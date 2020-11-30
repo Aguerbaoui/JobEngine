@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.je.utilities.response.Response;
 
 @RestController
 public class RuleController {
@@ -17,8 +16,7 @@ public class RuleController {
 	@RequestMapping(value = "/addRule", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 
 	public ResponseEntity<?> addRule(@RequestBody String input) {		
-		Response response = new Response();
-		return new ResponseEntity<Object>(response,HttpStatus.OK);
+		return new ResponseEntity<Object>(HttpStatus.OK);
 		
 	}
 

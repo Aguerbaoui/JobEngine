@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.je.utilities.response.Response;
 
 @RestController
 public class ProjectController {
@@ -17,8 +16,7 @@ public class ProjectController {
 	@RequestMapping(value = "/buildProject", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 
 	public ResponseEntity<?> buildProject(@RequestBody String input) {		
-		Response response = new Response();
-		return new ResponseEntity<Object>(response,HttpStatus.OK);
+		return new ResponseEntity<Object>(HttpStatus.OK);
 		
 	}
 	
@@ -26,16 +24,14 @@ public class ProjectController {
 	@RequestMapping(value = "/runProject", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 
 	public ResponseEntity<?> runProject(@RequestBody String input) {		
-		Response response = new Response();
-		return new ResponseEntity<Object>(response,HttpStatus.OK);
+		return new ResponseEntity<Object>(HttpStatus.OK);
 		
 	}
 
 	@RequestMapping(value = "/stopProject", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 
 	public ResponseEntity<?> stopProject(@RequestBody String input) {		
-		Response response = new Response();
-		return new ResponseEntity<Object>(response,HttpStatus.OK);
+		return new ResponseEntity<Object>(HttpStatus.OK);
 		
 	}
 
