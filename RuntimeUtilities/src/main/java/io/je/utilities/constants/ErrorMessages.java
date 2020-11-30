@@ -1,4 +1,4 @@
-package io.je.utilities.error;
+package io.je.utilities.constants;
 
 public enum ErrorMessages {
 	
