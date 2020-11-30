@@ -10,6 +10,11 @@ public class JELogger {
 		
 		logger.info(msg);
 	}
+	public static void error(String msg) {
+		logger.error(msg);
+
+		
+	}
 	
 
 }
