@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
+  <process id="test" isExecutable="true">
+    <startEvent id="start"></startEvent>
+    <scriptTask id="script" scriptFormat="groovy" activiti:autoStoreVariables="false">
+      <script><![CDATA[execution.setVariable("rowCount", 50)]]></script>
+    </scriptTask>
+    <sequenceFlow sourceRef="start" targetRef="split"></sequenceFlow>
+    <parallelGateway id="split"></parallelGateway>
+    <sequenceFlow sourceRef="script" targetRef="write"></sequenceFlow>
+    <serviceTask id="write"></serviceTask>
+    <sequenceFlow sourceRef="split" targetRef="join"></sequenceFlow>
+    <parallelGateway id="join"></parallelGateway>
+    <sequenceFlow sourceRef="write" targetRef="id"></sequenceFlow>
+    <endEvent id="end"></endEvent>
+    <sequenceFlow sourceRef="split" targetRef="join"></sequenceFlow>
+    <parallelGateway id="join"></parallelGateway>
+    <sequenceFlow sourceRef="write" targetRef="id"></sequenceFlow>
+    <endEvent id="end"></endEvent>
+    <sequenceFlow sourceRef="script" targetRef="mail"></sequenceFlow>
+    <serviceTask id="mail"></serviceTask>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_test">
+    <bpmndi:BPMNPlane bpmnElement="test" id="BPMNPlane_test"></bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>
