@@ -14,6 +14,7 @@ import org.activiti.engine.TaskService;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.task.Task;
 
+import io.je.JEProcess;
 import io.je.callbacks.OnExecuteOperation;
 
 
@@ -58,7 +59,7 @@ public class ProcessManager {
 	/*
 	 * List of all active processes
 	 * */
-	private static ArrayList<String> processes = null;
+	private static ArrayList<JEProcess> processes = null;
 	
 	
 	/*
@@ -82,12 +83,12 @@ public class ProcessManager {
 	/*
 	 * Add a process to engine
 	 * */
-	public static void addProcess(String processId) {
+	public static void addProcess(JEProcess process) {
 		
 		if(processes == null)  {
-			processes = new ArrayList<String>();
+			processes = new ArrayList<JEProcess>();
 		}
-		processes.add(processId);
+		processes.add(process);
 	}
 	
 	/*
@@ -246,7 +247,7 @@ public class ProcessManager {
 	/*
 	 * Get all deployed processes
 	 * */
-	public static ArrayList<String> getProcesses() {
+	public static ArrayList<JEProcess> getProcesses() {
 		return processes;
 	}
 }

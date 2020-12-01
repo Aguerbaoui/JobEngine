@@ -4,29 +4,29 @@ import java.time.LocalDateTime;
 
 public abstract class JEObject {
 
-	protected String id;
-	protected String projectId;
-	protected LocalDateTime lastUpdate;
+	protected String jobEngineElementID;
+	protected String jobEngineProjectID;
+	protected LocalDateTime jeObjectLastUpdate;
 	
 
 	
 	public String getId() {
-		return id;
+		return jobEngineElementID;
 	}
 	public void setId(String jobEngineElementID) {
-		this.id = jobEngineElementID;
+		this.jobEngineElementID = jobEngineElementID;
 	}
 	public String getProjectId() {
-		return projectId;
+		return jobEngineProjectID;
 	}
 	public void setProjectId(String jobEngineProjectID) {
-		this.projectId = jobEngineProjectID;
+		this.jobEngineProjectID = jobEngineProjectID;
 	}
 	public LocalDateTime getLastUpdate() {
-		return lastUpdate;
+		return jeObjectLastUpdate;
 	}
 	public void setLastUpdate(LocalDateTime jeObjectLastUpdate) {
-		this.lastUpdate = jeObjectLastUpdate;
+		this.jeObjectLastUpdate = jeObjectLastUpdate;
 	}
 	
 	

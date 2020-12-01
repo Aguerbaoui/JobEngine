@@ -6,7 +6,7 @@ import io.je.utilities.runtimeobject.JEObject;
 /*
  * Model class for a workflow
  * */
-public class Workflow extends JEObject{
+public class JEWorkflow extends JEObject{
 
 	/*
 	 * Workflow name

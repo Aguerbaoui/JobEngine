@@ -90,7 +90,7 @@ public class WorkflowBlock extends JEObject{
 	public List<SequenceFlow> generateBpmnInflows() {
 		List<SequenceFlow> l = new ArrayList<SequenceFlow>();
 		for(WorkflowBlock block: inflows) {
-			l.add(ModelBuilder.createSequenceFlow(block.id, this.id, ""));
+			l.add(ModelBuilder.createSequenceFlow(block.jobEngineElementID, this.jobEngineElementID, ""));
 		}
 		return l;
 	}
@@ -101,7 +101,7 @@ public class WorkflowBlock extends JEObject{
 	public List<SequenceFlow> generateBpmnOutflows() {
 		List<SequenceFlow> l = new ArrayList<SequenceFlow>();
 		for(WorkflowBlock block: outFlows) {
-			l.add(ModelBuilder.createSequenceFlow(this.id, block.id, ""));
+			l.add(ModelBuilder.createSequenceFlow(this.jobEngineElementID, block.jobEngineElementID, ""));
 		}
 		return l;
 	}
