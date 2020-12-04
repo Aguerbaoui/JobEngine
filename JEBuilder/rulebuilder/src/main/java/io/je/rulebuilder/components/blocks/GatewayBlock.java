@@ -1,5 +1,10 @@
 package io.je.rulebuilder.components.blocks;
 
-public interface GatewayBlock extends LogicalBlock {
+public abstract class GatewayBlock extends LogicalBlock {
+	
+	@Override
+	public String getExpression() {
+		return null;
+	}
 
 }

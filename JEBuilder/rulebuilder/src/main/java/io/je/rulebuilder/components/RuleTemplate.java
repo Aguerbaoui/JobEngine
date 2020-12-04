@@ -9,13 +9,17 @@ public class RuleTemplate {
 	
 	
 	
-	public RuleTemplate(String ruleName, String duration, String salience, String condition, String consequence) {
+	public RuleTemplate(JERule rule) {
 		super();
-		this.ruleName = ruleName;
-		this.duration = duration;
-		this.salience = salience;
-		this.condition = condition;
-		this.consequence = consequence;
+		this.ruleName = rule.name;
+		this.duration =String.valueOf( rule.getDuration());
+		this.salience = String.valueOf( rule.getSalience());
+		this.condition =  rule.getCondition().getString();
+		consequence = "";
+		for(Consequence cons : rule.getConsequences())
+		{
+			consequence = consequence + "\n"+ cons.getExpression();
+		}
 	}
 	public String getRuleName() {
 		return ruleName;

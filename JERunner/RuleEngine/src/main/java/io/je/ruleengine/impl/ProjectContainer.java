@@ -1,16 +1,12 @@
 package io.je.ruleengine.impl;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
-import java.io.IOException;
-
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
@@ -30,7 +26,6 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.internal.io.ResourceFactory;
 
-import io.je.ruleengine.interfaces.ProjectContainerInterface;
 import io.je.ruleengine.kie.KieSessionManagerInterface;
 import io.je.ruleengine.listener.RuleListener;
 import io.je.ruleengine.loader.RuleLoader;
@@ -40,13 +35,13 @@ import io.je.utilities.exceptions.RuleCompilationException;
 import io.je.utilities.exceptions.RuleEngineBuildFailedException;
 import io.je.utilities.exceptions.RulesNotFiredException;
 import io.je.utilities.logger.JELogger;
-import io.je.utilities.runtimeobject.JERuntimeObject;
+import io.je.utilities.runtimeobject.JEObject;
 
 /*
  * The Rule Engine supports multiple projects.
  * Each project is represented by a project container and is defined by 1 kie container and has its own rules and facts.
  */
-public class ProjectContainer extends JERuntimeObject {
+public class ProjectContainer extends JEObject {
 
 	// A project can be either running, or stopped.
 	private Status status = Status.STOPPED;
@@ -55,16 +50,16 @@ public class ProjectContainer extends JERuntimeObject {
 	// kie configuration
 	private KieServices ks;
 	private KieFileSystem kfs;
-	KieFileSystem kfsToCompile = ks.newKieFileSystem();
-	KieModuleModel kproj ;
+	private KieFileSystem kfsToCompile;
+	private KieModuleModel kproj;
 	private KieContainer kieContainer;
-	ReleaseId releaseId;
-	KieScanner kScanner;
-	KieBase kieBase;
-	KieSession kieSession;
+	private ReleaseId releaseId;
+	private KieScanner kScanner;
+	private KieBase kieBase;
+	private KieSession kieSession;
 	private int releaseVersion = 1;
 	private KieSessionManagerInterface kieManager;
-	ClassLoader classLoader;
+	private ClassLoader classLoader;
 
 	// rules
 	Map<String, Rule> allRules = new HashMap<>();
@@ -78,6 +73,7 @@ public class ProjectContainer extends JERuntimeObject {
 		this.jobEngineProjectID = id;
 		ks = KieServices.Factory.get();
 		kfs = ks.newKieFileSystem();
+		kfsToCompile = ks.newKieFileSystem();
 		// create kmodule ( TODO: add config to kie config class )
 		createKModule();
 
@@ -100,7 +96,7 @@ public class ProjectContainer extends JERuntimeObject {
 		JELogger.info(LogConstants.buildingProjectContainer);
 		if (!buildKie()) {
 			JELogger.error(LogConstants.buildingProjectContainerFailed);
-			throw new RuleEngineBuildFailedException("200", LogConstants.buildingProjectContainerFailed);			
+			throw new RuleEngineBuildFailedException("200", LogConstants.buildingProjectContainerFailed);
 		}
 		JELogger.info(LogConstants.buildingProjectContainerSuccessful);
 		buildStatus = BuildStatus.BUILT;
@@ -127,41 +123,43 @@ public class ProjectContainer extends JERuntimeObject {
 		} catch (Exception e) {
 			throw new RulesNotFiredException("200", "");
 		}
-		
+
 		return true;
 
 	}
 
 	public boolean stopRuleExecution() {
-		
+
 		try {
 
 			kieSession.halt();
 			status = Status.STOPPED;
 
 		} catch (Exception e) {
-			
+
 		}
 		return true;
 	}
 
-	/* --------------------------------------------------------KIE CONFIGURATION ---------------------------------------------------------------*/
+	/*
+	 * ---------------------------------------------------------------
+	 * --------------------------------------------------------KIE CONFIGURATION
+	 * ---------------------------------------------------------------
+	 */
 
 	/*
 	 * This method initialises the kie parameters. It is mainly responsible for
 	 * creating the project's kie container.
 	 */
 	private boolean buildKie() {
-		
-		if(allRules.isEmpty())
-		{
+
+		if (allRules.isEmpty()) {
 			return false;
 		}
-		
+
 		// add rules to kfs
-			addAllRulesToKieFileSystem();
-		
-		
+		addAllRulesToKieFileSystem();
+
 		// build all rules
 		try {
 			classLoader = Thread.currentThread().getContextClassLoader().getClass().getClassLoader();
@@ -169,17 +167,11 @@ public class ProjectContainer extends JERuntimeObject {
 		} catch (Exception e) {
 			return false;
 		}
-		
-		if(!initKieBase())
-		{
-			return false;
-		}
-		
 
-		return true;
+		return initKieBase();
 
 	}
-	
+
 	private boolean initKieBase() {
 		if (releaseId != null) {
 			// create container
@@ -198,9 +190,8 @@ public class ProjectContainer extends JERuntimeObject {
 		return true;
 	}
 
-	private void createKModule()
-	{
-	    kproj = ks.newKieModuleModel();
+	private void createKModule() {
+		kproj = ks.newKieModuleModel();
 
 		KieBaseModel kieBaseModel1 = kproj.newKieBaseModel("kie-base").setDefault(true)
 				.setEqualsBehavior(EqualityBehaviorOption.IDENTITY)
@@ -210,31 +201,39 @@ public class ProjectContainer extends JERuntimeObject {
 				.setType(KieSessionModel.KieSessionType.STATEFUL).setClockType(ClockTypeOption.get("realtime"));
 		kfs.writeKModuleXML(kproj.toXML());
 
-
 		// set releaseId
 		releaseId = ks.newReleaseId("io.je", "ruleengine", getReleaseVer());
 		kfs.generateAndWritePomXML(releaseId);
-		
+
 	}
-	
 
 	private boolean addAllRulesToKieFileSystem() {
-		
+
 		for (Rule rule : allRules.values()) {
 			addRuleToKieFileSystem(rule);
-			
+
 		}
 		return true;
 	}
 
 	private boolean addRuleToKieFileSystem(Rule rule) {
 
-		try
-		{
+		try {
 			kfs.write(generateResourceName(ResourceType.DRL, rule.getName()), rule.getContent());
 
+		} catch (Exception e) {
+			return false;
 		}
-		catch (Exception e) {
+
+		return true;
+	}
+
+	private boolean deleteRuleFromKieFileSystem(Rule rule) {
+
+		try {
+			kfs.delete(generateResourceName(ResourceType.DRL, rule.getName()));
+
+		} catch (Exception e) {
 			return false;
 		}
 
@@ -245,16 +244,24 @@ public class ProjectContainer extends JERuntimeObject {
 		return "0.0." + releaseVersion++;
 	}
 
-	public boolean  updateContainer() {
-
-		return false;
+	public boolean updateContainer() {
+		releaseId = ks.newReleaseId("io.je", "ruleengine", getReleaseVer());
+		kfs.generateAndWritePomXML(releaseId);
+		ks.newKieBuilder(kfs, classLoader).buildAll(null);
+		kieContainer.updateToVersion(releaseId);
+		kScanner.scanNow();
+		return true;
 	}
 
 	/*
+	 * ---------------------------------------------------------------
 	 * -------------------------------------------------------- RULE MANAGEMENT
 	 * ---------------------------------------------------------------
 	 */
 
+	/*
+	 * this method checks if a rule with an identical id already exists
+	 */
 	public boolean ruleExists(Rule rule) {
 		return allRules.containsKey(rule.getJobEngineElementID());
 	}
@@ -262,78 +269,76 @@ public class ProjectContainer extends JERuntimeObject {
 	/*
 	 * This method adds a rule to a project container
 	 */
-	public boolean  addRule(Rule rule) throws RuleCompilationException {
+	public boolean addRule(Rule rule) throws RuleCompilationException {
 
+		// check if rule already exists
+		if (ruleExists(rule)) {
+			return false;
 
-		
-			// check if rule already exists
-			if (allRules.containsKey(rule.getJobEngineElementID())) {
-				return false;
-
-			}
-			// compile rule
-			
-			if (!compileRule(rule)) {
-				
-				allRules.put(rule.getName(), rule);
-		
-				// if project is running
-				if (status == Status.RUNNING) {
-					// upgradeKieConfig()
-				}
-
-			}
-	
-		return true;
-
-	}
-
-	public boolean  updateRule(Rule rule) throws RuleCompilationException {
-		
-		if (!ruleExists(rule)) {
-			addRule(rule);
 		}
-		// check if project status = running
-		// if project stopped:
-		// reloadloadRuleContent
-		// update rule in allRules
+		
+		// compile rule
+		compileRule(rule);
+		allRules.put(rule.getName(), rule);
+
+		// if project is running
+		if (status == Status.RUNNING) {
+			addRuleToKieFileSystem(rule);
+			updateContainer();
+		}
+
+		return true;
+
+	}
+
+	public boolean updateRule(Rule rule) throws RuleCompilationException {
+
+		if (!ruleExists(rule)) {
+			return addRule(rule);
+		}
+		compileRule(rule);
+		allRules.put(rule.getJobEngineElementID(), rule);
+		if (status == Status.RUNNING) {
+			deleteRuleFromKieFileSystem(rule);
+			addRuleToKieFileSystem(rule);
+			updateContainer();
+		}
 
 		return true;
 	}
 
-	public boolean  compileRule(Rule rule) throws RuleCompilationException{
+	public void compileRule(Rule rule) throws RuleCompilationException {
 
 		// load rule
 		try {
-			RuleLoader ruleLoader = new RuleLoader();
-			if (!ruleLoader.loadRuleContent(rule)) {
-	
-				return false;
+			if (!RuleLoader.loadRuleContent(rule)) {
+
+				throw new RuleCompilationException("", "");
 			}
-		
-			/*if (!ruleLoader.writeRule(rule.getContent(), rule.getName())) {
-				
-				return false;
-			}
-			*/
-			
+
+			/*
+			 * if (!ruleLoader.writeRule(rule.getContent(), rule.getName())) {
+			 * 
+			 * return false; }
+			 */
+
 			String filename = generateResourceName(ResourceType.DRL, rule.getName());
 			kfsToCompile.write(filename, rule.getContent());
 			KieBuilder kieBuilder = ks.newKieBuilder(kfsToCompile, null).buildAll(null);
 			Results results = kieBuilder.getResults();
 			if (results.hasMessages(Message.Level.ERROR)) {
 				JELogger.error(results.getMessages().toString());
-				 throw new RuleCompilationException("","");
+				throw new RuleCompilationException("", "");
 			}
 			kfsToCompile.delete(filename);
 		} catch (Exception e) {
 			e.printStackTrace();
-			
+
 		}
-		return true;
+
 	}
 
-	public boolean  compileAllRules() {
+	public boolean compileAllRules() {
 		KieBuilder kieBuilder = ks.newKieBuilder(kfs, null).buildAll(null);
 		Results results = kieBuilder.getResults();
 		if (results.hasMessages(Message.Level.ERROR)) {
@@ -366,22 +371,22 @@ public class ProjectContainer extends JERuntimeObject {
 
 	}
 
-	public boolean  addRule(String rulePath, String ruleId) {
+	public boolean addRule(String rulePath, String ruleId) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	public boolean  updateRule(String ruleId) {
+	public boolean updateRule(String ruleId) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	public boolean  deleteRule(String ruleId) {
+	public boolean deleteRule(String ruleId) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	public boolean  insertFact(JERuntimeObject fact) {
+	public boolean insertFact(JEObject fact) {
 		if (status == Status.RUNNING) {
 			kieSession.insert(fact);
 			JELogger.info("inserting fact");
@@ -390,37 +395,37 @@ public class ProjectContainer extends JERuntimeObject {
 		return false;
 	}
 
-	public boolean  addRules(List<Rule> rules) {
+	public boolean addRules(List<Rule> rules) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	public boolean  compileRules(List<Rule> rules) {
+	public boolean compileRules(List<Rule> rules) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	public boolean  deleteRules(List<String> rulesIDs) {
+	public boolean deleteRules(List<String> rulesIDs) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	public boolean  disableRule(String ruleID) {
+	public boolean disableRule(String ruleID) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	public boolean  enableRule(String ruleID) {
+	public boolean enableRule(String ruleID) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	public boolean  retractFact(JERuntimeObject Fact) {
+	public boolean retractFact(JEObject Fact) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	public boolean  updateFact(JERuntimeObject Fact) {
+	public boolean updateFact(JEObject Fact) {
 		// TODO Auto-generated method stub
 		return false;
 	}

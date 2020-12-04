@@ -6,7 +6,10 @@ import java.util.List;
 import io.je.ruleengine.interfaces.ProjectContainerRepositoryInterface;
 import io.je.ruleengine.interfaces.RuleEngineInterface;
 import io.je.ruleengine.models.Rule;
-import io.je.utilities.runtimeobject.JERuntimeObject;
+import io.je.utilities.exceptions.RuleCompilationException;
+import io.je.utilities.exceptions.RuleEngineBuildFailedException;
+import io.je.utilities.exceptions.RulesNotFiredException;
+import io.je.utilities.runtimeobject.JEObject;
 
 
 public class RuleEngine implements RuleEngineInterface{
@@ -21,7 +24,12 @@ public class RuleEngine implements RuleEngineInterface{
 		 
 		String projectID = rule.getJobEngineProjectID();
 		ProjectContainer project = projectManager.getProjectContainer(projectID);
-		// project.addRule(rule);	
+		try {
+			project.addRule(rule);
+		} catch (RuleCompilationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}	
 		return true;
 		
 	}
@@ -83,7 +91,15 @@ public class RuleEngine implements RuleEngineInterface{
 	public boolean fireRules(String projectId)  {
 		 
 		ProjectContainer project = projectManager.getProjectContainer(projectId);
-		//return project.fireRules();
+		try {
+			project.fireRules();
+		} catch (RulesNotFiredException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (RuleEngineBuildFailedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return true;
 	}
 
@@ -102,7 +118,7 @@ public class RuleEngine implements RuleEngineInterface{
 	}
 
 	@Override
-	public boolean insertFact( JERuntimeObject fact) {
+	public boolean insertFact( JEObject fact) {
 		 
 		ProjectContainer project = projectManager.getProjectContainer(fact.getJobEngineProjectID());
 		project.insertFact(fact);
@@ -110,13 +126,13 @@ public class RuleEngine implements RuleEngineInterface{
 	}
 
 	@Override
-	public boolean retractFact( JERuntimeObject fact) {
+	public boolean retractFact( JEObject fact) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
-	public boolean updateFact( JERuntimeObject fact) {
+	public boolean updateFact( JEObject fact) {
 		// TODO Auto-generated method stub
 		return false;
 	}

@@ -1,8 +1,8 @@
 package io.je.ruleengine.models;
 
-import io.je.utilities.runtimeobject.JERuntimeObject;
+import io.je.utilities.runtimeobject.JEObject;
 
-public class Rule extends JERuntimeObject{
+public class Rule extends JEObject{
 	
 	String name;
 	Type resourceType;

@@ -16,8 +16,8 @@ public class DRLGenerationfromTemplateTest {
 		String consequence = "logger.info(\"hi\")";
 		DRLBuilder drlBuilder = new DRLBuilder();
 		
-		RuleTemplate ruleTemplate = new RuleTemplate(ruleName, duration, salience, condition, consequence);
-		drlBuilder.generateDRL(ruleTemplate);
+		//RuleTemplate ruleTemplate = new RuleTemplate(ruleName, duration, salience, condition, consequence);
+		//drlBuilder.generateDRL(ruleTemplate);
 		
 
 	}

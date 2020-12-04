@@ -3,7 +3,7 @@ package io.je.ruleengine.interfaces;
 import java.util.List;
 
 import io.je.ruleengine.models.Rule;
-import io.je.utilities.runtimeobject.JERuntimeObject;
+import io.je.utilities.runtimeobject.JEObject;
 
 public interface ProjectContainerInterface{
 	
@@ -25,9 +25,9 @@ public interface ProjectContainerInterface{
 
 
 	//FactManagement
-	public boolean insertFact(JERuntimeObject fact);
-	public boolean retractFact(JERuntimeObject fact);
-	public boolean updateFact(JERuntimeObject fact);
+	public boolean insertFact(JEObject fact);
+	public boolean retractFact(JEObject fact);
+	public boolean updateFact(JEObject fact);
 
 	
 	

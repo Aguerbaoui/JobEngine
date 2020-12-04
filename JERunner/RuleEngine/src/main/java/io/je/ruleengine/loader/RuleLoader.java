@@ -13,14 +13,10 @@ import io.je.utilities.logger.JELogger;
 /*
  * load rule content from file path
  */
-public class RuleLoader {
+public class  RuleLoader {
 
-public RuleLoader()
-{
-	
-}
 
-public boolean loadRuleContent(Rule rule)
+public static boolean loadRuleContent(Rule rule)
 {
 	try {
 		JELogger.info(rule.getPath());
@@ -32,7 +28,7 @@ public boolean loadRuleContent(Rule rule)
 	return true;
 }
 
-public boolean writeRule(String rule, String filename) throws IOException {
+public static boolean writeRule(String rule, String filename) throws IOException {
 	try (FileWriter fileWriter = new FileWriter(new File(filename));
 			BufferedWriter writer = new BufferedWriter(fileWriter)) {
 		writer.write(rule);

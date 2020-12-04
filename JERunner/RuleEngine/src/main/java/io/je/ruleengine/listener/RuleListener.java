@@ -15,7 +15,7 @@ public class RuleListener extends DefaultAgendaEventListener{
 	@Override
 	public void matchCreated(MatchCreatedEvent event) {
 		// TODO Auto-generated method stub
-		
+	
 	}
 
 	@Override
