@@ -102,8 +102,7 @@ public class ProjectContainer  {
 	 */
 	public ProjectContainer(String id) {
 
-		projectID = id;
-		
+		projectID = id;		
 		//Initialise kie configuration .
 		kieServices = KieServices.Factory.get();
 		kieFileSystem = kieServices.newKieFileSystem();
@@ -249,6 +248,9 @@ public class ProjectContainer  {
 	 */
 	private void createKModule() {
 		
+		try {
+			
+		
 		//get new kie Module
 		kproj = kieServices.newKieModuleModel();
 
@@ -267,6 +269,10 @@ public class ProjectContainer  {
 		
 		//generate pom file
 		kieFileSystem.generateAndWritePomXML(releaseId);
+		}
+		catch (Exception e) {
+			JELogger.error(LogConstants.unexpectedError + e.getMessage());
+		}
 
 	}
 
