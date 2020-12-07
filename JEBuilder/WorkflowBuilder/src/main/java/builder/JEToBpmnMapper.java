@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import org.activiti.bpmn.BpmnAutoLayout;
 import org.activiti.bpmn.model.ActivitiListener;
 import org.activiti.bpmn.model.BpmnModel;
+import org.activiti.bpmn.model.ImplementationType;
 import org.activiti.bpmn.model.Process;
 
 import blocks.WorkflowBlock;
@@ -13,8 +14,8 @@ import blocks.basic.EndBlock;
 import blocks.basic.MailBlock;
 import blocks.basic.ScriptBlock;
 import blocks.basic.StartBlock;
-import blocks.control.OrJoinBlock;
-import blocks.control.SplitBlock;
+import blocks.control.ExclusiveGatewayBlock;
+import blocks.control.ParallelGatewayBlock;
 import blocks.control.SynchronizeBlock;
 import io.je.utilities.constants.WorkflowConstants;
 
@@ -38,7 +39,7 @@ public class JEToBpmnMapper {
 		parseWorkflowBlock(startBlock, process, null);
 		model.addProcess(process);
 		//new BpmnAutoLayout(model).execute();
-		ModelBuilder.saveModel(model, "test");
+		ModelBuilder.saveModel(model, modelPath);
 		return model;
 	}
 
@@ -49,9 +50,10 @@ public class JEToBpmnMapper {
 		ActivitiListener startProcessListener = new ActivitiListener();
 		startProcessListener.setImplementation(WorkflowConstants.processListenerImplementation);
 		startProcessListener.setEvent(WorkflowConstants.startProcess);
-
+		startProcessListener.setImplementationType(ImplementationType.IMPLEMENTATION_TYPE_CLASS);
 		ActivitiListener endProcessListener = new ActivitiListener();
 		endProcessListener.setImplementation(WorkflowConstants.processListenerImplementation);
+		endProcessListener.setImplementationType(ImplementationType.IMPLEMENTATION_TYPE_CLASS);
 		endProcessListener.setEvent(WorkflowConstants.endProcess);
 		
 		ArrayList<ActivitiListener> listeners = new ArrayList<ActivitiListener>();
@@ -61,50 +63,47 @@ public class JEToBpmnMapper {
 
 	}
 
-	/*
+	/* 
 	 * Parse job engine blocks to bpmn blocks
 	 * */
 	private static void parseWorkflowBlock(WorkflowBlock startBlock, Process process, WorkflowBlock previous) {
 		
-		if(startBlock.isProcessed()) return;
 		if (previous != null) {
 			process.addFlowElement(ModelBuilder.createSequenceFlow(previous.getId(), startBlock.getId(), ""));
 		}
+		if(startBlock.isProcessed()) return;
+	 	startBlock.setProcessed(true);
 		for (WorkflowBlock block : startBlock.getOutFlows()) {
-			if (block instanceof EndBlock) {
+			if (block instanceof EndBlock && !block.isProcessed()) {
 				process.addFlowElement(ModelBuilder.createEndEvent());
-				return;
 			}
 
-			else if (block instanceof SplitBlock) {
+			else if (block instanceof ParallelGatewayBlock && !block.isProcessed()) {
 				process.addFlowElement(ModelBuilder.createParallelGateway(block.getId(), block.getName(),
 						block.generateBpmnInflows(), block.generateBpmnOutflows()));
-			} else if (block instanceof SynchronizeBlock) {
+			} else if (block instanceof SynchronizeBlock && !block.isProcessed()) {
 				process.addFlowElement(ModelBuilder.createParallelGateway(block.getId(), block.getName(),
 						block.generateBpmnInflows(), block.generateBpmnOutflows()));
-			} else if (block instanceof ScriptBlock) {
+			} else if (block instanceof ScriptBlock && !block.isProcessed()) {
 				process.addFlowElement(ModelBuilder.createScriptTask(block.getId(), block.getName(),
 						((ScriptBlock) block).getScript()));
-			} else if (block instanceof OrJoinBlock) {
+			} else if (block instanceof ExclusiveGatewayBlock && !block.isProcessed()) {
 				process.addFlowElement(ModelBuilder.createExclusiveGateway(block.getId(), block.getName(),
-						((OrJoinBlock) block).isExclusive(), block.generateBpmnInflows(),
+						((ExclusiveGatewayBlock) block).isExclusive(), block.generateBpmnInflows(),
 						block.generateBpmnOutflows()));
-			} else if (block instanceof DBWriteBlock) {
+			} else if (block instanceof DBWriteBlock && !block.isProcessed()) {
 				process.addFlowElement(ModelBuilder.createServiceTask(block.getId(), block.getName(),
 						WorkflowConstants.dbWriteTaskImplementation));
-			} else if (block instanceof MailBlock) {
+			} else if (block instanceof MailBlock && !block.isProcessed()) {
 				process.addFlowElement(ModelBuilder.createServiceTask(block.getId(), block.getName(),
 						WorkflowConstants.mailTaskImplementation));
 			}
-			startBlock.setProcessed(true);
+			
 			parseWorkflowBlock(block, process, startBlock);
 		}
 	}
-
-	/*
-	 * Test JEToBpmn conversion
-	 * */
-	public static void main(String[] args) {
+	
+	public static void launchTest() {
 		StartBlock start = new StartBlock();
 		start.setId("start");
 
@@ -113,7 +112,7 @@ public class JEToBpmnMapper {
 		start.getOutFlows().add(script);
 		script.getInflows().add(start);
 		script.setId("script");
-		SplitBlock split = new SplitBlock();
+		ParallelGatewayBlock split = new ParallelGatewayBlock();
 		split.setId("split");
 		split.getInflows().add(script);
 		script.getOutFlows().add(split);
@@ -130,12 +129,50 @@ public class JEToBpmnMapper {
 		join.getInflows().add(write);
 		join.getInflows().add(mail);
 		write.getOutFlows().add(join);
-		write.getOutFlows().add(join);
+		mail.getOutFlows().add(join);
 		EndBlock end = new EndBlock();
-		end.setId("id");
+		end.setId("end");
 		end.getInflows().add(join);
 		join.getOutFlows().add(end);
 
-		createBpmnFromJEWorkflow("test", start,"D:\\test.bpmn");
+		createBpmnFromJEWorkflow("generatedBpmn", start,"D:\\generatedBpmn.bpmn");
+	}
+
+	/*
+	 * Test JEToBpmn conversion
+	 * */
+	public static void main(String[] args) {
+		StartBlock start = new StartBlock();
+		start.setId("start");
+
+		ScriptBlock script = new ScriptBlock();
+		script.setScript("execution.setVariable(\"rowCount\", 50)");
+		start.getOutFlows().add(script);
+		script.getInflows().add(start);
+		script.setId("script");
+		ParallelGatewayBlock split = new ParallelGatewayBlock();
+		split.setId("split");
+		split.getInflows().add(script);
+		script.getOutFlows().add(split);
+		DBWriteBlock write = new DBWriteBlock();
+		write.setId("write");
+		write.getInflows().add(split);
+		MailBlock mail = new MailBlock();
+		mail.getInflows().add(split);
+		mail.setId("mail");
+		split.getOutFlows().add(write);
+		split.getOutFlows().add(mail);
+		SynchronizeBlock join = new SynchronizeBlock();
+		join.setId("join");
+		join.getInflows().add(write);
+		join.getInflows().add(mail);
+		write.getOutFlows().add(join);
+		mail.getOutFlows().add(join);
+		EndBlock end = new EndBlock();
+		end.setId("end");
+		end.getInflows().add(join);
+		join.getOutFlows().add(end);
+
+		createBpmnFromJEWorkflow("generatedBpmn", start,"D:\\generatedBpmn.bpmn");
 	}
 }

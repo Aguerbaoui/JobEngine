@@ -1,5 +1,8 @@
 package models;
 
+import java.util.HashMap;
+
+import blocks.WorkflowBlock;
 import blocks.basic.StartBlock;
 import io.je.utilities.runtimeobject.JEObject;
 
@@ -23,6 +26,11 @@ public class JEWorkflow extends JEObject{
 	 * */	
 	private String bpmnPath;
 
+	/*
+	 * List of all workflow blocks
+	 * */
+	private HashMap<String, WorkflowBlock> allBlocks;
+	
 	/*
 	 * Return workflow name
 	 * */
@@ -63,7 +71,34 @@ public class JEWorkflow extends JEObject{
 	 * */
 	public void setBpmnPath(String bpmnPath) {
 		this.bpmnPath = bpmnPath;
+	}
+
+	/*
+	 * Returns all Workflow blocks
+	 * */
+	public HashMap<String, WorkflowBlock> getAllBlocks() {
+		return allBlocks;
+	}
+
+	/*
+	 * set all Workflow blocks
+	 * */
+	public void setAllBlocks(HashMap<String, WorkflowBlock> allBlocks) {
+		this.allBlocks = allBlocks;
 	} 
 	
+	/*
+	 * Add a block to block list
+	 * */
+	public void addBlock(WorkflowBlock block) {
+		allBlocks.put(block.getId(), block);
+	}
 	
+	/*
+	 * Add a block flow to a block
+	 * */
+	public void addBlockFlow(String from, String to) {
+		allBlocks.get(from).getOutFlows().add(allBlocks.get(to));
+		allBlocks.get(to).getInflows().add(allBlocks.get(from));
+	}
 }

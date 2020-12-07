@@ -186,14 +186,14 @@ public class ProcessManager {
 
 	}
 	
-	/*public static void main(String[] args) {
+	public static void main(String[] args) {
 		init();
 		deployProcess("processes/test.bpmn");
 		launchProcessByKeyWithoutVariables("Process_test");
 		String taskId = getMessageEventSubscription("userStartWf").getId();
 		throwMessageEvent("userStartWf",taskId);
 		
-	}*/
+	}
 
 	/*
 	 * Get all execution callbacks

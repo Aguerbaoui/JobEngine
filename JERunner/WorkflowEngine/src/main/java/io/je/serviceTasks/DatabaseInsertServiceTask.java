@@ -14,7 +14,7 @@ public class DatabaseInsertServiceTask extends ServiceTask {
 	public void execute(DelegateExecution execution) {
 		JELogger.info("database op at execution id = " + execution.getCurrentActivityId());
 		
-		ProcessManager.getAllCallbacks().get(JEStringUtils.substring(execution.getProcessDefinitionId(), 0, execution.getProcessDefinitionId().indexOf(':'))).onDatabaseInsertOperation(execution.getCurrentActivityId());
+		//ProcessManager.getAllCallbacks().get(JEStringUtils.substring(execution.getProcessDefinitionId(), 0, execution.getProcessDefinitionId().indexOf(':'))).onDatabaseInsertOperation(execution.getCurrentActivityId());
 
 	}
 }

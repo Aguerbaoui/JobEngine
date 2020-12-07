@@ -3,7 +3,7 @@ package blocks.control;
 import blocks.WorkflowBlock;
 import io.je.utilities.runtimeobject.JEObject;
 
-public class OrJoinBlock extends WorkflowBlock{
+public class ExclusiveGatewayBlock extends WorkflowBlock{
 
 	boolean exclusive;
 

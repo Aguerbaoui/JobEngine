@@ -1,6 +1,6 @@
 package io.je.utilities.exceptions;
 
-public abstract class JEException extends Exception {
+public class JEException extends Exception {
    
 	private static final long serialVersionUID = 1L;
 	private  String code;

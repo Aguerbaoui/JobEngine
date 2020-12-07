@@ -18,6 +18,7 @@ import org.activiti.bpmn.model.ServiceTask;
 import org.activiti.bpmn.model.StartEvent;
 import org.activiti.bpmn.model.UserTask;
 import io.je.utilities.files.JEFileUtils;
+import io.je.utilities.logger.JELogger;
 import io.je.utilities.string.JEStringUtils;
 
 public class ModelBuilder {
@@ -153,6 +154,7 @@ public class ModelBuilder {
 		 BpmnXMLConverter bpmnXMLConverter = new BpmnXMLConverter();
 		 try {
 			String bpmn20Xml = new String(bpmnXMLConverter.convertToXML(model), "UTF-8");
+			JELogger.info(bpmn20Xml);
 			JEFileUtils.copyStringToFile(bpmn20Xml, fileName, "utf-8");
 		} catch (Exception e) {
 			e.printStackTrace();
