@@ -4,7 +4,7 @@ import io.je.ruleengine.impl.ProjectContainer;
 
 public interface ProjectContainerRepositoryInterface {
 	
-		private ProjectContainer newProjectContainer(String projectId) {
+		default ProjectContainer newProjectContainer(String projectId) {
 			return null;
 		}
 		public ProjectContainer getProjectContainer(String projectId);

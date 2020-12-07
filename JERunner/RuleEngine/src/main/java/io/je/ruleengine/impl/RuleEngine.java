@@ -13,18 +13,33 @@ import io.je.utilities.exceptions.RuleEngineBuildFailedException;
 import io.je.utilities.exceptions.RulesNotFiredException;
 import io.je.utilities.runtimeobject.JEObject;
 
-
+/*
+ * This class handles all the rule engine operations. 
+ */
 public class RuleEngine {
-	private static ProjectContainerRepositoryInterface projectManager = new ProjectContainerRepository();
+	private static ProjectContainerRepository projectManager = new ProjectContainerRepository();
 	
 	public RuleEngine()
 	{
 		 
 	}
 
+	
+	/*
+	 * add a new rule to the rule engine
+	 */
 	public boolean addRule(Rule rule) throws RuleAlreadyExistsException, RuleCompilationException {
 		 
-		String projectID = rule.getJobEngineProjectID();
+		String projectID;
+		try {
+			
+		
+			projectID = rule.getJobEngineProjectID();
+
+		}catch (Exception e) {
+			// error : rule does not have a project id
+			return false;
+		}
 		ProjectContainer project = projectManager.getProjectContainer(projectID);
 		project.addRule(rule);
 			

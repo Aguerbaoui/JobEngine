@@ -2,21 +2,29 @@ package io.je.ruleengine.impl;
 
 import java.util.HashMap;
 import java.util.Map;
-import io.je.ruleengine.interfaces.ProjectContainerRepositoryInterface;
 
 
-
-public class ProjectContainerRepository implements ProjectContainerRepositoryInterface {
+/*
+ * In Memory Repository for all the rule engine projects (project container)
+ */
+public class ProjectContainerRepository  {
 	
 	//Map of all the projectContainers of this RuleEngine. 
 	static Map<String,ProjectContainer> allProjects = new HashMap<>();
 
+	
+	/*
+	 * create new project container
+	 */
 	private ProjectContainer newProjectContainer(String projectId) {
 		ProjectContainer project = new ProjectContainer(projectId);
 		allProjects.put(projectId, project);
 		return project;
 	}
 
+	/*
+	 * get project container by ID
+	 */
 	public ProjectContainer getProjectContainer(String projectId) {
 		if(projectContainerExists(projectId))
 		{
@@ -24,6 +32,10 @@ public class ProjectContainerRepository implements ProjectContainerRepositoryInt
 		}
 		return  newProjectContainer(projectId);
 	}
+	
+	/*
+	 * delete project container
+	 */
 
 	public void deleteProjectContainer(String projectId) {
 		if(projectContainerExists(projectId))
@@ -42,6 +54,9 @@ public class ProjectContainerRepository implements ProjectContainerRepositoryInt
 
 	}
 	
+	/*
+	 * check if a project container with a specific id exists
+	 */
 	public boolean projectContainerExists(String projectId) {
 		
 		return allProjects.containsKey(projectId);

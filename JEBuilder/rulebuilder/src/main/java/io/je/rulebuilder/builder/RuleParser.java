@@ -45,7 +45,7 @@ import io.je.rulebuilder.utils.logic.Node;
 public class RuleParser {
 
 	public static void main(String[] args) {
-		JERule jeRule = new JERule();
+		/*JERule jeRule = new JERule();
 		jeRule.setName("test rule");
 		jeRule.setSalience(10);
 		jeRule.setDuration(10);
@@ -67,7 +67,7 @@ public class RuleParser {
 		RuleTemplate ruleTemplate = new RuleTemplate(jeRule);
 		DRLBuilder drlBuilder = new DRLBuilder();
 		drlBuilder.generateDRL(ruleTemplate);
-
+	*/
 
 	}
 
