@@ -1,5 +1,6 @@
 package io.je.rulebuilder.components.blocks;
 
+import io.je.rulebuilder.components.enumerations.DataType;
 import io.je.rulebuilder.components.enumerations.TimePersistenceUnit;
 
 /* 

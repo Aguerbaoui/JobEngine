@@ -14,11 +14,23 @@ import java.util.Map;
 
 import org.drools.template.ObjectDataCompiler;
 
+
+/*
+ * class responsible for drl generation
+ */
 public class DRLBuilder {
 	
-	
-	public void generateDRL(RuleTemplate rule)
+	private DRLBuilder()
 	{
+		
+	}
+	
+	public static void generateDRL(RuleTemplate rule)
+	{
+		
+		/*
+		 * TODO: not sure if objectDataCompiler is thread safe so creating a new instance everytime 
+		 */
 		  ObjectDataCompiler objectDataCompiler = new ObjectDataCompiler();
 		  Map<String, String> data = new HashMap<>();
 		  data.put("name",rule.getRuleName());
@@ -35,14 +47,18 @@ public class DRLBuilder {
 		  
 		  try {
 		      File myObj = new File(RuleBuilderConfig.drlGenerationPath+rule.getRuleName()+".drl");
-		      myObj.createNewFile() ;		      
+		      if(!myObj.createNewFile() )
+		      {
+		    	  //error
+		      }
 		    } catch (IOException e) {
 		      System.out.println("An error occurred.");
 		      e.printStackTrace();
 		    }
 		  
+		  FileWriter myWriter = null ;
 		  try {
-		      FileWriter myWriter = new FileWriter(RuleBuilderConfig.drlGenerationPath+rule.getRuleName()+".drl");
+		       myWriter = new FileWriter(RuleBuilderConfig.drlGenerationPath+rule.getRuleName()+".drl");
 		      myWriter.write(ruleContent);
 		      myWriter.close();
 		      System.out.println("Successfully generated drl");
@@ -50,6 +66,16 @@ public class DRLBuilder {
 		      System.out.println("An error occurred.");
 		      e.printStackTrace();
 		    }
+		  finally {
+			  if(myWriter!=null)
+			  {
+				  try {
+					myWriter.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			  }
+		  }
 	}
 
 }

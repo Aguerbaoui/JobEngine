@@ -1,4 +1,4 @@
-package io.je.rulebuilder.components.blocks;
+package io.je.rulebuilder.components.enumerations;
 
 public enum DataType {
 	VARIABLE,

@@ -1,8 +1,8 @@
 package io.je.rulebuilder.components.blocks.logical;
 
 import io.je.rulebuilder.components.blocks.ComparisonBlock;
-import io.je.rulebuilder.components.blocks.DataType;
 import io.je.rulebuilder.components.blocks.operators.Operator;
+import io.je.rulebuilder.components.enumerations.DataType;
 import io.je.rulebuilder.components.enumerations.TimePersistenceUnit;
 
 public class GreaterThanBlock extends ComparisonBlock {

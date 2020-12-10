@@ -54,7 +54,7 @@ public class ProjectContainer  {
 	 *-------------------*/
 	
 	//The KieServices is a thread-safe singleton acting as a hub giving access 
-	//to the otherServices provided by Kie.
+	//to the other services provided by Kie.
 	private KieServices kieServices;
 	
 	//KieFileSystem is an in memory file system used to programmatically define
@@ -265,7 +265,7 @@ public class ProjectContainer  {
 		kieFileSystem.writeKModuleXML(kproj.toXML());
 
 		// set releaseId
-		releaseId = kieServices.newReleaseId("io.je", "ruleengine", getReleaseVer());
+		releaseId = kieServices.newReleaseId("io.je", "ruleengine"+projectID, getReleaseVer());
 		
 		//generate pom file
 		kieFileSystem.generateAndWritePomXML(releaseId);
@@ -304,7 +304,7 @@ public class ProjectContainer  {
 	}
 
 	/*
-	 * delete rule  from kie file system
+	 * delete rule from kie file system
 	 */
 	private boolean deleteRuleFromKieFileSystem(Rule rule) {
 

@@ -2,10 +2,14 @@ package io.je.rulebuilder.components.blocks;
 
 import io.je.rulebuilder.components.enumerations.TimePersistenceUnit;
 
+
+/*
+ * blocks used to define a rule's condition
+ */
 public abstract class LogicalBlock extends Block {
 	
 	
-
+	// persistence in time 
 	boolean timePersistenceOn;
 	int timePersistenceValue;
 	TimePersistenceUnit timePersistenceUnit;

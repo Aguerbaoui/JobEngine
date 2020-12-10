@@ -2,6 +2,8 @@ package io.je.rulebuilder.builder;
 
 import io.je.rulebuilder.components.JERule;
 import io.je.rulebuilder.components.RuleTemplate;
+import io.je.rulebuilder.components.blocks.Block;
+import io.je.rulebuilder.models.BlockModel;
 
 public class RuleBuilder {
 	RuleConstructor ruleConstructor;
@@ -9,9 +11,10 @@ public class RuleBuilder {
 	DRLBuilder drlBuilder;
 	
 	
-	public void addBlockToRule (Object json)
+	public void addBlockToRule (BlockModel json)
 	{
 		//ruleConstructor.addBlockToRule();
+		System.out.println(json);
 	}
 	
 	public void buildRule(Object json)

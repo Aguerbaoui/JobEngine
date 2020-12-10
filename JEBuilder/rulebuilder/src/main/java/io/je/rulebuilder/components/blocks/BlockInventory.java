@@ -1,36 +1,55 @@
 package io.je.rulebuilder.components.blocks;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-
 /*
- * 
+ * In memory repository for all blocks 
  */
 public class BlockInventory {
-	static Map<String,Map<String,Block>> blocks = new HashMap<>();
-	
-	public boolean addBlock(Block block)
-	{
-		return false;
+
+	/*
+	 * Map of all the blocks
+	 */
+	static Map<String, Block> blocks = new HashMap<>();
+
+	/*
+	 * add block to repository
+	 */
+	public static boolean addBlock(Block block) {
+		if (!blockExists(block.getJobEngineElementID())) {
+			return false;
+		}
+		blocks.put(block.getJobEngineElementID(), block);
+		return true;
 	}
-	
-	public boolean updateBlock(Block block)
-	{
-		return false;
+
+	/*
+	 * update block
+	 */
+	public boolean updateBlock(Block block) {
+
+		blocks.put(block.getJobEngineElementID(), block);
+		return true;
+
 	}
+
 	
-	public boolean deleteBlock(String projectId,String blockId)
-	{
-		return false;
+	/*
+	 * delete block
+	 */
+	public boolean deleteBlock(String blockId) {
+		if (!blockExists(blockId)) {
+			//block not found
+			return false;
+		}
+		blocks.remove(blockId);
+		return true;
 	}
-	
-	private boolean blockExists(String projectId,String blockId)
-	{
-		 Map projectBlocks = blocks.get(projectId);
-		 return projectBlocks.containsKey(blockId);
-	}	
-	
-	
+
+	private static boolean blockExists(String blockId) {
+
+		return blocks.containsKey(blockId);
+	}
+
 }

@@ -2,9 +2,12 @@ package io.je.utilities.runtimeobject;
 
 import java.time.LocalDateTime;
 
+
 public abstract class JEObject {
 
+	
 	protected String jobEngineElementID;
+	
 	protected String jobEngineProjectID;
 	protected LocalDateTime jeObjectLastUpdate;
 	

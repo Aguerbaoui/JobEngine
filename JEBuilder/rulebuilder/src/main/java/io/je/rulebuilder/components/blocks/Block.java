@@ -1,11 +1,15 @@
 package io.je.rulebuilder.components.blocks;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import io.je.utilities.runtimeobject.JEObject;
+import io.je.rulebuilder.config.BlockAttributesMapping;
 
 
 
 public abstract class Block extends JEObject{
 	
+	@JsonProperty(BlockAttributesMapping.RULEID)
 	String ruleId;
 	
 	
@@ -13,6 +17,18 @@ public abstract class Block extends JEObject{
 	public Block(String jobEngineElementID, String jobEngineProjectID,String ruleId) {
 		super(jobEngineElementID, jobEngineProjectID);
 		this.ruleId=ruleId;
+	}
+
+
+
+	public String getRuleId() {
+		return ruleId;
+	}
+
+
+
+	public void setRuleId(String ruleId) {
+		this.ruleId = ruleId;
 	}
 
 
