@@ -95,7 +95,7 @@ public class JEWorkflow extends JEObject {
 		if(block instanceof StartBlock) {
 			workflowStartBlock = (StartBlock) block;
 		}
-		allBlocks.put(block.getId(), block);
+		allBlocks.put(block.getJobEngineElementID(), block);
 	}
 
 	/*

@@ -32,6 +32,8 @@ public abstract class JEObject {
 	public String getJobEngineElementID() {
 		return jobEngineElementID;
 	}
+	
+
 	public void setJobEngineElementID(String jobEngineElementID) {
 		this.jobEngineElementID = jobEngineElementID;
 	}

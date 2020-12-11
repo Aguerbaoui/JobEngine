@@ -65,67 +65,67 @@ public class WorkflowController {
 			if (block.getType().equalsIgnoreCase(WorkflowConstants.startType)) {
 				StartBlock b = new StartBlock();
 				b.setName(block.getAttributes().get("name"));
-				b.setProjectId(block.getProjectId());
+				b.setJobEngineProjectID(block.getProjectId());
 				b.setWorkflowId(block.getWorkflowId());
-				b.setId(block.getId());
+				b.setJobEngineElementID(block.getId());
 				WorkflowBuilder.addWorkflowBlock(b);
 			} else if (block.getType().equalsIgnoreCase(WorkflowConstants.endType)) {
 				EndBlock b = new EndBlock();
 				b.setName(block.getAttributes().get("name"));
-				b.setProjectId(block.getProjectId());
+				b.setJobEngineProjectID(block.getProjectId());
 				b.setWorkflowId(block.getWorkflowId());
-				b.setId(block.getId());
+				b.setJobEngineElementID(block.getId());
 				WorkflowBuilder.addWorkflowBlock(b);
 			} else if (block.getType().equalsIgnoreCase(WorkflowConstants.eventgatewayType)) {
 				EventGatewayBlock b = new EventGatewayBlock();
 				b.setName(block.getAttributes().get("name"));
-				b.setProjectId(block.getProjectId());
+				b.setJobEngineProjectID(block.getProjectId());
 				b.setWorkflowId(block.getWorkflowId());
-				b.setId(block.getId());
+				b.setJobEngineElementID(block.getId());
 				WorkflowBuilder.addWorkflowBlock(b);
 			} else if (block.getType().equalsIgnoreCase(WorkflowConstants.messageintermediatecatcheventType)) {
 				MessageCatchEvent b = new MessageCatchEvent();
 				b.setName(block.getAttributes().get("name"));
 				b.setMessageRef(block.getAttributes().get("messageRef"));
-				b.setProjectId(block.getProjectId());
+				b.setJobEngineProjectID(block.getProjectId());
 				b.setWorkflowId(block.getWorkflowId());
-				b.setId(block.getId());
+				b.setJobEngineElementID(block.getId());
 				WorkflowBuilder.addWorkflowBlock(b);
 			} else if (block.getType().equalsIgnoreCase(WorkflowConstants.exclusivegatewayType)) {
 				ExclusiveGatewayBlock b = new ExclusiveGatewayBlock();
 				b.setName(block.getAttributes().get("name"));
-				b.setProjectId(block.getProjectId());
+				b.setJobEngineProjectID(block.getProjectId());
 				b.setWorkflowId(block.getWorkflowId());
-				b.setId(block.getId());
+				b.setJobEngineElementID(block.getId());
 				WorkflowBuilder.addWorkflowBlock(b);
 			} else if (block.getType().equalsIgnoreCase(WorkflowConstants.scripttaskType)) {
 				ScriptBlock b = new ScriptBlock();
 				b.setName(block.getAttributes().get("name"));
 				b.setScript(block.getAttributes().get("script"));
-				b.setProjectId(block.getProjectId());
+				b.setJobEngineProjectID(block.getProjectId());
 				b.setWorkflowId(block.getWorkflowId());
-				b.setId(block.getId());
+				b.setJobEngineElementID(block.getId());
 				WorkflowBuilder.addWorkflowBlock(b);
 			} else if (block.getType().equalsIgnoreCase(WorkflowConstants.parallelgatewayType)) {
 				ParallelGatewayBlock b = new ParallelGatewayBlock();
 				b.setName(block.getAttributes().get("name"));
-				b.setProjectId(block.getProjectId());
+				b.setJobEngineProjectID(block.getProjectId());
 				b.setWorkflowId(block.getWorkflowId());
-				b.setId(block.getId());
+				b.setJobEngineElementID(block.getId());
 				WorkflowBuilder.addWorkflowBlock(b);
 			} else if (block.getType().equalsIgnoreCase(WorkflowConstants.dbservicetaskType)) {
 				DBWriteBlock b = new DBWriteBlock();
 				b.setName(block.getAttributes().get("name"));
-				b.setProjectId(block.getProjectId());
+				b.setJobEngineProjectID(block.getProjectId());
 				b.setWorkflowId(block.getWorkflowId());
-				b.setId(block.getId());
+				b.setJobEngineElementID(block.getId());
 				WorkflowBuilder.addWorkflowBlock(b);
 			} else if (block.getType().equalsIgnoreCase(WorkflowConstants.mailservicetaskType)) {
 				MailBlock b = new MailBlock();
 				b.setName(block.getAttributes().get("name"));
-				b.setProjectId(block.getProjectId());
+				b.setJobEngineProjectID(block.getProjectId());
 				b.setWorkflowId(block.getWorkflowId());
-				b.setId(block.getId());
+				b.setJobEngineElementID(block.getId());
 				WorkflowBuilder.addWorkflowBlock(b);
 			} else if (block.getType().equalsIgnoreCase(WorkflowConstants.seqFlowType)) {
 				WorkflowBuilder.addSequenceFlow(block.getProjectId(), block.getWorkflowId(),

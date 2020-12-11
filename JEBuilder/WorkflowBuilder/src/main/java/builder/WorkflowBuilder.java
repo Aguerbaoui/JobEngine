@@ -34,8 +34,8 @@ public class WorkflowBuilder {
 			throw new ProjectNotFoundException("2", Errors.projectNotFound);
 		}
 		JEWorkflow wf = new JEWorkflow();
-		wf.setId(key);
-		wf.setProjectId(projectId);
+		wf.setJobEngineElementID(key);
+		wf.setJobEngineProjectID(projectId);
 		workflows.get(projectId).put(key, wf);
 		
 	}
@@ -45,15 +45,15 @@ public class WorkflowBuilder {
 	 * */
 	public static void addWorkflowBlock(WorkflowBlock block) throws AddWorkflowBlockException, ProjectNotFoundException {
 		
-		if(workflows.get(block.getProjectId()) == null) {
+		if(workflows.get(block.getJobEngineProjectID()) == null) {
 			throw new ProjectNotFoundException("2", Errors.getMessage(2));
 		}
 		
-		else if(workflows.get(block.getProjectId()).get(block.getWorkflowId()) == null) {
+		else if(workflows.get(block.getJobEngineProjectID()).get(block.getWorkflowId()) == null) {
 			throw new AddWorkflowBlockException("1", Errors.getMessage(1));
 		}
 		
-		workflows.get(block.getProjectId()).get(block.getWorkflowId()).addBlock(block);
+		workflows.get(block.getJobEngineProjectID()).get(block.getWorkflowId()).addBlock(block);
 		
 	}
 	
