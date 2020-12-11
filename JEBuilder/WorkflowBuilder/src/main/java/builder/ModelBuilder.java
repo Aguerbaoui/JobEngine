@@ -84,7 +84,7 @@ public class ModelBuilder {
 	 * */
 	public static StartEvent createStartEvent() {
 		StartEvent startEvent = new StartEvent();
-		startEvent.setId("start");
+		startEvent.setId("start1");
 		return startEvent;
 	}
 
@@ -93,7 +93,7 @@ public class ModelBuilder {
 	 * */
 	public static EndEvent createEndEvent() {
 		EndEvent endEvent = new EndEvent();
-		endEvent.setId("end");
+		endEvent.setId("end1");
 		return endEvent;
 	}
 	
@@ -153,7 +153,9 @@ public class ModelBuilder {
 	public static void saveModel(BpmnModel model, String fileName) {
 		 BpmnXMLConverter bpmnXMLConverter = new BpmnXMLConverter();
 		 try {
-			String bpmn20Xml = new String(bpmnXMLConverter.convertToXML(model), "UTF-8");
+			 JELogger.info(fileName);
+			 JELogger.info(model.toString());
+			 String bpmn20Xml = new String(bpmnXMLConverter.convertToXML(model), "UTF-8");
 			JELogger.info(bpmn20Xml);
 			JEFileUtils.copyStringToFile(bpmn20Xml, fileName, "utf-8");
 		} catch (Exception e) {

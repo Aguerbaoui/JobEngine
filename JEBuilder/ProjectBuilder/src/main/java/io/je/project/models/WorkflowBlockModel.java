@@ -12,6 +12,7 @@ public class WorkflowBlockModel {
 
 	private String projectId;
 	
+	private String workflowId; 
 	
 	public WorkflowBlockModel(String id, String type, Map<String, String> attributes) {
 		super();
@@ -54,6 +55,14 @@ public class WorkflowBlockModel {
 
 	public void setProjectId(String projectId) {
 		this.projectId = projectId;
+	}
+
+	public String getWorkflowId() {
+		return workflowId;
+	}
+
+	public void setWorkflowId(String workflowId) {
+		this.workflowId = workflowId;
 	}
 	
 	

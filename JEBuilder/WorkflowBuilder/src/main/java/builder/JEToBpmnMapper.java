@@ -1,6 +1,8 @@
 package builder;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.activiti.bpmn.BpmnAutoLayout;
 import org.activiti.bpmn.model.ActivitiListener;
@@ -18,6 +20,9 @@ import blocks.control.ExclusiveGatewayBlock;
 import blocks.control.ParallelGatewayBlock;
 import blocks.control.SynchronizeBlock;
 import io.je.utilities.constants.WorkflowConstants;
+import io.je.utilities.logger.JELogger;
+import io.je.utilities.network.Network;
+import models.JEWorkflow;
 
 public class JEToBpmnMapper {
 
@@ -30,16 +35,17 @@ public class JEToBpmnMapper {
 	/*
 	 * Generate and save bpmn workflow from JE workflow
 	 * */
-	public static BpmnModel createBpmnFromJEWorkflow(String processKey, StartBlock startBlock, String modelPath) {
+	public static BpmnModel createBpmnFromJEWorkflow(String processKey, JEWorkflow wf, String modelPath) {
 		BpmnModel model = ModelBuilder.createNewBPMNModel();
 
 		org.activiti.bpmn.model.Process process = ModelBuilder.createProcess(processKey);
 		process.addFlowElement(ModelBuilder.createStartEvent());
 		addListeners(process);
-		parseWorkflowBlock(startBlock, process, null);
+		parseWorkflowBlock(wf.getWorkflowStartBlock(), process, null);
 		model.addProcess(process);
 		//new BpmnAutoLayout(model).execute();
 		ModelBuilder.saveModel(model, modelPath);
+		wf.setBpmnPath(modelPath);
 		return model;
 	}
 
@@ -69,7 +75,7 @@ public class JEToBpmnMapper {
 	private static void parseWorkflowBlock(WorkflowBlock startBlock, Process process, WorkflowBlock previous) {
 		
 		if (previous != null) {
-			process.addFlowElement(ModelBuilder.createSequenceFlow(previous.getId(), startBlock.getId(), ""));
+			process.addFlowElement(ModelBuilder.createSequenceFlow(previous.getId(), startBlock.getId(), previous.getCondition()));
 		}
 		if(startBlock.isProcessed()) return;
 	 	startBlock.setProcessed(true);
@@ -81,10 +87,10 @@ public class JEToBpmnMapper {
 			else if (block instanceof ParallelGatewayBlock && !block.isProcessed()) {
 				process.addFlowElement(ModelBuilder.createParallelGateway(block.getId(), block.getName(),
 						block.generateBpmnInflows(), block.generateBpmnOutflows()));
-			} else if (block instanceof SynchronizeBlock && !block.isProcessed()) {
+			} /*else if (block instanceof SynchronizeBlock && !block.isProcessed()) {
 				process.addFlowElement(ModelBuilder.createParallelGateway(block.getId(), block.getName(),
 						block.generateBpmnInflows(), block.generateBpmnOutflows()));
-			} else if (block instanceof ScriptBlock && !block.isProcessed()) {
+			}*/ else if (block instanceof ScriptBlock && !block.isProcessed()) {
 				process.addFlowElement(ModelBuilder.createScriptTask(block.getId(), block.getName(),
 						((ScriptBlock) block).getScript()));
 			} else if (block instanceof ExclusiveGatewayBlock && !block.isProcessed()) {
@@ -103,8 +109,9 @@ public class JEToBpmnMapper {
 		}
 	}
 	
-	public static void launchTest() {
-		StartBlock start = new StartBlock();
+	//Test function
+	public static void launchBuildTest(JEWorkflow wf) {
+		/*StartBlock start = new StartBlock();
 		start.setId("start");
 
 		ScriptBlock script = new ScriptBlock();
@@ -133,9 +140,18 @@ public class JEToBpmnMapper {
 		EndBlock end = new EndBlock();
 		end.setId("end");
 		end.getInflows().add(join);
-		join.getOutFlows().add(end);
+		join.getOutFlows().add(end);*/
 
-		createBpmnFromJEWorkflow("generatedBpmn", start,"D:\\generatedBpmn.bpmn");
+		createBpmnFromJEWorkflow(wf.getId(), wf,"D:\\Job engine\\JERunner\\WorkflowEngine\\src\\main\\resources\\processes\\testGenerated.bpmn");
+		HashMap<String, String> wfMap = new HashMap<String, String>();
+		wfMap.put("key",wf.getId());
+		wfMap.put("path", "processes/testGenerated.bpmn");
+		wfMap.put("projectId", wf.getProjectId());
+		try {
+			Network.makeNetworkCallWithJsonBody(wfMap, "http://127.0.0.1:8081/addWorkflow");
+		} catch (IOException e) {
+			JELogger.info("Network Error");
+		}
 	}
 
 	/*
@@ -173,6 +189,6 @@ public class JEToBpmnMapper {
 		end.getInflows().add(join);
 		join.getOutFlows().add(end);
 
-		createBpmnFromJEWorkflow("generatedBpmn", start,"D:\\generatedBpmn.bpmn");
+		//createBpmnFromJEWorkflow("generatedBpmn", start,"D:\\generatedBpmn.bpmn");
 	}
 }

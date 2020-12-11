@@ -24,6 +24,11 @@ public class WorkflowBlock extends JEObject{
 	private ArrayList<WorkflowBlock> outFlows;
 
 	/*
+	 * Condition to reach the block
+	 * */
+	private String condition;
+	
+	/*
 	 * Block Name
 	 * */
 	private String name;
@@ -32,6 +37,11 @@ public class WorkflowBlock extends JEObject{
 	 * Block processing state ( true if parsed in the tree )
 	 * */
 	private boolean processed;
+	
+	/*
+	 * Workflow id
+	 * */
+	private String workflowId;
 	
 	/*
 	 * Constructor
@@ -118,6 +128,22 @@ public class WorkflowBlock extends JEObject{
 	 * */
 	public void setProcessed(boolean processed) {
 		this.processed = processed;
+	}
+
+	public String getWorkflowId() {
+		return workflowId;
+	}
+
+	public void setWorkflowId(String workflowId) {
+		this.workflowId = workflowId;
+	}
+
+	public String getCondition() {
+		return condition;
+	}
+
+	public void setCondition(String condition) {
+		this.condition = condition;
 	}
 
 

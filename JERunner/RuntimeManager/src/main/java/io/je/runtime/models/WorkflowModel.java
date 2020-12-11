@@ -67,5 +67,11 @@ public class WorkflowModel {
 	public WorkflowModel() {
 		super();
 	}
+
+	@Override
+	public String toString() {
+		return "WorkflowModel [projectId=" + projectId + ", key=" + key + ", path=" + path + ", events=" + events
+				+ ", tasks=" + tasks + "]";
+	}
 	
 }

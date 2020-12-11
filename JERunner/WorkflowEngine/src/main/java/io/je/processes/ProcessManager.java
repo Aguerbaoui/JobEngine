@@ -16,6 +16,8 @@ import org.activiti.engine.task.Task;
 
 import io.je.JEProcess;
 import io.je.callbacks.OnExecuteOperation;
+import io.je.utilities.constants.Errors;
+import io.je.utilities.exceptions.WorkflowNotFoundException;
 
 
 
@@ -59,7 +61,7 @@ public class ProcessManager {
 	/*
 	 * List of all active processes
 	 * */
-	private static ArrayList<JEProcess> processes = null;
+	private static HashMap<String, JEProcess> processes = null;
 	
 	
 	/*
@@ -86,9 +88,9 @@ public class ProcessManager {
 	public static void addProcess(JEProcess process) {
 		
 		if(processes == null)  {
-			processes = new ArrayList<JEProcess>();
+			processes = new HashMap<String, JEProcess>();
 		}
-		processes.add(process);
+		processes.put(process.getKey() ,process);
 	}
 	
 	/*
@@ -120,7 +122,10 @@ public class ProcessManager {
 	/*
 	 * Launch process by key without variables
 	 * */
-	public static void launchProcessByKeyWithoutVariables(String id) {
+	public static void launchProcessByKeyWithoutVariables(String id) throws WorkflowNotFoundException {
+		if(processes.get(id) == null) {
+			throw new WorkflowNotFoundException("1", Errors.getMessage(1));
+		} 
 		runtimeService.startProcessInstanceByKey(id);
 	}
 	
@@ -186,14 +191,19 @@ public class ProcessManager {
 
 	}
 	
-	public static void main(String[] args) {
+	/*public static void main(String[] args) {
 		init();
 		deployProcess("processes/test.bpmn");
-		launchProcessByKeyWithoutVariables("Process_test");
+		try {
+			launchProcessByKeyWithoutVariables("Process_test");
+		} catch (WorkflowNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		String taskId = getMessageEventSubscription("userStartWf").getId();
 		throwMessageEvent("userStartWf",taskId);
 		
-	}
+	}*/
 
 	/*
 	 * Get all execution callbacks
@@ -247,7 +257,7 @@ public class ProcessManager {
 	/*
 	 * Get all deployed processes
 	 * */
-	public static ArrayList<JEProcess> getProcesses() {
+	public static HashMap<String, JEProcess> getProcesses() {
 		return processes;
 	}
 }

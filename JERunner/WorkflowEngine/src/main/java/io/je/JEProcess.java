@@ -30,6 +30,13 @@ public class JEProcess {
 
 	public void setBpmnPath(String bpmnPath) {
 		this.bpmnPath = bpmnPath;
+	}
+
+	public JEProcess(String key, String name, String bpmnPath) {
+		super();
+		this.key = key;
+		this.name = name;
+		this.bpmnPath = bpmnPath;
 	} 
 	
 }

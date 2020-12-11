@@ -1,18 +1,23 @@
 package io.je.runtime.workflow;
 
+import io.je.JEProcess;
 import io.je.processes.ProcessManager;
+import io.je.utilities.exceptions.WorkflowNotFoundException;
+import io.je.utilities.logger.JELogger;
 
 /*
  * Workflow Engine handler class 
  * */
 public class WorkflowEngineHandler {
 
+	private static boolean init = false;
 	/*
 	 * Initialize workflow engine
 	 * */
 	public static void initWorkflowEngine() {
 
 		ProcessManager.init();
+		init = true;
 	}
 
 	/*
@@ -33,7 +38,8 @@ public class WorkflowEngineHandler {
 	/*
 	 * Launch process without variables
 	 * */
-	public static void launchProcessWithoutVariables(String processId) {
+	public static void launchProcessWithoutVariables(String processId) throws WorkflowNotFoundException {
+		JELogger.info("running workflow " + processId);
 		ProcessManager.launchProcessByKeyWithoutVariables(processId);
 	}
 
@@ -42,6 +48,8 @@ public class WorkflowEngineHandler {
 	 * */
 	public static void addProcess(String processId, String processPath) {
 
+		if(!init) initWorkflowEngine();
+		ProcessManager.addProcess(new JEProcess(processId, processId, processPath));
 		registerWorkflow(processId);
 		deployBPMN(processPath);
 
@@ -58,10 +66,14 @@ public class WorkflowEngineHandler {
 	 * Main test
 	 * */
 	public static void main(String[] args) {
-		initWorkflowEngine();
-		addProcess("generatedBpmn", "processes/generatedBpmn.bpmn");
-		launchProcessWithoutVariables("generatedBpmn");
-		// triggerMessageEvent("userStartWf");
+		JELogger.info("running workflow ");
+		addProcess("testGenerated", "processes/testGenerated.bpmn");
+		try {
+			launchProcessWithoutVariables("testGenerated");
+		} catch (WorkflowNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 	}
 }
