@@ -21,7 +21,7 @@
 
 	</properties>
 	<dependencies>
-	
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
@@ -31,9 +31,15 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-		
+
+		<dependency>
+			<groupId>io.je</groupId>
+			<artifactId>RuntimeUtilities</artifactId>
+			<version>0.0.1</version>
+		</dependency>
+
 	</dependencies>
-	
+
 	<build>
 		<plugins>
 			<plugin>
@@ -42,6 +48,6 @@
 			</plugin>
 		</plugins>
 	</build>
-	
-	
+
+
 </project>

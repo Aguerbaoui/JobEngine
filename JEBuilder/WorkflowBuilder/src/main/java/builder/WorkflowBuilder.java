@@ -45,8 +45,8 @@ public class WorkflowBuilder {
 			throw new ProjectNotFoundException("2", Errors.projectNotFound);
 		}
 		JEWorkflow wf = new JEWorkflow();
-		wf.setId(key);
-		wf.setProjectId(projectId);
+		wf.setJobEngineElementID(key);
+		wf.setJobEngineProjectID(projectId);
 		workflows.get(projectId).put(key, wf);
 
 	}
