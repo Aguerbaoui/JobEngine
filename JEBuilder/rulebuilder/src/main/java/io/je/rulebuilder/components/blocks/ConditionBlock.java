@@ -6,7 +6,7 @@ import io.je.rulebuilder.components.enumerations.TimePersistenceUnit;
 /*
  * blocks used to define a rule's condition
  */
-public abstract class LogicalBlock extends Block {
+public abstract class ConditionBlock extends Block {
 	
 	
 	// persistence in time 
@@ -14,7 +14,7 @@ public abstract class LogicalBlock extends Block {
 	int timePersistenceValue;
 	TimePersistenceUnit timePersistenceUnit;
 	
-	public LogicalBlock(String jobEngineElementID, String jobEngineProjectID, String ruleId, boolean timePersistenceOn,
+	public ConditionBlock(String jobEngineElementID, String jobEngineProjectID, String ruleId, boolean timePersistenceOn,
 			int timePersistenceValue, TimePersistenceUnit timePersistenceUnit) {
 		super(jobEngineElementID, jobEngineProjectID, ruleId);
 		this.timePersistenceOn = timePersistenceOn;

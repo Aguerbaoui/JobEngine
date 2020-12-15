@@ -2,6 +2,7 @@ package io.je.ruleengine.loader;
 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -16,16 +17,17 @@ import io.je.utilities.logger.JELogger;
 public class  RuleLoader {
 
 
-public static boolean loadRuleContent(Rule rule)
+public static boolean loadRuleContent(Rule rule) throws FileNotFoundException
 {
+	boolean returnValue= false;
 	try {
 		JELogger.info(rule.getPath());
 		rule.setContent(new String(Files.readAllBytes(Paths.get(rule.getPath()))));
-		
+		returnValue = true;
 	} catch (IOException e) {
-		return false;
+		throw new FileNotFoundException();
 	}
-	return true;
+	return returnValue;
 }
 
 public static boolean writeRule(String rule, String filename) throws IOException {

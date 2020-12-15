@@ -1,5 +1,6 @@
 package io.je.ruleengine.models;
 
+import io.je.ruleengine.enumerations.RuleFormat;
 import io.je.utilities.runtimeobject.JEObject;
 
 /*
@@ -9,25 +10,29 @@ public class Rule extends JEObject {
 	
 	
 
-	public Rule(String jobEngineElementID, String jobEngineProjectID) {
+
+
+	public Rule(String jobEngineElementID, String jobEngineProjectID, String name, RuleFormat resourceType,
+			String path) {
 		super(jobEngineElementID, jobEngineProjectID);
+		this.name = name;
+		this.resourceType = resourceType;
+		this.path = path;
 	}
+
+
 
 	//Rule Name
 	String name;
 
 	//Rule Type ( drl, csv ...)
-	Type resourceType;
+	RuleFormat resourceType;
 	
 	//Rule file path 
 	String path;
 	
 	//Rule file content 
 	String content;
-	
-	//Rule status
-	Status status;
-	
 	
 
 
@@ -45,14 +50,14 @@ public class Rule extends JEObject {
 
 
 
-	public Type getResourceType() {
+	public RuleFormat getResourceType() {
 		return resourceType;
 	}
 
 
 
 
-	public void setResourceType(Type resourceType) {
+	public void setResourceType(RuleFormat resourceType) {
 		this.resourceType = resourceType;
 	}
 
@@ -87,19 +92,6 @@ public class Rule extends JEObject {
 
 
 
-	public Status getStatus() {
-		return status;
-	}
-
-
-
-
-	public void setStatus(Status status) {
-		this.status = status;
-	}
-
-
-
 
 	@Override
 	public String toString() {
@@ -109,10 +101,3 @@ public class Rule extends JEObject {
 
 }
 
-enum Type {
-	DRL, DTABLE, DSL, DRT,
-}
-
-enum Status {
-	ENABLED, DISABLED,
-}

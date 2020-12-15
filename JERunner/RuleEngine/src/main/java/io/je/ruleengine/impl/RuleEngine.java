@@ -2,6 +2,7 @@ package io.je.ruleengine.impl;
 
 
 
+import java.io.FileNotFoundException;
 import java.util.List;
 import io.je.ruleengine.interfaces.ProjectContainerRepositoryInterface;
 import io.je.ruleengine.interfaces.RuleEngineInterface;
@@ -11,6 +12,8 @@ import io.je.utilities.exceptions.RuleAlreadyExistsException;
 import io.je.utilities.exceptions.RuleCompilationException;
 import io.je.utilities.exceptions.RuleEngineBuildFailedException;
 import io.je.utilities.exceptions.RulesNotFiredException;
+import io.je.utilities.logger.JELogConstants;
+import io.je.utilities.logger.JELogger;
 import io.je.utilities.runtimeobject.JEObject;
 
 /*
@@ -28,26 +31,29 @@ public class RuleEngine {
 	/*
 	 * add a new rule to the rule engine
 	 */
-	public boolean addRule(Rule rule) throws RuleAlreadyExistsException, RuleCompilationException {
+	public static boolean addRule(Rule rule) throws RuleAlreadyExistsException, RuleCompilationException, FileNotFoundException {
 		 
-		String projectID;
+		String projectId;
 		try {
-			
-		
-			projectID = rule.getJobEngineProjectID();
-
+			projectId = rule.getJobEngineProjectID();
 		}catch (Exception e) {
-			// error : rule does not have a project id
+			JELogger.error(JELogConstants.idNotFound);
 			return false;
 		}
-		ProjectContainer project = projectManager.getProjectContainer(projectID);
-		project.addRule(rule);
-			
+		if(projectId!=null && !projectId.isEmpty())
+		{
+			ProjectContainer project = projectManager.getProjectContainer(projectId);
+			project.addRule(rule);
+		}
+		else {
+			JELogger.error(JELogConstants.idNotFound);
+			return false;
+		}
 		return true;
 		
 	}
 
-	public boolean addRules(List<Rule> rules) throws RuleAlreadyExistsException, RuleCompilationException {
+	public boolean addRules(List<Rule> rules) throws RuleAlreadyExistsException, RuleCompilationException, FileNotFoundException {
 		 
 		for(Rule rule: rules)
 		{
@@ -56,15 +62,28 @@ public class RuleEngine {
 		return true;
 	}
 
-	public boolean updateRule(Rule rule) throws RuleCompilationException, RuleAlreadyExistsException {
+	public static boolean updateRule(Rule rule) throws RuleCompilationException, FileNotFoundException  {
 		 
-		String projectID = rule.getJobEngineProjectID();
-		ProjectContainer project = projectManager.getProjectContainer(projectID);
-		project.updateRule(rule);
+		String projectId;
+		try {
+			projectId = rule.getJobEngineProjectID();
+		}catch (Exception e) {
+			JELogger.error(JELogConstants.idNotFound);
+			return false;
+		}
+		if(projectId!=null && !projectId.isEmpty())
+		{
+			ProjectContainer project = projectManager.getProjectContainer(projectId);
+			project.updateRule(rule);
+		}
+		else {
+			JELogger.error(JELogConstants.idNotFound);
+			return false;
+		}
 		return true;
 	}
 
-	public boolean compileRule(Rule rule) throws RuleCompilationException {
+	public boolean compileRule(Rule rule) throws RuleCompilationException, FileNotFoundException {
 		 
 		String projectID = rule.getJobEngineProjectID();
 		ProjectContainer project = projectManager.getProjectContainer(projectID);
@@ -72,7 +91,7 @@ public class RuleEngine {
 		return true;
 	}
 
-	public boolean compileRules(List<Rule> rules) throws RuleCompilationException {
+	public boolean compileRules(List<Rule> rules) throws RuleCompilationException, FileNotFoundException {
 		 
 		for(Rule rule: rules)
 		{
@@ -101,14 +120,14 @@ public class RuleEngine {
 		return false;
 	}
 
-	public boolean fireRules(String projectId) throws RulesNotFiredException, RuleEngineBuildFailedException, ProjectAlreadyRunningException  {
+	public static boolean fireRules(String projectId) throws RulesNotFiredException, RuleEngineBuildFailedException, ProjectAlreadyRunningException  {
 		 
 		ProjectContainer project = projectManager.getProjectContainer(projectId);
 		project.fireRules();		
 		return true;
 	}
 
-	public boolean stopRuleExecution(String projectId) {
+	public static boolean stopRuleExecution(String projectId) {
 		 
 		ProjectContainer project = projectManager.getProjectContainer(projectId);
 		return project.stopRuleExecution();
@@ -116,7 +135,7 @@ public class RuleEngine {
 
 
 
-	public boolean fireRules(String projectId, List<Rule> rules, boolean removePreviouslyAddedRules) {
+	public static boolean fireRules(String projectId, List<Rule> rules, boolean removePreviouslyAddedRules) {
 		// TODO Auto-generated method stub
 		return false;
 	}

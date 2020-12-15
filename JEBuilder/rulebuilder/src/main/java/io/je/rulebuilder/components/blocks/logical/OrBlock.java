@@ -1,14 +1,22 @@
 package io.je.rulebuilder.components.blocks.logical;
 
-import io.je.rulebuilder.components.blocks.GatewayBlock;
+import io.je.rulebuilder.components.blocks.LogicBlock;
 import io.je.rulebuilder.components.enumerations.TimePersistenceUnit;
+import io.je.rulebuilder.models.BlockModel;
 
-public class OrBlock extends GatewayBlock {
+public class OrBlock extends LogicBlock {
 
-	public OrBlock(String jobEngineElementID, String jobEngineProjectID, String ruleId, boolean timePersistenceOn,
-			int timePersistenceValue, TimePersistenceUnit timePersistenceUnit) {
-		super(jobEngineElementID, jobEngineProjectID, ruleId, timePersistenceOn, timePersistenceValue, timePersistenceUnit);
+	private OrBlock(BlockModel blockModel) {
+		super(blockModel);
 		// TODO Auto-generated constructor stub
 	}
+
+	@Override
+	public String getExpression() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
 
 }

@@ -18,24 +18,58 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>11</java.version>
 		<version.org.apache>2.13.1</version.org.apache>
+		<version.org.kie>7.45.0.Final</version.org.kie>
+		<version.org.drools>7.45.0.Final</version.org.drools>
 
 	</properties>
 	<dependencies>
 
 		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-web</artifactId>
+			<groupId>org.kie</groupId>
+			<artifactId>kie-ci</artifactId>
+			<version>${version.org.kie}</version>
+			 <exclusions>
+        <exclusion>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+        </exclusion>
+    </exclusions>
 		</dependency>
+
+		<dependency>
+			<groupId>org.drools</groupId>
+			<artifactId>drools-core</artifactId>
+			<version>${version.org.drools}</version>
+			 <exclusions>
+        <exclusion>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+        </exclusion>
+    </exclusions>
+		</dependency>
+<dependency>
+            <groupId>org.springframework.plugin</groupId>
+            <artifactId>spring-plugin-core</artifactId>
+            <version>2.0.0.RELEASE</version>
+        </dependency>
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
+			<artifactId>spring-boot-starter-web</artifactId>
+			 <exclusions>
+        <exclusion>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+        </exclusion>
+    </exclusions>
 		</dependency>
+	
 
 		<dependency>
 			<groupId>io.je</groupId>
 			<artifactId>RuntimeUtilities</artifactId>
 			<version>0.0.1</version>
+			
 		</dependency>
 
 	</dependencies>

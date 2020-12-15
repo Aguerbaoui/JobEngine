@@ -1,10 +1,15 @@
 package io.je.rulebuilder.models;
 
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import io.je.rulebuilder.components.enumerations.TimePersistenceUnit;
 import io.je.rulebuilder.config.BlockAttributesMapping;
 
 public class BlockModel {
+	
+	String jobEngineId;
 	
 	@JsonProperty(BlockAttributesMapping.PROJECTID)
 	String projectId;
@@ -22,21 +27,47 @@ public class BlockModel {
 	String timePersistenceOn;
 	
 	@JsonProperty(BlockAttributesMapping.TIMEPERSISTENCEVALUE)
-	String timePersistenceValue;
+	int timePersistenceValue;
 	
 	@JsonProperty(BlockAttributesMapping.TIMEPERSISTENCEUNIT)
-	String timePersistenceUnit;
+	TimePersistenceUnit timePersistenceUnit;
 
 	@JsonProperty(BlockAttributesMapping.FIRSTOPERAND)
-	OperandModel firstOperand;
+	List<String> operandIds;
 	
-	@JsonProperty(BlockAttributesMapping.SECONDOPERAND)
-	OperandModel secondOperand;
 	
-
+	
 	
 	@JsonProperty(BlockAttributesMapping.OPERATIONID)
 	String operatorId;
+
+	
+	
+
+	/*
+	 * constructor : TODO: generate unique job engine id
+	 */
+	private BlockModel() {
+		try
+		{
+			jobEngineId = projectId+"_"+ruleId+"_"+blockId;
+		}catch (Exception e) {
+			// TODO: handle exception
+			
+		}
+	}
+
+
+
+	public String getJobEngineId() {
+		return jobEngineId;
+	}
+
+
+
+	public void setJobEngineId(String jobEngineId) {
+		this.jobEngineId = jobEngineId;
+	}
 
 
 
@@ -100,50 +131,48 @@ public class BlockModel {
 
 
 
-	public String getTimePersistenceValue() {
+
+
+
+
+	public int getTimePersistenceValue() {
 		return timePersistenceValue;
 	}
 
 
 
-	public void setTimePersistenceValue(String timePersistenceValue) {
+	public void setTimePersistenceValue(int timePersistenceValue) {
 		this.timePersistenceValue = timePersistenceValue;
 	}
 
 
 
-	public String getTimePersistenceUnit() {
+	
+
+
+	public TimePersistenceUnit getTimePersistenceUnit() {
 		return timePersistenceUnit;
 	}
 
 
 
-	public void setTimePersistenceUnit(String timePersistenceUnit) {
+	public void setTimePersistenceUnit(TimePersistenceUnit timePersistenceUnit) {
 		this.timePersistenceUnit = timePersistenceUnit;
 	}
 
 
 
-	public OperandModel getFirstOperand() {
-		return firstOperand;
+
+
+
+	public List<String> getOperandIds() {
+		return operandIds;
 	}
 
 
 
-	public void setFirstOperand(OperandModel firstOperand) {
-		this.firstOperand = firstOperand;
-	}
-
-
-
-	public OperandModel getSecondOperand() {
-		return secondOperand;
-	}
-
-
-
-	public void setSecondOperand(OperandModel secondOperand) {
-		this.secondOperand = secondOperand;
+	public void setOperandIds(List<String> operandIds) {
+		this.operandIds = operandIds;
 	}
 
 
@@ -160,13 +189,7 @@ public class BlockModel {
 
 
 
-	@Override
-	public String toString() {
-		return "BlockModel [projectId=" + projectId + ", ruleId=" + ruleId + ", blockId=" + blockId + ", blockType="
-				+ blockType + ", timePersistenceOn=" + timePersistenceOn + ", timePersistenceValue="
-				+ timePersistenceValue + ", timePersistenceUnit=" + timePersistenceUnit + ", firstOperand="
-				+ firstOperand + ", secondOperand=" + secondOperand + ", operatorId=" + operatorId + "]";
-	}
+
 	
 	
 

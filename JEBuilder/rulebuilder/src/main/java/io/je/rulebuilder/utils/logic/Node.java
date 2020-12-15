@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.je.rulebuilder.components.blocks.ArithmeticBlock;
-import io.je.rulebuilder.components.blocks.GatewayBlock;
-import io.je.rulebuilder.components.blocks.LogicalBlock;
+import io.je.rulebuilder.components.blocks.LogicBlock;
+import io.je.rulebuilder.components.blocks.ConditionBlock;
 
 public  class Node {
-	LogicalBlock value;
+	ConditionBlock value;
 	Node parent;
 	List<Node> children;
 	StringBuilder string = new StringBuilder();
@@ -19,12 +19,16 @@ public  class Node {
 	{
 		
 		
-		if(this.value instanceof ArithmeticBlock || this.children == null || this.children.isEmpty() )
+		if( this.children == null || this.children.isEmpty() )
 		{
 			string.append(this.getValue().getExpression());
 			return string.toString();
 		}
-		if(this.value instanceof GatewayBlock)
+		if(this.value instanceof ArithmeticBlock )
+		{
+			
+		}
+		if(this.value instanceof LogicBlock)
 		{
 			int numberOfchildren= children.size();
 			for (int i = 0; i<numberOfchildren;i++)
@@ -41,12 +45,14 @@ public  class Node {
 		}
 		else
 		{
+			string.append("(");
+			string.append(" "+getValue().getExpression()+" ");
 			for (Node child : children)
 			{
 				string.append(child.getString());
 				
 			}
-			string.append(getValue().getExpression());
+			string.append( ")");
 			return string.toString();
 			
 		}
@@ -54,20 +60,20 @@ public  class Node {
 	}
 	
 	
-	public Node(LogicalBlock value) {
+	public Node(ConditionBlock value) {
 		super();
 		this.value = value;
 	}
 
 
 
-	public LogicalBlock getValue() {
+	public ConditionBlock getValue() {
 		return value;
 	}
 
 
 
-	public void setValue(LogicalBlock value) {
+	public void setValue(ConditionBlock value) {
 		this.value = value;
 	}
 
@@ -108,7 +114,7 @@ public  class Node {
 		node.setParent(this);
 	}
 	
-	public void addChild(LogicalBlock block) {
+	public void addChild(ConditionBlock block) {
 		if(this.children==null)
 		{
 			this.children = new ArrayList<>();
