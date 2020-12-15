@@ -1,8 +1,12 @@
-package io.je.ruleengine.utils;
+package io.je.utilities.logger;
 
-public class LogConstants {
+
+/*
+ * Rule Builder Log Messages
+ */
+public class RuleEngineLogConstants {
 	
-	private LogConstants()
+	private RuleEngineLogConstants()
 	{
 		
 	}
@@ -22,14 +26,14 @@ public class LogConstants {
 	public static String stoppingProjectContainerFailed = "Failed to stop project";
 	
 	public static String unexpectedError = "";
-	public static String sucessfullyAddedRule = "";
+	public static String sucessfullyAddedRule = "Rule successfully added";
 	public static String failedToAddRule = "";
-	public static String sucessfullyUpdatedRule = "";
+	public static String sucessfullyUpdatedRule = "Successfully updated rule";
 	public static String failedToUpdateRule = "";
 	public static String sucessfullyDeletedRule = "";
 	public static String failedToDeleteRule = "";
 	public static String sucessfullyCompiledRule="";
-	public static String ruleCompilationError="";
+	public static String ruleCompilationError="Failed to comile Rule";
 	public static String ruleExists = "A rule with this id already exists.";
 	public static String failedToFireRules = "";
 }

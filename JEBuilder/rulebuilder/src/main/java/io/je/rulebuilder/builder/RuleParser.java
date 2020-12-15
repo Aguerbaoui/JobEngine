@@ -34,7 +34,7 @@ import io.je.rulebuilder.components.Consequence;
 import io.je.rulebuilder.components.JERule;
 import io.je.rulebuilder.components.RuleTemplate;
 import io.je.rulebuilder.components.blocks.Block;
-import io.je.rulebuilder.components.blocks.LogicalBlock;
+import io.je.rulebuilder.components.blocks.ConditionBlock;
 import io.je.rulebuilder.components.blocks.logical.AndBlock;
 import io.je.rulebuilder.components.blocks.logical.GreaterThanBlock;
 import io.je.rulebuilder.tests.Person;
