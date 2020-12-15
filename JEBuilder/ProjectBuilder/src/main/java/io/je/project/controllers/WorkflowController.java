@@ -5,8 +5,10 @@ import java.io.IOException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -26,7 +28,9 @@ import io.je.project.models.WorkflowModel;
 import io.je.utilities.constants.Errors;
 import io.je.utilities.constants.WorkflowConstants;
 import io.je.utilities.exceptions.AddWorkflowBlockException;
+import io.je.utilities.exceptions.InvalidSequenceFlowException;
 import io.je.utilities.exceptions.ProjectNotFoundException;
+import io.je.utilities.exceptions.WorkflowBlockNotFound;
 import io.je.utilities.exceptions.WorkflowNotFoundException;
 import io.je.utilities.logger.JELogger;
 
@@ -141,11 +145,132 @@ public class WorkflowController {
 			e.printStackTrace();
 			return ResponseEntity.ok(e.getMessage());
 		}
-		JELogger.info(block.toString());
+		//JELogger.info(block.toString());
 		return ResponseEntity.ok("Added workflow component successfully");
 
 	}
 
+	@PutMapping(value = "/updateWorkflowBlock/{key}")
+	public ResponseEntity<?> updateWorkflowBlock(@PathVariable String key, @RequestBody WorkflowBlockModel block) {
+		 
+		try {
+			if (block.getType().equalsIgnoreCase(WorkflowConstants.startType)) {
+				StartBlock b = new StartBlock();
+				b.setName(block.getAttributes().get("name"));
+				b.setProjectId(block.getProjectId());
+				b.setWorkflowId(block.getWorkflowId());
+				b.setId(block.getId());
+				WorkflowBuilder.updateStartBlock(b);
+			} else if (block.getType().equalsIgnoreCase(WorkflowConstants.endType)) {
+				EndBlock b = new EndBlock();
+				b.setName(block.getAttributes().get("name"));
+				b.setProjectId(block.getProjectId());
+				b.setWorkflowId(block.getWorkflowId());
+				b.setId(block.getId());
+				WorkflowBuilder.updateEndBlock(b);
+			} else if (block.getType().equalsIgnoreCase(WorkflowConstants.eventgatewayType)) {
+				EventGatewayBlock b = new EventGatewayBlock();
+				b.setName(block.getAttributes().get("name"));
+				b.setProjectId(block.getProjectId());
+				b.setWorkflowId(block.getWorkflowId());
+				b.setId(block.getId());
+				WorkflowBuilder.updateEventGateway(b);
+			} else if (block.getType().equalsIgnoreCase(WorkflowConstants.messageintermediatecatcheventType)) {
+				MessageCatchEvent b = new MessageCatchEvent();
+				b.setName(block.getAttributes().get("name"));
+				b.setMessageRef(block.getAttributes().get("messageRef"));
+				b.setProjectId(block.getProjectId());
+				b.setWorkflowId(block.getWorkflowId());
+				b.setId(block.getId());
+				WorkflowBuilder.updateMessageCatchEvent(b);
+			} else if (block.getType().equalsIgnoreCase(WorkflowConstants.exclusivegatewayType)) {
+				ExclusiveGatewayBlock b = new ExclusiveGatewayBlock();
+				b.setName(block.getAttributes().get("name"));
+				b.setProjectId(block.getProjectId());
+				b.setWorkflowId(block.getWorkflowId());
+				b.setId(block.getId());
+				WorkflowBuilder.updateExclusiveGateway(b);
+			} else if (block.getType().equalsIgnoreCase(WorkflowConstants.scripttaskType)) {
+				ScriptBlock b = new ScriptBlock();
+				b.setName(block.getAttributes().get("name"));
+				b.setScript(block.getAttributes().get("script"));
+				b.setProjectId(block.getProjectId());
+				b.setWorkflowId(block.getWorkflowId());
+				b.setId(block.getId());
+				WorkflowBuilder.updateScript(b);
+			} else if (block.getType().equalsIgnoreCase(WorkflowConstants.parallelgatewayType)) {
+				ParallelGatewayBlock b = new ParallelGatewayBlock();
+				b.setName(block.getAttributes().get("name"));
+				b.setProjectId(block.getProjectId());
+				b.setWorkflowId(block.getWorkflowId());
+				b.setId(block.getId());
+				WorkflowBuilder.updateParallelGateway(b);
+			} else if (block.getType().equalsIgnoreCase(WorkflowConstants.dbservicetaskType)) {
+				DBWriteBlock b = new DBWriteBlock();
+				b.setName(block.getAttributes().get("name"));
+				b.setProjectId(block.getProjectId());
+				b.setWorkflowId(block.getWorkflowId());
+				b.setId(block.getId());
+				WorkflowBuilder.updateDbTask(b);
+			} else if (block.getType().equalsIgnoreCase(WorkflowConstants.mailservicetaskType)) {
+				MailBlock b = new MailBlock();
+				b.setName(block.getAttributes().get("name"));
+				b.setProjectId(block.getProjectId());
+				b.setWorkflowId(block.getWorkflowId());
+				b.setId(block.getId());
+				WorkflowBuilder.updateMailTask(b);
+			}
+
+		} catch (Exception e) {
+			JELogger.info(e.getMessage());
+			e.printStackTrace();
+			return ResponseEntity.ok(e.getMessage());
+		}
+		return ResponseEntity.ok("Updated workflow component successfully");
+	}
+
+	/*
+	 * Delete a wokflow block
+	 * */
+	@DeleteMapping(value = "/{projectId}/{key}/{id}")
+	public ResponseEntity<?> deleteWorkflowBlock(@PathVariable String projectId, @PathVariable String key, @PathVariable String id) {
+	
+			try {
+				WorkflowBuilder.deleteWorkflowBlock(projectId, key, id);
+			} catch (WorkflowNotFoundException e) {
+				return ResponseEntity.ok(Errors.workflowNotFound);
+			} catch (ProjectNotFoundException e) {
+				return ResponseEntity.ok(Errors.projectNotFound);
+			} catch (WorkflowBlockNotFound e) {
+				return ResponseEntity.ok(Errors.workflowBloclNotFound);
+			} catch (InvalidSequenceFlowException e) {
+				return ResponseEntity.ok(Errors.InvalidSequenceFlow);
+			}
+		
+			return ResponseEntity.ok("Block deleted successfully");
+	}
+	
+	/*
+	 * Delete a sequence flow in a workflow
+	 * */
+	@DeleteMapping(value = "/{projectId}/{key}/{from}/{to}")
+	public ResponseEntity<?> deleteSequenceFlow(@PathVariable String projectId, @PathVariable String key, @PathVariable String from, @PathVariable String to) {
+	
+			try {
+				WorkflowBuilder.deleteSequenceFlow(projectId, key, from, to);
+			} catch (WorkflowNotFoundException e) {
+				return ResponseEntity.ok(Errors.workflowNotFound);
+			} catch (ProjectNotFoundException e) {
+				return ResponseEntity.ok(Errors.projectNotFound);
+			} catch (WorkflowBlockNotFound e) {
+				return ResponseEntity.ok(Errors.workflowBloclNotFound);
+			} catch (InvalidSequenceFlowException e) {
+				return ResponseEntity.ok(Errors.InvalidSequenceFlow);
+			}
+		
+			return ResponseEntity.ok("Sequence flow deleted successfully");
+	}
+	
 	/*
 	 * Build workflow
 	 * */

@@ -1,12 +1,14 @@
 package blocks;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.activiti.bpmn.model.SequenceFlow;
 
 import builder.ModelBuilder;
 import io.je.utilities.runtimeobject.JEObject;
+import io.je.utilities.string.JEStringUtils;
 
 /*
  * Model class for a workflow block
@@ -16,12 +18,12 @@ public class WorkflowBlock extends JEObject{
 	/*
 	 * Incoming flows
 	 * */
-	private ArrayList<WorkflowBlock> inflows;
+	private HashMap<String, WorkflowBlock> inflows;
 	
 	/*
 	 * Outgoing flows
 	 * */
-	private ArrayList<WorkflowBlock> outFlows;
+	private HashMap<String, WorkflowBlock> outFlows;
 
 	/*
 	 * Condition to reach the block
@@ -47,36 +49,36 @@ public class WorkflowBlock extends JEObject{
 	 * Constructor
 	 * */
 	public WorkflowBlock() {
-		inflows = new ArrayList<WorkflowBlock>();
-		outFlows = new ArrayList<WorkflowBlock>();
+		inflows = new HashMap<String, WorkflowBlock>();
+		outFlows = new HashMap<String, WorkflowBlock>();
 		processed = false;
 	}
 	
 	/*
 	 * Returns incoming flows
 	 * */
-	public ArrayList<WorkflowBlock> getInflows() {
+	public HashMap<String, WorkflowBlock> getInflows() {
 		return inflows;
 	}
 
 	/*
 	 * Sets incoming flows
 	 * */
-	public void setInflows(ArrayList<WorkflowBlock> inflows) {
+	public void setInflows(HashMap<String, WorkflowBlock> inflows) {
 		this.inflows = inflows;
 	}
 
 	/*
 	 * Returns outgoing flows
 	 * */
-	public ArrayList<WorkflowBlock> getOutFlows() {
+	public HashMap<String, WorkflowBlock> getOutFlows() {
 		return outFlows;
 	}
 
 	/*
 	 * Set outgoing flows
 	 * */
-	public void setOutFlows(ArrayList<WorkflowBlock> outFlows) {
+	public void setOutFlows(HashMap<String, WorkflowBlock> outFlows) {
 		this.outFlows = outFlows;
 	}
 
@@ -91,6 +93,7 @@ public class WorkflowBlock extends JEObject{
 	 * Sets block name
 	 * */
 	public void setName(String name) {
+		if(JEStringUtils.isEmpty(name)) return;
 		this.name = name;
 	}
 
@@ -99,8 +102,8 @@ public class WorkflowBlock extends JEObject{
 	 * */
 	public List<SequenceFlow> generateBpmnInflows() {
 		List<SequenceFlow> l = new ArrayList<SequenceFlow>();
-		for(WorkflowBlock block: inflows) {
-			l.add(ModelBuilder.createSequenceFlow(block.jobEngineElementID, this.jobEngineElementID, ""));
+		for(WorkflowBlock block: inflows.values()) {
+			l.add(ModelBuilder.createSequenceFlow(block.getId(), this.getId(), ""));
 		}
 		return l;
 	}
@@ -110,8 +113,8 @@ public class WorkflowBlock extends JEObject{
 	 * */
 	public List<SequenceFlow> generateBpmnOutflows() {
 		List<SequenceFlow> l = new ArrayList<SequenceFlow>();
-		for(WorkflowBlock block: outFlows) {
-			l.add(ModelBuilder.createSequenceFlow(this.jobEngineElementID, block.jobEngineElementID, ""));
+		for(WorkflowBlock block: outFlows.values()) {
+			l.add(ModelBuilder.createSequenceFlow(this.getId(), block.getId(), ""));
 		}
 		return l;
 	}
@@ -143,6 +146,7 @@ public class WorkflowBlock extends JEObject{
 	}
 
 	public void setCondition(String condition) {
+		if(JEStringUtils.isEmpty(condition)) return;
 		this.condition = condition;
 	}
 
