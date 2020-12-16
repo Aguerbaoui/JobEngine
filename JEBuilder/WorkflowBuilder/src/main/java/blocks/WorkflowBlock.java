@@ -1,155 +1,153 @@
 package blocks;
 
+import builder.ModelBuilder;
+import io.je.utilities.runtimeobject.JEObject;
+import io.je.utilities.string.JEStringUtils;
+import org.activiti.bpmn.model.SequenceFlow;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.activiti.bpmn.model.SequenceFlow;
-
-import builder.ModelBuilder;
-import io.je.utilities.runtimeobject.JEObject;
-import io.je.utilities.string.JEStringUtils;
-
 /*
  * Model class for a workflow block
  * */
-public class WorkflowBlock extends JEObject{
+public class WorkflowBlock extends JEObject {
 
-	/*
-	 * Incoming flows
-	 * */
-	private HashMap<String, WorkflowBlock> inflows;
-	
-	/*
-	 * Outgoing flows
-	 * */
-	private HashMap<String, WorkflowBlock> outFlows;
+    /*
+     * Incoming flows
+     * */
+    private HashMap<String, WorkflowBlock> inflows;
 
-	/*
-	 * Condition to reach the block
-	 * */
-	private String condition;
-	
-	/*
-	 * Block Name
-	 * */
-	private String name;
-	
-	/*
-	 * Block processing state ( true if parsed in the tree )
-	 * */
-	private boolean processed;
-	
-	/*
-	 * Workflow id
-	 * */
-	private String workflowId;
-	
-	/*
-	 * Constructor
-	 * */
-	public WorkflowBlock() {
-		inflows = new HashMap<String, WorkflowBlock>();
-		outFlows = new HashMap<String, WorkflowBlock>();
-		processed = false;
-	}
-	
-	/*
-	 * Returns incoming flows
-	 * */
-	public HashMap<String, WorkflowBlock> getInflows() {
-		return inflows;
-	}
+    /*
+     * Outgoing flows
+     * */
+    private HashMap<String, WorkflowBlock> outFlows;
 
-	/*
-	 * Sets incoming flows
-	 * */
-	public void setInflows(HashMap<String, WorkflowBlock> inflows) {
-		this.inflows = inflows;
-	}
+    /*
+     * Condition to reach the block
+     * */
+    private String condition;
 
-	/*
-	 * Returns outgoing flows
-	 * */
-	public HashMap<String, WorkflowBlock> getOutFlows() {
-		return outFlows;
-	}
+    /*
+     * Block Name
+     * */
+    private String name;
 
-	/*
-	 * Set outgoing flows
-	 * */
-	public void setOutFlows(HashMap<String, WorkflowBlock> outFlows) {
-		this.outFlows = outFlows;
-	}
+    /*
+     * Block processing state ( true if parsed in the tree )
+     * */
+    private boolean processed;
 
-	/*
-	 * Returns block name
-	 * */
-	public String getName() {
-		return name;
-	}
+    /*
+     * Workflow id
+     * */
+    private String workflowId;
 
-	/*
-	 * Sets block name
-	 * */
-	public void setName(String name) {
-		if(JEStringUtils.isEmpty(name)) return;
-		this.name = name;
-	}
+    /*
+     * Constructor
+     * */
+    public WorkflowBlock() {
+        inflows = new HashMap<String, WorkflowBlock>();
+        outFlows = new HashMap<String, WorkflowBlock>();
+        processed = false;
+    }
 
-	/*
-	 * Returns generated bmpn incoming flows
-	 * */
-	public List<SequenceFlow> generateBpmnInflows() {
-		List<SequenceFlow> l = new ArrayList<SequenceFlow>();
-		for(WorkflowBlock block: inflows.values()) {
-			l.add(ModelBuilder.createSequenceFlow(block.getId(), this.getId(), ""));
-		}
-		return l;
-	}
-	
-	/*
-	 * Returns generated bmpn outgoing flows
-	 * */
-	public List<SequenceFlow> generateBpmnOutflows() {
-		List<SequenceFlow> l = new ArrayList<SequenceFlow>();
-		for(WorkflowBlock block: outFlows.values()) {
-			l.add(ModelBuilder.createSequenceFlow(this.getId(), block.getId(), ""));
-		}
-		return l;
-	}
+    /*
+     * Returns incoming flows
+     * */
+    public HashMap<String, WorkflowBlock> getInflows() {
+        return inflows;
+    }
 
-	/*
-	 * Returns if block is processed in the tree 
-	 * */
-	public boolean isProcessed() {
-		return processed;
-	}
+    /*
+     * Sets incoming flows
+     * */
+    public void setInflows(HashMap<String, WorkflowBlock> inflows) {
+        this.inflows = inflows;
+    }
 
-	/*
-	 * Sets block processed state
-	 * */
-	public void setProcessed(boolean processed) {
-		this.processed = processed;
-	}
+    /*
+     * Returns outgoing flows
+     * */
+    public HashMap<String, WorkflowBlock> getOutFlows() {
+        return outFlows;
+    }
 
-	public String getWorkflowId() {
-		return workflowId;
-	}
+    /*
+     * Set outgoing flows
+     * */
+    public void setOutFlows(HashMap<String, WorkflowBlock> outFlows) {
+        this.outFlows = outFlows;
+    }
 
-	public void setWorkflowId(String workflowId) {
-		this.workflowId = workflowId;
-	}
+    /*
+     * Returns block name
+     * */
+    public String getName() {
+        return name;
+    }
 
-	public String getCondition() {
-		return condition;
-	}
+    /*
+     * Sets block name
+     * */
+    public void setName(String name) {
+        if (JEStringUtils.isEmpty(name)) return;
+        this.name = name;
+    }
 
-	public void setCondition(String condition) {
-		if(JEStringUtils.isEmpty(condition)) return;
-		this.condition = condition;
-	}
+    /*
+     * Returns generated bmpn incoming flows
+     * */
+    public List<SequenceFlow> generateBpmnInflows() {
+        List<SequenceFlow> l = new ArrayList<SequenceFlow>();
+        for (WorkflowBlock block : inflows.values()) {
+            l.add(ModelBuilder.createSequenceFlow(block.getJobEngineElementID(), this.getJobEngineElementID(), ""));
+        }
+        return l;
+    }
+
+    /*
+     * Returns generated bmpn outgoing flows
+     * */
+    public List<SequenceFlow> generateBpmnOutflows() {
+        List<SequenceFlow> l = new ArrayList<SequenceFlow>();
+        for (WorkflowBlock block : outFlows.values()) {
+            l.add(ModelBuilder.createSequenceFlow(this.getJobEngineElementID(), block.getJobEngineElementID(), ""));
+        }
+        return l;
+    }
+
+    /*
+     * Returns if block is processed in the tree
+     * */
+    public boolean isProcessed() {
+        return processed;
+    }
+
+    /*
+     * Sets block processed state
+     * */
+    public void setProcessed(boolean processed) {
+        this.processed = processed;
+    }
+
+    public String getWorkflowId() {
+        return workflowId;
+    }
+
+    public void setWorkflowId(String workflowId) {
+        this.workflowId = workflowId;
+    }
+
+    public String getCondition() {
+        return condition;
+    }
+
+    public void setCondition(String condition) {
+        if (JEStringUtils.isEmpty(condition)) return;
+        this.condition = condition;
+    }
 
 
-	
 }

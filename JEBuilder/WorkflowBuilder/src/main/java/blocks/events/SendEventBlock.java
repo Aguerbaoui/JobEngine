@@ -1,8 +1,7 @@
 package blocks.events;
 
 import blocks.WorkflowBlock;
-import io.je.utilities.runtimeobject.JEObject;
 
-public class SendEventBlock extends WorkflowBlock{
+public class SendEventBlock extends WorkflowBlock {
 
 }

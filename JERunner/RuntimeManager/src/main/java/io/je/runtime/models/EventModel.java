@@ -2,33 +2,33 @@ package io.je.runtime.models;
 
 public class EventModel {
 
-	public String type;
-	
-	public String eventId;
+    public String type;
 
-	public String getType() {
-		return type;
-	}
+    public String eventId;
 
-	public void setType(String type) {
-		this.type = type;
-	}
+    public EventModel(String type, String eventId) {
+        super();
+        this.type = type;
+        this.eventId = eventId;
+    }
 
-	public String getEventId() {
-		return eventId;
-	}
+    public EventModel() {
+        super();
+    }
 
-	public void setEventId(String eventId) {
-		this.eventId = eventId;
-	}
+    public String getType() {
+        return type;
+    }
 
-	public EventModel(String type, String eventId) {
-		super();
-		this.type = type;
-		this.eventId = eventId;
-	}
+    public void setType(String type) {
+        this.type = type;
+    }
 
-	public EventModel() {
-		super();
-	}
+    public String getEventId() {
+        return eventId;
+    }
+
+    public void setEventId(String eventId) {
+        this.eventId = eventId;
+    }
 }

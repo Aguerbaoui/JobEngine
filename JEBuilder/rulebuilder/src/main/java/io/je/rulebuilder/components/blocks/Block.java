@@ -1,41 +1,35 @@
 package io.je.rulebuilder.components.blocks;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
-import io.je.utilities.runtimeobject.JEObject;
 import io.je.rulebuilder.config.BlockAttributesMapping;
+import io.je.utilities.runtimeobject.JEObject;
 
 
+public abstract class Block extends JEObject {
 
-public abstract class Block extends JEObject{
-	
-	@JsonProperty(BlockAttributesMapping.RULEID)
-	String ruleId;
-	
-	
-	
-	public Block(String jobEngineElementID, String jobEngineProjectID,String ruleId) {
-		super(jobEngineElementID, jobEngineProjectID);
-		this.ruleId=ruleId;
-	}
+    @JsonProperty(BlockAttributesMapping.RULEID)
+    String ruleId;
 
 
-
-	public String getRuleId() {
-		return ruleId;
-	}
-
-
-
-	public void setRuleId(String ruleId) {
-		this.ruleId = ruleId;
-	}
+    public Block(String jobEngineElementID, String jobEngineProjectID, String ruleId) {
+        super(jobEngineElementID, jobEngineProjectID);
+        this.ruleId = ruleId;
+    }
 
 
+    public String getRuleId() {
+        return ruleId;
+    }
 
-	/* 
-	 * returns a string that expresses this condition in the drools rule language.
-	 */
-	public abstract String getExpression();
+
+    public void setRuleId(String ruleId) {
+        this.ruleId = ruleId;
+    }
+
+
+    /*
+     * returns a string that expresses this condition in the drools rule language.
+     */
+    public abstract String getExpression();
 
 }

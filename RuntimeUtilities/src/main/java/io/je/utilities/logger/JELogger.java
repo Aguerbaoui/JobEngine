@@ -1,20 +1,21 @@
 package io.je.utilities.logger;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class JELogger {
-	
-	private static final Logger logger = LoggerFactory.getLogger(JELogger.class); 
-	public static void info(String msg) {
-		
-		logger.info(msg);
-	}
-	public static void error(String msg) {
-		logger.error(msg);
 
-		
-	}
-	
+    private static final Logger logger = LogManager.getLogger(JELogger.class);
+
+    public static void info(Class<?> clazz, String msg) {
+        logger.info(clazz.toString() + msg);
+    }
+
+    public static void error(Class<?> clazz, String msg) {
+        logger.info(clazz.toString() + msg);
+
+
+    }
+
 
 }

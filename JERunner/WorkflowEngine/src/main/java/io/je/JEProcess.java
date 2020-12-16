@@ -2,41 +2,41 @@ package io.je;
 
 public class JEProcess {
 
-	public String key;
-	
-	public String name;
-	
-	public String bpmnPath;
+    public String key;
 
-	public String getKey() {
-		return key;
-	}
+    public String name;
 
-	public void setKey(String key) {
-		this.key = key;
-	}
+    public String bpmnPath;
 
-	public String getName() {
-		return name;
-	}
+    public JEProcess(String key, String name, String bpmnPath) {
+        super();
+        this.key = key;
+        this.name = name;
+        this.bpmnPath = bpmnPath;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public String getKey() {
+        return key;
+    }
 
-	public String getBpmnPath() {
-		return bpmnPath;
-	}
+    public void setKey(String key) {
+        this.key = key;
+    }
 
-	public void setBpmnPath(String bpmnPath) {
-		this.bpmnPath = bpmnPath;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public JEProcess(String key, String name, String bpmnPath) {
-		super();
-		this.key = key;
-		this.name = name;
-		this.bpmnPath = bpmnPath;
-	} 
-	
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getBpmnPath() {
+        return bpmnPath;
+    }
+
+    public void setBpmnPath(String bpmnPath) {
+        this.bpmnPath = bpmnPath;
+    }
+
 }

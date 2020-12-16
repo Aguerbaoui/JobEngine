@@ -1,8 +1,7 @@
 package blocks.basic;
 
 import blocks.WorkflowBlock;
-import io.je.utilities.runtimeobject.JEObject;
 
-public class OPCWriteBlock extends WorkflowBlock{
+public class OPCWriteBlock extends WorkflowBlock {
 
 }

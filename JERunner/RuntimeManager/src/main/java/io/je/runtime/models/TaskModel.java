@@ -2,33 +2,33 @@ package io.je.runtime.models;
 
 public class TaskModel {
 
-	public String taskId;
-	
-	public String type;
+    public String taskId;
 
-	public String getTaskId() {
-		return taskId;
-	}
+    public String type;
 
-	public void setTaskId(String taskId) {
-		this.taskId = taskId;
-	}
+    public TaskModel(String taskId, String type) {
+        super();
+        this.taskId = taskId;
+        this.type = type;
+    }
 
-	public String getType() {
-		return type;
-	}
+    public TaskModel() {
+        super();
+    }
 
-	public void setType(String type) {
-		this.type = type;
-	}
+    public String getTaskId() {
+        return taskId;
+    }
 
-	public TaskModel(String taskId, String type) {
-		super();
-		this.taskId = taskId;
-		this.type = type;
-	}
+    public void setTaskId(String taskId) {
+        this.taskId = taskId;
+    }
 
-	public TaskModel() {
-		super();
-	}
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
 }

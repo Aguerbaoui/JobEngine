@@ -1,9 +1,9 @@
 package io.je.utilities.exceptions;
 
 public class JEException extends Exception {
-   
-	private static final long serialVersionUID = 1L;
-	private  String code;
+
+    private static final long serialVersionUID = 1L;
+    private String code;
 
     public JEException(String code, String message) {
         super(message);

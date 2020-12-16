@@ -1,8 +1,7 @@
 package blocks.basic;
 
 import blocks.WorkflowBlock;
-import io.je.utilities.runtimeobject.JEObject;
 
-public class DBRemoveBlock extends WorkflowBlock{
+public class DBRemoveBlock extends WorkflowBlock {
 
 }

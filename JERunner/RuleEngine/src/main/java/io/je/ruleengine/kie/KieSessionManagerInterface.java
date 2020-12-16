@@ -4,6 +4,6 @@ import org.kie.api.runtime.KieSession;
 
 public interface KieSessionManagerInterface {
 
-	public KieSession getKieSession();
-	
+    public KieSession getKieSession();
+
 }

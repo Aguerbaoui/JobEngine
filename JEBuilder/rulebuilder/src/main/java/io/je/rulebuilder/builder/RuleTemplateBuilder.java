@@ -5,9 +5,9 @@ import io.je.rulebuilder.components.RuleTemplate;
 
 public class RuleTemplateBuilder {
 
-	public RuleTemplate createRuleTemplate(JERule jERule) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    public RuleTemplate createRuleTemplate(JERule jERule) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
 }

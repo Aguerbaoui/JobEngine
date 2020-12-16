@@ -4,52 +4,51 @@ import java.util.HashMap;
 import java.util.Map;
 
 /*
- * In memory repository for all blocks 
+ * In memory repository for all blocks
  */
 public class BlockInventory {
 
-	/*
-	 * Map of all the blocks
-	 */
-	static Map<String, Block> blocks = new HashMap<>();
+    /*
+     * Map of all the blocks
+     */
+    static Map<String, Block> blocks = new HashMap<>();
 
-	/*
-	 * add block to repository
-	 */
-	public static boolean addBlock(Block block) {
-		if (!blockExists(block.getJobEngineElementID())) {
-			return false;
-		}
-		blocks.put(block.getJobEngineElementID(), block);
-		return true;
-	}
+    /*
+     * add block to repository
+     */
+    public static boolean addBlock(Block block) {
+        if (!blockExists(block.getJobEngineElementID())) {
+            return false;
+        }
+        blocks.put(block.getJobEngineElementID(), block);
+        return true;
+    }
 
-	/*
-	 * update block
-	 */
-	public boolean updateBlock(Block block) {
+    private static boolean blockExists(String blockId) {
 
-		blocks.put(block.getJobEngineElementID(), block);
-		return true;
+        return blocks.containsKey(blockId);
+    }
 
-	}
+    /*
+     * update block
+     */
+    public boolean updateBlock(Block block) {
 
-	
-	/*
-	 * delete block
-	 */
-	public boolean deleteBlock(String blockId) {
-		if (!blockExists(blockId)) {
-			//block not found
-			return false;
-		}
-		blocks.remove(blockId);
-		return true;
-	}
+        blocks.put(block.getJobEngineElementID(), block);
+        return true;
 
-	private static boolean blockExists(String blockId) {
+    }
 
-		return blocks.containsKey(blockId);
-	}
+    /*
+     * delete block
+     */
+    public boolean deleteBlock(String blockId) {
+        if (!blockExists(blockId)) {
+            //block not found
+            return false;
+        }
+        blocks.remove(blockId);
+        return true;
+    }
 
 }

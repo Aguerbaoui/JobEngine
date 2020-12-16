@@ -1,44 +1,42 @@
 package io.je.utilities.network;
-import java.io.IOException;
-import java.util.HashMap;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.squareup.okhttp.Call;
-import com.squareup.okhttp.MediaType;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.RequestBody;
-import com.squareup.okhttp.Response;
-
+import com.squareup.okhttp.*;
 import io.je.utilities.logger.JELogger;
+
+import java.io.IOException;
+import java.util.HashMap;
 
 public class Network {
 
-	private static OkHttpClient client = new OkHttpClient();
+    private static OkHttpClient client = new OkHttpClient();
 
-	public static void makeNetworkCallWithJsonBody(HashMap<String, String> json, String url) throws IOException {
-		String jsonStr = "";
-		try {
-			jsonStr = new ObjectMapper().writeValueAsString(json);
+    private Network() {
+    }
 
-		} catch (JsonProcessingException e) {
-			JELogger.info(e.getMessage());
-		}
-		JELogger.info(jsonStr);
-		RequestBody body = RequestBody.create(MediaType.parse("application/json"), jsonStr);
+    public static void makeNetworkCallWithJsonBody(HashMap<String, String> json, String url) throws IOException {
+        String jsonStr = "";
+        try {
+            jsonStr = new ObjectMapper().writeValueAsString(json);
 
-		Request request = new Request.Builder().url(url).post(body).build();
+        } catch (JsonProcessingException e) {
+            JELogger.info(Network.class, e.getMessage());
+        }
+        JELogger.info(Network.class, jsonStr);
+        RequestBody body = RequestBody.create(MediaType.parse("application/json"), jsonStr);
 
-		Call call = client.newCall(request);
-		Response response = call.execute();
-	}
-	
-	public static void makeNetworkCall(String url) throws IOException {
+        Request request = new Request.Builder().url(url).post(body).build();
 
-		Request request = new Request.Builder().url(url).get().build();
-		Call call = client.newCall(request);
-		JELogger.info(url);
-		Response response = call.execute();
-	}
+        Call call = client.newCall(request);
+        call.execute();
+    }
+
+    public static void makeNetworkCall(String url) throws IOException {
+
+        Request request = new Request.Builder().url(url).get().build();
+        Call call = client.newCall(request);
+        JELogger.info(Network.class, url);
+        call.execute();
+    }
 }

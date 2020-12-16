@@ -4,74 +4,74 @@ import java.util.ArrayList;
 
 public class WorkflowModel {
 
-	public String projectId;
-	
-	public String key;
-	
-	public String path;
-	
-	public ArrayList<EventModel> events;
-	
-	public ArrayList<TaskModel> tasks;
+    public String projectId;
 
-	public String getProjectId() {
-		return projectId;
-	}
+    public String key;
 
-	public void setProjectId(String projectId) {
-		this.projectId = projectId;
-	}
+    public String path;
 
-	public String getKey() {
-		return key;
-	}
+    public ArrayList<EventModel> events;
 
-	public void setKey(String key) {
-		this.key = key;
-	}
+    public ArrayList<TaskModel> tasks;
 
-	public String getPath() {
-		return path;
-	}
+    public WorkflowModel(String projectId, String key, String path, ArrayList<EventModel> events,
+                         ArrayList<TaskModel> tasks) {
+        super();
+        this.projectId = projectId;
+        this.key = key;
+        this.path = path;
+        this.events = events;
+        this.tasks = tasks;
+    }
 
-	public void setPath(String path) {
-		this.path = path;
-	}
+    public WorkflowModel() {
+        super();
+    }
 
-	public ArrayList<EventModel> getEvents() {
-		return events;
-	}
+    public String getProjectId() {
+        return projectId;
+    }
 
-	public void setEvents(ArrayList<EventModel> events) {
-		this.events = events;
-	}
+    public void setProjectId(String projectId) {
+        this.projectId = projectId;
+    }
 
-	public ArrayList<TaskModel> getTasks() {
-		return tasks;
-	}
+    public String getKey() {
+        return key;
+    }
 
-	public void setTasks(ArrayList<TaskModel> tasks) {
-		this.tasks = tasks;
-	}
+    public void setKey(String key) {
+        this.key = key;
+    }
 
-	public WorkflowModel(String projectId, String key, String path, ArrayList<EventModel> events,
-			ArrayList<TaskModel> tasks) {
-		super();
-		this.projectId = projectId;
-		this.key = key;
-		this.path = path;
-		this.events = events;
-		this.tasks = tasks;
-	}
+    public String getPath() {
+        return path;
+    }
 
-	public WorkflowModel() {
-		super();
-	}
+    public void setPath(String path) {
+        this.path = path;
+    }
 
-	@Override
-	public String toString() {
-		return "WorkflowModel [projectId=" + projectId + ", key=" + key + ", path=" + path + ", events=" + events
-				+ ", tasks=" + tasks + "]";
-	}
-	
+    public ArrayList<EventModel> getEvents() {
+        return events;
+    }
+
+    public void setEvents(ArrayList<EventModel> events) {
+        this.events = events;
+    }
+
+    public ArrayList<TaskModel> getTasks() {
+        return tasks;
+    }
+
+    public void setTasks(ArrayList<TaskModel> tasks) {
+        this.tasks = tasks;
+    }
+
+    @Override
+    public String toString() {
+        return "WorkflowModel [projectId=" + projectId + ", key=" + key + ", path=" + path + ", events=" + events
+                + ", tasks=" + tasks + "]";
+    }
+
 }

@@ -2,37 +2,37 @@ package io.je.project.models;
 
 public class WorkflowModel {
 
-	private String projectId;
-	
-	private String key;
-	
-	private String name;
+    private String projectId;
 
-	public String getProjectId() {
-		return projectId;
-	}
+    private String key;
 
-	public void setProjectId(String projectId) {
-		this.projectId = projectId;
-	}
+    private String name;
 
-	public String getKey() {
-		return key;
-	}
+    public WorkflowModel() {
+        super();
+    }
 
-	public void setKey(String key) {
-		this.key = key;
-	}
+    public String getProjectId() {
+        return projectId;
+    }
 
-	public WorkflowModel() {
-		super();
-	}
+    public void setProjectId(String projectId) {
+        this.projectId = projectId;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getKey() {
+        return key;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setKey(String key) {
+        this.key = key;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }
