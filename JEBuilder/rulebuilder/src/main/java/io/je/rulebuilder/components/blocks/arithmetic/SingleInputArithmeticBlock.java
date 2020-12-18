@@ -1,13 +1,17 @@
 package io.je.rulebuilder.components.blocks.arithmetic;
 
-import io.je.rulebuilder.components.Operand;
 import io.je.rulebuilder.components.blocks.ArithmeticBlock;
+import io.je.rulebuilder.components.blocks.Operand;
 import io.je.rulebuilder.components.enumerations.SingleInputArithmeticOperation;
 import io.je.rulebuilder.models.BlockModel;
 
+
+/*
+ * Arithmetic blocks with one input
+ */
 public abstract class SingleInputArithmeticBlock extends ArithmeticBlock {
 
-    Operand operand;
+    
     SingleInputArithmeticOperation operation;
 
     public SingleInputArithmeticBlock(BlockModel blockModel) {
@@ -21,17 +25,20 @@ public abstract class SingleInputArithmeticBlock extends ArithmeticBlock {
     @Override
     public String getExpression() {
         String expression = "";
-        switch (operand.getDataType()) {
-            case ARITHMETICRESULT:
-                break;
-            case CLASSATTRIBUTE:
-                break;
-            case CONSTANT:
-                break;
-            case VARIABLE:
-                break;
-            default:
-                break;
+        switch (operands.get(0).getOperandDataType()) {
+		case ARITHMETICBLOCK:
+			break;
+		case CLASSATTRIBUTE:
+			break;
+		case CONSTANT:
+			break;
+		case LOGICBLOCK:
+			break;
+		case VARIABLE:
+			break;
+		default:
+			break;
+           
 
         }
         return expression;

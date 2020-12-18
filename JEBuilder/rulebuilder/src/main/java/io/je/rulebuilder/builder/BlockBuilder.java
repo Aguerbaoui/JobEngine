@@ -3,7 +3,7 @@ package io.je.rulebuilder.builder;
 import io.je.rulebuilder.components.blocks.Block;
 import io.je.rulebuilder.components.blocks.BlockInventory;
 import io.je.rulebuilder.components.blocks.ComparisonBlock;
-import io.je.rulebuilder.config.BlockAttributesMapping;
+import io.je.rulebuilder.config.AttributesMapping;
 import io.je.rulebuilder.models.BlockModel;
 
 /*
@@ -12,18 +12,18 @@ import io.je.rulebuilder.models.BlockModel;
 public class BlockBuilder {
 
 
-    public Block createBlock(BlockModel blockModel) {
+    public static Block createBlock(BlockModel blockModel) {
         Block block = null;
         String blockType = blockModel.getBlockType();
         switch (blockType) {
-            case BlockAttributesMapping.COMPARISONBLOCK:
+            case AttributesMapping.COMPARISONBLOCK:
                 block = buildComparisonBlock(blockModel);
                 break;
-            case BlockAttributesMapping.ARITHMETICBLOCK:
+            case AttributesMapping.ARITHMETICBLOCK:
                 break;
-            case BlockAttributesMapping.GATEWAYBLOCK:
+            case AttributesMapping.GATEWAYBLOCK:
                 break;
-            case BlockAttributesMapping.EXECUTIONBLOCK:
+            case AttributesMapping.EXECUTIONBLOCK:
                 break;
 
             default:
@@ -48,7 +48,7 @@ public class BlockBuilder {
     }
 
 
-    private ComparisonBlock buildComparisonBlock(BlockModel blockModel) {
+    private static ComparisonBlock buildComparisonBlock(BlockModel blockModel) {
 
         return null;
     }

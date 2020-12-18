@@ -1,14 +1,18 @@
 package io.je.rulebuilder.components.blocks;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.je.rulebuilder.config.BlockAttributesMapping;
+import io.je.rulebuilder.config.AttributesMapping;
 import io.je.utilities.runtimeobject.JEObject;
 
-
+/*
+ * Job Engine block
+ */
 public abstract class Block extends JEObject {
 
-    @JsonProperty(BlockAttributesMapping.RULEID)
+    @JsonProperty(AttributesMapping.RULEID)
     String ruleId;
+    
+    int operationId;
 
 
     public Block(String jobEngineElementID, String jobEngineProjectID, String ruleId) {

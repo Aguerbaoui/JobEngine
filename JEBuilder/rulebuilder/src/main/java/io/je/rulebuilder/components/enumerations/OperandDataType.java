@@ -1,10 +1,10 @@
 package io.je.rulebuilder.components.enumerations;
 
-public enum DataType {
+public enum OperandDataType {
     VARIABLE,
     CLASSATTRIBUTE,
     CONSTANT,
-    ARITHMETICRESULT,
-
+    ARITHMETICBLOCK,
+    LOGICBLOCK,
 
 }

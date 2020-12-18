@@ -1,14 +1,13 @@
 package io.je.rulebuilder.components.blocks;
 
-import io.je.rulebuilder.components.Operand;
 import io.je.rulebuilder.models.BlockModel;
 
 import java.util.List;
 
 public abstract class ArithmeticBlock extends ConditionBlock {
 
-    List<Operand> operands;
-    String operationId;
+    protected List<Operand> operands;
+    protected String operationId;
 
     public ArithmeticBlock(BlockModel blockModel) {
         super(blockModel.getJobEngineId(), blockModel.getProjectId(), blockModel.getRuleId(), Boolean.valueOf(blockModel.getTimePersistenceOn()), blockModel.getTimePersistenceValue(), blockModel.getTimePersistenceUnit());

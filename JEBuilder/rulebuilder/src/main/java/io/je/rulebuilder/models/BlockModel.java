@@ -2,7 +2,7 @@ package io.je.rulebuilder.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.je.rulebuilder.components.enumerations.TimePersistenceUnit;
-import io.je.rulebuilder.config.BlockAttributesMapping;
+import io.je.rulebuilder.config.AttributesMapping;
 
 import java.util.List;
 
@@ -10,32 +10,32 @@ public class BlockModel {
 
     String jobEngineId;
 
-    @JsonProperty(BlockAttributesMapping.PROJECTID)
+    @JsonProperty(AttributesMapping.PROJECTID)
     String projectId;
 
-    @JsonProperty(BlockAttributesMapping.RULEID)
+    @JsonProperty(AttributesMapping.RULEID)
     String ruleId;
 
-    @JsonProperty(BlockAttributesMapping.BLOCKID)
+    @JsonProperty(AttributesMapping.BLOCKID)
     String blockId;
 
-    @JsonProperty(BlockAttributesMapping.BLOCKTYPE)
+    @JsonProperty(AttributesMapping.BLOCKTYPE)
     String blockType;
 
-    @JsonProperty(BlockAttributesMapping.TIMEPERSISTENCEON)
+    @JsonProperty(AttributesMapping.TIMEPERSISTENCEON)
     String timePersistenceOn;
 
-    @JsonProperty(BlockAttributesMapping.TIMEPERSISTENCEVALUE)
+    @JsonProperty(AttributesMapping.TIMEPERSISTENCEVALUE)
     int timePersistenceValue;
 
-    @JsonProperty(BlockAttributesMapping.TIMEPERSISTENCEUNIT)
+    @JsonProperty(AttributesMapping.TIMEPERSISTENCEUNIT)
     TimePersistenceUnit timePersistenceUnit;
 
-    @JsonProperty(BlockAttributesMapping.FIRSTOPERAND)
+    @JsonProperty(AttributesMapping.FIRSTOPERAND)
     List<String> operandIds;
 
 
-    @JsonProperty(BlockAttributesMapping.OPERATIONID)
+    @JsonProperty(AttributesMapping.OPERATIONID)
     String operatorId;
 
 
