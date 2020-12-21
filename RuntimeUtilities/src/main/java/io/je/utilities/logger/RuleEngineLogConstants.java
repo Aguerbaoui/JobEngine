@@ -26,7 +26,7 @@ public class RuleEngineLogConstants {
     public static String sucessfullyDeletedRule = "";
     public static String failedToDeleteRule = "";
     public static String sucessfullyCompiledRule = "";
-    public static String ruleCompilationError = "Failed to comile Rule";
+    public static String ruleCompilationError = "Failed to compile Rule";
     public static String ruleExists = "A rule with this id already exists.";
     public static String failedToFireRules = "";
     private RuleEngineLogConstants() {

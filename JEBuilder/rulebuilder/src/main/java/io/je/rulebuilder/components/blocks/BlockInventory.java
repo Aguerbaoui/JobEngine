@@ -4,12 +4,18 @@ import java.util.HashMap;
 import java.util.Map;
 
 /*
- * In memory repository for all blocks
+ * In memory block repository corresponding to one rule
  */
 public class BlockInventory {
 
+	/*
+	 * id of the rule that contains these blocks
+	 */
+	String ruleId;
     /*
-     * Map of all the blocks
+     * Map of all the blocks 
+     * key = block id
+     * value = block
      */
     static Map<String, Block> blocks = new HashMap<>();
 
@@ -27,6 +33,16 @@ public class BlockInventory {
     private static boolean blockExists(String blockId) {
 
         return blocks.containsKey(blockId);
+    }
+    
+    
+    public static Block getBlock(String blockId)
+    {
+    	if(blockExists(blockId))
+    	{
+    		return blocks.get(blockId);
+    	}
+    	return null;
     }
 
     /*

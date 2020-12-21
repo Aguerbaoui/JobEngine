@@ -10,7 +10,6 @@ public class RuleTemplate {
 
     public RuleTemplate(JERule rule) {
         super();
-        this.ruleName = rule.name;
         this.duration = String.valueOf(rule.getDuration());
         this.salience = String.valueOf(rule.getSalience());
         this.condition = rule.getCondition().getString();
