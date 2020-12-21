@@ -78,8 +78,8 @@
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <class id="9" language="java" name="io.je.rulebuilder.components.blocks.ConditionBlock" project="RuleBuilder" 
-    file="/RuleBuilder/src/main/java/io/je/rulebuilder/components/blocks/ConditionBlock.java" binary="false" 
+  <class id="9" language="java" name="io.je.rulebuilder.components.blocks.PersistableBlock" project="RuleBuilder" 
+    file="/RuleBuilder/src/main/java/io/je/rulebuilder/components/blocks/PersistableBlock.java" binary="false" 
     corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="2211" y="1195"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
@@ -275,125 +275,161 @@
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <association id="29">    
-    <end type="SOURCE" refId="25" navigable="false">      
-      <attribute id="30" name="consequences"/>      
-      <multiplicity id="31" minimum="0" maximum="2147483647"/>    
-    </end>    
-    <end type="TARGET" refId="10" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <association id="32">    
-    <end type="SOURCE" refId="10" navigable="false">      
-      <attribute id="33" name="value"/>      
-      <multiplicity id="34" minimum="0" maximum="1"/>    
-    </end>    
-    <end type="TARGET" refId="21" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <association id="35">    
-    <end type="SOURCE" refId="16" navigable="false">      
-      <attribute id="36" name="operands"/>      
-      <multiplicity id="37" minimum="0" maximum="2147483647"/>    
-    </end>    
-    <end type="TARGET" refId="3" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <association id="38">    
-    <end type="SOURCE" refId="5" navigable="false">      
-      <attribute id="39" name="parent"/>      
-      <multiplicity id="40" minimum="0" maximum="1"/>    
-    </end>    
-    <end type="TARGET" refId="5" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <association id="41">    
-    <end type="SOURCE" refId="25" navigable="false">      
-      <attribute id="42" name="condition"/>      
-      <multiplicity id="43" minimum="0" maximum="1"/>    
-    </end>    
-    <end type="TARGET" refId="5" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <association id="44">    
-    <end type="SOURCE" refId="17" navigable="false">      
-      <attribute id="45" name="operands"/>      
-      <multiplicity id="46" minimum="0" maximum="2147483647"/>    
-    </end>    
-    <end type="TARGET" refId="3" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <association id="47">    
-    <end type="SOURCE" refId="5" navigable="false">      
-      <attribute id="48" name="value"/>      
-      <multiplicity id="49" minimum="0" maximum="1"/>    
-    </end>    
-    <end type="TARGET" refId="9" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <generalization id="50">    
-    <end type="SOURCE" refId="16"/>    
-    <end type="TARGET" refId="9"/>  
+  <generalization id="29">    
+    <end type="SOURCE" refId="26"/>    
+    <end type="TARGET" refId="16"/>  
   </generalization>  
-  <association id="51">    
+  <association id="30">    
+    <end type="SOURCE" refId="16" navigable="false">      
+      <attribute id="31" name="operands">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="32" minimum="0" maximum="2147483647">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="3" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="33">    
     <end type="SOURCE" refId="1" navigable="false">      
-      <attribute id="52" name="blocks"/>      
-      <multiplicity id="53" minimum="0" maximum="1"/>    
+      <attribute id="34" name="blocks">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="35" minimum="0" maximum="1">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
     </end>    
     <end type="TARGET" refId="23" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
-  <generalization id="54">    
-    <end type="SOURCE" refId="21"/>    
-    <end type="TARGET" refId="13"/>  
-  </generalization>  
-  <generalization id="55">    
-    <end type="SOURCE" refId="6"/>    
-    <end type="TARGET" refId="9"/>  
-  </generalization>  
-  <generalization id="56">    
-    <end type="SOURCE" refId="9"/>    
-    <end type="TARGET" refId="13"/>  
-  </generalization>  
-  <association id="57">    
+  <association id="36">    
     <end type="SOURCE" refId="5" navigable="false">      
-      <attribute id="58" name="children"/>      
-      <multiplicity id="59" minimum="0" maximum="2147483647"/>    
+      <attribute id="37" name="parent">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="38" minimum="0" maximum="1">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
     </end>    
     <end type="TARGET" refId="5" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
-  <association id="60">    
-    <end type="SOURCE" refId="26" navigable="false">      
-      <attribute id="61" name="operation"/>      
-      <multiplicity id="62" minimum="0" maximum="1"/>    
+  <generalization id="39">    
+    <end type="SOURCE" refId="6"/>    
+    <end type="TARGET" refId="9"/>  
+  </generalization>  
+  <generalization id="40">    
+    <end type="SOURCE" refId="9"/>    
+    <end type="TARGET" refId="13"/>  
+  </generalization>  
+  <association id="41">    
+    <end type="SOURCE" refId="10" navigable="false">      
+      <attribute id="42" name="value">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="43" minimum="0" maximum="1">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
     </end>    
-    <end type="TARGET" refId="22" navigable="true"/>    
+    <end type="TARGET" refId="21" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
-  <generalization id="63">    
+  <association id="44">    
+    <end type="SOURCE" refId="5" navigable="false">      
+      <attribute id="45" name="children">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="46" minimum="0" maximum="2147483647">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="5" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <generalization id="47">    
+    <end type="SOURCE" refId="16"/>    
+    <end type="TARGET" refId="9"/>  
+  </generalization>  
+  <association id="48">    
+    <end type="SOURCE" refId="23" navigable="false">      
+      <attribute id="49" name="blocks">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="50" minimum="0" maximum="2147483647">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="13" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="51">    
+    <end type="SOURCE" refId="25" navigable="false">      
+      <attribute id="52" name="consequences">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="53" minimum="0" maximum="2147483647">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="10" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <generalization id="54">    
     <bendpoint x="2552" y="2111"/>    
     <end type="SOURCE" refId="20"/>    
     <end type="TARGET" refId="9"/>  
   </generalization>  
-  <association id="64">    
-    <end type="SOURCE" refId="9" navigable="false">      
-      <attribute id="65" name="timePersistenceUnit"/>      
-      <multiplicity id="66" minimum="0" maximum="1"/>    
+  <association id="55">    
+    <end type="SOURCE" refId="17" navigable="false">      
+      <attribute id="56" name="operands">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="57" minimum="0" maximum="2147483647">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
     </end>    
-    <end type="TARGET" refId="27" navigable="true"/>    
+    <end type="TARGET" refId="3" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
-  <generalization id="67">    
-    <end type="SOURCE" refId="26"/>    
-    <end type="TARGET" refId="16"/>  
-  </generalization>  
-  <association id="68">    
-    <end type="SOURCE" refId="23" navigable="false">      
-      <attribute id="69" name="blocks"/>      
-      <multiplicity id="70" minimum="0" maximum="2147483647"/>    
+  <association id="58">    
+    <end type="SOURCE" refId="25" navigable="false">      
+      <attribute id="59" name="condition">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="60" minimum="0" maximum="1">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
     </end>    
-    <end type="TARGET" refId="13" navigable="true"/>    
+    <end type="TARGET" refId="5" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="61">    
+    <end type="SOURCE" refId="5" navigable="false">      
+      <attribute id="62" name="value">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="63" minimum="0" maximum="1">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="9" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <generalization id="64">    
+    <end type="SOURCE" refId="21"/>    
+    <end type="TARGET" refId="13"/>  
+  </generalization>  
+  <association id="65">    
+    <end type="SOURCE" refId="26" navigable="false">      
+      <attribute id="66" name="operation">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="67" minimum="0" maximum="1">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="22" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
   <classifier-display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 

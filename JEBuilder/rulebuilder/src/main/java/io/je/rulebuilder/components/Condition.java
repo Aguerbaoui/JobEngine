@@ -5,16 +5,15 @@ import io.je.rulebuilder.components.blocks.Block;
 import io.je.rulebuilder.components.blocks.BlockInventory;
 import io.je.rulebuilder.components.blocks.ComparisonBlock;
 import io.je.rulebuilder.components.blocks.ConditionBlock;
+import io.je.rulebuilder.components.blocks.PersistableBlock;
 import io.je.rulebuilder.components.blocks.LogicBlock;
-import io.je.rulebuilder.components.blocks.Operand;
-import io.je.rulebuilder.components.blocks.OperandInventory;
-import io.je.rulebuilder.components.enumerations.OperandDataType;
+
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Condition {
-    ConditionBlock value;
+	ConditionBlock value;
     Condition parent;
     List<Condition> children;
     StringBuilder string = new StringBuilder();
@@ -29,14 +28,14 @@ public class Condition {
     {
     	Condition condition = new Condition(block);
     	
-    	if( block.getInputs().isEmpty()) 
+    	if( block.getInputBlocks().isEmpty()) 
     	{
     		return condition;
     	}
     	
     	if(block instanceof LogicBlock)
     	{
-    		for(String inputBlockId : block.getInputs())
+    		for(String inputBlockId : block.getInputBlocks())
     		{
     			ConditionBlock inputBlock = (ConditionBlock) BlockInventory.getBlock(inputBlockId);
     			if (inputBlock!=null)
@@ -48,20 +47,7 @@ public class Condition {
     	}
     	else
     	{
-    		for(String inputOperandId : block.getInputs())
-    		{
-    			Operand inputOperand =  OperandInventory.getOperand(inputOperandId);
-    			if (inputOperand!=null && (inputOperand.getOperandDataType() == OperandDataType.ARITHMETICBLOCK || inputOperand.getOperandDataType() == OperandDataType.LOGICBLOCK ))
-    			{
-    				ConditionBlock inputBlock = (ConditionBlock) BlockInventory.getBlock(inputOperand.getValue());
-        			if (inputBlock!=null)
-        			{
-        				condition.addChild(createCondition(inputBlock));
-        				
-        			}
-    				
-    			}
-    		}
+    		
     	
     	}
 		return condition;
@@ -108,7 +94,7 @@ public class Condition {
     }
 
 
-    public void setValue(ConditionBlock value) {
+    public void setValue(PersistableBlock value) {
         this.value = value;
     }
 
@@ -145,7 +131,7 @@ public class Condition {
         condition.setParent(this);
     }
 
-    public void addChild(ConditionBlock block) {
+    public void addChild(PersistableBlock block) {
         if (this.children == null) {
             this.children = new ArrayList<>();
         }

@@ -11,7 +11,7 @@ import java.util.Map;
 
 
 /*
- * class responsible for drl generation
+ * class responsible for drl generation from rule template
  */
 public class DRLBuilder {
 

@@ -1,7 +1,7 @@
 package io.je.rulebuilder.components;
 
 import io.je.rulebuilder.components.blocks.Block;
-import io.je.rulebuilder.components.blocks.ConditionBlock;
+import io.je.rulebuilder.components.blocks.PersistableBlock;
 import io.je.utilities.runtimeobject.JEObject;
 
 import java.util.ArrayList;
@@ -135,7 +135,7 @@ public class JERule extends JEObject {
 		this.condition = condition;
 	}
 
-	public void setCondition(ConditionBlock rootBlock) {
+	public void setCondition(PersistableBlock rootBlock) {
 		this.condition = new Condition(rootBlock);
 	}
 	

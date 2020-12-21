@@ -9,48 +9,36 @@ import io.je.rulebuilder.models.BlockModel;
 /*
  * this class handles the creation, update and deletion of blocks
  */
-public class BlockBuilder {
+public  class BlockBuilder {
 
+	
 
-    public static Block createBlock(BlockModel blockModel) {
-        Block block = null;
-        String blockType = blockModel.getBlockType();
-        switch (blockType) {
-            case AttributesMapping.COMPARISONBLOCK:
-                block = buildComparisonBlock(blockModel);
-                break;
-            case AttributesMapping.ARITHMETICBLOCK:
-                break;
-            case AttributesMapping.GATEWAYBLOCK:
-                break;
-            case AttributesMapping.EXECUTIONBLOCK:
-                break;
+    private BlockBuilder() {
+	}
 
-            default:
-                break;
-
-
-        }
-
-        if (block != null) {
-            BlockInventory.addBlock(block);
-
-        }
-        return null;
+	public static Block createBlock(BlockModel blockModel) {
+    	if(blockModel == null || blockModel.getOperationId()==0)
+    	{
+    		//throw exception, can't add block 
+    		return null;
+    	}
+    	int operation = blockModel.getOperationId()/1000;
+    	switch(operation)
+    	{
+    	//Arithmetic block
+    	case 1:
+    		
+    		break;
+    	//Comparison block	
+    	case 2:
+    		break;
+    	
+    	default:
+    		break;
+    	}
+		return null;
     }
 
-    public Block updateBlock(Object jsonBlockInput) {
-        return null;
-    }
-
-    public Block deleteBlock(Object blockId) {
-        return null;
-    }
-
-
-    private static ComparisonBlock buildComparisonBlock(BlockModel blockModel) {
-
-        return null;
-    }
+       
 
 }

@@ -9,44 +9,31 @@ public class AttributesMapping {
     //common attributes
     public static final String PROJECTID = "project_id";
     public static final String RULEID = "rule_id";
+   
+    
+    //block attributes
     public static final String BLOCKID = "block_id";
-    public static final String OPERANDID = "operand_id";
-    public static final String BLOCKTYPE = "block_type";
+    public static final String OPERATIONID = "operation_id";
     public static final String TIMEPERSISTENCEON = "time_persistence_on";
     public static final String TIMEPERSISTENCEVALUE = "";
     public static final String TIMEPERSISTENCEUNIT = "";
-    public static final String OPERATIONID = "operation_id";
-    //rule attributes
+    public static final String INPUTBLOCK = "input_blocks";
+    public static final String BLOCKCONFIG = "block_configuration";
     
-    //block types
-    public static final String COMPARISONBLOCK = "comparison_block";
-    public static final String ARITHMETICBLOCK = "arithmetic_block";
-    public static final String GATEWAYBLOCK = "gateway_block";
-    public static final String EXECUTIONBLOCK = "execution_block";
-    //operands
-    public static final String FIRSTOPERAND = "first_operand";
-    public static final String SECONDOPERAND = "second_operand";
-    public static final String OPERANDTYPE = "type";
-    public static final String OPERANDVALUE = "value";
-    public static final String OPERANDCLASSNAME = "class_name";
-    //COMPARISON OPERATORS
-    public static final String GREATERTHAN = ">";
-
-
-
-    /*
-     * operator Ids
-     */
-    //GATEWAY OPERATORS
-    public static final String AND = "and";
-
-
-    private AttributesMapping() {
-
-    }
-
-
-    //ARITHMETIC OPERATOR
+    //block configuration
+	public static final String VALUE = "value";
+	public static final String INPUTUNIT = "input_unit";
+	public static final String OUTPUTUNIT = "output_unit";
+	public static final String CLASSID = "class_id";
+	public static final String ATTRIBUTENAME = "attribute_name";
+	public static final String SPECIFICINSTANCES = "specific_instances";
+    
+    //rule attributes 
+    
+    
+    
+    
+  
 
 
 }

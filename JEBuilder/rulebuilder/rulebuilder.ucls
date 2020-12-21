@@ -11,8 +11,8 @@
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <class id="2" language="java" name="io.je.rulebuilder.components.blocks.ConditionBlock" project="RuleBuilder" 
-    file="/RuleBuilder/src/main/java/io/je/rulebuilder/components/blocks/ConditionBlock.java" binary="false" 
+  <class id="2" language="java" name="io.je.rulebuilder.components.blocks.PersistableBlock" project="RuleBuilder" 
+    file="/RuleBuilder/src/main/java/io/je/rulebuilder/components/blocks/PersistableBlock.java" binary="false" 
     corner="BOTTOM_RIGHT">    
     <position height="297" width="349" x="621" y="635"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
@@ -71,30 +71,34 @@
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <association id="8">    
+  <generalization id="8">    
+    <end type="SOURCE" refId="6"/>    
+    <end type="TARGET" refId="2"/>  
+  </generalization>  
+  <generalization id="9">    
+    <end type="SOURCE" refId="7"/>    
+    <end type="TARGET" refId="2"/>  
+  </generalization>  
+  <generalization id="10">    
+    <end type="SOURCE" refId="2"/>    
+    <end type="TARGET" refId="5"/>  
+  </generalization>  
+  <generalization id="11">    
+    <end type="SOURCE" refId="1"/>    
+    <end type="TARGET" refId="5"/>  
+  </generalization>  
+  <association id="12">    
     <end type="SOURCE" refId="3" navigable="false">      
-      <attribute id="9" name="blocks"/>      
-      <multiplicity id="10" minimum="0" maximum="2147483647"/>    
+      <attribute id="13" name="blocks">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="14" minimum="0" maximum="2147483647">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
     </end>    
     <end type="TARGET" refId="5" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
-  <generalization id="11">    
-    <end type="SOURCE" refId="6"/>    
-    <end type="TARGET" refId="2"/>  
-  </generalization>  
-  <generalization id="12">    
-    <end type="SOURCE" refId="1"/>    
-    <end type="TARGET" refId="5"/>  
-  </generalization>  
-  <generalization id="13">    
-    <end type="SOURCE" refId="7"/>    
-    <end type="TARGET" refId="2"/>  
-  </generalization>  
-  <generalization id="14">    
-    <end type="SOURCE" refId="2"/>    
-    <end type="TARGET" refId="5"/>  
-  </generalization>  
   <classifier-display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
     sort-features="false" accessors="true" visibility="true">    
     <attributes public="true" package="true" protected="true" private="true" static="true"/>    

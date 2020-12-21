@@ -3,6 +3,7 @@ package io.je.rulebuilder.components;
 import java.util.HashMap;
 import java.util.Map;
 
+import io.je.rulebuilder.builder.BlockBuilder;
 import io.je.rulebuilder.components.blocks.Block;
 import io.je.rulebuilder.models.BlockModel;
 
@@ -30,7 +31,8 @@ public class ComposedRule {
 	
 	public void addBlock(BlockModel blockModel)
 	{
-		//blocks.putBlock();
+		Block block = BlockBuilder.createBlock(blockModel);
+		blocks.put(block.getJobEngineElementID(), block);
 	}
 	
 	public void updateBlock(Block block)
