@@ -3,8 +3,6 @@ package io.je.rulebuilder.components.blocks;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import io.je.rulebuilder.config.AttributesMapping;
 import io.je.utilities.runtimeobject.JEObject;
 
 /*
@@ -16,8 +14,16 @@ public abstract class Block extends JEObject {
     int operationId;
     List<String> inputBlocks = new ArrayList<>();
 
-    
-    
+
+	protected Block(String jobEngineElementID, String jobEngineProjectID, String ruleId, int operationId,
+			List<String> inputBlocks) {
+		super(jobEngineElementID, jobEngineProjectID);
+		this.ruleId = ruleId;
+		this.operationId = operationId;
+		this.inputBlocks = inputBlocks;
+	}
+
+
 
 
 	public String getRuleId() {

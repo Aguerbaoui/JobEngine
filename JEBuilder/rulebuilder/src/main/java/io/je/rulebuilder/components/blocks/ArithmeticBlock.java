@@ -1,11 +1,25 @@
 package io.je.rulebuilder.components.blocks;
 
-import io.je.rulebuilder.components.enumerations.TimePersistenceUnit;
 import io.je.rulebuilder.models.BlockModel;
 
-import java.util.List;
+public abstract class ArithmeticBlock extends ConditionBlock {
+	
+	//parameters for arithmetic blocks that require parameters 
+		String value;
 
-public abstract class ArithmeticBlock extends PersistableBlock {
+	protected ArithmeticBlock(BlockModel blockModel) {
+		super(blockModel.getBlockId(), blockModel.getProjectId(), blockModel.getRuleId(), blockModel.getOperationId(), blockModel.getInputBlocksIds());
+		if(blockModel.getBlockConfiguration()!=null && blockModel.getBlockConfiguration().getValue()!=null)
+		{
+			//TODO: switch on operation id to configure parameters
+			value = blockModel.getBlockConfiguration().getValue();
+			
+		}
+	}
+	
+
+
+	
 
 
 
