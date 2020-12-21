@@ -8,7 +8,7 @@ import io.je.rulebuilder.models.BlockModel;
 /*
  * Blocks used to reference comparaison and arithmetic block's operands
  */
-public abstract class GetterBlock extends Block {
+public  class GetterBlock extends Block {
 	
 	
 		String classId;
@@ -22,5 +22,12 @@ public abstract class GetterBlock extends Block {
 		super(blockModel.getBlockId(), blockModel.getProjectId(), blockModel.getRuleId(), blockModel.getOperationId(),
 				blockModel.getInputBlocksIds());
 
+	}
+
+
+	@Override
+	public String getExpression() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

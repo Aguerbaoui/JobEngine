@@ -7,7 +7,7 @@ import io.je.rulebuilder.models.BlockModel;
 /*
  * Comparison Block is a class that represents the comparison elements in a rule.
  */
-public abstract class ComparisonBlock extends PersistableBlock {
+public  class ComparisonBlock extends PersistableBlock {
 	
 	
 	//if no second operand, the first operand is compared to a constant value (threshold)
@@ -34,6 +34,13 @@ public abstract class ComparisonBlock extends PersistableBlock {
 
 	public void setValue(String value) {
 		this.value = value;
+	}
+
+
+	@Override
+	public String getExpression() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 	

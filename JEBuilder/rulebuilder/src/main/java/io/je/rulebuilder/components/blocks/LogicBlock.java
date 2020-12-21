@@ -2,7 +2,7 @@ package io.je.rulebuilder.components.blocks;
 
 import io.je.rulebuilder.models.BlockModel;
 
-public abstract class LogicBlock extends PersistableBlock {
+public  class LogicBlock extends PersistableBlock {
 
 
 	public LogicBlock(BlockModel blockModel) {
@@ -11,4 +11,10 @@ public abstract class LogicBlock extends PersistableBlock {
 		
 
 }
+
+	@Override
+	public String getExpression() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

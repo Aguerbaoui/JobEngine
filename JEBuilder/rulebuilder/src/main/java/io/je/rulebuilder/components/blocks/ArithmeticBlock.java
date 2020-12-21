@@ -2,7 +2,7 @@ package io.je.rulebuilder.components.blocks;
 
 import io.je.rulebuilder.models.BlockModel;
 
-public abstract class ArithmeticBlock extends ConditionBlock {
+public  class ArithmeticBlock extends ConditionBlock {
 	
 	//parameters for arithmetic blocks that require parameters 
 		String value;
@@ -15,6 +15,12 @@ public abstract class ArithmeticBlock extends ConditionBlock {
 			value = blockModel.getBlockConfiguration().getValue();
 			
 		}
+	}
+
+	@Override
+	public String getExpression() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 
