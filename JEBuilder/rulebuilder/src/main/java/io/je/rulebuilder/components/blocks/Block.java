@@ -13,11 +13,22 @@ import io.je.utilities.runtimeobject.JEObject;
 public abstract class Block extends JEObject {
 
     String ruleId;    
-    int operationId;
     List<String> inputBlocks = new ArrayList<>();
+    List<String> outputBlocks = new ArrayList<>();
 
     
     
+
+
+	public Block(String jobEngineElementID, String jobEngineProjectID, String ruleId,
+			List<String> inputBlocks, List<String> outputBlocks) {
+		super(jobEngineElementID, jobEngineProjectID);
+		this.ruleId = ruleId;
+		this.inputBlocks = inputBlocks;
+		this.outputBlocks = outputBlocks;
+	}
+
+
 
 
 	public String getRuleId() {
@@ -34,19 +45,21 @@ public abstract class Block extends JEObject {
 
 
 
-	public int getOperationId() {
-		return operationId;
+
+
+
+
+
+	public List<String> getOutputBlocks() {
+		return outputBlocks;
 	}
 
 
 
 
-	public void setOperationId(int operationId) {
-		this.operationId = operationId;
+	public void setOutputBlocks(List<String> outputBlocks) {
+		this.outputBlocks = outputBlocks;
 	}
-
-
-
 
 
 

@@ -1,9 +1,6 @@
 package io.je.rulebuilder.components;
 
 import io.je.rulebuilder.components.blocks.ArithmeticBlock;
-import io.je.rulebuilder.components.blocks.Block;
-import io.je.rulebuilder.components.blocks.BlockInventory;
-import io.je.rulebuilder.components.blocks.ComparisonBlock;
 import io.je.rulebuilder.components.blocks.ConditionBlock;
 import io.je.rulebuilder.components.blocks.PersistableBlock;
 import io.je.rulebuilder.components.blocks.LogicBlock;
@@ -24,35 +21,7 @@ public class Condition {
         this.value = value;
     }
     
-    public Condition createCondition(ConditionBlock block)
-    {
-    	Condition condition = new Condition(block);
-    	
-    	if( block.getInputBlocks().isEmpty()) 
-    	{
-    		return condition;
-    	}
-    	
-    	if(block instanceof LogicBlock)
-    	{
-    		for(String inputBlockId : block.getInputBlocks())
-    		{
-    			ConditionBlock inputBlock = (ConditionBlock) BlockInventory.getBlock(inputBlockId);
-    			if (inputBlock!=null)
-    			{
-    				condition.addChild(createCondition(inputBlock));
-    				
-    			}
-    		}    	
-    	}
-    	else
-    	{
-    		
-    	
-    	}
-		return condition;
-
-    }
+   
 
     public String getString() {
 

@@ -18,6 +18,8 @@ public class AttributesMapping {
     public static final String TIMEPERSISTENCEVALUE = "";
     public static final String TIMEPERSISTENCEUNIT = "";
     public static final String INPUTBLOCK = "input_blocks";
+	public static final String OUTPUTBLOCK = "output_blocks";
+
     public static final String BLOCKCONFIG = "block_configuration";
     
     //block configuration

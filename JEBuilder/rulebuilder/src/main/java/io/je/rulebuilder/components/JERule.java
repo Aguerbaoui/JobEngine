@@ -22,13 +22,10 @@ public class JERule extends JEObject {
 	String timer;
 	String calendar;
     Condition condition;
+
     List<Consequence> consequences;
 
 
-    
-    
-    
-    
     
     public JERule(String jobEngineElementID, String jobEngineProjectID) {
         super(jobEngineElementID, jobEngineProjectID);

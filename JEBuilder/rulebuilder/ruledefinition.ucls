@@ -1,437 +1,114 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <class-diagram version="1.2.4" icons="true" always-add-relationships="false" generalizations="true" realizations="true" 
   associations="true" dependencies="false" nesting-relationships="true" router="FAN">  
-  <class id="1" language="java" name="io.je.rulebuilder.builder.RuleConstructor" project="RuleBuilder" 
-    file="/RuleBuilder/src/main/java/io/je/rulebuilder/builder/RuleConstructor.java" binary="false" 
-    corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="2063" y="377"/>    
-    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
-      sort-features="false" accessors="true" visibility="true">      
-      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
-      <operations public="true" package="true" protected="true" private="true" static="true"/>    
-    </display>  
-  </class>  
-  <class id="2" language="java" name="io.je.rulebuilder.components.RuleTemplate" project="RuleBuilder" 
-    file="/RuleBuilder/src/main/java/io/je/rulebuilder/components/RuleTemplate.java" binary="false" 
-    corner="BOTTOM_RIGHT">    
-    <position height="351" width="167" x="458" y="-88"/>    
-    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
-      sort-features="false" accessors="true" visibility="true">      
-      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
-      <operations public="true" package="true" protected="true" private="true" static="true"/>    
-    </display>  
-  </class>  
-  <class id="3" language="java" name="io.je.rulebuilder.components.blocks.Operand" project="RuleBuilder" 
-    file="/RuleBuilder/src/main/java/io/je/rulebuilder/components/blocks/Operand.java" binary="false" 
-    corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="1697" y="2030"/>    
-    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
-      sort-features="false" accessors="true" visibility="true">      
-      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
-      <operations public="true" package="true" protected="true" private="true" static="true"/>    
-    </display>  
-  </class>  
-  <class id="4" language="java" name="io.je.rulebuilder.builder.DRLBuilder" project="RuleBuilder" 
-    file="/RuleBuilder/src/main/java/io/je/rulebuilder/builder/DRLBuilder.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="99" width="183" x="665" y="-88"/>    
-    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
-      sort-features="false" accessors="true" visibility="true">      
-      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
-      <operations public="true" package="true" protected="true" private="true" static="true"/>    
-    </display>  
-  </class>  
-  <class id="5" language="java" name="io.je.rulebuilder.components.Condition" project="RuleBuilder" 
-    file="/RuleBuilder/src/main/java/io/je/rulebuilder/components/Condition.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="2679" y="1199"/>    
-    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
-      sort-features="false" accessors="true" visibility="true">      
-      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
-      <operations public="true" package="true" protected="true" private="true" static="true"/>    
-    </display>  
-  </class>  
-  <class id="6" language="java" name="io.je.rulebuilder.components.blocks.LogicBlock" project="RuleBuilder" 
-    file="/RuleBuilder/src/main/java/io/je/rulebuilder/components/blocks/LogicBlock.java" binary="false" 
-    corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="1769" y="1351"/>    
-    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
-      sort-features="false" accessors="true" visibility="true">      
-      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
-      <operations public="true" package="true" protected="true" private="true" static="true"/>    
-    </display>  
-  </class>  
-  <enumeration id="7" language="java" name="io.je.rulebuilder.components.blocks.operators.Operator" 
-    project="RuleBuilder" file="/RuleBuilder/src/main/java/io/je/rulebuilder/components/blocks/operators/Operator.java" 
-    binary="false" corner="BOTTOM_RIGHT">    
-    <position height="189" width="198" x="888" y="-88"/>    
-    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
-      sort-features="false" accessors="true" visibility="true">      
-      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
-      <operations public="true" package="true" protected="true" private="true" static="true"/>    
-    </display>  
-  </enumeration>  
-  <class id="8" language="java" name="io.je.rulebuilder.builder.RuleBuilder" project="RuleBuilder" 
-    file="/RuleBuilder/src/main/java/io/je/rulebuilder/builder/RuleBuilder.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="135" width="187" x="1981" y="-88"/>    
-    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
-      sort-features="false" accessors="true" visibility="true">      
-      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
-      <operations public="true" package="true" protected="true" private="true" static="true"/>    
-    </display>  
-  </class>  
-  <class id="9" language="java" name="io.je.rulebuilder.components.blocks.PersistableBlock" project="RuleBuilder" 
-    file="/RuleBuilder/src/main/java/io/je/rulebuilder/components/blocks/PersistableBlock.java" binary="false" 
-    corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="2211" y="1195"/>    
-    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
-      sort-features="false" accessors="true" visibility="true">      
-      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
-      <operations public="true" package="true" protected="true" private="true" static="true"/>    
-    </display>  
-  </class>  
-  <class id="10" language="java" name="io.je.rulebuilder.components.Consequence" project="RuleBuilder" 
-    file="/RuleBuilder/src/main/java/io/je/rulebuilder/components/Consequence.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="2397" y="722"/>    
-    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
-      sort-features="false" accessors="true" visibility="true">      
-      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
-      <operations public="true" package="true" protected="true" private="true" static="true"/>    
-    </display>  
-  </class>  
-  <class id="11" language="java" name="io.je.rulebuilder.builder.RuleParser" project="RuleBuilder" 
-    file="/RuleBuilder/src/main/java/io/je/rulebuilder/builder/RuleParser.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="99" width="113" x="1126" y="-88"/>    
-    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
-      sort-features="false" accessors="true" visibility="true">      
-      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
-      <operations public="true" package="true" protected="true" private="true" static="true"/>    
-    </display>  
-  </class>  
-  <class id="12" language="java" name="io.je.rulebuilder.builder.RuleTemplateBuilder" project="RuleBuilder" 
-    file="/RuleBuilder/src/main/java/io/je/rulebuilder/builder/RuleTemplateBuilder.java" binary="false" 
-    corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="2317" y="282"/>    
-    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
-      sort-features="false" accessors="true" visibility="true">      
-      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
-      <operations public="true" package="true" protected="true" private="true" static="true"/>    
-    </display>  
-  </class>  
-  <class id="13" language="java" name="io.je.rulebuilder.components.blocks.Block" project="RuleBuilder" 
-    file="/RuleBuilder/src/main/java/io/je/rulebuilder/components/blocks/Block.java" binary="false" 
-    corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="1991" y="866"/>    
-    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
-      sort-features="false" accessors="true" visibility="true">      
-      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
-      <operations public="true" package="true" protected="true" private="true" static="true"/>    
-    </display>  
-  </class>  
-  <class id="14" language="java" name="io.je.rulebuilder.components.OperationStringGenerator" project="RuleBuilder" 
-    file="/RuleBuilder/src/main/java/io/je/rulebuilder/components/OperationStringGenerator.java" binary="false" 
-    corner="BOTTOM_RIGHT">    
-    <position height="99" width="359" x="1279" y="-88"/>    
-    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
-      sort-features="false" accessors="true" visibility="true">      
-      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
-      <operations public="true" package="true" protected="true" private="true" static="true"/>    
-    </display>  
-  </class>  
-  <class id="15" language="java" name="io.je.rulebuilder.models.RuleModel" project="RuleBuilder" 
-    file="/RuleBuilder/src/main/java/io/je/rulebuilder/models/RuleModel.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="675" width="263" x="1678" y="-88"/>    
-    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
-      sort-features="false" accessors="true" visibility="true">      
-      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
-      <operations public="true" package="true" protected="true" private="true" static="true"/>    
-    </display>  
-  </class>  
-  <class id="16" language="java" name="io.je.rulebuilder.components.blocks.ArithmeticBlock" project="RuleBuilder" 
-    file="/RuleBuilder/src/main/java/io/je/rulebuilder/components/blocks/ArithmeticBlock.java" binary="false" 
-    corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="2023" y="2027"/>    
-    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
-      sort-features="false" accessors="true" visibility="true">      
-      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
-      <operations public="true" package="true" protected="true" private="true" static="true"/>    
-    </display>  
-  </class>  
-  <class id="17" language="java" name="io.je.rulebuilder.components.blocks.OperandInventory" project="RuleBuilder" 
-    file="/RuleBuilder/src/main/java/io/je/rulebuilder/components/blocks/OperandInventory.java" binary="false" 
-    corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="1366" y="2024"/>    
-    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
-      sort-features="false" accessors="true" visibility="true">      
-      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
-      <operations public="true" package="true" protected="true" private="true" static="true"/>    
-    </display>  
-  </class>  
-  <class id="18" language="java" name="io.je.rulebuilder.config.RuleBuilderConfig" project="RuleBuilder" 
-    file="/RuleBuilder/src/main/java/io/je/rulebuilder/config/RuleBuilderConfig.java" binary="false" 
-    corner="BOTTOM_RIGHT">    
-    <position height="117" width="146" x="2208" y="-88"/>    
-    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
-      sort-features="false" accessors="true" visibility="true">      
-      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
-      <operations public="true" package="true" protected="true" private="true" static="true"/>    
-    </display>  
-  </class>  
-  <class id="19" language="java" name="io.je.rulebuilder.builder.BlockBuilder" project="RuleBuilder" 
-    file="/RuleBuilder/src/main/java/io/je/rulebuilder/builder/BlockBuilder.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="153" width="279" x="2394" y="-88"/>    
-    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
-      sort-features="false" accessors="true" visibility="true">      
-      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
-      <operations public="true" package="true" protected="true" private="true" static="true"/>    
-    </display>  
-  </class>  
-  <class id="20" language="java" name="io.je.rulebuilder.components.blocks.ComparisonBlock" project="RuleBuilder" 
-    file="/RuleBuilder/src/main/java/io/je/rulebuilder/components/blocks/ComparisonBlock.java" binary="false" 
-    corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="2675" y="2213"/>    
-    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
-      sort-features="false" accessors="true" visibility="true">      
-      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
-      <operations public="true" package="true" protected="true" private="true" static="true"/>    
-    </display>  
-  </class>  
-  <class id="21" language="java" name="io.je.rulebuilder.components.blocks.ExecutionBlock" project="RuleBuilder" 
+  <class id="1" language="java" name="io.je.rulebuilder.components.blocks.ExecutionBlock" project="RuleBuilder" 
     file="/RuleBuilder/src/main/java/io/je/rulebuilder/components/blocks/ExecutionBlock.java" binary="false" 
     corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="2396" y="874"/>    
+    <position height="81" width="161" x="87" y="648"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <enumeration id="22" language="java" name="io.je.rulebuilder.components.enumerations.SingleInputArithmeticOperation" 
-    project="RuleBuilder" 
-    file="/RuleBuilder/src/main/java/io/je/rulebuilder/components/enumerations/SingleInputArithmeticOperation.java" 
-    binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="2000" y="2699"/>    
-    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
-      sort-features="false" accessors="true" visibility="true">      
-      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
-      <operations public="true" package="true" protected="true" private="true" static="true"/>    
-    </display>  
-  </enumeration>  
-  <class id="23" language="java" name="io.je.rulebuilder.components.blocks.BlockInventory" project="RuleBuilder" 
-    file="/RuleBuilder/src/main/java/io/je/rulebuilder/components/blocks/BlockInventory.java" binary="false" 
+  <class id="2" language="java" name="io.je.rulebuilder.components.blocks.ConditionBlock" project="RuleBuilder" 
+    file="/RuleBuilder/src/main/java/io/je/rulebuilder/components/blocks/ConditionBlock.java" binary="false" 
     corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="2070" y="600"/>    
+    <position height="81" width="328" x="288" y="648"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <class id="24" language="java" name="io.je.rulebuilder.config.LogConstants" project="RuleBuilder" 
-    file="/RuleBuilder/src/main/java/io/je/rulebuilder/config/LogConstants.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="81" width="103" x="2713" y="-88"/>    
-    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
-      sort-features="false" accessors="true" visibility="true">      
-      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
-      <operations public="true" package="true" protected="true" private="true" static="true"/>    
-    </display>  
-  </class>  
-  <class id="25" language="java" name="io.je.rulebuilder.components.JERule" project="RuleBuilder" 
-    file="/RuleBuilder/src/main/java/io/je/rulebuilder/components/JERule.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="2667" y="528"/>    
-    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
-      sort-features="false" accessors="true" visibility="true">      
-      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
-      <operations public="true" package="true" protected="true" private="true" static="true"/>    
-    </display>  
-  </class>  
-  <class id="26" language="java" name="io.je.rulebuilder.components.blocks.arithmetic.SingleInputArithmeticBlock" 
-    project="RuleBuilder" 
-    file="/RuleBuilder/src/main/java/io/je/rulebuilder/components/blocks/arithmetic/SingleInputArithmeticBlock.java" 
-    binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="2005" y="2311"/>    
-    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
-      sort-features="false" accessors="true" visibility="true">      
-      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
-      <operations public="true" package="true" protected="true" private="true" static="true"/>    
-    </display>  
-  </class>  
-  <enumeration id="27" language="java" name="io.je.rulebuilder.components.enumerations.TimePersistenceUnit" 
-    project="RuleBuilder" 
-    file="/RuleBuilder/src/main/java/io/je/rulebuilder/components/enumerations/TimePersistenceUnit.java" binary="false" 
+  <class id="3" language="java" name="io.je.rulebuilder.components.blocks.Block" project="RuleBuilder" 
+    file="/RuleBuilder/src/main/java/io/je/rulebuilder/components/blocks/Block.java" binary="false" 
     corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="2314" y="1534"/>    
-    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
-      sort-features="false" accessors="true" visibility="true">      
-      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
-      <operations public="true" package="true" protected="true" private="true" static="true"/>    
-    </display>  
-  </enumeration>  
-  <class id="28" language="java" name="io.je.rulebuilder.config.AttributesMapping" project="RuleBuilder" 
-    file="/RuleBuilder/src/main/java/io/je/rulebuilder/config/AttributesMapping.java" binary="false" 
-    corner="BOTTOM_RIGHT">    
-    <position height="441" width="183" x="2856" y="-88"/>    
+    <position height="315" width="284" x="188" y="293"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <generalization id="29">    
-    <end type="SOURCE" refId="26"/>    
-    <end type="TARGET" refId="16"/>  
+  <class id="4" language="java" name="io.je.rulebuilder.components.blocks.LogicBlock" project="RuleBuilder" 
+    file="/RuleBuilder/src/main/java/io/je/rulebuilder/components/blocks/LogicBlock.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="81" width="156" x="-203" y="998"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="5" language="java" name="io.je.rulebuilder.components.blocks.PersistableBlock" project="RuleBuilder" 
+    file="/RuleBuilder/src/main/java/io/je/rulebuilder/components/blocks/PersistableBlock.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="189" width="451" x="-203" y="769"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="6" language="java" name="io.je.rulebuilder.components.blocks.ArithmeticBlock" project="RuleBuilder" 
+    file="/RuleBuilder/src/main/java/io/je/rulebuilder/components/blocks/ArithmeticBlock.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="81" width="162" x="288" y="769"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="7" language="java" name="io.je.rulebuilder.components.blocks.ComparisonBlock" project="RuleBuilder" 
+    file="/RuleBuilder/src/main/java/io/je/rulebuilder/components/blocks/ComparisonBlock.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="81" width="156" x="-7" y="998"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="8" language="java" name="io.je.rulebuilder.components.blocks.GetterBlock" project="RuleBuilder" 
+    file="/RuleBuilder/src/main/java/io/je/rulebuilder/components/blocks/GetterBlock.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="81" width="156" x="490" y="769"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <generalization id="9">    
+    <end type="SOURCE" refId="5"/>    
+    <end type="TARGET" refId="2"/>  
   </generalization>  
-  <association id="30">    
-    <end type="SOURCE" refId="16" navigable="false">      
-      <attribute id="31" name="operands">        
-        <position height="0" width="0" x="0" y="0"/>      
-      </attribute>      
-      <multiplicity id="32" minimum="0" maximum="2147483647">        
-        <position height="0" width="0" x="0" y="0"/>      
-      </multiplicity>    
-    </end>    
-    <end type="TARGET" refId="3" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <association id="33">    
-    <end type="SOURCE" refId="1" navigable="false">      
-      <attribute id="34" name="blocks">        
-        <position height="0" width="0" x="0" y="0"/>      
-      </attribute>      
-      <multiplicity id="35" minimum="0" maximum="1">        
-        <position height="0" width="0" x="0" y="0"/>      
-      </multiplicity>    
-    </end>    
-    <end type="TARGET" refId="23" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <association id="36">    
-    <end type="SOURCE" refId="5" navigable="false">      
-      <attribute id="37" name="parent">        
-        <position height="0" width="0" x="0" y="0"/>      
-      </attribute>      
-      <multiplicity id="38" minimum="0" maximum="1">        
-        <position height="0" width="0" x="0" y="0"/>      
-      </multiplicity>    
-    </end>    
-    <end type="TARGET" refId="5" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <generalization id="39">    
+  <generalization id="10">    
+    <end type="SOURCE" refId="4"/>    
+    <end type="TARGET" refId="5"/>  
+  </generalization>  
+  <generalization id="11">    
+    <end type="SOURCE" refId="1"/>    
+    <end type="TARGET" refId="3"/>  
+  </generalization>  
+  <generalization id="12">    
     <end type="SOURCE" refId="6"/>    
-    <end type="TARGET" refId="9"/>  
+    <end type="TARGET" refId="2"/>  
   </generalization>  
-  <generalization id="40">    
-    <end type="SOURCE" refId="9"/>    
-    <end type="TARGET" refId="13"/>  
+  <generalization id="13">    
+    <end type="SOURCE" refId="8"/>    
+    <end type="TARGET" refId="2"/>  
   </generalization>  
-  <association id="41">    
-    <end type="SOURCE" refId="10" navigable="false">      
-      <attribute id="42" name="value">        
-        <position height="0" width="0" x="0" y="0"/>      
-      </attribute>      
-      <multiplicity id="43" minimum="0" maximum="1">        
-        <position height="0" width="0" x="0" y="0"/>      
-      </multiplicity>    
-    </end>    
-    <end type="TARGET" refId="21" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <association id="44">    
-    <end type="SOURCE" refId="5" navigable="false">      
-      <attribute id="45" name="children">        
-        <position height="0" width="0" x="0" y="0"/>      
-      </attribute>      
-      <multiplicity id="46" minimum="0" maximum="2147483647">        
-        <position height="0" width="0" x="0" y="0"/>      
-      </multiplicity>    
-    </end>    
-    <end type="TARGET" refId="5" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <generalization id="47">    
-    <end type="SOURCE" refId="16"/>    
-    <end type="TARGET" refId="9"/>  
+  <generalization id="14">    
+    <end type="SOURCE" refId="7"/>    
+    <end type="TARGET" refId="5"/>  
   </generalization>  
-  <association id="48">    
-    <end type="SOURCE" refId="23" navigable="false">      
-      <attribute id="49" name="blocks">        
-        <position height="0" width="0" x="0" y="0"/>      
-      </attribute>      
-      <multiplicity id="50" minimum="0" maximum="2147483647">        
-        <position height="0" width="0" x="0" y="0"/>      
-      </multiplicity>    
-    </end>    
-    <end type="TARGET" refId="13" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <association id="51">    
-    <end type="SOURCE" refId="25" navigable="false">      
-      <attribute id="52" name="consequences">        
-        <position height="0" width="0" x="0" y="0"/>      
-      </attribute>      
-      <multiplicity id="53" minimum="0" maximum="2147483647">        
-        <position height="0" width="0" x="0" y="0"/>      
-      </multiplicity>    
-    </end>    
-    <end type="TARGET" refId="10" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <generalization id="54">    
-    <bendpoint x="2552" y="2111"/>    
-    <end type="SOURCE" refId="20"/>    
-    <end type="TARGET" refId="9"/>  
+  <generalization id="15">    
+    <end type="SOURCE" refId="2"/>    
+    <end type="TARGET" refId="3"/>  
   </generalization>  
-  <association id="55">    
-    <end type="SOURCE" refId="17" navigable="false">      
-      <attribute id="56" name="operands">        
-        <position height="0" width="0" x="0" y="0"/>      
-      </attribute>      
-      <multiplicity id="57" minimum="0" maximum="2147483647">        
-        <position height="0" width="0" x="0" y="0"/>      
-      </multiplicity>    
-    </end>    
-    <end type="TARGET" refId="3" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <association id="58">    
-    <end type="SOURCE" refId="25" navigable="false">      
-      <attribute id="59" name="condition">        
-        <position height="0" width="0" x="0" y="0"/>      
-      </attribute>      
-      <multiplicity id="60" minimum="0" maximum="1">        
-        <position height="0" width="0" x="0" y="0"/>      
-      </multiplicity>    
-    </end>    
-    <end type="TARGET" refId="5" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <association id="61">    
-    <end type="SOURCE" refId="5" navigable="false">      
-      <attribute id="62" name="value">        
-        <position height="0" width="0" x="0" y="0"/>      
-      </attribute>      
-      <multiplicity id="63" minimum="0" maximum="1">        
-        <position height="0" width="0" x="0" y="0"/>      
-      </multiplicity>    
-    </end>    
-    <end type="TARGET" refId="9" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <generalization id="64">    
-    <end type="SOURCE" refId="21"/>    
-    <end type="TARGET" refId="13"/>  
-  </generalization>  
-  <association id="65">    
-    <end type="SOURCE" refId="26" navigable="false">      
-      <attribute id="66" name="operation">        
-        <position height="0" width="0" x="0" y="0"/>      
-      </attribute>      
-      <multiplicity id="67" minimum="0" maximum="1">        
-        <position height="0" width="0" x="0" y="0"/>      
-      </multiplicity>    
-    </end>    
-    <end type="TARGET" refId="22" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
   <classifier-display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
     sort-features="false" accessors="true" visibility="true">    
     <attributes public="true" package="true" protected="true" private="true" static="true"/>    
