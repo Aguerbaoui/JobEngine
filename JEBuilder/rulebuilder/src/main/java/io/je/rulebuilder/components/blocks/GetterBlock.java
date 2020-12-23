@@ -4,18 +4,18 @@ import io.je.rulebuilder.models.BlockModel;
 
 public abstract class GetterBlock extends ConditionBlock  {
 
-		
-
 	public GetterBlock(BlockModel blockModel) {
-		super(blockModel.getBlockId(), blockModel.getProjectId(), blockModel.getRuleId(), blockModel.getOperationId(),
-				blockModel.getInputBlocksIds());
-
+		super(blockModel.getBlockId(), blockModel.getProjectId(), blockModel.getRuleId(), blockModel.getInputBlocksIds(), blockModel.getOutputBlocksIds());
 	}
-
 
 	@Override
-	public String getExpression() {
-		// TODO Auto-generated method stub
-		return null;
+	public String toString() {
+		return "GetterBlock [ruleId=" + ruleId + ", inputBlocks=" + inputBlocks + ", outputBlocks=" + outputBlocks
+				+ ", jobEngineElementID=" + jobEngineElementID + ", jobEngineProjectID=" + jobEngineProjectID
+				+ ", jeObjectLastUpdate=" + jeObjectLastUpdate + "]";
 	}
+	
+	
+
+
 }

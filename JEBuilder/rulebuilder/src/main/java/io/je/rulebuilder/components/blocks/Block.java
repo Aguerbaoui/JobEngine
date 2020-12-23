@@ -3,6 +3,8 @@ package io.je.rulebuilder.components.blocks;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import io.je.rulebuilder.config.AttributesMapping;
 import io.je.utilities.runtimeobject.JEObject;
 
 /*
@@ -10,17 +12,20 @@ import io.je.utilities.runtimeobject.JEObject;
  */
 public abstract class Block extends JEObject {
 
-    String ruleId;    
-    int operationId;
-    List<String> inputBlocks = new ArrayList<>();
+   protected String ruleId;    
+   protected List<String> inputBlocks = new ArrayList<>();
+   protected List<String> outputBlocks = new ArrayList<>();
+
+    
+    
 
 
-	protected Block(String jobEngineElementID, String jobEngineProjectID, String ruleId, int operationId,
-			List<String> inputBlocks) {
+	public Block(String jobEngineElementID, String jobEngineProjectID, String ruleId,
+			List<String> inputBlocks, List<String> outputBlocks) {
 		super(jobEngineElementID, jobEngineProjectID);
 		this.ruleId = ruleId;
-		this.operationId = operationId;
 		this.inputBlocks = inputBlocks;
+		this.outputBlocks = outputBlocks;
 	}
 
 
@@ -40,19 +45,21 @@ public abstract class Block extends JEObject {
 
 
 
-	public int getOperationId() {
-		return operationId;
+
+
+
+
+
+	public List<String> getOutputBlocks() {
+		return outputBlocks;
 	}
 
 
 
 
-	public void setOperationId(int operationId) {
-		this.operationId = operationId;
+	public void setOutputBlocks(List<String> outputBlocks) {
+		this.outputBlocks = outputBlocks;
 	}
-
-
-
 
 
 

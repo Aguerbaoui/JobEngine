@@ -1,51 +1,44 @@
 package io.je.rulebuilder.components.blocks;
 
-import java.util.List;
-
 import io.je.rulebuilder.models.BlockModel;
 
 /*
  * Comparison Block is a class that represents the comparison elements in a rule.
  */
-public  class ComparisonBlock extends PersistableBlock {
+public abstract class ComparisonBlock extends PersistableBlock {
 	
-	
-	//if no second operand, the first operand is compared to a constant value (threshold)
-	String value;
-	
-	
+	String threshold;
+
 	public ComparisonBlock(BlockModel blockModel) {
-		super(blockModel.getBlockId(), blockModel.getProjectId(), blockModel.getRuleId(), blockModel.getOperationId(), blockModel.getInputBlocksIds(),
-				blockModel.getTimePersistenceValue(),blockModel.getTimePersistenceUnit());
-		if(blockModel.getBlockConfiguration()!=null && blockModel.getBlockConfiguration().getValue()!=null)
+		super(blockModel.getBlockId(), blockModel.getProjectId(), blockModel.getRuleId(), 
+				blockModel.getInputBlocksIds(), blockModel.getOutputBlocksIds(),blockModel.getTimePersistenceValue(),blockModel.getTimePersistenceUnit());
+		if(blockModel.getInputBlocksIds().size()==1)
 		{
-			
-			value = blockModel.getBlockConfiguration().getValue();
-			
+			threshold = blockModel.getBlockConfiguration().getValue();
 		}
-	
 	}
 
-
-	public String getValue() {
-		return value;
+	public String getThreshold() {
+		return threshold;
 	}
 
-
-	public void setValue(String value) {
-		this.value = value;
+	public void setThreshold(String threshold) {
+		this.threshold = threshold;
 	}
-
 
 	@Override
-	public String getExpression() {
-		// TODO Auto-generated method stub
-		return null;
+	public String toString() {
+		return "ComparisonBlock [threshold=" + threshold + ", timePersistenceValue=" + timePersistenceValue
+				+ ", timePersistenceUnit=" + timePersistenceUnit + ", ruleId=" + ruleId + ", inputBlocks=" + inputBlocks
+				+ ", outputBlocks=" + outputBlocks + ", jobEngineElementID=" + jobEngineElementID
+				+ ", jobEngineProjectID=" + jobEngineProjectID + ", jeObjectLastUpdate=" + jeObjectLastUpdate + "]";
 	}
 	
 	
-	
 
+
+
+	
 
 }
 

@@ -2,23 +2,40 @@ package io.je.rulebuilder.models;
 
 import java.util.ArrayList;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import io.je.rulebuilder.config.AttributesMapping;
+
 
 /*
  * Rule Model Class
  */
 public class RuleModel {
 	
+    @JsonProperty(AttributesMapping.PROJECTID)
 	String projectId;
-	String ruleId;
-	String salience;
-	boolean enabled;
-	String dateEffective;
-	String dateExpires;
-	String duration;
-	String timer;
-	String calendar;
-	ArrayList<String> conditionBlockRootIds;
-	ArrayList<String> consequenceBlocks;
+	
+    @JsonProperty(AttributesMapping.RULEID)
+    String ruleId;
+	
+    @JsonProperty(AttributesMapping.SALIENCE)
+    String salience;
+
+    @JsonProperty(AttributesMapping.ENABLED)
+    boolean enabled;
+	
+    @JsonProperty(AttributesMapping.DATEEFFECTIVE)
+    String dateEffective;
+	
+    @JsonProperty(AttributesMapping.DATEEXPIRES)
+    String dateExpires;
+	
+    @JsonProperty(AttributesMapping.TIMER)
+    String timer;
+	
+
+    
+    
 	public String getProjectId() {
 		return projectId;
 	}
@@ -55,37 +72,15 @@ public class RuleModel {
 	public void setDateExpires(String dateExpires) {
 		this.dateExpires = dateExpires;
 	}
-	public String getDuration() {
-		return duration;
-	}
-	public void setDuration(String duration) {
-		this.duration = duration;
-	}
+
 	public String getTimer() {
 		return timer;
 	}
 	public void setTimer(String timer) {
 		this.timer = timer;
 	}
-	public String getCalendar() {
-		return calendar;
-	}
-	public void setCalendar(String calendar) {
-		this.calendar = calendar;
-	}
-	public ArrayList<String> getConditionBlockRootIds() {
-		return conditionBlockRootIds;
-	}
-	public void setConditionBlockRootIds(ArrayList<String> conditionBlockRootIds) {
-		this.conditionBlockRootIds = conditionBlockRootIds;
-	}
-	public ArrayList<String> getConsequenceBlocks() {
-		return consequenceBlocks;
-	}
-	public void setConsequenceBlocks(ArrayList<String> consequenceBlocks) {
-		this.consequenceBlocks = consequenceBlocks;
-	}
-	
+
+
 	
 	
 

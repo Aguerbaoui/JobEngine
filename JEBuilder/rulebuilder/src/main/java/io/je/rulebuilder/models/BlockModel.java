@@ -6,6 +6,7 @@ import io.je.rulebuilder.config.AttributesMapping;
 
 import java.util.ArrayList;
 
+
 public class BlockModel {
 
 
@@ -30,8 +31,17 @@ public class BlockModel {
     @JsonProperty(AttributesMapping.INPUTBLOCK)
 	ArrayList<String> inputBlocksIds;
     
+    @JsonProperty(AttributesMapping.OUTPUTBLOCK)
+   	ArrayList<String> outputBlocksIds;
+    
     @JsonProperty(AttributesMapping.BLOCKCONFIG)
 	BlockConfigurationModel blockConfiguration;
+    
+    
+
+	private BlockModel() {
+		//TODO: throw exception if any of the ids is null
+	}
 
 	public String getProjectId() {
 		return projectId;
@@ -79,6 +89,16 @@ public class BlockModel {
 
 	public void setOperationId(int operationId) {
 		this.operationId = operationId;
+	}
+	
+	
+
+	public ArrayList<String> getOutputBlocksIds() {
+		return outputBlocksIds;
+	}
+
+	public void setOutputBlocksIds(ArrayList<String> outputBlocksIds) {
+		this.outputBlocksIds = outputBlocksIds;
 	}
 
 	public ArrayList<String> getInputBlocksIds() {
