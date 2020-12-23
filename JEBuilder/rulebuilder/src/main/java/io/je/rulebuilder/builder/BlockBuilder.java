@@ -22,6 +22,8 @@ public  class BlockBuilder {
     		//throw exception, can't add block 
     		return null;
     	}
+    	
+    	//TODO: switch to config
     	int operation = blockModel.getOperationId()/1000;
     	switch(operation)
     	{
