@@ -12,9 +12,9 @@ import io.je.utilities.runtimeobject.JEObject;
  */
 public abstract class Block extends JEObject {
 
-    String ruleId;    
-    List<String> inputBlocks = new ArrayList<>();
-    List<String> outputBlocks = new ArrayList<>();
+   protected String ruleId;    
+   protected List<String> inputBlocks = new ArrayList<>();
+   protected List<String> outputBlocks = new ArrayList<>();
 
     
     

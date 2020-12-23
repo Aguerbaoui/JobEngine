@@ -39,4 +39,11 @@ public abstract class PersistableBlock extends ConditionBlock {
 		this.timePersistenceUnit = timePersistenceUnit;
 	}
 
+	@Override
+	public String toString() {
+		return "Block [timePersistenceValue=" + timePersistenceValue + ", timePersistenceUnit="
+				+ timePersistenceUnit + ", ruleId=" + ruleId + ", inputBlocks=" + inputBlocks + ", outputBlocks="
+				+ outputBlocks + ", jobEngineElementID=" + jobEngineElementID + ", jobEngineProjectID="
+				+ jobEngineProjectID + ", jeObjectLastUpdate=" + jeObjectLastUpdate + "]";
+	}
 }

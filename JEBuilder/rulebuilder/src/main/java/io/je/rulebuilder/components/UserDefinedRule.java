@@ -11,6 +11,9 @@ import io.je.rulebuilder.components.blocks.ConditionBlock;
 import io.je.rulebuilder.components.blocks.ExecutionBlock;
 import io.je.rulebuilder.components.blocks.LogicBlock;
 import io.je.rulebuilder.components.blocks.arithmetic.SumBlock;
+import io.je.rulebuilder.components.blocks.comparison.GreaterThanBlock;
+import io.je.rulebuilder.components.blocks.execution.LogBlock;
+import io.je.rulebuilder.components.blocks.getter.AttributeGetterBlock;
 import io.je.rulebuilder.components.blocks.logic.AndBlock;
 import io.je.rulebuilder.components.blocks.logic.JoinBlock;
 import io.je.rulebuilder.components.blocks.logic.NotBlock;
@@ -22,6 +25,7 @@ import io.je.rulebuilder.models.RuleModel;
 /*
  * Rules defined by the user.
  * One UserDefinedRule can be equivalents to multiple JobEngine rules ( or drls)
+ * Each Job engine rule is defined by a root block ( a logic or comparison block that precedes and execution sequence)
  */
 
 public class UserDefinedRule {
@@ -32,9 +36,7 @@ public class UserDefinedRule {
 	boolean enabled;
 	String dateEffective;
 	String dateExpires;
-	String duration;
 	String timer;
-	String calendar;
 	Map<String, Block> blocks = new HashMap<>();
 
 	public UserDefinedRule(RuleModel ruleModel) {
@@ -47,9 +49,7 @@ public class UserDefinedRule {
 		this.enabled = ruleModel.isEnabled();
 		this.dateEffective = ruleModel.getDateEffective();
 		this.dateExpires = ruleModel.getDateExpires();
-		this.duration = ruleModel.getDuration();
 		this.timer = ruleModel.getTimer();
-		this.calendar = ruleModel.getCalendar();
 	}
 
 	
@@ -75,22 +75,26 @@ public class UserDefinedRule {
 
 		//generate JERules
 		List<JERule> rules = new ArrayList<>();
+		int counter = 0;
 		for(ConditionBlock root:roots)
 		{
-			rules.add(generateJERule(root));
+			JERule rule = generateJERule(root);
+			rule.setJobEngineElementID(projectId+"_"+ruleId+counter);
+			rules.add(rule);
 		}
 		return rules;
 	}
 
+	/*
+	 *  generate a job engine rule from a root bloxk
+	 */
 	public JERule generateJERule(ConditionBlock block) {
 		JERule rule = new JERule(ruleId, projectId);
 		rule.setSalience(salience);
 		rule.setDateEffective(dateEffective);
 		rule.setDateExpires(dateExpires);
-		rule.setDuration(duration);
 		rule.setEnabled(enabled);
 		rule.setTimer(timer);
-		rule.setCalendar(calendar);
 		rule.setCondition(buildCondition(block));
 		rule.setConsequences(getConsequence(block));
 		return rule;
@@ -98,6 +102,9 @@ public class UserDefinedRule {
 
 	}
 
+	/*
+	 * retrieve list of consequences relative to a JERule
+	 */
 	private List<Consequence> getConsequence(ConditionBlock block)
 	{
 		List<Consequence> consequences = new ArrayList<>();
@@ -111,23 +118,23 @@ public class UserDefinedRule {
 		
 	}
 	
-	private Condition buildCondition(ConditionBlock block) {
-		Condition condition = new Condition(block);
+	private ConditionBlockNode buildCondition(ConditionBlock block) {
+		ConditionBlockNode conditionBlockNode = new ConditionBlockNode(block);
 
-		if (block.getInputBlocks().isEmpty()) {
-			return condition;
+		if (block.getInputBlocks() == null || block.getInputBlocks().isEmpty()) {
+			return conditionBlockNode;
 		}
 
 		else {
 			for (String inputBlockId : block.getInputBlocks()) {
 				ConditionBlock inputBlock = (ConditionBlock) blocks.get(inputBlockId);
 				if (inputBlock != null) {
-					condition.addChild(buildCondition(inputBlock));
+					conditionBlockNode.addChild(buildCondition(inputBlock));
 
 				}
 			}
 		}
-		return condition;
+		return conditionBlockNode;
 
 	}
 
@@ -138,8 +145,10 @@ public class UserDefinedRule {
 			return;
 
 		}
-
+		
 		Block block = generateBlock(blockModel);
+		System.out.println(block);
+
 		blocks.put(blockModel.getBlockId(), block);
 
 	}
@@ -212,7 +221,7 @@ public class UserDefinedRule {
 		case 2002:
 			break;
 		case 2003:
-			break;
+			return new GreaterThanBlock(blockModel);
 		case 2004:
 			break;
 		case 2005:
@@ -265,9 +274,14 @@ public class UserDefinedRule {
 		case 4001:
 			break;
 		case 4002:
-			break;
+			return new AttributeGetterBlock(blockModel);
 		case 4003:
 			break;
+		/*
+		 * Execution blocks
+		 */
+		case 5001:
+			return new LogBlock(blockModel);
 
 		// no operation with such id
 		default:
@@ -341,13 +355,7 @@ public class UserDefinedRule {
 		this.dateExpires = dateExpires;
 	}
 
-	public String getDuration() {
-		return duration;
-	}
 
-	public void setDuration(String duration) {
-		this.duration = duration;
-	}
 
 	public String getTimer() {
 		return timer;
@@ -357,12 +365,16 @@ public class UserDefinedRule {
 		this.timer = timer;
 	}
 
-	public String getCalendar() {
-		return calendar;
+
+
+
+	@Override
+	public String toString() {
+		return "UserDefinedRule [projectId=" + projectId + ", ruleId=" + ruleId + ", salience=" + salience
+				+ ", enabled=" + enabled + ", dateEffective=" + dateEffective + ", dateExpires=" + dateExpires
+				+ ", timer=" + timer + ", blocks=" + blocks + "]";
 	}
 
-	public void setCalendar(String calendar) {
-		this.calendar = calendar;
-	}
-
+	
+	
 }

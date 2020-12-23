@@ -13,7 +13,6 @@ import java.util.List;
 public class JERule extends JEObject {
 
 	String projectId;
-	String ruleId;
 	String salience;
 	boolean enabled;
 	String dateEffective;
@@ -21,7 +20,7 @@ public class JERule extends JEObject {
 	String duration;
 	String timer;
 	String calendar;
-    Condition condition;
+    ConditionBlockNode conditionBlockNode;
 
     List<Consequence> consequences;
 
@@ -43,14 +42,6 @@ public class JERule extends JEObject {
 	}
 
 
-	public String getRuleId() {
-		return ruleId;
-	}
-
-
-	public void setRuleId(String ruleId) {
-		this.ruleId = ruleId;
-	}
 
 
 	public String getSalience() {
@@ -123,17 +114,17 @@ public class JERule extends JEObject {
 	}
 
 
-	public Condition getCondition() {
-		return condition;
+	public ConditionBlockNode getCondition() {
+		return conditionBlockNode;
 	}
 
 
-	public void setCondition(Condition condition) {
-		this.condition = condition;
+	public void setCondition(ConditionBlockNode conditionBlockNode) {
+		this.conditionBlockNode = conditionBlockNode;
 	}
 
 	public void setCondition(PersistableBlock rootBlock) {
-		this.condition = new Condition(rootBlock);
+		this.conditionBlockNode = new ConditionBlockNode(rootBlock);
 	}
 	
 
