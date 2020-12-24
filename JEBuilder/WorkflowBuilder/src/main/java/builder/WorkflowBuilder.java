@@ -6,6 +6,7 @@ import blocks.control.EventGatewayBlock;
 import blocks.control.ExclusiveGatewayBlock;
 import blocks.control.ParallelGatewayBlock;
 import blocks.events.MessageCatchEvent;
+import io.je.utilities.constants.APIConstants;
 import io.je.utilities.constants.Errors;
 import io.je.utilities.exceptions.*;
 import io.je.utilities.logger.JELogger;
@@ -20,192 +21,36 @@ import java.util.HashMap;
  * */
 public class WorkflowBuilder {
 
-    /*
-     * All Builder workflows
-     */
-    public static HashMap<String, HashMap<String, JEWorkflow>> workflows = new HashMap<String, HashMap<String, JEWorkflow>>();
-
-    public static void addNewWorkflow(String projectId, String key) throws ProjectNotFoundException {
-        if (workflows.get(projectId) == null) {
-            // to be changed to throw project not found error
-            workflows.put(projectId, new HashMap<String, JEWorkflow>());
-        }
-
-        if (workflows.get(projectId) == null) {
-            // to be changed to throw project not found error
-            throw new ProjectNotFoundException("2", Errors.projectNotFound);
-        }
-        JEWorkflow wf = new JEWorkflow();
-        wf.setJobEngineElementID(key);
-        wf.setJobEngineProjectID(projectId);
-        workflows.get(projectId).put(key, wf);
-
-    }
 
     /*
-     * Add a new workflow block
-     */
-    public static void addWorkflowBlock(WorkflowBlock block)
-            throws AddWorkflowBlockException, ProjectNotFoundException {
+    * Build workflow bpmn
+    * */
+    public static void buildWorkflow(JEWorkflow workflow) {
+        //JEToBpmnMapper.createBpmnFromJEWorkflow(workflow);
+        /*
+         * testing purposes only
+         * */
+        JEToBpmnMapper.launchBuildTest(workflow);
 
-        if (workflows.get(block.getJobEngineProjectID()) == null) {
-            throw new ProjectNotFoundException("2", Errors.getMessage(2));
-        } else if (workflows.get(block.getJobEngineProjectID()).get(block.getWorkflowId()) == null) {
-            throw new AddWorkflowBlockException("1", Errors.getMessage(1));
+        HashMap<String, String> wfMap = new HashMap<String, String>();
+        wfMap.put("key", workflow.getWorkflowName().trim());
+        wfMap.put("path", "processes/" + workflow.getWorkflowName().trim() + ".bpmn");
+        wfMap.put("projectId", workflow.getJobEngineProjectID());
+        try {
+            Network.makeNetworkCallWithJsonBody(wfMap, APIConstants.RUNTIME_MANAGER_BASE_API + APIConstants.ADD_WORKFLOW);
+        } catch (IOException e) {
+            JELogger.info(JEToBpmnMapper.class, "Network Error");
         }
-
-        workflows.get(block.getJobEngineProjectID()).get(block.getWorkflowId()).addBlock(block);
-
     }
 
-    /*
-     * Delete an exisiting workflow block
-     * */
-    public static void deleteWorkflowBlock(String projectId, String key, String id) throws WorkflowNotFoundException, ProjectNotFoundException, WorkflowBlockNotFound, InvalidSequenceFlowException {
-        if (workflows.get(projectId) == null) {
-            throw new ProjectNotFoundException("2", Errors.getMessage(2));
-        } else if (workflows.get(projectId).get(key) == null) {
-            throw new WorkflowNotFoundException("1", Errors.getMessage(1));
-        } else if (!blockExists(projectId, key, id)) {
-            throw new WorkflowBlockNotFound("3", Errors.getMessage(3));
-        }
-
-        workflows.get(projectId).get(key).deleteWorkflowBlock(id);
-    }
-
-    /*
-     * Delete a sequence flow
-     */
-    public static void deleteSequenceFlow(String projectId, String workflowId, String sourceRef, String targetRef)
-            throws WorkflowNotFoundException, ProjectNotFoundException, InvalidSequenceFlowException, WorkflowBlockNotFound {
-        if (workflows.get(projectId) == null) {
-            throw new ProjectNotFoundException("2", Errors.getMessage(2));
-        } else if (workflows.get(projectId).get(workflowId) == null) {
-            throw new WorkflowNotFoundException("1", Errors.getMessage(1));
-        } else if (workflows.get(projectId).get(workflowId).getAllBlocks().get(sourceRef) == null
-                || workflows.get(projectId).get(workflowId).getAllBlocks().get(targetRef) == null) {
-            throw new WorkflowBlockNotFound("3", Errors.getMessage(3));
-        }
-
-        workflows.get(projectId).get(workflowId).deleteSequenceFlow(sourceRef, targetRef);
-    }
-
-    /*
-     * Add a new sequence flow
-     */
-    public static void addSequenceFlow(String projectId, String workflowId, String sourceRef, String targetRef,
-                                       String condition) throws AddWorkflowBlockException {
-        if (workflows.get(projectId) == null) {
-            throw new AddWorkflowBlockException("2", Errors.getMessage(2));
-        } else if (workflows.get(projectId).get(workflowId) == null) {
-            throw new AddWorkflowBlockException("1", Errors.getMessage(1));
-        } else if (workflows.get(projectId).get(workflowId).getAllBlocks().get(sourceRef) == null
-                || workflows.get(projectId).get(workflowId).getAllBlocks().get(targetRef) == null) {
-            throw new AddWorkflowBlockException("3", Errors.getMessage(3));
-        }
-
-        JELogger.info(WorkflowBuilder.class, "pId " + projectId + " wId " + workflowId + " src " + sourceRef + " trgt " + targetRef);
-        workflows.get(projectId).get(workflowId).addBlockFlow(sourceRef, targetRef, condition);
-    }
-
-    /*
-     * Build Workflow Bpmn
-     */
-    public static void buildWorkflow(String projectId, String key)
-            throws WorkflowNotFoundException, ProjectNotFoundException {
-
-        if (workflows.get(projectId) == null) {
-            throw new ProjectNotFoundException("2", Errors.getMessage(2));
-        } else if (workflows.get(projectId).get(key) == null) {
-            throw new WorkflowNotFoundException("1", Errors.getMessage(1));
-        }
-        JEToBpmnMapper.launchBuildTest(workflows.get(projectId).get(key));
-    }
 
     /*
      * Run workflow in runtime engine
      * */
     public static void runWorkflow(String key) throws IOException {
-        Network.makeNetworkCall("http://127.0.0.1:8081/runWorkflow/" + key);
-        // TODO Auto-generated method stub
+        Network.makeNetworkCall(APIConstants.RUNTIME_MANAGER_BASE_API + APIConstants.ADD_WORKFLOW + key);
 
     }
 
-    /*
-     * Check if a block exists in a workflow
-     * */
-    public static boolean blockExists(String projectId, String key, String blockId) {
-        return workflows.get(projectId).get(key).getAllBlocks().containsKey(blockId);
-    }
 
-    /*
-     * Update an existing start block
-     * */
-    public static void updateStartBlock(StartBlock b)
-            throws ProjectNotFoundException, WorkflowNotFoundException, WorkflowBlockNotFound {
-        if (workflows.get(b.getJobEngineProjectID()) == null) {
-            throw new ProjectNotFoundException("2", Errors.getMessage(2));
-        } else if (workflows.get(b.getJobEngineProjectID()).get(b.getWorkflowId()) == null) {
-            throw new WorkflowNotFoundException("1", Errors.getMessage(1));
-        }
-        if (!blockExists(b.getJobEngineProjectID(), b.getWorkflowId(), b.getJobEngineElementID())) {
-            throw new WorkflowBlockNotFound("3", Errors.getMessage(3));
-        }
-
-        StartBlock existantBlock = (StartBlock) workflows.get(b.getJobEngineProjectID()).get(b.getWorkflowId()).getAllBlocks().get(b.getJobEngineElementID());
-        existantBlock.setName(b.getName());
-    }
-
-    /*
-     * Update an existing end block
-     * */
-    public static void updateEndBlock(EndBlock b) throws ProjectNotFoundException, WorkflowNotFoundException, WorkflowBlockNotFound {
-        if (workflows.get(b.getJobEngineProjectID()) == null) {
-            throw new ProjectNotFoundException("2", Errors.getMessage(2));
-        } else if (workflows.get(b.getJobEngineProjectID()).get(b.getWorkflowId()) == null) {
-            throw new WorkflowNotFoundException("1", Errors.getMessage(1));
-        }
-        if (!blockExists(b.getJobEngineProjectID(), b.getWorkflowId(), b.getJobEngineElementID())) {
-            throw new WorkflowBlockNotFound("3", Errors.getMessage(3));
-        }
-
-        workflows.get(b.getJobEngineProjectID()).get(b.getWorkflowId()).getAllBlocks().get(b.getJobEngineElementID()).setName(b.getName());
-        workflows.get(b.getJobEngineProjectID()).get(b.getWorkflowId()).getAllBlocks().get(b.getJobEngineElementID()).setCondition(b.getCondition());
-
-    }
-
-    public static void updateEventGateway(EventGatewayBlock b) {
-        // TODO Auto-generated method stub
-
-    }
-
-    public static void updateMessageCatchEvent(MessageCatchEvent b) {
-        // TODO Auto-generated method stub
-
-    }
-
-    public static void updateExclusiveGateway(ExclusiveGatewayBlock b) {
-        // TODO Auto-generated method stub
-
-    }
-
-    public static void updateScript(ScriptBlock b) {
-        // TODO Auto-generated method stub
-
-    }
-
-    public static void updateParallelGateway(ParallelGatewayBlock b) {
-        // TODO Auto-generated method stub
-
-    }
-
-    public static void updateMailTask(MailBlock b) {
-        // TODO Auto-generated method stub
-
-    }
-
-    public static void updateDbTask(DBWriteBlock b) {
-        // TODO Auto-generated method stub
-
-    }
 }

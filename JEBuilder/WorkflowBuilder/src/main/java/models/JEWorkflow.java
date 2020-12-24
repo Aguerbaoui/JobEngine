@@ -4,6 +4,7 @@ import blocks.WorkflowBlock;
 import blocks.basic.StartBlock;
 import io.je.utilities.constants.Errors;
 import io.je.utilities.exceptions.InvalidSequenceFlowException;
+import io.je.utilities.exceptions.WorkflowBlockNotFound;
 import io.je.utilities.logger.JELogger;
 import io.je.utilities.runtimeobject.JEObject;
 
@@ -34,6 +35,10 @@ public class JEWorkflow extends JEObject {
      * */
     private boolean needBuild;
 
+    /*
+    * Current workflow status ( running, building, nothing)
+    * */
+    private String status;
     /*
      * List of all workflow blocks
      */
@@ -141,7 +146,7 @@ public class JEWorkflow extends JEObject {
     /*
      * Delete a workflow block
      * */
-    public void deleteWorkflowBlock(String id) throws InvalidSequenceFlowException {
+    public void deleteWorkflowBlock(String id) throws InvalidSequenceFlowException, WorkflowBlockNotFound {
         for (WorkflowBlock block : allBlocks.get(id).getInflows().values()) {
             deleteSequenceFlow(block.getJobEngineElementID(), id);
         }
@@ -150,8 +155,15 @@ public class JEWorkflow extends JEObject {
         }
 
         WorkflowBlock b = allBlocks.get(id);
+        if(b == null) {
+            throw new WorkflowBlockNotFound("3", Errors.workflowBloclNotFound);
+        }
         allBlocks.remove(id);
         b = null;
 
+    }
+
+    public boolean blockExists(String bId) {
+        return allBlocks.containsKey(bId);
     }
 }

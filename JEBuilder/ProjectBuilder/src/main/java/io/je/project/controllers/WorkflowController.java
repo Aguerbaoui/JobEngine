@@ -5,42 +5,26 @@ import blocks.control.EventGatewayBlock;
 import blocks.control.ExclusiveGatewayBlock;
 import blocks.control.ParallelGatewayBlock;
 import blocks.events.MessageCatchEvent;
-import builder.WorkflowBuilder;
 import io.je.project.models.WorkflowBlockModel;
-import io.je.project.models.WorkflowModel;
+import io.je.project.services.WorkflowService;
 import io.je.utilities.constants.Errors;
 import io.je.utilities.constants.WorkflowConstants;
 import io.je.utilities.exceptions.*;
 import io.je.utilities.logger.JELogger;
+import io.je.utilities.network.Response;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
-
 /*
  * Workflow builder Rest Controller
  * */
-@RestController
+@RestController("workflow")
 public class WorkflowController {
 
-    /*
-     * Add a new workflow from front
-     */
-    @PostMapping(value = "/addWorkflow", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> addWorkflow(@RequestBody WorkflowModel m) {
-        try {
-            WorkflowBuilder.addNewWorkflow(m.getProjectId(), m.getKey());
-        } catch (ProjectNotFoundException e) {
-            JELogger.info(WorkflowController.class, e.getMessage());
-            return ResponseEntity.ok(Errors.projectNotFound);
-        } catch (Exception e) {
-            JELogger.info(WorkflowController.class, e.getMessage());
-            return ResponseEntity.ok(Errors.uknownError);
-        }
-        JELogger.info(WorkflowController.class, "Added workflow successfully");
-        return ResponseEntity.ok("Added workflow successfully");
-    }
+    @Autowired
+    WorkflowService workflowService;
 
     /*
      * Add a new Workflow component
@@ -54,21 +38,21 @@ public class WorkflowController {
                 b.setJobEngineProjectID(block.getProjectId());
                 b.setWorkflowId(block.getWorkflowId());
                 b.setJobEngineElementID(block.getId());
-                WorkflowBuilder.addWorkflowBlock(b);
+                workflowService.addWorkflowBlock(b);
             } else if (block.getType().equalsIgnoreCase(WorkflowConstants.endType)) {
                 EndBlock b = new EndBlock();
                 b.setName(block.getAttributes().get("name"));
                 b.setJobEngineProjectID(block.getProjectId());
                 b.setWorkflowId(block.getWorkflowId());
                 b.setJobEngineElementID(block.getId());
-                WorkflowBuilder.addWorkflowBlock(b);
+                workflowService.addWorkflowBlock(b);
             } else if (block.getType().equalsIgnoreCase(WorkflowConstants.eventgatewayType)) {
                 EventGatewayBlock b = new EventGatewayBlock();
                 b.setName(block.getAttributes().get("name"));
                 b.setJobEngineProjectID(block.getProjectId());
                 b.setWorkflowId(block.getWorkflowId());
                 b.setJobEngineElementID(block.getId());
-                WorkflowBuilder.addWorkflowBlock(b);
+                workflowService.addWorkflowBlock(b);
             } else if (block.getType().equalsIgnoreCase(WorkflowConstants.messageintermediatecatcheventType)) {
                 MessageCatchEvent b = new MessageCatchEvent();
                 b.setName(block.getAttributes().get("name"));
@@ -76,14 +60,14 @@ public class WorkflowController {
                 b.setJobEngineProjectID(block.getProjectId());
                 b.setWorkflowId(block.getWorkflowId());
                 b.setJobEngineElementID(block.getId());
-                WorkflowBuilder.addWorkflowBlock(b);
+                workflowService.addWorkflowBlock(b);
             } else if (block.getType().equalsIgnoreCase(WorkflowConstants.exclusivegatewayType)) {
                 ExclusiveGatewayBlock b = new ExclusiveGatewayBlock();
                 b.setName(block.getAttributes().get("name"));
                 b.setJobEngineProjectID(block.getProjectId());
                 b.setWorkflowId(block.getWorkflowId());
                 b.setJobEngineElementID(block.getId());
-                WorkflowBuilder.addWorkflowBlock(b);
+                workflowService.addWorkflowBlock(b);
             } else if (block.getType().equalsIgnoreCase(WorkflowConstants.scripttaskType)) {
                 ScriptBlock b = new ScriptBlock();
                 b.setName(block.getAttributes().get("name"));
@@ -91,30 +75,30 @@ public class WorkflowController {
                 b.setJobEngineProjectID(block.getProjectId());
                 b.setWorkflowId(block.getWorkflowId());
                 b.setJobEngineElementID(block.getId());
-                WorkflowBuilder.addWorkflowBlock(b);
+                workflowService.addWorkflowBlock(b);
             } else if (block.getType().equalsIgnoreCase(WorkflowConstants.parallelgatewayType)) {
                 ParallelGatewayBlock b = new ParallelGatewayBlock();
                 b.setName(block.getAttributes().get("name"));
                 b.setJobEngineProjectID(block.getProjectId());
                 b.setWorkflowId(block.getWorkflowId());
                 b.setJobEngineElementID(block.getId());
-                WorkflowBuilder.addWorkflowBlock(b);
+                workflowService.addWorkflowBlock(b);
             } else if (block.getType().equalsIgnoreCase(WorkflowConstants.dbservicetaskType)) {
                 DBWriteBlock b = new DBWriteBlock();
                 b.setName(block.getAttributes().get("name"));
                 b.setJobEngineProjectID(block.getProjectId());
                 b.setWorkflowId(block.getWorkflowId());
                 b.setJobEngineElementID(block.getId());
-                WorkflowBuilder.addWorkflowBlock(b);
+                workflowService.addWorkflowBlock(b);
             } else if (block.getType().equalsIgnoreCase(WorkflowConstants.mailservicetaskType)) {
                 MailBlock b = new MailBlock();
                 b.setName(block.getAttributes().get("name"));
                 b.setJobEngineProjectID(block.getProjectId());
                 b.setWorkflowId(block.getWorkflowId());
                 b.setJobEngineElementID(block.getId());
-                WorkflowBuilder.addWorkflowBlock(b);
+                workflowService.addWorkflowBlock(b);
             } else if (block.getType().equalsIgnoreCase(WorkflowConstants.seqFlowType)) {
-                WorkflowBuilder.addSequenceFlow(block.getProjectId(), block.getWorkflowId(),
+                workflowService.addSequenceFlow(block.getProjectId(), block.getWorkflowId(),
                         block.getAttributes().get("sourceRef"), block.getAttributes().get("targetRef"),
                         block.getAttributes().get("condition"));
             }
@@ -127,8 +111,7 @@ public class WorkflowController {
             return ResponseEntity.ok(e.getMessage());
         }
         //JELogger.info(block.toString());
-        return ResponseEntity.ok("Added workflow component successfully");
-
+        return ResponseEntity.ok(new Response(200, "Added workflow component successfully"));
     }
 
     @PutMapping(value = "/updateWorkflowBlock/{key}")
@@ -141,21 +124,21 @@ public class WorkflowController {
                 b.setJobEngineProjectID(block.getProjectId());
                 b.setWorkflowId(block.getWorkflowId());
                 b.setJobEngineElementID(block.getId());
-                WorkflowBuilder.updateStartBlock(b);
+                workflowService.updateStartBlock(b);
             } else if (block.getType().equalsIgnoreCase(WorkflowConstants.endType)) {
                 EndBlock b = new EndBlock();
                 b.setName(block.getAttributes().get("name"));
                 b.setJobEngineProjectID(block.getProjectId());
                 b.setWorkflowId(block.getWorkflowId());
                 b.setJobEngineElementID(block.getId());
-                WorkflowBuilder.updateEndBlock(b);
+                workflowService.updateEndBlock(b);
             } else if (block.getType().equalsIgnoreCase(WorkflowConstants.eventgatewayType)) {
                 EventGatewayBlock b = new EventGatewayBlock();
                 b.setName(block.getAttributes().get("name"));
                 b.setJobEngineProjectID(block.getProjectId());
                 b.setWorkflowId(block.getWorkflowId());
                 b.setJobEngineElementID(block.getId());
-                WorkflowBuilder.updateEventGateway(b);
+                workflowService.updateEventGateway(b);
             } else if (block.getType().equalsIgnoreCase(WorkflowConstants.messageintermediatecatcheventType)) {
                 MessageCatchEvent b = new MessageCatchEvent();
                 b.setName(block.getAttributes().get("name"));
@@ -163,14 +146,14 @@ public class WorkflowController {
                 b.setJobEngineProjectID(block.getProjectId());
                 b.setWorkflowId(block.getWorkflowId());
                 b.setJobEngineElementID(block.getId());
-                WorkflowBuilder.updateMessageCatchEvent(b);
+                workflowService.updateMessageCatchEvent(b);
             } else if (block.getType().equalsIgnoreCase(WorkflowConstants.exclusivegatewayType)) {
                 ExclusiveGatewayBlock b = new ExclusiveGatewayBlock();
                 b.setName(block.getAttributes().get("name"));
                 b.setJobEngineProjectID(block.getProjectId());
                 b.setWorkflowId(block.getWorkflowId());
                 b.setJobEngineElementID(block.getId());
-                WorkflowBuilder.updateExclusiveGateway(b);
+                workflowService.updateExclusiveGateway(b);
             } else if (block.getType().equalsIgnoreCase(WorkflowConstants.scripttaskType)) {
                 ScriptBlock b = new ScriptBlock();
                 b.setName(block.getAttributes().get("name"));
@@ -178,35 +161,35 @@ public class WorkflowController {
                 b.setJobEngineProjectID(block.getProjectId());
                 b.setWorkflowId(block.getWorkflowId());
                 b.setJobEngineElementID(block.getId());
-                WorkflowBuilder.updateScript(b);
+                workflowService.updateScript(b);
             } else if (block.getType().equalsIgnoreCase(WorkflowConstants.parallelgatewayType)) {
                 ParallelGatewayBlock b = new ParallelGatewayBlock();
                 b.setName(block.getAttributes().get("name"));
                 b.setJobEngineProjectID(block.getProjectId());
                 b.setWorkflowId(block.getWorkflowId());
                 b.setJobEngineElementID(block.getId());
-                WorkflowBuilder.updateParallelGateway(b);
+                workflowService.updateParallelGateway(b);
             } else if (block.getType().equalsIgnoreCase(WorkflowConstants.dbservicetaskType)) {
                 DBWriteBlock b = new DBWriteBlock();
                 b.setName(block.getAttributes().get("name"));
                 b.setJobEngineProjectID(block.getProjectId());
                 b.setWorkflowId(block.getWorkflowId());
                 b.setJobEngineElementID(block.getId());
-                WorkflowBuilder.updateDbTask(b);
+                workflowService.updateDbTask(b);
             } else if (block.getType().equalsIgnoreCase(WorkflowConstants.mailservicetaskType)) {
                 MailBlock b = new MailBlock();
                 b.setName(block.getAttributes().get("name"));
                 b.setJobEngineProjectID(block.getProjectId());
                 b.setWorkflowId(block.getWorkflowId());
                 b.setJobEngineElementID(block.getId());
-                WorkflowBuilder.updateMailTask(b);
+                workflowService.updateMailTask(b);
             }
 
         } catch (Exception e) {
             JELogger.info(WorkflowController.class, e.getMessage());
             return ResponseEntity.ok(e.getMessage());
         }
-        return ResponseEntity.ok("Updated workflow component successfully");
+        return ResponseEntity.ok(new Response(200, "Added workflow component successfully"));
     }
 
     /*
@@ -216,7 +199,7 @@ public class WorkflowController {
     public ResponseEntity<?> deleteWorkflowBlock(@PathVariable String projectId, @PathVariable String key, @PathVariable String id) {
 
         try {
-            WorkflowBuilder.deleteWorkflowBlock(projectId, key, id);
+            workflowService.deleteWorkflowBlock(projectId, key, id);
         } catch (WorkflowNotFoundException e) {
             return ResponseEntity.ok(Errors.workflowNotFound);
         } catch (ProjectNotFoundException e) {
@@ -237,7 +220,7 @@ public class WorkflowController {
     public ResponseEntity<?> deleteSequenceFlow(@PathVariable String projectId, @PathVariable String key, @PathVariable String from, @PathVariable String to) {
 
         try {
-            WorkflowBuilder.deleteSequenceFlow(projectId, key, from, to);
+            workflowService.deleteSequenceFlow(projectId, key, from, to);
         } catch (WorkflowNotFoundException e) {
             return ResponseEntity.ok(Errors.workflowNotFound);
         } catch (ProjectNotFoundException e) {
@@ -251,36 +234,5 @@ public class WorkflowController {
         return ResponseEntity.ok("Sequence flow deleted successfully");
     }
 
-    /*
-     * Build workflow
-     * */
-    @PostMapping(value = "/buildWorkflow", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> buildWorkflow(@RequestBody WorkflowModel m) {
 
-        try {
-            WorkflowBuilder.buildWorkflow(m.getProjectId(), m.getKey());
-        } catch (ProjectNotFoundException e) {
-            JELogger.info(WorkflowController.class, e.getMessage());
-            return ResponseEntity.ok(Errors.projectNotFound);
-        } catch (WorkflowNotFoundException e) {
-            JELogger.info(WorkflowController.class, e.getMessage());
-            return ResponseEntity.ok(Errors.workflowNotFound);
-        }
-        return ResponseEntity.ok("Workflow built successfully");
-    }
-
-    /*
-     * Run Workflow
-     * */
-    @PostMapping(value = "/runWorkflow/{key}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> runWorkflow(@PathVariable String key) {
-        try {
-            JELogger.info(WorkflowController.class, key);
-            WorkflowBuilder.runWorkflow(key);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return ResponseEntity.ok("Error executing workflow");
-        }
-        return ResponseEntity.ok("Executing workflow");
-    }
 }
