@@ -1,5 +1,8 @@
 package io.je.rulebuilder.components.blocks.getter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import io.je.rulebuilder.components.blocks.GetterBlock;
 import io.je.rulebuilder.models.BlockModel;
 
@@ -15,12 +18,37 @@ public class AttributeGetterBlock extends GetterBlock{
 		attributeName = blockModel.getBlockConfiguration().getAttributeName();
 	}
 
+	
 	@Override
-	public String getExpression() {
-		// TODO Auto-generated method stub
-		return null;
+	public String getExpression()
+	{
+		
+		return classPath+"($"+attributeName +":"+ attributeName+ ")";
+	}
+	
+	public String getExpression(String varName)
+	{
+		
+		return classPath+"($"+varName +":"+ attributeName+ ")";
 	}
 
+	
+	@Override
+	public String getComparableExpression(String constraint)
+	{
+		
+		return classPath+"(" +attributeName + constraint +" )";
+	}
+	
+
+	public String getArithmeticComparableExpression(String constraint, String arithmeticExpression)
+	{
+		
+		return classPath+"($"+attributeName +":"+ attributeName+ ")";
+	}
+	
+	
+	
 	@Override
 	public String toString() {
 		return "AttributeGetterBlock [classPath=" + classPath + ", attributeName=" + attributeName + ", ruleId="

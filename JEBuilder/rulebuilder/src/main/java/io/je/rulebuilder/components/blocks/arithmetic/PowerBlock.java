@@ -16,4 +16,18 @@ public class PowerBlock extends ArithmeticBlock {
 		return null;
 	}
 
+	@Override
+	public String getComparableExpression(String constraint) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getExpression(String Expression) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	
+
 }

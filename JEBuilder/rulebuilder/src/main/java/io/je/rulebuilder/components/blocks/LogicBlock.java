@@ -9,6 +9,10 @@ public abstract class LogicBlock extends PersistableBlock {
 				blockModel.getInputBlocksIds(), blockModel.getOutputBlocksIds(),blockModel.getTimePersistenceValue(),blockModel.getTimePersistenceUnit());
 	}
 
-
+	@Override
+	public String getExpression() {
+		// TODO Auto-generated method stub
+		return "and";
+	}
 
 }

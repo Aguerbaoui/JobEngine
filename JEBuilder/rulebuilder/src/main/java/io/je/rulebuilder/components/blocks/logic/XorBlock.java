@@ -11,9 +11,11 @@ public class XorBlock extends LogicBlock {
 	}
 
 	@Override
-	public String getExpression() {
+	public String getComparableExpression(String constraint) {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+
 
 }

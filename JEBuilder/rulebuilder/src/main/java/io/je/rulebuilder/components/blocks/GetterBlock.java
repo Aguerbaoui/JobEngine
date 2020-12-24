@@ -15,6 +15,8 @@ public abstract class GetterBlock extends ConditionBlock  {
 				+ ", jeObjectLastUpdate=" + jeObjectLastUpdate + "]";
 	}
 	
+	public  abstract String getComparableExpression(String constraint);
+	
 	
 
 

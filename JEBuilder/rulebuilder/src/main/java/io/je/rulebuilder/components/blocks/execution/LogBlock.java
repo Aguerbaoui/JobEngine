@@ -11,9 +11,4 @@ public class LogBlock extends ExecutionBlock {
 		super(blockModel);
 	}
 
-	@Override
-	public String getExpression() {
-		return "JELogger.info("+logMessage+")";
-	}
-
 }

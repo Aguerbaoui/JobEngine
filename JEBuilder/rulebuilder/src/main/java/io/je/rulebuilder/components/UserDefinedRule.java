@@ -12,12 +12,15 @@ import io.je.rulebuilder.components.blocks.ComparisonBlock;
 import io.je.rulebuilder.components.blocks.ConditionBlock;
 import io.je.rulebuilder.components.blocks.ExecutionBlock;
 import io.je.rulebuilder.components.blocks.LogicBlock;
+import io.je.rulebuilder.components.blocks.arithmetic.BiasBlock;
 import io.je.rulebuilder.components.blocks.arithmetic.DivideBlock;
 import io.je.rulebuilder.components.blocks.arithmetic.FunctionBlock;
+import io.je.rulebuilder.components.blocks.arithmetic.GainBlock;
 import io.je.rulebuilder.components.blocks.arithmetic.MultiplyBlock;
 import io.je.rulebuilder.components.blocks.arithmetic.PowerBlock;
 import io.je.rulebuilder.components.blocks.arithmetic.SubtractBlock;
 import io.je.rulebuilder.components.blocks.arithmetic.SumBlock;
+import io.je.rulebuilder.components.blocks.arithmetic.UnitConversionBlock;
 import io.je.rulebuilder.components.blocks.comparison.GreaterThanBlock;
 import io.je.rulebuilder.components.blocks.execution.LogBlock;
 import io.je.rulebuilder.components.blocks.getter.AttributeGetterBlock;
@@ -256,39 +259,41 @@ public class UserDefinedRule {
 		case 1009:
 			return new FunctionBlock(blockModel, 1009);
 		case 1010:
-			break;
+			return new BiasBlock(blockModel);
 		case 1011:
-			break;
+			return new GainBlock(blockModel);
 		case 1012:
-			break;
+			return new FunctionBlock(blockModel, 1012);
 		case 1013:
-			break;
+			return new FunctionBlock(blockModel, 1013);
 		case 1014:
-			break;
+			return new FunctionBlock(blockModel, 1014);
 		case 1015:
-			break;
+			return new FunctionBlock(blockModel, 1015);
 		case 1016:
-			break;
+			return new FunctionBlock(blockModel, 1016);
 		case 1017:
-			break;
+			return new FunctionBlock(blockModel, 1017);
 		case 1018:
-			break;
+			return new FunctionBlock(blockModel, 1018);
 		case 1019:
-			break;
+			return new FunctionBlock(blockModel, 1019);
 		case 1020:
-			break;
+			return new FunctionBlock(blockModel, 1020);
 		case 1021:
-			break;
+			return new FunctionBlock(blockModel, 1021);
 		case 1022:
-			break;
+			return new FunctionBlock(blockModel, 1022);
 		case 1023:
-			break;
+			return new FunctionBlock(blockModel, 1023);
 		case 1024:
-			break;
+			return new FunctionBlock(blockModel, 1024);
 		case 1025:
-			break;
+			return new FunctionBlock(blockModel, 1025);
 		case 1026:
 			break;
+		case 1027:
+			return new UnitConversionBlock(blockModel);
 
 		/*
 		 * Comparison blocks

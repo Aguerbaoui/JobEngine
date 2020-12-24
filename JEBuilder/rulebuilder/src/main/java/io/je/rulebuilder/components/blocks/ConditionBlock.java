@@ -9,6 +9,10 @@ public abstract class ConditionBlock extends Block{
 		super(jobEngineElementID, jobEngineProjectID, ruleId, inputBlocks, outputBlocks);
 	}
 	
+	public abstract String getExpression();
+	public abstract String getComparableExpression(String constraint);
+	
+	
 	
 
 }

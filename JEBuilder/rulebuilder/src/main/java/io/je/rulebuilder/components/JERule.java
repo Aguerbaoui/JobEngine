@@ -5,40 +5,53 @@ import io.je.rulebuilder.components.blocks.PersistableBlock;
 import io.je.utilities.runtimeobject.JEObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import org.drools.template.ObjectDataCompiler;
 
 /*
  * rule definition in job engine
  */
 public class JERule extends JEObject {
 
-	String projectId;
 	String salience;
 	boolean enabled;
 	String dateEffective;
 	String dateExpires;
-	String duration;
 	String timer;
-	String calendar;
     ConditionBlockNode conditionBlockNode;
-
     List<Consequence> consequences;
 
 
-    
+    /*
+     * Constructor
+     */
     public JERule(String jobEngineElementID, String jobEngineProjectID) {
         super(jobEngineElementID, jobEngineProjectID);
         consequences = new ArrayList<>();
     }
 
 
-	public String getProjectId() {
-		return projectId;
-	}
+    /*generate DRL for this rule */
+    
+	public void generateDRL()
+	{
+		// set rule attributes
+        Map<String, String> ruleTemplateAttributes = new HashMap<>();
+        ruleTemplateAttributes.put("ruleName", jobEngineElementID);
+        ruleTemplateAttributes.put("salience", salience);
+        
+        
+        ruleTemplateAttributes.put("ruleName", jobEngineElementID);
+        ruleTemplateAttributes.put("ruleName", jobEngineElementID);
+        
+        ObjectDataCompiler objectDataCompiler = new ObjectDataCompiler();
 
+        
 
-	public void setProjectId(String projectId) {
-		this.projectId = projectId;
+		
 	}
 
 
@@ -84,14 +97,6 @@ public class JERule extends JEObject {
 	}
 
 
-	public String getDuration() {
-		return duration;
-	}
-
-
-	public void setDuration(String duration) {
-		this.duration = duration;
-	}
 
 
 	public String getTimer() {
@@ -104,14 +109,6 @@ public class JERule extends JEObject {
 	}
 
 
-	public String getCalendar() {
-		return calendar;
-	}
-
-
-	public void setCalendar(String calendar) {
-		this.calendar = calendar;
-	}
 
 
 	public ConditionBlockNode getCondition() {

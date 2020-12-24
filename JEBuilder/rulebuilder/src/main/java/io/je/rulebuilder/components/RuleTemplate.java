@@ -10,9 +10,8 @@ public class RuleTemplate {
 
     public RuleTemplate(JERule rule) {
         super();
-        this.duration = String.valueOf(rule.getDuration());
         this.salience = String.valueOf(rule.getSalience());
-        this.condition = rule.getCondition().getString();
+       // this.condition = rule.getCondition().getString();
         consequence = "";
         for (Consequence cons : rule.getConsequences()) {
             consequence = consequence + "\n" + cons.getExpression();

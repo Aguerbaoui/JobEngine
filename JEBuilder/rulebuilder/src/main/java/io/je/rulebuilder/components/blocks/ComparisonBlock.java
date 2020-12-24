@@ -17,6 +17,13 @@ public abstract class ComparisonBlock extends PersistableBlock {
 			threshold = blockModel.getBlockConfiguration().getValue();
 		}
 	}
+	
+	public String getExpression()
+	{
+		return getOperator()+ threshold;
+	}
+	
+	public abstract String getOperator();
 
 	public String getThreshold() {
 		return threshold;

@@ -10,10 +10,29 @@ public class FunctionBlock extends ArithmeticBlock {
 		super(blockModel);
 		this.operationId=operationId;
 	}
-
 	@Override
 	public String getExpression() {
+		return "$"+jobEngineElementID +" : Number() from "+getFunction(operationId) + "("+getOperationIdentifier()+")";
+
+	}
+	@Override
+	public String getComparableExpression(String constraint) {
+		
+		return "$"+jobEngineElementID +" : Number (Double " + constraint + " ) from "+getFunction(operationId) + "("+getOperationIdentifier()+")";
+	}
+	@Override
+	public String getExpression(String Expression) {
 		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private String getFunction(int operationId)
+	{
+		switch(operationId)
+		{
+		case 1007:
+			return "Math.sqrt";
+		}
 		return null;
 	}
 
