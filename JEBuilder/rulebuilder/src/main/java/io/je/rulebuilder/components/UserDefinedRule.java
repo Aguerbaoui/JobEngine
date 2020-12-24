@@ -2,14 +2,21 @@ package io.je.rulebuilder.components;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import io.je.rulebuilder.components.blocks.Block;
 import io.je.rulebuilder.components.blocks.ComparisonBlock;
 import io.je.rulebuilder.components.blocks.ConditionBlock;
 import io.je.rulebuilder.components.blocks.ExecutionBlock;
 import io.je.rulebuilder.components.blocks.LogicBlock;
+import io.je.rulebuilder.components.blocks.arithmetic.DivideBlock;
+import io.je.rulebuilder.components.blocks.arithmetic.FunctionBlock;
+import io.je.rulebuilder.components.blocks.arithmetic.MultiplyBlock;
+import io.je.rulebuilder.components.blocks.arithmetic.PowerBlock;
+import io.je.rulebuilder.components.blocks.arithmetic.SubtractBlock;
 import io.je.rulebuilder.components.blocks.arithmetic.SumBlock;
 import io.je.rulebuilder.components.blocks.comparison.GreaterThanBlock;
 import io.je.rulebuilder.components.blocks.execution.LogBlock;
@@ -19,8 +26,12 @@ import io.je.rulebuilder.components.blocks.logic.JoinBlock;
 import io.je.rulebuilder.components.blocks.logic.NotBlock;
 import io.je.rulebuilder.components.blocks.logic.OrBlock;
 import io.je.rulebuilder.components.blocks.logic.XorBlock;
+import io.je.rulebuilder.config.LogConstants;
 import io.je.rulebuilder.models.BlockModel;
 import io.je.rulebuilder.models.RuleModel;
+import io.je.utilities.exceptions.RuleBuildFailedException;
+import io.je.utilities.exceptions.RuleNotAddedException;
+import io.je.utilities.logger.JELogger;
 
 /*
  * Rules defined by the user.
@@ -30,19 +41,65 @@ import io.je.rulebuilder.models.RuleModel;
 
 public class UserDefinedRule {
 
-	String projectId;
-	String ruleId;
-	String salience;
-	boolean enabled;
-	String dateEffective;
-	String dateExpires;
-	String timer;
+	/*
+	 * project id
+	 */
+	private String projectId;
+
+	/*
+	 * rule id
+	 */
+	private String ruleId;
+
+	/*
+	 * rule priority
+	 */
+	private String salience;
+
+	/*
+	 * rule parameter that indicates whether a rule is enabled or disbaled
+	 */
+	private boolean enabled;
+
+	/*
+	 * rule parameter that indicates when the rule should be activated
+	 */
+	private String dateEffective;
+
+	/*
+	 * rule parameter that indicates when the rule expires
+	 */
+	private String dateExpires;
+
+	/*
+	 * cron expression that defines the rule's firing schedule
+	 */
+	private String timer;
+
+	/*
+	 * Map of all the blocks that define this rule
+	 */
 	Map<String, Block> blocks = new HashMap<>();
 
-	public UserDefinedRule(RuleModel ruleModel) {
+	/*
+	 * Constructor : generates a user defined rule from a rule model
+	 */
+	public UserDefinedRule(RuleModel ruleModel) throws RuleNotAddedException {
 		super();
 
-		// TODO: throw exception if ids are null
+		// exception when the project id is empty;
+		if (ruleModel.getProjectId() == null) {
+			JELogger.error(getClass(), LogConstants.ProjectIdentifierIsEmpty);
+			throw new RuleNotAddedException("400", LogConstants.ProjectIdentifierIsEmpty);
+
+		}
+
+		// exception if rule id is null;
+		if (ruleModel.getRuleId() == null) {
+			JELogger.error(getClass(), LogConstants.RuleIdentifierIsEmpty);
+			throw new RuleNotAddedException("400", LogConstants.RuleIdentifierIsEmpty);
+
+		}
 		this.projectId = ruleModel.getProjectId();
 		this.ruleId = ruleModel.getRuleId();
 		this.salience = ruleModel.getSalience();
@@ -52,41 +109,49 @@ public class UserDefinedRule {
 		this.timer = ruleModel.getTimer();
 	}
 
-	
 	/*
-	 * build user defined rule and generate job engine rules from it
+	 * this method builds the user defined rule and generates unit rules (JERules)
+	 * from it
 	 */
-	public List<JERule> build() {
+	public List<JERule> build() throws RuleBuildFailedException {
 
-		// get root blocks : blocks that precede an execution block.
+		// number of execution blocks
+		int executionBlockCounter = 0;
+
+		// set of root blocks : blocks that precede an execution block.
 		// Each root block defines a job engine rule
-		List<ConditionBlock> roots = new ArrayList<>();
-		for (Block block : blocks.values()) {
-			if (block instanceof LogicBlock || block instanceof ComparisonBlock) {
-				for (String blockid : block.getOutputBlocks()) {
-					// if one of its output blocks is an execution block then it's a root block
-					if (blocks.get(blockid) instanceof ExecutionBlock) {
-						roots.add((ConditionBlock) block);
-						break;
-					}
+		Set<ConditionBlock> roots = new HashSet<>();
+
+		// get root blocks
+		for (Block ruleBlock : blocks.values()) {
+			if (ruleBlock instanceof ExecutionBlock) {
+				executionBlockCounter++;
+				for (String rootBlockId : ruleBlock.getInputBlocks()) {
+					roots.add((ConditionBlock) blocks.get(rootBlockId));
 				}
+
 			}
 		}
 
-		//generate JERules
+		// if this rule has no execution block, then it is not valid.
+		if (executionBlockCounter == 0) {
+			throw new RuleBuildFailedException("400", LogConstants.NoExecutionBlock);
+		}
+
+		// generate JERules
 		List<JERule> rules = new ArrayList<>();
-		int counter = 0;
-		for(ConditionBlock root:roots)
-		{
+
+		int jeRuleCounter = 0;
+		for (ConditionBlock root : roots) {
 			JERule rule = generateJERule(root);
-			rule.setJobEngineElementID(projectId+"_"+ruleId+counter);
+			rule.setJobEngineElementID(ruleId + jeRuleCounter);
 			rules.add(rule);
 		}
 		return rules;
 	}
 
 	/*
-	 *  generate a job engine rule from a root bloxk
+	 * generate a job engine rule from a root block
 	 */
 	public JERule generateJERule(ConditionBlock block) {
 		JERule rule = new JERule(ruleId, projectId);
@@ -98,34 +163,32 @@ public class UserDefinedRule {
 		rule.setCondition(buildCondition(block));
 		rule.setConsequences(getConsequence(block));
 		return rule;
-		
 
 	}
 
 	/*
 	 * retrieve list of consequences relative to a JERule
 	 */
-	private List<Consequence> getConsequence(ConditionBlock block)
-	{
+	private List<Consequence> getConsequence(ConditionBlock block) {
 		List<Consequence> consequences = new ArrayList<>();
 		for (String blockId : block.getOutputBlocks()) {
-			if(blocks.get(blockId) instanceof ExecutionBlock)
-			{
-				consequences.add( new Consequence( (ExecutionBlock) blocks.get(blockId) ));
+			if (blocks.get(blockId) instanceof ExecutionBlock) {
+				consequences.add(new Consequence((ExecutionBlock) blocks.get(blockId)));
 			}
 		}
 		return consequences;
-		
+
 	}
-	
+
+	/*
+	 * generates a condition tree with the input block as a root
+	 */
 	private ConditionBlockNode buildCondition(ConditionBlock block) {
 		ConditionBlockNode conditionBlockNode = new ConditionBlockNode(block);
 
 		if (block.getInputBlocks() == null || block.getInputBlocks().isEmpty()) {
 			return conditionBlockNode;
-		}
-
-		else {
+		} else {
 			for (String inputBlockId : block.getInputBlocks()) {
 				ConditionBlock inputBlock = (ConditionBlock) blocks.get(inputBlockId);
 				if (inputBlock != null) {
@@ -138,6 +201,9 @@ public class UserDefinedRule {
 
 	}
 
+	/*
+	 * add a block to this user defined rule
+	 */
 	public void addBlock(BlockModel blockModel) {
 		if (blockModel == null || blockModel.getOperationId() == 0 || blockModel.getBlockId() == null
 				|| blockModel.getBlockId().isEmpty()) {
@@ -145,39 +211,50 @@ public class UserDefinedRule {
 			return;
 
 		}
-		
+
 		Block block = generateBlock(blockModel);
-		System.out.println(block);
+		JELogger.info(getClass(), block.toString());
 
 		blocks.put(blockModel.getBlockId(), block);
 
 	}
 
+	/*
+	 * returns a new block created from a block model
+	 */
 	private Block generateBlock(BlockModel blockModel) {
 		switch (blockModel.getOperationId()) {
 		/*
 		 * Arithmetic blocks
 		 */
 
-		// sum block
+		// sum
 		case 1001:
 			return new SumBlock(blockModel);
+		// Subtract
 		case 1002:
-			break;
+			return new SubtractBlock(blockModel);
+		// Multiply
 		case 1003:
-			break;
+			return new MultiplyBlock(blockModel);
+		// Divide
 		case 1004:
-			break;
+			return new DivideBlock(blockModel);
+		// Factorial
 		case 1005:
-			break;
+			return new FunctionBlock(blockModel, 1005);
+		// Square
 		case 1006:
-			break;
+			return new FunctionBlock(blockModel, 1006);
+		// SquareRoot
 		case 1007:
-			break;
+			return new FunctionBlock(blockModel, 1007);
+		// Power
 		case 1008:
-			break;
+			return new PowerBlock(blockModel);
+		// change sign
 		case 1009:
-			break;
+			return new FunctionBlock(blockModel, 1009);
 		case 1010:
 			break;
 		case 1011:
@@ -291,6 +368,10 @@ public class UserDefinedRule {
 
 	}
 
+	/*
+	 * Getters and setters
+	 */
+
 	public Map<String, Block> getBlocks() {
 		return blocks;
 	}
@@ -355,8 +436,6 @@ public class UserDefinedRule {
 		this.dateExpires = dateExpires;
 	}
 
-
-
 	public String getTimer() {
 		return timer;
 	}
@@ -365,9 +444,6 @@ public class UserDefinedRule {
 		this.timer = timer;
 	}
 
-
-
-
 	@Override
 	public String toString() {
 		return "UserDefinedRule [projectId=" + projectId + ", ruleId=" + ruleId + ", salience=" + salience
@@ -375,6 +451,4 @@ public class UserDefinedRule {
 				+ ", timer=" + timer + ", blocks=" + blocks + "]";
 	}
 
-	
-	
 }

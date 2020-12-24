@@ -49,7 +49,7 @@ public class RuleEngineHandler {
     /*
      * start running a project given a project id
      */
-    public void runRuleEngineProject(String projectId) throws RulesNotFiredException, RuleEngineBuildFailedException, ProjectAlreadyRunningException {
+    public void runRuleEngineProject(String projectId) throws RulesNotFiredException, RuleBuildFailedException, ProjectAlreadyRunningException {
         RuleEngine.fireRules(projectId);
     }
 
@@ -57,7 +57,7 @@ public class RuleEngineHandler {
     /*
      * stop running a project given a project id
      */
-    public void stopRuleEngineProjectExecution(String projectId) throws RulesNotFiredException, RuleEngineBuildFailedException, ProjectAlreadyRunningException {
+    public void stopRuleEngineProjectExecution(String projectId) throws RulesNotFiredException, RuleBuildFailedException, ProjectAlreadyRunningException {
         RuleEngine.stopRuleExecution(projectId);
     }
 
