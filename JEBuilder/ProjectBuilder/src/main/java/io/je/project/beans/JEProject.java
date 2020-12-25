@@ -2,6 +2,7 @@ package io.je.project.beans;
 
 import blocks.WorkflowBlock;
 import io.je.rulebuilder.components.JERule;
+import io.je.utilities.constants.APIConstants;
 import io.je.utilities.constants.Errors;
 import io.je.utilities.exceptions.InvalidSequenceFlowException;
 import io.je.utilities.exceptions.WorkflowBlockNotFound;
@@ -24,6 +25,8 @@ public class JEProject {
     public JEProject(String projectId, String projectName) {
         rules = new HashMap<String, JERule>();
         workflows = new HashMap<String, JEWorkflow>();
+        this.projectId = projectId;
+        this.projectName = projectName;
 
     }
 
@@ -89,8 +92,8 @@ public class JEProject {
     }
 
     public void addWorkflowSequenceFlow(String workflowId, String sourceRef, String targetRef, String condition) throws WorkflowBlockNotFound {
-        if(! workflows.get(workflowId).blockExists(sourceRef) || workflows.get(workflowId).blockExists(targetRef)) {
-            throw new WorkflowBlockNotFound("3", Errors.workflowBloclNotFound);
+        if(! workflows.get(workflowId).blockExists(sourceRef) || !workflows.get(workflowId).blockExists(targetRef)) {
+            throw new WorkflowBlockNotFound(APIConstants.WORKFLOW_BLOCK_NOT_FOUND, Errors.workflowBlockNotFound);
         }
         workflows.get(workflowId).addBlockFlow(sourceRef, targetRef, condition);
     }

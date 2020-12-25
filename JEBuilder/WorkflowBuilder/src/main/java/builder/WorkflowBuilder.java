@@ -25,7 +25,7 @@ public class WorkflowBuilder {
     /*
     * Build workflow bpmn
     * */
-    public static void buildWorkflow(JEWorkflow workflow) {
+    public static void buildWorkflow(JEWorkflow workflow) throws IOException {
         //JEToBpmnMapper.createBpmnFromJEWorkflow(workflow);
         /*
          * testing purposes only
@@ -36,11 +36,9 @@ public class WorkflowBuilder {
         wfMap.put("key", workflow.getWorkflowName().trim());
         wfMap.put("path", "processes/" + workflow.getWorkflowName().trim() + ".bpmn");
         wfMap.put("projectId", workflow.getJobEngineProjectID());
-        try {
+
             Network.makeNetworkCallWithJsonBody(wfMap, APIConstants.RUNTIME_MANAGER_BASE_API + APIConstants.ADD_WORKFLOW);
-        } catch (IOException e) {
-            JELogger.info(JEToBpmnMapper.class, "Network Error");
-        }
+
     }
 
 

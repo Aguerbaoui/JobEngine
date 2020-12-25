@@ -4,9 +4,25 @@ public class Response {
 
     private String message;
 
-    private int code;
+    public String getMessage() {
+        return message;
+    }
 
-    public Response(int code, String message) {
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    private String code;
+
+    public Response(String code, String message) {
         this.message = message;
         this.code = code;
     }

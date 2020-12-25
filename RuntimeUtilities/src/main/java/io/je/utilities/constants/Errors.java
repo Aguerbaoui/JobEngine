@@ -5,7 +5,7 @@ public class Errors {
 
     public final static String workflowNotFound = "Workflow not found";
 
-    public final static String workflowBloclNotFound = "Workflow block not found";
+    public final static String workflowBlockNotFound = "Workflow block not found";
 
     public final static String projectNotFound = "Project not found";
 
@@ -13,25 +13,28 @@ public class Errors {
 
     public final static String InvalidSequenceFlow = "Invalid Sequence flow";
 
-    public static String getMessage(int i) {
+    public final static String NETWORK_ERROR = "Error connecting to runtime manager api";
 
-        switch (i) {
+    /*public static String getMessage(String i) {
 
-            case 1:
+        int code = Integer.parseInt(i);
+        switch (code) {
+
+            case APIConstants.WORKFLOW_NOT_FOUND:
                 return workflowNotFound;
 
-            case 2:
+            case APIConstants.PROJECT_NOT_FOUND:
                 return projectNotFound;
 
-            case 3:
-                return workflowBloclNotFound;
+            case APIConstants.WORKFLOW_BLOCK_NOT_FOUND:
+                return workflowBlockNotFound;
 
-            case 4:
+            case APIConstants.INVALID_SEQUENCE_FLOW:
                 return InvalidSequenceFlow;
 
             default:
-                return "Uknown Error";
+                return "Unknown Error";
         }
 
-    }
+    }*/
 }

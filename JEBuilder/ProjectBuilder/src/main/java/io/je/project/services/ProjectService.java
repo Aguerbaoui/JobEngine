@@ -78,7 +78,7 @@ public class ProjectService {
         ProjectService.loadedProjects = loadedProjects;
     }
 
-    public void buildWorkflow(String projectId, String workflowId) throws WorkflowNotFoundException, ProjectNotFoundException {
+    public void buildWorkflow(String projectId, String workflowId) throws WorkflowNotFoundException, ProjectNotFoundException, IOException {
         workflowService.buildWorkflow(projectId, workflowId);
     }
 
@@ -86,7 +86,7 @@ public class ProjectService {
         workflowService.runWorkflow(projectId, workflowId);
     }
 
-    public void buildAll(String projectId) throws WorkflowNotFoundException, ProjectNotFoundException {
+    public void buildAll(String projectId) throws WorkflowNotFoundException, ProjectNotFoundException, IOException {
         //TODO add build all rules
         workflowService.buildWorkflows(projectId);
     }
