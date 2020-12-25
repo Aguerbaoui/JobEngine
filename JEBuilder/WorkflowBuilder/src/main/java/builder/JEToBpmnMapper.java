@@ -31,18 +31,17 @@ public class JEToBpmnMapper {
     /*
      * Generate and save bpmn workflow from JE workflow
      * */
-    public static BpmnModel createBpmnFromJEWorkflow(String processKey, JEWorkflow wf, String modelPath) {
+    public static void createBpmnFromJEWorkflow( JEWorkflow wf) {
         BpmnModel model = ModelBuilder.createNewBPMNModel();
-
-        org.activiti.bpmn.model.Process process = ModelBuilder.createProcess(processKey);
+        org.activiti.bpmn.model.Process process = ModelBuilder.createProcess(wf.getWorkflowName().trim());
         process.addFlowElement(ModelBuilder.createStartEvent());
         addListeners(process);
         parseWorkflowBlock(wf.getWorkflowStartBlock(), process, null);
         model.addProcess(process);
         //new BpmnAutoLayout(model).execute();
+        String modelPath = WorkflowConstants.bpmnPath + wf.getWorkflowName().trim() + WorkflowConstants.bpmnExtension;
         ModelBuilder.saveModel(model, modelPath);
         wf.setBpmnPath(modelPath);
-        return model;
     }
 
     /*
@@ -136,7 +135,7 @@ public class JEToBpmnMapper {
 		end.getInflows().add(join);
 		join.getOutFlows().add(end);*/
 
-        createBpmnFromJEWorkflow(wf.getJobEngineElementID(), wf, "D:\\Job engine\\JERunner\\WorkflowEngine\\src\\main\\resources\\processes\\testGenerated.bpmn");
+        createBpmnFromJEWorkflow( wf);
         HashMap<String, String> wfMap = new HashMap<String, String>();
         wfMap.put("key", wf.getJobEngineElementID());
         wfMap.put("path", "processes/testGenerated.bpmn");
