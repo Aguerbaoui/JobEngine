@@ -15,8 +15,12 @@ public class WorkflowConstants {
     public final static String exclusivegatewayType = "exclusivegateway";
     public final static String scripttaskType = "scripttask";
     public final static String parallelgatewayType = "parallelgateway";
-
     public final static String dbservicetaskType = "dbservicetask";
     public final static String mailservicetaskType = "mailservicetask";
+    public final static String BUILDING = "building";
+    public final static String RUNNING = "running";
+    public final static String STANDBY = "standby";
+    public final static String bpmnPath = "D:\\Job engine\\JERunner\\WorkflowEngine\\src\\main\\resources\\processes\\";
+    public final static String bpmnExtension = ".bpmn";
 
 }

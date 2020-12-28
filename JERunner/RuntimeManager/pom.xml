@@ -55,13 +55,13 @@
 
         </dependency>
 
-
+        <!-- spring boot mongodb dependency. -->
         <dependency>
-            <groupId>io.je</groupId>
-            <artifactId>RuntimeUtilities</artifactId>
-            <version>0.0.1</version>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-mongodb</artifactId>
 
         </dependency>
+
 
     </dependencies>
 
