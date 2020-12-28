@@ -7,11 +7,14 @@ import io.je.rulebuilder.models.BlockModel;
  */
 public abstract class ComparisonBlock extends PersistableBlock {
 	
+	String operationIdentifier;
 	String threshold;
 
 	public ComparisonBlock(BlockModel blockModel) {
 		super(blockModel.getBlockId(), blockModel.getProjectId(), blockModel.getRuleId(), 
 				blockModel.getInputBlocksIds(), blockModel.getOutputBlocksIds(),blockModel.getTimePersistenceValue(),blockModel.getTimePersistenceUnit());
+		operationIdentifier="attToBeCompared";
+
 		if(blockModel.getInputBlocksIds().size()==1)
 		{
 			threshold = blockModel.getBlockConfiguration().getValue();
@@ -20,9 +23,16 @@ public abstract class ComparisonBlock extends PersistableBlock {
 	
 	public String getExpression()
 	{
-		return getOperator()+ threshold;
+		if(threshold!=null)
+			
+		{
+			return getOperator()+ threshold;
+		}
+		else
+			return getOperator()+ operationIdentifier ;
 	}
 	
+
 	public abstract String getOperator();
 
 	public String getThreshold() {
@@ -31,6 +41,16 @@ public abstract class ComparisonBlock extends PersistableBlock {
 
 	public void setThreshold(String threshold) {
 		this.threshold = threshold;
+	}
+	
+	
+
+	public String getOperationIdentifier() {
+		return operationIdentifier;
+	}
+
+	public void setOperationIdentifier(String operationIdentifier) {
+		this.operationIdentifier = operationIdentifier;
 	}
 
 	@Override

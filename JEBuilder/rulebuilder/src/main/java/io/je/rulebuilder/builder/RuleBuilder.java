@@ -36,7 +36,7 @@ public class RuleBuilder {
 		List<JERule> unitRules = userDefinedRule.build();
 		for(JERule rule : unitRules)
 		{
-			//rule.generateDrl(); 
+			//rule.generateDrl(buildPath); 
 		}
 	}
 }

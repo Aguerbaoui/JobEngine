@@ -18,7 +18,7 @@ public class FunctionBlock extends ArithmeticBlock {
 	@Override
 	public String getComparableExpression(String constraint) {
 		
-		return "$"+jobEngineElementID +" : Number (Double " + constraint + " ) from "+getFunction(operationId) + "("+getOperationIdentifier()+")";
+		return "$"+jobEngineElementID +" : Number (Double " + constraint + " ) from "+getFunction(operationId) + "((Double)"+getOperationIdentifier()+")";
 	}
 	@Override
 	public String getExpression(String Expression) {
@@ -30,8 +30,14 @@ public class FunctionBlock extends ArithmeticBlock {
 	{
 		switch(operationId)
 		{
+		case 1005:
+			return "";
+		case 1006:
+			return "";
 		case 1007:
 			return "Math.sqrt";
+		case 1009:
+			return "";
 		}
 		return null;
 	}

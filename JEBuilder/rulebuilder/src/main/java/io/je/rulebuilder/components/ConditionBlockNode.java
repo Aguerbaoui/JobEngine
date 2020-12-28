@@ -6,22 +6,35 @@ import io.je.rulebuilder.components.blocks.ConditionBlock;
 import io.je.rulebuilder.components.blocks.GetterBlock;
 import io.je.rulebuilder.components.blocks.PersistableBlock;
 import io.je.rulebuilder.components.blocks.getter.AttributeGetterBlock;
+import io.je.rulebuilder.components.blocks.logic.JoinBlock;
 import io.je.rulebuilder.components.blocks.LogicBlock;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.drools.core.beliefsystem.defeasible.Join;
 
 /*
  * This class represents a tree definition for the JobEngine Rule Condition
  * Each node has a ConditionBlock as value, a single parent and multiple children
  */
 public class ConditionBlockNode {
+	
+	/*
+	 * The node value. Each node holds a condition block
+	 */
 	ConditionBlock value;
+	
+	/*
+	 * The node's parent ( equivalent to the block's output)
+	 */
 	ConditionBlockNode parent;
+	
+	/*
+	 * list of all 
+	 */
 	List<ConditionBlockNode> children;
 
-	// the translation of the condition into Drools Rule Language (when)
-	// StringBuilder drlExpression = new StringBuilder();
 
 	/*
 	 * Constructor
@@ -53,11 +66,11 @@ public class ConditionBlockNode {
 		if (this.value instanceof AttributeGetterBlock) {
 			AttributeGetterBlock block = (AttributeGetterBlock) this.value;
 
-			// if parent is comparison
+			// if parent does not require identifier
 			if (ref == 1) {
 				return block.getComparableExpression(expression);
 			}
-			// if parent is arithmetic
+			// if parent requires identifier
 			else if (ref == 2) {
 				return block.getExpression(expression);
 			}
@@ -72,11 +85,11 @@ public class ConditionBlockNode {
 
 			drlExpression.append(children.get(0).getString(2, block.getOperationIdentifier()));
 			drlExpression.append("\n");
-			// if parent is comparison
+			// if parent does not require identifier
 			if (ref == 1) {
 				drlExpression.append(block.getComparableExpression(expression));
 			}
-			// if parent is arithmetic
+			// if parent requires identifier
 			if (ref == 2) {
 				drlExpression.append(block.getExpression("$randomVarName"));
 
@@ -90,7 +103,6 @@ public class ConditionBlockNode {
 		if (this.value instanceof ComparisonBlock) {
 			ComparisonBlock block = (ComparisonBlock) this.value;
 
-			// TODO: exception if number > 2 or <1
 			int numberOfChildren = this.children.size();
 			// if single input
 			if (numberOfChildren == 1) {
@@ -100,7 +112,40 @@ public class ConditionBlockNode {
 				// TODO: if input is another comparison block
 			} else if (numberOfChildren == 2) {
 				
+				drlExpression.append(children.get(0).getString(2, block.getOperationIdentifier()));
+				drlExpression.append("\n");
+				drlExpression.append(children.get(1).getString(1, block.getExpression()));
+				return drlExpression.toString();
+
+
+				
 			}
+			else
+			{
+				//throw exception comparison block must have 1 or 2 inputs
+			} 
+		}
+		
+		// parse logic block
+		if (this.value instanceof LogicBlock) {
+			
+			LogicBlock block = (LogicBlock) this.value;
+
+			if ( block instanceof JoinBlock)
+			{
+				//drlExpression.append(children.get(0).getString(2, "joinattributename"));
+			}
+			else
+			{
+				drlExpression.append(" "+block.getExpression()+" (");
+				for(ConditionBlockNode child : this.children)
+				{
+					drlExpression.append(child.getString(0, ""));
+				}
+			}
+
+				
+			
 		}
 
 		return drlExpression.toString();

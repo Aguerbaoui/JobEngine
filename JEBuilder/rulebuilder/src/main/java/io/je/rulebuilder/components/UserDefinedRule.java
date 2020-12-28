@@ -60,7 +60,7 @@ public class UserDefinedRule {
 	private String salience;
 
 	/*
-	 * rule parameter that indicates whether a rule is enabled or disbaled
+	 * rule parameter that indicates whether a rule is enabled or disabled
 	 */
 	private boolean enabled;
 
@@ -156,7 +156,7 @@ public class UserDefinedRule {
 	/*
 	 * generate a job engine rule from a root block
 	 */
-	public JERule generateJERule(ConditionBlock block) {
+	private JERule generateJERule(ConditionBlock block) {
 		JERule rule = new JERule(ruleId, projectId);
 		rule.setSalience(salience);
 		rule.setDateEffective(dateEffective);

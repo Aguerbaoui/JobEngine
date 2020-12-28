@@ -2,9 +2,15 @@ package io.je.rulebuilder.components;
 
 import io.je.rulebuilder.components.blocks.Block;
 import io.je.rulebuilder.components.blocks.PersistableBlock;
+import io.je.rulebuilder.config.RuleBuilderConfig;
+import io.je.utilities.files.JEFileUtils;
+import io.je.utilities.logger.JELogger;
 import io.je.utilities.runtimeobject.JEObject;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,8 +28,8 @@ public class JERule extends JEObject {
 	String dateExpires;
 	String timer;
     ConditionBlockNode conditionBlockNode;
-    List<Consequence> consequences;
-
+    List<Consequence> consequences ;
+    
 
     /*
      * Constructor
@@ -36,20 +42,23 @@ public class JERule extends JEObject {
 
     /*generate DRL for this rule */
     
-	public void generateDRL()
+	public void generateDRL(String configPath)
 	{
 		// set rule attributes
         Map<String, String> ruleTemplateAttributes = new HashMap<>();
         ruleTemplateAttributes.put("ruleName", jobEngineElementID);
-        ruleTemplateAttributes.put("salience", salience);
-        
-        
-        ruleTemplateAttributes.put("ruleName", jobEngineElementID);
-        ruleTemplateAttributes.put("ruleName", jobEngineElementID);
-        
+        ruleTemplateAttributes.put("salience", salience);        
+        ruleTemplateAttributes.put("condition", conditionBlockNode.getRoot().getString(0, ""));        
         ObjectDataCompiler objectDataCompiler = new ObjectDataCompiler();
-
-        
+        String ruleContent = "";
+        try {
+            ruleContent = objectDataCompiler.compile(Arrays.asList(ruleTemplateAttributes), new FileInputStream(RuleBuilderConfig.ruleTemplatePath));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        String fileName = configPath +"\\" + jobEngineElementID +".drl";
+        JELogger.info(getClass(), ruleContent);
+        JEFileUtils.copyStringToFile(ruleContent, fileName, "UTF-8");
 
 		
 	}
