@@ -42,7 +42,7 @@ public class ProjectController {
     * */
     @PostMapping(value = "/addProject", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> addProject(@RequestBody ProjectModel m) {
-        JEProject p = new JEProject(m.getProjectId(), m.getProjectName());
+        JEProject p = new JEProject(m.getProjectId(), m.getProjectName(), m.getConfigurationPath());
         projectService.saveProject(p);
         return ResponseEntity.ok(new Response(APIConstants.CODE_OK, CREATED_PROJECT_SUCCESSFULLY));
     }

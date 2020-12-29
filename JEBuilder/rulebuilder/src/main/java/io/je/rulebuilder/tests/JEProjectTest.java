@@ -12,7 +12,7 @@ public class JEProjectTest {
 	
 	public void addBlock( BlockModel blockModel)
 	{
-		allRules.get(blockModel.getBlockId()).addBlock(blockModel);
+		//allRules.get(blockModel.getBlockId()).addBlock(blockModel);
 	}
 
 }

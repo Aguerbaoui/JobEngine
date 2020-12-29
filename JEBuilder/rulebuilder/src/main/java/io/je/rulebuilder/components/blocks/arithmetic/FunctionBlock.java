@@ -21,8 +21,8 @@ public class FunctionBlock extends ArithmeticBlock {
 		return "$"+jobEngineElementID +" : Number (Double " + constraint + " ) from "+getFunction(operationId) + "((Double)"+getOperationIdentifier()+")";
 	}
 	@Override
-	public String getExpression(String Expression) {
-		// TODO Auto-generated method stub
+	public String getExpression(String expression) {
+		
 		return null;
 	}
 
@@ -31,9 +31,10 @@ public class FunctionBlock extends ArithmeticBlock {
 		switch(operationId)
 		{
 		case 1005:
+			//TODO: add calulaction library
 			return "";
 		case 1006:
-			return "";
+			return "Math.pow";
 		case 1007:
 			return "Math.sqrt";
 		case 1009:

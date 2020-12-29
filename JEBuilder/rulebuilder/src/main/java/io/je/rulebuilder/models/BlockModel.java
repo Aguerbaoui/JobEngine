@@ -10,10 +10,8 @@ import java.util.ArrayList;
 public class BlockModel {
 
 
-    @JsonProperty(AttributesMapping.PROJECTID)
     String projectId;
 
-    @JsonProperty(AttributesMapping.RULEID)
     String ruleId;
 
     @JsonProperty(AttributesMapping.BLOCKID)

@@ -46,8 +46,10 @@ public class JERule extends JEObject {
 	{
 		// set rule attributes
         Map<String, String> ruleTemplateAttributes = new HashMap<>();
-        ruleTemplateAttributes.put("ruleName", jobEngineElementID);
-        ruleTemplateAttributes.put("salience", salience);        
+        ruleTemplateAttributes.put("ruleName", "rule_"+jobEngineElementID);
+        ruleTemplateAttributes.put("salience", salience);   
+        ruleTemplateAttributes.put("enabled", String.valueOf(enabled));        
+
         ruleTemplateAttributes.put("condition", conditionBlockNode.getRoot().getString(0, ""));        
         ObjectDataCompiler objectDataCompiler = new ObjectDataCompiler();
         String ruleContent = "";

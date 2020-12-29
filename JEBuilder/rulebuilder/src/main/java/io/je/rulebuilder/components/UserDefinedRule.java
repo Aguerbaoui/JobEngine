@@ -8,10 +8,8 @@ import java.util.Map;
 import java.util.Set;
 
 import io.je.rulebuilder.components.blocks.Block;
-import io.je.rulebuilder.components.blocks.ComparisonBlock;
 import io.je.rulebuilder.components.blocks.ConditionBlock;
 import io.je.rulebuilder.components.blocks.ExecutionBlock;
-import io.je.rulebuilder.components.blocks.LogicBlock;
 import io.je.rulebuilder.components.blocks.arithmetic.BiasBlock;
 import io.je.rulebuilder.components.blocks.arithmetic.DivideBlock;
 import io.je.rulebuilder.components.blocks.arithmetic.FunctionBlock;
@@ -29,12 +27,15 @@ import io.je.rulebuilder.components.blocks.logic.JoinBlock;
 import io.je.rulebuilder.components.blocks.logic.NotBlock;
 import io.je.rulebuilder.components.blocks.logic.OrBlock;
 import io.je.rulebuilder.components.blocks.logic.XorBlock;
-import io.je.rulebuilder.config.LogConstants;
 import io.je.rulebuilder.models.BlockModel;
 import io.je.rulebuilder.models.RuleModel;
+import io.je.utilities.exceptions.AddRuleBlockException;
+import io.je.utilities.exceptions.RuleBlockNotFoundException;
 import io.je.utilities.exceptions.RuleBuildFailedException;
 import io.je.utilities.exceptions.RuleNotAddedException;
 import io.je.utilities.logger.JELogger;
+import io.je.utilities.runtimeobject.JEObject;
+import io.je.utilities.constants.RuleBuilderErrors;
 
 /*
  * Rules defined by the user.
@@ -42,17 +43,7 @@ import io.je.utilities.logger.JELogger;
  * Each Job engine rule is defined by a root block ( a logic or comparison block that precedes and execution sequence)
  */
 
-public class UserDefinedRule {
-
-	/*
-	 * project id
-	 */
-	private String projectId;
-
-	/*
-	 * rule id
-	 */
-	private String ruleId;
+public class UserDefinedRule extends JEObject {
 
 	/*
 	 * rule priority
@@ -87,25 +78,20 @@ public class UserDefinedRule {
 	/*
 	 * Constructor : generates a user defined rule from a rule model
 	 */
-	public UserDefinedRule(RuleModel ruleModel) throws RuleNotAddedException {
+	public UserDefinedRule(String projectId,RuleModel ruleModel) throws RuleNotAddedException {
 		super();
 
-		// exception when the project id is empty;
-		if (ruleModel.getProjectId() == null) {
-			JELogger.error(getClass(), LogConstants.ProjectIdentifierIsEmpty);
-			throw new RuleNotAddedException("400", LogConstants.ProjectIdentifierIsEmpty);
+	
 
-		}
-
-		// exception if rule id is null;
+		// exception if rule id is null
 		if (ruleModel.getRuleId() == null) {
-			JELogger.error(getClass(), LogConstants.RuleIdentifierIsEmpty);
-			throw new RuleNotAddedException("400", LogConstants.RuleIdentifierIsEmpty);
+			JELogger.error(getClass(), RuleBuilderErrors.RuleIdentifierIsEmpty);
+			throw new RuleNotAddedException("400", RuleBuilderErrors.RuleIdentifierIsEmpty);
 
 		}
-		this.projectId = ruleModel.getProjectId();
-		this.ruleId = ruleModel.getRuleId();
-		this.salience = ruleModel.getSalience();
+		this.jobEngineProjectID = projectId;
+		this.jobEngineElementID = ruleModel.getRuleId();
+		this.salience = String.valueOf(ruleModel.getSalience());
 		this.enabled = ruleModel.isEnabled();
 		this.dateEffective = ruleModel.getDateEffective();
 		this.dateExpires = ruleModel.getDateExpires();
@@ -138,7 +124,7 @@ public class UserDefinedRule {
 
 		// if this rule has no execution block, then it is not valid.
 		if (executionBlockCounter == 0) {
-			throw new RuleBuildFailedException("400", LogConstants.NoExecutionBlock);
+			throw new RuleBuildFailedException("400", RuleBuilderErrors.NoExecutionBlock);
 		}
 
 		// generate JERules
@@ -147,7 +133,7 @@ public class UserDefinedRule {
 		int jeRuleCounter = 0;
 		for (ConditionBlock root : roots) {
 			JERule rule = generateJERule(root);
-			rule.setJobEngineElementID(ruleId + jeRuleCounter);
+			rule.setJobEngineElementID(jobEngineElementID + jeRuleCounter);
 			rules.add(rule);
 		}
 		return rules;
@@ -157,7 +143,7 @@ public class UserDefinedRule {
 	 * generate a job engine rule from a root block
 	 */
 	private JERule generateJERule(ConditionBlock block) {
-		JERule rule = new JERule(ruleId, projectId);
+		JERule rule = new JERule(jobEngineElementID, jobEngineProjectID);
 		rule.setSalience(salience);
 		rule.setDateEffective(dateEffective);
 		rule.setDateExpires(dateExpires);
@@ -174,11 +160,18 @@ public class UserDefinedRule {
 	 */
 	private List<Consequence> getConsequence(ConditionBlock block) {
 		List<Consequence> consequences = new ArrayList<>();
-		for (String blockId : block.getOutputBlocks()) {
+		for (Block ruleBlock : blocks.values()) {
+			if (ruleBlock instanceof ExecutionBlock && ruleBlock.getInputBlocks().contains(block.getJobEngineElementID())) {
+				consequences.add(new Consequence((ExecutionBlock) blocks.get(ruleBlock.getJobEngineElementID())));
+			}
+		}
+		
+		/*for (String blockId : block.getOutputBlocks()) {
 			if (blocks.get(blockId) instanceof ExecutionBlock) {
 				consequences.add(new Consequence((ExecutionBlock) blocks.get(blockId)));
 			}
 		}
+		*/
 		return consequences;
 
 	}
@@ -207,17 +200,30 @@ public class UserDefinedRule {
 	/*
 	 * add a block to this user defined rule
 	 */
-	public void addBlock(BlockModel blockModel) {
-		if (blockModel == null || blockModel.getOperationId() == 0 || blockModel.getBlockId() == null
-				|| blockModel.getBlockId().isEmpty()) {
-			// throw exception, can't add block
-			return;
+	public void addBlock(BlockModel blockModel) throws AddRuleBlockException, AddRuleBlockException {
+
+		// block Id can't be null
+		if (blockModel == null || blockModel.getBlockId() == null || blockModel.getBlockId().isEmpty()) {
+			throw new AddRuleBlockException("400", RuleBuilderErrors.BlockIdentifierIsEmpty);
+
+		}
+
+		if (blocks.containsKey(blockModel.getBlockId())) {
+			throw new AddRuleBlockException("400", RuleBuilderErrors.BlockAlreadyExists);
+
+		}
+
+		// block operation id can't be empty
+		if (blockModel.getOperationId() == 0) {
+			throw new AddRuleBlockException("400", RuleBuilderErrors.BlockAlreadyExists);
 
 		}
 
 		Block block = generateBlock(blockModel);
+		if (block == null) {
+			throw new AddRuleBlockException("500", RuleBuilderErrors.AddRuleBlockFailed);
+		}
 		JELogger.info(getClass(), block.toString());
-
 		blocks.put(blockModel.getBlockId(), block);
 
 	}
@@ -225,7 +231,7 @@ public class UserDefinedRule {
 	/*
 	 * returns a new block created from a block model
 	 */
-	private Block generateBlock(BlockModel blockModel) {
+	private Block generateBlock(BlockModel blockModel) throws AddRuleBlockException {
 		switch (blockModel.getOperationId()) {
 		/*
 		 * Arithmetic blocks
@@ -367,7 +373,7 @@ public class UserDefinedRule {
 
 		// no operation with such id
 		default:
-			return null;
+			throw new AddRuleBlockException("", RuleBuilderErrors.BlockOperationIdUnknown);
 		}
 		return null;
 
@@ -385,28 +391,46 @@ public class UserDefinedRule {
 		this.blocks = blocks;
 	}
 
-	public void updateBlock(Block block) {
+	
+	/*
+	 * update block
+	 */
+	public void updateBlock(BlockModel blockModel) throws AddRuleBlockException {
+
+		// block Id can't be null
+		if (blockModel == null || blockModel.getBlockId() == null || blockModel.getBlockId().isEmpty()) {
+			throw new AddRuleBlockException("400", RuleBuilderErrors.BlockIdentifierIsEmpty);
+
+		}
+
+		if (!blocks.containsKey(blockModel.getBlockId())) {
+			throw new AddRuleBlockException("400", RuleBuilderErrors.BlockNotFound);
+
+		}
+
+		// block operation id can't be empty
+		if (blockModel.getOperationId() == 0) {
+			throw new AddRuleBlockException("400", RuleBuilderErrors.BlockAlreadyExists);
+
+		}
+
+		Block block = generateBlock(blockModel);
+		if (block == null) {
+			throw new AddRuleBlockException("500", RuleBuilderErrors.AddRuleBlockFailed);
+		}
+		JELogger.info(getClass(), block.toString());
+		blocks.put(blockModel.getBlockId(), block);
 
 	}
 
-	public void deletBlock(String blockId) {
+	public void deleteBlock(String blockId) throws RuleBlockNotFoundException {
+		if(!blocks.containsKey(blockId))
+		{
+			throw new RuleBlockNotFoundException("", RuleBuilderErrors.BlockNotFound);
+		}
+		blocks.remove(blockId);
+		
 
-	}
-
-	public String getProjectId() {
-		return projectId;
-	}
-
-	public void setProjectId(String projectId) {
-		this.projectId = projectId;
-	}
-
-	public String getRuleId() {
-		return ruleId;
-	}
-
-	public void setRuleId(String ruleId) {
-		this.ruleId = ruleId;
 	}
 
 	public String getSalience() {
@@ -451,9 +475,9 @@ public class UserDefinedRule {
 
 	@Override
 	public String toString() {
-		return "UserDefinedRule [projectId=" + projectId + ", ruleId=" + ruleId + ", salience=" + salience
-				+ ", enabled=" + enabled + ", dateEffective=" + dateEffective + ", dateExpires=" + dateExpires
-				+ ", timer=" + timer + ", blocks=" + blocks + "]";
+		return "UserDefinedRule [salience=" + salience + ", enabled=" + enabled + ", dateEffective=" + dateEffective
+				+ ", dateExpires=" + dateExpires + ", timer=" + timer + ", blocks=" + blocks + ", jobEngineElementID="
+				+ jobEngineElementID + ", jobEngineProjectID=" + jobEngineProjectID + "]";
 	}
 
 }

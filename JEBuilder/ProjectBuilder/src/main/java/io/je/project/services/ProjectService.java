@@ -2,8 +2,10 @@ package io.je.project.services;
 
 import io.je.project.beans.JEProject;
 import io.je.rulebuilder.components.JERule;
+import io.je.rulebuilder.components.UserDefinedRule;
 import io.je.utilities.constants.Errors;
 import io.je.utilities.exceptions.ProjectNotFoundException;
+import io.je.utilities.exceptions.RuleAlreadyExistsException;
 import io.je.utilities.exceptions.WorkflowNotFoundException;
 import models.JEWorkflow;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,8 @@ public class ProjectService {
 
     @Autowired
     WorkflowService workflowService;
+    
+ 
 
     // TODO add repo jpa save later
     private static HashMap<String, JEProject> loadedProjects = new HashMap<String, JEProject>();
@@ -62,7 +66,7 @@ public class ProjectService {
     /*
     * Add a rule to project
     * */
-    public void addRuleToProject(JERule rule) {
+    public void addRuleToProject(UserDefinedRule rule) throws RuleAlreadyExistsException {
         loadedProjects.get(rule.getJobEngineProjectID()).addRule(rule);
     }
 

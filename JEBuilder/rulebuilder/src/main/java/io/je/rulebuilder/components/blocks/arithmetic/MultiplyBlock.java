@@ -27,7 +27,7 @@ public class MultiplyBlock extends ArithmeticBlock{
 
 
 	@Override
-	public String getExpression(String Expression) {
+	public String getExpression(String expression) {
 		// TODO Auto-generated method stub
 		return null;
 	}

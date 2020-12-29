@@ -7,6 +7,7 @@ import io.je.rulebuilder.models.BlockModel;
  */
 public abstract class ComparisonBlock extends PersistableBlock {
 	
+	//a random variable name used to reference the dynamic 2nd operand if there is one
 	String operationIdentifier;
 	String threshold;
 
@@ -21,6 +22,12 @@ public abstract class ComparisonBlock extends PersistableBlock {
 		}
 	}
 	
+	/*
+	 * return comparison expression
+	 * example:  "> 5"
+	 * example2: "> $variable"
+	 * 
+	 */
 	public String getExpression()
 	{
 		if(threshold!=null)

@@ -13,6 +13,9 @@ public class APIConstants {
     public final static String PROJECT_NOT_FOUND = "2";
 
     public final static String WORKFLOW_NOT_FOUND = "1";
+    
+    public final static String RULE_NOT_FOUND = "6";
+
 
     public final static String WORKFLOW_BLOCK_NOT_FOUND = "3";
 
