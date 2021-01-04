@@ -59,7 +59,7 @@ public class ProjectService {
     /*
     * Remove workflow from project
     * */
-    public void deleteWorkflowFromProject(String projectId, String workflowId) throws ProjectNotFoundException {
+    public void deleteWorkflowFromProject(String projectId, String workflowId) throws ProjectNotFoundException, WorkflowNotFoundException {
         workflowService.removeWorkflow(projectId, workflowId);
     }
 

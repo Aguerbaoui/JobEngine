@@ -127,7 +127,6 @@ public class JEWorkflow extends JEObject {
         //TODO Bug with condition ( in case of multiple inflows with multiple conditions currently we assuming it's 1 condition
         allBlocks.get(from).getOutFlows().put(to, allBlocks.get(to));
         allBlocks.get(from).setCondition(condition);
-        JELogger.info(JEWorkflow.class, allBlocks.get(to).toString());
         if (allBlocks.get(to) != null && allBlocks.get(to).getInflows() != null) {
             allBlocks.get(to).getInflows().put(from, allBlocks.get(from));
         }

@@ -19,18 +19,39 @@ import java.util.HashMap;
 
 public class JEProject {
 
+    /*
+    * Project ID
+    * */
     private String projectId;
 
+    /*
+    * Project name
+    * */
     private String projectName;
-    
+
+    /*
+    * Configuration path
+    * */
     private String configurationPath;
 
+    /*
+    * Rules in a project
+    * */
     private HashMap<String, UserDefinedRule> rules;
 
+    /*
+    * workflows in a project
+    * */
     private HashMap<String, JEWorkflow> workflows;
 
+    /*
+    * Is the project running
+    * */
     private boolean running = false;
 
+    /*
+    * Constructor
+    * */
     public JEProject(String projectId, String projectName, String configurationPath) {
         rules = new HashMap<String, UserDefinedRule>();
         workflows = new HashMap<String, JEWorkflow>();
@@ -40,69 +61,109 @@ public class JEProject {
 
     }
 
+    /*
+    * Get project Id
+    * */
     public String getProjectId() {
         return projectId;
     }
 
+    /*
+    * Set project id
+    * */
     public void setProjectId(String projectId) {
         this.projectId = projectId;
     }
 
+    /*
+    * Get project name
+    * */
     public String getProjectName() {
         return projectName;
     }
 
+    /*
+    * Set project name
+    * */
     public void setProjectName(String projectName) {
         this.projectName = projectName;
     }
 
-
-
+    /*
+    * Get project rules
+    * */
     public HashMap<String, UserDefinedRule> getRules() {
 		return rules;
 	}
 
+	/*
+	* Set project rules
+	* */
 	public void setRules(HashMap<String, UserDefinedRule> rules) {
 		this.rules = rules;
 	}
 
+	/*
+	* Get all workflows
+	* */
 	public HashMap<String, JEWorkflow> getWorkflows() {
         return workflows;
     }
 
+    /*
+    * Set all workflows
+    * */
     public void setWorkflows(HashMap<String, JEWorkflow> workflows) {
         this.workflows = workflows;
     }
 
+    /*
+    * Add a workflow
+    * */
     public void addWorkflow(JEWorkflow wf) {
         this.workflows.put(wf.getJobEngineElementID(), wf);
     }
 
     /*
-     * Workflow Management 
+     * Remove a workflow
      */
-
     public void removeWorkflow(String id) {
         JEWorkflow wf = workflows.get(id);
         workflows.remove(id);
         wf = null;
     }
+
+    /*
+    * Checks if a workflow exists
+    * */
     public boolean workflowExists(String workflowId) {
         return workflows.containsKey(workflowId);
     }
 
+    /*
+    * Add a block to a workflow
+    * */
     public void addBlockToWorkflow(WorkflowBlock block) {
         workflows.get(block.getWorkflowId()).addBlock(block);
     }
 
+    /*
+    * Delete a workflow block
+    * */
     public void deleteWorkflowBlock(String workflowId, String blockId) throws InvalidSequenceFlowException, WorkflowBlockNotFound {
         workflows.get(workflowId).deleteWorkflowBlock(blockId);
     }
 
+    /*
+    * Delete a workflow sequence flow
+    * */
     public void deleteWorkflowSequenceFlow(String workflowId, String sourceRef, String targetRef) throws InvalidSequenceFlowException {
         workflows.get(workflowId).deleteSequenceFlow(sourceRef, targetRef);
     }
 
+    /*
+    * Add a workflow sequence flow
+    * */
     public void addWorkflowSequenceFlow(String workflowId, String sourceRef, String targetRef, String condition) throws WorkflowBlockNotFound {
         if(! workflows.get(workflowId).blockExists(sourceRef) || !workflows.get(workflowId).blockExists(targetRef)) {
             throw new WorkflowBlockNotFound(APIConstants.WORKFLOW_BLOCK_NOT_FOUND, Errors.workflowBlockNotFound);
@@ -110,6 +171,9 @@ public class JEProject {
         workflows.get(workflowId).addBlockFlow(sourceRef, targetRef, condition);
     }
 
+    /*
+    * Get a workflow id
+    * */
     public JEWorkflow getWorkflowById(String workflowId) {
         return workflows.get(workflowId);
     }
@@ -117,9 +181,7 @@ public class JEProject {
     /*
      * Rule Management 
      */
-    
-    
-    
+
     public boolean ruleExists(String ruleId)
     {
     	return rules.containsKey(ruleId);
@@ -135,7 +197,10 @@ public class JEProject {
     			}
         this.rules.put(rule.getJobEngineElementID(), rule);
     }
-    
+
+    /*
+    * Add a block to a rule
+    * */
     public void addBlockToRule(BlockModel blockModel) throws AddRuleBlockException 
     	
     {	

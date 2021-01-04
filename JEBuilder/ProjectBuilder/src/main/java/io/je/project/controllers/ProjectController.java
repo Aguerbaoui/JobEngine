@@ -7,7 +7,9 @@ import io.je.project.models.WorkflowModel;
 import io.je.project.services.ProjectService;
 import io.je.utilities.constants.APIConstants;
 import io.je.utilities.constants.Errors;
+import io.je.utilities.constants.ResponseMessages;
 import io.je.utilities.exceptions.ProjectNotFoundException;
+import io.je.utilities.exceptions.RuleNotFoundException;
 import io.je.utilities.exceptions.WorkflowNotFoundException;
 import io.je.utilities.logger.JELogger;
 import io.je.utilities.network.Response;
@@ -145,5 +147,22 @@ public class ProjectController {
             return ResponseEntity.badRequest().body(new Response(APIConstants.UNKNOWN_ERROR, Errors.uknownError));
         }
         return ResponseEntity.ok(new Response(APIConstants.CODE_OK, EXECUTING_WORKFLOW));
+    }
+
+    /*
+     * Delete a workflow
+     */
+    @DeleteMapping(value = "/deleteWorkflow/{projectId}/{workflowId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> deleteWorkflow(@PathVariable("projectId") String projectId,@PathVariable("workflowId") String workflowId) {
+
+        try {
+            projectService.deleteWorkflowFromProject(projectId,workflowId);
+        } catch (ProjectNotFoundException | WorkflowNotFoundException e) {
+            JELogger.error(ProjectController.class, e.getMessage());
+            return ResponseEntity.badRequest().body(new Response(e.getCode(), e.getMessage()));
+        }
+
+
+        return ResponseEntity.ok(new Response(APIConstants.CODE_OK, ResponseMessages.WorkflowDeletionSucceeded));
     }
 }
