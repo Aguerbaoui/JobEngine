@@ -19,7 +19,7 @@ public class APIConstants {
 
     public final static String WORKFLOW_BLOCK_NOT_FOUND = "3";
 
-    public final static String INVALID_SEQUENCE_FLOW = "4";
+    public final static String INVALID_SEQUENCE_FLOW = "40";
 
     public final static String NETWORK_ERROR = "5";
 

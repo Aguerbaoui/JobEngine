@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>io.je</groupId>
     <artifactId>ProjectBuilder</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.1</version>
     <packaging>war</packaging>
     <name>ProjectBuilder</name>
     <parent>
@@ -27,9 +27,44 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.activiti</groupId>
+            <artifactId>activiti-engine</artifactId>
+            <version>7.0.0.GA</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
+
+        </dependency>
+      <!--  <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
             <version>3.10</version>
+        </dependency>
+        <dependency>
+            <groupId>org.activiti</groupId>
+            <artifactId>activiti-bpmn-model</artifactId>
+            <version>7.0.0.GA</version>
+            <scope>compile</scope>
+        </dependency> -->
+        <dependency>
+            <groupId>io.je</groupId>
+            <artifactId>RuntimeUtilities</artifactId>
+            <version>0.0.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.je</groupId>
+            <artifactId>WorkflowBuilder</artifactId>
+            <version>0.0.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.je</groupId>
+            <artifactId>rulebuilder</artifactId>
+            <version>0.0.1</version>
         </dependency>
     </dependencies>
 </project>

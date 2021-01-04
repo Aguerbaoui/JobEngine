@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
  * Runtime manager project controller
  * */
 @RestController
+@RequestMapping(value= "/project")
 public class ProjectController {
 
     /*

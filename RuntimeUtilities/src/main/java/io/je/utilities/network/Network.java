@@ -10,7 +10,7 @@ import java.util.HashMap;
 
 public class Network {
 
-    private static OkHttpClient client = new OkHttpClient();
+    private static final OkHttpClient client = new OkHttpClient();
 
     private Network() {
     }
@@ -25,15 +25,12 @@ public class Network {
         }
         JELogger.info(Network.class, jsonStr);
         RequestBody body = RequestBody.create(MediaType.parse("application/json"), jsonStr);
-
         Request request = new Request.Builder().url(url).post(body).build();
-
         Call call = client.newCall(request);
         call.execute();
     }
 
     public static void makeNetworkCall(String url) throws IOException {
-
         Request request = new Request.Builder().url(url).get().build();
         Call call = client.newCall(request);
         JELogger.info(Network.class, url);
