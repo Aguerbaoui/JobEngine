@@ -2,43 +2,67 @@ package io.je.rulebuilder.components;
 
 import io.je.rulebuilder.components.blocks.Block;
 import io.je.rulebuilder.components.blocks.PersistableBlock;
+import io.je.rulebuilder.config.RuleBuilderConfig;
+import io.je.utilities.files.JEFileUtils;
+import io.je.utilities.logger.JELogger;
 import io.je.utilities.runtimeobject.JEObject;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import org.drools.template.ObjectDataCompiler;
 
 /*
  * rule definition in job engine
  */
 public class JERule extends JEObject {
 
-	String projectId;
 	String salience;
 	boolean enabled;
 	String dateEffective;
 	String dateExpires;
-	String duration;
 	String timer;
-	String calendar;
     ConditionBlockNode conditionBlockNode;
-
-    List<Consequence> consequences;
-
-
+    List<Consequence> consequences ;
     
+
+    /*
+     * Constructor
+     */
     public JERule(String jobEngineElementID, String jobEngineProjectID) {
         super(jobEngineElementID, jobEngineProjectID);
         consequences = new ArrayList<>();
     }
 
 
-	public String getProjectId() {
-		return projectId;
-	}
+    /*generate DRL for this rule */
+    
+	public void generateDRL(String configPath)
+	{
+		// set rule attributes
+        Map<String, String> ruleTemplateAttributes = new HashMap<>();
+        ruleTemplateAttributes.put("ruleName", "rule_"+jobEngineElementID);
+        ruleTemplateAttributes.put("salience", salience);   
+        ruleTemplateAttributes.put("enabled", String.valueOf(enabled));        
 
+        ruleTemplateAttributes.put("condition", conditionBlockNode.getRoot().getString(0, ""));        
+        ObjectDataCompiler objectDataCompiler = new ObjectDataCompiler();
+        String ruleContent = "";
+        try {
+            ruleContent = objectDataCompiler.compile(Arrays.asList(ruleTemplateAttributes), new FileInputStream(RuleBuilderConfig.ruleTemplatePath));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        String fileName = configPath +"\\" + jobEngineElementID +".drl";
+        JELogger.info(getClass(), ruleContent);
+        JEFileUtils.copyStringToFile(ruleContent, fileName, "UTF-8");
 
-	public void setProjectId(String projectId) {
-		this.projectId = projectId;
+		
 	}
 
 
@@ -84,14 +108,6 @@ public class JERule extends JEObject {
 	}
 
 
-	public String getDuration() {
-		return duration;
-	}
-
-
-	public void setDuration(String duration) {
-		this.duration = duration;
-	}
 
 
 	public String getTimer() {
@@ -104,14 +120,6 @@ public class JERule extends JEObject {
 	}
 
 
-	public String getCalendar() {
-		return calendar;
-	}
-
-
-	public void setCalendar(String calendar) {
-		this.calendar = calendar;
-	}
 
 
 	public ConditionBlockNode getCondition() {

@@ -114,13 +114,13 @@ public class ProjectContainer {
      * the build project method builds the kie environment needed to execute the
      * rules.
      */
-    public void buildProject() throws RuleEngineBuildFailedException {
+    public void buildProject() throws RuleBuildFailedException {
         JELogger.info(ProjectContainer.class, RuleEngineLogConstants.buildingProjectContainer);
 
         // build kie environment
         if (!buildKie()) {
             JELogger.error(ProjectContainer.class, RuleEngineLogConstants.buildingProjectContainerFailed);
-            throw new RuleEngineBuildFailedException("200", RuleEngineLogConstants.buildingProjectContainerFailed);
+            throw new RuleBuildFailedException("200", RuleEngineLogConstants.buildingProjectContainerFailed);
         }
 
         JELogger.info(ProjectContainer.class, RuleEngineLogConstants.buildingProjectContainerSuccessful);
@@ -133,7 +133,7 @@ public class ProjectContainer {
      * This method fires until halt the kiesession of this project.
      */
     public void fireRules()
-            throws RulesNotFiredException, RuleEngineBuildFailedException, ProjectAlreadyRunningException {
+            throws RulesNotFiredException, RuleBuildFailedException, ProjectAlreadyRunningException {
 
         // build project if not already built
         if (buildStatus == BuildStatus.UNBUILT) {

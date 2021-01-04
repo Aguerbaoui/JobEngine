@@ -12,14 +12,15 @@ import io.je.rulebuilder.config.AttributesMapping;
  */
 public class RuleModel {
 	
-    @JsonProperty(AttributesMapping.PROJECTID)
-	String projectId;
+
 	
     @JsonProperty(AttributesMapping.RULEID)
     String ruleId;
+    
+    //TODO: add rule name
 	
     @JsonProperty(AttributesMapping.SALIENCE)
-    String salience;
+    int salience;
 
     @JsonProperty(AttributesMapping.ENABLED)
     boolean enabled;
@@ -36,22 +37,19 @@ public class RuleModel {
 
     
     
-	public String getProjectId() {
-		return projectId;
-	}
-	public void setProjectId(String projectId) {
-		this.projectId = projectId;
-	}
+
 	public String getRuleId() {
 		return ruleId;
 	}
 	public void setRuleId(String ruleId) {
 		this.ruleId = ruleId;
 	}
-	public String getSalience() {
+
+	
+	public int getSalience() {
 		return salience;
 	}
-	public void setSalience(String salience) {
+	public void setSalience(int salience) {
 		this.salience = salience;
 	}
 	public boolean isEnabled() {

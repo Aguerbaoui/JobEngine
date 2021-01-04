@@ -78,9 +78,5 @@ public abstract class Block extends JEObject {
 
 
 
-	/*
-     * returns a string that describes this block in the drools rule language.
-     */
-    public abstract String getExpression();
 
 }

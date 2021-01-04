@@ -4,16 +4,21 @@ import io.je.rulebuilder.components.blocks.LogicBlock;
 import io.je.rulebuilder.models.BlockModel;
 
 public class JoinBlock extends LogicBlock {
+	
+	String joinId;
 
 	public JoinBlock(BlockModel blockModel) {
 		super(blockModel);
-		// TODO Auto-generated constructor stub
+		joinId="joinId";
 	}
 
+	
+	
 	@Override
-	public String getExpression() {
-		// TODO Auto-generated method stub
+	public String getComparableExpression(String constraint) {
 		return null;
 	}
+
+
 
 }

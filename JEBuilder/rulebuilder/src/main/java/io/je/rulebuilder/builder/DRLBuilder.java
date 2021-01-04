@@ -47,7 +47,6 @@ public class DRLBuilder {
             System.out.println("An error occurred.");
             e.printStackTrace();
         }
-
         FileWriter myWriter = null;
         try {
             myWriter = new FileWriter(RuleBuilderConfig.drlGenerationPath + rule.getRuleName() + ".drl");

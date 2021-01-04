@@ -3,13 +3,11 @@ package io.je.rulebuilder.components.blocks.arithmetic;
 import io.je.rulebuilder.components.blocks.ArithmeticBlock;
 import io.je.rulebuilder.models.BlockModel;
 
-/*
- * Sum Block
- */
-public class SumBlock extends ArithmeticBlock {
+public class SubtractBlock extends ArithmeticBlock{
 
-	public SumBlock(BlockModel blockModel) {
+	public SubtractBlock(BlockModel blockModel) {
 		super(blockModel);
+		// TODO Auto-generated constructor stub
 	}
 
 	/*
@@ -23,7 +21,7 @@ public class SumBlock extends ArithmeticBlock {
 		int numberOfInputs = this.inputBlocks.size();
 		for(int i = 0; i<numberOfInputs-1;i++)
 		{
-			simpleExpression.append("$"+ inputBlocks.get(i) + "+");
+			simpleExpression.append("$"+ inputBlocks.get(i) + "-");
 		}
 		simpleExpression.append("$"+ (numberOfInputs-1) );
 
@@ -42,7 +40,7 @@ public class SumBlock extends ArithmeticBlock {
 		int numberOfInputs = this.inputBlocks.size();
 		for(int i = 0; i<numberOfInputs-1;i++)
 		{
-			simpleExpression.append("$"+ inputBlocks.get(i) + "+");
+			simpleExpression.append("$"+ inputBlocks.get(i) + "-");
 		}
 		simpleExpression.append("$"+ (numberOfInputs-1) );
 
@@ -54,10 +52,6 @@ public class SumBlock extends ArithmeticBlock {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-
-
-
 
 
 }

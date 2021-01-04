@@ -14,6 +14,12 @@ public class Errors {
     public final static String InvalidSequenceFlow = "Invalid Sequence flow";
 
     public final static String NETWORK_ERROR = "Error connecting to runtime manager api";
+    
+    
+    
+    
+    
+    
 
     /*public static String getMessage(String i) {
 

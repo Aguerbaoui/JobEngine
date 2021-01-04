@@ -16,4 +16,16 @@ public class GainBlock extends ArithmeticBlock {
 		return null;
 	}
 
+	@Override
+	public String getComparableExpression(String constraint) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getExpression(String expression) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

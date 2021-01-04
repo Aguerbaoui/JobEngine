@@ -7,16 +7,40 @@ import io.je.rulebuilder.models.BlockModel;
  */
 public abstract class ComparisonBlock extends PersistableBlock {
 	
+	//a random variable name used to reference the dynamic 2nd operand if there is one
+	String operationIdentifier;
 	String threshold;
 
 	public ComparisonBlock(BlockModel blockModel) {
 		super(blockModel.getBlockId(), blockModel.getProjectId(), blockModel.getRuleId(), 
 				blockModel.getInputBlocksIds(), blockModel.getOutputBlocksIds(),blockModel.getTimePersistenceValue(),blockModel.getTimePersistenceUnit());
+		operationIdentifier="attToBeCompared";
+
 		if(blockModel.getInputBlocksIds().size()==1)
 		{
 			threshold = blockModel.getBlockConfiguration().getValue();
 		}
 	}
+	
+	/*
+	 * return comparison expression
+	 * example:  "> 5"
+	 * example2: "> $variable"
+	 * 
+	 */
+	public String getExpression()
+	{
+		if(threshold!=null)
+			
+		{
+			return getOperator()+ threshold;
+		}
+		else
+			return getOperator()+ operationIdentifier ;
+	}
+	
+
+	public abstract String getOperator();
 
 	public String getThreshold() {
 		return threshold;
@@ -24,6 +48,16 @@ public abstract class ComparisonBlock extends PersistableBlock {
 
 	public void setThreshold(String threshold) {
 		this.threshold = threshold;
+	}
+	
+	
+
+	public String getOperationIdentifier() {
+		return operationIdentifier;
+	}
+
+	public void setOperationIdentifier(String operationIdentifier) {
+		this.operationIdentifier = operationIdentifier;
 	}
 
 	@Override

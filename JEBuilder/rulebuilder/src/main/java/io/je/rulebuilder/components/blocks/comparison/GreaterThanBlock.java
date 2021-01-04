@@ -10,9 +10,15 @@ public class GreaterThanBlock extends ComparisonBlock {
 	}
 
 	@Override
-	public String getExpression() {
-		// TODO Auto-generated method stub
+	public String getOperator() {
+		return ">";
+	}
+
+	@Override
+	public String getComparableExpression(String constraint) {
+		
 		return null;
 	}
+
 
 }
