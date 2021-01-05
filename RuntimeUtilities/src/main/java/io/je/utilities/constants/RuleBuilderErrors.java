@@ -12,7 +12,7 @@ public class RuleBuilderErrors {
 
 
 	
-	//blocks
+	//rule blocks
 	public static final String AddRuleBlockFailed = "Failed to Add Block";
 	public static final String BlockAlreadyExists = "A block with this id already exists.";
 	public static final String BlockNotFound = "No Block with this id was found";

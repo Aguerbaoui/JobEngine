@@ -69,7 +69,7 @@ public class RuleService {
 	 */
 	public void updateRule(String projectId, RuleModel ruleModel) throws RuleNotAddedException, ProjectNotFoundException, RuleNotFoundException {
 		UserDefinedRule rule = createRule(projectId,ruleModel);
-		JEProject project = ProjectService.getProjectById(rule.getJobEngineProjectID());
+		JEProject project = ProjectService.getProjectById(projectId);
 		if (project == null) {
 			throw new ProjectNotFoundException(APIConstants.PROJECT_NOT_FOUND, Errors.projectNotFound);
 		} else if (!project.ruleExists(ruleModel.getRuleId())) {
