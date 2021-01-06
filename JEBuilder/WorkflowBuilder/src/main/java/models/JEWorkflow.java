@@ -8,12 +8,14 @@ import io.je.utilities.exceptions.InvalidSequenceFlowException;
 import io.je.utilities.exceptions.WorkflowBlockNotFound;
 import io.je.utilities.logger.JELogger;
 import io.je.utilities.runtimeobject.JEObject;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.HashMap;
 
 /*
  * Model class for a workflow
  * */
+@Document("JEWorkflow")
 public class JEWorkflow extends JEObject {
 
     /*

@@ -1,15 +1,13 @@
 package io.je.project.services;
 
-import builder.ModelBuilder;
 import io.je.project.beans.JEProject;
-import io.je.rulebuilder.components.JERule;
+import io.je.project.repository.ProjectRepository;
 import io.je.rulebuilder.components.UserDefinedRule;
 import io.je.utilities.constants.Errors;
 import io.je.utilities.exceptions.ProjectNotFoundException;
 import io.je.utilities.exceptions.RuleAlreadyExistsException;
 import io.je.utilities.exceptions.WorkflowNotFoundException;
 import models.JEWorkflow;
-import org.activiti.bpmn.model.FlowElement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,8 +22,9 @@ public class ProjectService {
 
     @Autowired
     WorkflowService workflowService;
-    
- 
+
+    @Autowired
+    ProjectRepository projectRepository;
 
     // TODO add repo jpa save later
     private static HashMap<String, JEProject> loadedProjects = new HashMap<String, JEProject>();
@@ -35,6 +34,7 @@ public class ProjectService {
     * */
     public void saveProject(JEProject project) {
         //Todo add repo jpa save operation
+        projectRepository.save(project);
         loadedProjects.put(project.getProjectId(), project);
     }
 

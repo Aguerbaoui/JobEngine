@@ -173,9 +173,9 @@ public class ClassBuilder {
 	 */
 	private static Class<?> getType(String type) {
 		Class<?> classType = Integer.class;
-		switch (type) {
+		/*switch (type) {
 		// TODO : assign type
-		}
+		}*/
 		return classType;
 	}
 
