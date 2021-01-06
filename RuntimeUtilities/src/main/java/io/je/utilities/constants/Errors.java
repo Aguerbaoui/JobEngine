@@ -21,26 +21,4 @@ public class Errors {
     
     
 
-    /*public static String getMessage(String i) {
-
-        int code = Integer.parseInt(i);
-        switch (code) {
-
-            case APIConstants.WORKFLOW_NOT_FOUND:
-                return workflowNotFound;
-
-            case APIConstants.PROJECT_NOT_FOUND:
-                return projectNotFound;
-
-            case APIConstants.WORKFLOW_BLOCK_NOT_FOUND:
-                return workflowBlockNotFound;
-
-            case APIConstants.INVALID_SEQUENCE_FLOW:
-                return InvalidSequenceFlow;
-
-            default:
-                return "Unknown Error";
-        }
-
-    }*/
 }

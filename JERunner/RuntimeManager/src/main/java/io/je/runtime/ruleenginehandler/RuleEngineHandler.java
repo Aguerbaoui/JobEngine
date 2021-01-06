@@ -28,7 +28,7 @@ public class RuleEngineHandler {
         String ruleId = ruleModel.getProjectId() + "_" + ruleModel.getRuleId();
         Rule rule = new Rule(ruleId, ruleModel.getProjectId(), ruleModel.getRuleId(), ruleModel.getFormat(), ruleModel.getRulePath());
         if (!RuleEngine.addRule(rule)) {
-            throw new RuleNotAddedException("", "");
+            throw new RuleNotAddedException( "");
         }
 
     }

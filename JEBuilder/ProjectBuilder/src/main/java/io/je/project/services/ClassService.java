@@ -22,7 +22,7 @@ public class ClassService {
 	public void addClass(String projectId,ClassModel classModel) throws ProjectNotFoundException, ClassFormatInvalidException {
 		JEProject project = ProjectService.getProjectById(projectId);
 		if (project == null) {
-			throw new ProjectNotFoundException(APIConstants.PROJECT_NOT_FOUND, Errors.projectNotFound);
+			throw new ProjectNotFoundException( Errors.projectNotFound);
 		}
 		project.addClass(classModel);
 	}

@@ -115,7 +115,7 @@ public class ProcessManager {
      * */
     public static void launchProcessByKeyWithoutVariables(String id) throws WorkflowNotFoundException {
         if (processes.get(id) == null) {
-            throw new WorkflowNotFoundException(APIConstants.WORKFLOW_NOT_FOUND, Errors.workflowNotFound);
+            throw new WorkflowNotFoundException( Errors.workflowNotFound);
         }
         runtimeService.startProcessInstanceByKey(id);
     }

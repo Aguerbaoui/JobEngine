@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import io.je.classbuilder.models.ClassModel;
 import io.je.project.services.ClassService;
 import io.je.utilities.constants.APIConstants;
+import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.constants.ResponseMessages;
 import io.je.utilities.exceptions.ClassFormatInvalidException;
 import io.je.utilities.exceptions.ProjectNotFoundException;
@@ -42,7 +43,7 @@ public class ClassController {
 			JELogger.error(ClassController.class, e.getMessage());
 			return ResponseEntity.badRequest().body(new Response(e.getCode(), e.getMessage()));
 		}
-		return ResponseEntity.ok(new Response(APIConstants.CODE_OK, ResponseMessages.RuleAdditionSucceeded));
+		return ResponseEntity.ok(new Response(ResponseCodes.CODE_OK, ResponseMessages.RuleAdditionSucceeded));
 
 	}
 
