@@ -22,7 +22,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.HashMap;
 
-@Document("JEProject")
+@Document(collection="JEProject")
 public class JEProject {
 
     /*

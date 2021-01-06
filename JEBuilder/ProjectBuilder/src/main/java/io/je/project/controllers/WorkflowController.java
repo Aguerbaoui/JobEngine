@@ -1,16 +1,14 @@
 package io.je.project.controllers;
 
-import blocks.basic.*;
-import blocks.control.EventGatewayBlock;
-import blocks.control.ExclusiveGatewayBlock;
-import blocks.control.ParallelGatewayBlock;
-import blocks.events.MessageCatchEvent;
 import io.je.project.models.WorkflowBlockModel;
+import io.je.project.services.ProjectService;
 import io.je.project.services.WorkflowService;
 import io.je.utilities.constants.APIConstants;
 import io.je.utilities.constants.Errors;
-import io.je.utilities.constants.WorkflowConstants;
-import io.je.utilities.exceptions.*;
+import io.je.utilities.exceptions.InvalidSequenceFlowException;
+import io.je.utilities.exceptions.ProjectNotFoundException;
+import io.je.utilities.exceptions.WorkflowBlockNotFound;
+import io.je.utilities.exceptions.WorkflowNotFoundException;
 import io.je.utilities.logger.JELogger;
 import io.je.utilities.network.Response;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +30,8 @@ public class WorkflowController {
     @Autowired
     WorkflowService workflowService;
 
+    @Autowired
+    ProjectService projectService;
     /*
      * Add a new Workflow component
      */
@@ -40,6 +40,7 @@ public class WorkflowController {
         try {
 
             workflowService.addWorkflowBlock(block);
+            projectService.saveProject(ProjectService.getProjectById(block.getProjectId()));
         } catch (WorkflowNotFoundException|WorkflowBlockNotFound  e) {
             JELogger.info(WorkflowController.class, e.getMessage());
             return ResponseEntity.badRequest().body(new Response(e.getCode(), e.getMessage()));
@@ -60,6 +61,7 @@ public class WorkflowController {
 
         try {
             workflowService.updateWorkflowBlock(block);
+            projectService.saveProject(ProjectService.getProjectById(block.getProjectId()));
         }
         catch (WorkflowNotFoundException|WorkflowBlockNotFound  e) {
             JELogger.info(WorkflowController.class, e.getMessage());
@@ -82,6 +84,7 @@ public class WorkflowController {
 
         try {
             workflowService.deleteWorkflowBlock(projectId, key, id);
+            projectService.saveProject(ProjectService.getProjectById(projectId));
         } catch (WorkflowNotFoundException e) {
             return ResponseEntity.badRequest().body(new Response(APIConstants.WORKFLOW_NOT_FOUND, Errors.workflowNotFound));
         } catch (ProjectNotFoundException e) {
@@ -102,6 +105,7 @@ public class WorkflowController {
 
         try {
             workflowService.deleteSequenceFlow(projectId, key, from, to);
+            projectService.saveProject(ProjectService.getProjectById(projectId));
         } catch (WorkflowNotFoundException e) {
             return ResponseEntity.badRequest().body(new Response(APIConstants.WORKFLOW_NOT_FOUND, Errors.workflowNotFound));
         } catch (ProjectNotFoundException e) {

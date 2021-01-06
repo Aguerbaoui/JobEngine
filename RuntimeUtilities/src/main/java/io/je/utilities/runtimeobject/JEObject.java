@@ -5,7 +5,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
 
-@Document("JEObject")
+@Document(collection="JEObject")
 public abstract class JEObject {
 
 

@@ -31,7 +31,7 @@ public class JEToBpmnMapper {
         Process process = ModelBuilder.createProcess(wf.getWorkflowName().trim());
         process.addFlowElement(ModelBuilder.createStartEvent());
         addListeners(process);
-        parseWorkflowBlock(wf.getWorkflowStartBlock(), process, null);
+        parseWorkflowBlock(wf, wf.getWorkflowStartBlock(), process, null);
         model.addProcess(process);
         //new BpmnAutoLayout(model).execute();
         String modelPath = WorkflowConstants.bpmnPath + wf.getWorkflowName().trim() + WorkflowConstants.bpmnExtension;
@@ -62,29 +62,30 @@ public class JEToBpmnMapper {
     /*
      * Parse job engine blocks to bpmn blocks
      * */
-    private static void parseWorkflowBlock(WorkflowBlock startBlock, Process process, WorkflowBlock previous) {
+    private static void parseWorkflowBlock(JEWorkflow wf, WorkflowBlock startBlock, Process process, WorkflowBlock previous) {
 
         if (previous != null) {
             process.addFlowElement(ModelBuilder.createSequenceFlow(previous.getJobEngineElementID(), startBlock.getJobEngineElementID(), previous.getCondition()));
         }
         if (startBlock.isProcessed()) return;
         startBlock.setProcessed(true);
-        for (WorkflowBlock block : startBlock.getOutFlows().values()) {
+        for (String id : startBlock.getOutFlows().values()) {
+            WorkflowBlock block = wf.getBlockById(id);
             if (block instanceof EndBlock && !block.isProcessed()) {
                 process.addFlowElement(ModelBuilder.createEndEvent());
             } else if (block instanceof ParallelGatewayBlock && !block.isProcessed()) {
                 process.addFlowElement(ModelBuilder.createParallelGateway(block.getJobEngineElementID(), block.getName(),
-                        block.generateBpmnInflows(), block.generateBpmnOutflows()));
+                        block.generateBpmnInflows(wf), block.generateBpmnOutflows(wf)));
             } /*else if (block instanceof SynchronizeBlock && !block.isProcessed()) {
 				process.addFlowElement(ModelBuilder.createParallelGateway(block.getId(), block.getName(),
-						block.generateBpmnInflows(), block.generateBpmnOutflows()));
+						block.generateBpmnInflows(wf), block.generateBpmnOutflows()));
 			}*/ else if (block instanceof ScriptBlock && !block.isProcessed()) {
                 process.addFlowElement(ModelBuilder.createScriptTask(block.getJobEngineElementID(), block.getName(),
                         ((ScriptBlock) block).getScript()));
             } else if (block instanceof ExclusiveGatewayBlock && !block.isProcessed()) {
                 process.addFlowElement(ModelBuilder.createExclusiveGateway(block.getJobEngineElementID(), block.getName(),
-                        ((ExclusiveGatewayBlock) block).isExclusive(), block.generateBpmnInflows(),
-                        block.generateBpmnOutflows()));
+                        ((ExclusiveGatewayBlock) block).isExclusive(), block.generateBpmnInflows(wf),
+                        block.generateBpmnOutflows(wf)));
             } else if (block instanceof DBWriteBlock && !block.isProcessed()) {
                 process.addFlowElement(ModelBuilder.createServiceTask(block.getJobEngineElementID(), block.getName(),
                         WorkflowConstants.dbWriteTaskImplementation));
@@ -93,7 +94,7 @@ public class JEToBpmnMapper {
                         WorkflowConstants.mailTaskImplementation));
             }
 
-            parseWorkflowBlock(block, process, startBlock);
+            parseWorkflowBlock(wf, block, process, startBlock);
         }
     }
 

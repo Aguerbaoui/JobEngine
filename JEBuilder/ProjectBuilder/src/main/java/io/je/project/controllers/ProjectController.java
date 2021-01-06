@@ -9,7 +9,6 @@ import io.je.utilities.constants.APIConstants;
 import io.je.utilities.constants.Errors;
 import io.je.utilities.constants.ResponseMessages;
 import io.je.utilities.exceptions.ProjectNotFoundException;
-import io.je.utilities.exceptions.RuleNotFoundException;
 import io.je.utilities.exceptions.WorkflowNotFoundException;
 import io.je.utilities.logger.JELogger;
 import io.je.utilities.network.Response;
@@ -20,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 /*
  * Project Rest Controller
@@ -35,6 +35,7 @@ public class ProjectController {
     public static final String ADDED_WORKFLOW_SUCCESSFULLY = "Added workflow successfully";
     public static final String WORKFLOW_BUILT_SUCCESSFULLY = "Workflow built successfully";
     public static final String EXECUTING_WORKFLOW = "Executing workflow";
+
     @Autowired
     ProjectService projectService;
 //########################################### **PROJECT** ################################################################
@@ -49,6 +50,10 @@ public class ProjectController {
         return ResponseEntity.ok(new Response(APIConstants.CODE_OK, CREATED_PROJECT_SUCCESSFULLY));
     }
 
+    @GetMapping("/getProject/{projectId}")
+    public JEProject getProject(@PathVariable String projectId) {
+        return projectService.getProject(projectId);
+    }
     /*
     * Build entire project files
     * */
@@ -157,12 +162,17 @@ public class ProjectController {
 
         try {
             projectService.deleteWorkflowFromProject(projectId,workflowId);
+            projectService.saveProject(ProjectService.getProjectById(projectId));
         } catch (ProjectNotFoundException | WorkflowNotFoundException e) {
             JELogger.error(ProjectController.class, e.getMessage());
             return ResponseEntity.badRequest().body(new Response(e.getCode(), e.getMessage()));
         }
-
-
         return ResponseEntity.ok(new Response(APIConstants.CODE_OK, ResponseMessages.WorkflowDeletionSucceeded));
+    }
+
+    @GetMapping(value="/getAllWorkflows/{projectId}")
+    @ResponseBody
+    public HashMap<String, JEWorkflow> getAllWorkflows(@PathVariable("projectId") String projectId) {
+        return projectService.getAllWorkflows(projectId);
     }
 }

@@ -12,7 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Optional;
 /*
 * Service class to handle business logic for projects
 * */
@@ -21,10 +23,11 @@ import java.util.HashMap;
 public class ProjectService {
 
     @Autowired
-    WorkflowService workflowService;
+    ProjectRepository projectRepository;
 
     @Autowired
-    ProjectRepository projectRepository;
+    WorkflowService workflowService;
+
 
     // TODO add repo jpa save later
     private static HashMap<String, JEProject> loadedProjects = new HashMap<String, JEProject>();
@@ -56,6 +59,7 @@ public class ProjectService {
     * */
     public void addWorkflowToProject(JEWorkflow wf) throws ProjectNotFoundException {
         workflowService.addWorkflow(wf);
+        saveProject(getProjectById(wf.getJobEngineProjectID()));
     }
 
     /*
@@ -63,6 +67,7 @@ public class ProjectService {
     * */
     public void deleteWorkflowFromProject(String projectId, String workflowId) throws ProjectNotFoundException, WorkflowNotFoundException {
         workflowService.removeWorkflow(projectId, workflowId);
+        saveProject(getProjectById(projectId));
     }
 
     /*
@@ -102,4 +107,19 @@ public class ProjectService {
         workflowService.runWorkflows(projectId);
     }
 
+    public HashMap<String, JEWorkflow> getAllWorkflows(String projectId) {
+       return loadedProjects.get(projectId).getWorkflows();
+    }
+
+    public JEProject getProject(String projectId) {
+        if(!loadedProjects.containsKey(projectId)) {
+            Optional<JEProject> p =  projectRepository.findById(projectId);
+            JEProject project = p.isEmpty() ? null : p.get();
+            if(project != null) {
+                loadedProjects.put(projectId, project);
+            }
+            return project;
+        }
+        return null;
+    }
 }

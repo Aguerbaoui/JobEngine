@@ -3,7 +3,7 @@ package io.je.classbuilder.entity;
 import io.je.utilities.runtimeobject.JEObject;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document("JEClass")
+@Document(collection="JEClass")
 public class JEClass extends JEObject {
 	String className;
 
