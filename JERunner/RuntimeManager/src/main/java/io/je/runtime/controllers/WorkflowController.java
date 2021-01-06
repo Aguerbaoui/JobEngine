@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
  * Workflow Rest Controller
  * */
 @RestController
+@RequestMapping(value= "/workflow")
 public class WorkflowController {
 
 

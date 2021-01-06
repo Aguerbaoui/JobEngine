@@ -1,19 +1,14 @@
 package builder;
 
 import blocks.WorkflowBlock;
-import blocks.basic.DBWriteBlock;
-import blocks.basic.EndBlock;
-import blocks.basic.MailBlock;
-import blocks.basic.ScriptBlock;
+import blocks.basic.*;
 import blocks.control.ExclusiveGatewayBlock;
 import blocks.control.ParallelGatewayBlock;
 import io.je.utilities.constants.WorkflowConstants;
 import io.je.utilities.logger.JELogger;
 import io.je.utilities.network.Network;
 import models.JEWorkflow;
-import org.activiti.bpmn.model.ActivitiListener;
-import org.activiti.bpmn.model.BpmnModel;
-import org.activiti.bpmn.model.ImplementationType;
+import org.activiti.bpmn.model.*;
 import org.activiti.bpmn.model.Process;
 
 import java.io.IOException;
@@ -33,7 +28,7 @@ public class JEToBpmnMapper {
      * */
     public static void createBpmnFromJEWorkflow( JEWorkflow wf) {
         BpmnModel model = ModelBuilder.createNewBPMNModel();
-        org.activiti.bpmn.model.Process process = ModelBuilder.createProcess(wf.getWorkflowName().trim());
+        Process process = ModelBuilder.createProcess(wf.getWorkflowName().trim());
         process.addFlowElement(ModelBuilder.createStartEvent());
         addListeners(process);
         parseWorkflowBlock(wf.getWorkflowStartBlock(), process, null);
@@ -151,37 +146,10 @@ public class JEToBpmnMapper {
      * Test JEToBpmn conversion
      * */
     public static void main(String[] args) {
-		/*StartBlock start = new StartBlock();
-		start.setJobEngineElementID("start");
 
-		ScriptBlock script = new ScriptBlock();
-		script.setScript("execution.setVariable(\"rowCount\", 50)");
-		start.getOutFlows().add(script);
-		script.getInflows().add(start);
-		script.setJobEngineElementID("script");
-		ParallelGatewayBlock split = new ParallelGatewayBlock();
-		split.setJobEngineElementID("split");
-		split.getInflows().add(script);
-		script.getOutFlows().add(split);
-		DBWriteBlock write = new DBWriteBlock();
-		write.setJobEngineElementID("write");
-		write.getInflows().add(split);
-		MailBlock mail = new MailBlock();
-		mail.getInflows().add(split);
-		mail.setJobEngineElementID("mail");
-		split.getOutFlows().add(write);
-		split.getOutFlows().add(mail);
-		SynchronizeBlock join = new SynchronizeBlock();
-		join.setJobEngineElementID("join");
-		join.getInflows().add(write);
-		join.getInflows().add(mail);
-		write.getOutFlows().add(join);
-		mail.getOutFlows().add(join);
-		EndBlock end = new EndBlock();
-		end.setJobEngineElementID("end");
-		end.getInflows().add(join);
-		join.getOutFlows().add(end);*/
 
-        //createBpmnFromJEWorkflow("generatedBpmn", start,"D:\\generatedBpmn.bpmn");
+        FlowElement element = ModelBuilder.createStartEvent();
+
+
     }
 }

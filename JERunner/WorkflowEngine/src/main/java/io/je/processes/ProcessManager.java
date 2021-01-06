@@ -2,6 +2,7 @@ package io.je.processes;
 
 import io.je.JEProcess;
 import io.je.callbacks.OnExecuteOperation;
+import io.je.utilities.constants.APIConstants;
 import io.je.utilities.constants.Errors;
 import io.je.utilities.exceptions.WorkflowNotFoundException;
 import org.activiti.engine.*;
@@ -114,7 +115,7 @@ public class ProcessManager {
      * */
     public static void launchProcessByKeyWithoutVariables(String id) throws WorkflowNotFoundException {
         if (processes.get(id) == null) {
-            throw new WorkflowNotFoundException("1", Errors.getMessage(1));
+            throw new WorkflowNotFoundException(APIConstants.WORKFLOW_NOT_FOUND, Errors.workflowNotFound);
         }
         runtimeService.startProcessInstanceByKey(id);
     }
