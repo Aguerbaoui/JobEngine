@@ -3,6 +3,8 @@ package io.je.utilities.network;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.squareup.okhttp.*;
+import com.squareup.okhttp.Response;
+
 import io.je.utilities.logger.JELogger;
 
 import java.io.IOException;
@@ -37,6 +39,14 @@ public class Network {
         Request request = new Request.Builder().url(url).get().build();
         Call call = client.newCall(request);
         JELogger.info(Network.class, url);
-        call.execute();
+         call.execute();
+    }
+    
+    public static Response makeNetworkCallWithResponse(String url) throws IOException {
+
+        Request request = new Request.Builder().url(url).get().build();
+        Call call = client.newCall(request);
+        JELogger.info(Network.class, url);
+         return call.execute();
     }
 }

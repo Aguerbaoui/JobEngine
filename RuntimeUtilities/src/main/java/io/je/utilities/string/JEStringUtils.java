@@ -12,4 +12,9 @@ public class JEStringUtils {
         // TODO Auto-generated method stub
         return StringUtils.isEmpty(str);
     }
+    
+    public static String capitalize(String str)
+    {
+    	return StringUtils.capitalize(str);
+    }
 }

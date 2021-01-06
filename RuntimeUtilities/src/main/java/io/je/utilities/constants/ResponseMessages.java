@@ -33,4 +33,8 @@ public class ResponseMessages {
 	public static final String RuleDeletionFailed ="";
 	
 	
+	
+	//class addition
+	public static final String classAddedSuccessully ="Class was added sucessfully";
+
 }
