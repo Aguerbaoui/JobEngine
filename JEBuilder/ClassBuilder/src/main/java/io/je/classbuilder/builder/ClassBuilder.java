@@ -33,7 +33,7 @@ public class ClassBuilder {
 		//check if class format is valid
 		if(classModel.getName()==null)
 		{
-			throw new ClassFormatInvalidException("", ClassBuilderErrors.classNameNull);
+			throw new ClassFormatInvalidException(ClassBuilderErrors.classNameNull);
 		}
 		
 		//load inherited classes

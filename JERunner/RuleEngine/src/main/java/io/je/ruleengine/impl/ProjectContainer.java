@@ -120,7 +120,7 @@ public class ProjectContainer {
         // build kie environment
         if (!buildKie()) {
             JELogger.error(ProjectContainer.class, RuleEngineLogConstants.buildingProjectContainerFailed);
-            throw new RuleBuildFailedException("200", RuleEngineLogConstants.buildingProjectContainerFailed);
+            throw new RuleBuildFailedException( RuleEngineLogConstants.buildingProjectContainerFailed);
         }
 
         JELogger.info(ProjectContainer.class, RuleEngineLogConstants.buildingProjectContainerSuccessful);
@@ -143,7 +143,7 @@ public class ProjectContainer {
         // check that project is not already running
         if (status == Status.RUNNING) {
             JELogger.error(ProjectContainer.class, RuleEngineLogConstants.projectAlreadyRunning);
-            throw new ProjectAlreadyRunningException("200", "");
+            throw new ProjectAlreadyRunningException( "");
         }
 
         // fire rules
@@ -157,7 +157,7 @@ public class ProjectContainer {
 
         } catch (Exception e) {
             JELogger.error(ProjectContainer.class, RuleEngineLogConstants.failedToFireRules);
-            throw new RulesNotFiredException("200", "");
+            throw new RulesNotFiredException( "");
         }
 
     }
@@ -351,7 +351,8 @@ public class ProjectContainer {
 
         // check if rule already exists
         if (ruleExists(rule)) {
-            throw new RuleAlreadyExistsException("200", "");
+        	//TODO: replace error msg
+            throw new RuleAlreadyExistsException( "Rule already exists in rule engine");
         }
 
         // compile rule
@@ -444,7 +445,7 @@ public class ProjectContainer {
 
         if (!RuleLoader.loadRuleContent(rule)) {
 
-            throw new RuleCompilationException("", "");
+            throw new RuleCompilationException( "");
         }
         String filename = generateResourceName(ResourceType.DRL, rule.getName());
         kfsToCompile.write(filename, rule.getContent());
@@ -452,7 +453,7 @@ public class ProjectContainer {
         Results results = kieBuilder.getResults();
         if (results.hasMessages(Message.Level.ERROR)) {
             JELogger.error(ProjectContainer.class, results.getMessages().toString());
-            throw new RuleCompilationException("", "");
+            throw new RuleCompilationException( "");
         }
         kfsToCompile.delete(filename);
 
