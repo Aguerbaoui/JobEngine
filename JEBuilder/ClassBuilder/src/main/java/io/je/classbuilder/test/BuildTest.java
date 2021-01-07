@@ -7,6 +7,7 @@ import com.squareup.okhttp.Response;
 
 import io.je.classbuilder.builder.ClassBuilder;
 import io.je.classbuilder.models.ClassModel;
+import io.je.utilities.classLoader.ClassLoader;
 import io.je.utilities.exceptions.ClassFormatInvalidException;
 import io.je.utilities.network.Network;
 
@@ -18,7 +19,8 @@ public class BuildTest {
 		ClassModel jeClass = objectMapper.readValue(resp.body().string(), ClassModel.class);
 		jeClass.setWorkspaceId("14");
 		System.out.println(jeClass);
-		ClassBuilder.buildClass(jeClass, "C:\\JobEngine");
+		String fp = ClassBuilder.buildClass(jeClass, "C:\\JobEngine");
+		ClassLoader.loadClass(fp, "C:\\JobEngine");
 
 	}
 
