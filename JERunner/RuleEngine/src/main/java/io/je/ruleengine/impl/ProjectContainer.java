@@ -4,6 +4,7 @@ import io.je.ruleengine.kie.KieSessionManagerInterface;
 import io.je.ruleengine.listener.RuleListener;
 import io.je.ruleengine.loader.RuleLoader;
 import io.je.ruleengine.models.Rule;
+import io.je.utilities.beans.JEData;
 import io.je.utilities.exceptions.*;
 import io.je.utilities.logger.JELogger;
 import io.je.utilities.logger.RuleEngineLogConstants;
@@ -22,9 +23,7 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.conf.ClockTypeOption;
 
 import java.io.FileNotFoundException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 enum Status {
     RUNNING, STOPPED,
@@ -44,6 +43,8 @@ public class ProjectContainer {
 
     // This is where all the compiled rules are saved.
     Map<String, Rule> allRules = new HashMap<>();
+
+    Set<String> subscribedTopics = new HashSet<String>();
     private String projectID;
     // A project can be either running, or stopped.
     private Status status = Status.STOPPED;
@@ -544,5 +545,20 @@ public class ProjectContainer {
     public boolean updateFact(JEObject fact) {
         // TODO Auto-generated method stub
         return false;
+    }
+
+    /*
+    *
+    * inject data into rule engine*/
+    public void injectData(JEData data) {
+        if(subscribedTopics.contains(data.getTopic())) {
+            insertFact(data);
+        }
+    }
+
+    public void addTopic(String topic) {
+        if(!subscribedTopics.contains(topic)) {
+            subscribedTopics.add(topic);
+        }
     }
 }

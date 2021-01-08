@@ -4,6 +4,7 @@ package io.je.runtime.ruleenginehandler;
 import io.je.ruleengine.impl.RuleEngine;
 import io.je.ruleengine.models.Rule;
 import io.je.runtime.models.RuleModel;
+import io.je.utilities.beans.JEData;
 import io.je.utilities.exceptions.*;
 
 import java.io.FileNotFoundException;
@@ -22,12 +23,12 @@ public class RuleEngineHandler {
     /*
      * add rule to rule engine
      */
-    public void addRule(RuleModel ruleModel) throws RuleAlreadyExistsException, RuleCompilationException, RuleNotAddedException, FileNotFoundException {
+    public void addRule(RuleModel ruleModel) throws RuleAlreadyExistsException, RuleCompilationException, RuleNotAddedException, FileNotFoundException, ProjectNotFoundException {
 
         //TODO: add test to check that models params are not null
         String ruleId = ruleModel.getProjectId() + "_" + ruleModel.getRuleId();
         Rule rule = new Rule(ruleId, ruleModel.getProjectId(), ruleModel.getRuleId(), ruleModel.getFormat(), ruleModel.getRulePath());
-        if (!RuleEngine.addRule(rule)) {
+        if (!RuleEngine.addRule(rule) || !RuleEngine.addTopics(ruleModel.getProjectId(), ruleModel.getTopics())) {
             throw new RuleNotAddedException( "");
         }
 
@@ -54,6 +55,9 @@ public class RuleEngineHandler {
     }
 
 
+    public static void injectData(JEData data) {
+        RuleEngine.injectData(data);
+    }
     /*
      * stop running a project given a project id
      */

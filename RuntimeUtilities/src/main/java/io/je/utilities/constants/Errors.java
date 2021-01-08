@@ -14,8 +14,8 @@ public class Errors {
     public final static String InvalidSequenceFlow = "Invalid Sequence flow";
 
     public final static String NETWORK_ERROR = "Error connecting to runtime manager api";
-    
-    
+
+    public final static String DATA_LISTENER_NOT_FOUND = "Data listener not found";
     
     
     

@@ -1,6 +1,7 @@
 package io.je.runtime.controllers;
 
 
+import io.je.runtime.data.DataListener;
 import io.je.runtime.models.RuleModel;
 import io.je.runtime.ruleenginehandler.RuleEngineHandler;
 import io.je.utilities.exceptions.RuleAlreadyExistsException;
@@ -37,6 +38,7 @@ public class RuleController {
         System.out.println(rule);
         try {
             ruleHandler.addRule(rule);
+            DataListener.addTopics(rule.getTopics());
         } catch (RuleAlreadyExistsException e) {
             return new ResponseEntity<Object>(RuleEngineLogConstants.ruleExists, HttpStatus.BAD_REQUEST);
         } catch (RuleCompilationException e) {
