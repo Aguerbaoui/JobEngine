@@ -120,6 +120,6 @@ public class ProjectService {
             }
             return project;
         }
-        return null;
+        return loadedProjects.get(projectId);
     }
 }

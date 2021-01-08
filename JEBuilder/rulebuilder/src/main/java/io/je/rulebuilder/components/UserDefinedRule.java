@@ -77,6 +77,11 @@ public class UserDefinedRule extends JEObject {
 	Map<String, Block> blocks = new HashMap<>();
 
 	/*
+	 * front configuration
+	 * */
+	private String frontConfig;
+
+	/*
 	 * Constructor : generates a user defined rule from a rule model
 	 */
 	public UserDefinedRule(String projectId,RuleModel ruleModel) throws RuleNotAddedException {

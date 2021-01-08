@@ -29,7 +29,7 @@ public class JEToBpmnMapper {
     public static void createBpmnFromJEWorkflow( JEWorkflow wf) {
         BpmnModel model = ModelBuilder.createNewBPMNModel();
         Process process = ModelBuilder.createProcess(wf.getWorkflowName().trim());
-        process.addFlowElement(ModelBuilder.createStartEvent());
+        process.addFlowElement(ModelBuilder.createStartEvent(wf.getWorkflowStartBlock().getJobEngineElementID()));
         addListeners(process);
         parseWorkflowBlock(wf, wf.getWorkflowStartBlock(), process, null);
         model.addProcess(process);
@@ -72,7 +72,7 @@ public class JEToBpmnMapper {
         for (String id : startBlock.getOutFlows().values()) {
             WorkflowBlock block = wf.getBlockById(id);
             if (block instanceof EndBlock && !block.isProcessed()) {
-                process.addFlowElement(ModelBuilder.createEndEvent());
+                process.addFlowElement(ModelBuilder.createEndEvent(block.getJobEngineElementID()));
             } else if (block instanceof ParallelGatewayBlock && !block.isProcessed()) {
                 process.addFlowElement(ModelBuilder.createParallelGateway(block.getJobEngineElementID(), block.getName(),
                         block.generateBpmnInflows(wf), block.generateBpmnOutflows(wf)));
@@ -149,7 +149,7 @@ public class JEToBpmnMapper {
     public static void main(String[] args) {
 
 
-        FlowElement element = ModelBuilder.createStartEvent();
+       // FlowElement element = ModelBuilder.createStartEvent();
 
 
     }

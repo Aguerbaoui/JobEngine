@@ -48,6 +48,11 @@ public class JEWorkflow extends JEObject {
     private HashMap<String, WorkflowBlock> allBlocks;
 
     /*
+    * front configuration
+    * */
+    private String frontConfig;
+
+    /*
      * Constructor
      * */
     public JEWorkflow() {
