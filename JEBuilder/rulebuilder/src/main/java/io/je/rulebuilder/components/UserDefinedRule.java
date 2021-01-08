@@ -36,13 +36,14 @@ import io.je.utilities.exceptions.RuleNotAddedException;
 import io.je.utilities.logger.JELogger;
 import io.je.utilities.runtimeobject.JEObject;
 import io.je.utilities.constants.RuleBuilderErrors;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 /*
  * Rules defined by the user.
  * One UserDefinedRule can be equivalents to multiple JobEngine rules ( or drls)
  * Each Job engine rule is defined by a root block ( a logic or comparison block that precedes and execution sequence)
  */
-
+@Document(collection="JERule")
 public class UserDefinedRule extends JEObject {
 
 	/*
@@ -74,6 +75,11 @@ public class UserDefinedRule extends JEObject {
 	 * Map of all the blocks that define this rule
 	 */
 	Map<String, Block> blocks = new HashMap<>();
+
+	/*
+	 * front configuration
+	 * */
+	private String frontConfig;
 
 	/*
 	 * Constructor : generates a user defined rule from a rule model

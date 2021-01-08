@@ -3,6 +3,7 @@ package blocks;
 import builder.ModelBuilder;
 import io.je.utilities.runtimeobject.JEObject;
 import io.je.utilities.string.JEStringUtils;
+import models.JEWorkflow;
 import org.activiti.bpmn.model.SequenceFlow;
 
 import java.util.ArrayList;
@@ -17,12 +18,12 @@ public class WorkflowBlock extends JEObject {
     /*
      * Incoming flows
      * */
-    private HashMap<String, WorkflowBlock> inflows;
+    private HashMap<String, String> inflows;
 
     /*
      * Outgoing flows
      * */
-    private HashMap<String, WorkflowBlock> outFlows;
+    private HashMap<String, String> outFlows;
 
     /*
      * Condition to reach the block
@@ -48,36 +49,36 @@ public class WorkflowBlock extends JEObject {
      * Constructor
      * */
     public WorkflowBlock() {
-        inflows = new HashMap<String, WorkflowBlock>();
-        outFlows = new HashMap<String, WorkflowBlock>();
+        inflows = new HashMap<String, String>();
+        outFlows = new HashMap<String, String>();
         processed = false;
     }
 
     /*
      * Returns incoming flows
      * */
-    public HashMap<String, WorkflowBlock> getInflows() {
+    public HashMap<String, String> getInflows() {
         return inflows;
     }
 
     /*
      * Sets incoming flows
      * */
-    public void setInflows(HashMap<String, WorkflowBlock> inflows) {
+    public void setInflows(HashMap<String, String> inflows) {
         this.inflows = inflows;
     }
 
     /*
      * Returns outgoing flows
      * */
-    public HashMap<String, WorkflowBlock> getOutFlows() {
+    public HashMap<String, String> getOutFlows() {
         return outFlows;
     }
 
     /*
      * Set outgoing flows
      * */
-    public void setOutFlows(HashMap<String, WorkflowBlock> outFlows) {
+    public void setOutFlows(HashMap<String, String> outFlows) {
         this.outFlows = outFlows;
     }
 
@@ -99,9 +100,10 @@ public class WorkflowBlock extends JEObject {
     /*
      * Returns generated bmpn incoming flows
      * */
-    public List<SequenceFlow> generateBpmnInflows() {
+    public List<SequenceFlow> generateBpmnInflows(JEWorkflow wf) {
         List<SequenceFlow> l = new ArrayList<SequenceFlow>();
-        for (WorkflowBlock block : inflows.values()) {
+        for (String id : inflows.values()) {
+            WorkflowBlock block = wf.getBlockById(id);
             l.add(ModelBuilder.createSequenceFlow(block.getJobEngineElementID(), this.getJobEngineElementID(), ""));
         }
         return l;
@@ -110,9 +112,10 @@ public class WorkflowBlock extends JEObject {
     /*
      * Returns generated bmpn outgoing flows
      * */
-    public List<SequenceFlow> generateBpmnOutflows() {
+    public List<SequenceFlow> generateBpmnOutflows(JEWorkflow wf) {
         List<SequenceFlow> l = new ArrayList<SequenceFlow>();
-        for (WorkflowBlock block : outFlows.values()) {
+        for (String id : outFlows.values()) {
+            WorkflowBlock block = wf.getBlockById(id);
             l.add(ModelBuilder.createSequenceFlow(this.getJobEngineElementID(), block.getJobEngineElementID(), ""));
         }
         return l;

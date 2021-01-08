@@ -71,18 +71,18 @@ public class ModelBuilder {
     /*
      * Create a user start event and return it
      * */
-    public static StartEvent createStartEvent() {
+    public static StartEvent createStartEvent(String id) {
         StartEvent startEvent = new StartEvent();
-        startEvent.setId("start1");
+        startEvent.setId(id);
         return startEvent;
     }
 
     /*
      * Create an end event and return it
      * */
-    public static EndEvent createEndEvent() {
+    public static EndEvent createEndEvent(String id) {
         EndEvent endEvent = new EndEvent();
-        endEvent.setId("end1");
+        endEvent.setId(id);
         return endEvent;
     }
 

@@ -8,12 +8,14 @@ import io.je.utilities.exceptions.InvalidSequenceFlowException;
 import io.je.utilities.exceptions.WorkflowBlockNotFound;
 import io.je.utilities.logger.JELogger;
 import io.je.utilities.runtimeobject.JEObject;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.HashMap;
 
 /*
  * Model class for a workflow
  * */
+@Document(collection="JEWorkflow")
 public class JEWorkflow extends JEObject {
 
     /*
@@ -44,6 +46,11 @@ public class JEWorkflow extends JEObject {
      * List of all workflow blocks
      */
     private HashMap<String, WorkflowBlock> allBlocks;
+
+    /*
+    * front configuration
+    * */
+    private String frontConfig;
 
     /*
      * Constructor
@@ -125,10 +132,10 @@ public class JEWorkflow extends JEObject {
      */
     public void addBlockFlow(String from, String to, String condition) {
         //TODO Bug with condition ( in case of multiple inflows with multiple conditions currently we assuming it's 1 condition
-        allBlocks.get(from).getOutFlows().put(to, allBlocks.get(to));
+        allBlocks.get(from).getOutFlows().put(to, to);
         allBlocks.get(from).setCondition(condition);
         if (allBlocks.get(to) != null && allBlocks.get(to).getInflows() != null) {
-            allBlocks.get(to).getInflows().put(from, allBlocks.get(from));
+            allBlocks.get(to).getInflows().put(from, from);
         }
     }
 
@@ -147,10 +154,12 @@ public class JEWorkflow extends JEObject {
      * Delete a workflow block
      * */
     public void deleteWorkflowBlock(String id) throws InvalidSequenceFlowException, WorkflowBlockNotFound {
-        for (WorkflowBlock block : allBlocks.get(id).getInflows().values()) {
+        for (String blockId : allBlocks.get(id).getInflows().values()) {
+            WorkflowBlock block = this.getBlockById(blockId);
             deleteSequenceFlow(block.getJobEngineElementID(), id);
         }
-        for (WorkflowBlock block : allBlocks.get(id).getOutFlows().values()) {
+        for (String blockId : allBlocks.get(id).getOutFlows().values()) {
+            WorkflowBlock block = this.getBlockById(blockId);
             deleteSequenceFlow(id, block.getJobEngineElementID());
         }
 
@@ -165,5 +174,9 @@ public class JEWorkflow extends JEObject {
 
     public boolean blockExists(String bId) {
         return allBlocks.containsKey(bId);
+    }
+
+    public WorkflowBlock getBlockById(String i) {
+        return allBlocks.get(i);
     }
 }
