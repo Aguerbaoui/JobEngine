@@ -27,13 +27,14 @@ public class ClassBuilder {
 
 	/*
 	 * build .java class/interface/enum from classModel
+	 * returns  path where file was created
 	 */
-	public static void buildClass(ClassModel classModel, String generationPath) throws ClassFormatInvalidException {
+	public static String buildClass(ClassModel classModel, String generationPath) throws ClassFormatInvalidException {
 		
 		//check if class format is valid
 		if(classModel.getName()==null)
 		{
-			throw new ClassFormatInvalidException("", ClassBuilderErrors.classNameNull);
+			throw new ClassFormatInvalidException(ClassBuilderErrors.classNameNull);
 		}
 		
 		//load inherited classes
@@ -58,16 +59,17 @@ public class ClassBuilder {
 		
 		//generate class
 		if (classModel.getIsClass()) {
-			generateClass(classModel, generationPath);
-			return;
+			return  generateClass(classModel, generationPath);
+			
 
 		}
 
 		//generate interface
 		if (classModel.getIsInterface()) {
 			generateInterface(classModel, generationPath);
-			return;
+			
 		}
+		return null;
 
 	}
 
@@ -95,7 +97,7 @@ public class ClassBuilder {
 	/*
 	 * generate a class
 	 */
-	private static void generateClass(ClassModel classModel, String generationPath) {
+	private static String generateClass(ClassModel classModel, String generationPath) {
 
 		// class name
 		String className = classModel.getName();
@@ -105,7 +107,10 @@ public class ClassBuilder {
 		newClass.addModifier(getModifier(classModel.getClassVisibility()));
 		// inheritance semantics
 		String inheritanceSemantics = classModel.getInheritanceSemantics();
-		newClass.addModifier(getModifier(inheritanceSemantics));
+		if(inheritanceSemantics!=null && !inheritanceSemantics.isEmpty())
+		{
+			newClass.addModifier(getModifier(inheritanceSemantics));
+		}
 
 
 
@@ -152,7 +157,7 @@ public class ClassBuilder {
 
 		// add inherited classes
 		if (classModel.getBaseTypes() == null || classModel.getBaseTypes().isEmpty()) {
-			newClass.addConcretizedType(JEObject.class);
+			newClass.expands(JEObject.class);
 		} else {
 			// if all base types are interfaces: add them + add JEObject
 			// if more than 1 base type class, throw exception
@@ -164,8 +169,9 @@ public class ClassBuilder {
 
 		unitSG.storeToClassPath(generationPath);
 
-		//System.out.println("\nGenerated code:\n" + unitSG.make());
-
+		String filePath= generationPath + "\\" + ClassBuilderConfig.genrationFolderName  + "\\" + className +".java" ;
+		return filePath;
+		
 	}
 
 	/*

@@ -1,7 +1,10 @@
 package io.je.utilities.exceptions;
 
+import io.je.utilities.constants.ResponseCodes;
+
 public class ProjectExistsException extends JEException{
-    public ProjectExistsException(String code, String message) {
-        super(code, message);
+    public ProjectExistsException( String message) {
+		super(ResponseCodes.PROJECT_EXISTS,message);
+
     }
 }

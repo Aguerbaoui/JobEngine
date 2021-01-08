@@ -49,7 +49,7 @@ public class ProjectService {
 
         if(!loadedProjects.containsKey(id))
         {
-            throw new ProjectNotFoundException("2", Errors.projectNotFound);
+            throw new ProjectNotFoundException( Errors.projectNotFound);
         }
         loadedProjects.remove(id);
     }

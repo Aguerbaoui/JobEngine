@@ -1,10 +1,13 @@
 package io.je.utilities.exceptions;
 
+import io.je.utilities.constants.ResponseCodes;
+
 public class ProjectNotFoundException extends JEException {
 
-    public ProjectNotFoundException(String code, String message) {
-        super(code, message);
-        // TODO Auto-generated constructor stub
+    public ProjectNotFoundException(String message) {
+		super(ResponseCodes.PROJECT_NOT_FOUND,message);
+
+       
     }
 
 }

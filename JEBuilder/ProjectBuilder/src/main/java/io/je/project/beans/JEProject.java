@@ -9,6 +9,7 @@ import io.je.rulebuilder.components.UserDefinedRule;
 import io.je.rulebuilder.models.BlockModel;
 import io.je.utilities.constants.APIConstants;
 import io.je.utilities.constants.Errors;
+import io.je.utilities.constants.RuleBuilderErrors;
 import io.je.utilities.exceptions.AddRuleBlockException;
 import io.je.utilities.exceptions.ClassFormatInvalidException;
 import io.je.utilities.exceptions.InvalidSequenceFlowException;
@@ -179,7 +180,7 @@ public class JEProject {
     * */
     public void addWorkflowSequenceFlow(String workflowId, String sourceRef, String targetRef, String condition) throws WorkflowBlockNotFound {
         if(! workflows.get(workflowId).blockExists(sourceRef) || !workflows.get(workflowId).blockExists(targetRef)) {
-            throw new WorkflowBlockNotFound(APIConstants.WORKFLOW_BLOCK_NOT_FOUND, Errors.workflowBlockNotFound);
+            throw new WorkflowBlockNotFound( Errors.workflowBlockNotFound);
         }
         workflows.get(workflowId).addBlockFlow(sourceRef, targetRef, condition);
     }
@@ -206,7 +207,7 @@ public class JEProject {
     public void addRule(UserDefinedRule rule) throws RuleAlreadyExistsException {
     	if(rules.containsKey(rule.getJobEngineElementID()))
     			{
-    				throw new RuleAlreadyExistsException("", "");
+    				throw new RuleAlreadyExistsException(RuleBuilderErrors.RuleAlreadyExists);
     			}
         this.rules.put(rule.getJobEngineElementID(), rule);
     }

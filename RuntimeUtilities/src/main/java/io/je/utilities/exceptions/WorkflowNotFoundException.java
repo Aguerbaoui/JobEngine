@@ -1,10 +1,12 @@
 package io.je.utilities.exceptions;
 
+import io.je.utilities.constants.ResponseCodes;
+
 public class WorkflowNotFoundException extends JEException {
 
-    public WorkflowNotFoundException(String code, String message) {
-        super(code, message);
-        // TODO Auto-generated constructor stub
+    public WorkflowNotFoundException( String message) {
+		super(ResponseCodes.WORKFLOW_NOT_FOUND,message);
+
     }
 
 }

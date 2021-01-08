@@ -1,15 +1,12 @@
 package io.je.project.services;
 
 import java.util.Collection;
-import java.util.List;
-
 import org.springframework.stereotype.Service;
 
 import io.je.project.beans.JEProject;
 import io.je.rulebuilder.components.UserDefinedRule;
 import io.je.rulebuilder.models.BlockModel;
 import io.je.rulebuilder.models.RuleModel;
-import io.je.utilities.constants.APIConstants;
 import io.je.utilities.constants.Errors;
 import io.je.utilities.constants.RuleBuilderErrors;
 import io.je.utilities.exceptions.AddRuleBlockException;
@@ -42,9 +39,9 @@ public class RuleService {
 		UserDefinedRule rule = createRule(projectId,ruleModel);
 		JEProject project = ProjectService.getProjectById(projectId);
 		if (project == null) {
-			throw new ProjectNotFoundException(APIConstants.PROJECT_NOT_FOUND, Errors.projectNotFound);
+			throw new ProjectNotFoundException( Errors.projectNotFound);
 		} else if (project.ruleExists(ruleModel.getRuleId())) {
-			throw new RuleAlreadyExistsException("", RuleBuilderErrors.RuleAlreadyExists);
+			throw new RuleAlreadyExistsException( RuleBuilderErrors.RuleAlreadyExists);
 		}
 		project.addRule(rule);
 	}
@@ -56,9 +53,9 @@ public class RuleService {
 	{
 		JEProject project = ProjectService.getProjectById(projectId);
 		if (project == null) {
-			throw new ProjectNotFoundException(APIConstants.PROJECT_NOT_FOUND, Errors.projectNotFound);
+			throw new ProjectNotFoundException( Errors.projectNotFound);
 		} else if (!project.ruleExists(ruleId)) {
-			throw new RuleNotFoundException("", RuleBuilderErrors.RuleNotFound);
+			throw new RuleNotFoundException( RuleBuilderErrors.RuleNotFound);
 		}
 		project.deleteRule(ruleId);
 	}
@@ -71,9 +68,9 @@ public class RuleService {
 		UserDefinedRule rule = createRule(projectId,ruleModel);
 		JEProject project = ProjectService.getProjectById(projectId);
 		if (project == null) {
-			throw new ProjectNotFoundException(APIConstants.PROJECT_NOT_FOUND, Errors.projectNotFound);
+			throw new ProjectNotFoundException( Errors.projectNotFound);
 		} else if (!project.ruleExists(ruleModel.getRuleId())) {
-			throw new RuleNotFoundException("", RuleBuilderErrors.RuleNotFound);
+			throw new RuleNotFoundException( RuleBuilderErrors.RuleNotFound);
 		}
 		project.updateRuleAttributes(rule);
 		
@@ -86,18 +83,18 @@ public class RuleService {
 
 		
 		if (blockModel.getProjectId() == null) {
-			throw new AddRuleBlockException("400", RuleBuilderErrors.BlockProjectIdentifierIsEmpty);
+			throw new AddRuleBlockException( RuleBuilderErrors.BlockProjectIdentifierIsEmpty);
 		}
 
 		if (blockModel.getRuleId() == null) {
-			throw new AddRuleBlockException("400", RuleBuilderErrors.BlockRuleIdentifierIsEmpty);
+			throw new AddRuleBlockException( RuleBuilderErrors.BlockRuleIdentifierIsEmpty);
 		}
 
 		JEProject project = ProjectService.getProjectById(blockModel.getProjectId());
 		if (project == null) {
-			throw new ProjectNotFoundException(APIConstants.PROJECT_NOT_FOUND, Errors.projectNotFound);
+			throw new ProjectNotFoundException( Errors.projectNotFound);
 		} else if (!project.ruleExists(blockModel.getRuleId())) {
-			throw new RuleNotFoundException(APIConstants.RULE_NOT_FOUND, RuleBuilderErrors.RuleNotFound);
+			throw new RuleNotFoundException( RuleBuilderErrors.RuleNotFound);
 		}
 		project.addBlockToRule(blockModel);
 	}
@@ -108,18 +105,18 @@ public class RuleService {
 	 */
 	public void updateBlock(BlockModel blockModel) throws AddRuleBlockException, ProjectNotFoundException, RuleNotFoundException {
 		if (blockModel.getProjectId() == null) {
-			throw new AddRuleBlockException("400", RuleBuilderErrors.BlockProjectIdentifierIsEmpty);
+			throw new AddRuleBlockException( RuleBuilderErrors.BlockProjectIdentifierIsEmpty);
 		}
 
 		if (blockModel.getRuleId() == null) {
-			throw new AddRuleBlockException("400", RuleBuilderErrors.BlockRuleIdentifierIsEmpty);
+			throw new AddRuleBlockException( RuleBuilderErrors.BlockRuleIdentifierIsEmpty);
 		}
 
 		JEProject project = ProjectService.getProjectById(blockModel.getProjectId());
 		if (project == null) {
-			throw new ProjectNotFoundException(APIConstants.PROJECT_NOT_FOUND, Errors.projectNotFound);
+			throw new ProjectNotFoundException( Errors.projectNotFound);
 		} else if (!project.ruleExists(blockModel.getRuleId())) {
-			throw new RuleNotFoundException(APIConstants.RULE_NOT_FOUND, RuleBuilderErrors.RuleNotFound);
+			throw new RuleNotFoundException( RuleBuilderErrors.RuleNotFound);
 		}
 		project.updateRuleBlock(blockModel);
 		
@@ -132,9 +129,9 @@ public class RuleService {
 	public void deleteBlock(String projectId, String ruleId, String blockId) throws  ProjectNotFoundException, RuleNotFoundException, RuleBlockNotFoundException {
 		JEProject project = ProjectService.getProjectById(projectId);
 		if (project == null) {
-			throw new ProjectNotFoundException(APIConstants.PROJECT_NOT_FOUND, Errors.projectNotFound);
+			throw new ProjectNotFoundException( Errors.projectNotFound);
 		} else if (!project.ruleExists(ruleId)) {
-			throw new RuleNotFoundException(APIConstants.RULE_NOT_FOUND, RuleBuilderErrors.RuleNotFound);
+			throw new RuleNotFoundException( RuleBuilderErrors.RuleNotFound);
 		}
 		project.deleteRuleBlock(ruleId, blockId);
 		
@@ -151,9 +148,9 @@ public class RuleService {
 	{
 		JEProject project = ProjectService.getProjectById(projectId);
 		if (project == null) {
-			throw new ProjectNotFoundException(APIConstants.PROJECT_NOT_FOUND, Errors.projectNotFound);
+			throw new ProjectNotFoundException( Errors.projectNotFound);
 		} else if (!project.ruleExists(ruleId)) {
-			throw new RuleNotFoundException(APIConstants.RULE_NOT_FOUND, RuleBuilderErrors.RuleNotFound);
+			throw new RuleNotFoundException( RuleBuilderErrors.RuleNotFound);
 		}
 		
 		project.buildRule(ruleId);
@@ -165,7 +162,7 @@ public class RuleService {
 	public Collection<UserDefinedRule> getAllRules(String projectId) throws ProjectNotFoundException {
 		JEProject project = ProjectService.getProjectById(projectId);
 		if (project == null) {
-			throw new ProjectNotFoundException(APIConstants.PROJECT_NOT_FOUND, Errors.projectNotFound);
+			throw new ProjectNotFoundException( Errors.projectNotFound);
 		}
 		return project.getRules().values();
 	}
@@ -173,10 +170,10 @@ public class RuleService {
 	public UserDefinedRule getRule(String projectId, String ruleId) throws ProjectNotFoundException, RuleNotFoundException {
 		JEProject project = ProjectService.getProjectById(projectId);
 		if (project == null) {
-			throw new ProjectNotFoundException(APIConstants.PROJECT_NOT_FOUND, Errors.projectNotFound);
+			throw new ProjectNotFoundException( Errors.projectNotFound);
 		
 		} else if (!project.ruleExists(ruleId)) {
-		throw new RuleNotFoundException(APIConstants.RULE_NOT_FOUND, RuleBuilderErrors.RuleNotFound);
+		throw new RuleNotFoundException( RuleBuilderErrors.RuleNotFound);
 	}
 		return project.getRules().get(ruleId);
 	}

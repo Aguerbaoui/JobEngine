@@ -12,17 +12,17 @@ public class Response {
         this.message = message;
     }
 
-    public String getCode() {
+    public int getCode() {
         return code;
     }
 
-    public void setCode(String code) {
+    public void setCode(int code) {
         this.code = code;
     }
 
-    private String code;
+    private int code;
 
-    public Response(String code, String message) {
+    public Response(int code, String message) {
         this.message = message;
         this.code = code;
     }

@@ -92,7 +92,7 @@ public class UserDefinedRule extends JEObject {
 		// exception if rule id is null
 		if (ruleModel.getRuleId() == null) {
 			JELogger.error(getClass(), RuleBuilderErrors.RuleIdentifierIsEmpty);
-			throw new RuleNotAddedException("400", RuleBuilderErrors.RuleIdentifierIsEmpty);
+			throw new RuleNotAddedException( RuleBuilderErrors.RuleIdentifierIsEmpty);
 
 		}
 		this.jobEngineProjectID = projectId;
@@ -130,7 +130,7 @@ public class UserDefinedRule extends JEObject {
 
 		// if this rule has no execution block, then it is not valid.
 		if (executionBlockCounter == 0) {
-			throw new RuleBuildFailedException("400", RuleBuilderErrors.NoExecutionBlock);
+			throw new RuleBuildFailedException( RuleBuilderErrors.NoExecutionBlock);
 		}
 
 		// generate JERules
@@ -210,24 +210,24 @@ public class UserDefinedRule extends JEObject {
 
 		// block Id can't be null
 		if (blockModel == null || blockModel.getBlockId() == null || blockModel.getBlockId().isEmpty()) {
-			throw new AddRuleBlockException("400", RuleBuilderErrors.BlockIdentifierIsEmpty);
+			throw new AddRuleBlockException( RuleBuilderErrors.BlockIdentifierIsEmpty);
 
 		}
 
 		if (blocks.containsKey(blockModel.getBlockId())) {
-			throw new AddRuleBlockException("400", RuleBuilderErrors.BlockAlreadyExists);
+			throw new AddRuleBlockException( RuleBuilderErrors.BlockAlreadyExists);
 
 		}
 
 		// block operation id can't be empty
 		if (blockModel.getOperationId() == 0) {
-			throw new AddRuleBlockException("400", RuleBuilderErrors.BlockAlreadyExists);
+			throw new AddRuleBlockException( RuleBuilderErrors.BlockAlreadyExists);
 
 		}
 
 		Block block = generateBlock(blockModel);
 		if (block == null) {
-			throw new AddRuleBlockException("500", RuleBuilderErrors.AddRuleBlockFailed);
+			throw new AddRuleBlockException( RuleBuilderErrors.AddRuleBlockFailed);
 		}
 		JELogger.info(getClass(), block.toString());
 		blocks.put(blockModel.getBlockId(), block);
@@ -379,7 +379,7 @@ public class UserDefinedRule extends JEObject {
 
 		// no operation with such id
 		default:
-			throw new AddRuleBlockException("", RuleBuilderErrors.BlockOperationIdUnknown);
+			throw new AddRuleBlockException( RuleBuilderErrors.BlockOperationIdUnknown);
 		}
 		return null;
 
@@ -405,24 +405,24 @@ public class UserDefinedRule extends JEObject {
 
 		// block Id can't be null
 		if (blockModel == null || blockModel.getBlockId() == null || blockModel.getBlockId().isEmpty()) {
-			throw new AddRuleBlockException("400", RuleBuilderErrors.BlockIdentifierIsEmpty);
+			throw new AddRuleBlockException( RuleBuilderErrors.BlockIdentifierIsEmpty);
 
 		}
 
 		if (!blocks.containsKey(blockModel.getBlockId())) {
-			throw new AddRuleBlockException("400", RuleBuilderErrors.BlockNotFound);
+			throw new AddRuleBlockException( RuleBuilderErrors.BlockNotFound);
 
 		}
 
 		// block operation id can't be empty
 		if (blockModel.getOperationId() == 0) {
-			throw new AddRuleBlockException("400", RuleBuilderErrors.BlockAlreadyExists);
+			throw new AddRuleBlockException( RuleBuilderErrors.BlockAlreadyExists);
 
 		}
 
 		Block block = generateBlock(blockModel);
 		if (block == null) {
-			throw new AddRuleBlockException("500", RuleBuilderErrors.AddRuleBlockFailed);
+			throw new AddRuleBlockException( RuleBuilderErrors.AddRuleBlockFailed);
 		}
 		JELogger.info(getClass(), block.toString());
 		blocks.put(blockModel.getBlockId(), block);
@@ -432,7 +432,7 @@ public class UserDefinedRule extends JEObject {
 	public void deleteBlock(String blockId) throws RuleBlockNotFoundException {
 		if(!blocks.containsKey(blockId))
 		{
-			throw new RuleBlockNotFoundException("", RuleBuilderErrors.BlockNotFound);
+			throw new RuleBlockNotFoundException( RuleBuilderErrors.BlockNotFound);
 		}
 		blocks.remove(blockId);
 		
