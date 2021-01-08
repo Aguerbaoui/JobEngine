@@ -29,6 +29,7 @@ public class ProjectController {
      * */
     @PostMapping(value = "/runProject", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> runProject(@RequestBody String input) {
+        //Start listening via data listener do not forget plz
         return new ResponseEntity<Object>(HttpStatus.OK);
 
     }
@@ -38,6 +39,7 @@ public class ProjectController {
      * */
     @PostMapping(value = "/stopProject", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> stopProject(@RequestBody String input) {
+        //Stop listening via data listener do not forget plz
         return new ResponseEntity<Object>(HttpStatus.OK);
 
     }
