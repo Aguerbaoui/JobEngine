@@ -42,7 +42,7 @@ public class JERule extends JEObject {
 
     /*generate DRL for this rule */
     
-	public void generateDRL(String configPath)
+	public String generateDRL(String configPath)
 	{
 		// set rule attributes
         Map<String, String> ruleTemplateAttributes = new HashMap<>();
@@ -61,7 +61,7 @@ public class JERule extends JEObject {
         String fileName = configPath +"\\" + jobEngineElementID +".drl";
         JELogger.info(getClass(), ruleContent);
         JEFileUtils.copyStringToFile(ruleContent, fileName, "UTF-8");
-
+        return fileName;
 		
 	}
 

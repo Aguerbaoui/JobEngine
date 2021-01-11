@@ -1,22 +1,29 @@
 package io.je.runtime.controllers;
 
 
-import io.je.runtime.data.DataListener;
-import io.je.runtime.models.RuleModel;
-import io.je.runtime.ruleenginehandler.RuleEngineHandler;
-import io.je.utilities.exceptions.RuleAlreadyExistsException;
-import io.je.utilities.exceptions.RuleCompilationException;
-import io.je.utilities.exceptions.RuleNotAddedException;
-import io.je.utilities.logger.RuleEngineLogConstants;
-import org.springframework.http.HttpStatus;
+import java.io.IOException;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.FileNotFoundException;
+import io.je.runtime.data.DataListener;
+import io.je.runtime.models.ClassModel;
+import io.je.runtime.models.RuleModel;
+import io.je.runtime.services.RuntimeDispatcher;
+import io.je.utilities.constants.ResponseCodes;
+import io.je.utilities.constants.ResponseMessages;
+import io.je.utilities.exceptions.ClassLoadException;
+import io.je.utilities.exceptions.JEFileNotFoundException;
+import io.je.utilities.exceptions.RuleAlreadyExistsException;
+import io.je.utilities.exceptions.RuleCompilationException;
+import io.je.utilities.exceptions.RuleFormatNotValidException;
+import io.je.utilities.exceptions.RuleNotAddedException;
+import io.je.utilities.logger.JELogger;
+import io.je.utilities.network.JEResponse;
 
 
 /*
@@ -25,80 +32,115 @@ import java.io.FileNotFoundException;
 
 @RestController
 public class RuleController {
+	
+	
+	@Autowired
+	RuntimeDispatcher runtimeDispatcher = new RuntimeDispatcher();
 
-    // Handler Responsible for calling the ryle engine
-    RuleEngineHandler ruleHandler = new RuleEngineHandler();
-
-
-    /*
-     * add rule
-     */
-    @RequestMapping(value = "/addRule", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> addRule(@RequestBody RuleModel rule) {
-        System.out.println(rule);
-        try {
-            ruleHandler.addRule(rule);
-            DataListener.addTopics(rule.getTopics());
-        } catch (RuleAlreadyExistsException e) {
-            return new ResponseEntity<Object>(RuleEngineLogConstants.ruleExists, HttpStatus.BAD_REQUEST);
-        } catch (RuleCompilationException e) {
-            return new ResponseEntity<Object>(RuleEngineLogConstants.ruleCompilationError, HttpStatus.BAD_REQUEST);
-        } catch (RuleNotAddedException e) {
-            return new ResponseEntity<Object>(RuleEngineLogConstants.ruleCompilationError, HttpStatus.BAD_REQUEST);
-        } catch (FileNotFoundException e) {
-            return new ResponseEntity<Object>("File Not Found", HttpStatus.BAD_REQUEST);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return new ResponseEntity<Object>(RuleEngineLogConstants.sucessfullyAddedRule, HttpStatus.OK);
-
-    }
-
-    /*
-     * update rule
-     */
-    @RequestMapping(value = "/updateRule", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> updateRule(@RequestBody RuleModel rule) {
-        System.out.println(rule);
-        try {
-            ruleHandler.updateRule(rule);
-        } catch (RuleCompilationException e) {
-            return new ResponseEntity<Object>(RuleEngineLogConstants.ruleCompilationError, HttpStatus.BAD_REQUEST);
-        } catch (FileNotFoundException e) {
-            return new ResponseEntity<Object>("File Not Found", HttpStatus.BAD_REQUEST);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return new ResponseEntity<Object>(RuleEngineLogConstants.sucessfullyUpdatedRule, HttpStatus.OK);
-
-    }
-
-
-    /*
-     * run project
-     */
-	/*@RequestMapping(value = "/runProject", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> runProject(@RequestBody String id) {		
-		System.out.println(id);
+	/*
+	 * add a new Rule
+	 */
+	@PostMapping(value = "/addRule", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> addRule( @RequestBody RuleModel ruleModel) {
 		
+		try {
+			runtimeDispatcher.addRule(ruleModel);
+		
+		} catch (RuleAlreadyExistsException | JEFileNotFoundException |RuleFormatNotValidException| RuleNotAddedException e) {
+			e.printStackTrace();
+			JELogger.error(RuleController.class, e.getMessage());
+			return ResponseEntity.badRequest().body(new JEResponse(e.getCode(), e.getMessage()));
+		
+		} catch (RuleCompilationException e) {
+			
+			JELogger.error(RuleController.class, e.getMessage());
+			return ResponseEntity.badRequest().body(new JEResponse(e.getCode(), e.getCompilationError()));
+		
+		} 
+			
+		
+		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.RuleAdditionSucceeded));
+	}
+	
+	/*
+	 * update a  Rule
+	 */
+	@PostMapping(value = "/updateRule", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> updateRule( @RequestBody RuleModel ruleModel) {
+		
+		try {
+			runtimeDispatcher.updateRule(ruleModel);
+		} catch (  JEFileNotFoundException |RuleFormatNotValidException e) {
+			e.printStackTrace();
+			JELogger.error(RuleController.class, e.getMessage());
+			return ResponseEntity.badRequest().body(new JEResponse(e.getCode(), e.getMessage()));
+		
+		} catch (RuleCompilationException e) {
+			
+			JELogger.error(RuleController.class, e.getMessage());
+			return ResponseEntity.badRequest().body(new JEResponse(e.getCode(), e.getCompilationError()));
+		
+		} 
+			
+		
+		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.RuleUpdateSucceeded));
+	}
+
+
+	
+	/*
+	 * compile  a  Rule
+	 */
+	@PostMapping(value = "/compileRule", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> compileRule( @RequestBody RuleModel ruleModel) {
+		
+		try {
+			runtimeDispatcher.compileRule(ruleModel);
+		} catch (  JEFileNotFoundException |RuleFormatNotValidException e) {
+			e.printStackTrace();
+			JELogger.error(RuleController.class, e.getMessage());
+			return ResponseEntity.badRequest().body(new JEResponse(e.getCode(), e.getMessage()));
+		
+		} catch (RuleCompilationException e) {
+			
+			JELogger.error(RuleController.class, e.getMessage());
+			return ResponseEntity.badRequest().body(new JEResponse(e.getCode(), e.getCompilationError()));
+		
+		} 
+			
+		
+		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.RuleUpdateSucceeded));
+	}
+
+	
+	//TODO: move method to class controller
+	/*
+	 * add a new class
+	 */
+	@PostMapping(value = "/addClass", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> addClass( @RequestBody ClassModel classModel) {
+		
+	
 			try {
-				ruleHandler.runRuleEngineProject(id);
-			} catch (RulesNotFiredException e) {
-				// TODO Auto-generated catch block
+				runtimeDispatcher.addClass(classModel.getClassPath());
+			} catch (ClassLoadException e) {
 				e.printStackTrace();
-			} catch (RuleEngineBuildFailedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (ProjectAlreadyRunningException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				return ResponseEntity.badRequest().body(new JEResponse(e.getCode(), e.getMessage()));
 			}
 		
-		return new ResponseEntity<Object>("project sucesffully running" ,HttpStatus.OK);
+			
 		
-	}*/
-
+		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.classAddedSuccessully));
+	}
+	
+	
+		@PostMapping(value = "/setLoadPath", produces = MediaType.APPLICATION_JSON_VALUE)
+		public ResponseEntity<?> setLoadPath( @RequestBody String classPath) {
+			
+		
+				runtimeDispatcher.setClassLoadPath(classPath);
+				
+			
+			return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.classAddedSuccessully));
+		}
 }

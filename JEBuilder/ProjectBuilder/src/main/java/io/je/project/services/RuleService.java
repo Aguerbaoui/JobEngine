@@ -1,5 +1,6 @@
 package io.je.project.services;
 
+import java.io.IOException;
 import java.util.Collection;
 import org.springframework.stereotype.Service;
 
@@ -10,6 +11,7 @@ import io.je.rulebuilder.models.RuleModel;
 import io.je.utilities.constants.Errors;
 import io.je.utilities.constants.RuleBuilderErrors;
 import io.je.utilities.exceptions.AddRuleBlockException;
+import io.je.utilities.exceptions.JERunnerUnreachableException;
 import io.je.utilities.exceptions.ProjectNotFoundException;
 import io.je.utilities.exceptions.RuleAlreadyExistsException;
 import io.je.utilities.exceptions.RuleBlockNotFoundException;
@@ -45,6 +47,10 @@ public class RuleService {
 		}
 		project.addRule(rule);
 	}
+	
+
+	
+	
 	
 	/*
 	 * delete rule from a project
@@ -144,7 +150,7 @@ public class RuleService {
 	/*
 	 * build rule : create drl + check for compilation errors
 	 */
-	public void buildRule(String projectId, String ruleId) throws ProjectNotFoundException, RuleNotFoundException, RuleBuildFailedException
+	public void buildRule(String projectId, String ruleId) throws ProjectNotFoundException, RuleNotFoundException, RuleBuildFailedException, JERunnerUnreachableException, IOException
 	{
 		JEProject project = ProjectService.getProjectById(projectId);
 		if (project == null) {

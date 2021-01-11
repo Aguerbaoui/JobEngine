@@ -17,6 +17,7 @@ public class Network {
     private Network() {
     }
 
+    
     public static void makeNetworkCallWithJsonBody(HashMap<String, String> json, String url) throws IOException {
         String jsonStr = "";
         try {
@@ -46,4 +47,21 @@ public class Network {
         JELogger.info(Network.class, url);
          return call.execute();
     }
+    
+    public static Response makeNetworkCallWithJsonBodyWithResponse(HashMap<String, String> json, String url) throws IOException {
+        String jsonStr = "";
+        try {
+            jsonStr = new ObjectMapper().writeValueAsString(json);
+
+        } catch (JsonProcessingException e) {
+            JELogger.info(Network.class, e.getMessage());
+        }
+        JELogger.info(Network.class, jsonStr);
+        RequestBody body = RequestBody.create(MediaType.parse("application/json"), jsonStr);
+        Request request = new Request.Builder().url(url).post(body).build();
+        Call call = client.newCall(request);
+        return call.execute();
+    }
+    
+   
 }

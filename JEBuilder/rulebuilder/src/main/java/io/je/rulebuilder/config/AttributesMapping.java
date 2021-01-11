@@ -10,7 +10,8 @@ public class AttributesMapping {
     //common attributes
     public static final String PROJECTID = "project_id";
     public static final String RULEID = "rule_id";
-   
+	public static final String RULENAME = "rule_name";
+
     
     //block attributes
     public static final String BLOCKID = "block_id";

@@ -6,7 +6,7 @@
             <PatternLayout
                     pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
         </Console>
-         <File name="FileAppender" fileName="jelog-${date:yyyyMMdd}.log" immediateFlush="true"
+         <File name="FileAppender" fileName="test-${date:yyyyMMdd}.log" immediateFlush="true"
             append="true"> <PatternLayout pattern="%d{yyy-MM-dd HH:mm:ss.SSS} [%t] %-5level
             %logger{36} - %msg%n"/> </File> 
 <RollingFile

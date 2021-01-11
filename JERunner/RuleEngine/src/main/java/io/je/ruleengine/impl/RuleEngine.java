@@ -1,15 +1,11 @@
 package io.je.ruleengine.impl;
 
-
 import io.je.ruleengine.models.Rule;
 import io.je.utilities.beans.JEData;
 import io.je.utilities.constants.Errors;
 import io.je.utilities.exceptions.*;
-import io.je.utilities.logger.JELogConstants;
-import io.je.utilities.logger.JELogger;
 import io.je.utilities.runtimeobject.JEObject;
 
-import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.Set;
 
@@ -17,79 +13,77 @@ import java.util.Set;
  * This class handles all the rule engine operations.
  */
 public class RuleEngine {
-    private static ProjectContainerRepository projectManager = new ProjectContainerRepository();
+	private static ProjectContainerRepository projectManager = new ProjectContainerRepository();
 
-    public RuleEngine() {
+	public RuleEngine() {
 
-    }
+	}
+
+	/*
+	 * add a new rule to the rule engine
+	 */
+	public static void addRule(Rule rule) throws RuleAlreadyExistsException, RuleCompilationException,
+			JEFileNotFoundException {
+
+		String projectId = rule.getJobEngineProjectID();
+		ProjectContainer project = projectManager.getProjectContainer(projectId);
+		project.addRule(rule);
+
+	}
+
+	public static void updateRule(Rule rule) throws RuleCompilationException, JEFileNotFoundException {
 
 
-    /*
-     * add a new rule to the rule engine
-     */
-    public static boolean addRule(Rule rule) throws RuleAlreadyExistsException, RuleCompilationException, FileNotFoundException {
+		String projectId = rule.getJobEngineProjectID();
+		ProjectContainer project = projectManager.getProjectContainer(projectId);
+		project.updateRule(rule);
 
-        String projectId;
-        try {
-            projectId = rule.getJobEngineProjectID();
-        } catch (Exception e) {
-            JELogger.error(RuleEngine.class, JELogConstants.idNotFound);
-            return false;
-        }
-        if (projectId != null && !projectId.isEmpty()) {
-            ProjectContainer project = projectManager.getProjectContainer(projectId);
-            project.addRule(rule);
-        } else {
-            JELogger.error(RuleEngine.class, JELogConstants.idNotFound);
-            return false;
-        }
-        return true;
+	}
 
-    }
+	public static boolean fireRules(String projectId)
+			throws RulesNotFiredException, RuleBuildFailedException, ProjectAlreadyRunningException {
 
-    public static boolean updateRule(Rule rule) throws RuleCompilationException, FileNotFoundException {
+		ProjectContainer project = projectManager.getProjectContainer(projectId);
+		project.fireRules();
+		return true;
+	}
 
-        String projectId;
-        try {
-            projectId = rule.getJobEngineProjectID();
-        } catch (Exception e) {
-            JELogger.error(RuleEngine.class, JELogConstants.idNotFound);
-            return false;
-        }
-        if (projectId != null && !projectId.isEmpty()) {
-            ProjectContainer project = projectManager.getProjectContainer(projectId);
-            project.updateRule(rule);
-        } else {
-            JELogger.error(RuleEngine.class, JELogConstants.idNotFound);
-            return false;
-        }
-        return true;
-    }
+	public static boolean stopRuleExecution(String projectId) {
 
-    public static boolean fireRules(String projectId) throws RulesNotFiredException, RuleBuildFailedException, ProjectAlreadyRunningException {
+		ProjectContainer project = projectManager.getProjectContainer(projectId);
+		return project.stopRuleExecution();
+	}
 
-        ProjectContainer project = projectManager.getProjectContainer(projectId);
-        project.fireRules();
-        return true;
-    }
+	public static boolean fireRules(String projectId, List<Rule> rules, boolean removePreviouslyAddedRules) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 
-    public static boolean stopRuleExecution(String projectId) {
+	public boolean addRules(List<Rule> rules) throws RuleAlreadyExistsException, RuleCompilationException,
+			JEFileNotFoundException, RuleNotAddedException {
 
-        ProjectContainer project = projectManager.getProjectContainer(projectId);
-        return project.stopRuleExecution();
-    }
+		// TODO: try/catch errors and return list of the rules that were not added
+		for (Rule rule : rules) {
+			addRule(rule);
+		}
+		return true;
+	}
 
-    public static boolean fireRules(String projectId, List<Rule> rules, boolean removePreviouslyAddedRules) {
-        // TODO Auto-generated method stub
-        return false;
-    }
+	public static void compileRule(Rule rule) throws RuleCompilationException, JEFileNotFoundException {
+
+
+		String projectID = rule.getJobEngineProjectID();
+		ProjectContainer project = projectManager.getProjectContainer(projectID);
+		project.compileRule(rule);
+		
+	}
 
     public static void injectData(JEData data) {
         ProjectContainer project = projectManager.getProjectContainer(data.getJobEngineProjectID());
         project.injectData(data);
     }
 
-    public static boolean addTopics(String projectId, Set<String> topics) throws ProjectNotFoundException {
+ /*   public static boolean addTopics(String projectId, Set<String> topics) throws ProjectNotFoundException {
 
 
         ProjectContainer project = projectManager.getProjectContainer(projectId);
@@ -102,68 +96,62 @@ public class RuleEngine {
         }
 
         return true;
-    }
+    } */
 
-    public boolean addRules(List<Rule> rules) throws RuleAlreadyExistsException, RuleCompilationException, FileNotFoundException {
 
-        for (Rule rule : rules) {
-            addRule(rule);
-        }
-        return true;
-    }
 
-    public boolean compileRule(Rule rule) throws RuleCompilationException, FileNotFoundException {
+	public boolean compileRules(List<Rule> rules) throws RuleCompilationException, JEFileNotFoundException {
 
-        String projectID = rule.getJobEngineProjectID();
-        ProjectContainer project = projectManager.getProjectContainer(projectID);
-        project.compileRule(rule);
-        return true;
-    }
+		for (Rule rule : rules) {
+			compileRule(rule);
+		}
+		return true;
+	}
 
-    public boolean compileRules(List<Rule> rules) throws RuleCompilationException, FileNotFoundException {
+	public static void deleteRule(String projectId,String ruleId) throws DeleteRuleException {
+		ProjectContainer project = projectManager.getProjectContainer(projectId);
+		project.deleteRule(ruleId);
+	}
 
-        for (Rule rule : rules) {
-            compileRule(rule);
-        }
-        return true;
-    }
+	public boolean deleteRules(List<String> rulesIDs) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 
-    public boolean deleteRule(String ruleID) {
-        // TODO Auto-generated method stub
-        return false;
-    }
+	public boolean disableRule(String ruleID) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 
-    public boolean deleteRules(List<String> rulesIDs) {
-        // TODO Auto-generated method stub
-        return false;
-    }
+	public boolean enableRule(String ruleID) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 
-    public boolean disableRule(String ruleID) {
-        // TODO Auto-generated method stub
-        return false;
-    }
+	public boolean insertFact(JEObject fact) {
 
-    public boolean enableRule(String ruleID) {
-        // TODO Auto-generated method stub
-        return false;
-    }
+		ProjectContainer project = projectManager.getProjectContainer(fact.getJobEngineProjectID());
+		project.insertFact(fact);
+		return false;
+	}
 
-    public boolean insertFact(JEObject fact) {
+	public boolean retractFact(JEObject fact) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 
-        ProjectContainer project = projectManager.getProjectContainer(fact.getJobEngineProjectID());
-        project.insertFact(fact);
-        return false;
-    }
+	public boolean updateFact(JEObject fact) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 
-    public boolean retractFact(JEObject fact) {
-        // TODO Auto-generated method stub
-        return false;
-    }
+	public static void buildProject(String projectId) throws RuleBuildFailedException {
 
-    public boolean updateFact(JEObject fact) {
-        // TODO Auto-generated method stub
-        return false;
-    }
+		ProjectContainer project = projectManager.getProjectContainer(projectId);
+		project.buildProject();
+
+	}
+
 
 
 }

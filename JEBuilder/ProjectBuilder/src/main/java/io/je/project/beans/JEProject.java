@@ -1,18 +1,14 @@
 package io.je.project.beans;
 
 import blocks.WorkflowBlock;
-import io.je.classbuilder.builder.ClassBuilder;
-import io.je.classbuilder.entity.JEClass;
-import io.je.classbuilder.models.ClassModel;
 import io.je.rulebuilder.builder.RuleBuilder;
 import io.je.rulebuilder.components.UserDefinedRule;
 import io.je.rulebuilder.models.BlockModel;
-import io.je.utilities.constants.APIConstants;
 import io.je.utilities.constants.Errors;
 import io.je.utilities.constants.RuleBuilderErrors;
 import io.je.utilities.exceptions.AddRuleBlockException;
-import io.je.utilities.exceptions.ClassFormatInvalidException;
 import io.je.utilities.exceptions.InvalidSequenceFlowException;
+import io.je.utilities.exceptions.JERunnerUnreachableException;
 import io.je.utilities.exceptions.RuleAlreadyExistsException;
 import io.je.utilities.exceptions.RuleBlockNotFoundException;
 import io.je.utilities.exceptions.RuleBuildFailedException;
@@ -21,6 +17,7 @@ import models.JEWorkflow;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.io.IOException;
 import java.util.HashMap;
 
 @Document(collection="JEProject")
@@ -53,11 +50,6 @@ public class JEProject {
     private HashMap<String, JEWorkflow> workflows;
 
     /*
-    * List of classes used in the project
-    * */
-    private HashMap<String, JEClass> classes;
-
-    /*
     * Is the project running
     * */
     private boolean running = false;
@@ -68,7 +60,6 @@ public class JEProject {
     public JEProject(String projectId, String projectName, String configurationPath) {
         rules = new HashMap<>();
         workflows = new HashMap<>();
-        classes = new HashMap<>();
         this.projectId = projectId;
         this.projectName = projectName;
         this.configurationPath = configurationPath;
@@ -224,7 +215,7 @@ public class JEProject {
     /*
      * build rule : drl generation + compilation
      */
-    public void buildRule(String ruleId) throws RuleBuildFailedException
+    public void buildRule(String ruleId) throws RuleBuildFailedException, JERunnerUnreachableException, IOException
     {
     	RuleBuilder.buildRule(rules.get(ruleId), configurationPath);
     }
@@ -269,18 +260,6 @@ public class JEProject {
 	}
 	 
 	
-	/*
-     * Class Management 
-     */
-    
-	/*
-	 * add class
-	 */
-	public void addClass(ClassModel classModel) throws ClassFormatInvalidException
-	{
-		ClassBuilder.buildClass(classModel, configurationPath);
-		classes.put(classModel.get_id(), new JEClass(classModel.get_id(),projectId,classModel.getName()));
-		
-	}
+	
 
 }

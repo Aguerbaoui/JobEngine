@@ -1,5 +1,6 @@
 package io.je.project.controllers;
 
+import java.io.IOException;
 import java.util.Collection;
 
 import io.je.project.services.ProjectService;
@@ -22,10 +23,11 @@ import io.je.project.services.RuleService;
 import io.je.rulebuilder.components.UserDefinedRule;
 import io.je.rulebuilder.models.BlockModel;
 import io.je.rulebuilder.models.RuleModel;
-import io.je.utilities.constants.APIConstants;
+import io.je.utilities.constants.Errors;
 import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.constants.ResponseMessages;
 import io.je.utilities.exceptions.AddRuleBlockException;
+import io.je.utilities.exceptions.JERunnerUnreachableException;
 import io.je.utilities.exceptions.ProjectNotFoundException;
 import io.je.utilities.exceptions.RuleAlreadyExistsException;
 import io.je.utilities.exceptions.RuleBlockNotFoundException;
@@ -33,7 +35,7 @@ import io.je.utilities.exceptions.RuleBuildFailedException;
 import io.je.utilities.exceptions.RuleNotAddedException;
 import io.je.utilities.exceptions.RuleNotFoundException;
 import io.je.utilities.logger.JELogger;
-import io.je.utilities.network.Response;
+import io.je.utilities.network.JEResponse;
 
 /*
  * Rule Builder Rest Controller
@@ -61,7 +63,7 @@ public class RuleController {
 		} catch (ProjectNotFoundException e) {
 			e.printStackTrace();
 			JELogger.error(RuleController.class, e.getMessage());
-			return ResponseEntity.badRequest().body(new Response(e.getCode(), e.getMessage()));
+			return ResponseEntity.badRequest().body(new JEResponse(e.getCode(), e.getMessage()));
 		}
 		
 		return	new ResponseEntity<Object>(rules,HttpStatus.OK);
@@ -81,13 +83,26 @@ public class RuleController {
 			} catch (ProjectNotFoundException | RuleNotFoundException e) {
 				e.printStackTrace();
 				JELogger.error(RuleController.class, e.getMessage());
-				return ResponseEntity.badRequest().body(new Response(e.getCode(), e.getMessage()));
+				return ResponseEntity.badRequest().body(new JEResponse(e.getCode(), e.getMessage()));
 			}
 		
 		
 		return	new ResponseEntity<>(rule,HttpStatus.OK);
 	
 }
+	
+	
+	/*
+	 * add a new Rule from script
+	 */
+	@PostMapping(value = "/{projectId}/addScriptedRule", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> addScriptedRule(@PathVariable("projectId") String projectId, @RequestBody String drlContent) {
+		
+			//TODO: add calls
+		
+		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.RuleAdditionSucceeded));
+	}
+	
 	
 	
 	/*
@@ -100,12 +115,12 @@ public class RuleController {
 				ruleService.addRule(projectId,ruleModel);
 				projectService.saveProject(ProjectService.getProjectById(projectId));
 			} catch (ProjectNotFoundException | RuleNotAddedException | RuleAlreadyExistsException e) {
-				e.printStackTrace();
+				//e.printStackTrace();
 				JELogger.error(RuleController.class, e.getMessage());
-				return ResponseEntity.badRequest().body(new Response(e.getCode(), e.getMessage()));
+				return ResponseEntity.badRequest().body(new JEResponse(e.getCode(), e.getMessage()));
 			}
 		
-		return ResponseEntity.ok(new Response(ResponseCodes.CODE_OK, ResponseMessages.RuleAdditionSucceeded));
+		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.RuleAdditionSucceeded));
 	}
 
 	/*
@@ -121,11 +136,11 @@ public class RuleController {
 				} catch (ProjectNotFoundException | RuleNotFoundException e) {
 					e.printStackTrace();
 					JELogger.error(RuleController.class, e.getMessage());
-					return ResponseEntity.badRequest().body(new Response(e.getCode(), e.getMessage()));
+					return ResponseEntity.badRequest().body(new JEResponse(e.getCode(), e.getMessage()));
 				}
 			
 		
-		return ResponseEntity.ok(new Response(ResponseCodes.CODE_OK, ResponseMessages.RuleDeletionSucceeded));
+		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.RuleDeletionSucceeded));
 	}
 	
 	/*
@@ -141,11 +156,11 @@ public class RuleController {
 				} catch (RuleNotAddedException | ProjectNotFoundException | RuleNotFoundException e) {
 					e.printStackTrace();
 					JELogger.error(RuleController.class, e.getMessage());
-					return ResponseEntity.badRequest().body(new Response(e.getCode(), e.getMessage()));
+					return ResponseEntity.badRequest().body(new JEResponse(e.getCode(), e.getMessage()));
 				}
 			
 		
-		return ResponseEntity.ok(new Response(ResponseCodes.CODE_OK, ResponseMessages.RuleUpdateSucceeded));
+		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.RuleUpdateSucceeded));
 	}
 	
 	/*
@@ -162,10 +177,10 @@ public class RuleController {
 		} catch (AddRuleBlockException | ProjectNotFoundException | RuleNotFoundException e) {
 			e.printStackTrace();
 			JELogger.error(RuleController.class, e.getMessage());
-			return ResponseEntity.badRequest().body(new Response(e.getCode(), e.getMessage()));
+			return ResponseEntity.badRequest().body(new JEResponse(e.getCode(), e.getMessage()));
 		}
 
-		return ResponseEntity.ok(new Response(ResponseCodes.CODE_OK, ResponseMessages.RuleUpdateSucceeded));
+		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.RuleUpdateSucceeded));
 	}
 	
 	/*
@@ -182,10 +197,10 @@ public class RuleController {
 		} catch (AddRuleBlockException | ProjectNotFoundException | RuleNotFoundException e) {
 			e.printStackTrace();
 			JELogger.error(RuleController.class, e.getMessage());
-			return ResponseEntity.badRequest().body(new Response(e.getCode(), e.getMessage()));
+			return ResponseEntity.badRequest().body(new JEResponse(e.getCode(), e.getMessage()));
 		}
 
-		return ResponseEntity.ok(new Response(ResponseCodes.CODE_OK, ResponseMessages.RuleUpdateSucceeded));
+		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.RuleUpdateSucceeded));
 	}
 	
 	/*
@@ -200,10 +215,10 @@ public class RuleController {
 		} catch (ProjectNotFoundException | RuleNotFoundException | RuleBlockNotFoundException e) {
 			e.printStackTrace();
 			JELogger.error(RuleController.class, e.getMessage());
-			return ResponseEntity.badRequest().body(new Response(e.getCode(), e.getMessage()));
+			return ResponseEntity.badRequest().body(new JEResponse(e.getCode(), e.getMessage()));
 		}
 		
-		return ResponseEntity.ok(new Response(ResponseCodes.CODE_OK, ResponseMessages.RuleDeletionSucceeded));
+		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.RuleDeletionSucceeded));
 
 	}
 	
@@ -215,14 +230,19 @@ public class RuleController {
 
 		try {
 			ruleService.buildRule(projectId,ruleId);
-		} catch (ProjectNotFoundException | RuleNotFoundException | RuleBuildFailedException e) {
-			e.printStackTrace();
+		} catch (ProjectNotFoundException | RuleNotFoundException | RuleBuildFailedException | JERunnerUnreachableException  e) {
+			//e.printStackTrace();
 			JELogger.error(RuleController.class, e.getMessage());
-			return ResponseEntity.badRequest().body(new Response(e.getCode(), e.getMessage()));
+			return ResponseEntity.badRequest().body(new JEResponse(e.getCode(), e.getMessage()));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+            return ResponseEntity.badRequest().body(new JEResponse(ResponseCodes.UNKNOWN_ERROR, e.getMessage()));
+
 		}
 
 
-		return ResponseEntity.ok(new Response(ResponseCodes.CODE_OK, ResponseMessages.RuleUpdateSucceeded));
+		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.RuleBuiltSuccessfully));
 	}
 
 	

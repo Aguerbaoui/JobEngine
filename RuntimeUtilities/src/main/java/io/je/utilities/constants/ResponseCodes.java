@@ -27,6 +27,12 @@ public class ResponseCodes {
 	public static final int WORKFLOW_NOT_FOUND = 1014;
 	public static final int RULE_COMPILATION_ERROR = 1015;
 	public static final int RULE_BUILD_FAILED = 1016;
-	public static final int DATA_LISTENER_NOT_FOUND = 1017;
+	public static final int RULE_NOT_VALID = 1017;
+	public static final int RULE_NOT_DELETED = 1018;
+	public static final int DATA_DEF_UNREACHABLE = 1019;
+	public static final int JERUNNER_UNREACHABLE = 1020;
+	public static final int ADD_CLASS_FAILED = 1021;
+	public static final int CLASS_LOAD_EXCEPTION = 1022;
+	public static final int DATA_LISTENER_NOT_FOUND = 1023;
 	
 }
