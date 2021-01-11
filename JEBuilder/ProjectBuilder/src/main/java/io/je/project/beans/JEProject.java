@@ -1,24 +1,21 @@
 package io.je.project.beans;
 
 import blocks.WorkflowBlock;
-import io.je.classbuilder.builder.ClassBuilder;
-import io.je.classbuilder.entity.JEClass;
-import io.je.classbuilder.models.ClassModel;
 import io.je.rulebuilder.builder.RuleBuilder;
 import io.je.rulebuilder.components.UserDefinedRule;
 import io.je.rulebuilder.models.BlockModel;
-import io.je.utilities.constants.APIConstants;
 import io.je.utilities.constants.Errors;
 import io.je.utilities.constants.RuleBuilderErrors;
 import io.je.utilities.exceptions.AddRuleBlockException;
-import io.je.utilities.exceptions.ClassFormatInvalidException;
 import io.je.utilities.exceptions.InvalidSequenceFlowException;
+import io.je.utilities.exceptions.JERunnerUnreachableException;
 import io.je.utilities.exceptions.RuleAlreadyExistsException;
 import io.je.utilities.exceptions.RuleBlockNotFoundException;
 import io.je.utilities.exceptions.RuleBuildFailedException;
 import io.je.utilities.exceptions.WorkflowBlockNotFound;
 import models.JEWorkflow;
 
+import java.io.IOException;
 import java.util.HashMap;
 
 public class JEProject {
@@ -48,7 +45,7 @@ public class JEProject {
     * */
     private HashMap<String, JEWorkflow> workflows;
     
-    private HashMap<String, JEClass> classes;
+  
 
     /*
     * Is the project running
@@ -216,7 +213,7 @@ public class JEProject {
     /*
      * build rule : drl generation + compilation
      */
-    public void buildRule(String ruleId) throws RuleBuildFailedException
+    public void buildRule(String ruleId) throws RuleBuildFailedException, JERunnerUnreachableException, IOException
     {
     	RuleBuilder.buildRule(rules.get(ruleId), configurationPath);
     }
@@ -261,18 +258,6 @@ public class JEProject {
 	}
 	 
 	
-	/*
-     * Class Management 
-     */
-    
-	/*
-	 * add class
-	 */
-	public void addClass(ClassModel classModel) throws ClassFormatInvalidException
-	{
-		ClassBuilder.buildClass(classModel, configurationPath);
-		classes.put(classModel.get_id(), new JEClass(classModel.get_id(),projectId,classModel.getName()));
-		
-	}
+	
 
 }

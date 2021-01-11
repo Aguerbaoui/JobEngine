@@ -7,25 +7,25 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+import io.je.utilities.constants.RuleEngineErrors;
+import io.je.utilities.exceptions.JEFileNotFoundException;
+
 /*
  * load rule content from file path
  */
 public class RuleLoader {
 
 
-    public static boolean loadRuleContent(Rule rule) throws FileNotFoundException {
-        boolean returnValue = false;
+    public static void loadRuleContent(Rule rule) throws JEFileNotFoundException {
         try {
             JELogger.info(RuleLoader.class, rule.getPath());
             rule.setContent(new String(Files.readAllBytes(Paths.get(rule.getPath()))));
-            returnValue = true;
         } catch (IOException e) {
-            throw new FileNotFoundException();
+            throw new JEFileNotFoundException(RuleEngineErrors.RULE_FILE_NOT_FOUND);
         }
-        return returnValue;
     }
 
-    public static boolean writeRule(String rule, String filename) throws IOException {
+    public static boolean writeRsule(String rule, String filename) throws IOException {
         try (FileWriter fileWriter = new FileWriter(new File(filename));
              BufferedWriter writer = new BufferedWriter(fileWriter)) {
             writer.write(rule);

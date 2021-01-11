@@ -2,6 +2,7 @@ package io.je.ruleengine.impl;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 
 /*
@@ -10,7 +11,7 @@ import java.util.Map;
 public class ProjectContainerRepository {
 
     //Map of all the projectContainers of this RuleEngine.
-    static Map<String, ProjectContainer> allProjects = new HashMap<>();
+    static Map<String, ProjectContainer> allProjects = new ConcurrentHashMap<>();
 
 
     /*
@@ -26,6 +27,7 @@ public class ProjectContainerRepository {
      * get project container by ID
      */
     public ProjectContainer getProjectContainer(String projectId) {
+ 
         if (projectContainerExists(projectId)) {
             return allProjects.get(projectId);
         }
@@ -54,7 +56,7 @@ public class ProjectContainerRepository {
     /*
      * check if a project container with a specific id exists
      */
-    public boolean projectContainerExists(String projectId) {
+    public  boolean projectContainerExists(String projectId) {
 
         return allProjects.containsKey(projectId);
     }

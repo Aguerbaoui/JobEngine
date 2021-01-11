@@ -13,7 +13,7 @@ import io.je.utilities.exceptions.ProjectNotFoundException;
 import io.je.utilities.exceptions.RuleNotFoundException;
 import io.je.utilities.exceptions.WorkflowNotFoundException;
 import io.je.utilities.logger.JELogger;
-import io.je.utilities.network.Response;
+import io.je.utilities.network.JEResponse;
 import models.JEWorkflow;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -47,7 +47,7 @@ public class ProjectController {
     public ResponseEntity<?> addProject(@RequestBody ProjectModel m) {
         JEProject p = new JEProject(m.getProjectId(), m.getProjectName(), m.getConfigurationPath());
         projectService.saveProject(p);
-        return ResponseEntity.ok(new Response(ResponseCodes.CODE_OK, CREATED_PROJECT_SUCCESSFULLY));
+        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, CREATED_PROJECT_SUCCESSFULLY));
     }
 
     /*
@@ -58,12 +58,12 @@ public class ProjectController {
         try {
             projectService.buildAll(projectId);
         } catch (ProjectNotFoundException e) {
-            return ResponseEntity.badRequest().body(new Response(e.getCode(), Errors.projectNotFound));
+            return ResponseEntity.badRequest().body(new JEResponse(e.getCode(), Errors.projectNotFound));
         } catch (Exception e) {
             JELogger.info(WorkflowController.class, e.getMessage());
-            return ResponseEntity.badRequest().body(new Response(ResponseCodes.UNKNOWN_ERROR, Errors.uknownError));
+            return ResponseEntity.badRequest().body(new JEResponse(ResponseCodes.UNKNOWN_ERROR, Errors.uknownError));
         }
-        return ResponseEntity.ok(new Response(ResponseCodes.CODE_OK, BUILT_EVERYTHING_SUCCESSFULLY));
+        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, BUILT_EVERYTHING_SUCCESSFULLY));
     }
 
     /*Run project*/
@@ -72,15 +72,15 @@ public class ProjectController {
         try {
             projectService.runAll(projectId);
         } catch (IOException e) {
-            return ResponseEntity.badRequest().body(new Response(ResponseCodes.NETWORK_ERROR, Errors.NETWORK_ERROR));
+            return ResponseEntity.badRequest().body(new JEResponse(ResponseCodes.NETWORK_ERROR, Errors.NETWORK_ERROR));
         } catch (ProjectNotFoundException e) {
-            return ResponseEntity.badRequest().body(new Response(e.getCode(), Errors.projectNotFound));
+            return ResponseEntity.badRequest().body(new JEResponse(e.getCode(), Errors.projectNotFound));
         }
         catch (Exception e) {
             JELogger.info(WorkflowController.class, e.getMessage());
-            return ResponseEntity.badRequest().body(new Response(ResponseCodes.UNKNOWN_ERROR, Errors.uknownError));
+            return ResponseEntity.badRequest().body(new JEResponse(ResponseCodes.UNKNOWN_ERROR, Errors.uknownError));
         }
-        return ResponseEntity.ok(new Response(ResponseCodes.CODE_OK, BUILT_EVERYTHING_SUCCESSFULLY1));
+        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, BUILT_EVERYTHING_SUCCESSFULLY1));
     }
  //########################################### **WORKFLOW** ################################################################
     /*
@@ -96,12 +96,12 @@ public class ProjectController {
             projectService.addWorkflowToProject(wf);
         } catch (ProjectNotFoundException e) {
             JELogger.info(WorkflowController.class, e.getMessage());
-            return ResponseEntity.badRequest().body(new Response(e.getCode(), Errors.projectNotFound));
+            return ResponseEntity.badRequest().body(new JEResponse(e.getCode(), Errors.projectNotFound));
         } catch (Exception e) {
             JELogger.info(WorkflowController.class, e.getMessage());
-            return ResponseEntity.badRequest().body(new Response(ResponseCodes.UNKNOWN_ERROR, Errors.uknownError));
+            return ResponseEntity.badRequest().body(new JEResponse(ResponseCodes.UNKNOWN_ERROR, Errors.uknownError));
         }
-        return ResponseEntity.ok(new Response(ResponseCodes.CODE_OK, ADDED_WORKFLOW_SUCCESSFULLY));
+        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ADDED_WORKFLOW_SUCCESSFULLY));
     }
 
     /*
@@ -114,20 +114,20 @@ public class ProjectController {
             projectService.buildWorkflow(m.getProjectId(), m.getKey());
         } catch (ProjectNotFoundException e) {
             JELogger.info(WorkflowController.class, e.getMessage());
-            return ResponseEntity.badRequest().body(new Response(e.getCode(), Errors.projectNotFound));
+            return ResponseEntity.badRequest().body(new JEResponse(e.getCode(), Errors.projectNotFound));
         } catch (WorkflowNotFoundException e) {
             JELogger.info(WorkflowController.class, e.getMessage());
-            return ResponseEntity.badRequest().body(new Response(e.getCode(), Errors.workflowNotFound));
+            return ResponseEntity.badRequest().body(new JEResponse(e.getCode(), Errors.workflowNotFound));
         }
         catch (IOException e) {
-            return ResponseEntity.badRequest().body(new Response(ResponseCodes.NETWORK_ERROR, Errors.NETWORK_ERROR));
+            return ResponseEntity.badRequest().body(new JEResponse(ResponseCodes.NETWORK_ERROR, Errors.NETWORK_ERROR));
         }
         catch (Exception e) {
             JELogger.info(WorkflowController.class, e.getMessage());
-            return ResponseEntity.badRequest().body(new Response(ResponseCodes.UNKNOWN_ERROR, Errors.uknownError));
+            return ResponseEntity.badRequest().body(new JEResponse(ResponseCodes.UNKNOWN_ERROR, Errors.uknownError));
         }
 
-        return ResponseEntity.ok(new Response(ResponseCodes.CODE_OK, WORKFLOW_BUILT_SUCCESSFULLY));
+        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, WORKFLOW_BUILT_SUCCESSFULLY));
     }
 
     /*
@@ -139,15 +139,15 @@ public class ProjectController {
             JELogger.info(WorkflowController.class, key);
             projectService.runWorkflow(projectId, key);
         } catch (ProjectNotFoundException e) {
-            return ResponseEntity.badRequest().body(new Response(e.getCode(), Errors.projectNotFound));
+            return ResponseEntity.badRequest().body(new JEResponse(e.getCode(), Errors.projectNotFound));
         } catch (WorkflowNotFoundException e) {
-            return ResponseEntity.badRequest().body(new Response(e.getCode(), Errors.workflowNotFound));
+            return ResponseEntity.badRequest().body(new JEResponse(e.getCode(), Errors.workflowNotFound));
         }
         catch (Exception e) {
             JELogger.info(WorkflowController.class, e.getMessage());
-            return ResponseEntity.badRequest().body(new Response(ResponseCodes.UNKNOWN_ERROR, Errors.uknownError));
+            return ResponseEntity.badRequest().body(new JEResponse(ResponseCodes.UNKNOWN_ERROR, Errors.uknownError));
         }
-        return ResponseEntity.ok(new Response(ResponseCodes.CODE_OK, EXECUTING_WORKFLOW));
+        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, EXECUTING_WORKFLOW));
     }
 
     /*
@@ -160,10 +160,10 @@ public class ProjectController {
             projectService.deleteWorkflowFromProject(projectId,workflowId);
         } catch (ProjectNotFoundException | WorkflowNotFoundException e) {
             JELogger.error(ProjectController.class, e.getMessage());
-            return ResponseEntity.badRequest().body(new Response(e.getCode(), e.getMessage()));
+            return ResponseEntity.badRequest().body(new JEResponse(e.getCode(), e.getMessage()));
         }
 
 
-        return ResponseEntity.ok(new Response(ResponseCodes.CODE_OK, ResponseMessages.WorkflowDeletionSucceeded));
+        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.WorkflowDeletionSucceeded));
     }
 }

@@ -17,7 +17,8 @@ public class RuleModel {
     @JsonProperty(AttributesMapping.RULEID)
     String ruleId;
     
-    //TODO: add rule name
+    @JsonProperty(AttributesMapping.RULENAME)
+    String ruleName;
 	
     @JsonProperty(AttributesMapping.SALIENCE)
     int salience;
@@ -76,6 +77,12 @@ public class RuleModel {
 	}
 	public void setTimer(String timer) {
 		this.timer = timer;
+	}
+	public String getRuleName() {
+		return ruleName;
+	}
+	public void setRuleName(String ruleName) {
+		this.ruleName = ruleName;
 	}
 
 

@@ -7,6 +7,11 @@ public class ResponseMessages {
 	 */
 	private ResponseMessages() {
 	}
+	
+	
+	//
+	public static final String ConfigUpdated = "Configuration Updated successfully.";
+
 
 	/*
 	 * Rules response messages
@@ -14,13 +19,13 @@ public class ResponseMessages {
 
 	// rule addition
 
-	public static final String RuleAdditionSucceeded = "Rule added succesffully.";
+	public static final String RuleAdditionSucceeded = "Rule added successfully.";
 
 	public static final String RuleAdditionFailed = "Failed to add rule.";
 	
 	// rule update 
 	
-	public static final String RuleUpdateSucceeded = "Rule updated sucesfully";
+	public static final String RuleUpdateSucceeded = "Rule updated successfully";
 	
 	public static final String RuleUpdateFailed ="";
 	
@@ -33,8 +38,11 @@ public class ResponseMessages {
 	public static final String RuleDeletionFailed ="";
 	
 	
+	//rule build 
+	
+	public static final String RuleBuiltSuccessfully = "Rule was built successfully";
 	
 	//class addition
-	public static final String classAddedSuccessully ="Class was added sucessfully";
+	public static final String classAddedSuccessully ="Class was added successfully";
 
 }

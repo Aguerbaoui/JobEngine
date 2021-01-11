@@ -1,10 +1,16 @@
 package io.je.utilities.network;
 
-public class Response {
+public class JEResponse {
 
     private String message;
+    private int code;
+    
+    
 
-    public String getMessage() {
+    private JEResponse() {
+	}
+
+	public String getMessage() {
         return message;
     }
 
@@ -20,9 +26,8 @@ public class Response {
         this.code = code;
     }
 
-    private int code;
 
-    public Response(int code, String message) {
+    public JEResponse(int code, String message) {
         this.message = message;
         this.code = code;
     }

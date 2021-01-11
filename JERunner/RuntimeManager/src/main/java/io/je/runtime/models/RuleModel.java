@@ -11,11 +11,15 @@ import io.je.runtime.config.RuleModelMapping;
 public class RuleModel {
 
     //The project this rule belongs to
-    @JsonProperty(RuleModelMapping.PROJECTID)
+    @JsonProperty(RuleModelMapping.PROJECT_ID)
     String projectId;
 
     //rule identifier
-    @JsonProperty(RuleModelMapping.RULEID)
+    @JsonProperty(RuleModelMapping.RULE_NAME)
+    String ruleName;
+    
+  //rule identifier
+    @JsonProperty(RuleModelMapping.RULE_ID)
     String ruleId;
 
     //path where the rule file was created
@@ -62,6 +66,14 @@ public class RuleModel {
     public void setFormat(RuleFormat format) {
         this.format = format;
     }
+
+	public String getRuleName() {
+		return ruleName;
+	}
+
+	public void setRuleName(String ruleName) {
+		this.ruleName = ruleName;
+	}
 
 
 }

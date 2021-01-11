@@ -1,5 +1,6 @@
 package io.je.classbuilder.builder;
 
+import java.io.File;
 import java.lang.reflect.Modifier;
 import java.util.List;
 
@@ -14,7 +15,7 @@ import io.je.classbuilder.models.ClassModel;
 import io.je.classbuilder.models.FieldModel;
 import io.je.classbuilder.models.MethodModel;
 import io.je.utilities.constants.ClassBuilderErrors;
-import io.je.utilities.exceptions.ClassFormatInvalidException;
+import io.je.utilities.exceptions.AddClassException;
 import io.je.utilities.runtimeobject.JEObject;
 import io.je.utilities.string.JEStringUtils;
 
@@ -23,18 +24,17 @@ import io.je.utilities.string.JEStringUtils;
  */
 public class ClassBuilder {
 
-	private static UnitSourceGenerator unitSG = UnitSourceGenerator.create(ClassBuilderConfig.genrationFolderName);
 
 	/*
 	 * build .java class/interface/enum from classModel
 	 * returns  path where file was created
 	 */
-	public static String buildClass(ClassModel classModel, String generationPath) throws ClassFormatInvalidException {
+	public static String buildClass(ClassModel classModel, String generationPath) throws AddClassException {
 		
 		//check if class format is valid
 		if(classModel.getName()==null)
 		{
-			throw new ClassFormatInvalidException(ClassBuilderErrors.classNameNull);
+			throw new AddClassException(ClassBuilderErrors.classNameNull);
 		}
 		
 		//load inherited classes
@@ -51,11 +51,7 @@ public class ClassBuilder {
 		
 		
 		
-		//add imports
-		if (classModel.getImports() != null && !classModel.getImports().isEmpty()) {
-			addImports(classModel.getImports());
-		}
-
+	
 		
 		//generate class
 		if (classModel.getIsClass()) {
@@ -74,7 +70,7 @@ public class ClassBuilder {
 	}
 
 	/* add imports */
-	private static void addImports(List<String> imports) {
+	private static void addImports(List<String> imports, UnitSourceGenerator unitSG ) {
 		for (String import_ : imports) {
 			unitSG.addImport(import_);
 		}
@@ -98,6 +94,11 @@ public class ClassBuilder {
 	 * generate a class
 	 */
 	private static String generateClass(ClassModel classModel, String generationPath) {
+		 UnitSourceGenerator unitSG = UnitSourceGenerator.create(ClassBuilderConfig.genrationFolderName);
+			//add imports
+			if (classModel.getImports() != null && !classModel.getImports().isEmpty()) {
+				addImports(classModel.getImports(),unitSG);
+			}
 
 		// class name
 		String className = classModel.getName();
@@ -157,7 +158,7 @@ public class ClassBuilder {
 
 		// add inherited classes
 		if (classModel.getBaseTypes() == null || classModel.getBaseTypes().isEmpty()) {
-			newClass.expands(JEObject.class);
+		//	newClass.expands(JEObject.class);
 		} else {
 			// if all base types are interfaces: add them + add JEObject
 			// if more than 1 base type class, throw exception
@@ -166,10 +167,15 @@ public class ClassBuilder {
 
 		// store class
 		unitSG.addClass(newClass);
-
-		unitSG.storeToClassPath(generationPath);
-
 		String filePath= generationPath + "\\" + ClassBuilderConfig.genrationFolderName  + "\\" + className +".java" ;
+		File file = new File(generationPath);
+		file.delete();
+		unitSG.storeToClassPath(generationPath);
+		
+		
+		
+
+		 
 		return filePath;
 		
 	}
