@@ -4,6 +4,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.je.ruleengine.enumerations.RuleFormat;
 import io.je.runtime.config.RuleModelMapping;
 
+import java.util.Map;
+import java.util.Set;
+
 
 /*
  * Rule Model
@@ -30,6 +33,10 @@ public class RuleModel {
     @JsonProperty(RuleModelMapping.FORMAT)
     RuleFormat format;
 
+    /*
+    * Set of modelId-InstanceId
+    * */
+    private Set<String> topics;
 
     /*
      * getters and setters
@@ -67,6 +74,7 @@ public class RuleModel {
         this.format = format;
     }
 
+
 	public String getRuleName() {
 		return ruleName;
 	}
@@ -75,5 +83,19 @@ public class RuleModel {
 		this.ruleName = ruleName;
 	}
 
+
+
+    /*
+    * Get list of topics
+    * */
+    public Set<String> getTopics() {
+        return topics;
+    }
+    /*
+     * Set list of topics
+     * */
+    public void setTopics(Set<String> topics) {
+        this.topics = topics;
+    }
 
 }

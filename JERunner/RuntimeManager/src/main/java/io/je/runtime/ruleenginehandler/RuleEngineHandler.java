@@ -4,7 +4,11 @@ package io.je.runtime.ruleenginehandler;
 import io.je.ruleengine.impl.RuleEngine;
 import io.je.ruleengine.models.Rule;
 import io.je.runtime.models.RuleModel;
+
 import io.je.utilities.constants.RuleEngineErrors;
+
+import io.je.utilities.beans.JEData;
+
 import io.je.utilities.exceptions.*;
 
 /*
@@ -44,11 +48,15 @@ public class RuleEngineHandler {
     /*
      * add rule to rule engine
      */
-    public static void addRule(RuleModel ruleModel) throws RuleAlreadyExistsException, RuleCompilationException, RuleNotAddedException, JEFileNotFoundException, RuleFormatNotValidException {
 
+    public static void addRule(RuleModel ruleModel) throws RuleAlreadyExistsException, RuleCompilationException, RuleNotAddedException, JEFileNotFoundException, RuleFormatNotValidException {
     	verifyRuleIsValid(ruleModel);       
-        Rule rule = new Rule(ruleModel.getRuleId(), ruleModel.getProjectId(), ruleModel.getRuleId(), ruleModel.getFormat(), ruleModel.getRulePath());
-        RuleEngine.addRule(rule);
+        Rule rule = new Rule(ruleModel.getRuleId(), ruleModel.getProjectId(), ruleModel.getRuleId(), ruleModel.getFormat(), ruleModel.getRulePath(),ruleModel.getTopics());
+        RuleEngine.addRule(rule);  
+     /*   if ( !RuleEngine.addTopics(ruleModel.getProjectId(), ruleModel.getTopics())) {
+            throw new RuleNotAddedException( "Failed to add topics");
+        }*/
+
 
     }
 
@@ -58,7 +66,7 @@ public class RuleEngineHandler {
     public static void updateRule(RuleModel ruleModel) throws RuleCompilationException, JEFileNotFoundException, RuleFormatNotValidException {
 
     	verifyRuleIsValid(ruleModel); 
-        Rule rule = new Rule(ruleModel.getRuleId(), ruleModel.getProjectId(), ruleModel.getRuleId(), ruleModel.getFormat(), ruleModel.getRulePath());
+        Rule rule = new Rule(ruleModel.getRuleId(), ruleModel.getProjectId(), ruleModel.getRuleId(), ruleModel.getFormat(), ruleModel.getRulePath(),ruleModel.getTopics());
         RuleEngine.updateRule(rule);
 
     }
@@ -72,6 +80,9 @@ public class RuleEngineHandler {
     }
 
 
+    public static void injectData(JEData data) {
+        RuleEngine.injectData(data);
+    }
     /*
      * stop running a project given a project id
      */
@@ -94,7 +105,7 @@ public class RuleEngineHandler {
 	 */
 	public static void compileRule(RuleModel ruleModel) throws RuleFormatNotValidException, RuleCompilationException, JEFileNotFoundException {
 		verifyRuleIsValid(ruleModel); 
-        Rule rule = new Rule(ruleModel.getRuleId(), ruleModel.getProjectId(), ruleModel.getRuleId(), ruleModel.getFormat(), ruleModel.getRulePath());
+        Rule rule = new Rule(ruleModel.getRuleId(), ruleModel.getProjectId(), ruleModel.getRuleId(), ruleModel.getFormat(), ruleModel.getRulePath(),ruleModel.getTopics());
         RuleEngine.compileRule(rule);
        
 		

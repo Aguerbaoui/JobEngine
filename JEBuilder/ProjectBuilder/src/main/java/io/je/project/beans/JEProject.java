@@ -14,15 +14,19 @@ import io.je.utilities.exceptions.RuleBlockNotFoundException;
 import io.je.utilities.exceptions.RuleBuildFailedException;
 import io.je.utilities.exceptions.WorkflowBlockNotFound;
 import models.JEWorkflow;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.io.IOException;
 import java.util.HashMap;
 
+@Document(collection="JEProject")
 public class JEProject {
 
     /*
     * Project ID
     * */
+    @Id
     private String projectId;
 
     /*
@@ -44,8 +48,6 @@ public class JEProject {
     * workflows in a project
     * */
     private HashMap<String, JEWorkflow> workflows;
-    
-  
 
     /*
     * Is the project running

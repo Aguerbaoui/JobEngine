@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.je.runtime.data.DataListener;
 import io.je.runtime.models.ClassModel;
 import io.je.runtime.models.RuleModel;
 import io.je.runtime.services.RuntimeDispatcher;
@@ -44,6 +45,7 @@ public class RuleController {
 		
 		try {
 			runtimeDispatcher.addRule(ruleModel);
+		
 		} catch (RuleAlreadyExistsException | JEFileNotFoundException |RuleFormatNotValidException| RuleNotAddedException e) {
 			e.printStackTrace();
 			JELogger.error(RuleController.class, e.getMessage());

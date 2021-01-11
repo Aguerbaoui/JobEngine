@@ -1,10 +1,13 @@
 package io.je.ruleengine.impl;
 
 import io.je.ruleengine.models.Rule;
+import io.je.utilities.beans.JEData;
+import io.je.utilities.constants.Errors;
 import io.je.utilities.exceptions.*;
 import io.je.utilities.runtimeobject.JEObject;
 
 import java.util.List;
+import java.util.Set;
 
 /*
  * This class handles all the rule engine operations.
@@ -68,11 +71,34 @@ public class RuleEngine {
 
 	public static void compileRule(Rule rule) throws RuleCompilationException, JEFileNotFoundException {
 
+
 		String projectID = rule.getJobEngineProjectID();
 		ProjectContainer project = projectManager.getProjectContainer(projectID);
 		project.compileRule(rule);
 		
 	}
+
+    public static void injectData(JEData data) {
+        ProjectContainer project = projectManager.getProjectContainer(data.getJobEngineProjectID());
+        project.injectData(data);
+    }
+
+ /*   public static boolean addTopics(String projectId, Set<String> topics) throws ProjectNotFoundException {
+
+
+        ProjectContainer project = projectManager.getProjectContainer(projectId);
+        if (project == null) {
+            throw new ProjectNotFoundException(Errors.projectNotFound);
+        }
+        while (topics.iterator().hasNext()) {
+            String next = topics.iterator().next();
+            project.addTopic(next);
+        }
+
+        return true;
+    } */
+
+
 
 	public boolean compileRules(List<Rule> rules) throws RuleCompilationException, JEFileNotFoundException {
 

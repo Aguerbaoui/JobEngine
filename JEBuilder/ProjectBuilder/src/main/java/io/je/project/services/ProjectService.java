@@ -1,20 +1,20 @@
 package io.je.project.services;
 
-import builder.ModelBuilder;
 import io.je.project.beans.JEProject;
-import io.je.rulebuilder.components.JERule;
+import io.je.project.repository.ProjectRepository;
 import io.je.rulebuilder.components.UserDefinedRule;
 import io.je.utilities.constants.Errors;
 import io.je.utilities.exceptions.ProjectNotFoundException;
 import io.je.utilities.exceptions.RuleAlreadyExistsException;
 import io.je.utilities.exceptions.WorkflowNotFoundException;
 import models.JEWorkflow;
-import org.activiti.bpmn.model.FlowElement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Optional;
 /*
 * Service class to handle business logic for projects
 * */
@@ -23,9 +23,11 @@ import java.util.HashMap;
 public class ProjectService {
 
     @Autowired
+    ProjectRepository projectRepository;
+
+    @Autowired
     WorkflowService workflowService;
-    
- 
+
 
     // TODO add repo jpa save later
     private static HashMap<String, JEProject> loadedProjects = new HashMap<String, JEProject>();
@@ -35,6 +37,7 @@ public class ProjectService {
     * */
     public void saveProject(JEProject project) {
         //Todo add repo jpa save operation
+        projectRepository.save(project);
         loadedProjects.put(project.getProjectId(), project);
     }
 
@@ -56,6 +59,7 @@ public class ProjectService {
     * */
     public void addWorkflowToProject(JEWorkflow wf) throws ProjectNotFoundException {
         workflowService.addWorkflow(wf);
+        saveProject(getProjectById(wf.getJobEngineProjectID()));
     }
 
     /*
@@ -63,6 +67,7 @@ public class ProjectService {
     * */
     public void deleteWorkflowFromProject(String projectId, String workflowId) throws ProjectNotFoundException, WorkflowNotFoundException {
         workflowService.removeWorkflow(projectId, workflowId);
+        saveProject(getProjectById(projectId));
     }
 
     /*
@@ -102,4 +107,19 @@ public class ProjectService {
         workflowService.runWorkflows(projectId);
     }
 
+    public HashMap<String, JEWorkflow> getAllWorkflows(String projectId) {
+       return loadedProjects.get(projectId).getWorkflows();
+    }
+
+    public JEProject getProject(String projectId) {
+        if(!loadedProjects.containsKey(projectId)) {
+            Optional<JEProject> p =  projectRepository.findById(projectId);
+            JEProject project = p.isEmpty() ? null : p.get();
+            if(project != null) {
+                loadedProjects.put(projectId, project);
+            }
+            return project;
+        }
+        return loadedProjects.get(projectId);
+    }
 }

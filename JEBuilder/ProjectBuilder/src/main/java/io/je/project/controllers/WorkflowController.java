@@ -1,6 +1,7 @@
 package io.je.project.controllers;
 
 import io.je.project.models.WorkflowBlockModel;
+import io.je.project.services.ProjectService;
 import io.je.project.services.WorkflowService;
 import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.constants.Errors;
@@ -26,6 +27,8 @@ public class WorkflowController {
     @Autowired
     WorkflowService workflowService;
 
+    @Autowired
+    ProjectService projectService;
     /*
      * Add a new Workflow component
      */
@@ -34,6 +37,7 @@ public class WorkflowController {
         try {
 
             workflowService.addWorkflowBlock(block);
+            projectService.saveProject(ProjectService.getProjectById(block.getProjectId()));
         } catch (WorkflowNotFoundException|WorkflowBlockNotFound  e) {
             JELogger.info(WorkflowController.class, e.getMessage());
             return ResponseEntity.badRequest().body(new JEResponse(e.getCode(), e.getMessage()));
@@ -54,6 +58,7 @@ public class WorkflowController {
 
         try {
             workflowService.updateWorkflowBlock(block);
+            projectService.saveProject(ProjectService.getProjectById(block.getProjectId()));
         }
         catch (WorkflowNotFoundException|WorkflowBlockNotFound  e) {
             JELogger.info(WorkflowController.class, e.getMessage());
@@ -76,6 +81,7 @@ public class WorkflowController {
 
         try {
             workflowService.deleteWorkflowBlock(projectId, key, id);
+            projectService.saveProject(ProjectService.getProjectById(projectId));
         } catch (WorkflowNotFoundException e) {
             return ResponseEntity.badRequest().body(new JEResponse(e.getCode(), Errors.workflowNotFound));
         } catch (ProjectNotFoundException e) {
@@ -96,6 +102,7 @@ public class WorkflowController {
 
         try {
             workflowService.deleteSequenceFlow(projectId, key, from, to);
+            projectService.saveProject(ProjectService.getProjectById(projectId));
         } catch (WorkflowNotFoundException e) {
             return ResponseEntity.badRequest().body(new JEResponse(e.getCode(), Errors.workflowNotFound));
         } catch (ProjectNotFoundException e) {

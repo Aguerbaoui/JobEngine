@@ -3,6 +3,7 @@ package io.je.project.controllers;
 import java.io.IOException;
 import java.util.Collection;
 
+import io.je.project.services.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -47,6 +48,8 @@ public class RuleController {
 	@Autowired
 	RuleService ruleService = new RuleService();
 
+	@Autowired
+	ProjectService projectService;
 	
 	/*
 	 * Retrieve all rules in a project
@@ -110,6 +113,7 @@ public class RuleController {
 		
 			try {
 				ruleService.addRule(projectId,ruleModel);
+				projectService.saveProject(ProjectService.getProjectById(projectId));
 			} catch (ProjectNotFoundException | RuleNotAddedException | RuleAlreadyExistsException e) {
 				//e.printStackTrace();
 				JELogger.error(RuleController.class, e.getMessage());
@@ -128,6 +132,7 @@ public class RuleController {
 			
 				try {
 					ruleService.deleteRule(projectId,ruleId);
+					projectService.saveProject(ProjectService.getProjectById(projectId));
 				} catch (ProjectNotFoundException | RuleNotFoundException e) {
 					e.printStackTrace();
 					JELogger.error(RuleController.class, e.getMessage());
@@ -147,6 +152,7 @@ public class RuleController {
 			
 				try {
 					ruleService.updateRule(projectId,ruleModel);
+					projectService.saveProject(ProjectService.getProjectById(projectId));
 				} catch (RuleNotAddedException | ProjectNotFoundException | RuleNotFoundException e) {
 					e.printStackTrace();
 					JELogger.error(RuleController.class, e.getMessage());
@@ -167,6 +173,7 @@ public class RuleController {
 			blockModel.setRuleId(ruleId);
 			blockModel.setProjectId(projectId);
 			ruleService.addBlockToRule(blockModel);
+			projectService.saveProject(ProjectService.getProjectById(projectId));
 		} catch (AddRuleBlockException | ProjectNotFoundException | RuleNotFoundException e) {
 			e.printStackTrace();
 			JELogger.error(RuleController.class, e.getMessage());
@@ -186,6 +193,7 @@ public class RuleController {
 			blockModel.setRuleId(ruleId);
 			blockModel.setProjectId(projectId);
 			ruleService.updateBlock(blockModel);
+			projectService.saveProject(ProjectService.getProjectById(projectId));
 		} catch (AddRuleBlockException | ProjectNotFoundException | RuleNotFoundException e) {
 			e.printStackTrace();
 			JELogger.error(RuleController.class, e.getMessage());
@@ -203,6 +211,7 @@ public class RuleController {
 	{
 		try {
 			ruleService.deleteBlock(projectId, ruleId, blockId);
+			projectService.saveProject(ProjectService.getProjectById(projectId));
 		} catch (ProjectNotFoundException | RuleNotFoundException | RuleBlockNotFoundException e) {
 			e.printStackTrace();
 			JELogger.error(RuleController.class, e.getMessage());

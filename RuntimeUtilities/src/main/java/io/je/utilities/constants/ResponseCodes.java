@@ -33,5 +33,6 @@ public class ResponseCodes {
 	public static final int JERUNNER_UNREACHABLE = 1020;
 	public static final int ADD_CLASS_FAILED = 1021;
 	public static final int CLASS_LOAD_EXCEPTION = 1022;
+	public static final int DATA_LISTENER_NOT_FOUND = 1023;
 	
 }

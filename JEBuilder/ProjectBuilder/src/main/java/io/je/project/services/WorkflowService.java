@@ -213,6 +213,7 @@ public class WorkflowService {
         } else if (!project.workflowExists(workflowId)) {
             throw new WorkflowNotFoundException( Errors.workflowNotFound);
         }
+
         //set statuses wesh
         WorkflowBuilder.runWorkflow(workflowId);
     }

@@ -1,14 +1,19 @@
 package io.je.utilities.runtimeobject;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
 import java.time.LocalDateTime;
 
-
+@Document(collection="JEObject")
 public abstract class JEObject {
 
 
+    @Id
     protected String jobEngineElementID;
 
     protected String jobEngineProjectID;
+
     protected LocalDateTime jeObjectLastUpdate;
 
 

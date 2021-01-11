@@ -2,6 +2,7 @@ package io.je.runtime.services;
 
 import org.springframework.stereotype.Service;
 
+import io.je.runtime.data.DataListener;
 import io.je.runtime.loader.JEClassLoader;
 import io.je.runtime.models.RuleModel;
 import io.je.runtime.ruleenginehandler.RuleEngineHandler;
@@ -63,6 +64,7 @@ public class RuntimeDispatcher {
 	public void addRule(RuleModel ruleModel) throws RuleAlreadyExistsException, RuleCompilationException, RuleNotAddedException, JEFileNotFoundException, RuleFormatNotValidException
 	{
 		RuleEngineHandler.addRule(ruleModel);
+		DataListener.addTopics(ruleModel.getTopics());
 		
 	}
 	//update rule
