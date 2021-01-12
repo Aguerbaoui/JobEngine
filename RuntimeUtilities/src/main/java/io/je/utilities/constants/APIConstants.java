@@ -14,7 +14,7 @@ public class APIConstants {
 
 
     
-    public final static String COMPILERULE= "/compileRule";
+    public final static String COMPILERULE= "/rule/compileRule";
 
     
     public  static String CLASS_DEFINITION_API = "http://localhost:5555/api";
