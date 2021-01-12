@@ -102,11 +102,12 @@ public class ProcessManager {
     /*
      * Deploy a process to engine
      * */
-    public static void deployProcess(String classpathResource) {
+    public static void deployProcess(String key) {
         repoService.createDeployment()
                 .addClasspathResource(
-                        classpathResource)
+                        processes.get(key).getBpmnPath())
                 .deploy();
+        processes.get(key).setDeployed(true);
 
     }
 
@@ -118,6 +119,8 @@ public class ProcessManager {
             throw new WorkflowNotFoundException( Errors.workflowNotFound);
         }
         runtimeService.startProcessInstanceByKey(id);
+        processes.get(id).setRunning(true);
+
     }
 
     /*
@@ -250,5 +253,42 @@ public class ProcessManager {
      * */
     public static HashMap<String, JEProcess> getProcesses() {
         return processes;
+    }
+
+    public static void runAll() throws WorkflowNotFoundException {
+        for(String key: processes.keySet()) {
+            launchProcessByKeyWithoutVariables(key);
+        }
+    }
+
+    public static void runAll(String projectId) throws WorkflowNotFoundException {
+        for(JEProcess process: processes.values()) {
+            if(process.getProjectId().equals(projectId) && process.isDeployed() && !process.isRunning()) {
+                launchProcessByKeyWithoutVariables(process.getKey());
+            }
+        }
+    }
+
+    public static void buildProjectWorkflows(String projectId) {
+        for(JEProcess process: processes.values()) {
+            if(process.getProjectId().equals(projectId) && !process.isDeployed()) {
+                deployProcess(process.getKey());
+            }
+        }
+    }
+
+    public static void stopProcess(String key) {
+        if(processes.get(key).isRunning()) {
+            runtimeService.deleteProcessInstance(key, "User Stopped the execution");
+            processes.get(key).setRunning(false);
+        }
+    }
+
+    public static void stopProjectWorkflows(String projectId) {
+        for(JEProcess process: processes.values()) {
+            if(process.getProjectId().equals(projectId) && process.isRunning()) {
+                runtimeService.deleteProcessInstance(process.getKey(), "User Stopped the execution");
+            }
+        }
     }
 }

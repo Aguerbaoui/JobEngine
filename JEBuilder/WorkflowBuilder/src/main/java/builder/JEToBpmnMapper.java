@@ -134,7 +134,7 @@ public class JEToBpmnMapper {
         createBpmnFromJEWorkflow( wf);
         HashMap<String, String> wfMap = new HashMap<String, String>();
         wfMap.put("key", wf.getJobEngineElementID());
-        wfMap.put("path", "processes/testGenerated.bpmn");
+        wfMap.put("path", "processes/" + wf.getWorkflowName() + ".bpmn");
         wfMap.put("projectId", wf.getJobEngineProjectID());
         try {
             Network.makeNetworkCallWithJsonBody(wfMap, "http://127.0.0.1:8081/addWorkflow");

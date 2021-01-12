@@ -5,6 +5,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.appender.ConsoleAppender;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.config.LoggerConfig;
@@ -33,16 +34,15 @@ public class JELogger {
 
             builder.setStatusLevel(Level.OFF);
             builder.setConfigurationName("JobEngineLogger");
-
-            // create a console appender
-            /*AppenderComponentBuilder appenderBuilder = builder.newAppender("Console", "CONSOLE").addAttribute("target",
-                    ConsoleAppender.Target.SYSTEM_OUT);
-            appenderBuilder.add(builder.newLayout("PatternLayout")
-                    .addAttribute("pattern", pattern));
             RootLoggerComponentBuilder rootLogger = builder.newRootLogger(Level.INFO);
+            // create a console appender
+            AppenderComponentBuilder consoleAppender = builder.newAppender("Console", "CONSOLE").addAttribute("target",
+                    ConsoleAppender.Target.SYSTEM_OUT);
+            consoleAppender.add(builder.newLayout("PatternLayout")
+                    .addAttribute("pattern", pattern));
             rootLogger.add(builder.newAppenderRef("Console"));
 
-            builder.add(appenderBuilder);*/
+            builder.add(consoleAppender);
 
             // create a rolling file appender
             LayoutComponentBuilder layoutBuilder = builder.newLayout("PatternLayout")
@@ -51,11 +51,11 @@ public class JELogger {
                     .addComponent(builder.newComponent("SizeBasedTriggeringPolicy").addAttribute("size", "1KB"));
             AppenderComponentBuilder appenderBuilder = builder.newAppender("LogToRollingFile", "RollingFile")
                     .addAttribute("fileName", fileName)
-                    .addAttribute("filePattern", fileName+"-%d{MM-dd-yy-HH-mm-ss}.log.")
+                    .addAttribute("filePattern", fileName+"-%d{MM-dd-yy-HH}.log.")
                     .add(layoutBuilder)
                     .addComponent(triggeringPolicy);
             builder.add(appenderBuilder);
-            RootLoggerComponentBuilder rootLogger = builder.newRootLogger(Level.INFO);
+
             rootLogger.add(builder.newAppenderRef("LogToRollingFile"));
             builder.add(rootLogger);
             LoggerContext context = Configurator.initialize(builder.build());

@@ -1,14 +1,17 @@
 package io.je.runtime.controllers;
 
 import io.je.runtime.models.WorkflowModel;
-import io.je.runtime.workflow.WorkflowEngineHandler;
+import io.je.runtime.services.RuntimeDispatcher;
 import io.je.utilities.constants.Errors;
+import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.exceptions.WorkflowNotFoundException;
-import io.je.utilities.logger.JELogger;
-import org.springframework.http.HttpStatus;
+import io.je.utilities.network.JEResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import static io.je.utilities.constants.ResponseMessages.*;
 
 /*
  * Workflow Rest Controller
@@ -17,15 +20,18 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(value= "/workflow")
 public class WorkflowController {
 
+    @Autowired
+    RuntimeDispatcher dispatcher;
 
     /*
      * Add a new Workflow
      * */
     @PostMapping(value = "/addWorkflow", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> addWorkflow(@RequestBody WorkflowModel wf) {
-        JELogger.info(WorkflowController.class, wf.toString());
-        WorkflowEngineHandler.addProcess(wf.getKey(), wf.getPath());
-        return ResponseEntity.ok("Deploying workflow to engine");
+        //JELogger.info(WorkflowController.class, wf.toString());
+        dispatcher.addWorkflow(wf);
+        dispatcher.buildWorkflow(wf.getKey());
+        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ADDED_WORKFLOW_SUCCESSFULLY));
 
     }
 
@@ -34,7 +40,8 @@ public class WorkflowController {
      * */
     @PostMapping(value = "/buildWorkflow/{key}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> buildWorkflow(@PathVariable String key) {
-        return new ResponseEntity<String>(HttpStatus.OK);
+        dispatcher.buildWorkflow(key);
+        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, WORKFLOW_DEPLOYED));
     }
 
     /*
@@ -43,14 +50,14 @@ public class WorkflowController {
     @GetMapping(value = "/runWorkflow/{key}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> runWorkflow(@PathVariable String key) {
         try {
-            JELogger.info(WorkflowController.class, "Executing");
-            WorkflowEngineHandler.launchProcessWithoutVariables(key);
+            //JELogger.info(WorkflowController.class, "Executing");
+            dispatcher.launchProcessWithoutVariables(key);
         } catch (WorkflowNotFoundException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
-            return ResponseEntity.ok(Errors.workflowNotFound);
+            return ResponseEntity.badRequest().body(new JEResponse(e.getCode(), e.getMessage()));
         }
-        return ResponseEntity.ok("Executing workflow");
+        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, EXECUTING_WORKFLOW));
 
     }
 
@@ -59,8 +66,12 @@ public class WorkflowController {
      * */
     @PostMapping(value = "/runAllWorkflows", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> runAllWorkflows() {
-        new ResponseEntity<String>(HttpStatus.OK);
-        return ResponseEntity.ok("");
+        try {
+            dispatcher.runAllWorkflows();
+        } catch (WorkflowNotFoundException e) {
+            return ResponseEntity.badRequest().body(new JEResponse(e.getCode(), e.getMessage()));
+        }
+        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, EXECUTING_WORKFLOW));
     }
 
 

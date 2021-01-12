@@ -1,21 +1,14 @@
 package io.je.runtime.services;
 
+import io.je.runtime.models.WorkflowModel;
+import io.je.runtime.workflow.WorkflowEngineHandler;
+import io.je.utilities.exceptions.*;
 import org.springframework.stereotype.Service;
 
 import io.je.runtime.data.DataListener;
 import io.je.runtime.loader.JEClassLoader;
 import io.je.runtime.models.RuleModel;
 import io.je.runtime.ruleenginehandler.RuleEngineHandler;
-import io.je.utilities.exceptions.ClassLoadException;
-import io.je.utilities.exceptions.DeleteRuleException;
-import io.je.utilities.exceptions.JEFileNotFoundException;
-import io.je.utilities.exceptions.ProjectAlreadyRunningException;
-import io.je.utilities.exceptions.RuleAlreadyExistsException;
-import io.je.utilities.exceptions.RuleBuildFailedException;
-import io.je.utilities.exceptions.RuleCompilationException;
-import io.je.utilities.exceptions.RuleFormatNotValidException;
-import io.je.utilities.exceptions.RuleNotAddedException;
-import io.je.utilities.exceptions.RulesNotFiredException;
 import io.je.utilities.logger.JELogger;
 
 
@@ -35,17 +28,17 @@ public class RuntimeDispatcher {
 		//start listening to datasources
 		//start workflows
 		RuleEngineHandler.buildProject(projectId);
+		WorkflowEngineHandler.buildProject(projectId);
 		
 	}
     
     
 	//run project
-	public void runProject(String projectId) throws RulesNotFiredException, RuleBuildFailedException, ProjectAlreadyRunningException 
-	{
+	public void runProject(String projectId) throws RulesNotFiredException, RuleBuildFailedException, ProjectAlreadyRunningException, WorkflowNotFoundException {
 		//start listening to datasources
 		//start workflows
 		RuleEngineHandler.runRuleEngineProject(projectId);
-		
+		WorkflowEngineHandler.runAllWorkflows(projectId);
 	}
 	
 	//stop project
@@ -55,7 +48,7 @@ public class RuntimeDispatcher {
 		//start listening to datasources
 		//start workflows
 		//RuleEngineHandler.stopProject(projectId);
-		
+		WorkflowEngineHandler.stopProjectWorfklows(projectId);
 	}
 	
 	//////////////////////////////RULES
@@ -88,17 +81,34 @@ public class RuntimeDispatcher {
 		RuleEngineHandler.deleteRule(projectId,ruleId);
 	}
 
+	//***********************************WORKFLOW********************************************************
+	/*
+	 * Add a workflow to the engine
+	 * */
+	public void addWorkflow(WorkflowModel wf) {
+		WorkflowEngineHandler.addProcess(wf.getKey(), wf.getName(), wf.getPath(), wf.getProjectId());
+	}
 
-	
-	
-	
-	
-	
-	/////////////////////////////Workflows
-	
-	//add workflow
-	//update workflow
-	//delete workflow
+	/*
+	 * Launch a workflow without variables
+	 * */
+	public void launchProcessWithoutVariables(String key) throws WorkflowNotFoundException {
+		WorkflowEngineHandler.launchProcessWithoutVariables(key);
+	}
+
+	/*
+	 * Run all workflows deployed in the engine without project specification
+	 * */
+	public void runAllWorkflows() throws WorkflowNotFoundException {
+		WorkflowEngineHandler.runAllWorkflows();
+	}
+
+	/*
+	 * Deploy a workflow to the engine
+	 * */
+	public void buildWorkflow(String key) {
+		WorkflowEngineHandler.deployBPMN(key);
+	}
 	
 	/////////////////////////////Classes
 	//add class
@@ -115,6 +125,8 @@ public class RuntimeDispatcher {
 	public void setClassLoadPath(String classPath){
 		classLoadPath = classPath;
 	}
+
+
 	//update class
 	//delete class
 	

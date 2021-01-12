@@ -1,6 +1,8 @@
 package builder;
 
+import com.squareup.okhttp.Response;
 import io.je.utilities.constants.APIConstants;
+import io.je.utilities.logger.JELogger;
 import io.je.utilities.network.Network;
 import models.JEWorkflow;
 
@@ -18,6 +20,7 @@ public class WorkflowBuilder {
     * */
     public static void buildWorkflow(JEWorkflow workflow) throws IOException {
         //JEToBpmnMapper.createBpmnFromJEWorkflow(workflow);
+        //TODO fix this shit will u still just testing atm
         /*
          * testing purposes only
          * */
@@ -28,7 +31,8 @@ public class WorkflowBuilder {
         wfMap.put("path", "processes/" + workflow.getWorkflowName().trim() + ".bpmn");
         wfMap.put("projectId", workflow.getJobEngineProjectID());
 
-            Network.makeNetworkCallWithJsonBody(wfMap, APIConstants.RUNTIME_MANAGER_BASE_API + APIConstants.ADD_WORKFLOW);
+        Response response = Network.makeNetworkCallWithJsonBodyWithResponse(wfMap, APIConstants.RUNTIME_MANAGER_BASE_API + APIConstants.ADD_WORKFLOW);
+        JELogger.info(WorkflowBuilder.class, response.body().string());
 
     }
 
@@ -37,7 +41,8 @@ public class WorkflowBuilder {
      * Run workflow in runtime engine
      * */
     public static void runWorkflow(String key) throws IOException {
-        Network.makeNetworkCall(APIConstants.RUNTIME_MANAGER_BASE_API + APIConstants.ADD_WORKFLOW + key);
+        Response response = Network.makeNetworkCallWithResponse(APIConstants.RUNTIME_MANAGER_BASE_API + APIConstants.RUN_WORKFLOW + key);
+        JELogger.info(WorkflowBuilder.class, response.body().string());
 
     }
 
