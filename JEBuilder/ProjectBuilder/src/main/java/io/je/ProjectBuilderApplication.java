@@ -10,7 +10,6 @@ public class ProjectBuilderApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(ProjectBuilderApplication.class, args);
-        JELogger.info(ProjectBuilderApplication.class, " Hell");
     }
 
 }

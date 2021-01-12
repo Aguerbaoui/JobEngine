@@ -2,6 +2,7 @@ package io.je.classbuilder.builder;
 
 import java.io.File;
 import java.lang.reflect.Modifier;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.burningwave.core.classes.ClassSourceGenerator;
@@ -10,12 +11,13 @@ import org.burningwave.core.classes.TypeDeclarationSourceGenerator;
 import org.burningwave.core.classes.UnitSourceGenerator;
 import org.burningwave.core.classes.VariableSourceGenerator;
 
-import io.je.classbuilder.config.ClassBuilderConfig;
 import io.je.classbuilder.models.ClassModel;
 import io.je.classbuilder.models.FieldModel;
 import io.je.classbuilder.models.MethodModel;
+import io.je.utilities.constants.ClassBuilderConfig;
 import io.je.utilities.constants.ClassBuilderErrors;
 import io.je.utilities.exceptions.AddClassException;
+import io.je.utilities.logger.JELogger;
 import io.je.utilities.runtimeobject.JEObject;
 import io.je.utilities.string.JEStringUtils;
 
@@ -37,17 +39,6 @@ public class ClassBuilder {
 			throw new AddClassException(ClassBuilderErrors.classNameNull);
 		}
 		
-		//load inherited classes
-		if(classModel.getBaseTypes()!=null && !classModel.getBaseTypes().isEmpty())
-		{
-			//if class not found in unit , throw exception
-		}
-		
-		//load dependent classes
-		if(classModel.getDependentEntities()!=null && !classModel.getDependentEntities().isEmpty())
-		{
-			//if class not found in unit , throw exception
-		}
 		
 		
 		
@@ -94,7 +85,7 @@ public class ClassBuilder {
 	 * generate a class
 	 */
 	private static String generateClass(ClassModel classModel, String generationPath) {
-		 UnitSourceGenerator unitSG = UnitSourceGenerator.create(ClassBuilderConfig.genrationFolderName);
+		 UnitSourceGenerator unitSG = UnitSourceGenerator.create(ClassBuilderConfig.genrationPackageName);
 			//add imports
 			if (classModel.getImports() != null && !classModel.getImports().isEmpty()) {
 				addImports(classModel.getImports(),unitSG);
@@ -113,6 +104,7 @@ public class ClassBuilder {
 			newClass.addModifier(getModifier(inheritanceSemantics));
 		}
 
+		
 
 
 		// attributes
@@ -123,6 +115,7 @@ public class ClassBuilder {
 				String capitalizedAttributeName = JEStringUtils.capitalize(attributeName);
 				Class<?> attributeType = getType(field.getType());
 				
+				//TODO: all attributes should have a getter ( 
 				if (field.getHasSetter()) {
 					FunctionSourceGenerator setter = FunctionSourceGenerator.create("set" + capitalizedAttributeName)
 							.addParameter(VariableSourceGenerator.create(attributeType, attributeName))
@@ -160,14 +153,14 @@ public class ClassBuilder {
 		if (classModel.getBaseTypes() == null || classModel.getBaseTypes().isEmpty()) {
 		//	newClass.expands(JEObject.class);
 		} else {
-			// if all base types are interfaces: add them + add JEObject
+			//TODO: if all base types are interfaces: add them + add JEObject
 			// if more than 1 base type class, throw exception
 
 		}
 
 		// store class
 		unitSG.addClass(newClass);
-		String filePath= generationPath + "\\" + ClassBuilderConfig.genrationFolderName  + "\\" + className +".java" ;
+		String filePath= generationPath + "\\" + ClassBuilderConfig.genrationPackageName  + "\\" + className +".java" ;
 		File file = new File(generationPath);
 		file.delete();
 		unitSG.storeToClassPath(generationPath);
@@ -184,10 +177,60 @@ public class ClassBuilder {
 	 * returns the class type based on a string defining the type
 	 */
 	private static Class<?> getType(String type) {
-		Class<?> classType = Integer.class;
+		Class<?> classType = null;;
 		switch (type) {
-		// TODO : assign type
+		case "BYTE" :
+			classType =  byte.class;
+			break;
+		case "SBYTE":
+			classType =  byte.class;
+			break;
+		case "INT":
+			classType =  int.class;
+			break;
+		case "SHORT":
+			classType =  short.class;
+			break;
+		case "LONG":
+			classType =  long.class;
+			break;
+		case "FLOAT":
+			classType =  float.class;
+			break;
+		case "DOUBLE":
+			classType =  double.class;
+			break;
+		case "CHAR":
+			classType =  char.class;
+			break;
+		case "BOOL":
+			classType =  boolean.class;
+			break;
+		case "OBJECT":
+			classType =  Object.class;
+			break;
+		case "STRING":
+			classType =  String.class;
+			break;
+		case "DATETIME":
+			classType =  LocalDateTime.class;
+			break;
+		default:
+			break; //add default value
 		}
+		if(classType==null)
+		{
+			if(ClassManager.classExistsByName(type))
+			{
+				classType = ClassManager.getClassByName(type);
+			}
+			else
+			{
+				// TODO: throw exceeption : type not found
+				JELogger.error(ClassBuilder.class, "COULD NOT BUILD CLASS : UNKNOWN TYPE");
+			}
+		}
+		
 		return classType;
 	}
 

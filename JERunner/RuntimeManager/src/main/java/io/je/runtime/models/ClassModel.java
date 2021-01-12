@@ -2,8 +2,18 @@ package io.je.runtime.models;
 
 public class ClassModel {
 	
+	String classId;
 	String className;
 	String classPath;
+	
+	
+	
+	public String getClassId() {
+		return classId;
+	}
+	public void setClassId(String classId) {
+		this.classId = classId;
+	}
 	public String getClassName() {
 		return className;
 	}

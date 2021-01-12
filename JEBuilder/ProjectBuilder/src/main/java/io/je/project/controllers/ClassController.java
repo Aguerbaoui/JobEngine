@@ -11,9 +11,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.je.project.services.ClassService;
+import io.je.utilities.constants.Errors;
 import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.constants.ResponseMessages;
 import io.je.utilities.exceptions.AddClassException;
+import io.je.utilities.exceptions.ClassLoadException;
 import io.je.utilities.exceptions.DataDefinitionUnreachableException;
 import io.je.utilities.exceptions.JERunnerUnreachableException;
 import io.je.utilities.logger.JELogger;
@@ -40,13 +42,15 @@ public class ClassController {
 		
 			classService.addClass(worksapceId, classId);
 		
-		} catch ( AddClassException | DataDefinitionUnreachableException | JERunnerUnreachableException e) {
+		} catch ( ClassLoadException | AddClassException | DataDefinitionUnreachableException | JERunnerUnreachableException e) {
 			e.printStackTrace();
 			JELogger.error(ClassController.class, e.getMessage());
 			return ResponseEntity.badRequest().body(new JEResponse(e.getCode(), e.getMessage()));
 		} catch (IOException e) {
 			
 			e.printStackTrace();
+			JELogger.info(WorkflowController.class, Errors.uknownError);
+            return ResponseEntity.badRequest().body(new JEResponse(ResponseCodes.UNKNOWN_ERROR, Errors.uknownError));
 		}
 		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.classAddedSuccessully));
 

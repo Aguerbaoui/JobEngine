@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.je.runtime.data.DataListener;
 import io.je.runtime.models.ClassModel;
+import io.je.runtime.models.InstanceModel;
 import io.je.runtime.models.RuleModel;
 import io.je.runtime.services.RuntimeDispatcher;
 import io.je.utilities.constants.ResponseCodes;
@@ -122,7 +123,7 @@ public class RuleController {
 		
 	
 			try {
-				runtimeDispatcher.addClass(classModel.getClassPath());
+				runtimeDispatcher.addClass(classModel);
 			} catch (ClassLoadException e) {
 				e.printStackTrace();
 				return ResponseEntity.badRequest().body(new JEResponse(e.getCode(), e.getMessage()));
@@ -143,4 +144,25 @@ public class RuleController {
 			
 			return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.classAddedSuccessully));
 		}
+		
+		//add instance 
+		@PostMapping(value = "/addInstance", produces = MediaType.APPLICATION_JSON_VALUE)
+		public ResponseEntity<?> addInstance( @RequestBody InstanceModel instanceModel) {
+			
+		
+				try {
+					runtimeDispatcher.addInstanceTest(instanceModel);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			
+				
+			
+			return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.classAddedSuccessully));
+		}
+		
+		
+			
+		
+		
 }

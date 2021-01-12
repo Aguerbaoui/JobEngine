@@ -4,13 +4,39 @@ import io.je.utilities.runtimeobject.JEObject;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection="JEClass")
-public class JEClass extends JEObject {
+public class JEClass  {
+	String classId;
 	String className;
+	String classPath;
 
-	public JEClass(String jobEngineElementID, String jobEngineProjectID, String className) {
-		super(jobEngineElementID, jobEngineProjectID);
-		this.className = className;
+	
+
+	
+	private JEClass() {
 	}
+
+
+
+	public JEClass(String classId, String className, String classPath) {
+		this.className = className;
+		this.classPath = classPath;
+		this.classId = classId;
+		
+	}
+
+	
+	
+	public String getClassId() {
+		return classId;
+	}
+
+
+
+	public void setClassId(String classId) {
+		this.classId = classId;
+	}
+
+
 
 	public String getClassName() {
 		return className;
@@ -20,7 +46,15 @@ public class JEClass extends JEObject {
 		this.className = className;
 	}
 
+	public String getClassPath() {
+		return classPath;
+	}
 
+	public void setClassPath(String classPath) {
+		this.classPath = classPath;
+	}
+
+	
 
 
 	

@@ -3,9 +3,13 @@ package io.je.runtime.services;
 import org.springframework.stereotype.Service;
 
 import io.je.runtime.data.DataListener;
-import io.je.runtime.loader.JEClassLoader;
+import io.je.runtime.models.ClassModel;
+import io.je.runtime.models.InstanceModel;
 import io.je.runtime.models.RuleModel;
+import io.je.runtime.objects.ClassManager;
+import io.je.runtime.objects.InstanceManager;
 import io.je.runtime.ruleenginehandler.RuleEngineHandler;
+import io.je.utilities.classloader.JEClassLoader;
 import io.je.utilities.exceptions.ClassLoadException;
 import io.je.utilities.exceptions.DeleteRuleException;
 import io.je.utilities.exceptions.JEFileNotFoundException;
@@ -102,13 +106,9 @@ public class RuntimeDispatcher {
 	
 	/////////////////////////////Classes
 	//add class
-	public void addClass(String classPath) throws  ClassLoadException {
-		JELogger.info(getClass(), " Loading class from : " + classPath);
-		String [] mpath = System.getProperty("java.class.path").split(";");
-		//String path = mpath[0]+"\\io\\je\\runtime";
-		//String path = mpath[0];
-		JEClassLoader.loadClass(classPath, classLoadPath);
-		JELogger.info(getClass(), " CLASS LOADED TO :" + classLoadPath);
+	public void addClass(ClassModel classModel) throws  ClassLoadException {
+		
+		ClassManager.loadClass(classModel.getClassId(),classModel.getClassName(),classModel.getClassPath());
 		
 	}
 	
@@ -118,5 +118,10 @@ public class RuntimeDispatcher {
 	//update class
 	//delete class
 	
+	///////////////////////////////instance
+	public void addInstanceTest(InstanceModel instanceModel)
+	{
+		InstanceManager.createInstance(instanceModel);
+	}
 
 }
