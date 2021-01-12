@@ -22,6 +22,8 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.util.HashMap;
 
+import static io.je.utilities.constants.ResponseMessages.*;
+
 /*
  * Project Rest Controller
  * */
@@ -30,15 +32,11 @@ import java.util.HashMap;
 public class ProjectController {
 
 
-    public static final String CREATED_PROJECT_SUCCESSFULLY = "Created project successfully";
-    public static final String BUILT_EVERYTHING_SUCCESSFULLY = "Built everything successfully";
-    public static final String BUILT_EVERYTHING_SUCCESSFULLY1 = "Built everything successfully";
-    public static final String ADDED_WORKFLOW_SUCCESSFULLY = "Added workflow successfully";
-    public static final String WORKFLOW_BUILT_SUCCESSFULLY = "Workflow built successfully";
-    public static final String EXECUTING_WORKFLOW = "Executing workflow";
+
 
     @Autowired
     ProjectService projectService;
+
 //########################################### **PROJECT** ################################################################
 
     /*
@@ -68,6 +66,7 @@ public class ProjectController {
             JELogger.info(WorkflowController.class, e.getMessage());
             return ResponseEntity.badRequest().body(new JEResponse(ResponseCodes.UNKNOWN_ERROR, Errors.uknownError));
         }
+        JELogger.info(ProjectController.class, "Built workflow successfully");
         return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, BUILT_EVERYTHING_SUCCESSFULLY));
     }
 
@@ -77,12 +76,14 @@ public class ProjectController {
         try {
             projectService.runAll(projectId);
         } catch (IOException e) {
+            e.printStackTrace();
             return ResponseEntity.badRequest().body(new JEResponse(ResponseCodes.NETWORK_ERROR, Errors.NETWORK_ERROR));
         } catch (ProjectNotFoundException e) {
+            e.printStackTrace();
             return ResponseEntity.badRequest().body(new JEResponse(e.getCode(), Errors.projectNotFound));
         }
         catch (Exception e) {
-            JELogger.info(WorkflowController.class, e.getMessage());
+            e.printStackTrace();
             return ResponseEntity.badRequest().body(new JEResponse(ResponseCodes.UNKNOWN_ERROR, Errors.uknownError));
         }
         return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, BUILT_EVERYTHING_SUCCESSFULLY1));
@@ -138,10 +139,9 @@ public class ProjectController {
     /*
      * Run Workflow
      * */
-    @PostMapping(value = "/runWorkflow/{key}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/runWorkflow/{projectId}/{key}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> runWorkflow(@PathVariable String projectId, @PathVariable String key) {
         try {
-            JELogger.info(WorkflowController.class, key);
             projectService.runWorkflow(projectId, key);
         } catch (ProjectNotFoundException e) {
             return ResponseEntity.badRequest().body(new JEResponse(e.getCode(), Errors.projectNotFound));

@@ -24,8 +24,8 @@ public class WorkflowEngineHandler {
     /*
      * Deploy bpmn process
      * */
-    public static void deployBPMN(String path) {
-        ProcessManager.deployProcess(path);
+    public static void deployBPMN(String key) {
+        ProcessManager.deployProcess(key);
     }
 
     /*
@@ -47,13 +47,12 @@ public class WorkflowEngineHandler {
     /*
      * Add new process
      * */
-    public static void addProcess(String processId, String processPath) {
+    public static void addProcess(String processId, String name, String processPath, String projectId) {
 
         if (!init) initWorkflowEngine();
-        ProcessManager.addProcess(new JEProcess(processId, processId, processPath));
+        ProcessManager.addProcess(new JEProcess(processId, name, processPath, projectId));
         registerWorkflow(processId);
-        deployBPMN(processPath);
-
+        //deployBPMN(processPath);
     }
 
     /*
@@ -76,5 +75,25 @@ public class WorkflowEngineHandler {
 			e.printStackTrace();
 		}*/
 
+    }
+
+    /*
+    * Run all existing workflows
+    * */
+    public static void runAllWorkflows() throws WorkflowNotFoundException {
+        ProcessManager.runAll();
+    }
+    public static void runAllWorkflows(String projectId) throws WorkflowNotFoundException {
+        ProcessManager.runAll(projectId);
+    }
+    public static void buildProject(String projectId) {
+        ProcessManager.buildProjectWorkflows(projectId);
+    }
+
+    public static void stopWorkflow(String key) {
+        ProcessManager.stopProcess(key);
+    }
+    public static void stopProjectWorfklows(String projectId) {
+        ProcessManager.stopProjectWorkflows(projectId);
     }
 }

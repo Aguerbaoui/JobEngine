@@ -4,17 +4,21 @@ import java.util.ArrayList;
 
 public class WorkflowModel {
 
-    public String projectId;
+    private String projectId;
 
-    public String key;
+    private String key;
 
-    public String path;
+    private String path;
 
-    public ArrayList<EventModel> events;
 
-    public ArrayList<TaskModel> tasks;
 
-    public WorkflowModel(String projectId, String key, String path, ArrayList<EventModel> events,
+    private String name;
+
+    private ArrayList<EventModel> events;
+
+    private ArrayList<TaskModel> tasks;
+
+    public WorkflowModel(String projectId, String key, String path, String name, ArrayList<EventModel> events,
                          ArrayList<TaskModel> tasks) {
         super();
         this.projectId = projectId;
@@ -22,6 +26,7 @@ public class WorkflowModel {
         this.path = path;
         this.events = events;
         this.tasks = tasks;
+        this.name = name;
     }
 
     public WorkflowModel() {
@@ -34,6 +39,14 @@ public class WorkflowModel {
 
     public void setProjectId(String projectId) {
         this.projectId = projectId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getKey() {
