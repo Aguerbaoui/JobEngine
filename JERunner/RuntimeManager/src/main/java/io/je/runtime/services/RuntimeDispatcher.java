@@ -2,6 +2,7 @@ package io.je.runtime.services;
 
 import io.je.runtime.models.WorkflowModel;
 import io.je.runtime.workflow.WorkflowEngineHandler;
+import io.je.utilities.beans.JEData;
 import io.je.utilities.exceptions.*;
 import org.springframework.stereotype.Service;
 
@@ -11,6 +12,8 @@ import io.je.runtime.models.RuleModel;
 import io.je.runtime.ruleenginehandler.RuleEngineHandler;
 import io.je.utilities.logger.JELogger;
 
+import java.util.Set;
+
 
 /*
  * Service class to handle JERunner inputs
@@ -19,9 +22,11 @@ import io.je.utilities.logger.JELogger;
 public class RuntimeDispatcher {
 	
 	
-	public String classLoadPath = ""; 
-    
-    /////////////////////////////////PROJECT
+	public String classLoadPath = "";
+
+
+
+	/////////////////////////////////PROJECT
 	//build project
 	public void buildProject(String projectId) throws RuleBuildFailedException
 	{
@@ -57,7 +62,7 @@ public class RuntimeDispatcher {
 	public void addRule(RuleModel ruleModel) throws RuleAlreadyExistsException, RuleCompilationException, RuleNotAddedException, JEFileNotFoundException, RuleFormatNotValidException
 	{
 		RuleEngineHandler.addRule(ruleModel);
-		DataListener.addTopics(ruleModel.getTopics());
+
 		
 	}
 	//update rule
@@ -126,6 +131,25 @@ public class RuntimeDispatcher {
 		classLoadPath = classPath;
 	}
 
+	/*
+	* Add data topics
+	* */
+	public void addTopics(String projectId, Set<String> topics) {
+		DataListener.addTopics(topics);
+		while(topics.iterator().hasNext()) {
+			String topic = topics.iterator().next();
+			RuleEngineHandler.addTopic(projectId, topic);
+			//WorkflowEngineHandler.addTopic(projectId, topic);
+		}
+	}
+
+	/*
+	* Inject data into runtime engine
+	* */
+	public static void injectData(JEData jeData) {
+		RuleEngineHandler.injectData(jeData);
+		//WorkflowEngineHandler.injectData(jeData);
+	}
 
 	//update class
 	//delete class
