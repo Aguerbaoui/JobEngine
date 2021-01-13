@@ -12,12 +12,16 @@ public class ResponseMessages {
 	//
 	public static final String ConfigUpdated = "Configuration Updated successfully.";
 
+	public static final String EXECUTING_PROJECT = "Executing project";
 
+	public static final String STOPPING_PROJECT = "Stopped project";
 	/*
 	 * Rules response messages
 	 */
 
 	// rule addition
+
+	public static final String RULE_BUILD_ERROR = "Error while building a rule";
 
 	public static final String RuleAdditionSucceeded = "Rule added successfully.";
 
@@ -44,5 +48,20 @@ public class ResponseMessages {
 	
 	//class addition
 	public static final String classAddedSuccessully ="Class was added successfully";
+
+	//****************************************WORKFLOW**************************************************
+	public static final String CREATED_PROJECT_SUCCESSFULLY = "Created project successfully";
+
+	public static final String BUILT_EVERYTHING_SUCCESSFULLY = "Built everything successfully";
+
+	public static final String BUILT_EVERYTHING_SUCCESSFULLY1 = "Built everything successfully";
+
+	public static final String ADDED_WORKFLOW_SUCCESSFULLY = "Added workflow successfully";
+
+	public static final String WORKFLOW_BUILT_SUCCESSFULLY = "Workflow built successfully";
+
+	public static final String EXECUTING_WORKFLOW = "Executing workflow";
+
+	public static final String WORKFLOW_DEPLOYED = "Workflow deployed to engine";
 
 }

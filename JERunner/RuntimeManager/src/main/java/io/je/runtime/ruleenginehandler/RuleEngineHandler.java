@@ -53,9 +53,9 @@ public class RuleEngineHandler {
     	verifyRuleIsValid(ruleModel);       
         Rule rule = new Rule(ruleModel.getRuleId(), ruleModel.getProjectId(), ruleModel.getRuleId(), ruleModel.getFormat(), ruleModel.getRulePath(),ruleModel.getTopics());
         RuleEngine.addRule(rule);  
-     /*   if ( !RuleEngine.addTopics(ruleModel.getProjectId(), ruleModel.getTopics())) {
-            throw new RuleNotAddedException( "Failed to add topics");
-        }*/
+       /* if ( !RuleEngine.addTopics(ruleModel.getProjectId(), ruleModel.getTopics())) {
+			throw new RuleNotAddedException("Failed to add topics");
+		}*/
 
 
     }
@@ -117,5 +117,8 @@ public class RuleEngineHandler {
 		
 	}
 
+	public static void addTopic(String projectId, String topic) {
+		RuleEngine.addTopic(projectId, topic);
+	}
 
 }

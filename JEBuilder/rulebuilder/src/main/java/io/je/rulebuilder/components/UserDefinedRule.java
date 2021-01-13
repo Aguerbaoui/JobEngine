@@ -81,6 +81,10 @@ public class UserDefinedRule extends JEObject {
 	 * */
 	private String frontConfig;
 
+	public UserDefinedRule() {
+		if(blocks == null) blocks = new HashMap<>();
+	}
+
 	/*
 	 * Constructor : generates a user defined rule from a rule model
 	 */

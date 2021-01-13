@@ -59,6 +59,13 @@ public class RuleEngine {
 		return false;
 	}
 
+	public static void addTopic(String projectId, String topic) {
+		ProjectContainer project = projectManager.getProjectContainer(projectId);
+		if(project!= null) {
+			project.addTopic(topic);
+		}
+	}
+
 	public boolean addRules(List<Rule> rules) throws RuleAlreadyExistsException, RuleCompilationException,
 			JEFileNotFoundException, RuleNotAddedException {
 

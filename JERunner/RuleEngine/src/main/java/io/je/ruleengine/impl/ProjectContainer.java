@@ -568,8 +568,6 @@ public class ProjectContainer {
     }
 
     public void addTopic(String topic) {
-        if(!subscribedTopics.contains(topic)) {
-            subscribedTopics.add(topic);
-        }
+        subscribedTopics.add(topic);
     }
 }

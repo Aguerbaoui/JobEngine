@@ -1,5 +1,9 @@
 package io.je.runtime.services;
 
+import io.je.runtime.models.WorkflowModel;
+import io.je.runtime.workflow.WorkflowEngineHandler;
+import io.je.utilities.beans.JEData;
+import io.je.utilities.exceptions.*;
 import org.springframework.stereotype.Service;
 
 import io.je.runtime.data.DataListener;
@@ -23,6 +27,8 @@ import io.je.utilities.exceptions.RuleNotAddedException;
 import io.je.utilities.exceptions.RulesNotFiredException;
 import io.je.utilities.logger.JELogger;
 
+import java.util.Set;
+
 
 /*
  * Service class to handle JERunner inputs
@@ -39,17 +45,17 @@ public class RuntimeDispatcher {
 		//start listening to datasources
 		//start workflows
 		RuleEngineHandler.buildProject(projectId);
+		WorkflowEngineHandler.buildProject(projectId);
 		
 	}
     
     
 	//run project
-	public void runProject(String projectId) throws RulesNotFiredException, RuleBuildFailedException, ProjectAlreadyRunningException 
-	{
+	public void runProject(String projectId) throws RulesNotFiredException, RuleBuildFailedException, ProjectAlreadyRunningException, WorkflowNotFoundException {
 		//start listening to datasources
 		//start workflows
 		RuleEngineHandler.runRuleEngineProject(projectId);
-		
+		WorkflowEngineHandler.runAllWorkflows(projectId);
 	}
 	
 	//stop project
@@ -59,7 +65,7 @@ public class RuntimeDispatcher {
 		//start listening to datasources
 		//start workflows
 		//RuleEngineHandler.stopProject(projectId);
-		
+		WorkflowEngineHandler.stopProjectWorfklows(projectId);
 	}
 	
 	//////////////////////////////RULES
@@ -68,7 +74,7 @@ public class RuntimeDispatcher {
 	public void addRule(RuleModel ruleModel) throws RuleAlreadyExistsException, RuleCompilationException, RuleNotAddedException, JEFileNotFoundException, RuleFormatNotValidException
 	{
 		RuleEngineHandler.addRule(ruleModel);
-		DataListener.addTopics(ruleModel.getTopics());
+
 		
 	}
 	//update rule
@@ -92,17 +98,34 @@ public class RuntimeDispatcher {
 		RuleEngineHandler.deleteRule(projectId,ruleId);
 	}
 
+	//***********************************WORKFLOW********************************************************
+	/*
+	 * Add a workflow to the engine
+	 * */
+	public void addWorkflow(WorkflowModel wf) {
+		WorkflowEngineHandler.addProcess(wf.getKey(), wf.getName(), wf.getPath(), wf.getProjectId());
+	}
 
-	
-	
-	
-	
-	
-	/////////////////////////////Workflows
-	
-	//add workflow
-	//update workflow
-	//delete workflow
+	/*
+	 * Launch a workflow without variables
+	 * */
+	public void launchProcessWithoutVariables(String key) throws WorkflowNotFoundException {
+		WorkflowEngineHandler.launchProcessWithoutVariables(key);
+	}
+
+	/*
+	 * Run all workflows deployed in the engine without project specification
+	 * */
+	public void runAllWorkflows() throws WorkflowNotFoundException {
+		WorkflowEngineHandler.runAllWorkflows();
+	}
+
+	/*
+	 * Deploy a workflow to the engine
+	 * */
+	public void buildWorkflow(String key) {
+		WorkflowEngineHandler.deployBPMN(key);
+	}
 	
 	/////////////////////////////Classes
 	//add class

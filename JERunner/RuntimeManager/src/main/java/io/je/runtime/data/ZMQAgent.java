@@ -2,6 +2,7 @@ package io.je.runtime.data;
 
 import io.je.ruleengine.impl.RuleEngine;
 import io.je.runtime.ruleenginehandler.RuleEngineHandler;
+import io.je.runtime.services.RuntimeDispatcher;
 import io.je.utilities.beans.JEData;
 import io.je.utilities.constants.APIConstants;
 import io.je.utilities.logger.JELogger;
@@ -141,7 +142,8 @@ public class ZMQAgent {
             if(isListening()) {
                 String data = this.getSubSocket().recvStr();
                 JELogger.info(ZMQAgent.class, data);
-                RuleEngineHandler.injectData(new JEData(this.topic, data));
+                RuntimeDispatcher.injectData(new JEData(this.topic, data));
+
                 //DISPATCHER calls to rule engine handler / workflow handler
             }
         }
