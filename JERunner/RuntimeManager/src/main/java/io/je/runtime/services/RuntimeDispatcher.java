@@ -12,6 +12,7 @@ import io.je.runtime.ruleenginehandler.RuleEngineHandler;
 import io.je.utilities.classloader.JEClassLoader;
 import io.je.utilities.exceptions.ClassLoadException;
 import io.je.utilities.exceptions.DeleteRuleException;
+import io.je.utilities.exceptions.InstanceCreationFailed;
 import io.je.utilities.exceptions.JEFileNotFoundException;
 import io.je.utilities.exceptions.ProjectAlreadyRunningException;
 import io.je.utilities.exceptions.RuleAlreadyExistsException;
@@ -119,8 +120,9 @@ public class RuntimeDispatcher {
 	//delete class
 	
 	///////////////////////////////instance
-	public void addInstanceTest(InstanceModel instanceModel)
+	public void addInstanceTest(InstanceModel instanceModel) throws InstanceCreationFailed
 	{
+		JELogger.info(getClass(), instanceModel.toString());
 		InstanceManager.createInstance(instanceModel);
 	}
 

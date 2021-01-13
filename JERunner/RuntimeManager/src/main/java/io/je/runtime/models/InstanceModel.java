@@ -15,11 +15,11 @@ public class InstanceModel {
 	String instanceId;
 	
 	@JsonProperty(InstanceModelMapping.PAYLOAD)
-	String payload;
+	JSONObject payload;
 
 	
 	
-	private InstanceModel() {
+	public InstanceModel() {
 		// TODO Auto-generated constructor stub
 	}
 
@@ -39,11 +39,13 @@ public class InstanceModel {
 		this.instanceId = instanceId;
 	}
 
-	public String getPayload() {
+	
+
+	public JSONObject getPayload() {
 		return payload;
 	}
 
-	public void setPayload(String payload) {
+	public void setPayload(JSONObject payload) {
 		this.payload = payload;
 	}
 

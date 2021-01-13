@@ -3,6 +3,7 @@ package io.je.runtime.controllers;
 
 import java.io.IOException;
 
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.je.runtime.config.InstanceModelMapping;
 import io.je.runtime.data.DataListener;
 import io.je.runtime.models.ClassModel;
 import io.je.runtime.models.InstanceModel;
@@ -147,9 +149,14 @@ public class RuleController {
 		
 		//add instance 
 		@PostMapping(value = "/addInstance", produces = MediaType.APPLICATION_JSON_VALUE)
-		public ResponseEntity<?> addInstance( @RequestBody InstanceModel instanceModel) {
-			
-		
+		public ResponseEntity<?> addInstance( @RequestBody String  instance) {
+				JSONObject instanceJson = new JSONObject(instance);
+				JELogger.info(getClass(), instanceJson.toString());
+
+				InstanceModel instanceModel = new InstanceModel();
+				instanceModel.setInstanceId(instanceJson.getString(InstanceModelMapping.INSTANCEID));
+				instanceModel.setModelId(instanceJson.getString(InstanceModelMapping.MODELID));
+				instanceModel.setPayload(instanceJson.getJSONObject(InstanceModelMapping.PAYLOAD));
 				try {
 					runtimeDispatcher.addInstanceTest(instanceModel);
 				} catch (Exception e) {
