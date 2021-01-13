@@ -7,21 +7,17 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 
+import io.je.utilities.logger.JELogger;
+
+
+
 @SpringBootApplication
 public class JERunnerApplication {
-	
-	 public static void main(String[] args) {
-	        SpringApplication app = new SpringApplication(JERunnerApplication.class);
-	        app.setDefaultProperties(Collections
-	                .singletonMap("server.port", "8081"));
-	        app.run(args);
-		 JELogger.info(JERunnerApplication.class, "Running JERunner app");
-	    }
 
-/*    public static void main(String[] args) {
+    public static void main(String[] args) {
         SpringApplication.run(JERunnerApplication.class, args);
     }
-*/
+
 }
 
 

@@ -4,7 +4,7 @@ public class ResponseCodes {
 
 	
 	//success
-	public static final int CODE_OK = 0;
+	public static final int CODE_OK = 200;
 	public static final int UNKNOWN_ERROR = 9999;
 	public static final int NETWORK_ERROR = 9998;
 
@@ -34,5 +34,6 @@ public class ResponseCodes {
 	public static final int ADD_CLASS_FAILED = 1021;
 	public static final int CLASS_LOAD_EXCEPTION = 1022;
 	public static final int DATA_LISTENER_NOT_FOUND = 1023;
+	public static final int INSTANCE_NOT_CREATED = 1024;
 	
 }

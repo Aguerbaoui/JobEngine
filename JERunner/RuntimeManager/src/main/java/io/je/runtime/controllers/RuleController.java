@@ -1,11 +1,24 @@
 package io.je.runtime.controllers;
 
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
+
 import io.je.runtime.models.ClassModel;
 import io.je.runtime.models.RuleModel;
 import io.je.runtime.services.RuntimeDispatcher;
 import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.constants.ResponseMessages;
+import io.je.utilities.exceptions.JEFileNotFoundException;
+import io.je.utilities.exceptions.RuleAlreadyExistsException;
+import io.je.utilities.exceptions.RuleCompilationException;
+import io.je.utilities.exceptions.RuleFormatNotValidException;
+import io.je.utilities.exceptions.RuleNotAddedException;
 import io.je.utilities.exceptions.*;
 import io.je.utilities.logger.JELogger;
 import io.je.utilities.network.JEResponse;
@@ -25,6 +38,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping(value= "/rule")
 public class RuleController {
+
+	
+
+
 
 
     @Autowired
@@ -103,32 +120,5 @@ public class RuleController {
 
 
         return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.RuleUpdateSucceeded));
-    }
-
-
-    //TODO: move method to class controller
-    /*
-     * add a new class
-     */
-    @PostMapping(value = "/addClass", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> addClass(@RequestBody ClassModel classModel) {
-        try {
-            runtimeDispatcher.addClass(classModel.getClassPath());
-        } catch (ClassLoadException e) {
-            e.printStackTrace();
-            return ResponseEntity.badRequest().body(new JEResponse(e.getCode(), e.getMessage()));
-        }
-        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.classAddedSuccessully));
-    }
-
-
-    @PostMapping(value = "/setLoadPath", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> setLoadPath(@RequestBody String classPath) {
-
-
-        runtimeDispatcher.setClassLoadPath(classPath);
-
-
-        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.classAddedSuccessully));
     }
 }

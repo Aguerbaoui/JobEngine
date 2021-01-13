@@ -46,7 +46,7 @@ import io.je.utilities.network.JEResponse;
 public class RuleController {
 
 	@Autowired
-	RuleService ruleService = new RuleService();
+	RuleService ruleService ;
 
 	@Autowired
 	ProjectService projectService;

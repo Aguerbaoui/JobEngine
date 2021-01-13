@@ -7,9 +7,24 @@ import io.je.utilities.exceptions.*;
 import org.springframework.stereotype.Service;
 
 import io.je.runtime.data.DataListener;
-import io.je.runtime.loader.JEClassLoader;
+import io.je.runtime.models.ClassModel;
+import io.je.runtime.models.InstanceModel;
 import io.je.runtime.models.RuleModel;
+import io.je.runtime.objects.ClassManager;
+import io.je.runtime.objects.InstanceManager;
 import io.je.runtime.ruleenginehandler.RuleEngineHandler;
+import io.je.utilities.classloader.JEClassLoader;
+import io.je.utilities.exceptions.ClassLoadException;
+import io.je.utilities.exceptions.DeleteRuleException;
+import io.je.utilities.exceptions.InstanceCreationFailed;
+import io.je.utilities.exceptions.JEFileNotFoundException;
+import io.je.utilities.exceptions.ProjectAlreadyRunningException;
+import io.je.utilities.exceptions.RuleAlreadyExistsException;
+import io.je.utilities.exceptions.RuleBuildFailedException;
+import io.je.utilities.exceptions.RuleCompilationException;
+import io.je.utilities.exceptions.RuleFormatNotValidException;
+import io.je.utilities.exceptions.RuleNotAddedException;
+import io.je.utilities.exceptions.RulesNotFiredException;
 import io.je.utilities.logger.JELogger;
 
 import java.util.Set;
@@ -22,11 +37,8 @@ import java.util.Set;
 public class RuntimeDispatcher {
 	
 	
-	public String classLoadPath = "";
-
-
-
-	/////////////////////////////////PROJECT
+    
+    /////////////////////////////////PROJECT
 	//build project
 	public void buildProject(String projectId) throws RuleBuildFailedException
 	{
@@ -117,42 +129,21 @@ public class RuntimeDispatcher {
 	
 	/////////////////////////////Classes
 	//add class
-	public void addClass(String classPath) throws  ClassLoadException {
-		JELogger.info(getClass(), " Loading class from : " + classPath);
-		String [] mpath = System.getProperty("java.class.path").split(";");
-		//String path = mpath[0]+"\\io\\je\\runtime";
-		//String path = mpath[0];
-		JEClassLoader.loadClass(classPath, classLoadPath);
-		JELogger.info(getClass(), " CLASS LOADED TO :" + classLoadPath);
+	public void addClass(ClassModel classModel) throws  ClassLoadException {
+		
+		ClassManager.loadClass(classModel.getClassId(),classModel.getClassName(),classModel.getClassPath());
 		
 	}
 	
-	public void setClassLoadPath(String classPath){
-		classLoadPath = classPath;
-	}
-
-	/*
-	* Add data topics
-	* */
-	public void addTopics(String projectId, Set<String> topics) {
-		DataListener.addTopics(topics);
-		while(topics.iterator().hasNext()) {
-			String topic = topics.iterator().next();
-			RuleEngineHandler.addTopic(projectId, topic);
-			//WorkflowEngineHandler.addTopic(projectId, topic);
-		}
-	}
-
-	/*
-	* Inject data into runtime engine
-	* */
-	public static void injectData(JEData jeData) {
-		RuleEngineHandler.injectData(jeData);
-		//WorkflowEngineHandler.injectData(jeData);
-	}
 
 	//update class
 	//delete class
 	
+	///////////////////////////////instance
+	public void addInstanceTest(InstanceModel instanceModel) throws InstanceCreationFailed
+	{
+		JELogger.info(getClass(), instanceModel.toString());
+		InstanceManager.createInstance(instanceModel);
+	}
 
 }
