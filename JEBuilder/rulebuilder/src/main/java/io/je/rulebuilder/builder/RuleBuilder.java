@@ -13,6 +13,7 @@ import io.je.rulebuilder.components.UserDefinedRule;
 import io.je.rulebuilder.config.JERunnerRuleMapping;
 import io.je.utilities.constants.APIConstants;
 import io.je.utilities.constants.ClassBuilderErrors;
+import io.je.utilities.constants.JEGlobalconfig;
 import io.je.utilities.exceptions.JERunnerUnreachableException;
 import io.je.utilities.exceptions.RuleBuildFailedException;
 import io.je.utilities.network.Network;
@@ -55,7 +56,7 @@ public class RuleBuilder {
 			Response response = null;
 			try {
 				response = Network.makeNetworkCallWithJsonBodyWithResponse(ruleMap,
-						APIConstants.RUNTIME_MANAGER_BASE_API + APIConstants.COMPILERULE);
+						JEGlobalconfig.RUNTIME_MANAGER_BASE_API + APIConstants.COMPILERULE);
 
 			} catch (ConnectException e) {
 				throw new JERunnerUnreachableException(ClassBuilderErrors.jeRunnerUnreachable);
