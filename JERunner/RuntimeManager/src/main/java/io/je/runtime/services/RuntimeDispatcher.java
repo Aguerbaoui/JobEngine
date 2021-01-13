@@ -31,7 +31,6 @@ import io.je.utilities.logger.JELogger;
 public class RuntimeDispatcher {
 	
 	
-	public String classLoadPath = ""; 
     
     /////////////////////////////////PROJECT
 	//build project
@@ -113,9 +112,7 @@ public class RuntimeDispatcher {
 		
 	}
 	
-	public void setClassLoadPath(String classPath){
-		classLoadPath = classPath;
-	}
+
 	//update class
 	//delete class
 	

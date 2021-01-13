@@ -29,7 +29,7 @@ import io.je.utilities.network.JEResponse;
 @RequestMapping(value= "/class")
 public class ClassController {
 	@Autowired
-	ClassService classService = new ClassService();
+	ClassService classService ;
 	
 	
 	/*
