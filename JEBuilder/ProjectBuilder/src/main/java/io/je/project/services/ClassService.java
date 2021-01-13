@@ -18,6 +18,7 @@ import io.je.classbuilder.models.ClassModel;
 import io.je.utilities.constants.APIConstants;
 import io.je.utilities.constants.ClassBuilderConfig;
 import io.je.utilities.constants.ClassBuilderErrors;
+import io.je.utilities.constants.JEGlobalconfig;
 import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.exceptions.AddClassException;
 import io.je.utilities.exceptions.ClassLoadException;
@@ -34,8 +35,6 @@ public class ClassService {
 
 	private List<String> classes = new ArrayList<>();
 	
-	//TODO: add to global config
-	String configurationPath = ClassBuilderConfig.classGenerationPath;
 
 	/*
 	 * add class
@@ -43,7 +42,7 @@ public class ClassService {
 	public void addClass(String workspaceId, String classId)
 			throws IOException, DataDefinitionUnreachableException, JERunnerUnreachableException, AddClassException, ClassLoadException {
 
-		List<JEClass> builtClasses = ClassManager.buildClass(workspaceId, classId, configurationPath);
+		List<JEClass> builtClasses = ClassManager.buildClass(workspaceId, classId);
 		for (JEClass _class : builtClasses) {
 			addClassToJeRunner(_class);
 		}
@@ -63,7 +62,7 @@ public class ClassService {
 				Response classResp = null;
 				try
 				{
-					classResp = Network.makeNetworkCallWithJsonBodyWithResponse(classMap,APIConstants.RUNTIME_MANAGER_BASE_API + "/addClass");
+					classResp = Network.makeNetworkCallWithJsonBodyWithResponse(classMap,JEGlobalconfig.RUNTIME_MANAGER_BASE_API + "/addClass");
 
 					
 				}catch(ConnectException e )

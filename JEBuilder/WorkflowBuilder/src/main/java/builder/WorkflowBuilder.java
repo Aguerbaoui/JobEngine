@@ -2,6 +2,7 @@ package builder;
 
 import com.squareup.okhttp.Response;
 import io.je.utilities.constants.APIConstants;
+import io.je.utilities.constants.JEGlobalconfig;
 import io.je.utilities.logger.JELogger;
 import io.je.utilities.network.Network;
 import models.JEWorkflow;
@@ -31,7 +32,7 @@ public class WorkflowBuilder {
         wfMap.put("path", "processes/" + workflow.getWorkflowName().trim() + ".bpmn");
         wfMap.put("projectId", workflow.getJobEngineProjectID());
 
-        Response response = Network.makeNetworkCallWithJsonBodyWithResponse(wfMap, APIConstants.RUNTIME_MANAGER_BASE_API + APIConstants.ADD_WORKFLOW);
+        Response response = Network.makeNetworkCallWithJsonBodyWithResponse(wfMap, JEGlobalconfig.RUNTIME_MANAGER_BASE_API + APIConstants.ADD_WORKFLOW);
         JELogger.info(WorkflowBuilder.class, response.body().string());
 
     }
@@ -41,7 +42,7 @@ public class WorkflowBuilder {
      * Run workflow in runtime engine
      * */
     public static void runWorkflow(String key) throws IOException {
-        Response response = Network.makeNetworkCallWithResponse(APIConstants.RUNTIME_MANAGER_BASE_API + APIConstants.RUN_WORKFLOW + key);
+        Response response = Network.makeNetworkCallWithResponse(JEGlobalconfig.RUNTIME_MANAGER_BASE_API + APIConstants.RUN_WORKFLOW + key);
         JELogger.info(WorkflowBuilder.class, response.body().string());
 
     }

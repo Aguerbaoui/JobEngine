@@ -2,6 +2,7 @@ package io.je.runtime.data;
 
 import io.je.utilities.constants.APIConstants;
 import io.je.utilities.constants.Errors;
+import io.je.utilities.constants.JEGlobalconfig;
 import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.exceptions.DataListenerNotFoundException;
 
@@ -26,7 +27,7 @@ public class DataListener {
     }
 
     private static ZMQAgent createNewZmqAgent(String topic) {
-        return new ZMQAgent(APIConstants.DATA_MANAGER_BASE_API, APIConstants.SUBSCRIBER_PORT, APIConstants.REQUEST_PORT, topic);
+        return new ZMQAgent(JEGlobalconfig.DATA_MANAGER_BASE_API, JEGlobalconfig.SUBSCRIBER_PORT, JEGlobalconfig.REQUEST_PORT, topic);
     }
 
     public static void startListening() {

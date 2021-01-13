@@ -145,5 +145,26 @@ public class RuntimeDispatcher {
 		JELogger.info(getClass(), instanceModel.toString());
 		InstanceManager.createInstance(instanceModel);
 	}
+	
+	/*
+	* Add data topics
+	* */
+	public void addTopics(String projectId, Set<String> topics) {
+		DataListener.addTopics(topics);
+		while(topics.iterator().hasNext()) {
+			String topic = topics.iterator().next();
+			RuleEngineHandler.addTopic(projectId, topic);
+			//WorkflowEngineHandler.addTopic(projectId, topic);
+		}
+	}
+
+	/*
+	* Inject data into runtime engine
+	* */
+	public static void injectData(JEData jeData) {
+		RuleEngineHandler.injectData(jeData);
+		//WorkflowEngineHandler.injectData(jeData);
+	}
+
 
 }

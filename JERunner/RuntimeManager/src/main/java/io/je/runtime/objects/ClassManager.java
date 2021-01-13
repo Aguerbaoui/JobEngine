@@ -5,12 +5,13 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import io.je.utilities.classloader.JEClassLoader;
 import io.je.utilities.constants.ClassBuilderConfig;
+import io.je.utilities.constants.JEGlobalconfig;
 import io.je.utilities.exceptions.ClassLoadException;
 
 public class ClassManager {
 	
 	static Map<String,Class<?>> loadedClasses = new ConcurrentHashMap<>();
-	static String classLoadPath = System.getProperty("java.class.path").split(";")[0]; //TODO : add default value
+	static String classLoadPath = JEGlobalconfig.runnerClassLoadPath;
 	  // Create a new JavaClassLoader 
     static ClassLoader classLoader = ClassManager.class.getClassLoader();
 	

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import io.je.project.models.JEBuilderConfigModel;
 import io.je.project.services.ConfigurationService;
 import io.je.utilities.constants.APIConstants;
+import io.je.utilities.constants.JEGlobalconfig;
 import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.constants.ResponseMessages;
 import io.je.utilities.network.JEResponse;
@@ -43,8 +44,8 @@ public class ConfigurationController {
 		
 			//TODO: add to service
 			Map<String,String> config = new HashMap<>();
-			config.put("class definition api : " , APIConstants.CLASS_DEFINITION_API);
-			config.put("JErunner api : " , APIConstants.RUNTIME_MANAGER_BASE_API);
+			config.put("class definition api : " , JEGlobalconfig.CLASS_DEFINITION_API);
+			config.put("JErunner api : " , JEGlobalconfig.RUNTIME_MANAGER_BASE_API);
 		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, config.toString()));
 	}
 	

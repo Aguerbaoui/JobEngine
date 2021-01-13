@@ -16,6 +16,7 @@ import io.je.utilities.classloader.JEClassLoader;
 import io.je.utilities.constants.APIConstants;
 import io.je.utilities.constants.ClassBuilderConfig;
 import io.je.utilities.constants.ClassBuilderErrors;
+import io.je.utilities.constants.JEGlobalconfig;
 import io.je.utilities.exceptions.AddClassException;
 import io.je.utilities.exceptions.ClassLoadException;
 import io.je.utilities.exceptions.DataDefinitionUnreachableException;
@@ -27,13 +28,14 @@ public class ClassManager {
 	static Map<String,Class<?>> builtClasses = new ConcurrentHashMap<>(); //key = id , value = class
 	static Map <String, String > classNames =  new ConcurrentHashMap<>(); //key = name, value = classid
     static ClassLoader classLoader = ClassManager.class.getClassLoader();
-    static String loadPath = System.getProperty("java.class.path").split(";")[0];
+    static String loadPath = JEGlobalconfig.builderClassLoadPath;
+    static String generationPath = JEGlobalconfig.classGenerationPath;
 
 	
 	/*
 	 * build class (generate .java then load Class )
 	 */
-	public static List<JEClass> buildClass(String workspaceId ,String classId,String generationPath) throws AddClassException, DataDefinitionUnreachableException, IOException, ClassLoadException
+	public static List<JEClass> buildClass(String workspaceId ,String classId) throws AddClassException, DataDefinitionUnreachableException, IOException, ClassLoadException
 	{
 		ArrayList<JEClass> classes = new ArrayList<>();
 		ClassModel classModel = loadClassDefinition(workspaceId, classId);
@@ -44,7 +46,7 @@ public class ClassManager {
 					{
 						if(!classNames.containsKey(baseTypeId))
 						{
-							for ( JEClass _class : ClassManager.buildClass(workspaceId,baseTypeId,generationPath) )
+							for ( JEClass _class : ClassManager.buildClass(workspaceId,baseTypeId) )
 							{
 								classes.add(_class);
 							}
@@ -59,7 +61,7 @@ public class ClassManager {
 					{
 						if(!classNames.containsKey(baseTypeId))
 						{
-							for ( JEClass _class : ClassManager.buildClass(workspaceId,baseTypeId,generationPath) )
+							for ( JEClass _class : ClassManager.buildClass(workspaceId,baseTypeId) )
 							{
 								classes.add(_class);
 							}
@@ -78,7 +80,7 @@ public class ClassManager {
 					 loadedClass = classLoader.loadClass(ClassBuilderConfig.genrationPackageName+"."+classModel.getName());
 				} catch (ClassNotFoundException e) {
 					e.printStackTrace();
-					throw new ClassLoadException(""); //TODO add error msg
+					throw new ClassLoadException("Failed to load class" + e.getMessage()); //TODO add error msg
 				}
 		        builtClasses.put(classId, loadedClass); 
 		        classNames.put(classModel.getName(), classId);
@@ -95,7 +97,7 @@ public class ClassManager {
 	public static ClassModel loadClassDefinition(String workspaceId,String classId) throws IOException, DataDefinitionUnreachableException
 	{
 		ObjectMapper objectMapper = new ObjectMapper();
-		String requestURL = APIConstants.CLASS_DEFINITION_API + "/Class/" + classId + "/workspace/" + workspaceId;
+		String requestURL = JEGlobalconfig.CLASS_DEFINITION_API + "/Class/" + classId + "/workspace/" + workspaceId;
 		Response resp = null;
 		try
 		{
