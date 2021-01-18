@@ -1,5 +1,6 @@
 package io.je.runtime.controllers;
 
+import io.je.runtime.data.DataListener;
 import io.je.runtime.services.RuntimeDispatcher;
 import io.je.runtime.workflow.WorkflowEngineHandler;
 import io.je.utilities.constants.Errors;
@@ -32,7 +33,7 @@ public class ProjectController {
      * Build whole project
      * */
 
-    @PostMapping(value = "/buildProject", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/buildProject", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> buildProject(@RequestBody String input) {
         try {
             dispatcher.buildProject(input);
@@ -47,11 +48,11 @@ public class ProjectController {
     /*
      * Run the whole project ( rules and workflows )
      * */
-    @PostMapping(value = "/runProject", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> runProject(@RequestBody String input) {
+    @GetMapping(value = "/runProject/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> runProject(@PathVariable String projectId) {
         //Start listening via data listener do not forget plz
         try {
-            dispatcher.runProject(input);
+            dispatcher.runProject(projectId);
         } catch (RulesNotFiredException | RuleBuildFailedException | ProjectAlreadyRunningException | WorkflowNotFoundException e) {
             return ResponseEntity.badRequest().body(new JEResponse(e.getCode(), e.getMessage()));
         }

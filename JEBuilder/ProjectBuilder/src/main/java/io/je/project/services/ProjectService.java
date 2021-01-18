@@ -3,10 +3,16 @@ package io.je.project.services;
 import io.je.project.beans.JEProject;
 import io.je.project.repository.ProjectRepository;
 import io.je.rulebuilder.components.UserDefinedRule;
+import io.je.utilities.apis.JERunnerAPIHandler;
 import io.je.utilities.constants.Errors;
+import io.je.utilities.constants.ResponseCodes;
+import io.je.utilities.exceptions.JERunnerUnreachableException;
 import io.je.utilities.exceptions.ProjectNotFoundException;
+import io.je.utilities.exceptions.ProjectRunException;
 import io.je.utilities.exceptions.RuleAlreadyExistsException;
+import io.je.utilities.exceptions.RuleBuildFailedException;
 import io.je.utilities.exceptions.WorkflowNotFoundException;
+import io.je.utilities.network.JEResponse;
 import models.JEWorkflow;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,6 +33,9 @@ public class ProjectService {
 
     @Autowired
     WorkflowService workflowService;
+
+    @Autowired
+    RuleService ruleService;
 
 
     // TODO add repo jpa save later
@@ -97,14 +106,43 @@ public class ProjectService {
         workflowService.runWorkflow(projectId, workflowId);
     }
 
-    public void buildAll(String projectId) throws WorkflowNotFoundException, ProjectNotFoundException, IOException {
+    public void buildAll(String projectId) throws WorkflowNotFoundException, ProjectNotFoundException, IOException, RuleBuildFailedException, JERunnerUnreachableException {
         //TODO add build all rules
-        workflowService.buildWorkflows(projectId);
+    	ruleService.buildRules(projectId);
+        //workflowService.buildWorkflows(projectId);
     }
 
-    public void runAll(String projectId) throws IOException, ProjectNotFoundException {
-        //TODO add run all rules
-        workflowService.runWorkflows(projectId);
+    
+    /*
+     * run project => send request to jeRunner to run project
+     */
+    public void runAll(String projectId) throws IOException, ProjectNotFoundException, JERunnerUnreachableException, ProjectRunException {
+    	if(loadedProjects.containsKey(projectId))
+    	{
+    		JEProject project = loadedProjects.get(projectId);
+    		JEResponse jeRunnerResp = null;
+    		if(!project.isRunning())
+    		{
+    			jeRunnerResp = JERunnerAPIHandler.runProject(projectId);
+    			project.setRunning(true);
+
+    		}
+    		else
+    		{
+    			throw new ProjectRunException("PROJECT ALREADY RUNNING");
+
+    		}
+    		if (jeRunnerResp.getCode() != ResponseCodes.CODE_OK) {
+    			throw new ProjectRunException(jeRunnerResp.getMessage());
+    		}
+    	}
+    	else
+    	{
+    		throw new ProjectNotFoundException(Errors.projectNotFound);
+    	}
+
+
+      
     }
 
     public HashMap<String, JEWorkflow> getAllWorkflows(String projectId) {

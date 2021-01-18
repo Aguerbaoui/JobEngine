@@ -75,6 +75,11 @@ public class UserDefinedRule extends JEObject {
 	 * Map of all the blocks that define this rule
 	 */
 	Map<String, Block> blocks = new HashMap<>();
+	
+	/*
+	 * buildStatus
+	 */
+	boolean isBuilt = false;
 
 	/*
 	 * front configuration
@@ -481,6 +486,16 @@ public class UserDefinedRule extends JEObject {
 
 	public void setTimer(String timer) {
 		this.timer = timer;
+	}
+	
+	
+
+	public boolean isBuilt() {
+		return isBuilt;
+	}
+
+	public void setBuilt(boolean isBuilt) {
+		this.isBuilt = isBuilt;
 	}
 
 	@Override

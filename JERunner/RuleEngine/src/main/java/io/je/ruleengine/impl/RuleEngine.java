@@ -59,12 +59,7 @@ public class RuleEngine {
 		return false;
 	}
 
-	public static void addTopic(String projectId, String topic) {
-		ProjectContainer project = projectManager.getProjectContainer(projectId);
-		if(project!= null) {
-			project.addTopic(topic);
-		}
-	}
+
 
 	public boolean addRules(List<Rule> rules) throws RuleAlreadyExistsException, RuleCompilationException,
 			JEFileNotFoundException, RuleNotAddedException {
@@ -85,10 +80,6 @@ public class RuleEngine {
 		
 	}
 
-    public static void injectData(JEData data) {
-        ProjectContainer project = projectManager.getProjectContainer(data.getJobEngineProjectID());
-        project.injectData(data);
-    }
 
  /*   public static boolean addTopics(String projectId, Set<String> topics) throws ProjectNotFoundException {
 
@@ -157,6 +148,12 @@ public class RuleEngine {
 		ProjectContainer project = projectManager.getProjectContainer(projectId);
 		project.buildProject();
 
+	}
+
+	public static void assertFact(String projectId, Object fact) {
+		ProjectContainer project = projectManager.getProjectContainer(projectId);
+		project.insertFact(fact);
+		
 	}
 
 

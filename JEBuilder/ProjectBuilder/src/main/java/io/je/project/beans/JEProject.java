@@ -4,21 +4,27 @@ import blocks.WorkflowBlock;
 import io.je.rulebuilder.builder.RuleBuilder;
 import io.je.rulebuilder.components.UserDefinedRule;
 import io.je.rulebuilder.models.BlockModel;
+import io.je.utilities.apis.JERunnerAPIHandler;
 import io.je.utilities.constants.Errors;
+import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.constants.RuleBuilderErrors;
 import io.je.utilities.exceptions.AddRuleBlockException;
 import io.je.utilities.exceptions.InvalidSequenceFlowException;
 import io.je.utilities.exceptions.JERunnerUnreachableException;
+import io.je.utilities.exceptions.ProjectRunException;
 import io.je.utilities.exceptions.RuleAlreadyExistsException;
 import io.je.utilities.exceptions.RuleBlockNotFoundException;
 import io.je.utilities.exceptions.RuleBuildFailedException;
+import io.je.utilities.exceptions.RuleNotAddedException;
 import io.je.utilities.exceptions.WorkflowBlockNotFound;
+import io.je.utilities.network.JEResponse;
 import models.JEWorkflow;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map.Entry;
 
 @Document(collection="JEProject")
 public class JEProject {
@@ -52,7 +58,7 @@ public class JEProject {
     /*
     * Is the project running
     * */
-    private boolean running = false;
+    private boolean isRunning = false;
 
     /*
     * Constructor
@@ -192,6 +198,11 @@ public class JEProject {
     	return rules.containsKey(ruleId);
     }
     
+    public UserDefinedRule getRule(String ruleId)
+    {
+    	return rules.get(ruleId);
+    }
+    
     /*
      * add a new rule to project
      */
@@ -212,13 +223,6 @@ public class JEProject {
     	rules.get(blockModel.getRuleId()).addBlock(blockModel);
     }
     
-    /*
-     * build rule : drl generation + compilation
-     */
-    public void buildRule(String ruleId) throws RuleBuildFailedException, JERunnerUnreachableException, IOException
-    {
-    	RuleBuilder.buildRule(rules.get(ruleId), configurationPath);
-    }
 
     /*
      * update Block
@@ -259,7 +263,35 @@ public class JEProject {
 
 	}
 	 
+	public void buildRules() throws RuleBuildFailedException, JERunnerUnreachableException, IOException, RuleNotAddedException {
+		for (Entry<String, UserDefinedRule> entry : rules.entrySet()) {
+		    String key = entry.getKey();
+		    RuleBuilder.buildRule(rules.get(key), configurationPath);
+		   
+		    
+		}
+		
+	}
+
 	
+
+
+	public boolean isRunning() {
+		return isRunning;
+	}
+
+	public void setRunning(boolean isRunning) {
+		this.isRunning = isRunning;
+	}
+
+	public String getConfigurationPath() {
+		return configurationPath;
+	}
+
+	public void setConfigurationPath(String configurationPath) {
+		this.configurationPath = configurationPath;
+	}
+
 	
 
 }

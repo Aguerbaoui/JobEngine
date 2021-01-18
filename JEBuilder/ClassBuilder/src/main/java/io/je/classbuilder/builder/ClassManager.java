@@ -94,23 +94,28 @@ public class ClassManager {
 	/*
 	 * load class definition from data definition API
 	 */
-	public static ClassModel loadClassDefinition(String workspaceId,String classId) throws IOException, DataDefinitionUnreachableException
+	public static ClassModel loadClassDefinition(String workspaceId,String classId) throws IOException, DataDefinitionUnreachableException, ClassLoadException
 	{
 		ObjectMapper objectMapper = new ObjectMapper();
 		String requestURL = JEGlobalconfig.CLASS_DEFINITION_API + "/Class/" + classId + "/workspace/" + workspaceId;
+		JELogger.info(ClassManager.class, requestURL);
 		Response resp = null;
 		try
 		{
-			resp = Network.makeNetworkCallWithResponse(requestURL );
+			resp = Network.makeGetNetworkCallWithResponse(requestURL );
 			
 		}catch(ConnectException e )
 		{
 			throw new DataDefinitionUnreachableException(ClassBuilderErrors.dataDefinitonUnreachable);
 		}
-		if(resp == null || resp.code() == 404 )
+		if(resp == null || resp.code()!= 200 )
 		{
-			throw new DataDefinitionUnreachableException(ClassBuilderErrors.dataDefinitonUnreachable);
+			throw new DataDefinitionUnreachableException(ClassBuilderErrors.dataDefinitonUnreachable );
 
+		}
+		if(resp.code()==204)
+		{
+			throw new ClassLoadException("THERE IS NO CLASS WITH THIS ID");
 		}
 		String resp1 = resp.body().string();
 		

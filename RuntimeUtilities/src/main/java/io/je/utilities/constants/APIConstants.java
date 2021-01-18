@@ -22,5 +22,11 @@ public class APIConstants {
 
     public static final int REQUESTER_TIMEOUT = 5000;
 
+	public static final String ADD_RULE =  "/rule/addRule";
+
+	public static final String UPDATERULE = "/rule/updateRule";
+
+	public static final String RUN_PROJECT = "/project/runProject/";
+
 
 }

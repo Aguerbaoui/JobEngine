@@ -55,7 +55,6 @@ public class RuleController {
 
         try {
             runtimeDispatcher.addRule(ruleModel);
-            runtimeDispatcher.addTopics(ruleModel.getProjectId(), ruleModel.getTopics());
 
         } catch (RuleAlreadyExistsException | JEFileNotFoundException | RuleFormatNotValidException | RuleNotAddedException e) {
             e.printStackTrace();

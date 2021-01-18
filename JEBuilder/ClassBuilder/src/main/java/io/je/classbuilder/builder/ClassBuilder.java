@@ -5,6 +5,7 @@ import java.lang.reflect.Modifier;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.burningwave.core.classes.AnnotationSourceGenerator;
 import org.burningwave.core.classes.ClassSourceGenerator;
 import org.burningwave.core.classes.FunctionSourceGenerator;
 import org.burningwave.core.classes.TypeDeclarationSourceGenerator;
@@ -62,8 +63,9 @@ public class ClassBuilder {
 
 	/* add imports */
 	private static void addImports(List<String> imports, UnitSourceGenerator unitSG ) {
+		unitSG.addImport("com.fasterxml.jackson.annotation.JsonProperty");
 		for (String import_ : imports) {
-			unitSG.addImport(import_);
+			//unitSG.addImport(import_);
 		}
 	}
 
@@ -121,12 +123,14 @@ public class ClassBuilder {
 							.addParameter(VariableSourceGenerator.create(attributeType, attributeName))
 							.setReturnType(TypeDeclarationSourceGenerator.create(void.class))
 							.addModifier(Modifier.PUBLIC)
+							.addAnnotation(new AnnotationSourceGenerator("JsonProperty(\""+attributeName+"\")"))
 							.addBodyCodeLine("this." + attributeName + "=" + attributeName + ";");
 					newClass.addMethod(setter);
 				}
 				if (field.getHasGetter()) {
 					FunctionSourceGenerator getter = FunctionSourceGenerator.create("get" + capitalizedAttributeName)
 							.setReturnType(TypeDeclarationSourceGenerator.create(attributeType))
+							.addAnnotation(new AnnotationSourceGenerator("JsonProperty(\""+attributeName+"\")"))
 							.addModifier(Modifier.PUBLIC).addBodyCodeLine("return this." + attributeName + ";");
 					newClass.addMethod(getter);
 				}
@@ -151,7 +155,7 @@ public class ClassBuilder {
 
 		// add inherited classes
 		if (classModel.getBaseTypes() == null || classModel.getBaseTypes().isEmpty()) {
-		//	newClass.expands(JEObject.class);
+			newClass.expands(JEObject.class);
 		} else {
 			//TODO: if all base types are interfaces: add them + add JEObject
 			// if more than 1 base type class, throw exception

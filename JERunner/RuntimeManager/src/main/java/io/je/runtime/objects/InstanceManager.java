@@ -26,7 +26,7 @@ public class InstanceManager {
 		Object instance=null;
 		//addInstanceId
 		JSONObject instanceJson = instanceModel.getPayload();
-		instanceJson.put("jobEngineElementId", instanceModel.getInstanceId());
+		instanceJson.put("jobEngineElementID", instanceModel.getInstanceId());
 		
 		try {
 			instance = objectMapper.readValue(instanceModel.getPayload().toString(), instanceClass);

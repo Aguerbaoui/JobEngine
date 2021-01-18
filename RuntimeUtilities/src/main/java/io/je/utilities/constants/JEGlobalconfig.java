@@ -9,12 +9,12 @@ public class JEGlobalconfig {
 	
 	//Data Definition
 	
-    public  static String CLASS_DEFINITION_API = "http://localhost:5555/api";
+    public  static String CLASS_DEFINITION_API = "http://192.168.7.51:1515/api";
 
 	
 	
 	//Data Model
-    public  static String DATA_MANAGER_BASE_API = "tcp://192.168.0.128";
+    public  static String DATA_MANAGER_BASE_API = "tcp://192.168.7.51";
 
     public  static int SUBSCRIBER_PORT = 5554;
 

@@ -50,7 +50,6 @@ public class ProjectContainer {
     Map<String, Rule> allRules = new ConcurrentHashMap<>();
 
 
-    Set<String> subscribedTopics = new HashSet<String>();
 
     private String projectID;
     // A project can be either running, or stopped.
@@ -540,7 +539,7 @@ public class ProjectContainer {
      * -------------------------------------------------------- FACT MANAGEMENT
      * ---------------------------------------------------------------
      */
-    public void insertFact(JEObject fact) {
+    public void insertFact(Object fact) {
         if (status == Status.RUNNING) {
             kieSession.insert(fact);
             JELogger.info(ProjectContainer.class, "inserting fact");
@@ -558,16 +557,5 @@ public class ProjectContainer {
         return false;
     }
 
-    /*
-    *
-    * inject data into rule engine*/
-    public void injectData(JEData data) {
-        if(subscribedTopics.contains(data.getTopic())) {
-            insertFact(data);
-        }
-    }
-
-    public void addTopic(String topic) {
-        subscribedTopics.add(topic);
-    }
+ 
 }

@@ -42,7 +42,7 @@ public class WorkflowBuilder {
      * Run workflow in runtime engine
      * */
     public static void runWorkflow(String key) throws IOException {
-        Response response = Network.makeNetworkCallWithResponse(JEGlobalconfig.RUNTIME_MANAGER_BASE_API + APIConstants.RUN_WORKFLOW + key);
+        Response response = Network.makeGetNetworkCallWithResponse(JEGlobalconfig.RUNTIME_MANAGER_BASE_API + APIConstants.RUN_WORKFLOW + key);
         JELogger.info(WorkflowBuilder.class, response.body().string());
 
     }

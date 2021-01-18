@@ -1,15 +1,20 @@
 package io.je.runtime.ruleenginehandler;
 
 
+import org.json.JSONObject;
+
 import io.je.ruleengine.impl.RuleEngine;
 import io.je.ruleengine.models.Rule;
+import io.je.runtime.config.InstanceModelMapping;
+import io.je.runtime.models.InstanceModel;
 import io.je.runtime.models.RuleModel;
-
+import io.je.runtime.objects.InstanceManager;
 import io.je.utilities.constants.RuleEngineErrors;
 
 import io.je.utilities.beans.JEData;
 
 import io.je.utilities.exceptions.*;
+import io.je.utilities.logger.JELogger;
 
 /*
  * class responsible for Rule Engine calls
@@ -80,8 +85,18 @@ public class RuleEngineHandler {
     }
 
 
-    public static void injectData(JEData data) {
-        RuleEngine.injectData(data);
+    public static void injectData(String projectId,JEData data) throws InstanceCreationFailed {
+    	JSONObject instanceJson = new JSONObject(data.getData());
+		JELogger.info(RuleEngineHandler.class, instanceJson.toString());
+
+		InstanceModel instanceModel = new InstanceModel();
+		instanceModel.setInstanceId(instanceJson.getString(InstanceModelMapping.INSTANCEID));
+		instanceModel.setModelId(instanceJson.getString(InstanceModelMapping.MODELID));
+		instanceModel.setPayload(instanceJson.getJSONObject(InstanceModelMapping.PAYLOAD));
+		Object instanceData = InstanceManager.createInstance(instanceModel);
+
+        RuleEngine.assertFact(projectId,instanceData);
+        
     }
     /*
      * stop running a project given a project id
@@ -117,8 +132,5 @@ public class RuleEngineHandler {
 		
 	}
 
-	public static void addTopic(String projectId, String topic) {
-		RuleEngine.addTopic(projectId, topic);
-	}
 
 }

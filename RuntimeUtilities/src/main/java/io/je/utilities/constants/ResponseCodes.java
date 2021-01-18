@@ -35,5 +35,6 @@ public class ResponseCodes {
 	public static final int CLASS_LOAD_EXCEPTION = 1022;
 	public static final int DATA_LISTENER_NOT_FOUND = 1023;
 	public static final int INSTANCE_NOT_CREATED = 1024;
+	public static final int PROJECT_RUN_FAILED = 1025;
 	
 }
