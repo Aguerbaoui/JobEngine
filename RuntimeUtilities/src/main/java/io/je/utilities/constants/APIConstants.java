@@ -6,6 +6,7 @@ public class APIConstants {
 
    // public  static String RUNTIME_MANAGER_BASE_API = "http://127.0.0.1:8182/RuntimeManager-0.0.1.war";
 
+    public final static String ADD_TOPIC= "/project/addTopics";
 
     public final static String ADD_WORKFLOW = "/workflow/addWorkflow";
 

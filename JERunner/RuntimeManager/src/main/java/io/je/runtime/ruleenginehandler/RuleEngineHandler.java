@@ -56,7 +56,7 @@ public class RuleEngineHandler {
 
     public static void addRule(RuleModel ruleModel) throws RuleAlreadyExistsException, RuleCompilationException, RuleNotAddedException, JEFileNotFoundException, RuleFormatNotValidException {
     	verifyRuleIsValid(ruleModel);       
-        Rule rule = new Rule(ruleModel.getRuleId(), ruleModel.getProjectId(), ruleModel.getRuleId(), ruleModel.getFormat(), ruleModel.getRulePath(),ruleModel.getTopics());
+        Rule rule = new Rule(ruleModel.getRuleId(), ruleModel.getProjectId(), ruleModel.getRuleId(), ruleModel.getFormat(), ruleModel.getRulePath());
         RuleEngine.addRule(rule);  
        /* if ( !RuleEngine.addTopics(ruleModel.getProjectId(), ruleModel.getTopics())) {
 			throw new RuleNotAddedException("Failed to add topics");
@@ -71,7 +71,7 @@ public class RuleEngineHandler {
     public static void updateRule(RuleModel ruleModel) throws RuleCompilationException, JEFileNotFoundException, RuleFormatNotValidException {
 
     	verifyRuleIsValid(ruleModel); 
-        Rule rule = new Rule(ruleModel.getRuleId(), ruleModel.getProjectId(), ruleModel.getRuleId(), ruleModel.getFormat(), ruleModel.getRulePath(),ruleModel.getTopics());
+        Rule rule = new Rule(ruleModel.getRuleId(), ruleModel.getProjectId(), ruleModel.getRuleId(), ruleModel.getFormat(), ruleModel.getRulePath());
         RuleEngine.updateRule(rule);
 
     }
@@ -120,7 +120,7 @@ public class RuleEngineHandler {
 	 */
 	public static void compileRule(RuleModel ruleModel) throws RuleFormatNotValidException, RuleCompilationException, JEFileNotFoundException {
 		verifyRuleIsValid(ruleModel); 
-        Rule rule = new Rule(ruleModel.getRuleId(), ruleModel.getProjectId(), ruleModel.getRuleId(), ruleModel.getFormat(), ruleModel.getRulePath(),ruleModel.getTopics());
+        Rule rule = new Rule(ruleModel.getRuleId(), ruleModel.getProjectId(), ruleModel.getRuleId(), ruleModel.getFormat(), ruleModel.getRulePath());
         RuleEngine.compileRule(rule);
        
 		
