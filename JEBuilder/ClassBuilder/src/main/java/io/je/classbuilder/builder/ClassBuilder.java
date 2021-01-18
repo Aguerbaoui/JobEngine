@@ -64,10 +64,15 @@ public class ClassBuilder {
 	/* add imports */
 	private static void addImports(List<String> imports, UnitSourceGenerator unitSG ) {
 		unitSG.addImport("com.fasterxml.jackson.annotation.JsonProperty");
-		for (String import_ : imports) {
-			//unitSG.addImport(import_);
-		}
+		if (imports != null && !imports.isEmpty()) {
+			{
+				for (String import_ : imports) {
+					//unitSG.addImport(import_);
+				}
+			}
+			}
 	}
+		
 
 	/*
 	 * generate an interface
@@ -89,9 +94,8 @@ public class ClassBuilder {
 	private static String generateClass(ClassModel classModel, String generationPath) {
 		 UnitSourceGenerator unitSG = UnitSourceGenerator.create(ClassBuilderConfig.genrationPackageName);
 			//add imports
-			if (classModel.getImports() != null && !classModel.getImports().isEmpty()) {
-				addImports(classModel.getImports(),unitSG);
-			}
+			addImports(classModel.getImports(),unitSG);
+			
 
 		// class name
 		String className = classModel.getName();

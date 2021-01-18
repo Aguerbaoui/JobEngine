@@ -4,6 +4,7 @@ public class JEGlobalconfig {
 	
 	//JERunner
     public  static String RUNTIME_MANAGER_BASE_API = "http://127.0.0.1:8081";
+   // public  static String RUNTIME_MANAGER_BASE_API = "http://127.0.0.1:8182//RuntimeManager-0.0.1";
 
 	
 	
@@ -28,9 +29,11 @@ public class JEGlobalconfig {
     
     // path where builder loads classes 
     public static String builderClassLoadPath = System.getProperty("java.class.path").split(";")[0]; 
+   // public static String builderClassLoadPath = System.getProperty("catalina.base") + "\\WEB-INF\\classes"; 
     
     // path where runner loads classes
     public static String runnerClassLoadPath = System.getProperty("java.class.path").split(";")[0]; 
+    //public static String runnerClassLoadPath = System.getProperty("catalina.base") + "\\WEB-INF\\classes"; 
 
 
 

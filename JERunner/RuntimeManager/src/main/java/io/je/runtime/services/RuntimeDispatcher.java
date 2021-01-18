@@ -94,8 +94,8 @@ public class RuntimeDispatcher {
 	// run project
 	public void stopProject(String projectId)
 			throws RulesNotFiredException, RuleBuildFailedException, ProjectAlreadyRunningException {
-		// start listening to datasources
-		// start workflows
+		// stop listening to datasources
+		// stop workflows
 		// RuleEngineHandler.stopProject(projectId);
 		WorkflowEngineHandler.stopProjectWorfklows(projectId);
 	}
@@ -168,7 +168,7 @@ public class RuntimeDispatcher {
 	// update class
 	// delete class
 
-	/////////////////////////////// instance
+	/////////////////////////////// instance creation example : TODO to be deleted 
 	public void addInstanceTest(InstanceModel instanceModel) throws InstanceCreationFailed {
 		JELogger.info(getClass(), instanceModel.toString());
 		InstanceManager.createInstance(instanceModel);
@@ -176,7 +176,7 @@ public class RuntimeDispatcher {
 
 	public static void injectData(JEData jeData) throws InstanceCreationFailed {
 		for (String projectId : projectsByTopic.get(jeData.getTopic())) {
-			if (projectStatus.get(projectId)) {
+			if (Boolean.TRUE.equals(projectStatus.get(projectId))) {
 				RuleEngineHandler.injectData(projectId, jeData);
 			}
 		}
