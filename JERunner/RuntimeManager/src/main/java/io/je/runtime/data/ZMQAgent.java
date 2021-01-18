@@ -27,7 +27,7 @@ public class ZMQAgent implements Runnable {
 
     private String topic;
 
-    private boolean listening = false;
+    private boolean listening = true;
 
     public ZMQAgent(String url,int subPort, int requestPort, String topic) {
         this.url = url;
@@ -141,7 +141,7 @@ public class ZMQAgent implements Runnable {
 
 	@Override
 	public void run() {
-		while(true)
+		while(listening)
     	{
     		 String data = this.getSubSocket().recvStr();
              JELogger.info(ZMQAgent.class, "read data " + data);

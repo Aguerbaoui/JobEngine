@@ -62,7 +62,7 @@ public class RuntimeDispatcher {
 		
 
 		/* TODO: to delete : hardcoded for test */
-		String testTopic = "00fd4e5d-5f19-4b8a-9c89-66e05be497b4Class1";
+		/*String testTopic = "00fd4e5d-5f19-4b8a-9c89-66e05be497b4Class1";
 		if(projectsByTopic.get(testTopic)==null)
 		{
 	        projectsByTopic.put(testTopic,new ArrayList<String>() );
@@ -71,7 +71,7 @@ public class RuntimeDispatcher {
 		projectsByTopic.get(testTopic).add(projectId);
         
         DataListener.subscribeToTopic(testTopic);
-        projectStatus.put(projectId, true);
+        projectStatus.put(projectId, true);*/
 
        /* ------------------------------ */
 		
@@ -98,6 +98,17 @@ public class RuntimeDispatcher {
 		// start workflows
 		// RuleEngineHandler.stopProject(projectId);
 		WorkflowEngineHandler.stopProjectWorfklows(projectId);
+
+		ArrayList<String> topics = new ArrayList<>();
+		// get topics :
+		for (Entry<String, List<String>> entry : projectsByTopic.entrySet()) {
+			//if more than 1 project is listening on that topic we dont stop the thread
+			if (entry.getValue().size() == 1 && entry.getValue().contains(projectId)) {
+				topics.add(entry.getKey());
+			}
+
+		}
+		DataListener.stopListening(topics);
 	}
 
 	////////////////////////////// RULES
@@ -183,4 +194,13 @@ public class RuntimeDispatcher {
 
 	}
 
+	public void addTopics(String projectId, List<String> topics) {
+		for(String topic: topics) {
+			if(!projectsByTopic.containsKey(topic)) {
+				projectsByTopic.put(topic, new ArrayList<>());
+				projectsByTopic.get(topic).add(projectId);
+			}
+			DataListener.subscribeToTopic(topic);
+		}
+	}
 }

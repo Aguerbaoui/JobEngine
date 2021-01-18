@@ -1,9 +1,6 @@
 package io.je.runtime.controllers;
 
-import io.je.runtime.data.DataListener;
 import io.je.runtime.services.RuntimeDispatcher;
-import io.je.runtime.workflow.WorkflowEngineHandler;
-import io.je.utilities.constants.Errors;
 import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.constants.ResponseMessages;
 import io.je.utilities.exceptions.ProjectAlreadyRunningException;
@@ -12,19 +9,18 @@ import io.je.utilities.exceptions.RulesNotFiredException;
 import io.je.utilities.exceptions.WorkflowNotFoundException;
 import io.je.utilities.network.JEResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import static io.je.utilities.constants.ResponseMessages.RULE_BUILD_ERROR;
+import java.util.List;
 
 
 /*
  * Runtime manager project controller
  * */
 @RestController
-@RequestMapping(value= "/project")
+@RequestMapping(value = "/project")
 public class ProjectController {
 
     @Autowired
@@ -74,6 +70,16 @@ public class ProjectController {
         }
         return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.STOPPING_PROJECT));
 
+    }
+
+    /*
+     * Add topics
+     * */
+    @PostMapping(value = "/addTopics/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> addTopics(@PathVariable String projectId, @RequestBody List<String> topics) {
+        //Stop listening via data listener do not forget plz
+        dispatcher.addTopics(projectId, topics);
+        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.TOPIC_ADDED));
     }
 
     /*
