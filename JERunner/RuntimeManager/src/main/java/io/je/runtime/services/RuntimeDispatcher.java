@@ -62,7 +62,7 @@ public class RuntimeDispatcher {
 		
 
 		/* TODO: to delete : hardcoded for test */
-		/*String testTopic = "00fd4e5d-5f19-4b8a-9c89-66e05be497b4Class1";
+		String testTopic = "00fd4e5d-5f19-4b8a-9c89-66e05be497b4";
 		if(projectsByTopic.get(testTopic)==null)
 		{
 	        projectsByTopic.put(testTopic,new ArrayList<String>() );
@@ -71,7 +71,7 @@ public class RuntimeDispatcher {
 		projectsByTopic.get(testTopic).add(projectId);
         
         DataListener.subscribeToTopic(testTopic);
-        projectStatus.put(projectId, true);*/
+        projectStatus.put(projectId, true);
 
        /* ------------------------------ */
 		

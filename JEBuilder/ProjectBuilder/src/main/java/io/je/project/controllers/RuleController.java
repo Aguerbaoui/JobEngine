@@ -20,10 +20,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.je.project.services.RuleService;
-import io.je.rulebuilder.components.UserDefinedRule;
+import io.je.rulebuilder.components.JERule;
 import io.je.rulebuilder.models.BlockModel;
 import io.je.rulebuilder.models.RuleModel;
-import io.je.utilities.constants.Errors;
 import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.constants.ResponseMessages;
 import io.je.utilities.exceptions.AddRuleBlockException;
@@ -76,7 +75,7 @@ public class RuleController {
 	@GetMapping(value="/{projectId}/getRule/{ruleId}")
 	@ResponseBody
 	public ResponseEntity<?> getRule(@PathVariable("projectId") String projectId,@PathVariable("ruleId") String ruleId) {
-		UserDefinedRule rule = null;
+		JERule rule = null;
 		
 			 try {
 				rule = ruleService.getRule(projectId,ruleId);
@@ -92,19 +91,7 @@ public class RuleController {
 }
 	
 	
-	/*
-	 * add a new Rule from script
-	 */
-	@PostMapping(value = "/{projectId}/addScriptedRule", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> addScriptedRule(@PathVariable("projectId") String projectId, @RequestBody String drlContent) {
-		
-			//TODO: add calls
-		
-		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.RuleAdditionSucceeded));
-	}
-	
-	
-	
+
 	/*
 	 * add a new Rule
 	 */
@@ -119,6 +106,25 @@ public class RuleController {
 				JELogger.error(RuleController.class, e.getMessage());
 				return ResponseEntity.badRequest().body(new JEResponse(e.getCode(), e.getMessage()));
 			}
+		
+		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.RuleAdditionSucceeded));
+	}
+
+
+	/*
+	 * add a new scripted Rule
+	 */
+	@PostMapping(value = "/{projectId}/addScriptedRule/{ruleId}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> addScriptedRule(@PathVariable("projectId") String projectId, @PathVariable("ruleId") String ruleId,@RequestBody String script) {
+		
+				try {
+					ruleService.addScriptedRule(projectId,ruleId,script);
+				} catch (ProjectNotFoundException | RuleAlreadyExistsException e) {
+					e.printStackTrace();
+					JELogger.error(RuleController.class, e.getMessage());
+					return ResponseEntity.badRequest().body(new JEResponse(e.getCode(), e.getMessage()));
+				}
+				projectService.saveProject(ProjectService.getProjectById(projectId));
 		
 		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.RuleAdditionSucceeded));
 	}

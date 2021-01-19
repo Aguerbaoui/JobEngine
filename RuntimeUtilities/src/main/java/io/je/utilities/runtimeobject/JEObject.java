@@ -74,9 +74,9 @@ public abstract class JEObject {
         JEObject jeObject = (JEObject) o;
 
         // if objects in different projects, return false 
-        if (!jeObject.jobEngineProjectID.equals(this.jobEngineProjectID)) {
+       /* if (!jeObject.jobEngineProjectID.equals(this.jobEngineProjectID)) {
             return false;
-        }
+        } */
 
         //if object are in the same project, and they share the same ID, then 
         //they're considered equal

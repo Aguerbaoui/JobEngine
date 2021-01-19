@@ -15,6 +15,7 @@ import io.je.utilities.beans.JEData;
 
 import io.je.utilities.exceptions.*;
 import io.je.utilities.logger.JELogger;
+import io.je.utilities.runtimeobject.JEObject;
 
 /*
  * class responsible for Rule Engine calls
@@ -87,14 +88,14 @@ public class RuleEngineHandler {
 
     public static void injectData(String projectId,JEData data) throws InstanceCreationFailed {
     	JSONObject instanceJson = new JSONObject(data.getData());
-		JELogger.info(RuleEngineHandler.class, instanceJson.toString());
+		//JELogger.info(RuleEngineHandler.class, instanceJson.toString());
 
 		InstanceModel instanceModel = new InstanceModel();
 		instanceModel.setInstanceId(instanceJson.getString(InstanceModelMapping.INSTANCEID));
 		instanceModel.setModelId(instanceJson.getString(InstanceModelMapping.MODELID));
 		instanceModel.setPayload(instanceJson.getJSONObject(InstanceModelMapping.PAYLOAD));
-		Object instanceData = InstanceManager.createInstance(instanceModel);
-
+		JEObject instanceData = (JEObject) InstanceManager.createInstance(instanceModel);
+		JELogger.info("Data : "+ instanceJson );
         RuleEngine.assertFact(projectId,instanceData);
         
     }

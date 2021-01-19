@@ -15,7 +15,7 @@ public class DataListener {
     /*
      * Map of modelId-InstanceId
      * */
-    private static HashMap<String , Thread> activeThreads = null;
+    private static HashMap<String , Thread> activeThreads = new HashMap<String, Thread>();
     private static HashMap<String, ZMQAgent> agents = new HashMap<String, ZMQAgent>();
 
 
@@ -32,7 +32,6 @@ public class DataListener {
     }
 
     public static void startListening(List<String> topics) {
-        //activeThreads = new HashMap<>();
     	for (String id : topics)
     	{
     		ZMQAgent agent = agents.get(id);
