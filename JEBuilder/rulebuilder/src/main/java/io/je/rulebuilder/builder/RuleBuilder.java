@@ -31,26 +31,30 @@ public class RuleBuilder {
 	public static void buildRule(JERule jeRule, String buildPath)
 			throws RuleBuildFailedException, JERunnerUnreachableException, IOException {
 		String rulePath = "";
-		boolean ruleIsBuilt = jeRule.isBuilt();
+		boolean ruleIsAdded = jeRule.isBuilt();
 		if( jeRule instanceof UserDefinedRule) {
 			List<DrlRule> unitRules = ((UserDefinedRule) jeRule).build();
 			for (DrlRule rule : unitRules) {
 				// generate drl
 				 rulePath = rule.generateDRL(buildPath);
-				sendDRLToJeRunner(jeRule,buildPath,ruleIsBuilt);
+				sendDRLToJeRunner(jeRule,rulePath,ruleIsAdded);
 				}
 		}
 		if( jeRule instanceof ScriptedRule)
 		{
 			 rulePath = ((ScriptedRule) jeRule).generateDRL(buildPath);
-			sendDRLToJeRunner(jeRule,rulePath,ruleIsBuilt);
+			sendDRLToJeRunner(jeRule,rulePath,ruleIsAdded);
 		}
 		
+		 jeRule.setAdded(true);
 		 jeRule.setBuilt(true);
 	}
 		
 	
-	public static void sendDRLToJeRunner(JERule rule, String path, boolean ruleIsBuilt) throws JERunnerUnreachableException, IOException, RuleBuildFailedException
+	/*
+	 * send rule to JERunner
+	 */
+	public static void sendDRLToJeRunner(JERule rule, String path, boolean ruleIsAdded) throws JERunnerUnreachableException, IOException, RuleBuildFailedException
 	{
 		
 
@@ -65,7 +69,7 @@ public class RuleBuilder {
 			ruleMap.put(JERunnerRuleMapping.FORMAT, "DRL");
 			
 			JEResponse jeRunnerResp = null;
-			if(ruleIsBuilt)
+			if(ruleIsAdded)
 			{
 				 jeRunnerResp = JERunnerAPIHandler.addRule(ruleMap);
 

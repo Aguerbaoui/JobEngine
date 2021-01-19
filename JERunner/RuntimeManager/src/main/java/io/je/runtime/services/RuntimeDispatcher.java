@@ -28,9 +28,11 @@ import io.je.utilities.logger.JELogger;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 /*
  * Service class to handle JERunner inputs
@@ -39,7 +41,7 @@ import java.util.Map.Entry;
 public class RuntimeDispatcher {
 
 	//
-	static Map<String, List<String>> projectsByTopic = new HashMap<String, List<String>>(); // key : topic, value list
+	static Map<String, Set<String>> projectsByTopic = new HashMap<String, Set<String>>(); // key : topic, value: list
 																							// of projects
 	static Map<String, Boolean> projectStatus = new HashMap<String, Boolean>();
 
@@ -47,8 +49,7 @@ public class RuntimeDispatcher {
 	// build project
 	public void buildProject(String projectId) throws RuleBuildFailedException
 	{
-		//start listening to datasources
-		//start workflows
+
 		RuleEngineHandler.buildProject(projectId);
 		WorkflowEngineHandler.buildProject(projectId);
 		
@@ -65,20 +66,20 @@ public class RuntimeDispatcher {
 		String testTopic = "00fd4e5d-5f19-4b8a-9c89-66e05be497b4";
 		if(projectsByTopic.get(testTopic)==null)
 		{
-	        projectsByTopic.put(testTopic,new ArrayList<String>() );
+	        projectsByTopic.put(testTopic,new HashSet<>() );
 
 		}
 		projectsByTopic.get(testTopic).add(projectId);
         
         DataListener.subscribeToTopic(testTopic);
-        projectStatus.put(projectId, true);
+     
 
        /* ------------------------------ */
 		
-		
+        projectStatus.put(projectId, true);
 		ArrayList<String> topics = new ArrayList<>();
 		// get topics :
-		for (Entry<String, List<String>> entry : projectsByTopic.entrySet()) {
+		for (Entry<String, Set<String>> entry : projectsByTopic.entrySet()) {
 			if (entry.getValue().contains(projectId)) {
 				topics.add(entry.getKey());
 			}
@@ -94,14 +95,14 @@ public class RuntimeDispatcher {
 	// run project
 	public void stopProject(String projectId)
 			throws RulesNotFiredException, RuleBuildFailedException, ProjectAlreadyRunningException {
-		// stop listening to datasources
+		
 		// stop workflows
-		// RuleEngineHandler.stopProject(projectId);
+		
 		WorkflowEngineHandler.stopProjectWorfklows(projectId);
 
 		ArrayList<String> topics = new ArrayList<>();
 		// get topics :
-		for (Entry<String, List<String>> entry : projectsByTopic.entrySet()) {
+		for (Entry<String, Set<String>> entry : projectsByTopic.entrySet()) {
 			//if more than 1 project is listening on that topic we dont stop the thread
 			if (entry.getValue().size() == 1 && entry.getValue().contains(projectId)) {
 				topics.add(entry.getKey());
@@ -109,6 +110,9 @@ public class RuntimeDispatcher {
 
 		}
 		DataListener.stopListening(topics);
+		RuleEngineHandler.stopRuleEngineProjectExecution(projectId);
+        projectStatus.put(projectId, false);
+
 	}
 
 	////////////////////////////// RULES
@@ -194,12 +198,15 @@ public class RuntimeDispatcher {
 
 	}
 
+	/*
+	 * add a topic 
+	 */
 	public void addTopics(String projectId, List<String> topics) {
 		for(String topic: topics) {
 			if(!projectsByTopic.containsKey(topic)) {
-				projectsByTopic.put(topic, new ArrayList<>());
-				projectsByTopic.get(topic).add(projectId);
+				projectsByTopic.put(topic, new HashSet<>());				
 			}
+			projectsByTopic.get(topic).add(projectId);
 			DataListener.subscribeToTopic(topic);
 		}
 	}

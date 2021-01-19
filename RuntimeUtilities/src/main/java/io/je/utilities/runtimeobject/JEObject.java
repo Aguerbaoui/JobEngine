@@ -57,31 +57,7 @@ public abstract class JEObject {
     }
 
     // Overriding equals() to compare two JEObjects
-    @Override
-    public boolean equals(Object o) {
-
-        // If the object is compared with itself then return true   
-        if (o == this) {
-            return true;
-        }
-
-        /* Check if o is an instance of JEObject or not */
-        if (!(o instanceof JEObject)) {
-            return false;
-        }
-
-        // typecast o to Complex so that we can compare data members  
-        JEObject jeObject = (JEObject) o;
-
-        // if objects in different projects, return false 
-       /* if (!jeObject.jobEngineProjectID.equals(this.jobEngineProjectID)) {
-            return false;
-        } */
-
-        //if object are in the same project, and they share the same ID, then 
-        //they're considered equal
-        return jeObject.jobEngineElementID.equals(this.jobEngineElementID);
-    }
+ 
 
     @Override
     public int hashCode() {

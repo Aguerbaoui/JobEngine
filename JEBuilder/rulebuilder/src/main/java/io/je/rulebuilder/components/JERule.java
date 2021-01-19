@@ -15,11 +15,30 @@ public abstract class JERule extends JEObject  {
 	 */
 	boolean isBuilt = false;
 	
+	/*
+	 * check if rule was added to JERunner or not
+	 */
+	boolean isAdded =  false;
+	
 	//public abstract String generateDRL(String buildPath);
 
 	public boolean isBuilt() {
 		return isBuilt;
 	}
+
+	
+	
+	public boolean isAdded() {
+		return isAdded;
+	}
+
+
+
+	public void setAdded(boolean isAdded) {
+		this.isAdded = isAdded;
+	}
+
+
 
 	public void setBuilt(boolean isBuilt) {
 		this.isBuilt = isBuilt;
