@@ -4,7 +4,7 @@ public class JEGlobalconfig {
 
 	
 	 // IDE TEST
-	//JERunner
+	 //JERunner
     public  static String RUNTIME_MANAGER_BASE_API = "http://127.0.0.1:8081";
 
 	//Data Definition
@@ -33,9 +33,11 @@ public class JEGlobalconfig {
     public static String runnerClassLoadPath = System.getProperty("java.class.path").split(";")[0]; 
 
 
+	
+	
 /*         TOMCAT DEPLOYMENT CONFIG                       */
-/*	//JERunner
-    public  static String RUNTIME_MANAGER_BASE_API = "http://127.0.0.1:8182//RuntimeManager-0.0.1";
+	//JERunner
+    /*   public  static String RUNTIME_MANAGER_BASE_API = "http://127.0.0.1:8182/RuntimeManager-0.0.1";
 
 	//Data Definition
 	
@@ -57,9 +59,10 @@ public class JEGlobalconfig {
     public 	static String  classGenerationPath	= "D:\\myproject2" ;
     
     // path where builder loads classes 
-    public static String builderClassLoadPath = System.getProperty("catalina.base") + "\\WEB-INF\\classes"; 
+    public static String builderClassLoadPath = System.getProperty("catalina.base") + "\\webapps\\ProjectBuilder-0.0.1\\WEB-INF\\classes"; 
     
     // path where runner loads classes
-    public static String runnerClassLoadPath = System.getProperty("catalina.base") + "\\WEB-INF\\classes";
-*/
+    public static String runnerClassLoadPath = System.getProperty("catalina.base") + "\\webapps\\RuntimeManager-0.0.1\\WEB-INF\\classes";
+
+    */
 }
