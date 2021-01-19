@@ -10,7 +10,7 @@ public class ScriptedRule extends  JERule {
 	
 	
 
-	public ScriptedRule(String jobEngineElementID, String jobEngineProjectID, String script) {
+	public ScriptedRule(String jobEngineProjectID , String jobEngineElementID, String script) {
 		super(jobEngineElementID, jobEngineProjectID);
 		this.script = script;
 	}

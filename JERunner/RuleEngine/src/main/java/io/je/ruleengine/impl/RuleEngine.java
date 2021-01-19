@@ -150,7 +150,7 @@ public class RuleEngine {
 
 	}
 
-	public static void assertFact(String projectId, Object fact) {
+	public static void assertFact(String projectId, JEObject fact) {
 		ProjectContainer project = projectManager.getProjectContainer(projectId);
 		project.insertFact(fact);
 		
