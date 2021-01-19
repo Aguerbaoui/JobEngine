@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 
 import io.je.project.beans.JEProject;
 import io.je.rulebuilder.builder.RuleBuilder;
+import io.je.rulebuilder.components.JERule;
+import io.je.rulebuilder.components.ScriptedRule;
 import io.je.rulebuilder.components.UserDefinedRule;
 import io.je.rulebuilder.models.BlockModel;
 import io.je.rulebuilder.models.RuleModel;
@@ -178,7 +180,7 @@ public class RuleService {
 		if (project == null) {
 			throw new ProjectNotFoundException( Errors.projectNotFound);
 		}
-			for (Entry<String, UserDefinedRule> entry : project.getRules().entrySet()) {
+			for (Entry<String, JERule> entry : project.getRules().entrySet()) {
 			    String key = entry.getKey();
 			    RuleBuilder.buildRule(project.getRules().get(key), project.getConfigurationPath());
 			   
@@ -194,7 +196,7 @@ public class RuleService {
 	/*
 	 * Retrieve list of all rules that exist in a project.
 	 */
-	public Collection<UserDefinedRule> getAllRules(String projectId) throws ProjectNotFoundException {
+	public Collection<JERule> getAllRules(String projectId) throws ProjectNotFoundException {
 		JEProject project = ProjectService.getProjectById(projectId);
 		if (project == null) {
 			throw new ProjectNotFoundException( Errors.projectNotFound);
@@ -202,7 +204,7 @@ public class RuleService {
 		return project.getRules().values();
 	}
 
-	public UserDefinedRule getRule(String projectId, String ruleId) throws ProjectNotFoundException, RuleNotFoundException {
+	public JERule getRule(String projectId, String ruleId) throws ProjectNotFoundException, RuleNotFoundException {
 		JEProject project = ProjectService.getProjectById(projectId);
 		if (project == null) {
 			throw new ProjectNotFoundException( Errors.projectNotFound);
@@ -211,6 +213,21 @@ public class RuleService {
 		throw new RuleNotFoundException( RuleBuilderErrors.RuleNotFound);
 	}
 		return project.getRules().get(ruleId);
+	}
+
+	/*
+	 * add scripted rule
+	 */
+	public void addScriptedRule(String projectId, String ruleId, String script) throws ProjectNotFoundException, RuleAlreadyExistsException {
+		ScriptedRule rule = new ScriptedRule(projectId,ruleId,script);
+		JEProject project = ProjectService.getProjectById(projectId);
+		if (project == null) {
+			throw new ProjectNotFoundException( Errors.projectNotFound);
+		} else if (project.ruleExists(ruleId)) {
+			throw new RuleAlreadyExistsException( RuleBuilderErrors.RuleAlreadyExists);
+		}
+		project.addRule(rule);
+		
 	}
 
 

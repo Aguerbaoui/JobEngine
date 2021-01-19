@@ -8,7 +8,7 @@ public class RuleTemplate {
     String consequence;
 
 
-    public RuleTemplate(JERule rule) {
+    public RuleTemplate(DrlRule rule) {
         super();
         this.salience = String.valueOf(rule.getSalience());
        // this.condition = rule.getCondition().getString();
