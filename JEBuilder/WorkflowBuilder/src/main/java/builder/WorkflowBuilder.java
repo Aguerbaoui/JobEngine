@@ -6,6 +6,7 @@ import io.je.utilities.constants.JEGlobalconfig;
 import io.je.utilities.logger.JELogger;
 import io.je.utilities.network.Network;
 import models.JEWorkflow;
+import org.springframework.ui.Model;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -25,8 +26,9 @@ public class WorkflowBuilder {
         /*
          * testing purposes only
          * */
-        JEToBpmnMapper.launchBuildTest(workflow);
-
+        if(!workflow.isScript()) {
+            JEToBpmnMapper.createBpmnFromJEWorkflow(workflow);
+        }
         HashMap<String, String> wfMap = new HashMap<String, String>();
         wfMap.put("key", workflow.getWorkflowName().trim());
         wfMap.put("path", "processes/" + workflow.getWorkflowName().trim() + ".bpmn");
@@ -48,4 +50,7 @@ public class WorkflowBuilder {
     }
 
 
+    public static void saveBpmn(JEWorkflow wf, String bpmn) {
+        ModelBuilder.saveModel(bpmn, wf.getBpmnPath());
+    }
 }

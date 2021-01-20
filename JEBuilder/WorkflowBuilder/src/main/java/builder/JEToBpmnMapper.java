@@ -36,6 +36,7 @@ public class JEToBpmnMapper {
         //new BpmnAutoLayout(model).execute();
         String modelPath = WorkflowConstants.bpmnPath + wf.getWorkflowName().trim() + WorkflowConstants.bpmnExtension;
         ModelBuilder.saveModel(model, modelPath);
+        wf.resetBlocks();
         wf.setBpmnPath(modelPath);
     }
 
