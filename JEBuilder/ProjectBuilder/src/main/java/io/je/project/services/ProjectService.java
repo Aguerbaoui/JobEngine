@@ -86,30 +86,49 @@ public class ProjectService {
         loadedProjects.get(rule.getJobEngineProjectID()).addRule(rule);
     }
 
+    /*
+    * Get all loaded Projects
+    * */
     public static HashMap<String, JEProject> getLoadedProjects() {
         return loadedProjects;
     }
 
+    /*
+    * Return a project loaded in memory
+    * */
     public static JEProject getProjectById(String id) {
         return loadedProjects.get(id);
 
     }
+
+    /*
+     * Set loaded project in memory
+     * */
     public static void setLoadedProjects(HashMap<String, JEProject> loadedProjects) {
         ProjectService.loadedProjects = loadedProjects;
     }
 
+    /*
+     * Build a workflow by id
+     * */
     public void buildWorkflow(String projectId, String workflowId) throws WorkflowNotFoundException, ProjectNotFoundException, IOException {
         workflowService.buildWorkflow(projectId, workflowId);
     }
 
+    /*
+    * Run a workflow by id
+    * */
     public void runWorkflow(String projectId, String workflowId) throws ProjectNotFoundException, IOException, WorkflowNotFoundException {
         workflowService.runWorkflow(projectId, workflowId);
     }
 
+    /*
+    Builds all the rules and workflows
+    * */
     public void buildAll(String projectId) throws WorkflowNotFoundException, ProjectNotFoundException, IOException, RuleBuildFailedException, JERunnerUnreachableException {
         //TODO add build all rules
-    	ruleService.buildRules(projectId);
-        //workflowService.buildWorkflows(projectId);
+    	//ruleService.buildRules(projectId);
+        workflowService.buildWorkflows(projectId);
     }
 
     
@@ -129,7 +148,7 @@ public class ProjectService {
     		}
     		else
     		{
-    			throw new ProjectRunException("PROJECT ALREADY RUNNING");
+    			throw new ProjectRunException(Errors.PROJECT_RUNNING);
 
     		}
     		if (jeRunnerResp.getCode() != ResponseCodes.CODE_OK) {
@@ -145,10 +164,14 @@ public class ProjectService {
       
     }
 
+    /*Return all currently available workflows in project*/
     public HashMap<String, JEWorkflow> getAllWorkflows(String projectId) {
        return loadedProjects.get(projectId).getWorkflows();
     }
 
+    /*
+    * Return project by id
+    * */
     public JEProject getProject(String projectId) {
         if(!loadedProjects.containsKey(projectId)) {
             Optional<JEProject> p =  projectRepository.findById(projectId);

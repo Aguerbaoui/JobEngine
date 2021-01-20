@@ -340,4 +340,20 @@ public class WorkflowService {
     }
 
 
+    public void addBpmn(String projectId, String workflowId, String bpmn) throws ProjectNotFoundException {
+        JEProject project = ProjectService.getProjectById(projectId);
+        if(project == null) {
+            throw new ProjectNotFoundException( Errors.projectNotFound);
+        }
+        JEWorkflow wf = new JEWorkflow();
+        wf.setWorkflowName(workflowId);
+        wf.setJobEngineProjectID(projectId);
+        wf.setJobEngineElementID(workflowId);
+        wf.setBpmnPath(WorkflowConstants.bpmnPath + wf.getWorkflowName().trim() + WorkflowConstants.bpmnExtension);
+        wf.setScript(true);
+        wf.setScript(bpmn);
+        WorkflowBuilder.saveBpmn(wf, bpmn);
+        project.addWorkflow(wf);
+
+    }
 }

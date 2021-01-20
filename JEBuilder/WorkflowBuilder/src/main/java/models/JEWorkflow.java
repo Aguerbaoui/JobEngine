@@ -53,12 +53,61 @@ public class JEWorkflow extends JEObject {
     private String frontConfig;
 
     /*
+    * User scripted bpmn
+    * */
+    private boolean isScript = false;
+    /*
+    * Bpmn script
+    * */
+    private String script;
+
+    public String getScript() {
+        return script;
+    }
+
+    public void setScript(String script) {
+        this.script = script;
+    }
+
+    /*
      * Constructor
      * */
     public JEWorkflow() {
         super();
         allBlocks = new HashMap<String, WorkflowBlock>();
         needBuild = true;
+    }
+
+    public boolean isNeedBuild() {
+        return needBuild;
+    }
+
+    public void setNeedBuild(boolean needBuild) {
+        this.needBuild = needBuild;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getFrontConfig() {
+        return frontConfig;
+    }
+
+    public void setFrontConfig(String frontConfig) {
+        this.frontConfig = frontConfig;
+    }
+
+    public boolean isScript() {
+        return isScript;
+    }
+
+    public void setScript(boolean script) {
+        isScript = script;
     }
 
     /*
@@ -178,5 +227,11 @@ public class JEWorkflow extends JEObject {
 
     public WorkflowBlock getBlockById(String i) {
         return allBlocks.get(i);
+    }
+
+    public void resetBlocks() {
+        for(WorkflowBlock block: allBlocks.values()) {
+            block.setProcessed(false);
+        }
     }
 }
