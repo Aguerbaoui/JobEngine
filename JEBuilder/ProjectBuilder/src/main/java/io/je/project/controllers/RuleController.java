@@ -128,6 +128,25 @@ public class RuleController {
 		
 		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.RuleAdditionSucceeded));
 	}
+	
+	/*
+	 * add a new scripted Rule
+	 */
+	@PostMapping(value = "/{projectId}/updateScriptedRule/{ruleId}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> updateScriptedRule(@PathVariable("projectId") String projectId, @PathVariable("ruleId") String ruleId,@RequestBody String script) {
+		
+				try {
+					ruleService.updateScriptedRule(projectId,ruleId,script);
+				} catch (ProjectNotFoundException | RuleNotFoundException e) {
+					e.printStackTrace();
+					JELogger.error(RuleController.class, e.getMessage());
+					return ResponseEntity.badRequest().body(new JEResponse(e.getCode(), e.getMessage()));
+				}
+				projectService.saveProject(ProjectService.getProjectById(projectId));
+		
+		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.RuleAdditionSucceeded));
+	}
+
 
 	/*
 	 * Delete Rule

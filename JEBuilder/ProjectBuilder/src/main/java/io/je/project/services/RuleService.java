@@ -223,10 +223,22 @@ public class RuleService {
 		JEProject project = ProjectService.getProjectById(projectId);
 		if (project == null) {
 			throw new ProjectNotFoundException( Errors.projectNotFound);
-		} else if (project.ruleExists(ruleId)) {
-			throw new RuleAlreadyExistsException( RuleBuilderErrors.RuleAlreadyExists);
-		}
+		} 
 		project.addRule(rule);
+		
+	}
+
+	
+	/*
+	 * update scripted rule
+	 */
+	public void updateScriptedRule(String projectId, String ruleId, String script) throws ProjectNotFoundException, RuleNotFoundException {
+		ScriptedRule rule = new ScriptedRule(projectId,ruleId,script);
+		JEProject project = ProjectService.getProjectById(projectId);
+		if (project == null) {
+			throw new ProjectNotFoundException( Errors.projectNotFound);
+		}
+		project.updateRule(rule);
 		
 	}
 

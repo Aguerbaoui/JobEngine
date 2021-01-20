@@ -1,6 +1,8 @@
 package io.je.runtime.ruleenginehandler;
 
 
+import java.time.LocalDateTime;
+
 import org.json.JSONObject;
 
 import io.je.ruleengine.impl.RuleEngine;
@@ -59,9 +61,7 @@ public class RuleEngineHandler {
     	verifyRuleIsValid(ruleModel);       
         Rule rule = new Rule(ruleModel.getRuleId(), ruleModel.getProjectId(), ruleModel.getRuleId(), ruleModel.getFormat(), ruleModel.getRulePath());
         RuleEngine.addRule(rule);  
-       /* if ( !RuleEngine.addTopics(ruleModel.getProjectId(), ruleModel.getTopics())) {
-			throw new RuleNotAddedException("Failed to add topics");
-		}*/
+      
 
 
     }
@@ -88,13 +88,14 @@ public class RuleEngineHandler {
 
     public static void injectData(String projectId,JEData data) throws InstanceCreationFailed {
     	JSONObject instanceJson = new JSONObject(data.getData());
-		//JELogger.info(RuleEngineHandler.class, instanceJson.toString());
+		JELogger.info(RuleEngineHandler.class, instanceJson.toString());
 
 		InstanceModel instanceModel = new InstanceModel();
 		instanceModel.setInstanceId(instanceJson.getString(InstanceModelMapping.INSTANCEID));
 		instanceModel.setModelId(instanceJson.getString(InstanceModelMapping.MODELID));
 		instanceModel.setPayload(instanceJson.getJSONObject(InstanceModelMapping.PAYLOAD));
 		JEObject instanceData = (JEObject) InstanceManager.createInstance(instanceModel);
+		instanceData.setJeObjectLastUpdate(LocalDateTime.now());
 		JELogger.info("Data : "+ instanceJson );
         RuleEngine.assertFact(projectId,instanceData);
         
@@ -102,7 +103,7 @@ public class RuleEngineHandler {
     /*
      * stop running a project given a project id
      */
-    public static void stopRuleEngineProjectExecution(String projectId) throws RulesNotFiredException, RuleBuildFailedException, ProjectAlreadyRunningException {
+    public static void stopRuleEngineProjectExecution(String projectId)  {
         RuleEngine.stopRuleExecution(projectId);
     }
 

@@ -25,6 +25,8 @@ import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.runtime.rule.FactHandle;
 
 import java.io.FileNotFoundException;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -537,10 +539,10 @@ public class ProjectContainer {
 	 */
 	public void insertFact(JEObject fact) {
 		if (status == Status.RUNNING) {
-			
-			kieSession.insert(fact);
+			//JELogger.info(String.valueOf(fact.getJeObjectLastUpdate().until(LocalDateTime.now(), ChronoUnit.MILLIS)));
+			//kieSession.insert(fact);
 
-			/*try {
+			try {
 				if(facts.containsKey(fact.getJobEngineElementID()))
 				{
 					kieSession.update(facts.get(fact.getJobEngineElementID()), fact);
@@ -549,13 +551,13 @@ public class ProjectContainer {
 					facts.put(fact.getJobEngineElementID(), kieSession.insert(fact));
 				}
 				
-				JELogger.info(ProjectContainer.class, " inserting fact ");
+				JELogger.debug(ProjectContainer.class, " inserting fact ");
 			} catch (Exception e) {
 				e.printStackTrace();
-				JELogger.info(ProjectContainer.class, " failed to insert fact : " + e.getMessage());
+				JELogger.error(ProjectContainer.class, " failed to insert fact into working memory [factId ="+ fact.getJobEngineElementID() + "]: " + e.getMessage());
 
 			}
-			*/
+			
 		}
 
 	}

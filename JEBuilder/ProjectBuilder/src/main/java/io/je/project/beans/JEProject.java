@@ -17,6 +17,7 @@ import io.je.utilities.exceptions.RuleAlreadyExistsException;
 import io.je.utilities.exceptions.RuleBlockNotFoundException;
 import io.je.utilities.exceptions.RuleBuildFailedException;
 import io.je.utilities.exceptions.RuleNotAddedException;
+import io.je.utilities.exceptions.RuleNotFoundException;
 import io.je.utilities.exceptions.WorkflowBlockNotFound;
 import io.je.utilities.network.JEResponse;
 import models.JEWorkflow;
@@ -216,6 +217,17 @@ public class JEProject {
     	if(rules.containsKey(rule.getJobEngineElementID()))
     			{
     				throw new RuleAlreadyExistsException(RuleBuilderErrors.RuleAlreadyExists);
+    			}
+        this.rules.put(rule.getJobEngineElementID(), rule);
+    }
+    
+    /*
+     * update rule to project
+     */
+    public void updateRule(JERule rule) throws RuleNotFoundException {
+    	if(!rules.containsKey(rule.getJobEngineElementID()))
+    			{
+    				throw new RuleNotFoundException(RuleBuilderErrors.RuleNotFound);
     			}
         this.rules.put(rule.getJobEngineElementID(), rule);
     }
