@@ -89,6 +89,7 @@
 
 
 	</dependencies>
-
-
+	<build>
+		<finalName>RuntimeManager</finalName>
+	</build>
 </project>
