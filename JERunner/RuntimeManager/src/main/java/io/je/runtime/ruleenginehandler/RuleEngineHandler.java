@@ -96,7 +96,7 @@ public class RuleEngineHandler {
 		instanceModel.setPayload(instanceJson.getJSONObject(InstanceModelMapping.PAYLOAD));
 		JEObject instanceData = (JEObject) InstanceManager.createInstance(instanceModel);
 		instanceData.setJeObjectLastUpdate(LocalDateTime.now());
-		JELogger.info("Data : "+ instanceJson );
+		//JELogger.info("Data : "+ instanceJson );
         RuleEngine.assertFact(projectId,instanceData);
         
     }

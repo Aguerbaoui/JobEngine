@@ -91,6 +91,27 @@ public class ProjectController {
 		}
 		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, PROJECT_RUNNING));
 	}
+	
+	
+	/* Run project */
+	@PostMapping(value = "/stopProject/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> stopProject(@PathVariable String projectId) {
+		
+			
+				try {
+					projectService.stopProject(projectId);
+				} catch (ProjectNotFoundException | JERunnerUnreachableException | ProjectRunException
+						e) {
+					e.printStackTrace();
+					JELogger.error(RuleController.class, e.getMessage());
+					return ResponseEntity.badRequest().body(new JEResponse(e.getCode(), e.getMessage()));
+				} catch (Exception e) {
+					return ResponseEntity.badRequest().body(new JEResponse(ResponseCodes.UNKNOWN_ERROR, Errors.uknownError));
+
+				}
+		
+		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, STOPPING_PROJECT));
+	}
 
 	// ########################################### **WORKFLOW**
 	// ################################################################

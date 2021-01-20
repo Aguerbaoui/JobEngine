@@ -60,9 +60,8 @@ public class ProjectController {
     /*
      * Stop the project
      * */
-    @PostMapping(value = "/stopProject/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/stopProject/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> stopProject(@PathVariable String projectId) {
-        //Stop listening via data listener do not forget plz
         try {
             dispatcher.stopProject(projectId);
         } catch (RulesNotFiredException | RuleBuildFailedException | ProjectAlreadyRunningException e) {

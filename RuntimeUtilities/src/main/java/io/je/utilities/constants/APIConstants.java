@@ -29,5 +29,7 @@ public class APIConstants {
 
 	public static final String RUN_PROJECT = "/project/runProject/";
 
+	public static final String STOP_PROJECT = "/project/stopProject/";
+
 
 }
