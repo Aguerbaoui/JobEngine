@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
  * */
 @RestController
 @RequestMapping(value= "/workflow")
+@CrossOrigin(maxAge = 3600)
 public class WorkflowController {
 
     public static final String ADDED_WORKFLOW_COMPONENT_SUCCESSFULLY = "Added workflow component successfully";

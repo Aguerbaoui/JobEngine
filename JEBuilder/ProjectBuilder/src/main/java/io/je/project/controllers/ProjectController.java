@@ -30,6 +30,7 @@ import static io.je.utilities.constants.ResponseMessages.*;
  * */
 @RestController
 @RequestMapping(value = "/project")
+@CrossOrigin(maxAge = 3600)
 public class ProjectController {
 
 	@Autowired
