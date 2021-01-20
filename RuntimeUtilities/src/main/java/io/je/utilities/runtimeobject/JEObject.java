@@ -21,6 +21,7 @@ public abstract class JEObject {
         super();
         this.jobEngineElementID = jobEngineElementID;
         this.jobEngineProjectID = jobEngineProjectID;
+        this.jeObjectLastUpdate = LocalDateTime.now();
         //TODO: add time config (format, timezone, etc ..)
         //set update time
     }

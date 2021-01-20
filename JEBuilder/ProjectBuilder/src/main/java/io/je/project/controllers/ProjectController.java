@@ -6,10 +6,10 @@ import io.je.project.models.WorkflowModel;
 import io.je.project.services.ProjectService;
 import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.constants.Errors;
-import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.constants.ResponseMessages;
 import io.je.utilities.exceptions.JERunnerUnreachableException;
 import io.je.utilities.exceptions.ProjectNotFoundException;
+import io.je.utilities.exceptions.ProjectRunException;
 import io.je.utilities.exceptions.RuleBuildFailedException;
 import io.je.utilities.exceptions.WorkflowNotFoundException;
 import io.je.utilities.logger.JELogger;
@@ -75,18 +75,20 @@ public class ProjectController {
 	@PostMapping(value = "/runProject/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> runProject(@PathVariable String projectId) {
 		try {
-			projectService.runAll(projectId);
+			try {
+				projectService.runAll(projectId);
+			} catch (JERunnerUnreachableException | ProjectRunException | ProjectNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 			return ResponseEntity.badRequest().body(new JEResponse(ResponseCodes.NETWORK_ERROR, Errors.NETWORK_ERROR));
-		} catch (ProjectNotFoundException e) {
-			e.printStackTrace();
-			return ResponseEntity.badRequest().body(new JEResponse(e.getCode(), Errors.projectNotFound));
 		} catch (Exception e) {
 			e.printStackTrace();
 			return ResponseEntity.badRequest().body(new JEResponse(ResponseCodes.UNKNOWN_ERROR, Errors.uknownError));
 		}
-		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, BUILT_EVERYTHING_SUCCESSFULLY1));
+		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, PROJECT_RUNNING));
 	}
 
 	// ########################################### **WORKFLOW**

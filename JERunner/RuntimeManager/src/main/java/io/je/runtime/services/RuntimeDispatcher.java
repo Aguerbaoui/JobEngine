@@ -41,9 +41,8 @@ import java.util.Set;
 public class RuntimeDispatcher {
 
 	//
-	static Map<String, Set<String>> projectsByTopic = new HashMap<String, Set<String>>(); // key : topic, value: list
-																							// of projects
-	static Map<String, Boolean> projectStatus = new HashMap<String, Boolean>();
+	static Map<String, Set<String>> projectsByTopic = new HashMap<>(); // key : topic, value: list of projects																							// of projects
+	static Map<String, Boolean> projectStatus = new HashMap<>(); //key: project id, value : true if project is running, false if not
 
 	///////////////////////////////// PROJECT
 	// build project
@@ -115,7 +114,8 @@ public class RuntimeDispatcher {
 
 	}
 
-	////////////////////////////// RULES
+	// ***********************************RULES********************************************************
+
 
 	// add rule
 	public void addRule(RuleModel ruleModel) throws RuleAlreadyExistsException, RuleCompilationException,
