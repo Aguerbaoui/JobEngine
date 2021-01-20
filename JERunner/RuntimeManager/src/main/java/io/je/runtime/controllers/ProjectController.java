@@ -21,6 +21,7 @@ import java.util.List;
  * */
 @RestController
 @RequestMapping(value = "/project")
+@CrossOrigin(maxAge = 3600)
 public class ProjectController {
 
     @Autowired
