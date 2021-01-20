@@ -52,7 +52,7 @@ public class ProcessManager {
     /*
      * List of all active processes
      * */
-    private static HashMap<String, JEProcess> processes = null;
+    private static HashMap<String, JEProcess> processes = new HashMap<>();
 
 
     /*

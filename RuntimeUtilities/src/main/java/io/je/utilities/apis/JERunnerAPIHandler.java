@@ -40,6 +40,27 @@ public class JERunnerAPIHandler {
 		return jeRunnerResp;
 	}
 	
+	public static JEResponse stopProject(String projectId) throws JERunnerUnreachableException, IOException {
+		Response response = null;
+		try {
+			String requestUrl = JEGlobalconfig.RUNTIME_MANAGER_BASE_API + APIConstants.STOP_PROJECT + projectId;
+			response = Network.makeGetNetworkCallWithResponse(requestUrl);
+
+		} catch (Exception e) {
+			throw new JERunnerUnreachableException(ClassBuilderErrors.jeRunnerUnreachable);
+		}
+
+		if ( response.code() != 200) {
+			throw new JERunnerUnreachableException(ClassBuilderErrors.jeRunnerUnreachable + " : " + response);
+		}
+
+		String respBody = response.body().string();
+		ObjectMapper objectMapper = new ObjectMapper();
+		JEResponse jeRunnerResp = objectMapper.readValue(respBody,
+				JEResponse.class);
+		return jeRunnerResp;
+	}
+	
 	
 	//////// RULES //////////
 	
@@ -143,5 +164,8 @@ public class JERunnerAPIHandler {
 		
 
 	}
+
+
+
 
 }

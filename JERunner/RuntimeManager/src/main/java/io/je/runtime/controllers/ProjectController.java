@@ -59,11 +59,10 @@ public class ProjectController {
     /*
      * Stop the project
      * */
-    @PostMapping(value = "/stopProject", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> stopProject(@RequestBody String input) {
-        //Stop listening via data listener do not forget plz
+    @GetMapping(value = "/stopProject/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> stopProject(@PathVariable String projectId) {
         try {
-            dispatcher.stopProject(input);
+            dispatcher.stopProject(projectId);
         } catch (RulesNotFiredException | RuleBuildFailedException | ProjectAlreadyRunningException e) {
             e.printStackTrace();
             return ResponseEntity.badRequest().body(new JEResponse(e.getCode(), e.getMessage()));

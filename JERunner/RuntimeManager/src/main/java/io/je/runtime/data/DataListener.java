@@ -35,6 +35,7 @@ public class DataListener {
     	for (String id : topics)
     	{
     		ZMQAgent agent = agents.get(id);
+    		agent.setListening(true);
     		Thread thread = new Thread(agent);
     		activeThreads.put(id, thread);
     		thread.start();
@@ -46,6 +47,7 @@ public class DataListener {
         for (String id : topics)
         {
             agents.get(id).setListening(false);
+        	activeThreads.remove(id);
         }
         //activeThreads = null;
     }

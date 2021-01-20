@@ -98,6 +98,7 @@ public class RuntimeDispatcher {
 		// stop workflows
 		
 		WorkflowEngineHandler.stopProjectWorfklows(projectId);
+		RuleEngineHandler.stopRuleEngineProjectExecution(projectId);
 
 		ArrayList<String> topics = new ArrayList<>();
 		// get topics :
@@ -109,7 +110,6 @@ public class RuntimeDispatcher {
 
 		}
 		DataListener.stopListening(topics);
-		RuleEngineHandler.stopRuleEngineProjectExecution(projectId);
         projectStatus.put(projectId, false);
 
 	}

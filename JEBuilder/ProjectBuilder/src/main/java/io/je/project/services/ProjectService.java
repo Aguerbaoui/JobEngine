@@ -144,6 +144,30 @@ public class ProjectService {
 
       
     }
+    
+    public void stopProject(String projectId) throws ProjectNotFoundException, JERunnerUnreachableException, IOException, ProjectRunException {
+		if(!loadedProjects.containsKey(projectId)){
+			throw new ProjectNotFoundException(Errors.projectNotFound);
+    	}
+		JEProject project = loadedProjects.get(projectId);		
+		JEResponse jeRunnerResp = null;
+		if(project.isRunning())
+		{
+			jeRunnerResp = JERunnerAPIHandler.stopProject(projectId);
+			if (jeRunnerResp.getCode() != ResponseCodes.CODE_OK) {
+    			throw new ProjectRunException(jeRunnerResp.getMessage());
+    		}
+			project.setRunning(false);
+
+		}
+		else
+		{
+			//TODO change to another exception
+			throw new ProjectRunException("PROJECT IS ALREADY STOPPED");
+
+		}
+
+		}
 
     public HashMap<String, JEWorkflow> getAllWorkflows(String projectId) {
        return loadedProjects.get(projectId).getWorkflows();
@@ -160,4 +184,8 @@ public class ProjectService {
         }
         return loadedProjects.get(projectId);
     }
+
+	
+		
+	
 }
