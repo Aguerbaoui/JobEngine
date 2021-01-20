@@ -100,7 +100,7 @@ public class RuntimeDispatcher {
 		WorkflowEngineHandler.stopProjectWorfklows(projectId);
 		RuleEngineHandler.stopRuleEngineProjectExecution(projectId);
 
-		/*ArrayList<String> topics = new ArrayList<>();
+		ArrayList<String> topics = new ArrayList<>();
 		// get topics :
 		for (Entry<String, Set<String>> entry : projectsByTopic.entrySet()) {
 			//if more than 1 project is listening on that topic we dont stop the thread
