@@ -52,7 +52,7 @@ public class ProcessManager {
     /*
      * List of all active processes
      * */
-    private static HashMap<String, JEProcess> processes = null;
+    private static HashMap<String, JEProcess> processes = new HashMap<>();
 
 
     /*
@@ -118,8 +118,9 @@ public class ProcessManager {
         if (processes.get(id) == null) {
             throw new WorkflowNotFoundException( Errors.workflowNotFound);
         }
-        runtimeService.startProcessInstanceByKey(id);
         processes.get(id).setRunning(true);
+        runtimeService.startProcessInstanceByKey(id);
+
 
     }
 
@@ -290,5 +291,10 @@ public class ProcessManager {
                 runtimeService.deleteProcessInstance(process.getKey(), "User Stopped the execution");
             }
         }
+    }
+
+    public static void setRunning(String id, boolean b) {
+
+        processes.get(id.replace(id.substring(id.indexOf(':'), id.length()), "")).setRunning(b);
     }
 }

@@ -2,9 +2,14 @@ package io.je.project.services;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Map.Entry;
+
 import org.springframework.stereotype.Service;
 
 import io.je.project.beans.JEProject;
+import io.je.rulebuilder.builder.RuleBuilder;
+import io.je.rulebuilder.components.JERule;
+import io.je.rulebuilder.components.ScriptedRule;
 import io.je.rulebuilder.components.UserDefinedRule;
 import io.je.rulebuilder.models.BlockModel;
 import io.je.rulebuilder.models.RuleModel;
@@ -158,14 +163,40 @@ public class RuleService {
 		} else if (!project.ruleExists(ruleId)) {
 			throw new RuleNotFoundException( RuleBuilderErrors.RuleNotFound);
 		}
+		    	RuleBuilder.buildRule(project.getRule(ruleId), project.getConfigurationPath());
+
 		
-		project.buildRule(ruleId);
 	}
+
+
+	
+	/*
+	 * build rule : create drl + check for compilation errors + add to jerunner
+	 * TODO: handle the case where some rules are built while others aren't 
+	 */
+	public void buildRules(String projectId) throws ProjectNotFoundException, RuleBuildFailedException, JERunnerUnreachableException, IOException
+	{
+		JEProject project = ProjectService.getProjectById(projectId);
+		if (project == null) {
+			throw new ProjectNotFoundException( Errors.projectNotFound);
+		}
+			for (Entry<String, JERule> entry : project.getRules().entrySet()) {
+			    String key = entry.getKey();
+			    RuleBuilder.buildRule(project.getRules().get(key), project.getConfigurationPath());
+			   
+			    
+			}
+
+
+		
+	}
+	
+
 
 	/*
 	 * Retrieve list of all rules that exist in a project.
 	 */
-	public Collection<UserDefinedRule> getAllRules(String projectId) throws ProjectNotFoundException {
+	public Collection<JERule> getAllRules(String projectId) throws ProjectNotFoundException {
 		JEProject project = ProjectService.getProjectById(projectId);
 		if (project == null) {
 			throw new ProjectNotFoundException( Errors.projectNotFound);
@@ -173,7 +204,7 @@ public class RuleService {
 		return project.getRules().values();
 	}
 
-	public UserDefinedRule getRule(String projectId, String ruleId) throws ProjectNotFoundException, RuleNotFoundException {
+	public JERule getRule(String projectId, String ruleId) throws ProjectNotFoundException, RuleNotFoundException {
 		JEProject project = ProjectService.getProjectById(projectId);
 		if (project == null) {
 			throw new ProjectNotFoundException( Errors.projectNotFound);
@@ -183,6 +214,34 @@ public class RuleService {
 	}
 		return project.getRules().get(ruleId);
 	}
+
+	/*
+	 * add scripted rule
+	 */
+	public void addScriptedRule(String projectId, String ruleId, String script) throws ProjectNotFoundException, RuleAlreadyExistsException {
+		ScriptedRule rule = new ScriptedRule(projectId,ruleId,script);
+		JEProject project = ProjectService.getProjectById(projectId);
+		if (project == null) {
+			throw new ProjectNotFoundException( Errors.projectNotFound);
+		} 
+		project.addRule(rule);
+		
+	}
+
+	
+	/*
+	 * update scripted rule
+	 */
+	public void updateScriptedRule(String projectId, String ruleId, String script) throws ProjectNotFoundException, RuleNotFoundException {
+		ScriptedRule rule = new ScriptedRule(projectId,ruleId,script);
+		JEProject project = ProjectService.getProjectById(projectId);
+		if (project == null) {
+			throw new ProjectNotFoundException( Errors.projectNotFound);
+		}
+		project.updateRule(rule);
+		
+	}
+
 
 
 }

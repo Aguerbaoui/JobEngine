@@ -152,6 +152,16 @@ public class ModelBuilder {
         }
     }
 
+    public static void saveModel(String bpmn, String fileName) {
+        try {
+            JELogger.info(ModelBuilder.class, fileName);
+            JELogger.info(ModelBuilder.class, bpmn);
+            JEFileUtils.copyStringToFile(bpmn, fileName, "utf-8");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     /*
      * set Process listeners
      * */

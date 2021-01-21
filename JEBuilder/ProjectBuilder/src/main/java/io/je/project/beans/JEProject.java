@@ -2,23 +2,31 @@ package io.je.project.beans;
 
 import blocks.WorkflowBlock;
 import io.je.rulebuilder.builder.RuleBuilder;
+import io.je.rulebuilder.components.JERule;
 import io.je.rulebuilder.components.UserDefinedRule;
 import io.je.rulebuilder.models.BlockModel;
+import io.je.utilities.apis.JERunnerAPIHandler;
 import io.je.utilities.constants.Errors;
+import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.constants.RuleBuilderErrors;
 import io.je.utilities.exceptions.AddRuleBlockException;
 import io.je.utilities.exceptions.InvalidSequenceFlowException;
 import io.je.utilities.exceptions.JERunnerUnreachableException;
+import io.je.utilities.exceptions.ProjectRunException;
 import io.je.utilities.exceptions.RuleAlreadyExistsException;
 import io.je.utilities.exceptions.RuleBlockNotFoundException;
 import io.je.utilities.exceptions.RuleBuildFailedException;
+import io.je.utilities.exceptions.RuleNotAddedException;
+import io.je.utilities.exceptions.RuleNotFoundException;
 import io.je.utilities.exceptions.WorkflowBlockNotFound;
+import io.je.utilities.network.JEResponse;
 import models.JEWorkflow;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map.Entry;
 
 @Document(collection="JEProject")
 public class JEProject {
@@ -42,7 +50,7 @@ public class JEProject {
     /*
     * Rules in a project
     * */
-    private HashMap<String, UserDefinedRule> rules;
+    private HashMap<String, JERule> rules;
 
     /*
     * workflows in a project
@@ -52,7 +60,12 @@ public class JEProject {
     /*
     * Is the project running
     * */
-    private boolean running = false;
+    private boolean isRunning = false;
+    
+    /*
+    * Is the project built \\TODO: set true during build, set false everytime rules/wfs get added/updated/deleted 
+    * */
+    private boolean isBuilt = false;
 
     /*
     * Constructor
@@ -97,14 +110,14 @@ public class JEProject {
     /*
     * Get project rules
     * */
-    public HashMap<String, UserDefinedRule> getRules() {
+    public HashMap<String, JERule> getRules() {
 		return rules;
 	}
 
 	/*
 	* Set project rules
 	* */
-	public void setRules(HashMap<String, UserDefinedRule> rules) {
+	public void setRules(HashMap<String, JERule> rules) {
 		this.rules = rules;
 	}
 
@@ -192,13 +205,29 @@ public class JEProject {
     	return rules.containsKey(ruleId);
     }
     
+    public JERule getRule(String ruleId)
+    {
+    	return rules.get(ruleId);
+    }
+    
     /*
      * add a new rule to project
      */
-    public void addRule(UserDefinedRule rule) throws RuleAlreadyExistsException {
+    public void addRule(JERule rule) throws RuleAlreadyExistsException {
     	if(rules.containsKey(rule.getJobEngineElementID()))
     			{
     				throw new RuleAlreadyExistsException(RuleBuilderErrors.RuleAlreadyExists);
+    			}
+        this.rules.put(rule.getJobEngineElementID(), rule);
+    }
+    
+    /*
+     * update rule to project
+     */
+    public void updateRule(JERule rule) throws RuleNotFoundException {
+    	if(!rules.containsKey(rule.getJobEngineElementID()))
+    			{
+    				throw new RuleNotFoundException(RuleBuilderErrors.RuleNotFound);
     			}
         this.rules.put(rule.getJobEngineElementID(), rule);
     }
@@ -209,22 +238,15 @@ public class JEProject {
     public void addBlockToRule(BlockModel blockModel) throws AddRuleBlockException 
     	
     {	
-    	rules.get(blockModel.getRuleId()).addBlock(blockModel);
+    	((UserDefinedRule) rules.get(blockModel.getRuleId())).addBlock(blockModel);
     }
     
-    /*
-     * build rule : drl generation + compilation
-     */
-    public void buildRule(String ruleId) throws RuleBuildFailedException, JERunnerUnreachableException, IOException
-    {
-    	RuleBuilder.buildRule(rules.get(ruleId), configurationPath);
-    }
 
     /*
      * update Block
      */
 	public void updateRuleBlock(BlockModel blockModel) throws AddRuleBlockException {
-		rules.get(blockModel.getRuleId()).updateBlock(blockModel);
+		((UserDefinedRule) rules.get(blockModel.getRuleId())).updateBlock(blockModel);
 		
 	}
 	
@@ -233,7 +255,7 @@ public class JEProject {
 	 */
 
 	public void deleteRuleBlock(String ruleId, String blockId) throws RuleBlockNotFoundException {
-		rules.get(ruleId).deleteBlock(blockId);
+		((UserDefinedRule) rules.get(ruleId)).deleteBlock(blockId);
 		
 	}
 
@@ -241,7 +263,8 @@ public class JEProject {
 	 * delete rule
 	 */
 	public void deleteRule(String ruleId) {
-		//TODO: send request to JERunner to delete Rule
+		//TODO: send request to JERunner to delete Rule 
+		//TODO: delete file
 		rules.remove(ruleId);
 		
 	}
@@ -250,7 +273,7 @@ public class JEProject {
 	 * update rule attributes
 	 */
 	public void updateRuleAttributes(UserDefinedRule rule) {
-		UserDefinedRule ruleToUpdate = rules.get(rule.getJobEngineElementID());
+		UserDefinedRule ruleToUpdate = (UserDefinedRule) rules.get(rule.getJobEngineElementID());
 		ruleToUpdate.setSalience(rule.getSalience());
 		ruleToUpdate.setDateEffective(rule.getDateEffective());
 		ruleToUpdate.setDateExpires(rule.getDateExpires());
@@ -259,7 +282,27 @@ public class JEProject {
 
 	}
 	 
+
+
 	
+
+
+	public boolean isRunning() {
+		return isRunning;
+	}
+
+	public void setRunning(boolean isRunning) {
+		this.isRunning = isRunning;
+	}
+
+	public String getConfigurationPath() {
+		return configurationPath;
+	}
+
+	public void setConfigurationPath(String configurationPath) {
+		this.configurationPath = configurationPath;
+	}
+
 	
 
 }

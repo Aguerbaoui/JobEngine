@@ -1,8 +1,6 @@
 package io.je.runtime.controllers;
 
 import io.je.runtime.services.RuntimeDispatcher;
-import io.je.runtime.workflow.WorkflowEngineHandler;
-import io.je.utilities.constants.Errors;
 import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.constants.ResponseMessages;
 import io.je.utilities.exceptions.ProjectAlreadyRunningException;
@@ -11,19 +9,19 @@ import io.je.utilities.exceptions.RulesNotFiredException;
 import io.je.utilities.exceptions.WorkflowNotFoundException;
 import io.je.utilities.network.JEResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import static io.je.utilities.constants.ResponseMessages.RULE_BUILD_ERROR;
+import java.util.List;
 
 
 /*
  * Runtime manager project controller
  * */
 @RestController
-@RequestMapping(value= "/project")
+@RequestMapping(value = "/project")
+@CrossOrigin(maxAge = 3600)
 public class ProjectController {
 
     @Autowired
@@ -32,7 +30,7 @@ public class ProjectController {
      * Build whole project
      * */
 
-    @PostMapping(value = "/buildProject", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/buildProject", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> buildProject(@RequestBody String input) {
         try {
             dispatcher.buildProject(input);
@@ -47,11 +45,11 @@ public class ProjectController {
     /*
      * Run the whole project ( rules and workflows )
      * */
-    @PostMapping(value = "/runProject", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> runProject(@RequestBody String input) {
+    @GetMapping(value = "/runProject/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> runProject(@PathVariable String projectId) {
         //Start listening via data listener do not forget plz
         try {
-            dispatcher.runProject(input);
+            dispatcher.runProject(projectId);
         } catch (RulesNotFiredException | RuleBuildFailedException | ProjectAlreadyRunningException | WorkflowNotFoundException e) {
             return ResponseEntity.badRequest().body(new JEResponse(e.getCode(), e.getMessage()));
         }
@@ -62,17 +60,26 @@ public class ProjectController {
     /*
      * Stop the project
      * */
-    @PostMapping(value = "/stopProject", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> stopProject(@RequestBody String input) {
-        //Stop listening via data listener do not forget plz
+    @GetMapping(value = "/stopProject/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> stopProject(@PathVariable String projectId) {
         try {
-            dispatcher.stopProject(input);
+            dispatcher.stopProject(projectId);
         } catch (RulesNotFiredException | RuleBuildFailedException | ProjectAlreadyRunningException e) {
             e.printStackTrace();
             return ResponseEntity.badRequest().body(new JEResponse(e.getCode(), e.getMessage()));
         }
         return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.STOPPING_PROJECT));
 
+    }
+
+    /*
+     * Add topics
+     * */
+    @PostMapping(value = "/addTopics/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> addTopics(@PathVariable String projectId, @RequestBody List<String> topics) {
+        //Stop listening via data listener do not forget plz
+        dispatcher.addTopics(projectId, topics);
+        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.TOPIC_ADDED));
     }
 
     /*

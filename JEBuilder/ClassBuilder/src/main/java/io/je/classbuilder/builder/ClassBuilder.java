@@ -3,20 +3,24 @@ package io.je.classbuilder.builder;
 import java.io.File;
 import java.lang.reflect.Modifier;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
+import org.burningwave.core.classes.AnnotationSourceGenerator;
 import org.burningwave.core.classes.ClassSourceGenerator;
 import org.burningwave.core.classes.FunctionSourceGenerator;
 import org.burningwave.core.classes.TypeDeclarationSourceGenerator;
 import org.burningwave.core.classes.UnitSourceGenerator;
 import org.burningwave.core.classes.VariableSourceGenerator;
 
+import io.je.classbuilder.entity.ClassType;
 import io.je.classbuilder.models.ClassModel;
 import io.je.classbuilder.models.FieldModel;
 import io.je.classbuilder.models.MethodModel;
 import io.je.utilities.constants.ClassBuilderConfig;
 import io.je.utilities.constants.ClassBuilderErrors;
 import io.je.utilities.exceptions.AddClassException;
+import io.je.utilities.exceptions.ClassLoadException;
 import io.je.utilities.logger.JELogger;
 import io.je.utilities.runtimeobject.JEObject;
 import io.je.utilities.string.JEStringUtils;
@@ -31,15 +35,13 @@ public class ClassBuilder {
 	 * build .java class/interface/enum from classModel
 	 * returns  path where file was created
 	 */
-	public static String buildClass(ClassModel classModel, String generationPath) throws AddClassException {
+	public static String buildClass(ClassModel classModel, String generationPath) throws AddClassException, ClassLoadException {
 		
 		//check if class format is valid
 		if(classModel.getName()==null)
 		{
 			throw new AddClassException(ClassBuilderErrors.classNameNull);
 		}
-		
-		
 		
 		
 	
@@ -53,7 +55,7 @@ public class ClassBuilder {
 
 		//generate interface
 		if (classModel.getIsInterface()) {
-			generateInterface(classModel, generationPath);
+			return generateInterface(classModel, generationPath);
 			
 		}
 		return null;
@@ -62,15 +64,25 @@ public class ClassBuilder {
 
 	/* add imports */
 	private static void addImports(List<String> imports, UnitSourceGenerator unitSG ) {
-		for (String import_ : imports) {
-			unitSG.addImport(import_);
-		}
+		//TODO : remove harcoded imports
+		unitSG.addImport("com.fasterxml.jackson.annotation.JsonProperty");
+		if (imports != null && !imports.isEmpty()) {
+			{
+				for (String import_ : imports) {
+					//unitSG.addImport(import_);
+				}
+			}
+			}
 	}
+		
 
 	/*
 	 * generate an interface
 	 */
-	private static void generateInterface(ClassModel classModel, String generationPath) {
+	private static String generateInterface(ClassModel classModel, String generationPath) throws ClassLoadException {
+		 UnitSourceGenerator unitSG = UnitSourceGenerator.create(ClassBuilderConfig.genrationPackageName);
+			//add imports
+			addImports(classModel.getImports(),unitSG);
 		// class name
 		String interfaceName = classModel.getName();
 		TypeDeclarationSourceGenerator type = TypeDeclarationSourceGenerator.create(interfaceName);
@@ -79,17 +91,60 @@ public class ClassBuilder {
 		newInterface.addModifier(getModifier(classModel.getClassVisibility()));
 
 		// TODO: add interface methods
+		
+		//add inheritance
+		String inheritedClass = null;
+		List<String> inheritedInterfaces = new ArrayList<String>();
+
+		if (classModel.getBaseTypes() != null && !classModel.getBaseTypes().isEmpty()) {
+			
+			for(String classId : classModel.getBaseTypes())
+			{
+				if(ClassManager.getClassType(classId) == ClassType.CLASS) {
+					inheritedClass=classId ;
+					break;}
+				if(ClassManager.getClassType(classId) == ClassType.INTERFACE) {
+					inheritedInterfaces.add(classId);
+				}
+				
+			}
+			// extend class
+			if(inheritedClass != null)
+			{
+				throw new ClassLoadException(ClassBuilderErrors.invalidClassFormat + "INTERFACE CAN'T INHERIT FROM CLASS");
+				
+			}
+			 // implement interfaces
+			for(String id:inheritedInterfaces)
+			{
+				newInterface.addConcretizedType(ClassManager.getClassById(id));
+			}
+
+		}
+		
+		// store class
+				unitSG.addClass(newInterface);
+				String filePath= generationPath + "\\" + ClassBuilderConfig.genrationPackageName  + "\\" + classModel.getName() +".java" ;
+				File file = new File(generationPath);
+				file.delete();
+				unitSG.storeToClassPath(generationPath);
+				
+				
+				
+
+				 
+				return filePath;
+				
 	}
 
 	/*
 	 * generate a class
 	 */
-	private static String generateClass(ClassModel classModel, String generationPath) {
+	private static String generateClass(ClassModel classModel, String generationPath) throws ClassLoadException {
 		 UnitSourceGenerator unitSG = UnitSourceGenerator.create(ClassBuilderConfig.genrationPackageName);
 			//add imports
-			if (classModel.getImports() != null && !classModel.getImports().isEmpty()) {
-				addImports(classModel.getImports(),unitSG);
-			}
+			addImports(classModel.getImports(),unitSG);
+			
 
 		// class name
 		String className = classModel.getName();
@@ -121,12 +176,14 @@ public class ClassBuilder {
 							.addParameter(VariableSourceGenerator.create(attributeType, attributeName))
 							.setReturnType(TypeDeclarationSourceGenerator.create(void.class))
 							.addModifier(Modifier.PUBLIC)
+							.addAnnotation(new AnnotationSourceGenerator("JsonProperty(\""+attributeName+"\")"))
 							.addBodyCodeLine("this." + attributeName + "=" + attributeName + ";");
 					newClass.addMethod(setter);
 				}
 				if (field.getHasGetter()) {
 					FunctionSourceGenerator getter = FunctionSourceGenerator.create("get" + capitalizedAttributeName)
 							.setReturnType(TypeDeclarationSourceGenerator.create(attributeType))
+							.addAnnotation(new AnnotationSourceGenerator("JsonProperty(\""+attributeName+"\")"))
 							.addModifier(Modifier.PUBLIC).addBodyCodeLine("return this." + attributeName + ";");
 					newClass.addMethod(getter);
 				}
@@ -150,11 +207,47 @@ public class ClassBuilder {
 		}
 
 		// add inherited classes
+		List<String> inheritedClass = new ArrayList<String>();
+
+		List<String> inheritedInterfaces = new ArrayList<String>();
+
 		if (classModel.getBaseTypes() == null || classModel.getBaseTypes().isEmpty()) {
-		//	newClass.expands(JEObject.class);
+			newClass.expands(JEObject.class);
 		} else {
-			//TODO: if all base types are interfaces: add them + add JEObject
-			// if more than 1 base type class, throw exception
+			for(String classId : classModel.getBaseTypes())
+			{
+				if(ClassManager.getClassType(classId) == ClassType.CLASS) {
+					inheritedClass.add(classId) ;
+					break;}
+				if(ClassManager.getClassType(classId) == ClassType.INTERFACE) {
+					inheritedInterfaces.add(classId);
+				}	//count number of inherited class
+				
+			    if(ClassManager.getClassType(classId) == ClassType.ENUM) { throw new ClassLoadException(ClassBuilderErrors.invalidClassFormat + " : " + ClassBuilderErrors.enumAsInheritedClass); }
+				
+				
+			}
+			// extend class
+			if(inheritedClass.isEmpty())
+			{
+				newClass.expands(JEObject.class);
+				
+			}
+			//multiple inheritance not supported
+			else if (inheritedClass.size()>1)
+			{
+				throw new ClassLoadException(ClassBuilderErrors.invalidClassFormat + " : " + ClassBuilderErrors.multipleInheritance);
+			}
+			//if base types contains class 
+			else if (inheritedClass.size()==1)
+			{
+				newClass.expands(ClassManager.getClassById(inheritedClass.get(0)));
+			}
+			 // implement interfaces
+			for(String id:inheritedInterfaces)
+			{
+				newClass.addConcretizedType(ClassManager.getClassById(id));
+			}
 
 		}
 
@@ -176,7 +269,7 @@ public class ClassBuilder {
 	/*
 	 * returns the class type based on a string defining the type
 	 */
-	private static Class<?> getType(String type) {
+	private static Class<?> getType(String type) throws ClassLoadException {
 		Class<?> classType = null;;
 		switch (type) {
 		case "BYTE" :
@@ -226,15 +319,16 @@ public class ClassBuilder {
 			}
 			else
 			{
-				// TODO: throw exceeption : type not found
+				// TODO: throw exception : type not found
 				JELogger.error(ClassBuilder.class, "COULD NOT BUILD CLASS : UNKNOWN TYPE");
+				throw new ClassLoadException("COULD NOT BUILD CLASS : UNKNOWN TYPE : " + type);
 			}
 		}
 		
 		return classType;
 	}
 
-	private static VariableSourceGenerator generateField(FieldModel fieldModel) {
+	private static VariableSourceGenerator generateField(FieldModel fieldModel) throws ClassLoadException {
 		// TODO: if field not valid throw exception
 
 		return VariableSourceGenerator.create(getType(fieldModel.getType()), fieldModel.getName());
@@ -248,13 +342,16 @@ public class ClassBuilder {
 	private static int getModifier(String modifier) {
 		int value = Modifier.PUBLIC;
 		switch (modifier) {
-		case "public":
+		case "PUBLIC":
 			break;
-		case "private":
+		case "PRIVATE":
 			value = Modifier.PRIVATE;
 			break;
-		case "protected":
+		case "PROTECTED":
 			value = Modifier.PROTECTED;
+			break;
+		case "ABSTRACT":
+			value = Modifier.ABSTRACT;
 			break;
 		default:
 			// TODO: throw except

@@ -5,6 +5,7 @@ import io.je.project.services.ProjectService;
 import io.je.project.services.WorkflowService;
 import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.constants.Errors;
+import io.je.utilities.constants.ResponseMessages;
 import io.je.utilities.exceptions.*;
 import io.je.utilities.logger.JELogger;
 import io.je.utilities.network.JEResponse;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
  * */
 @RestController
 @RequestMapping(value= "/workflow")
+@CrossOrigin(maxAge = 3600)
 public class WorkflowController {
 
     public static final String ADDED_WORKFLOW_COMPONENT_SUCCESSFULLY = "Added workflow component successfully";
@@ -116,5 +118,22 @@ public class WorkflowController {
 
     }
 
+    /*
+     * add a new scripted Rule
+     */
+    @PostMapping(value = "/addBpmn/{projectId}/{workflowId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> addScriptedRule(@PathVariable("projectId") String projectId, @PathVariable("workflowId") String workflowId,@RequestBody String bpmn) {
+
+        try {
+            workflowService.addBpmn(projectId,workflowId,bpmn);
+        } catch (ProjectNotFoundException  e) {
+            e.printStackTrace();
+            JELogger.error(RuleController.class, e.getMessage());
+            return ResponseEntity.badRequest().body(new JEResponse(e.getCode(), e.getMessage()));
+        }
+        projectService.saveProject(ProjectService.getProjectById(projectId));
+
+        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.ADDED_WORKFLOW_SUCCESSFULLY));
+    }
 
 }

@@ -5,12 +5,13 @@ import io.je.runtime.ruleenginehandler.RuleEngineHandler;
 import io.je.runtime.services.RuntimeDispatcher;
 import io.je.utilities.beans.JEData;
 import io.je.utilities.constants.APIConstants;
+import io.je.utilities.exceptions.InstanceCreationFailed;
 import io.je.utilities.logger.JELogger;
 import org.zeromq.SocketType;
 import org.zeromq.ZContext;
 import org.zeromq.ZMQ;
 
-public class ZMQAgent {
+public class ZMQAgent implements Runnable {
 
     private ZContext context = null;
 
@@ -26,7 +27,7 @@ public class ZMQAgent {
 
     private String topic;
 
-    private boolean listening = false;
+    private boolean listening = true;
 
     public ZMQAgent(String url,int subPort, int requestPort, String topic) {
         this.url = url;
@@ -136,8 +137,24 @@ public class ZMQAgent {
     public void setTopic(String topic) {
         this.topic = topic;
     }
+    
 
-    public void prepareListener() {
+	@Override
+	public void run() {
+		while(listening)
+    	{
+    		 String data = this.getSubSocket().recvStr();
+            // JELogger.info(ZMQAgent.class, "read data " + data);
+             try {
+				RuntimeDispatcher.injectData(new JEData(this.topic, data));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+    	}
+		
+	}
+
+  /*  public void prepareListener() {
         while(true) {
             if(isListening()) {
                 String data = this.getSubSocket().recvStr();
@@ -147,5 +164,5 @@ public class ZMQAgent {
                 //DISPATCHER calls to rule engine handler / workflow handler
             }
         }
-    }
+    } */
 }

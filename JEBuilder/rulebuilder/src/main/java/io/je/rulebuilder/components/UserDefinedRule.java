@@ -20,6 +20,7 @@ import io.je.rulebuilder.components.blocks.arithmetic.SubtractBlock;
 import io.je.rulebuilder.components.blocks.arithmetic.SumBlock;
 import io.je.rulebuilder.components.blocks.arithmetic.UnitConversionBlock;
 import io.je.rulebuilder.components.blocks.comparison.GreaterThanBlock;
+import io.je.rulebuilder.components.blocks.comparison.LessThanBlock;
 import io.je.rulebuilder.components.blocks.execution.LogBlock;
 import io.je.rulebuilder.components.blocks.getter.AttributeGetterBlock;
 import io.je.rulebuilder.components.blocks.logic.AndBlock;
@@ -43,8 +44,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
  * One UserDefinedRule can be equivalents to multiple JobEngine rules ( or drls)
  * Each Job engine rule is defined by a root block ( a logic or comparison block that precedes and execution sequence)
  */
-@Document(collection="JERule")
-public class UserDefinedRule extends JEObject {
+
+public class UserDefinedRule extends JERule {
 
 	/*
 	 * rule priority
@@ -75,6 +76,8 @@ public class UserDefinedRule extends JEObject {
 	 * Map of all the blocks that define this rule
 	 */
 	Map<String, Block> blocks = new HashMap<>();
+	
+
 
 	/*
 	 * front configuration
@@ -112,7 +115,8 @@ public class UserDefinedRule extends JEObject {
 	 * this method builds the user defined rule and generates unit rules (JERules)
 	 * from it
 	 */
-	public List<JERule> build() throws RuleBuildFailedException {
+	
+	public List<DrlRule> build() throws RuleBuildFailedException {
 
 		// number of execution blocks
 		int executionBlockCounter = 0;
@@ -138,11 +142,11 @@ public class UserDefinedRule extends JEObject {
 		}
 
 		// generate JERules
-		List<JERule> rules = new ArrayList<>();
+		List<DrlRule> rules = new ArrayList<>();
 
 		int jeRuleCounter = 0;
 		for (ConditionBlock root : roots) {
-			JERule rule = generateJERule(root);
+			DrlRule rule = generateJERule(root);
 			rule.setJobEngineElementID(jobEngineElementID + jeRuleCounter);
 			rules.add(rule);
 		}
@@ -152,8 +156,8 @@ public class UserDefinedRule extends JEObject {
 	/*
 	 * generate a job engine rule from a root block
 	 */
-	private JERule generateJERule(ConditionBlock block) {
-		JERule rule = new JERule(jobEngineElementID, jobEngineProjectID);
+	private DrlRule generateJERule(ConditionBlock block) {
+		DrlRule rule = new DrlRule(jobEngineElementID, jobEngineProjectID);
 		rule.setSalience(salience);
 		rule.setDateEffective(dateEffective);
 		rule.setDateExpires(dateExpires);
@@ -323,7 +327,7 @@ public class UserDefinedRule extends JEObject {
 		case 2004:
 			break;
 		case 2005:
-			break;
+			return new LessThanBlock(blockModel);
 		case 2006:
 			break;
 		case 2007:
@@ -482,6 +486,16 @@ public class UserDefinedRule extends JEObject {
 	public void setTimer(String timer) {
 		this.timer = timer;
 	}
+	
+	
+
+	public boolean isBuilt() {
+		return isBuilt;
+	}
+
+	public void setBuilt(boolean isBuilt) {
+		this.isBuilt = isBuilt;
+	}
 
 	@Override
 	public String toString() {
@@ -489,5 +503,7 @@ public class UserDefinedRule extends JEObject {
 				+ ", dateExpires=" + dateExpires + ", timer=" + timer + ", blocks=" + blocks + ", jobEngineElementID="
 				+ jobEngineElementID + ", jobEngineProjectID=" + jobEngineProjectID + "]";
 	}
+
+
 
 }

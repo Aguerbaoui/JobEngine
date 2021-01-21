@@ -18,6 +18,7 @@ import static io.je.utilities.constants.ResponseMessages.*;
  * */
 @RestController
 @RequestMapping(value= "/workflow")
+@CrossOrigin(maxAge = 3600)
 public class WorkflowController {
 
     @Autowired

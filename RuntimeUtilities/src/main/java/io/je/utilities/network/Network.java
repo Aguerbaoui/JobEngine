@@ -40,13 +40,16 @@ public class Network {
          call.execute();
     }
     
-    public static Response makeNetworkCallWithResponse(String url) throws IOException {
+    public static Response makeGetNetworkCallWithResponse(String url) throws IOException {
 
         Request request = new Request.Builder().url(url).get().build();
         Call call = client.newCall(request);
         JELogger.info(Network.class, url);
          return call.execute();
     }
+    
+
+    
     
     public static Response makeNetworkCallWithJsonBodyWithResponse(HashMap<String, String> json, String url) throws IOException {
         String jsonStr = "";

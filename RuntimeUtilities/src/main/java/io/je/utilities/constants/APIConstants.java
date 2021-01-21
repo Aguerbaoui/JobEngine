@@ -6,6 +6,7 @@ public class APIConstants {
 
    // public  static String RUNTIME_MANAGER_BASE_API = "http://127.0.0.1:8182/RuntimeManager-0.0.1.war";
 
+    public final static String ADD_TOPIC= "/project/addTopics";
 
     public final static String ADD_WORKFLOW = "/workflow/addWorkflow";
 
@@ -21,6 +22,14 @@ public class APIConstants {
     public static final int SUBSCRIBER_TIMEOUT = 1000;
 
     public static final int REQUESTER_TIMEOUT = 5000;
+
+	public static final String ADD_RULE =  "/rule/addRule";
+
+	public static final String UPDATERULE = "/rule/updateRule";
+
+	public static final String RUN_PROJECT = "/project/runProject/";
+
+	public static final String STOP_PROJECT = "/project/stopProject/";
 
 
 }

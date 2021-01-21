@@ -17,7 +17,7 @@ public class Errors {
 
     public final static String DATA_LISTENER_NOT_FOUND = "Data listener not found";
     
-    
+    public final static String PROJECT_RUNNING = "PROJECT ALREADY RUNNING";
     
 
 }
