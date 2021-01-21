@@ -148,7 +148,7 @@ public class ZMQAgent implements Runnable {
              try {
 				RuntimeDispatcher.injectData(new JEData(this.topic, data));
 			} catch (Exception e) {
-				//e.printStackTrace();
+				e.printStackTrace();
 			}
     	}
 		

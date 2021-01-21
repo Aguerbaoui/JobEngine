@@ -127,7 +127,7 @@ public class ProjectService {
     * */
     public void buildAll(String projectId) throws WorkflowNotFoundException, ProjectNotFoundException, IOException, RuleBuildFailedException, JERunnerUnreachableException {
         //TODO add build all rules
-    	//ruleService.buildRules(projectId);
+    	ruleService.buildRules(projectId);
         workflowService.buildWorkflows(projectId);
     }
 

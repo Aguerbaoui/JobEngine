@@ -292,7 +292,7 @@ public class JEProject {
 	}
 
 	public void setRunning(boolean isRunning) {
-		//this.isRunning = isRunning;
+		this.isRunning = isRunning;
 	}
 
 	public String getConfigurationPath() {

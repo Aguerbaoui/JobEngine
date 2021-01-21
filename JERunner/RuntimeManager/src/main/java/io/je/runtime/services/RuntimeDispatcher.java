@@ -62,7 +62,7 @@ public class RuntimeDispatcher {
 		
 
 		/* TODO: to delete : hardcoded for test */
-	/*	String testTopic = "00fd4e5d-5f19-4b8a-9c89-66e05be497b4";
+		String testTopic = "00fd4e5d-5f19-4b8a-9c89-66e05be497b4";
 		if(projectsByTopic.get(testTopic)==null)
 		{
 	        projectsByTopic.put(testTopic,new HashSet<>() );
@@ -75,7 +75,7 @@ public class RuntimeDispatcher {
 
        /* ------------------------------ */
 		
-       /* projectStatus.put(projectId, true);
+       projectStatus.put(projectId, true);
 		ArrayList<String> topics = new ArrayList<>();
 		// get topics :
 		for (Entry<String, Set<String>> entry : projectsByTopic.entrySet()) {
@@ -86,7 +86,7 @@ public class RuntimeDispatcher {
 		}
 
 		DataListener.startListening(topics);
-		RuleEngineHandler.runRuleEngineProject(projectId);*/
+		RuleEngineHandler.runRuleEngineProject(projectId);
 		WorkflowEngineHandler.runAllWorkflows(projectId);
 	}
 

@@ -87,6 +87,8 @@ public class RuleEngineHandler {
 
 
     public static void injectData(String projectId,JEData data) throws InstanceCreationFailed {
+    try
+    {
     	JSONObject instanceJson = new JSONObject(data.getData());
 		JELogger.info(RuleEngineHandler.class, instanceJson.toString());
 
@@ -98,6 +100,11 @@ public class RuleEngineHandler {
 		instanceData.setJeObjectLastUpdate(LocalDateTime.now());
 		//JELogger.info("Data : "+ instanceJson );
         RuleEngine.assertFact(projectId,instanceData);
+    }catch(Exception e)
+    {
+    	JELogger.info("failed to inject data  " );
+    	}
+    	
         
     }
     /*
