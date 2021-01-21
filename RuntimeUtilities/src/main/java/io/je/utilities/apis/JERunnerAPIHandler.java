@@ -155,7 +155,7 @@ public class JERunnerAPIHandler {
 
 		}
 		if ( response.code() != 200) {
-			throw new JERunnerUnreachableException("JERunner Unexpected Error : " + response.body());
+			throw new JERunnerUnreachableException("JERunner Unexpected Error : " + response.body().toString());
 		}
 
 		String respBody = response.body().string();
