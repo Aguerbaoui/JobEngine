@@ -25,6 +25,7 @@ import io.je.utilities.exceptions.RuleBlockNotFoundException;
 import io.je.utilities.exceptions.RuleBuildFailedException;
 import io.je.utilities.exceptions.RuleNotAddedException;
 import io.je.utilities.exceptions.RuleNotFoundException;
+import io.je.utilities.logger.JELogger;
 import io.je.utilities.runtimeobject.ClassDefinition;
 
 /*
@@ -112,7 +113,8 @@ public class RuleService {
 		if (project == null) {
 			throw new ProjectNotFoundException( Errors.projectNotFound);
 		} else if (!project.ruleExists(blockModel.getRuleId())) {
-			throw new RuleNotFoundException( RuleBuilderErrors.RuleNotFound);
+			JELogger.error(getClass(), RuleBuilderErrors.RuleNotFound + " [ " +blockModel.getRuleId() + "]");
+			throw new RuleNotFoundException( RuleBuilderErrors.RuleNotFound );
 		}
 		project.addBlockToRule(blockModel);
 	}

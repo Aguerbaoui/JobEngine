@@ -19,6 +19,7 @@ import io.je.utilities.exceptions.RuleBuildFailedException;
 import io.je.utilities.exceptions.RuleNotAddedException;
 import io.je.utilities.exceptions.RuleNotFoundException;
 import io.je.utilities.exceptions.WorkflowBlockNotFound;
+import io.je.utilities.logger.JELogger;
 import io.je.utilities.network.JEResponse;
 import models.JEWorkflow;
 import org.springframework.data.annotation.Id;
@@ -26,6 +27,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map.Entry;
 
 @Document(collection="JEProject")
@@ -282,6 +284,24 @@ public class JEProject {
 
 	
 
+
+	public boolean isBuilt() {
+		//TODO: check for unbuilt workflows
+		for(JERule rule : this.getRules().values())
+		{
+			if(!rule.isBuilt())
+			{
+				isBuilt = false;
+				JELogger.info("Rule Not built : " + rule.getRuleName());
+			}
+		}
+		
+		return isBuilt;
+	}
+
+	public void setBuilt(boolean isBuilt) {
+		this.isBuilt = isBuilt;
+	}
 
 	public boolean isRunning() {
 		return isRunning;
