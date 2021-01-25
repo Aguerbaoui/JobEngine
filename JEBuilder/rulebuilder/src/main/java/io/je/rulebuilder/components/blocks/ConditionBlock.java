@@ -4,13 +4,28 @@ import java.util.List;
 
 public abstract class ConditionBlock extends Block{
 
-	public ConditionBlock(String jobEngineElementID, String jobEngineProjectID, String ruleId, 
-			List<String> inputBlocks, List<String> outputBlocks) {
-		super(jobEngineElementID, jobEngineProjectID, ruleId, inputBlocks, outputBlocks);
+	public ConditionBlock(String jobEngineElementID, String jobEngineProjectID, String ruleId, String blockName,
+			String blockDescription) {
+		super(jobEngineElementID, jobEngineProjectID, ruleId, blockName, blockDescription);
+		
 	}
-	
-	public abstract String getExpression();
-	public abstract String getComparableExpression(String constraint);
+
+	public ConditionBlock() {
+		super();
+	}
+
+	public String getConsequences() {
+		StringBuilder consequences = new StringBuilder();
+		for(Block block : getOutputBlocks())
+		{
+			consequences.append(block.getExpression());
+			consequences.append("\n");
+		}
+		return consequences.toString();
+	}
+
+
+
 	
 	
 	

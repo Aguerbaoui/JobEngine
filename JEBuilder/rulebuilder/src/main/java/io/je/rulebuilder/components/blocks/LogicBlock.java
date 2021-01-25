@@ -2,17 +2,78 @@ package io.je.rulebuilder.components.blocks;
 
 import io.je.rulebuilder.models.BlockModel;
 
-public abstract class LogicBlock extends PersistableBlock {
+public  class LogicBlock extends PersistableBlock {
 
+	String operator;
 	public LogicBlock(BlockModel blockModel) {
 		super(blockModel.getBlockId(), blockModel.getProjectId(), blockModel.getRuleId(), 
-				blockModel.getInputBlocksIds(), blockModel.getOutputBlocksIds(),blockModel.getTimePersistenceValue(),blockModel.getTimePersistenceUnit());
+				blockModel.getBlockName(), blockModel.getDescription(),blockModel.getTimePersistenceValue(),blockModel.getTimePersistenceUnit());
+		switch(blockModel.getOperationId())
+		{
+		//and
+		case 3001:
+			operator = "";
+			break;
+		
+		//or
+		case 3002 :
+			operator = "or";
+			break;
+		
+		}
+	}
+
+	 public LogicBlock() {
+		
 	}
 
 	@Override
 	public String getExpression() {
-		// TODO Auto-generated method stub
-		return "and";
+		StringBuilder expression = new StringBuilder();
+		expression.append(operator +"(\n");
+		for(Block block : inputBlocks)
+		{
+			expression.append(block.getExpression());
+		}
+		expression.append("\n )");
+
+		return expression.toString();
 	}
+
+
+	@Override
+	public String getAsFirstOperandExpression() {
+		// not applicable for these blocks
+		return null;
+	}
+
+
+
+	@Override
+	public String getAsSecondOperandExpression() {
+		// not applicable for these blocks
+		return null;
+	}
+
+
+
+	@Override
+	public String getJoinedExpression() {
+		StringBuilder expression = new StringBuilder();
+		expression.append(operator +"(\n");
+		for(Block block : inputBlocks)
+		{
+			expression.append(block.getJoinedExpression());
+		}
+		expression.append("\n )");
+
+		return expression.toString();
+	}
+
+
+
+
+
+
 
 }

@@ -3,22 +3,23 @@ package io.je.rulebuilder.components.blocks.comparison;
 import io.je.rulebuilder.components.blocks.ComparisonBlock;
 import io.je.rulebuilder.models.BlockModel;
 
-public class GreaterThanBlock extends ComparisonBlock {
+public class EqualsBlock extends ComparisonBlock {
 
-	public GreaterThanBlock(BlockModel blockModel) {
+	public EqualsBlock(BlockModel blockModel) {
 		super(blockModel);
 		
 	}
 
-	public GreaterThanBlock()
+	public EqualsBlock()
 	{
 		super();
 	}
 
 	@Override
+	//TODO: get operator based on operands type ( ex: equals if string etc )
 	public String getOperator() {
 		
-		return ">";
+		return "==";
 	}
 
 }

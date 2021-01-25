@@ -53,6 +53,7 @@ public class RuleController {
 
         try {
             runtimeDispatcher.addRule(ruleModel);
+            runtimeDispatcher.addTopics(ruleModel.getProjectId(), ruleModel.getTopics());
 
         } catch (RuleAlreadyExistsException | JEFileNotFoundException | RuleFormatNotValidException | RuleNotAddedException e) {
             e.printStackTrace();
@@ -78,6 +79,8 @@ public class RuleController {
 
         try {
             runtimeDispatcher.updateRule(ruleModel);
+            runtimeDispatcher.addTopics(ruleModel.getProjectId(), ruleModel.getTopics());
+
         } catch (JEFileNotFoundException | RuleFormatNotValidException e) {
             e.printStackTrace();
             JELogger.error(RuleController.class, e.getMessage());

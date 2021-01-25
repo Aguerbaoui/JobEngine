@@ -14,8 +14,39 @@ public class JoinBlock extends LogicBlock {
 
 	
 	
+
+
+
 	@Override
-	public String getComparableExpression(String constraint) {
+	public String getAsFirstOperandExpression() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+
+	@Override
+	public String getAsSecondOperandExpression() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+
+	@Override
+	public String getJoinedExpression() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+
+
+
+
+	@Override
+	public String getExpression() {
+		// TODO Auto-generated method stub
 		return null;
 	}
 

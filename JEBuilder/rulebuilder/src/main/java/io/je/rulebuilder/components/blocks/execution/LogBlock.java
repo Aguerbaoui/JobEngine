@@ -9,6 +9,21 @@ public class LogBlock extends ExecutionBlock {
 
 	public LogBlock(BlockModel blockModel) {
 		super(blockModel);
+		if(blockModel.getBlockConfiguration()!=null && blockModel.getBlockConfiguration().getValue()!=null)
+		{
+			logMessage = blockModel.getBlockConfiguration().getValue();
+		}
 	}
+	
+	 public LogBlock() {
+		 super();
+	}
+
+	@Override
+	public String getExpression() {
+		return "JELogger.info("+getClass()+",\" "+logMessage+"\")";
+	}
+
+
 
 }

@@ -3,14 +3,14 @@ package io.je.rulebuilder.components.blocks.comparison;
 import io.je.rulebuilder.components.blocks.ComparisonBlock;
 import io.je.rulebuilder.models.BlockModel;
 
-public class GreaterThanBlock extends ComparisonBlock {
+public class GreaterOrEqualBlock extends ComparisonBlock {
 
-	public GreaterThanBlock(BlockModel blockModel) {
+	public GreaterOrEqualBlock(BlockModel blockModel) {
 		super(blockModel);
 		
 	}
 
-	public GreaterThanBlock()
+	public GreaterOrEqualBlock()
 	{
 		super();
 	}
@@ -18,7 +18,7 @@ public class GreaterThanBlock extends ComparisonBlock {
 	@Override
 	public String getOperator() {
 		
-		return ">";
+		return ">=";
 	}
 
 }

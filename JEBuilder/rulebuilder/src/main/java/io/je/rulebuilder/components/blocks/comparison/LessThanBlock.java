@@ -7,18 +7,18 @@ public class LessThanBlock extends ComparisonBlock {
 
 	public LessThanBlock(BlockModel blockModel) {
 		super(blockModel);
+		
+	}
+
+	public LessThanBlock()
+	{
+		super();
 	}
 
 	@Override
 	public String getOperator() {
+		
 		return "<";
 	}
-
-	@Override
-	public String getComparableExpression(String constraint) {
-		
-		return null;
-	}
-
 
 }

@@ -21,6 +21,9 @@ public class RuleBuilderErrors {
 	public static final String BlockProjectIdentifierIsEmpty = "A block must have a project Id";
 	public static final String BlockOperationIdEmpty ="A block operation id can not be empty";
 	public static final String BlockOperationIdUnknown ="Block operation id is unknown.";
+	public static final String BlockNameIsEmpty = "Block name can't be empty";
+	public static final String RuleBuildFailed = "Failed to build rule";
+	public static final String FailedToUpdateBlock = "Failed to update block";
 
 
 

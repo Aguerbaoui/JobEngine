@@ -1,5 +1,7 @@
 package io.je.rulebuilder.components.blocks;
 
+import io.je.rulebuilder.components.blocks.getter.AttributeGetterBlock;
+import io.je.rulebuilder.config.Keywords;
 import io.je.rulebuilder.models.BlockModel;
 
 /*
@@ -7,64 +9,87 @@ import io.je.rulebuilder.models.BlockModel;
  */
 public abstract class ComparisonBlock extends PersistableBlock {
 	
-	//a random variable name used to reference the dynamic 2nd operand if there is one
-	String operationIdentifier;
-	String threshold;
+	protected String operator;
+	String threshold=null;
 
 	public ComparisonBlock(BlockModel blockModel) {
-		super(blockModel.getBlockId(), blockModel.getProjectId(), blockModel.getRuleId(), 
-				blockModel.getInputBlocksIds(), blockModel.getOutputBlocksIds(),blockModel.getTimePersistenceValue(),blockModel.getTimePersistenceUnit());
-		operationIdentifier="attToBeCompared";
+		super(blockModel.getBlockId(), blockModel.getProjectId(), blockModel.getRuleId(),blockModel.getBlockName(),
+				blockModel.getDescription() ,
+				blockModel.getTimePersistenceValue(),blockModel.getTimePersistenceUnit());
 
-		if(blockModel.getInputBlocksIds().size()==1)
+
+		if(blockModel.getBlockConfiguration()!=null && blockModel.getBlockConfiguration().getValue()!=null)
 		{
 			threshold = blockModel.getBlockConfiguration().getValue();
 		}
+		
 	}
 	
-	/*
-	 * return comparison expression
-	 * example:  "> 5"
-	 * example2: "> $variable"
-	 * 
-	 */
-	public String getExpression()
-	{
-		if(threshold!=null)
-			
+	
+	public ComparisonBlock() {
+		super();
+	}
+
+
+	@Override
+	public String getExpression() {
+		StringBuilder expression = new StringBuilder();
+		expression.append("\n");
+		//single input
+		if(threshold !=null)
 		{
-			return getOperator()+ threshold;
+			String inputExpression = inputBlocks.get(0).getAsFirstOperandExpression().replaceAll(Keywords.toBeReplaced, getOperator()+threshold);
+			expression.append(inputExpression);
+
 		}
 		else
-			return getOperator()+ operationIdentifier ;
+		{
+			String firstOperand = inputBlocks.get(1).getExpression();
+			expression.append(firstOperand);
+			expression.append("\n");
+			String secondOperand = inputBlocks.get(0).getAsFirstOperandExpression().replaceAll(Keywords.toBeReplaced,  getOperator() + "\\$"+getInputRefName(1) );
+			expression.append(secondOperand);
+
+
+		}
+		return expression.toString();
 	}
 	
-
 	public abstract String getOperator();
 
-	public String getThreshold() {
-		return threshold;
+	@Override
+	public String getAsFirstOperandExpression() {
+		return null;
 	}
 
-	public void setThreshold(String threshold) {
-		this.threshold = threshold;
-	}
-	
-	
 
-	public String getOperationIdentifier() {
-		return operationIdentifier;
+
+	@Override
+	public String getAsSecondOperandExpression() {
+		return null;
 	}
 
-	public void setOperationIdentifier(String operationIdentifier) {
-		this.operationIdentifier = operationIdentifier;
+
+
+	@Override
+	public String getJoinedExpression() {
+		return null;
 	}
+
+
+
+
+
+
+
+
+
+
 
 	@Override
 	public String toString() {
 		return "ComparisonBlock [threshold=" + threshold + ", timePersistenceValue=" + timePersistenceValue
-				+ ", timePersistenceUnit=" + timePersistenceUnit + ", ruleId=" + ruleId + ", inputBlocks=" + inputBlocks
-				+ ", outputBlocks=" + outputBlocks + ", jobEngineElementID=" + jobEngineElementID
+				+ ", timePersistenceUnit=" + timePersistenceUnit + ", ruleId=" + ruleId + ", jobEngineElementID=" + jobEngineElementID
 				+ ", jobEngineProjectID=" + jobEngineProjectID + ", jeObjectLastUpdate=" + jeObjectLastUpdate + "]";
 	}
 	

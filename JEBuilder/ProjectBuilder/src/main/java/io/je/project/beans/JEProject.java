@@ -274,11 +274,7 @@ public class JEProject {
 	 */
 	public void updateRuleAttributes(UserDefinedRule rule) {
 		UserDefinedRule ruleToUpdate = (UserDefinedRule) rules.get(rule.getJobEngineElementID());
-		ruleToUpdate.setSalience(rule.getSalience());
-		ruleToUpdate.setDateEffective(rule.getDateEffective());
-		ruleToUpdate.setDateExpires(rule.getDateExpires());
-		ruleToUpdate.setTimer(rule.getTimer());
-		ruleToUpdate.setEnabled(rule.isEnabled());
+		//TODO: implement update
 
 	}
 	 

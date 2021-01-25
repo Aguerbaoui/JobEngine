@@ -38,7 +38,7 @@ public class JELogger {
      * log level 1 : debug
      */
     public static void debug(Class<?> clazz, String msg) {
-        logger.debug(clazz.toString() + msg);
+        logger.debug(clazz.toString() +" : "+ msg);
         
     }
     

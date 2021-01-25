@@ -6,6 +6,9 @@ import io.je.rulebuilder.components.UserDefinedRule;
 import io.je.utilities.apis.JERunnerAPIHandler;
 import io.je.utilities.constants.Errors;
 import io.je.utilities.constants.ResponseCodes;
+import io.je.utilities.exceptions.AddClassException;
+import io.je.utilities.exceptions.ClassLoadException;
+import io.je.utilities.exceptions.DataDefinitionUnreachableException;
 import io.je.utilities.exceptions.JERunnerUnreachableException;
 import io.je.utilities.exceptions.ProjectNotFoundException;
 import io.je.utilities.exceptions.ProjectRunException;
@@ -13,6 +16,7 @@ import io.je.utilities.exceptions.RuleAlreadyExistsException;
 import io.je.utilities.exceptions.RuleBuildFailedException;
 import io.je.utilities.exceptions.WorkflowNotFoundException;
 import io.je.utilities.network.JEResponse;
+import io.je.utilities.runtimeobject.ClassDefinition;
 import models.JEWorkflow;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +24,7 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Optional;
 /*
 * Service class to handle business logic for projects
@@ -36,6 +41,9 @@ public class ProjectService {
 
     @Autowired
     RuleService ruleService;
+    
+    @Autowired
+	ClassService classService ;
 
 
     // TODO add repo jpa save later
@@ -125,10 +133,11 @@ public class ProjectService {
     /*
     Builds all the rules and workflows
     * */
-    public void buildAll(String projectId) throws WorkflowNotFoundException, ProjectNotFoundException, IOException, RuleBuildFailedException, JERunnerUnreachableException {
+    public void buildAll(String projectId) throws WorkflowNotFoundException, ProjectNotFoundException, IOException, RuleBuildFailedException, JERunnerUnreachableException, DataDefinitionUnreachableException, AddClassException, ClassLoadException {
         //TODO add build all rules
-    	ruleService.buildRules(projectId);
+    	List<ClassDefinition> classes = ruleService.buildRules(projectId);
         workflowService.buildWorkflows(projectId);
+       classService.addClasses(classes);
     }
 
     
