@@ -1,9 +1,16 @@
 package io.je.utilities.runtimeobject;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import io.je.utilities.mapping.ClassDefinitionMapping;
 
 public class ClassDefinition {
 	
-	String workspaceId;
+	
+    @JsonProperty(ClassDefinitionMapping.WORKSPACEID)
+	String workspaceId;	
+    
+    @JsonProperty(ClassDefinitionMapping.CLASSID)
 	String classId;
 	public ClassDefinition(String workspaceId, String classId) {
 		super();

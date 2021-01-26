@@ -14,6 +14,7 @@ import io.je.project.services.RuleService;
 import io.je.rulebuilder.components.JERule;
 import io.je.rulebuilder.models.BlockModel;
 import io.je.rulebuilder.models.RuleModel;
+import io.je.rulebuilder.models.ScriptRuleModel;
 import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.constants.ResponseMessages;
 import io.je.utilities.exceptions.AddRuleBlockException;
@@ -134,11 +135,13 @@ public class RuleController {
 	/*
 	 * add a new scripted Rule
 	 */
-	/*@PostMapping(value = "/{projectId}/addScriptedRule/{ruleId}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> addScriptedRule(@PathVariable("projectId") String projectId, @PathVariable("ruleId") String ruleId,@RequestBody String script) {
+	@PostMapping(value = "/{projectId}/addScriptedRule}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> addScriptedRule(@PathVariable("projectId") String projectId,@RequestBody ScriptRuleModel ruleModel) {
 		
 				try {
-					ruleService.addScriptedRule(projectId,ruleId,script);
+					ruleService.addScriptedRule(projectId,ruleModel);
+					projectService.saveProject(ProjectService.getProjectById(projectId));
+
 				} catch (ProjectNotFoundException | RuleAlreadyExistsException e) {
 					e.printStackTrace();
 					JELogger.error(RuleController.class, e.getMessage());
@@ -147,16 +150,18 @@ public class RuleController {
 				projectService.saveProject(ProjectService.getProjectById(projectId));
 		
 		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.RuleAdditionSucceeded));
-	}*/
+	}
 	
 	/*
 	 * add a new scripted Rule
 	 */
-/*	@PostMapping(value = "/{projectId}/updateScriptedRule/{ruleId}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> updateScriptedRule(@PathVariable("projectId") String projectId, @PathVariable("ruleId") String ruleId,@RequestBody String script) {
+	@PostMapping(value = "/{projectId}/updateScriptedRule", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> updateScriptedRule(@PathVariable("projectId") String projectId,@RequestBody ScriptRuleModel ruleModel) {
 		
 				try {
-					ruleService.updateScriptedRule(projectId,ruleId,script);
+					ruleService.updateScriptedRule(projectId,ruleModel);
+					projectService.saveProject(ProjectService.getProjectById(projectId));
+
 				} catch (ProjectNotFoundException | RuleNotFoundException e) {
 					e.printStackTrace();
 					JELogger.error(RuleController.class, e.getMessage());
@@ -165,7 +170,7 @@ public class RuleController {
 				projectService.saveProject(ProjectService.getProjectById(projectId));
 		
 		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.RuleAdditionSucceeded));
-	}*/
+	}
 
 
 	/*
