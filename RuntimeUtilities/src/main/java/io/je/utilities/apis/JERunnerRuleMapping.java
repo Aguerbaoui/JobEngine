@@ -1,4 +1,4 @@
-package io.je.rulebuilder.config;
+package io.je.utilities.apis;
 
 public class JERunnerRuleMapping {
 
@@ -7,5 +7,7 @@ public class JERunnerRuleMapping {
 	public static final String PROJECT_ID = "project-Id";
 	public static final String PATH = "rule-path";
 	public static final String FORMAT = "rule-format";
+	public static final String TOPICS = "rule-topics";
+
 
 }

@@ -206,8 +206,12 @@ public class RuntimeDispatcher {
 			if(!projectsByTopic.containsKey(topic)) {
 				projectsByTopic.put(topic, new HashSet<>());				
 			}
-			projectsByTopic.get(topic).add(projectId);
-			DataListener.subscribeToTopic(topic);
+			if(!projectsByTopic.get(topic).contains(projectId))
+			{
+				projectsByTopic.get(topic).add(projectId);
+				DataListener.subscribeToTopic(topic);
+			}
+			
 		}
 	}
 }

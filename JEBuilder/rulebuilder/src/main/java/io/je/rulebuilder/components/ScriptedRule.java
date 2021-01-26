@@ -1,17 +1,20 @@
 package io.je.rulebuilder.components;
 
+import java.util.List;
+
 import io.je.utilities.files.JEFileUtils;
 import io.je.utilities.logger.JELogger;
+import io.je.utilities.runtimeobject.ClassDefinition;
 
 public class ScriptedRule extends  JERule {
 
 	String script ;
 
-	
+	List<ClassDefinition> topics;
 	
 
-	public ScriptedRule(String jobEngineProjectID , String jobEngineElementID, String script) {
-		super(jobEngineElementID, jobEngineProjectID);
+	public ScriptedRule(String jobEngineProjectID , String jobEngineElementID, String script, String ruleName) {
+		super(jobEngineElementID, jobEngineProjectID,ruleName);
 		this.script = script;
 	}
 
@@ -36,6 +39,22 @@ public class ScriptedRule extends  JERule {
 		return fileName;
 		
 		
+	}
+
+
+
+
+
+	public List<ClassDefinition> getTopics() {
+		return topics;
+	}
+
+
+
+
+
+	public void setTopics(List<ClassDefinition> topics) {
+		this.topics = topics;
 	}
 
 

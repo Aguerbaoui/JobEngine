@@ -7,6 +7,9 @@ import io.je.project.services.ProjectService;
 import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.constants.Errors;
 import io.je.utilities.constants.ResponseMessages;
+import io.je.utilities.exceptions.AddClassException;
+import io.je.utilities.exceptions.ClassLoadException;
+import io.je.utilities.exceptions.DataDefinitionUnreachableException;
 import io.je.utilities.exceptions.JERunnerUnreachableException;
 import io.je.utilities.exceptions.ProjectNotFoundException;
 import io.je.utilities.exceptions.ProjectRunException;
@@ -61,10 +64,11 @@ public class ProjectController {
 		try {
 			projectService.buildAll(projectId);
 		} catch (ProjectNotFoundException | WorkflowNotFoundException | RuleBuildFailedException
-				| JERunnerUnreachableException e) {
+				| JERunnerUnreachableException | DataDefinitionUnreachableException | AddClassException | ClassLoadException  e) {
 			return ResponseEntity.badRequest().body(new JEResponse(e.getCode(), e.getMessage()));
 
 		} catch (Exception e) {
+			e.printStackTrace();
 			JELogger.info(ProjectController.class, e.getMessage());
 			return ResponseEntity.badRequest().body(new JEResponse(ResponseCodes.UNKNOWN_ERROR, Errors.uknownError));
 		}
@@ -93,7 +97,7 @@ public class ProjectController {
 	}
 	
 	
-	/* Run project */
+	/* Stop project */
 	@PostMapping(value = "/stopProject/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> stopProject(@PathVariable String projectId) {
 		

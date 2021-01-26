@@ -16,6 +16,12 @@ public class BlockModel {
 
     @JsonProperty(AttributesMapping.BLOCKID)
     String blockId;
+    
+    @JsonProperty(AttributesMapping.BLOCKNAME)
+    String blockName;
+    
+    @JsonProperty(AttributesMapping.DESC)
+    String description;
 
     @JsonProperty(AttributesMapping.TIMEPERSISTENCEVALUE)
     int timePersistenceValue;
@@ -27,10 +33,10 @@ public class BlockModel {
 	int operationId;
     
     @JsonProperty(AttributesMapping.INPUTBLOCK)
-	ArrayList<String> inputBlocksIds;
+	ArrayList<String> inputBlocksIds = new ArrayList<String>();
     
     @JsonProperty(AttributesMapping.OUTPUTBLOCK)
-   	ArrayList<String> outputBlocksIds;
+   	ArrayList<String> outputBlocksIds = new ArrayList<>();
     
     @JsonProperty(AttributesMapping.BLOCKCONFIG)
 	BlockConfigurationModel blockConfiguration;
@@ -40,6 +46,32 @@ public class BlockModel {
 	private BlockModel() {
 		//TODO: throw exception if any of the ids is null
 	}
+
+	
+	
+	public String getBlockName() {
+		return blockName;
+	}
+
+
+
+	public void setBlockName(String blockName) {
+		this.blockName = blockName;
+	}
+
+
+
+	public String getDescription() {
+		return description;
+	}
+
+
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+
 
 	public String getProjectId() {
 		return projectId;
