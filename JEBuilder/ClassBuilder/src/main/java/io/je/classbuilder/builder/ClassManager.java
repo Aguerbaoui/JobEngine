@@ -13,6 +13,7 @@ import com.squareup.okhttp.Response;
 import io.je.classbuilder.entity.ClassType;
 import io.je.classbuilder.entity.JEClass;
 import io.je.classbuilder.models.ClassModel;
+import io.je.utilities.apis.DataDefinitionApiHandler;
 import io.je.utilities.classloader.JEClassLoader;
 import io.je.utilities.constants.ClassBuilderConfig;
 import io.je.utilities.constants.ClassBuilderErrors;
@@ -90,7 +91,7 @@ public class ClassManager {
 		}
 		builtClasses.put(classId, loadedClass);
 		classNames.put(classModel.getName(), classModel.get_id());
-		JEClass jeClass = new JEClass(classId, classModel.getName(), filePath, classType);
+		JEClass jeClass = new JEClass(workspaceId,classId, classModel.getName(), filePath, classType);
 		jeClasses.put(classModel.get_id(), jeClass);
 		classes.add(jeClass);
 		return classes;
@@ -103,28 +104,10 @@ public class ClassManager {
 	public static ClassModel loadClassDefinition(String workspaceId, String classId)
 			throws IOException, DataDefinitionUnreachableException, ClassLoadException {
 		ObjectMapper objectMapper = new ObjectMapper();
-		String requestURL = JEGlobalconfig.CLASS_DEFINITION_API + "/Class/" + classId + "/workspace/" + workspaceId;
-		JELogger.info(ClassManager.class, requestURL);
-		Response resp = null;
-		try {
-			resp = Network.makeGetNetworkCallWithResponse(requestURL);
-
-		} catch (ConnectException e) {
-			throw new DataDefinitionUnreachableException(ClassBuilderErrors.dataDefinitonUnreachable);
-		}
-		if (resp == null || resp.code() != 200) {
-			throw new DataDefinitionUnreachableException(ClassBuilderErrors.dataDefinitonUnreachable);
-
-		}
-		if (resp.code() == 204) {
-			throw new ClassLoadException(ClassBuilderErrors.classNotFound + "[id = "+ classId+ "]");
-		}
-		String resp1 = resp.body().string();
-
-		//JELogger.info(ClassManager.class, " loaded definition : " + resp1);
-
+	
+		String response = DataDefinitionApiHandler.loadClassDefinition(workspaceId, classId);
 		// create class model from response
-		ClassModel jeClass = objectMapper.readValue(resp1, ClassModel.class);
+		ClassModel jeClass = objectMapper.readValue(response, ClassModel.class);
 
 		// set workspace id
 		jeClass.setWorkspaceId(workspaceId);

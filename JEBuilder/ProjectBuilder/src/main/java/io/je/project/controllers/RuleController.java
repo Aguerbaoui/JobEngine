@@ -17,8 +17,11 @@ import io.je.rulebuilder.models.RuleModel;
 import io.je.rulebuilder.models.ScriptRuleModel;
 import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.constants.ResponseMessages;
+import io.je.utilities.exceptions.AddClassException;
 import io.je.utilities.exceptions.AddRuleBlockException;
-import io.je.utilities.exceptions.JERunnerUnreachableException;
+import io.je.utilities.exceptions.ClassLoadException;
+import io.je.utilities.exceptions.DataDefinitionUnreachableException;
+import io.je.utilities.exceptions.JERunnerErrorException;
 import io.je.utilities.exceptions.ProjectNotFoundException;
 import io.je.utilities.exceptions.RuleAlreadyExistsException;
 import io.je.utilities.exceptions.RuleBlockNotFoundException;
@@ -224,10 +227,15 @@ public class RuleController {
 			blockModel.setProjectId(projectId);
 			ruleService.addBlockToRule(blockModel);
 			projectService.saveProject(ProjectService.getProjectById(projectId));
-		} catch (AddRuleBlockException | ProjectNotFoundException | RuleNotFoundException e) {
+		} catch (AddRuleBlockException | ProjectNotFoundException | RuleNotFoundException | DataDefinitionUnreachableException | JERunnerErrorException | AddClassException | ClassLoadException  e) {
 			e.printStackTrace();
 			JELogger.error(RuleController.class, e.getMessage());
 			return ResponseEntity.badRequest().body(new JEResponse(e.getCode(), e.getMessage()));
+		} catch (IOException e)
+		{
+			JELogger.error(RuleController.class, e.getMessage());
+            return ResponseEntity.badRequest().body(new JEResponse(ResponseCodes.UNKNOWN_ERROR, e.getMessage()));
+
 		}
 
 		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.RuleUpdateSucceeded));
@@ -280,7 +288,7 @@ public class RuleController {
 
 		try {
 			ruleService.buildRule(projectId,ruleId);
-		} catch (ProjectNotFoundException | RuleNotFoundException | RuleBuildFailedException | JERunnerUnreachableException  e) {
+		} catch (ProjectNotFoundException | RuleNotFoundException | RuleBuildFailedException | JERunnerErrorException  e) {
 			//e.printStackTrace();
 			JELogger.error(RuleController.class, e.getMessage());
 			return ResponseEntity.badRequest().body(new JEResponse(e.getCode(), e.getMessage()));

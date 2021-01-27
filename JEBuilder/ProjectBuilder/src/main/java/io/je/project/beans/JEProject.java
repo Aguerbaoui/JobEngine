@@ -11,7 +11,7 @@ import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.constants.RuleBuilderErrors;
 import io.je.utilities.exceptions.AddRuleBlockException;
 import io.je.utilities.exceptions.InvalidSequenceFlowException;
-import io.je.utilities.exceptions.JERunnerUnreachableException;
+import io.je.utilities.exceptions.JERunnerErrorException;
 import io.je.utilities.exceptions.ProjectRunException;
 import io.je.utilities.exceptions.RuleAlreadyExistsException;
 import io.je.utilities.exceptions.RuleBlockNotFoundException;

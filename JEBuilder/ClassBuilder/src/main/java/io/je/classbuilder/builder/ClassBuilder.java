@@ -165,7 +165,8 @@ public class ClassBuilder {
 		// attributes
 		if (classModel.getAttributes() != null) {
 			for (FieldModel field : classModel.getAttributes()) {
-				newClass.addField(generateField(field));
+				//TODO: all attributes are public because the data def rest api doesn't provide the attribute's modifier
+				newClass.addField(generateField(field).addModifier(Modifier.PUBLIC));
 				String attributeName = field.getName();
 				String capitalizedAttributeName = JEStringUtils.capitalize(attributeName);
 				Class<?> attributeType = getType(field.getType());

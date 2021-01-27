@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map.Entry;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import io.je.project.beans.JEProject;
@@ -18,8 +19,11 @@ import io.je.rulebuilder.models.RuleModel;
 import io.je.rulebuilder.models.ScriptRuleModel;
 import io.je.utilities.constants.Errors;
 import io.je.utilities.constants.RuleBuilderErrors;
+import io.je.utilities.exceptions.AddClassException;
 import io.je.utilities.exceptions.AddRuleBlockException;
-import io.je.utilities.exceptions.JERunnerUnreachableException;
+import io.je.utilities.exceptions.ClassLoadException;
+import io.je.utilities.exceptions.DataDefinitionUnreachableException;
+import io.je.utilities.exceptions.JERunnerErrorException;
 import io.je.utilities.exceptions.ProjectNotFoundException;
 import io.je.utilities.exceptions.RuleAlreadyExistsException;
 import io.je.utilities.exceptions.RuleBlockNotFoundException;
@@ -34,6 +38,9 @@ import io.je.utilities.runtimeobject.ClassDefinition;
  */
 @Service
 public class RuleService {
+	
+	@Autowired
+	ClassService classService;
 
 	/*
 	 * creates a new rule from the Rule Model
@@ -99,7 +106,7 @@ public class RuleService {
 	/*
 	 * update rule : add block to rule
 	 */
-	public void addBlockToRule(BlockModel blockModel) throws AddRuleBlockException, ProjectNotFoundException, RuleNotFoundException {
+	public void addBlockToRule(BlockModel blockModel) throws AddRuleBlockException, ProjectNotFoundException, RuleNotFoundException, DataDefinitionUnreachableException, JERunnerErrorException, AddClassException, ClassLoadException, IOException {
 
 		
 		if (blockModel.getProjectId() == null) {
@@ -118,6 +125,11 @@ public class RuleService {
 			throw new RuleNotFoundException( RuleBuilderErrors.RuleNotFound );
 		}
 		project.addBlockToRule(blockModel);
+		if(blockModel.getOperationId()==4002)
+		{
+			//TODO: add null tests
+			classService.addClass(blockModel.getBlockConfiguration().getWorkspaceId(), blockModel.getBlockConfiguration().getClassId());
+		}
 	}
 	
 	
@@ -165,7 +177,7 @@ public class RuleService {
 	/*
 	 * build rule : create drl + check for compilation errors
 	 */
-	public void buildRule(String projectId, String ruleId) throws ProjectNotFoundException, RuleNotFoundException, RuleBuildFailedException, JERunnerUnreachableException, IOException
+	public void buildRule(String projectId, String ruleId) throws ProjectNotFoundException, RuleNotFoundException, RuleBuildFailedException, JERunnerErrorException, IOException
 	{
 		JEProject project = ProjectService.getProjectById(projectId);
 		if (project == null) {
@@ -185,21 +197,22 @@ public class RuleService {
 	 * TODO: handle the case where some rules are built while others aren't 
 	 * returns list of class ids required by these rules
 	 */
-	public List<ClassDefinition> buildRules(String projectId) throws ProjectNotFoundException, RuleBuildFailedException, JERunnerUnreachableException, IOException
+	public void buildRules(String projectId) throws ProjectNotFoundException, RuleBuildFailedException, JERunnerErrorException, IOException
 	{
 		JEProject project = ProjectService.getProjectById(projectId);
 		if (project == null) {
 			throw new ProjectNotFoundException( Errors.projectNotFound);
 		}
-		List<ClassDefinition> classIds = new ArrayList<>();
+		//List<ClassDefinition> classIds = new ArrayList<>();
 			for (Entry<String, JERule> entry : project.getRules().entrySet()) {
 			    String key = entry.getKey();
 			    RuleBuilder.buildRule(project.getRules().get(key), project.getConfigurationPath());
-			    classIds.addAll(project.getRules().get(key).getTopics());
+			    project.getRules().get(key).setBuilt(true);
+			   // classIds.addAll(project.getRules().get(key).getTopics());
 			}
 
 
-		return classIds;
+		//return classIds;
 	}
 	
 

@@ -57,7 +57,7 @@ public class JEClassLoader {
 					fileManager.getJavaFileObjectsFromFiles(Arrays.asList(sourceFile))).call();
 			fileManager.close();
 		}catch (Exception e) {
-			//TODO: move msg to error clas
+			//TODO: move msg to error class
 			e.printStackTrace();
 			JELogger.info(JEClassLoader.class, e.getMessage());
 			throw new ClassLoadException("failed to load class");

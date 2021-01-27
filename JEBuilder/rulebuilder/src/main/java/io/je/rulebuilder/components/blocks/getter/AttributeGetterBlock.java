@@ -20,7 +20,6 @@ public class AttributeGetterBlock extends GetterBlock {
 		super();
 	}
 
-	
 	@Override
 	public String toString() {
 		return "AttributeGetterBlock [classPath=" + classPath + ", attributeName=" + attributeName + ", ruleId="
@@ -29,25 +28,27 @@ public class AttributeGetterBlock extends GetterBlock {
 				+ ", jeObjectLastUpdate=" + jeObjectLastUpdate + "]";
 	}
 
-
 	@Override
 	public String getExpression() {
 		StringBuilder expression = new StringBuilder();
-		expression.append("$" +blockName.replaceAll("\\s+","")+ " : "+   classPath + " ( $" +attributeName+ " : " + attributeName + " )" ); //TODO: nested attributes
+		expression.append("$" + blockName.replaceAll("\\s+", "") + " : " + classPath + " ( $" + getFinalAttributeName() + " : "
+				+ attributeName + " )"); // TODO: nested attributes
 		return expression.toString();
 	}
 
 	@Override
 	public String getAsFirstOperandExpression() {
 		StringBuilder expression = new StringBuilder();
-		expression.append(  "$" +blockName.replaceAll("\\s+","")+ " : "+classPath + " ( " + attributeName +" " + Keywords.toBeReplaced + " )" ); //TODO: nested attributes
+		expression.append("$" + blockName.replaceAll("\\s+", "") + " : " + classPath + " ( " + getFinalAttributeName() + " "
+				+ Keywords.toBeReplaced + " )"); // TODO: nested attributes
 		return expression.toString();
 	}
 
 	@Override
 	public String getAsSecondOperandExpression() {
 		StringBuilder expression = new StringBuilder();
-		expression.append("$" +blockName.replaceAll("\\s+","")+ " : "+ classPath + " ( "  + Keywords.toBeReplaced + attributeName + " )" ); //TODO: nested attributes
+		expression.append("$" + blockName.replaceAll("\\s+", "") + " : " + classPath + " ( " + Keywords.toBeReplaced
+				+ getFinalAttributeName() + " )"); // TODO: nested attributes
 		return expression.toString();
 	}
 
@@ -73,6 +74,20 @@ public class AttributeGetterBlock extends GetterBlock {
 		this.attributeName = attributeName;
 	}
 
-	
-	
+	private String getFinalAttributeName() {
+		String s = "";
+		String str = attributeName;
+		String[] a = str.split("\\.", 5);
+
+		for (int i = 0; i < a.length - 1; i++) {
+			a[i] = a[i].substring(0, 1).toUpperCase() + a[i].substring(1);
+			a[i] = "get" + a[i] + "()";
+			s = s + a[i] + ".";
+		}
+		a[a.length - 1] = a[a.length - 1].substring(0, 1).toUpperCase() + a[a.length - 1].substring(1);
+		a[a.length - 1] = "get" + a[a.length - 1] + "()";
+		s = s + a[a.length - 1];
+		return s;
+	}
+
 }
