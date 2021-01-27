@@ -15,7 +15,7 @@ import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.exceptions.AddClassException;
 import io.je.utilities.exceptions.ClassLoadException;
 import io.je.utilities.exceptions.DataDefinitionUnreachableException;
-import io.je.utilities.exceptions.JERunnerUnreachableException;
+import io.je.utilities.exceptions.JERunnerErrorException;
 import io.je.utilities.network.JEResponse;
 import io.je.utilities.runtimeobject.ClassDefinition;
 
@@ -31,7 +31,7 @@ public class ClassService {
 	
 	
 	
-	public void addClasses(List<ClassDefinition> classDefinitions) throws DataDefinitionUnreachableException, JERunnerUnreachableException, AddClassException, ClassLoadException, IOException
+	public void addClasses(List<ClassDefinition> classDefinitions) throws DataDefinitionUnreachableException, JERunnerErrorException, AddClassException, ClassLoadException, IOException
 	{
 		for (ClassDefinition clazz : classDefinitions)
 		{
@@ -43,7 +43,7 @@ public class ClassService {
 	 * add/update class
 	 */
 	public void addClass(String workspaceId, String classId)
-			throws IOException, DataDefinitionUnreachableException, JERunnerUnreachableException, AddClassException, ClassLoadException {
+			throws IOException, DataDefinitionUnreachableException, JERunnerErrorException, AddClassException, ClassLoadException {
 
 		List<JEClass> builtClasses = ClassManager.buildClass(workspaceId, classId);
 		for (JEClass _class : builtClasses) {
@@ -58,7 +58,7 @@ public class ClassService {
 	/*
 	 * send class to je runner to be loaded there
 	 */
-	private void addClassToJeRunner(JEClass clazz) throws IOException, AddClassException, JERunnerUnreachableException {
+	private void addClassToJeRunner(JEClass clazz) throws IOException, AddClassException, JERunnerErrorException {
 				HashMap<String, String> classMap = new HashMap<>();
 				classMap.put("className", clazz.getClassName());
 				classMap.put("classPath", clazz.getClassPath());
@@ -68,6 +68,18 @@ public class ClassService {
 				{
 					throw new AddClassException(ClassBuilderErrors.classLoadFailed);
 				}
+		
+	}
+
+	public void loadAllClasses() throws DataDefinitionUnreachableException, JERunnerErrorException, AddClassException, ClassLoadException, IOException {
+		List<JEClass> classes = classRepository.findAll();
+		if (classes != null)
+		{
+			for(JEClass clazz : classes)
+			{
+				addClass(clazz.getWorkspaceId(),clazz.getClassId());
+			}
+		}
 		
 	}
 

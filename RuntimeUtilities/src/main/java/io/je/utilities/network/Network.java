@@ -18,7 +18,7 @@ public class Network {
     }
 
     
-    public static void makeNetworkCallWithJsonBody(HashMap<String, String> json, String url) throws IOException {
+    public static void makeNetworkCallWithJsonBody(Object json, String url) throws IOException {
         String jsonStr = "";
         try {
             jsonStr = new ObjectMapper().writeValueAsString(json);
@@ -51,7 +51,7 @@ public class Network {
 
     
     
-    public static Response makeNetworkCallWithJsonBodyWithResponse(HashMap<String, String> json, String url) throws IOException {
+    public static Response makeNetworkCallWithJsonBodyWithResponse(Object json, String url) throws IOException {
         String jsonStr = "";
         try {
             jsonStr = new ObjectMapper().writeValueAsString(json);

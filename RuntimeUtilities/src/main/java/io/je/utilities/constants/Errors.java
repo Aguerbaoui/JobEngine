@@ -17,6 +17,19 @@ public class Errors {
 
     public final static String DATA_LISTENER_NOT_FOUND = "Data listener not found";
     
+	public static final String DATA_DEFINITION_API_UNREACHABLE = "Data Definition Model Unreachable";
+	
+	public static final String DATA_DEFINITION_API_ERROR = "Data Definition Model Error";
+
+	public static final String JERUNNER_UNREACHABLE=  "JERunner Unreachable";
+
+	public static final String JERUNNER_ERROR=  "JERunner ERROR";
+
+	
+	public static final String DATA_DEFINITION_CLASS_NOT_FOUND = "No class with this Id was found";
+
+
+    
     public final static String PROJECT_RUNNING = "PROJECT ALREADY RUNNING";
     
 

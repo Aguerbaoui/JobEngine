@@ -145,6 +145,8 @@ public class ProjectContainer {
 	 */
 	public void fireRules() throws RulesNotFiredException, RuleBuildFailedException, ProjectAlreadyRunningException {
 
+		
+		JELogger.info(getClass(), "FIRING RULES : " + allRules.values());
 		// build project if not already built
 		if (buildStatus == BuildStatus.UNBUILT) {
 			buildProject();
@@ -157,15 +159,19 @@ public class ProjectContainer {
 		}
 
 		// fire rules
+		Thread t1 = null;
 		try {
 			if (kieSession == null) {
 				kieSession = kieBase.newKieSession();
 			}
+			//TODO: create runnable class and add variable to stop thread exec
 			Runnable runnable = () -> kieSession.fireUntilHalt();
-			new Thread(runnable).start();
+			 t1 = new Thread(runnable);
+			t1.start();
 			status = Status.RUNNING;
 
 		} catch (Exception e) {
+			if(t1!=null) {t1.stop();}
 			JELogger.error(ProjectContainer.class, RuleEngineErrors.failedToFireRules);
 			throw new RulesNotFiredException("");
 		}
@@ -551,7 +557,7 @@ public class ProjectContainer {
 					facts.put(fact.getJobEngineElementID(), kieSession.insert(fact));
 				}
 				
-				JELogger.debug(ProjectContainer.class, " inserting fact ");
+			//	JELogger.info(ProjectContainer.class, " inserting fact ");
 			} catch (Exception e) {
 				e.printStackTrace();
 				JELogger.error(ProjectContainer.class, " failed to insert fact into working memory [factId ="+ fact.getJobEngineElementID() + "]: " + e.getMessage());

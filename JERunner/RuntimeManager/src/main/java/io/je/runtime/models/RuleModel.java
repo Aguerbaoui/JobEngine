@@ -2,7 +2,7 @@ package io.je.runtime.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.je.ruleengine.enumerations.RuleFormat;
-import io.je.utilities.apis.JERunnerRuleMapping;
+import io.je.utilities.mapping.JERunnerRuleMapping;
 
 import java.util.ArrayList;
 import java.util.List;

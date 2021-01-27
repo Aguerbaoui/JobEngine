@@ -1,4 +1,4 @@
-package io.je.utilities.apis;
+package io.je.utilities.mapping;
 
 public class JERunnerRuleMapping {
 

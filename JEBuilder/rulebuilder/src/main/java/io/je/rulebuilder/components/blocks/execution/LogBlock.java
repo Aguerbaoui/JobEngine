@@ -21,7 +21,7 @@ public class LogBlock extends ExecutionBlock {
 
 	@Override
 	public String getExpression() {
-		return "JELogger.info("+getClass()+",\" "+logMessage+"\")";
+		return "JELogger.info(" +"\" "+logMessage+"\");";
 	}
 
 

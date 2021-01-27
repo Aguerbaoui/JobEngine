@@ -10,7 +10,7 @@ import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.exceptions.AddClassException;
 import io.je.utilities.exceptions.ClassLoadException;
 import io.je.utilities.exceptions.DataDefinitionUnreachableException;
-import io.je.utilities.exceptions.JERunnerUnreachableException;
+import io.je.utilities.exceptions.JERunnerErrorException;
 import io.je.utilities.exceptions.ProjectNotFoundException;
 import io.je.utilities.exceptions.ProjectRunException;
 import io.je.utilities.exceptions.RuleAlreadyExistsException;
@@ -43,8 +43,7 @@ public class ProjectService {
 	@Autowired
 	RuleService ruleService;
 
-	@Autowired
-	ClassService classService;
+	
 
 	// TODO add repo jpa save later
 	private static HashMap<String, JEProject> loadedProjects = new HashMap<String, JEProject>();
@@ -137,18 +136,19 @@ public class ProjectService {
 	 */
 	public void buildAll(String projectId)
 			throws WorkflowNotFoundException, ProjectNotFoundException, IOException, RuleBuildFailedException,
-			JERunnerUnreachableException, DataDefinitionUnreachableException, AddClassException, ClassLoadException {
+			JERunnerErrorException, DataDefinitionUnreachableException, AddClassException, ClassLoadException {
 		// TODO add build all rules
-		List<ClassDefinition> classes = ruleService.buildRules(projectId);
+		ruleService.buildRules(projectId);
 		workflowService.buildWorkflows(projectId);
-		classService.addClasses(classes);
+		loadedProjects.get(projectId).setBuilt(true);
+
 	}
 
 	/*
 	 * run project => send request to jeRunner to run project
 	 */
 	public void runAll(String projectId)
-			throws IOException, ProjectNotFoundException, JERunnerUnreachableException, ProjectRunException {
+			throws IOException, ProjectNotFoundException, JERunnerErrorException, ProjectRunException {
 		if (loadedProjects.containsKey(projectId)) {
 			JEProject project = loadedProjects.get(projectId);
 			JEResponse jeRunnerResp = null;
@@ -177,7 +177,7 @@ public class ProjectService {
 	}
 
 	public void stopProject(String projectId)
-			throws ProjectNotFoundException, JERunnerUnreachableException, IOException, ProjectRunException {
+			throws ProjectNotFoundException, JERunnerErrorException, IOException, ProjectRunException {
 		if (!loadedProjects.containsKey(projectId)) {
 			throw new ProjectNotFoundException(Errors.projectNotFound);
 		}
