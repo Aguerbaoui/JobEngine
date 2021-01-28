@@ -118,6 +118,72 @@ public class ModelBuilder {
     }
 
     /*
+     * Create an event based gateway and returns it
+     * */
+    public static EventGateway createEventGateway(String id, String name, boolean exclusive, List<SequenceFlow> inFlows, List<SequenceFlow> outFlows) {
+        EventGateway gateway = new EventGateway();
+        gateway.setName(name);
+        gateway.setId(id);
+        gateway.setExclusive(exclusive);
+        gateway.setIncomingFlows(inFlows);
+        gateway.setOutgoingFlows(outFlows);
+        return gateway;
+    }
+
+    /*
+     * Create an inclusive gateway and returns it
+     * */
+    public static InclusiveGateway createInclusiveGateway(String id, String name, boolean exclusive, List<SequenceFlow> inFlows, List<SequenceFlow> outFlows) {
+        InclusiveGateway gateway = new InclusiveGateway();
+        gateway.setName(name);
+        gateway.setId(id);
+        gateway.setExclusive(exclusive);
+        gateway.setIncomingFlows(inFlows);
+        gateway.setOutgoingFlows(outFlows);
+        return gateway;
+    }
+
+    /*
+     * Create a date timer event and returns it
+     * */
+    public static ThrowEvent createDateTimerEvent(String id, String name, String timeDate) {
+        ThrowEvent event = new ThrowEvent();
+        event.setName(name);
+        event.setId(id);
+        TimerEventDefinition timerEventDefinition = new TimerEventDefinition();
+        timerEventDefinition.setTimeDate(timeDate);
+        event.addEventDefinition(timerEventDefinition);
+        return event;
+    }
+
+    /*
+     * Create a cycle timer event and returns it
+     * */
+    public static ThrowEvent createCycleTimerEvent(String id, String name, String timeCycle, String endDate) {
+        ThrowEvent event = new ThrowEvent();
+        event.setName(name);
+        event.setId(id);
+        TimerEventDefinition timerEventDefinition = new TimerEventDefinition();
+        timerEventDefinition.setTimeCycle(timeCycle);
+        timerEventDefinition.setEndDate(endDate);
+        event.addEventDefinition(timerEventDefinition);
+        return event;
+    }
+
+    /*
+     * Create a cycle timer event and returns it
+     * */
+    public static ThrowEvent createDurationTimerEvent(String id, String name, String timeDuration) {
+        ThrowEvent event = new ThrowEvent();
+        event.setName(name);
+        event.setId(id);
+        TimerEventDefinition timerEventDefinition = new TimerEventDefinition();
+        timerEventDefinition.setTimeDuration(timeDuration);
+        event.addEventDefinition(timerEventDefinition);
+        return event;
+    }
+
+    /*
      * Create a parallel gateway and return it
      * */
     public static ParallelGateway createParallelGateway(String id, String name, List<SequenceFlow> inFlows, List<SequenceFlow> outFlows) {

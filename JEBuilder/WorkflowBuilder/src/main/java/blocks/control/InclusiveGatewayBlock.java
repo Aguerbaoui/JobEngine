@@ -2,7 +2,7 @@ package blocks.control;
 
 import blocks.WorkflowBlock;
 
-public class EventGatewayBlock extends WorkflowBlock {
+public class InclusiveGatewayBlock extends WorkflowBlock {
 
     boolean exclusive;
 
@@ -13,5 +13,4 @@ public class EventGatewayBlock extends WorkflowBlock {
     public void setExclusive(boolean exclusive) {
         this.exclusive = exclusive;
     }
-
 }

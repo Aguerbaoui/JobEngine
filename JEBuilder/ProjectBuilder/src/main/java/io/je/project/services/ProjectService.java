@@ -191,8 +191,19 @@ public class ProjectService {
 	}
 
 	/* Return all currently available workflows in project */
-	public HashMap<String, JEWorkflow> getAllWorkflows(String projectId) {
-		return loadedProjects.get(projectId).getWorkflows();
+	public HashMap<String, JEWorkflow> getAllWorkflows(String projectId) throws ProjectNotFoundException{
+		if (loadedProjects.containsKey(projectId)) {
+			return loadedProjects.get(projectId).getWorkflows();
+		}
+		else throw new ProjectNotFoundException(Errors.projectNotFound);
+	}
+
+	/* Return a workflow by id */
+	public JEWorkflow getWorkflowById(String projectId, String key) throws ProjectNotFoundException{
+		if (loadedProjects.containsKey(projectId)) {
+			return loadedProjects.get(projectId).getWorkflows().get(key);
+		}
+		else throw new ProjectNotFoundException(Errors.projectNotFound);
 	}
 
 	/*
