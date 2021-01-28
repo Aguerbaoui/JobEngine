@@ -9,9 +9,9 @@ public class ProcessListener implements ExecutionListener {
 
     public void notify(DelegateExecution execution) {
         JELogger.info(ProcessListener.class, "Process " + execution.getEventName());
-        if(execution.getEventName().equalsIgnoreCase("end")) {
+       /* if(execution.getEventName().equalsIgnoreCase("end")) {
             ProcessManager.setRunning(execution.getProcessDefinitionId(), false);
-        }
+        }*/
     }
 
 }

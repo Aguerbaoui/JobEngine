@@ -41,7 +41,7 @@ public class Network {
     }
     
     public static Response makeGetNetworkCallWithResponse(String url) throws IOException {
-
+//http://127.0.0.1:8081/project/runProject/0001
         Request request = new Request.Builder().url(url).get().build();
         Call call = client.newCall(request);
         JELogger.info(Network.class, url);
@@ -52,6 +52,21 @@ public class Network {
     
     
     public static Response makeNetworkCallWithJsonBodyWithResponse(Object json, String url) throws IOException {
+        String jsonStr = "";
+        try {
+            jsonStr = new ObjectMapper().writeValueAsString(json);
+
+        } catch (JsonProcessingException e) {
+            JELogger.info(Network.class, e.getMessage());
+        }
+        JELogger.info(Network.class, jsonStr);
+        RequestBody body = RequestBody.create(MediaType.parse("application/json"), jsonStr);
+        Request request = new Request.Builder().url(url).post(body).build();
+        Call call = client.newCall(request);
+        return call.execute();
+    }
+
+    public static Response makeNetworkCallWithJsonObjectBodyWithResponse(Object json, String url) throws IOException {
         String jsonStr = "";
         try {
             jsonStr = new ObjectMapper().writeValueAsString(json);

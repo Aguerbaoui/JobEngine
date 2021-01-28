@@ -1,9 +1,13 @@
 package io.je.runtime.services;
 
-import io.je.runtime.models.WorkflowModel;
+import io.je.runtime.events.EventManager;
 import io.je.runtime.workflow.WorkflowEngineHandler;
+import io.je.utilities.beans.EventTriggeredCallback;
 import io.je.utilities.beans.JEData;
+import io.je.utilities.beans.JEEvent;
 import io.je.utilities.exceptions.*;
+import io.je.utilities.models.EventModel;
+import io.je.utilities.models.WorkflowModel;
 import org.springframework.stereotype.Service;
 
 import io.je.runtime.data.DataListener;
@@ -43,6 +47,8 @@ public class RuntimeDispatcher {
 	//
 	static Map<String, Set<String>> projectsByTopic = new HashMap<>(); // key : topic, value: list of projects																							// of projects
 	static Map<String, Boolean> projectStatus = new HashMap<>(); //key: project id, value : true if project is running, false if not
+
+
 
 	///////////////////////////////// PROJECT
 	// build project
@@ -85,7 +91,7 @@ public class RuntimeDispatcher {
 
 		}
 
-		DataListener.startListening(topics);
+		//DataListener.startListening(topics);
 		RuleEngineHandler.runRuleEngineProject(projectId);
 		WorkflowEngineHandler.runAllWorkflows(projectId);
 	}
@@ -120,7 +126,20 @@ public class RuntimeDispatcher {
 	// add rule
 	public void addRule(RuleModel ruleModel) throws RuleAlreadyExistsException, RuleCompilationException,
 			RuleNotAddedException, JEFileNotFoundException, RuleFormatNotValidException {
+
+
+
 		RuleEngineHandler.addRule(ruleModel);
+		//TODO remove this after testing, temporary should be relocated to ruleModel
+		ArrayList<EventModel> l = new ArrayList<>();
+		EventModel m = new EventModel();
+		m.setProjectId(ruleModel.getProjectId());
+		m.setReference("msgStart");
+		m.setName("msgStart");
+		m.setEventId("testId");
+		m.setType(JEEvent.START_WORKFLOW);
+		l.add(m);
+		registerEvents("1212", ruleModel.getProjectId(), l);
 
 	}
 
@@ -129,6 +148,16 @@ public class RuntimeDispatcher {
 			throws RuleCompilationException, JEFileNotFoundException, RuleFormatNotValidException {
 
 		RuleEngineHandler.updateRule(ruleModel);
+		//TODO remove this after testing, temporary should be relocated to ruleModel
+		ArrayList<EventModel> l = new ArrayList<>();
+		EventModel m = new EventModel();
+		m.setProjectId(ruleModel.getProjectId());
+		m.setReference("msgStart");
+		m.setName("msgStart");
+		m.setEventId("testId");
+		m.setType(JEEvent.START_WORKFLOW);
+		l.add(m);
+		registerEvents("1212", ruleModel.getProjectId(), l);
 
 	}
 
@@ -148,30 +177,54 @@ public class RuntimeDispatcher {
 	 * Add a workflow to the engine
 	 */
 	public void addWorkflow(WorkflowModel wf) {
-		WorkflowEngineHandler.addProcess(wf.getKey(), wf.getName(), wf.getPath(), wf.getProjectId());
+		WorkflowEngineHandler.addProcess(wf.getKey(), wf.getName(), wf.getPath(), wf.getProjectId(), wf.isTriggeredByEvent());
 	}
 
 	/*
 	 * Launch a workflow without variables
 	 */
-	public void launchProcessWithoutVariables(String key) throws WorkflowNotFoundException {
-		WorkflowEngineHandler.launchProcessWithoutVariables(key);
+	public void launchProcessWithoutVariables(String projectId, String key) throws WorkflowNotFoundException {
+		try {
+			WorkflowEngineHandler.launchProcessWithoutVariables(projectId, key);
+		} catch (WorkflowAlreadyRunningException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/*
 	 * Run all workflows deployed in the engine without project specification
 	 */
-	public void runAllWorkflows() throws WorkflowNotFoundException {
-		WorkflowEngineHandler.runAllWorkflows();
+	public void runAllWorkflows(String projectId) throws WorkflowNotFoundException {
+		WorkflowEngineHandler.runAllWorkflows(projectId);
 	}
 
 	/*
 	 * Deploy a workflow to the engine
 	 */
-	public void buildWorkflow(String key) {
-		WorkflowEngineHandler.deployBPMN(key);
+	public void buildWorkflow(String projectId, String key) {
+		WorkflowEngineHandler.deployBPMN(projectId, key);
 	}
 
+	/*
+	*  Start workflow with message event
+	* */
+	/*public static void startProcessInstanceByMessage(String messageEvent) {
+		EventManager.startProcessInstanceByMessage(messageEvent);
+	}*/
+
+	/*
+	 *  Throw message event for workflow execution
+	 * */
+	/*public static void throwMessageEventInWorkflow(String messageEvent) {
+		EventManager.throwMessageEventInWorkflow(messageEvent);
+	}*/
+
+	/*
+	* Throw signal event for workflow execution
+	* */
+	/*public static void throwSignalEventInWorkflow(String messageEvent) {
+		EventManager.throwSignalEventInWorkflow(messageEvent);
+	}*/
 	///////////////////////////// Classes
 	// add class
 	public void addClass(ClassModel classModel) throws ClassLoadException {
@@ -215,6 +268,26 @@ public class RuntimeDispatcher {
 				}
 				
 			}
+		}
+	}
+
+	public void triggerEvent(String projectId, String id) {
+		EventManager.triggerEvent(projectId, id);
+	}
+
+
+	public void registerEvents(String id, String projectId, ArrayList<EventModel> events) {
+		for(EventModel event: events) {
+			JEEvent e = new JEEvent();
+			e.setName(event.getName());
+			e.setTriggeredById(id);
+			e.setReference(event.getReference());
+			e.setJobEngineElementID(event.getEventId());
+			e.setJobEngineProjectID(projectId);
+			e.setType(event.getType());
+			e.setTriggeredCallback(eventId -> triggerEvent(projectId, event.getReference()));
+			//RuleEngineHandler.addRuleEvent(id, projectId, e);
+			EventManager.addEvent(projectId, e);
 		}
 	}
 }

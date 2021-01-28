@@ -1,8 +1,10 @@
 package io.je.ruleengine.models;
 
+import java.util.ArrayList;
 import java.util.Set;
 
 import io.je.ruleengine.enumerations.RuleFormat;
+import io.je.utilities.beans.JEEvent;
 import io.je.utilities.runtimeobject.JEObject;
 
 /*
@@ -20,6 +22,7 @@ public class Rule extends JEObject {
     //Rule file content
     String content;
 
+    ArrayList<JEEvent> events;
 
     public Rule(String jobEngineElementID, String jobEngineProjectID, String name, RuleFormat resourceType,
                 String path) {
@@ -76,7 +79,19 @@ public class Rule extends JEObject {
 
     }
 
+    public ArrayList<JEEvent> getEvents() {
+        return events;
+    }
 
+    public void setEvents(ArrayList<JEEvent> events) {
+        this.events = events;
+    }
 
+    public void addEvent(JEEvent e) {
+        if(events == null) {
+            events = new ArrayList<>();
+        }
+        events.add(e);
+    }
 }
 

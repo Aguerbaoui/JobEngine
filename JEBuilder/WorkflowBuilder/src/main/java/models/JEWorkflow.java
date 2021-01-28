@@ -2,6 +2,7 @@ package models;
 
 import blocks.WorkflowBlock;
 import blocks.basic.StartBlock;
+import io.je.utilities.beans.JEEvent;
 import io.je.utilities.constants.APIConstants;
 import io.je.utilities.constants.Errors;
 import io.je.utilities.exceptions.InvalidSequenceFlowException;
@@ -18,6 +19,11 @@ import java.util.HashMap;
 @Document(collection="JEWorkflow")
 public class JEWorkflow extends JEObject {
 
+    public final static String RUNNING = "RUNNING";
+
+    public final static String STOPPED = "STOPPED";
+
+    public final static String BUILDING = "BUILDING";
     /*
      * Workflow name
      */
@@ -42,6 +48,7 @@ public class JEWorkflow extends JEObject {
     * Current workflow status ( running, building, nothing)
     * */
     private String status;
+
     /*
      * List of all workflow blocks
      */
@@ -56,10 +63,16 @@ public class JEWorkflow extends JEObject {
     * User scripted bpmn
     * */
     private boolean isScript = false;
+
     /*
     * Bpmn script
     * */
     private String script;
+
+    /*
+    * True if the workflow can be triggered by an event
+    * */
+    private boolean triggeredByEvent;
 
     public String getScript() {
         return script;
@@ -76,6 +89,14 @@ public class JEWorkflow extends JEObject {
         super();
         allBlocks = new HashMap<String, WorkflowBlock>();
         needBuild = true;
+    }
+
+    public boolean isTriggeredByEvent() {
+        return triggeredByEvent;
+    }
+
+    public void setTriggeredByEvent(boolean triggeredByEvent) {
+        this.triggeredByEvent = triggeredByEvent;
     }
 
     public boolean isNeedBuild() {
@@ -172,6 +193,10 @@ public class JEWorkflow extends JEObject {
     public void addBlock(WorkflowBlock block) {
         if (block instanceof StartBlock) {
             workflowStartBlock = (StartBlock) block;
+            workflowStartBlock.setProcessed(false);
+            if(((StartBlock) block).getReference() != null) {
+                this.setTriggeredByEvent(true);
+            }
         }
         allBlocks.put(block.getJobEngineElementID(), block);
     }
@@ -233,5 +258,8 @@ public class JEWorkflow extends JEObject {
         for(WorkflowBlock block: allBlocks.values()) {
             block.setProcessed(false);
         }
+        workflowStartBlock.setProcessed(false);
     }
+
+
 }

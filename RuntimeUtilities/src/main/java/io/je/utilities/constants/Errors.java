@@ -31,6 +31,9 @@ public class Errors {
 
     
     public final static String PROJECT_RUNNING = "PROJECT ALREADY RUNNING";
-    
+
+    public final static String workflowAlreadyRunning = "Workflow ALREADY RUNNING";
+
+
 
 }

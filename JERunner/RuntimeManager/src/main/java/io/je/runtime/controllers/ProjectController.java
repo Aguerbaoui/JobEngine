@@ -83,6 +83,15 @@ public class ProjectController {
     }
 
     /*
+     * Add topics
+     * */
+    @GetMapping(value = "/triggerEvent/{projectId}/{eventId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> triggerEvent(@PathVariable String projectId, @PathVariable String eventId) {
+        dispatcher.triggerEvent(projectId, eventId);
+        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.TOPIC_ADDED));
+    }
+
+    /*
      * Initialize the project
      * */
   /*  @RequestMapping(value = "/initProject", method = RequestMethod.GET)

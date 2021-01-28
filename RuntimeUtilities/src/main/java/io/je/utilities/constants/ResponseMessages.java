@@ -20,6 +20,8 @@ public class ResponseMessages {
 	public static final String STOPPING_PROJECT = "Stopped project";
 
 	public static final String TOPIC_ADDED = "Added topics successfully";
+
+	public static final String EVENT_TRIGGERED = "Event triggered";
 	/*
 	 * Rules response messages
 	 */
