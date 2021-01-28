@@ -32,4 +32,13 @@ public class JEData extends JEObject {
     public void setTopic(String topic) {
         this.topic = topic;
     }
+
+	@Override
+	public String toString() {
+		return "JEData [data=" + data + ", topic=" + topic + "]";
+	}
+    
+    
+    
+    
 }

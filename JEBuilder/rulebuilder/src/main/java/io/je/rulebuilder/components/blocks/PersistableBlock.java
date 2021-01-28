@@ -15,12 +15,16 @@ public abstract class PersistableBlock extends ConditionBlock {
 	TimePersistenceUnit timePersistenceUnit;
 
 
-	public PersistableBlock(String jobEngineElementID, String jobEngineProjectID, String ruleId,
-			List<String> inputBlocks, List<String> outputBlocks, int timePersistenceValue,
+	public PersistableBlock(String jobEngineElementID, String jobEngineProjectID, String ruleId, String blockName,
+			String blockDescription, int timePersistenceValue,
 			TimePersistenceUnit timePersistenceUnit) {
-		super(jobEngineElementID, jobEngineProjectID, ruleId, inputBlocks, outputBlocks);
+		super(jobEngineElementID, jobEngineProjectID, ruleId, blockName, blockDescription);
 		this.timePersistenceValue = timePersistenceValue;
 		this.timePersistenceUnit = timePersistenceUnit;
+	}
+
+	public PersistableBlock() {
+		super();
 	}
 
 	public int getTimePersistenceValue() {

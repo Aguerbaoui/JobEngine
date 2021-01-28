@@ -255,12 +255,19 @@ public class RuntimeDispatcher {
 	 * add a topic 
 	 */
 	public void addTopics(String projectId, List<String> topics) {
-		for(String topic: topics) {
-			if(!projectsByTopic.containsKey(topic)) {
-				projectsByTopic.put(topic, new HashSet<>());				
+		if(topics != null)
+		{
+			for(String topic: topics) {
+				if(!projectsByTopic.containsKey(topic)) {
+					projectsByTopic.put(topic, new HashSet<>());				
+				}
+				if(!projectsByTopic.get(topic).contains(projectId))
+				{
+					projectsByTopic.get(topic).add(projectId);
+					DataListener.subscribeToTopic(topic);
+				}
+				
 			}
-			projectsByTopic.get(topic).add(projectId);
-			DataListener.subscribeToTopic(topic);
 		}
 	}
 

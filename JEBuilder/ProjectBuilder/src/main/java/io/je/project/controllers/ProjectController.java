@@ -57,10 +57,11 @@ public class ProjectController {
 		try {
 			projectService.buildAll(projectId);
 		} catch (ProjectNotFoundException | WorkflowNotFoundException | RuleBuildFailedException
-				| JERunnerUnreachableException e) {
+				| JERunnerErrorException | DataDefinitionUnreachableException | AddClassException | ClassLoadException  e) {
 			return ResponseEntity.badRequest().body(new JEResponse(e.getCode(), e.getMessage()));
 
 		} catch (Exception e) {
+			e.printStackTrace();
 			JELogger.info(ProjectController.class, e.getMessage());
 			return ResponseEntity.badRequest().body(new JEResponse(ResponseCodes.UNKNOWN_ERROR, Errors.uknownError));
 		}
@@ -74,7 +75,7 @@ public class ProjectController {
 		try {
 			try {
 				projectService.runAll(projectId);
-			} catch (JERunnerUnreachableException | ProjectRunException | ProjectNotFoundException e) {
+			} catch (JERunnerErrorException | ProjectRunException | ProjectNotFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
@@ -89,14 +90,14 @@ public class ProjectController {
 	}
 	
 	
-	/* Run project */
+	/* Stop project */
 	@PostMapping(value = "/stopProject/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> stopProject(@PathVariable String projectId) {
 		
 			
 				try {
 					projectService.stopProject(projectId);
-				} catch (ProjectNotFoundException | JERunnerUnreachableException | ProjectRunException
+				} catch (ProjectNotFoundException | JERunnerErrorException | ProjectRunException
 						e) {
 					e.printStackTrace();
 					JELogger.error(RuleController.class, e.getMessage());

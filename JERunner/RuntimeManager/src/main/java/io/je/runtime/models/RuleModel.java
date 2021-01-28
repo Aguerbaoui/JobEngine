@@ -2,7 +2,7 @@ package io.je.runtime.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.je.ruleengine.enumerations.RuleFormat;
-import io.je.runtime.config.RuleModelMapping;
+import io.je.utilities.mapping.JERunnerRuleMapping;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,24 +16,27 @@ import java.util.Set;
 public class RuleModel {
 
     //The project this rule belongs to
-    @JsonProperty(RuleModelMapping.PROJECT_ID)
+    @JsonProperty(JERunnerRuleMapping.PROJECT_ID)
     String projectId;
 
     //rule identifier
-    @JsonProperty(RuleModelMapping.RULE_NAME)
+    @JsonProperty(JERunnerRuleMapping.RULE_NAME)
     String ruleName;
     
   //rule identifier
-    @JsonProperty(RuleModelMapping.RULE_ID)
+    @JsonProperty(JERunnerRuleMapping.RULE_ID)
     String ruleId;
 
     //path where the rule file was created
-    @JsonProperty(RuleModelMapping.PATH)
+    @JsonProperty(JERunnerRuleMapping.PATH)
     String rulePath;
 
     //Rule format
-    @JsonProperty(RuleModelMapping.FORMAT)
+    @JsonProperty(JERunnerRuleMapping.FORMAT)
     RuleFormat format;
+    
+    @JsonProperty(JERunnerRuleMapping.TOPICS)
+    List<String> topics;
 
     /*
      * getters and setters
@@ -80,6 +83,16 @@ public class RuleModel {
 		this.ruleName = ruleName;
 	}
 
+	public List<String> getTopics() {
+		return topics;
+	}
+
+	public void setTopics(List<String> topics) {
+		this.topics = topics;
+	}
+
+   
+	
 
 
 }

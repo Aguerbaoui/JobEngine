@@ -12,7 +12,7 @@ import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.constants.RuleBuilderErrors;
 import io.je.utilities.exceptions.AddRuleBlockException;
 import io.je.utilities.exceptions.InvalidSequenceFlowException;
-import io.je.utilities.exceptions.JERunnerUnreachableException;
+import io.je.utilities.exceptions.JERunnerErrorException;
 import io.je.utilities.exceptions.ProjectRunException;
 import io.je.utilities.exceptions.RuleAlreadyExistsException;
 import io.je.utilities.exceptions.RuleBlockNotFoundException;
@@ -20,6 +20,7 @@ import io.je.utilities.exceptions.RuleBuildFailedException;
 import io.je.utilities.exceptions.RuleNotAddedException;
 import io.je.utilities.exceptions.RuleNotFoundException;
 import io.je.utilities.exceptions.WorkflowBlockNotFound;
+import io.je.utilities.logger.JELogger;
 import io.je.utilities.network.JEResponse;
 import models.JEWorkflow;
 import org.springframework.data.annotation.Id;
@@ -27,6 +28,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map.Entry;
 
 @Document(collection="JEProject")
@@ -276,11 +278,7 @@ public class JEProject {
 	 */
 	public void updateRuleAttributes(UserDefinedRule rule) {
 		UserDefinedRule ruleToUpdate = (UserDefinedRule) rules.get(rule.getJobEngineElementID());
-		ruleToUpdate.setSalience(rule.getSalience());
-		ruleToUpdate.setDateEffective(rule.getDateEffective());
-		ruleToUpdate.setDateExpires(rule.getDateExpires());
-		ruleToUpdate.setTimer(rule.getTimer());
-		ruleToUpdate.setEnabled(rule.isEnabled());
+		//TODO: implement update
 
 	}
 	 
@@ -288,6 +286,24 @@ public class JEProject {
 
 
 
+
+	public boolean isBuilt() {
+		//TODO: check for unbuilt workflows
+		for(JERule rule : this.getRules().values())
+		{
+			if(!rule.isBuilt())
+			{
+				isBuilt = false;
+				JELogger.info("Rule Not built : " + rule.getRuleName());
+			}
+		}
+		
+		return isBuilt;
+	}
+
+	public void setBuilt(boolean isBuilt) {
+		this.isBuilt = isBuilt;
+	}
 
 	public boolean isRunning() {
 		return isRunning;

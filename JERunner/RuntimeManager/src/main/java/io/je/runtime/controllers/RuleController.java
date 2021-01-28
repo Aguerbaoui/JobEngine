@@ -52,10 +52,14 @@ public class RuleController {
     public ResponseEntity<?> addRule(@RequestBody RuleModel ruleModel) {
 
         try {
+        	JELogger.info(getClass(),"adding rule : " + ruleModel.getRuleName());
             runtimeDispatcher.addRule(ruleModel);
-           /* if(ruleModel.getEvents() != null) {
-                runtimeDispatcher.registerRuleEvents(ruleModel.getKey(), ruleModel.getProjectId(), ruleModel.getEvents());
-            }*/
+        	JELogger.info(getClass(),"adding rule topics : " + ruleModel.getRuleName());
+
+            runtimeDispatcher.addTopics(ruleModel.getProjectId(), ruleModel.getTopics());
+        	JELogger.info(getClass(),"rule added successfully");
+
+
         } catch (RuleAlreadyExistsException | JEFileNotFoundException | RuleFormatNotValidException | RuleNotAddedException e) {
             e.printStackTrace();
             JELogger.error(RuleController.class, e.getMessage());
@@ -80,6 +84,8 @@ public class RuleController {
 
         try {
             runtimeDispatcher.updateRule(ruleModel);
+            runtimeDispatcher.addTopics(ruleModel.getProjectId(), ruleModel.getTopics());
+
         } catch (JEFileNotFoundException | RuleFormatNotValidException e) {
             e.printStackTrace();
             JELogger.error(RuleController.class, e.getMessage());

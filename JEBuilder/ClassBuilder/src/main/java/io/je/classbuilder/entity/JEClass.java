@@ -8,6 +8,7 @@ public class JEClass  {
 	
 	@Id
 	String classId; // class id defined in data model
+	String workspaceId;
 	String className;
 	
 	/*
@@ -25,7 +26,8 @@ public class JEClass  {
 
 
 
-	public JEClass(String classId, String className, String classPath, ClassType classType) {
+	public JEClass(String workspaceId,String classId, String className, String classPath, ClassType classType) {
+		this.workspaceId = workspaceId;
 		this.className = className;
 		this.classPath = classPath;
 		this.classId = classId;
@@ -73,6 +75,18 @@ public class JEClass  {
 
 	public void setClassType(ClassType classType) {
 		this.classType = classType;
+	}
+
+
+
+	public String getWorkspaceId() {
+		return workspaceId;
+	}
+
+
+
+	public void setWorkspaceId(String workspaceId) {
+		this.workspaceId = workspaceId;
 	}
 
 	

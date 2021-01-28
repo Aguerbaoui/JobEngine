@@ -38,7 +38,7 @@ public class JELogger {
      * log level 1 : debug
      */
     public static void debug(Class<?> clazz, String msg) {
-        logger.debug(clazz.toString() + msg);
+        logger.debug(clazz.toString() +" : "+ msg);
         
     }
     
@@ -65,7 +65,7 @@ public class JELogger {
      * log level 4 : error
      */
     public static void error(Class<?> clazz, String msg) {
-        logger.info(clazz.toString() + msg);
+        logger.error(clazz.toString() + msg);
 
 
     }

@@ -102,7 +102,7 @@ public class RuleEngineHandler {
         RuleEngine.assertFact(projectId,instanceData);
     }catch(Exception e)
     {
-    	JELogger.info("failed to inject data  " );
+    //	JELogger.info("failed to inject data  " );
     	}
     	
         

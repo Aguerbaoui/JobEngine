@@ -25,6 +25,13 @@ public class BlockConfigurationModel {
     @JsonProperty(AttributesMapping.CLASSID)
 	String classId;
     
+    @JsonProperty(AttributesMapping.CLASSNAME)
+   	String className;
+    
+    @JsonProperty(AttributesMapping.WORKSPACEID)
+   	String workspaceId;
+       
+    
     @JsonProperty(AttributesMapping.ATTRIBUTENAME)
 	String attributeName;
 
@@ -66,6 +73,22 @@ public class BlockConfigurationModel {
 	public void setAttributeName(String attributeName) {
 		this.attributeName = attributeName;
 	}
+	public String getClassName() {
+		return className;
+	}
+	public void setClassName(String className) {
+		this.className = className;
+	}
+	public String getWorkspaceId() {
+		return workspaceId;
+	}
+	public void setWorkspaceId(String workspaceId) {
+		this.workspaceId = workspaceId;
+	}
+	
+	
+	
+	
 	/*public List<String> getSpecificInstances() {
 		return specificInstances;
 	}
