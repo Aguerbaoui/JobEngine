@@ -62,5 +62,4 @@ public class JEGlobalconfig {
     // path where runner loads classes
     public static String runnerClassLoadPath = System.getProperty("catalina.base") + "\\webapps\\RuntimeManager\\WEB-INF\\classes\\";*/
 
-*/
 }

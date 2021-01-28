@@ -189,22 +189,22 @@ public class JERunnerAPIHandler {
 
 	/////////////////////////////////EVENTS//////////////////////////////
 
-	public static JEResponse triggerEvent(String eventId, String projectId) throws JERunnerUnreachableException, IOException
+	public static JEResponse triggerEvent(String eventId, String projectId) throws JERunnerErrorException, IOException
 	{
 		Response response = null;
 		try {
 			response = Network.makeGetNetworkCallWithResponse(JEGlobalconfig.RUNTIME_MANAGER_BASE_API + "/project/triggerEvent/" + projectId + "/" + eventId);
 
 		} catch (Exception e) {
-			throw new JERunnerUnreachableException(ClassBuilderErrors.jeRunnerUnreachable +" "+ e.getMessage());
+			throw new JERunnerErrorException(Errors.JERUNNER_UNREACHABLE +" "+ e.getMessage());
 		}
 		if(response == null)
 		{
-			throw new JERunnerUnreachableException(ClassBuilderErrors.jeRunnerUnreachable);
+			throw new JERunnerErrorException(Errors.JERUNNER_UNREACHABLE);
 
 		}
 		if ( response.code() != 200) {
-			throw new JERunnerUnreachableException("JERunner Unexpected Error : " + response.body().toString());
+			throw new JERunnerErrorException("JERunner Unexpected Error : " + response.body().toString());
 		}
 
 		String respBody = response.body().string();
