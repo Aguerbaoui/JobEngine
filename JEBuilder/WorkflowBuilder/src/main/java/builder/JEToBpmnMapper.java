@@ -4,6 +4,10 @@ import blocks.WorkflowBlock;
 import blocks.basic.*;
 import blocks.control.ExclusiveGatewayBlock;
 import blocks.control.ParallelGatewayBlock;
+import blocks.events.MessageCatchEvent;
+import blocks.events.SignalCatchEvent;
+import blocks.events.ThrowMessageEvent;
+import blocks.events.ThrowSignalEvent;
 import io.je.utilities.constants.WorkflowConstants;
 import io.je.utilities.logger.JELogger;
 import io.je.utilities.network.Network;
@@ -28,8 +32,9 @@ public class JEToBpmnMapper {
      * */
     public static void createBpmnFromJEWorkflow( JEWorkflow wf) {
         BpmnModel model = ModelBuilder.createNewBPMNModel();
+        model.setTargetNamespace(wf.getJobEngineProjectID());
         Process process = ModelBuilder.createProcess(wf.getWorkflowName().trim());
-        process.addFlowElement(ModelBuilder.createStartEvent(wf.getWorkflowStartBlock().getJobEngineElementID()));
+        process.addFlowElement(ModelBuilder.createStartEvent(wf.getWorkflowStartBlock().getJobEngineElementID(), wf.getWorkflowStartBlock().getReference()));
         addListeners(process);
         parseWorkflowBlock(wf, wf.getWorkflowStartBlock(), process, null);
         model.addProcess(process);
@@ -77,10 +82,19 @@ public class JEToBpmnMapper {
             } else if (block instanceof ParallelGatewayBlock && !block.isProcessed()) {
                 process.addFlowElement(ModelBuilder.createParallelGateway(block.getJobEngineElementID(), block.getName(),
                         block.generateBpmnInflows(wf), block.generateBpmnOutflows(wf)));
-            } /*else if (block instanceof SynchronizeBlock && !block.isProcessed()) {
-				process.addFlowElement(ModelBuilder.createParallelGateway(block.getId(), block.getName(),
-						block.generateBpmnInflows(wf), block.generateBpmnOutflows()));
-			}*/ else if (block instanceof ScriptBlock && !block.isProcessed()) {
+            } else if (block instanceof MessageCatchEvent && !block.isProcessed()) {
+				process.addFlowElement(ModelBuilder.createMessageIntermediateCatchEvent(block.getJobEngineElementID(), block.getName(),
+						((MessageCatchEvent) block).getMessageRef()));
+			} else if (block instanceof SignalCatchEvent && !block.isProcessed()) {
+                process.addFlowElement(ModelBuilder.createSignalIntermediateCatchEvent(block.getJobEngineElementID(), block.getName(),
+                        ((SignalCatchEvent) block).getMessageRef()));
+            }else if (block instanceof ThrowMessageEvent && !block.isProcessed()) {
+                process.addFlowElement(ModelBuilder.createThrowMessageEvent(block.getJobEngineElementID(), block.getName(),
+                        ((ThrowMessageEvent) block).getMessageRef()));
+            }else if (block instanceof ThrowSignalEvent && !block.isProcessed()) {
+                process.addFlowElement(ModelBuilder.createThrowSignalEvent(block.getJobEngineElementID(), block.getName(),
+                        ((ThrowSignalEvent) block).getMessageRef()));
+            }else if (block instanceof ScriptBlock && !block.isProcessed()) {
                 process.addFlowElement(ModelBuilder.createScriptTask(block.getJobEngineElementID(), block.getName(),
                         ((ScriptBlock) block).getScript()));
             } else if (block instanceof ExclusiveGatewayBlock && !block.isProcessed()) {

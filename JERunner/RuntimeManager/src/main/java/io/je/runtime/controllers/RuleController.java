@@ -53,7 +53,9 @@ public class RuleController {
 
         try {
             runtimeDispatcher.addRule(ruleModel);
-
+           /* if(ruleModel.getEvents() != null) {
+                runtimeDispatcher.registerRuleEvents(ruleModel.getKey(), ruleModel.getProjectId(), ruleModel.getEvents());
+            }*/
         } catch (RuleAlreadyExistsException | JEFileNotFoundException | RuleFormatNotValidException | RuleNotAddedException e) {
             e.printStackTrace();
             JELogger.error(RuleController.class, e.getMessage());

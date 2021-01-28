@@ -129,6 +129,7 @@ public class ProjectService {
         //TODO add build all rules
     	ruleService.buildRules(projectId);
         workflowService.buildWorkflows(projectId);
+
     }
 
     

@@ -71,11 +71,17 @@ public class ModelBuilder {
     /*
      * Create a user start event and return it
      * */
-    public static StartEvent createStartEvent(String id) {
+    public static StartEvent createStartEvent(String id, String reference) {
         StartEvent startEvent = new StartEvent();
         startEvent.setId(id);
+        if(reference != null) {
+            MessageEventDefinition eventDefinition = new MessageEventDefinition();
+            eventDefinition.setMessageRef(reference);
+            startEvent.addEventDefinition(eventDefinition);
+        }
         return startEvent;
     }
+
 
     /*
      * Create an end event and return it
@@ -124,6 +130,18 @@ public class ModelBuilder {
     }
 
     /*
+    * Create an event base gateway
+    * */
+    public static EventGateway createEventGateway(String id, String name, List<SequenceFlow> inFlows, List<SequenceFlow> outFlows) {
+        EventGateway gateway = new EventGateway();
+        gateway.setName(name);
+        gateway.setId(id);
+        gateway.setIncomingFlows(inFlows);
+        gateway.setOutgoingFlows(outFlows);
+        return gateway;
+    }
+
+    /*
      * Create a message catch event and return it
      * */
     public static IntermediateCatchEvent createMessageIntermediateCatchEvent(String id, String name, String messageRef) {
@@ -132,6 +150,36 @@ public class ModelBuilder {
         event.setId(id);
         MessageEventDefinition eventDefinition = new MessageEventDefinition();
         eventDefinition.setMessageRef(messageRef);
+        event.addEventDefinition(eventDefinition);
+        return event;
+    }
+
+    public static IntermediateCatchEvent createSignalIntermediateCatchEvent(String id, String name, String messageRef) {
+        IntermediateCatchEvent event = new IntermediateCatchEvent();
+        event.setName(name);
+        event.setId(id);
+        SignalEventDefinition eventDefinition = new SignalEventDefinition();
+        eventDefinition.setSignalRef(messageRef);
+        event.addEventDefinition(eventDefinition);
+        return event;
+    }
+
+    public static ThrowEvent createThrowMessageEvent(String id, String name, String reference) {
+        ThrowEvent event = new ThrowEvent();
+        event.setName(name);
+        event.setId(id);
+        MessageEventDefinition eventDefinition = new MessageEventDefinition();
+        eventDefinition.setMessageRef(reference);
+        event.addEventDefinition(eventDefinition);
+        return event;
+    }
+
+    public static ThrowEvent createThrowSignalEvent(String id, String name, String reference) {
+        ThrowEvent event = new ThrowEvent();
+        event.setName(name);
+        event.setId(id);
+        SignalEventDefinition eventDefinition = new SignalEventDefinition();
+        eventDefinition.setSignalRef(reference);
         event.addEventDefinition(eventDefinition);
         return event;
     }

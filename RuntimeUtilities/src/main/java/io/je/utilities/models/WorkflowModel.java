@@ -1,4 +1,4 @@
-package io.je.runtime.models;
+package io.je.utilities.models;
 
 import java.util.ArrayList;
 
@@ -10,9 +10,9 @@ public class WorkflowModel {
 
     private String path;
 
-
-
     private String name;
+
+    private boolean triggeredByEvent;
 
     private ArrayList<EventModel> events;
 
@@ -27,6 +27,14 @@ public class WorkflowModel {
         this.events = events;
         this.tasks = tasks;
         this.name = name;
+    }
+
+    public boolean isTriggeredByEvent() {
+        return triggeredByEvent;
+    }
+
+    public void setTriggeredByEvent(boolean triggeredByEvent) {
+        this.triggeredByEvent = triggeredByEvent;
     }
 
     public WorkflowModel() {

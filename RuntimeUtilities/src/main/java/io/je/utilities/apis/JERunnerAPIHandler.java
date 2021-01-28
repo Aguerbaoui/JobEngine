@@ -165,7 +165,31 @@ public class JERunnerAPIHandler {
 
 	}
 
+	/////////////////////////////////EVENTS//////////////////////////////
+
+	public static JEResponse triggerEvent(String eventId, String projectId) throws JERunnerUnreachableException, IOException
+	{
+		Response response = null;
+		try {
+			response = Network.makeGetNetworkCallWithResponse(JEGlobalconfig.RUNTIME_MANAGER_BASE_API + "/project/triggerEvent/" + projectId + "/" + eventId);
+
+		} catch (Exception e) {
+			throw new JERunnerUnreachableException(ClassBuilderErrors.jeRunnerUnreachable +" "+ e.getMessage());
+		}
+		if(response == null)
+		{
+			throw new JERunnerUnreachableException(ClassBuilderErrors.jeRunnerUnreachable);
+
+		}
+		if ( response.code() != 200) {
+			throw new JERunnerUnreachableException("JERunner Unexpected Error : " + response.body().toString());
+		}
+
+		String respBody = response.body().string();
+		ObjectMapper objectMapper = new ObjectMapper();
+		return objectMapper.readValue(respBody,JEResponse.class);
 
 
+	}
 
 }

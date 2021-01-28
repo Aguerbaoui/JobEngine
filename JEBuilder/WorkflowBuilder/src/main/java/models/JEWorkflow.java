@@ -2,6 +2,7 @@ package models;
 
 import blocks.WorkflowBlock;
 import blocks.basic.StartBlock;
+import io.je.utilities.beans.JEEvent;
 import io.je.utilities.constants.APIConstants;
 import io.je.utilities.constants.Errors;
 import io.je.utilities.exceptions.InvalidSequenceFlowException;
@@ -42,6 +43,7 @@ public class JEWorkflow extends JEObject {
     * Current workflow status ( running, building, nothing)
     * */
     private String status;
+
     /*
      * List of all workflow blocks
      */
@@ -56,6 +58,7 @@ public class JEWorkflow extends JEObject {
     * User scripted bpmn
     * */
     private boolean isScript = false;
+
     /*
     * Bpmn script
     * */
@@ -77,6 +80,7 @@ public class JEWorkflow extends JEObject {
         allBlocks = new HashMap<String, WorkflowBlock>();
         needBuild = true;
     }
+
 
     public boolean isNeedBuild() {
         return needBuild;
@@ -172,6 +176,7 @@ public class JEWorkflow extends JEObject {
     public void addBlock(WorkflowBlock block) {
         if (block instanceof StartBlock) {
             workflowStartBlock = (StartBlock) block;
+            workflowStartBlock.setProcessed(false);
         }
         allBlocks.put(block.getJobEngineElementID(), block);
     }
@@ -233,5 +238,8 @@ public class JEWorkflow extends JEObject {
         for(WorkflowBlock block: allBlocks.values()) {
             block.setProcessed(false);
         }
+        workflowStartBlock.setProcessed(false);
     }
+
+
 }

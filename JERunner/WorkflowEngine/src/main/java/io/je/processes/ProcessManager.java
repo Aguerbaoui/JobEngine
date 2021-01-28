@@ -4,9 +4,12 @@ import io.je.JEProcess;
 import io.je.callbacks.OnExecuteOperation;
 import io.je.utilities.constants.APIConstants;
 import io.je.utilities.constants.Errors;
+import io.je.utilities.exceptions.WorkflowAlreadyRunningException;
 import io.je.utilities.exceptions.WorkflowNotFoundException;
+import io.je.utilities.logger.JELogger;
 import org.activiti.engine.*;
 import org.activiti.engine.runtime.Execution;
+import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 
 import java.util.HashMap;
@@ -19,52 +22,52 @@ public class ProcessManager {
     /*
      * Activiti Workflow engine
      * */
-    private static ProcessEngine processEngine;
+    private ProcessEngine processEngine;
 
     /*
      * Runtime service for Activiti
      * */
-    private static RuntimeService runtimeService;
+    private RuntimeService runtimeService;
 
     /*
      * Task service for Activiti
      * */
-    private static TaskService taskService;
+    private TaskService taskService;
 
 
     /*
      * Management service for Activiti
      * */
-    private static ManagementService managementService;
+    private ManagementService managementService;
 
     /*
      * Dynamic service for Activiti
      * */
-    private static DynamicBpmnService dyService;
+    private DynamicBpmnService dyService;
 
 
     /*
      * Repository service for activiti
      * */
-    private static RepositoryService repoService;
+    private RepositoryService repoService;
 
 
     /*
      * List of all active processes
      * */
-    private static HashMap<String, JEProcess> processes = new HashMap<>();
+    private HashMap<String, JEProcess> processes = new HashMap<>();
 
 
     /*
      * List of all possible workflow task executions
      * */
-    private static HashMap<String, OnExecuteOperation> allCallbacks = new HashMap<String, OnExecuteOperation>();
+    private HashMap<String, OnExecuteOperation> allCallbacks = new HashMap<String, OnExecuteOperation>();
 
 
     /*
      * Initialize the workflow engine
      * */
-    public static void init() {
+    public ProcessManager() {
 
         processEngine = ProcessEngines.getDefaultProcessEngine();
         repoService = processEngine.getRepositoryService();
@@ -76,7 +79,7 @@ public class ProcessManager {
     /*
      * Add a process to engine
      * */
-    public static void addProcess(JEProcess process) {
+    public void addProcess(JEProcess process) {
 
         if (processes == null) {
             processes = new HashMap<String, JEProcess>();
@@ -87,14 +90,14 @@ public class ProcessManager {
     /*
      * Register workflow execution callback
      * */
-    public static void registerWorkflowCallback(String id, OnExecuteOperation callback) {
+    public void registerWorkflowCallback(String id, OnExecuteOperation callback) {
         allCallbacks.put(id, callback);
     }
 
     /*
      * Complete a user task
      * */
-    public static void completeTask(Task task) {
+    public void completeTask(Task task) {
 
         taskService.complete(task.getId());
     }
@@ -102,7 +105,7 @@ public class ProcessManager {
     /*
      * Deploy a process to engine
      * */
-    public static void deployProcess(String key) {
+    public void deployProcess(String key) {
         repoService.createDeployment()
                 .addClasspathResource(
                         processes.get(key).getBpmnPath())
@@ -114,12 +117,17 @@ public class ProcessManager {
     /*
      * Launch process by key without variables
      * */
-    public static void launchProcessByKeyWithoutVariables(String id) throws WorkflowNotFoundException {
+    public void launchProcessByKeyWithoutVariables(String id) throws WorkflowNotFoundException, WorkflowAlreadyRunningException {
         if (processes.get(id) == null) {
             throw new WorkflowNotFoundException( Errors.workflowNotFound);
         }
-        processes.get(id).setRunning(true);
-        runtimeService.startProcessInstanceByKey(id);
+        if(!processes.get(id).isRunning() && !processes.get(id).isTriggeredByEvent()) {
+            processes.get(id).setRunning(true);
+            runtimeService.startProcessInstanceByKey(id);
+        }
+        else {
+            throw new WorkflowAlreadyRunningException(Errors.workflowAlreadyRunning);
+        }
 
 
     }
@@ -127,7 +135,7 @@ public class ProcessManager {
     /*
      * Launch process by message event without variables
      * */
-    public static void launchProcessByMessageWithoutVariables(String messageId) {
+    public void launchProcessByMessageWithoutVariables(String messageId) {
 
         runtimeService.startProcessInstanceByMessage(messageId);
     }
@@ -135,15 +143,16 @@ public class ProcessManager {
     /*
      * Throw signal in engine
      * */
-    public static void throwSignal(String signalId) {
-
+    public void throwSignal(String signalId) {
+       /* String executionId = runtimeService.createExecutionQuery()
+                .signalEventSubscriptionName(signalId).singleResult().getId();*/
         runtimeService.signalEventReceived(signalId);
     }
 
     /*
      * Throw signal in workflow
      * */
-    public static void throwSignalInProcess(String signalId, String executionId) {
+    public void throwSignalInProcess(String signalId, String executionId) {
 
         runtimeService.signalEventReceived(signalId, executionId);
     }
@@ -151,7 +160,7 @@ public class ProcessManager {
     /*
      * Returns a list of all signal event subscriptions
      * */
-    public static List<Execution> getAllSignalEventSubscriptions(String signalId) {
+    public List<Execution> getAllSignalEventSubscriptions(String signalId) {
 
         return runtimeService.createExecutionQuery()
                 .signalEventSubscriptionName(signalId)
@@ -161,7 +170,7 @@ public class ProcessManager {
     /*
      * Throw a message event in workflow
      * */
-    public static void throwMessageEvent(String messageId, String executionId) {
+    public void throwMessageEvent(String messageId, String executionId) {
 
         runtimeService.messageEventReceived(messageId, executionId);
     }
@@ -169,7 +178,7 @@ public class ProcessManager {
     /*
      * Throw a message event
      * */
-    public static void throwMessageEvent(String messageId) {
+    public void throwMessageEvent(String messageId) {
 
         String executionId = runtimeService.createExecutionQuery()
                 .messageEventSubscriptionName(messageId).singleResult().getId();
@@ -179,7 +188,7 @@ public class ProcessManager {
     /*
      * Returns the process execution subscribed to message event
      * */
-    public static Execution getMessageEventSubscription(String messageId) {
+    public Execution getMessageEventSubscription(String messageId) {
 
         return runtimeService.createExecutionQuery()
                 .messageEventSubscriptionName(messageId).singleResult();
@@ -203,74 +212,78 @@ public class ProcessManager {
     /*
      * Get all execution callbacks
      * */
-    public static HashMap<String, OnExecuteOperation> getAllCallbacks() {
+    public HashMap<String, OnExecuteOperation> getAllCallbacks() {
         return allCallbacks;
     }
 
     /*
      * Get workflow Engine
      * */
-    public static ProcessEngine getProcessEngine() {
+    public ProcessEngine getProcessEngine() {
         return processEngine;
     }
 
     /*
      * Get runtime service
      * */
-    public static RuntimeService getRuntimeService() {
+    public RuntimeService getRuntimeService() {
         return runtimeService;
     }
 
     /*
      * Get the engine task service
      * */
-    public static TaskService getTaskService() {
+    public TaskService getTaskService() {
         return taskService;
     }
 
     /*
      *Get the engine management service
      * */
-    public static ManagementService getManagementService() {
+    public ManagementService getManagementService() {
         return managementService;
     }
 
     /*
      * Get the engine dynamic service
      * */
-    public static DynamicBpmnService getDyService() {
+    public DynamicBpmnService getDyService() {
         return dyService;
     }
 
     /*
      * Get the engine repository service
      * */
-    public static RepositoryService getRepoService() {
+    public RepositoryService getRepoService() {
         return repoService;
     }
 
     /*
      * Get all deployed processes
      * */
-    public static HashMap<String, JEProcess> getProcesses() {
+    public HashMap<String, JEProcess> getProcesses() {
         return processes;
     }
 
-    public static void runAll() throws WorkflowNotFoundException {
+   /* public void runAll() throws WorkflowNotFoundException {
         for(String key: processes.keySet()) {
             launchProcessByKeyWithoutVariables(key);
         }
-    }
+    }*/
 
-    public static void runAll(String projectId) throws WorkflowNotFoundException {
+    public void runAll(String projectId) throws WorkflowNotFoundException{
         for(JEProcess process: processes.values()) {
             if(process.getProjectId().equals(projectId) && process.isDeployed() && !process.isRunning()) {
-                launchProcessByKeyWithoutVariables(process.getKey());
+                try {
+                    launchProcessByKeyWithoutVariables(process.getKey());
+                } catch (WorkflowAlreadyRunningException e) {
+                    JELogger.error(ProcessManager.class, "Workflow running exception id = " + process.getKey());
+                }
             }
         }
     }
 
-    public static void buildProjectWorkflows(String projectId) {
+    public void buildProjectWorkflows(String projectId) {
         for(JEProcess process: processes.values()) {
             if(process.getProjectId().equals(projectId) && !process.isDeployed()) {
                 deployProcess(process.getKey());
@@ -278,14 +291,14 @@ public class ProcessManager {
         }
     }
 
-    public static void stopProcess(String key) {
+    public void stopProcess(String key) {
         if(processes.get(key).isRunning()) {
             runtimeService.deleteProcessInstance(key, "User Stopped the execution");
             processes.get(key).setRunning(false);
         }
     }
 
-    public static void stopProjectWorkflows(String projectId) {
+    public void stopProjectWorkflows(String projectId) {
         for(JEProcess process: processes.values()) {
             if(process.getProjectId().equals(projectId) && process.isRunning()) {
                 runtimeService.deleteProcessInstance(process.getKey(), "User Stopped the execution");
@@ -293,8 +306,8 @@ public class ProcessManager {
         }
     }
 
-    public static void setRunning(String id, boolean b) {
-
+    public void setRunning(String id, boolean b) {
         processes.get(id.replace(id.substring(id.indexOf(':'), id.length()), "")).setRunning(b);
     }
+
 }

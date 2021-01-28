@@ -63,6 +63,7 @@ public class WorkflowService {
         if (block.getType().equalsIgnoreCase(WorkflowConstants.startType)) {
             StartBlock b = new StartBlock();
             b.setName(block.getAttributes().get("name"));
+            b.setReference(block.getAttributes().get("reference"));
             b.setJobEngineProjectID(block.getProjectId());
             b.setWorkflowId(block.getWorkflowId());
             b.setJobEngineElementID(block.getId());
@@ -215,7 +216,7 @@ public class WorkflowService {
         }
 
         //set statuses wesh
-        WorkflowBuilder.runWorkflow(workflowId);
+        WorkflowBuilder.runWorkflow(projectId, workflowId);
     }
 
     /*
@@ -227,7 +228,7 @@ public class WorkflowService {
             throw new ProjectNotFoundException( Errors.projectNotFound);
         }
         for(JEWorkflow wf: project.getWorkflows().values()) {
-            WorkflowBuilder.runWorkflow(wf.getWorkflowName().trim());
+            WorkflowBuilder.runWorkflow(projectId, wf.getWorkflowName().trim());
         }
     }
 

@@ -2,7 +2,7 @@ package blocks.events;
 
 import blocks.WorkflowBlock;
 
-public class MessageCatchEvent extends WorkflowBlock {
+public class ThrowMessageEvent extends WorkflowBlock {
 
     private String messageRef;
 
