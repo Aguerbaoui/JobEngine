@@ -1,20 +1,74 @@
 package io.je.utilities.logger;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.LoggerConfig;
 
+
+
+/*
+ * Class Responsible for logging 
+ * A log request of level p in a logger with level q is enabled if p >= q. 
+ * It assumes that levels are ordered. For the standard levels, we have   DEBUG < INFO < WARN < ERROR
+ */
 public class JELogger {
-	
-	private static final Logger logger = LoggerFactory.getLogger(JELogger.class); 
-	public static void info(String msg) {
-		
-		logger.info(msg);
-	}
-	public static void error(String msg) {
-		logger.error(msg);
 
-		
-	}
-	
+    private static  Logger logger = LogManager.getLogger(JELogger.class);
+  /*  private static int logLevel = 2;
+    static LoggerContext context = (LoggerContext) LogManager.getContext(false);
+	static Configuration config = context.getConfiguration();
+	static LoggerConfig rootConfig = config.getLoggerConfig(LogManager.ROOT_LOGGER_NAME);
+    public static void setLogLevel(int logLevel)
+    {
+    	
+    	switch(logLevel)
+    	{case 1:
+    	rootConfig.setLevel(Level.DEBUG);
+    	break;
+    	}
+    	rootConfig.setLevel(Level.DEBUG);
+
+    	context.updateLoggers();
+    }
+    /*
+    /*
+     * log level 1 : debug
+     */
+    public static void debug(Class<?> clazz, String msg) {
+        logger.debug(clazz.toString() +" : "+ msg);
+        
+    }
+    
+    
+    /*
+     * log level 2 : info
+     */
+    public static void info(Class<?> clazz, String msg) {
+        logger.info(clazz.toString() + msg);
+    }
+
+    public static void info( String msg) {
+        logger.info( msg);
+    }
+    /*
+     * log level 3 : warn
+     */
+    public static void warning(Class<?> clazz, String msg) {
+        logger.warn(clazz.toString() + msg);
+    }
+    
+    
+    /*
+     * log level 4 : error
+     */
+    public static void error(Class<?> clazz, String msg) {
+        logger.error(clazz.toString() + msg);
+
+
+    }
+
 
 }

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- https://mkyong.com/logging/log4j2-xml-example/ -->
+<Configuration status="INFO">
+    <Appenders>
+        <Console name="ConsoleAppender" target="SYSTEM_OUT">
+            <PatternLayout
+                    pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+        </Console>
+         <File name="FileAppender" fileName="test-${date:yyyyMMdd}.log" immediateFlush="true"
+            append="true"> <PatternLayout pattern="%d{yyy-MM-dd HH:mm:ss.SSS} [%t] %-5level
+            %logger{36} - %msg%n"/> </File> 
+<RollingFile
+    name="rollingFile"
+    fileName="D:\myproject2\test-${date:yyyyMMdd}.log"
+    filePattern="D:\myproject2\logs\test-${date:yyyyMMdd}.%d{dd-MM}.log.gz"
+    ignoreExceptions="false">
+	<PatternLayout pattern="%d{yyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/> 
+    <Policies>
+        <OnStartupTriggeringPolicy />
+        <SizeBasedTriggeringPolicy size="10 MB" />
+        <TimeBasedTriggeringPolicy />
+    </Policies>
+</RollingFile>
+
+
+    </Appenders>
+
+    <Loggers>
+        <Root level="info">
+            <AppenderRef ref="ConsoleAppender"/>
+            <AppenderRef ref="rollingFile" />
+
+        </Root>
+
+    </Loggers>
+</Configuration>
