@@ -119,7 +119,7 @@ public class ProjectService {
 	 * Run a workflow by id
 	 */
 	public void runWorkflow(String projectId, String workflowId)
-			throws ProjectNotFoundException, IOException, WorkflowNotFoundException {
+			throws ProjectNotFoundException, IOException, WorkflowNotFoundException, WorkflowAlreadyRunningException {
 		workflowService.runWorkflow(projectId, workflowId);
 	}
 
