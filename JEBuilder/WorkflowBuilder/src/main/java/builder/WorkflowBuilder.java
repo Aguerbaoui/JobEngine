@@ -44,7 +44,7 @@ public class WorkflowBuilder {
         wf.setKey(workflow.getWorkflowName().trim());
         wf.setPath("processes/" + workflow.getWorkflowName().trim() + ".bpmn");
         wf.setProjectId(workflow.getJobEngineProjectID());
-        ArrayList<EventModel> events = new ArrayList<>();
+      /*  ArrayList<EventModel> events = new ArrayList<>();
         for(WorkflowBlock block: workflow.getAllBlocks().values()) {
             if(block instanceof ThrowMessageEvent) {
                 events.add(new EventModel(block.getJobEngineElementID(), block.getJobEngineProjectID(),  JEEvent.START_WORKFLOW, ((ThrowMessageEvent) block).getMessageRef(), block.getName()));
@@ -53,8 +53,8 @@ public class WorkflowBuilder {
                 events.add(new EventModel(block.getJobEngineElementID(), block.getJobEngineProjectID(),  JEEvent.START_WORKFLOW, ((ThrowSignalEvent) block).getMessageRef(), block.getName()));
             }
         }
-        wf.setEvents(events);
-        wf.setTriggeredByEvent(true);
+        wf.setEvents(events);*/
+        wf.setTriggeredByEvent(workflow.isTriggeredByEvent());
         Response response = Network.makeNetworkCallWithJsonObjectBodyWithResponse(wf, JEGlobalconfig.RUNTIME_MANAGER_BASE_API + APIConstants.ADD_WORKFLOW);
         JELogger.info(WorkflowBuilder.class, response.body().string());
 

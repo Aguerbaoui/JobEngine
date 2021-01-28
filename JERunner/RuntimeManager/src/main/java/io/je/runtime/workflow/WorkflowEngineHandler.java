@@ -115,6 +115,7 @@ public class WorkflowEngineHandler {
     * Stop project workflows
     * */
     public static void stopProjectWorfklows(String projectId) {
+        JELogger.info(WorkflowEngineHandler.class, "Stopping workflow executions for project id = " + projectId);
         processManagerHashMap.get(projectId).stopProjectWorkflows(projectId);
     }
 

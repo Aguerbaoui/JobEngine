@@ -7,11 +7,7 @@ import io.je.project.services.ProjectService;
 import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.constants.Errors;
 import io.je.utilities.constants.ResponseMessages;
-import io.je.utilities.exceptions.JERunnerUnreachableException;
-import io.je.utilities.exceptions.ProjectNotFoundException;
-import io.je.utilities.exceptions.ProjectRunException;
-import io.je.utilities.exceptions.RuleBuildFailedException;
-import io.je.utilities.exceptions.WorkflowNotFoundException;
+import io.je.utilities.exceptions.*;
 import io.je.utilities.logger.JELogger;
 import io.je.utilities.network.JEResponse;
 import models.JEWorkflow;
@@ -167,10 +163,8 @@ public class ProjectController {
 	public ResponseEntity<?> runWorkflow(@PathVariable String projectId, @PathVariable String key) {
 		try {
 			projectService.runWorkflow(projectId, key);
-		} catch (ProjectNotFoundException e) {
-			return ResponseEntity.badRequest().body(new JEResponse(e.getCode(), Errors.projectNotFound));
-		} catch (WorkflowNotFoundException e) {
-			return ResponseEntity.badRequest().body(new JEResponse(e.getCode(), Errors.workflowNotFound));
+		} catch (ProjectNotFoundException | WorkflowNotFoundException | WorkflowAlreadyRunningException e) {
+			return ResponseEntity.badRequest().body(new JEResponse(e.getCode(), e.getMessage()));
 		} catch (Exception e) {
 			JELogger.info(ProjectController.class, e.getMessage());
 			return ResponseEntity.badRequest().body(new JEResponse(ResponseCodes.UNKNOWN_ERROR, Errors.uknownError));

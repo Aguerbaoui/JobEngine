@@ -53,8 +53,6 @@ public class WorkflowController {
             //JELogger.info(WorkflowController.class, "Executing");
             dispatcher.launchProcessWithoutVariables(projectId, key);
         } catch (WorkflowNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
             return ResponseEntity.badRequest().body(new JEResponse(e.getCode(), e.getMessage()));
         }
         return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, EXECUTING_WORKFLOW));

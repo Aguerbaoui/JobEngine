@@ -22,6 +22,7 @@ public class JEProcess {
         this.name = name;
         this.bpmnPath = bpmnPath;
         this.projectId = projectId;
+        this.triggeredByEvent = triggeredByEvent;
     }
     public boolean isTriggeredByEvent() {
         return triggeredByEvent;

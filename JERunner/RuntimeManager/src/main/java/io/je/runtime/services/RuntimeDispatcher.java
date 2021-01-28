@@ -93,7 +93,7 @@ public class RuntimeDispatcher {
 
 		//DataListener.startListening(topics);
 		RuleEngineHandler.runRuleEngineProject(projectId);
-		//WorkflowEngineHandler.runAllWorkflows(projectId);
+		WorkflowEngineHandler.runAllWorkflows(projectId);
 	}
 
 	// stop project

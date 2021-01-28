@@ -6,12 +6,7 @@ import io.je.rulebuilder.components.UserDefinedRule;
 import io.je.utilities.apis.JERunnerAPIHandler;
 import io.je.utilities.constants.Errors;
 import io.je.utilities.constants.ResponseCodes;
-import io.je.utilities.exceptions.JERunnerUnreachableException;
-import io.je.utilities.exceptions.ProjectNotFoundException;
-import io.je.utilities.exceptions.ProjectRunException;
-import io.je.utilities.exceptions.RuleAlreadyExistsException;
-import io.je.utilities.exceptions.RuleBuildFailedException;
-import io.je.utilities.exceptions.WorkflowNotFoundException;
+import io.je.utilities.exceptions.*;
 import io.je.utilities.network.JEResponse;
 import models.JEWorkflow;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -118,7 +113,7 @@ public class ProjectService {
     /*
     * Run a workflow by id
     * */
-    public void runWorkflow(String projectId, String workflowId) throws ProjectNotFoundException, IOException, WorkflowNotFoundException {
+    public void runWorkflow(String projectId, String workflowId) throws ProjectNotFoundException, IOException, WorkflowNotFoundException, WorkflowAlreadyRunningException {
         workflowService.runWorkflow(projectId, workflowId);
     }
 

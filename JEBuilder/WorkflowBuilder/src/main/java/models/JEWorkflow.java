@@ -19,6 +19,11 @@ import java.util.HashMap;
 @Document(collection="JEWorkflow")
 public class JEWorkflow extends JEObject {
 
+    public final static String RUNNING = "RUNNING";
+
+    public final static String STOPPED = "STOPPED";
+
+    public final static String BUILDING = "BUILDING";
     /*
      * Workflow name
      */
@@ -64,6 +69,11 @@ public class JEWorkflow extends JEObject {
     * */
     private String script;
 
+    /*
+    * True if the workflow can be triggered by an event
+    * */
+    private boolean triggeredByEvent;
+
     public String getScript() {
         return script;
     }
@@ -81,6 +91,13 @@ public class JEWorkflow extends JEObject {
         needBuild = true;
     }
 
+    public boolean isTriggeredByEvent() {
+        return triggeredByEvent;
+    }
+
+    public void setTriggeredByEvent(boolean triggeredByEvent) {
+        this.triggeredByEvent = triggeredByEvent;
+    }
 
     public boolean isNeedBuild() {
         return needBuild;
@@ -177,6 +194,9 @@ public class JEWorkflow extends JEObject {
         if (block instanceof StartBlock) {
             workflowStartBlock = (StartBlock) block;
             workflowStartBlock.setProcessed(false);
+            if(((StartBlock) block).getReference() != null) {
+                this.setTriggeredByEvent(true);
+            }
         }
         allBlocks.put(block.getJobEngineElementID(), block);
     }
