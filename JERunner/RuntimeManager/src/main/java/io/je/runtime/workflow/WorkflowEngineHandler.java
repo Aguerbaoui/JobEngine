@@ -94,7 +94,10 @@ public class WorkflowEngineHandler {
     * Run all deployed workflows
     * */
     public static void runAllWorkflows(String projectId) throws WorkflowNotFoundException {
-        processManagerHashMap.get(projectId).runAll(projectId);
+       if(processManagerHashMap.containsKey(projectId))
+    	{
+    	   processManagerHashMap.get(projectId).runAll(projectId);
+    	}
     }
 
     /*
@@ -115,14 +118,22 @@ public class WorkflowEngineHandler {
     * Stop project workflows
     * */
     public static void stopProjectWorfklows(String projectId) {
-        JELogger.info(WorkflowEngineHandler.class, "Stopping workflow executions for project id = " + projectId);
-        processManagerHashMap.get(projectId).stopProjectWorkflows(projectId);
+    	if(processManagerHashMap.containsKey(projectId))
+    	{
+    		JELogger.info(WorkflowEngineHandler.class, "Stopping workflow executions for project id = " + projectId);
+            processManagerHashMap.get(projectId).stopProjectWorkflows(projectId);
+
+    	}
     }
 
     /*
     * Start workflow by message id
     * */
     public static void startProcessInstanceByMessage(String projectId, String messageEvent) {
-        processManagerHashMap.get(projectId).launchProcessByMessageWithoutVariables(messageEvent);
+    	if(processManagerHashMap.containsKey(projectId))
+    	{
+            processManagerHashMap.get(projectId).launchProcessByMessageWithoutVariables(messageEvent);
+
+    	}
     }
 }

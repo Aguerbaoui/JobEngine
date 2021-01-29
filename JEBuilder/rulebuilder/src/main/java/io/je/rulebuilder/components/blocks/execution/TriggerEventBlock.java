@@ -2,10 +2,11 @@ package io.je.rulebuilder.components.blocks.execution;
 
 import io.je.rulebuilder.components.blocks.ExecutionBlock;
 import io.je.rulebuilder.models.BlockModel;
+import io.je.utilities.exceptions.EventException;
 
 public class TriggerEventBlock extends ExecutionBlock {
 	
-	String eventId = "log output";
+	String eventId = null;
 
 	public TriggerEventBlock(BlockModel blockModel) {
 		super(blockModel);
@@ -13,6 +14,7 @@ public class TriggerEventBlock extends ExecutionBlock {
 		{
 			eventId = blockModel.getBlockConfiguration().getValue();
 		}
+
 	}
 	
 	 public TriggerEventBlock() {

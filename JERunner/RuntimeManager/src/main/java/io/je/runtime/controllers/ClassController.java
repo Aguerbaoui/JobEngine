@@ -55,26 +55,7 @@ public class ClassController {
 	
 	
 		
-		//add instance : TODO : to be deleted
-		@PostMapping(value = "/addInstance", produces = MediaType.APPLICATION_JSON_VALUE)
-		public ResponseEntity<?> addInstance( @RequestBody String  instance) {
-				JSONObject instanceJson = new JSONObject(instance);
-				JELogger.info(getClass(), instanceJson.toString());
-
-				InstanceModel instanceModel = new InstanceModel();
-				instanceModel.setInstanceId(instanceJson.getString(InstanceModelMapping.INSTANCEID));
-				instanceModel.setModelId(instanceJson.getString(InstanceModelMapping.MODELID));
-				instanceModel.setPayload(instanceJson.getJSONObject(InstanceModelMapping.PAYLOAD));
-				try {
-					runtimeDispatcher.addInstanceTest(instanceModel);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			
-				
-			
-			return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.classAddedSuccessully));
-		}
+		
 		
 		
 			

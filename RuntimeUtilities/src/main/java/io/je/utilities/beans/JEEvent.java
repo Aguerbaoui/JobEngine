@@ -15,15 +15,7 @@ public class JEEvent extends JEObject {
 
     private EventType type;
 
-    public EventTriggeredCallback getTriggeredCallback() {
-        return triggeredCallback;
-    }
-
-    public void setTriggeredCallback(EventTriggeredCallback triggeredCallback) {
-        this.triggeredCallback = triggeredCallback;
-    }
-
-    private EventTriggeredCallback triggeredCallback;
+    private boolean isTriggered = false;
 
     /*
     * The reference in case of a rule should be the rule id, in case of a workflow its the message or signal reference
@@ -71,4 +63,15 @@ public class JEEvent extends JEObject {
     public void setReference(String reference) {
         this.reference = reference;
     }
+
+	public boolean isTriggered() {
+		return isTriggered;
+	}
+
+	public void setTriggered(boolean isTriggered) {
+		this.isTriggered = isTriggered;
+	}
+    
+    
+    
 }

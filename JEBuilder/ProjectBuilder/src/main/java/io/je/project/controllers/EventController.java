@@ -1,5 +1,6 @@
 package io.je.project.controllers;
 
+import java.io.IOException;
 import java.util.Collection;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,7 @@ import io.je.utilities.beans.JEEvent;
 import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.constants.ResponseMessages;
 import io.je.utilities.exceptions.EventException;
+import io.je.utilities.exceptions.JERunnerErrorException;
 import io.je.utilities.exceptions.ProjectNotFoundException;
 import io.je.utilities.logger.JELogger;
 import io.je.utilities.models.EventModel;
@@ -102,10 +104,13 @@ public class EventController {
 				projectService.saveProject(ProjectService.getProjectById(projectId));
 				JELogger.info(getClass(), ResponseMessages.EVENT_ADDED);
 
-			} catch (ProjectNotFoundException e) {
+			} catch (ProjectNotFoundException | JERunnerErrorException  e) {
 				//e.printStackTrace();
 				JELogger.error(EventController.class, e.getMessage());
 				return ResponseEntity.badRequest().body(new JEResponse(e.getCode(), e.getMessage()));
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		
 		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.EVENT_ADDED));
