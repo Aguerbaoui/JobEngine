@@ -149,5 +149,16 @@ public class BlockModel {
 
 
 
+	@Override
+	public String toString() {
+		return "BlockModel [projectId=" + projectId + ", ruleId=" + ruleId + ", blockId=" + blockId + ", blockName="
+				+ blockName + ", description=" + description + ", timePersistenceValue=" + timePersistenceValue
+				+ ", timePersistenceUnit=" + timePersistenceUnit + ", operationId=" + operationId + ", inputBlocksIds="
+				+ inputBlocksIds + ", outputBlocksIds=" + outputBlocksIds + ", blockConfiguration=" + blockConfiguration
+				+ "]";
+	}
+
+
+
 
 }

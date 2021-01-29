@@ -45,8 +45,12 @@ public class ProjectService {
 	 */
 	public void saveProject(JEProject project) {
 		// Todo add repo jpa save operation
-		projectRepository.save(project);
-		loadedProjects.put(project.getProjectId(), project);
+		synchronized (projectRepository)
+		{
+			projectRepository.save(project);
+			loadedProjects.put(project.getProjectId(), project);
+		}
+		
 	}
 
 	/*

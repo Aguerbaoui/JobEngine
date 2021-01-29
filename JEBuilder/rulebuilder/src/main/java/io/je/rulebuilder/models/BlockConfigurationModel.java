@@ -85,6 +85,12 @@ public class BlockConfigurationModel {
 	public void setWorkspaceId(String workspaceId) {
 		this.workspaceId = workspaceId;
 	}
+	@Override
+	public String toString() {
+		return "BlockConfigurationModel [value=" + value + ", inputUnit=" + inputUnit + ", outputUnit=" + outputUnit
+				+ ", classId=" + classId + ", className=" + className + ", workspaceId=" + workspaceId
+				+ ", attributeName=" + attributeName + "]";
+	}
 	
 	
 	
