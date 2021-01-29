@@ -6,11 +6,11 @@ public class ThrowSignalEvent extends WorkflowBlock {
 
     private String signalRef;
 
-    public String getMessageRef() {
+    public String getSignalRef() {
         return signalRef;
     }
 
-    public void setMessageRef(String signalRef) {
+    public void setSignalRef(String signalRef) {
         this.signalRef = signalRef;
     }
 }
