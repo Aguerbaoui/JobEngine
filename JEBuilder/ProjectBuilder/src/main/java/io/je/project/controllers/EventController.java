@@ -115,7 +115,7 @@ public class EventController {
 	/*
 	 * delete event
 	 */
-	@DeleteMapping(value = "{projectId}/getEvent/{eventId}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@DeleteMapping(value = "{projectId}/deleteEvent/{eventId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> deleteEvent(@PathVariable("projectId") String projectId,@PathVariable("eventId") String eventId) {
 		
 			try {

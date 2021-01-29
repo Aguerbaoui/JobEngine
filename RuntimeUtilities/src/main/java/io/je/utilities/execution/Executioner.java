@@ -7,7 +7,7 @@ import java.io.IOException;
 
 public class Executioner {
 
-    public static void triggerEvent(String projectId, String eventId, String message) throws JERunnerErrorException, IOException {
+    public static void triggerEvent(String projectId, String eventId) throws JERunnerErrorException, IOException {
         JERunnerAPIHandler.triggerEvent(eventId, projectId);
     }
 }

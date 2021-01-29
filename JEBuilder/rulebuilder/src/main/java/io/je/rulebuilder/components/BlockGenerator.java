@@ -17,6 +17,7 @@ import io.je.rulebuilder.components.blocks.comparison.GreaterThanBlock;
 import io.je.rulebuilder.components.blocks.comparison.LessOrEqualBlock;
 import io.je.rulebuilder.components.blocks.comparison.LessThanBlock;
 import io.je.rulebuilder.components.blocks.execution.LogBlock;
+import io.je.rulebuilder.components.blocks.execution.TriggerEventBlock;
 import io.je.rulebuilder.components.blocks.getter.AttributeGetterBlock;
 import io.je.rulebuilder.models.BlockModel;
 import io.je.utilities.constants.RuleBuilderErrors;
@@ -165,6 +166,8 @@ public class BlockGenerator {
 		 */
 		case 5001:
 			return new LogBlock(blockModel);
+		case 5002:
+			return new TriggerEventBlock(blockModel);
 
 		// no operation with such id
 		default:
