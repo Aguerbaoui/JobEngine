@@ -11,10 +11,17 @@ public class WorkflowConstants {
     public final static String endType = "end";
     public final static String eventgatewayType = "eventgateway";
     public final static String messageintermediatecatcheventType = "messageintermediatecatchevent";
+    public final static String signalintermediatecatcheventType = "signalintermediatecatcheventType";
+    public final static String messageThrowEventType = "messageThrowEventType";
+    public final static String signalThrowEventType = "signalThrowEventType";
     public final static String seqFlowType = "sequenceflow";
     public final static String exclusivegatewayType = "exclusivegateway";
     public final static String scripttaskType = "scripttask";
     public final static String parallelgatewayType = "parallelgateway";
+    public final static String inclusivegatewayType = "inclusivegateway";
+    public final static String datetimerevent = "datetimerevent";
+    public final static String cycletimerevent = "cycletimerevent";
+    public final static String durationtimerevent = "durationtimerevent";
     public final static String dbservicetaskType = "dbservicetask";
     public final static String mailservicetaskType = "mailservicetask";
     public final static String BUILDING = "building";

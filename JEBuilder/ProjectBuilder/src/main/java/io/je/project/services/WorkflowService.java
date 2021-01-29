@@ -4,7 +4,9 @@ import blocks.WorkflowBlock;
 import blocks.basic.*;
 import blocks.control.EventGatewayBlock;
 import blocks.control.ExclusiveGatewayBlock;
+import blocks.control.InclusiveGatewayBlock;
 import blocks.control.ParallelGatewayBlock;
+import blocks.events.DateTimerEvent;
 import blocks.events.MessageCatchEvent;
 import builder.WorkflowBuilder;
 import io.je.project.beans.JEProject;
@@ -112,7 +114,41 @@ public class WorkflowService {
             b.setWorkflowId(block.getWorkflowId());
             b.setJobEngineElementID(block.getId());
             project.addBlockToWorkflow(b);
-        } else if (block.getType().equalsIgnoreCase(WorkflowConstants.dbservicetaskType)) {
+        } else if (block.getType().equalsIgnoreCase(WorkflowConstants.inclusivegatewayType)) {
+            InclusiveGatewayBlock b = new InclusiveGatewayBlock();
+            b.setName(block.getAttributes().get("name"));
+            b.setJobEngineProjectID(block.getProjectId());
+            b.setWorkflowId(block.getWorkflowId());
+            b.setJobEngineElementID(block.getId());
+            project.addBlockToWorkflow(b);
+        } else if (block.getType().equalsIgnoreCase(WorkflowConstants.datetimerevent)) {
+            DateTimerEvent b = new DateTimerEvent();
+            b.setName(block.getAttributes().get("name"));
+            b.setTimeDate(block.getAttributes().get("timedate"));
+            b.setJobEngineProjectID(block.getProjectId());
+            b.setWorkflowId(block.getWorkflowId());
+            b.setJobEngineElementID(block.getId());
+            project.addBlockToWorkflow(b);
+        }else if (block.getType().equalsIgnoreCase(WorkflowConstants.cycletimerevent)) {
+            DateTimerEvent b = new DateTimerEvent();
+            b.setName(block.getAttributes().get("name"));
+            b.setTimeDate(block.getAttributes().get("timecycle"));
+            b.setTimeDate(block.getAttributes().get("enddate"));
+            b.setJobEngineProjectID(block.getProjectId());
+            b.setWorkflowId(block.getWorkflowId());
+            b.setJobEngineElementID(block.getId());
+            project.addBlockToWorkflow(b);
+        }
+        else if (block.getType().equalsIgnoreCase(WorkflowConstants.durationtimerevent)) {
+            DateTimerEvent b = new DateTimerEvent();
+            b.setName(block.getAttributes().get("name"));
+            b.setTimeDate(block.getAttributes().get("duration"));
+            b.setJobEngineProjectID(block.getProjectId());
+            b.setWorkflowId(block.getWorkflowId());
+            b.setJobEngineElementID(block.getId());
+            project.addBlockToWorkflow(b);
+        }
+        else if (block.getType().equalsIgnoreCase(WorkflowConstants.dbservicetaskType)) {
             DBWriteBlock b = new DBWriteBlock();
             b.setName(block.getAttributes().get("name"));
             b.setJobEngineProjectID(block.getProjectId());
