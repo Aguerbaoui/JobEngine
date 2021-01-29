@@ -1,13 +1,20 @@
 package io.je.utilities.models;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import io.je.utilities.mapping.EventModelMapping;
+
+
 public class EventModel {
 	
+    @JsonProperty(EventModelMapping.EVENTTYPE)
 	private EventType type;
-
+    @JsonProperty(EventModelMapping.EVENTID)
     private String eventId;
 
+    @JsonProperty(EventModelMapping.EVENTNAME)
     private String name;
 
+    @JsonProperty(EventModelMapping.PROJECTID)
     private String projectId;
 
     public String getProjectId() {
