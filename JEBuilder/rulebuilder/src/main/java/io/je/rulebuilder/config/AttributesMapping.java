@@ -43,7 +43,7 @@ public class AttributesMapping {
 	public static final String DATEEFFECTIVE="date_effective";
 	public static final String DATEEXPIRES="date_expires";
 	public static final String TIMER="timer";
-	public static final String CLASSNAME = "class_name";
+	public static final String CLASSNAME = "class_name"; 
 	public static final String WORKSPACEID = "workspace_id";
 	public static final String CLASSES = "classes";
 

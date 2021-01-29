@@ -108,7 +108,7 @@ public class RuleService {
 	 */
 	public void addBlockToRule(BlockModel blockModel) throws AddRuleBlockException, ProjectNotFoundException, RuleNotFoundException, DataDefinitionUnreachableException, JERunnerErrorException, AddClassException, ClassLoadException, IOException {
 
-		
+		//JELogger.info(getClass(), " RECEIVED BLOCK : " + blockModel);
 		if (blockModel.getProjectId() == null) {
 			throw new AddRuleBlockException( RuleBuilderErrors.BlockProjectIdentifierIsEmpty);
 		}
