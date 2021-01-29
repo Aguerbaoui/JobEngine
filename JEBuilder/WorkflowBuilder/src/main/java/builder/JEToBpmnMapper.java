@@ -86,13 +86,13 @@ public class JEToBpmnMapper {
 						((MessageCatchEvent) block).getMessageRef()));
 			} else if (block instanceof SignalCatchEvent && !block.isProcessed()) {
                 process.addFlowElement(ModelBuilder.createSignalIntermediateCatchEvent(block.getJobEngineElementID(), block.getName(),
-                        ((SignalCatchEvent) block).getMessageRef()));
+                        ((SignalCatchEvent) block).getSignalRef()));
             }else if (block instanceof ThrowMessageEvent && !block.isProcessed()) {
                 process.addFlowElement(ModelBuilder.createThrowMessageEvent(block.getJobEngineElementID(), block.getName(),
                         ((ThrowMessageEvent) block).getMessageRef()));
             }else if (block instanceof ThrowSignalEvent && !block.isProcessed()) {
                 process.addFlowElement(ModelBuilder.createThrowSignalEvent(block.getJobEngineElementID(), block.getName(),
-                        ((ThrowSignalEvent) block).getMessageRef()));
+                        ((ThrowSignalEvent) block).getSignalRef()));
             }else if (block instanceof ScriptBlock && !block.isProcessed()) {
                 process.addFlowElement(ModelBuilder.createScriptTask(block.getJobEngineElementID(), block.getName(),
                         ((ScriptBlock) block).getScript()));

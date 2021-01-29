@@ -6,8 +6,7 @@ import blocks.control.EventGatewayBlock;
 import blocks.control.ExclusiveGatewayBlock;
 import blocks.control.InclusiveGatewayBlock;
 import blocks.control.ParallelGatewayBlock;
-import blocks.events.DateTimerEvent;
-import blocks.events.MessageCatchEvent;
+import blocks.events.*;
 import builder.WorkflowBuilder;
 import io.je.project.beans.JEProject;
 import io.je.project.models.WorkflowBlockModel;
@@ -92,7 +91,32 @@ public class WorkflowService {
             b.setWorkflowId(block.getWorkflowId());
             b.setJobEngineElementID(block.getId());
             project.addBlockToWorkflow(b);
-        } else if (block.getType().equalsIgnoreCase(WorkflowConstants.exclusivegatewayType)) {
+
+        } else if (block.getType().equalsIgnoreCase(WorkflowConstants.messageThrowEventType)) {
+            ThrowMessageEvent b = new ThrowMessageEvent();
+            b.setName(block.getAttributes().get("name"));
+            b.setMessageRef(block.getAttributes().get("messageRef"));
+            b.setJobEngineProjectID(block.getProjectId());
+            b.setWorkflowId(block.getWorkflowId());
+            b.setJobEngineElementID(block.getId());
+            project.addBlockToWorkflow(b);
+        }else if (block.getType().equalsIgnoreCase(WorkflowConstants.signalintermediatecatcheventType)) {
+            SignalCatchEvent b = new SignalCatchEvent();
+            b.setName(block.getAttributes().get("name"));
+            b.setSignalRef(block.getAttributes().get("signalRef"));
+            b.setJobEngineProjectID(block.getProjectId());
+            b.setWorkflowId(block.getWorkflowId());
+            b.setJobEngineElementID(block.getId());
+            project.addBlockToWorkflow(b);
+        }else if (block.getType().equalsIgnoreCase(WorkflowConstants.signalThrowEventType)) {
+            ThrowSignalEvent b = new ThrowSignalEvent();
+            b.setName(block.getAttributes().get("name"));
+            b.setSignalRef(block.getAttributes().get("signalRef"));
+            b.setJobEngineProjectID(block.getProjectId());
+            b.setWorkflowId(block.getWorkflowId());
+            b.setJobEngineElementID(block.getId());
+            project.addBlockToWorkflow(b);
+        }else if (block.getType().equalsIgnoreCase(WorkflowConstants.exclusivegatewayType)) {
             ExclusiveGatewayBlock b = new ExclusiveGatewayBlock();
             b.setName(block.getAttributes().get("name"));
             b.setJobEngineProjectID(block.getProjectId());
