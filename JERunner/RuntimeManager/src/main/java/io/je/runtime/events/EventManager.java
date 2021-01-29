@@ -3,6 +3,7 @@ package io.je.runtime.events;
 import io.je.runtime.services.RuntimeDispatcher;
 import io.je.runtime.workflow.WorkflowEngineHandler;
 import io.je.utilities.beans.JEEvent;
+import io.je.utilities.models.EventType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -58,13 +59,13 @@ public class EventManager {
     public static void triggerEvent(String projectId, String id) {
         JEEvent event = events.get(projectId).get(id);
         if(event != null) {
-            if(event.getType().equals(JEEvent.MESSAGE_EVENT)) {
+            if(event.getType().equals(EventType.MESSAGE_EVENT)) {
                 throwMessageEventInWorkflow(projectId, event.getReference());
             }
-            else if(event.getType().equals(JEEvent.SIGNAL_EVENT)) {
+            else if(event.getType().equals(EventType.SIGNAL_EVENT)) {
                 throwSignalEventInWorkflow(projectId, event.getReference());
             }
-            else if(event.getType().equals(JEEvent.START_WORKFLOW)) {
+            else if(event.getType().equals(EventType.START_WORKFLOW)) {
                 startProcessInstanceByMessage(projectId, event.getReference());
             }
             else {

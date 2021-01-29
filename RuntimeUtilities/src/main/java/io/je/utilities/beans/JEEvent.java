@@ -1,24 +1,19 @@
 package io.je.utilities.beans;
 
+import io.je.utilities.models.EventType;
 import io.je.utilities.runtimeobject.JEObject;
 
 import java.sql.Timestamp;
 
 public class JEEvent extends JEObject {
 
-    public static final String START_WORKFLOW = "START_WORKFLOW";
-
-    public static final String START_RULE = "START_RULE";
-
-    public static final String MESSAGE_EVENT = "MESSAGE_EVENT";
-
-    public static final String SIGNAL_EVENT = "SIGNAL_EVENT";
+   
 
     private String name;
 
     private String triggeredById;
 
-    private String type;
+    private EventType type;
 
     public EventTriggeredCallback getTriggeredCallback() {
         return triggeredCallback;
@@ -51,17 +46,19 @@ public class JEEvent extends JEObject {
         this.triggeredById = triggeredById;
     }
 
-    public String getType() {
-        return type;
-    }
 
-    public void setType(String type) {
-        this.type = type;
-    }
 
-    public JEEvent() {}
+    public EventType getType() {
+		return type;
+	}
 
-    public JEEvent(String jobEngineElementID, String jobEngineProjectID, String name, String type) {
+	public void setType(EventType type) {
+		this.type = type;
+	}
+
+	public JEEvent() {}
+
+    public JEEvent(String jobEngineElementID, String jobEngineProjectID, String name, EventType type) {
         super(jobEngineElementID, jobEngineProjectID);
         this.name = name;
         this.type = type;

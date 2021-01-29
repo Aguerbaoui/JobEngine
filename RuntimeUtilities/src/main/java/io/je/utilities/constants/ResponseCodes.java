@@ -37,5 +37,6 @@ public class ResponseCodes {
 	public static final int INSTANCE_NOT_CREATED = 1024;
 	public static final int PROJECT_RUN_FAILED = 1025;
 	public static final int UNKNOWN_BLOCK = 1026;
+	public static final int EVENT_EXCEPTION = 1027;
 	
 }

@@ -11,6 +11,7 @@ import io.je.utilities.constants.Errors;
 import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.constants.RuleBuilderErrors;
 import io.je.utilities.exceptions.AddRuleBlockException;
+import io.je.utilities.exceptions.EventException;
 import io.je.utilities.exceptions.InvalidSequenceFlowException;
 import io.je.utilities.exceptions.JERunnerErrorException;
 import io.je.utilities.exceptions.ProjectRunException;
@@ -59,7 +60,12 @@ public class JEProject {
     * workflows in a project
     * */
     private HashMap<String, JEWorkflow> workflows;
-
+    
+    
+    /*
+     * Events in a project
+     * */
+     private HashMap<String, JEEvent> events;
 
     /*
     * Is the project running
@@ -323,4 +329,33 @@ public class JEProject {
 
 	
 
+	/******************************************************** EVENTS **********************************************************************/
+	
+	
+	public boolean eventExists(String eventId)
+	{
+		return events.containsKey(eventId);
+	}
+	public void addEvent(String eventId)
+	{
+		
+	}
+	
+	public JEEvent getEvent(String eventId) throws EventException
+	{
+		if(!eventExists(eventId))
+		{
+			throw new EventException(Errors.EVENT_NOT_FOUND);
+		}
+		return events.get(eventId);
+	}
+	
+	public HashMap<String, JEEvent> getEvents() {
+		return events;
+	}
+
+	public void setEvents(HashMap<String, JEEvent> events) {
+		this.events = events;
+	}
+	
 }

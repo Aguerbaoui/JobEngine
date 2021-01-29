@@ -34,6 +34,8 @@ public class Errors {
 
     public final static String workflowAlreadyRunning = "Workflow ALREADY RUNNING";
 
+	public static final String EVENT_NOT_FOUND = " No event with this id was found ";
+
 
 
 }

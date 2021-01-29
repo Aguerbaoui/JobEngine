@@ -7,6 +7,7 @@ import io.je.utilities.beans.JEData;
 import io.je.utilities.beans.JEEvent;
 import io.je.utilities.exceptions.*;
 import io.je.utilities.models.EventModel;
+import io.je.utilities.models.EventType;
 import io.je.utilities.models.WorkflowModel;
 import org.springframework.stereotype.Service;
 
@@ -137,7 +138,7 @@ public class RuntimeDispatcher {
 		m.setReference("msgStart");
 		m.setName("msgStart");
 		m.setEventId("testId");
-		m.setType(JEEvent.START_WORKFLOW);
+		m.setType(EventType.START_WORKFLOW);
 		l.add(m);
 		registerEvents("1212", ruleModel.getProjectId(), l);
 
@@ -155,7 +156,7 @@ public class RuntimeDispatcher {
 		m.setReference("msgStart");
 		m.setName("msgStart");
 		m.setEventId("testId");
-		m.setType(JEEvent.START_WORKFLOW);
+		m.setType(EventType.START_WORKFLOW);
 		l.add(m);
 		registerEvents("1212", ruleModel.getProjectId(), l);
 
