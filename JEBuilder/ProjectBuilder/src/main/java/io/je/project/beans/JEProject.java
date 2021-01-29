@@ -241,6 +241,7 @@ public class JEProject {
     	
     {	
     	((UserDefinedRule) rules.get(blockModel.getRuleId())).addBlock(blockModel);
+    	rules.get(blockModel.getRuleId()).setBuilt(false);
     }
     
 
@@ -249,7 +250,8 @@ public class JEProject {
      */
 	public void updateRuleBlock(BlockModel blockModel) throws AddRuleBlockException {
 		((UserDefinedRule) rules.get(blockModel.getRuleId())).updateBlock(blockModel);
-		
+    	rules.get(blockModel.getRuleId()).setBuilt(false);
+
 	}
 	
 	/*
@@ -258,6 +260,8 @@ public class JEProject {
 
 	public void deleteRuleBlock(String ruleId, String blockId) throws RuleBlockNotFoundException {
 		((UserDefinedRule) rules.get(ruleId)).deleteBlock(blockId);
+    	rules.get(ruleId).setBuilt(false);
+
 		
 	}
 
