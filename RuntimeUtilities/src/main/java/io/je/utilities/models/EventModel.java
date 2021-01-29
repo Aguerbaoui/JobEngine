@@ -1,12 +1,12 @@
 package io.je.utilities.models;
 
 public class EventModel {
+	
+	private EventType type;
 
-    public String type;
+    private String eventId;
 
-    public String eventId;
-
-    public String name;
+    private String name;
 
     private String projectId;
 
@@ -36,7 +36,7 @@ public class EventModel {
         this.name = name;
     }
 
-    public EventModel(String id, String projectId, String type, String reference, String name) {
+    public EventModel(String id, String projectId, EventType type, String reference, String name) {
         super();
         this.type = type;
         this.reference = reference;
@@ -49,15 +49,17 @@ public class EventModel {
         super();
     }
 
-    public String getType() {
-        return type;
-    }
+    
 
-    public void setType(String type) {
-        this.type = type;
-    }
+    public EventType getType() {
+		return type;
+	}
 
-    public String getEventId() {
+	public void setType(EventType type) {
+		this.type = type;
+	}
+
+	public String getEventId() {
         return eventId;
     }
 
