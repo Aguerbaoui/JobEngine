@@ -10,6 +10,7 @@ import java.util.Set;
 
 import org.drools.template.ObjectDataCompiler;
 
+import io.je.rulebuilder.components.blocks.Block;
 import io.je.rulebuilder.components.blocks.ConditionBlock;
 import io.je.rulebuilder.config.RuleBuilderConfig;
 import io.je.rulebuilder.models.BlockModel;
@@ -36,18 +37,16 @@ public class UserDefinedRule extends JERule {
 	 * Map of all the blocks that define this rule
 	 */
 	BlockManager blocks = new BlockManager();
-	
+
 	/*
 	 * class names - data model topics -
 	 */
-	
-	public UserDefinedRule()
-	{
-		
+
+	public UserDefinedRule() {
+
 	}
-	
-	public UserDefinedRule(String projectId, RuleModel ruleModel)
-	{
+
+	public UserDefinedRule(String projectId, RuleModel ruleModel) {
 		super(ruleModel.getRuleId(), projectId, ruleModel.getRuleName());
 		ruleParameters = new RuleParameters();
 		ruleParameters.setSalience(String.valueOf(ruleModel.getSalience()));
@@ -55,11 +54,8 @@ public class UserDefinedRule extends JERule {
 		ruleParameters.setEnabled(ruleModel.isEnabled());
 		ruleParameters.setDateEffective(ruleModel.getDateEffective());
 		ruleParameters.setDateExpires(ruleModel.getDateExpires());
-		
-		
-		
+
 	}
-	
 
 	/*
 	 * generate script rules
@@ -69,41 +65,54 @@ public class UserDefinedRule extends JERule {
 		int scriptedRulesCounter = 0;
 		String scriptedRuleid = "";
 		List<ScriptedRule> scriptedRules = new ArrayList<>();
-		Set<ConditionBlock> rootBlocks = blocks.getRootBlocks();
-		for (ConditionBlock root : rootBlocks) {
+		Set<Block> rootBlocks = blocks.getRootBlocks();
+		for (Block root : rootBlocks) {
 			scriptedRuleid = "[" + jobEngineElementID + "]" + ruleName + ++scriptedRulesCounter;
-			String condition = root.getExpression(); 
-			String consequences = root.getConsequences();
-			String script = generateScript(scriptedRuleid,condition,consequences); 
+			String condition = "";
+			if (root instanceof ConditionBlock) {
+				condition = root.getExpression();
+
+			}
+
+			String consequences = "";
+			if (root instanceof ConditionBlock) {
+				consequences = ((ConditionBlock) root).getConsequences();
+
+			} else {
+				consequences = root.getExpression();
+			}
+
+			String script = generateScript(scriptedRuleid, condition, consequences);
 			JELogger.info(script);
-			ScriptedRule rule = new ScriptedRule(jobEngineProjectID, scriptedRuleid, script, ruleName + scriptedRulesCounter);
-			scriptedRules.add(rule);			
+			ScriptedRule rule = new ScriptedRule(jobEngineProjectID, scriptedRuleid, script,
+					ruleName + scriptedRulesCounter);
+			scriptedRules.add(rule);
 		}
 		return scriptedRules;
 	}
-	
-    /*generate DRL for this rule */
-    
-	private String generateScript(String ruleId,String condition , String consequences) throws RuleBuildFailedException
-	{
-		
+
+	/* generate DRL for this rule */
+
+	private String generateScript(String ruleId, String condition, String consequences)
+			throws RuleBuildFailedException {
+
 		// set rule attributes
-        Map<String, String> ruleTemplateAttributes = new HashMap<>();
-        ruleTemplateAttributes.put("ruleName", ruleId);
-        ruleTemplateAttributes.put("salience", ruleParameters.getSalience());   
-        ruleTemplateAttributes.put("enabled", String.valueOf(ruleParameters.isEnabled()));        
-        ruleTemplateAttributes.put("condition", condition);        
-        ruleTemplateAttributes.put("consequence", consequences);        
-        ObjectDataCompiler objectDataCompiler = new ObjectDataCompiler();
-        String ruleContent = "";
-        try {
-            ruleContent = objectDataCompiler.compile(Arrays.asList(ruleTemplateAttributes), new FileInputStream(RuleBuilderConfig.ruleTemplatePath));
-        } catch(Exception e)
-        {
-        	throw new RuleBuildFailedException(RuleBuilderErrors.RuleBuildFailed + e.getMessage() );
-        }
-        return ruleContent;
-		
+		Map<String, String> ruleTemplateAttributes = new HashMap<>();
+		ruleTemplateAttributes.put("ruleName", ruleId);
+		ruleTemplateAttributes.put("salience", ruleParameters.getSalience());
+		ruleTemplateAttributes.put("enabled", String.valueOf(ruleParameters.isEnabled()));
+		ruleTemplateAttributes.put("condition", condition);
+		ruleTemplateAttributes.put("consequence", consequences);
+		ObjectDataCompiler objectDataCompiler = new ObjectDataCompiler();
+		String ruleContent = "";
+		try {
+			ruleContent = objectDataCompiler.compile(Arrays.asList(ruleTemplateAttributes),
+					new FileInputStream(RuleBuilderConfig.ruleTemplatePath));
+		} catch (Exception e) {
+			throw new RuleBuildFailedException(RuleBuilderErrors.RuleBuildFailed + e.getMessage());
+		}
+		return ruleContent;
+
 	}
 
 	/*
@@ -146,7 +155,5 @@ public class UserDefinedRule extends JERule {
 	public List<ClassDefinition> getTopics() {
 		return blocks.getTopics();
 	}
-	
-	
 
 }
