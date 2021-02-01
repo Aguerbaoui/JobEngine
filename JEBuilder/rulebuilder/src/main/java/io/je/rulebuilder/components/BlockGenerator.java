@@ -16,6 +16,7 @@ import io.je.rulebuilder.components.blocks.comparison.GreaterOrEqualBlock;
 import io.je.rulebuilder.components.blocks.comparison.GreaterThanBlock;
 import io.je.rulebuilder.components.blocks.comparison.LessOrEqualBlock;
 import io.je.rulebuilder.components.blocks.comparison.LessThanBlock;
+import io.je.rulebuilder.components.blocks.event.AcceptEventBlock;
 import io.je.rulebuilder.components.blocks.execution.LogBlock;
 import io.je.rulebuilder.components.blocks.execution.TriggerEventBlock;
 import io.je.rulebuilder.components.blocks.getter.AttributeGetterBlock;
@@ -161,6 +162,8 @@ public class BlockGenerator {
 			return new AttributeGetterBlock(blockModel);
 		case 4003:
 			break;
+		case 6001:
+			return new AcceptEventBlock(blockModel);
 		/*
 		 * Execution blocks
 		 */
