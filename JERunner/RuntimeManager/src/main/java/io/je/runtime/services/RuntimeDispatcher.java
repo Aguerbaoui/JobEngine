@@ -62,19 +62,6 @@ public class RuntimeDispatcher {
 			ProjectAlreadyRunningException, WorkflowNotFoundException {
 		
 
-		/* TODO: to delete : hardcoded for test */
-		String testTopic = "00fd4e5d-5f19-4b8a-9c89-66e05be497b4";
-		if(projectsByTopic.get(testTopic)==null)
-		{
-	        projectsByTopic.put(testTopic,new HashSet<>() );
-
-		}
-		projectsByTopic.get(testTopic).add(projectId);
-        
-        DataListener.subscribeToTopic(testTopic);
-     
-
-       /* ------------------------------ */
 		
        projectStatus.put(projectId, true);
 		ArrayList<String> topics = new ArrayList<>();
@@ -86,7 +73,7 @@ public class RuntimeDispatcher {
 
 		}
 
-		//DataListener.startListening(topics);
+		DataListener.startListening(topics);
 		RuleEngineHandler.runRuleEngineProject(projectId);
 		WorkflowEngineHandler.runAllWorkflows(projectId);
 	}

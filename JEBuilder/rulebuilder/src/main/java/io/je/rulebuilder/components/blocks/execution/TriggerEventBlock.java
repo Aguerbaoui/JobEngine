@@ -23,7 +23,7 @@ public class TriggerEventBlock extends ExecutionBlock {
 
 	@Override
 	public String getExpression() {
-		return "Executioner.triggerEvent(" +eventId  +" , "+ jobEngineElementID + ");";
+		return "Executioner.triggerEvent(" +jobEngineProjectID  +" , "+ eventId  + ");";
 	}
 
 

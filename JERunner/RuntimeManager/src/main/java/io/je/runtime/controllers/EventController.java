@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class EventController {
 
 	@Autowired
-	RuntimeDispatcher runtimeDispatcher = new RuntimeDispatcher();
+	RuntimeDispatcher runtimeDispatcher ;
 
 	/*
 	 * add a new event
@@ -36,5 +36,16 @@ public class EventController {
 
 		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.RuleAdditionSucceeded));
 	}
+	
+
+    /*
+     * trigger event
+     * */
+    @GetMapping(value = "/triggerEvent/{projectId}/{eventId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> triggerEvent(@PathVariable String projectId, @PathVariable String eventId) {
+    	runtimeDispatcher.triggerEvent(projectId, eventId);
+        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.TOPIC_ADDED));
+    }
+
 
 }

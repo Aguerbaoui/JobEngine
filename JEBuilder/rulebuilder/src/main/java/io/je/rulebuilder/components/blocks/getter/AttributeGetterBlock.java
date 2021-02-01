@@ -31,6 +31,13 @@ public class AttributeGetterBlock extends GetterBlock {
 	@Override
 	public String getExpression() {
 		StringBuilder expression = new StringBuilder();
+		if(!inputBlocks.isEmpty())
+		{
+			expression.append("\n");
+			expression.append(inputBlocks.get(0).getExpression());
+			expression.append("\n");
+
+		}
 		expression.append("$" + blockName.replaceAll("\\s+", "") + " : " + classPath + " ( $" + getFinalAttributeName() + " : "
 				+ attributeName + " )"); // TODO: nested attributes
 		return expression.toString();
@@ -39,6 +46,13 @@ public class AttributeGetterBlock extends GetterBlock {
 	@Override
 	public String getAsFirstOperandExpression() {
 		StringBuilder expression = new StringBuilder();
+		if(!inputBlocks.isEmpty())
+		{
+			expression.append("\n");
+			expression.append(inputBlocks.get(0).getExpression());
+			expression.append("\n");
+
+		}
 		expression.append("$" + blockName.replaceAll("\\s+", "") + " : " + classPath + " ( " + getFinalAttributeName() + " "
 				+ Keywords.toBeReplaced + " )"); // TODO: nested attributes
 		return expression.toString();
