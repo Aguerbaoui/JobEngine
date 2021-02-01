@@ -1,5 +1,6 @@
 package io.je.runtime.events;
 
+import io.je.runtime.ruleenginehandler.RuleEngineHandler;
 import io.je.runtime.services.RuntimeDispatcher;
 import io.je.runtime.workflow.WorkflowEngineHandler;
 import io.je.utilities.beans.JEEvent;
@@ -59,6 +60,8 @@ public class EventManager {
     public static void triggerEvent(String projectId, String id) {
         JEEvent event = events.get(projectId).get(id);
         if(event != null) {
+            event.setTriggered(true);
+            RuleEngineHandler.addEvent(event);
             if(event.getType().equals(EventType.MESSAGE_EVENT)) {
                 throwMessageEventInWorkflow(projectId, event.getReference());
             }
@@ -67,9 +70,8 @@ public class EventManager {
             }
             else if(event.getType().equals(EventType.START_WORKFLOW)) {
                 startProcessInstanceByMessage(projectId, event.getReference());
-            }
-            else {
-                startRule(event.getReference());
+
+
             }
         }
     }
@@ -82,6 +84,7 @@ public class EventManager {
             events.put(projectId, new HashMap<>());
         }
         events.get(projectId).put(event.getJobEngineElementID(), event);
+        RuleEngineHandler.addEvent(event);
     }
 
 

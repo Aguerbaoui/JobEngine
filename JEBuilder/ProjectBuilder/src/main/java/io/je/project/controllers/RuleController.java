@@ -138,7 +138,7 @@ public class RuleController {
 	/*
 	 * add a new scripted Rule
 	 */
-	@PostMapping(value = "/{projectId}/addScriptedRule}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(value = "/{projectId}/addScriptedRule", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> addScriptedRule(@PathVariable("projectId") String projectId,@RequestBody ScriptRuleModel ruleModel) {
 		
 				try {

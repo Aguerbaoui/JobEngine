@@ -83,6 +83,7 @@ public class JEProject {
     public JEProject(String projectId, String projectName, String configurationPath) {
         rules = new HashMap<>();
         workflows = new HashMap<>();
+        events = new HashMap<>();
         this.projectId = projectId;
         this.projectName = projectName;
         this.configurationPath = configurationPath;

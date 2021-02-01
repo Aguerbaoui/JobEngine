@@ -12,6 +12,7 @@ import io.je.utilities.constants.ClassBuilderErrors;
 import io.je.utilities.constants.Errors;
 import io.je.utilities.constants.JEGlobalconfig;
 import io.je.utilities.exceptions.JERunnerErrorException;
+import io.je.utilities.models.EventModel;
 import io.je.utilities.network.JEResponse;
 import io.je.utilities.network.Network;
 
@@ -213,5 +214,33 @@ public class JERunnerAPIHandler {
 
 
 	}
+
+
+
+	//compile rule 
+		public static JEResponse addEvent(HashMap<String,String> requestModel) throws JERunnerErrorException, IOException
+		{
+			Response response = null;
+			try {
+				response = Network.makeNetworkCallWithJsonBodyWithResponse(requestModel,
+						JEGlobalconfig.RUNTIME_MANAGER_BASE_API + "/event/addEvent");
+
+			} catch (Exception e) {
+				throw new JERunnerErrorException(Errors.JERUNNER_UNREACHABLE);
+			}
+			if(response == null)
+			{
+				throw new JERunnerErrorException(Errors.JERUNNER_UNREACHABLE);
+
+			}
+
+			if ( response.code() != 200) {
+				throw new JERunnerErrorException(Errors.JERUNNER_ERROR + " : " + response.body().string());
+			}
+
+			String respBody = response.body().string();
+			ObjectMapper objectMapper = new ObjectMapper();
+			return objectMapper.readValue(respBody,JEResponse.class);
+		}
 
 }

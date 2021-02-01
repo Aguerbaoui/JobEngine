@@ -14,7 +14,7 @@ import io.je.runtime.objects.InstanceManager;
 import io.je.utilities.constants.RuleEngineErrors;
 
 import io.je.utilities.beans.JEData;
-
+import io.je.utilities.beans.JEEvent;
 import io.je.utilities.exceptions.*;
 import io.je.utilities.logger.JELogger;
 import io.je.utilities.runtimeobject.JEObject;
@@ -138,6 +138,12 @@ public class RuleEngineHandler {
 
 	public static void deleteRule(String projectId,String ruleId) throws DeleteRuleException {
 		RuleEngine.deleteRule(projectId,ruleId);
+		
+	}
+
+
+	public static void addEvent(JEEvent event) {
+		RuleEngine.assertFact(event.getJobEngineProjectID(), event);
 		
 	}
 

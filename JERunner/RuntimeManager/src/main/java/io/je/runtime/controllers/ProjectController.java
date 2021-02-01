@@ -47,7 +47,6 @@ public class ProjectController {
      * */
     @GetMapping(value = "/runProject/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> runProject(@PathVariable String projectId) {
-        //Start listening via data listener do not forget plz
         try {
             dispatcher.runProject(projectId);
         } catch (RulesNotFiredException | RuleBuildFailedException | ProjectAlreadyRunningException | WorkflowNotFoundException e) {
@@ -62,12 +61,9 @@ public class ProjectController {
      * */
     @GetMapping(value = "/stopProject/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> stopProject(@PathVariable String projectId) {
-        try {
+    	//TODO: add failed to stop project exception
             dispatcher.stopProject(projectId);
-        } catch (RulesNotFiredException | RuleBuildFailedException | ProjectAlreadyRunningException e) {
-            e.printStackTrace();
-            return ResponseEntity.badRequest().body(new JEResponse(e.getCode(), e.getMessage()));
-        }
+
         return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.STOPPING_PROJECT));
 
     }

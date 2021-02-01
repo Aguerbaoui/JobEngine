@@ -2,21 +2,17 @@ package io.je.runtime.services;
 
 import io.je.runtime.events.EventManager;
 import io.je.runtime.workflow.WorkflowEngineHandler;
-import io.je.utilities.beans.EventTriggeredCallback;
 import io.je.utilities.beans.JEData;
 import io.je.utilities.beans.JEEvent;
 import io.je.utilities.exceptions.*;
 import io.je.utilities.models.EventModel;
-import io.je.utilities.models.EventType;
 import io.je.utilities.models.WorkflowModel;
 import org.springframework.stereotype.Service;
 
 import io.je.runtime.data.DataListener;
 import io.je.runtime.models.ClassModel;
-import io.je.runtime.models.InstanceModel;
 import io.je.runtime.models.RuleModel;
 import io.je.runtime.objects.ClassManager;
-import io.je.runtime.objects.InstanceManager;
 import io.je.runtime.ruleenginehandler.RuleEngineHandler;
 import io.je.utilities.exceptions.ClassLoadException;
 import io.je.utilities.exceptions.DeleteRuleException;
@@ -29,8 +25,6 @@ import io.je.utilities.exceptions.RuleCompilationException;
 import io.je.utilities.exceptions.RuleFormatNotValidException;
 import io.je.utilities.exceptions.RuleNotAddedException;
 import io.je.utilities.exceptions.RulesNotFiredException;
-import io.je.utilities.logger.JELogger;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -99,8 +93,7 @@ public class RuntimeDispatcher {
 
 	// stop project
 	// run project
-	public void stopProject(String projectId)
-			throws RulesNotFiredException, RuleBuildFailedException, ProjectAlreadyRunningException {
+	public void stopProject(String projectId) {
 		
 		// stop workflows
 		
@@ -131,17 +124,6 @@ public class RuntimeDispatcher {
 
 
 		RuleEngineHandler.addRule(ruleModel);
-		//TODO remove this after testing, temporary should be relocated to ruleModel
-		ArrayList<EventModel> l = new ArrayList<>();
-		EventModel m = new EventModel();
-		m.setProjectId(ruleModel.getProjectId());
-		m.setReference("msgStart");
-		m.setName("msgStart");
-		m.setEventId("testId");
-		m.setType(EventType.START_WORKFLOW);
-		l.add(m);
-		registerEvents("1212", ruleModel.getProjectId(), l);
-
 	}
 
 	// update rule
@@ -149,16 +131,6 @@ public class RuntimeDispatcher {
 			throws RuleCompilationException, JEFileNotFoundException, RuleFormatNotValidException {
 
 		RuleEngineHandler.updateRule(ruleModel);
-		//TODO remove this after testing, temporary should be relocated to ruleModel
-		ArrayList<EventModel> l = new ArrayList<>();
-		EventModel m = new EventModel();
-		m.setProjectId(ruleModel.getProjectId());
-		m.setReference("msgStart");
-		m.setName("msgStart");
-		m.setEventId("testId");
-		m.setType(EventType.START_WORKFLOW);
-		l.add(m);
-		registerEvents("1212", ruleModel.getProjectId(), l);
 
 	}
 
@@ -237,11 +209,7 @@ public class RuntimeDispatcher {
 	// update class
 	// delete class
 
-	/////////////////////////////// instance creation example : TODO to be deleted 
-	public void addInstanceTest(InstanceModel instanceModel) throws InstanceCreationFailed {
-		JELogger.info(getClass(), instanceModel.toString());
-		InstanceManager.createInstance(instanceModel);
-	}
+
 
 	public static void injectData(JEData jeData) throws InstanceCreationFailed {
 		for (String projectId : projectsByTopic.get(jeData.getTopic())) {
@@ -277,18 +245,19 @@ public class RuntimeDispatcher {
 	}
 
 
-	public void registerEvents(String id, String projectId, ArrayList<EventModel> events) {
-		for(EventModel event: events) {
+	public void addEvent(EventModel eventModel) {	
 			JEEvent e = new JEEvent();
-			e.setName(event.getName());
-			e.setTriggeredById(id);
-			e.setReference(event.getReference());
-			e.setJobEngineElementID(event.getEventId());
-			e.setJobEngineProjectID(projectId);
-			e.setType(event.getType());
-			e.setTriggeredCallback(eventId -> triggerEvent(projectId, event.getReference()));
-			//RuleEngineHandler.addRuleEvent(id, projectId, e);
-			EventManager.addEvent(projectId, e);
-		}
+			e.setName(eventModel.getName());
+			e.setTriggeredById(eventModel.getEventId());
+			e.setReference(eventModel.getReference());
+			e.setJobEngineElementID(eventModel.getEventId());
+			e.setJobEngineProjectID(eventModel.getProjectId());
+			e.setType(eventModel.getType());
+			EventManager.addEvent(eventModel.getProjectId(), e);
+		
 	}
+	
+	
+
+	
 }
