@@ -194,7 +194,7 @@ public class JERunnerAPIHandler {
 	{
 		Response response = null;
 		try {
-			response = Network.makeGetNetworkCallWithResponse(JEGlobalconfig.RUNTIME_MANAGER_BASE_API + "/project/triggerEvent/" + projectId + "/" + eventId);
+			response = Network.makeGetNetworkCallWithResponse(JEGlobalconfig.RUNTIME_MANAGER_BASE_API + "/event/triggerEvent/" + projectId + "/" + eventId);
 
 		} catch (Exception e) {
 			throw new JERunnerErrorException(Errors.JERUNNER_UNREACHABLE +" "+ e.getMessage());

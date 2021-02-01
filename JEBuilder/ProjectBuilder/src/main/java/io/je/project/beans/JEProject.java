@@ -301,7 +301,7 @@ public class JEProject {
 			if(!rule.isBuilt())
 			{
 				isBuilt = false;
-				JELogger.info("Rule Not built : " + rule.getRuleName());
+				//JELogger.info("Rule Not built : " + rule.getRuleName());
 			}
 		}
 		
