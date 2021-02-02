@@ -8,16 +8,14 @@ public class AttributeGetterBlock extends GetterBlock {
 
 	String classPath;
 	String attributeName;
-	String workspaceId;
-	String classId;
+
 	// specific instances
 
 	public AttributeGetterBlock(BlockModel blockModel) {
 		super(blockModel);
 		classPath = blockModel.getBlockConfiguration().getClassName();
 		attributeName = blockModel.getBlockConfiguration().getAttributeName();
-		workspaceId = blockModel.getBlockConfiguration().getWorkspaceId();
-		classId= blockModel.getBlockConfiguration().getClassId();
+
 	}
 
 	public AttributeGetterBlock() {
@@ -92,24 +90,7 @@ public class AttributeGetterBlock extends GetterBlock {
 		this.attributeName = attributeName;
 	}
 
-	
-	public String getWorkspaceId() {
-		return workspaceId;
-	}
 
-	public void setWorkspaceId(String workspaceId) {
-		this.workspaceId = workspaceId;
-	}
-	
-	
-
-	public String getClassId() {
-		return classId;
-	}
-
-	public void setClassId(String classId) {
-		this.classId = classId;
-	}
 
 	private String getFinalAttributeName() {
 		String s = "";
