@@ -52,7 +52,7 @@ public class UserDefinedRule extends JERule {
 		ruleParameters = new RuleParameters();
 		ruleParameters.setSalience(String.valueOf(ruleModel.getSalience()));
 		ruleParameters.setTimer(ruleModel.getTimer());
-		ruleParameters.setEnabled(ruleModel.isEnabled());
+		ruleParameters.setEnabled(ruleModel.getEnabled());
 		ruleParameters.setDateEffective(ruleModel.getDateEffective());
 		ruleParameters.setDateExpires(ruleModel.getDateExpires());
 
@@ -102,7 +102,7 @@ public class UserDefinedRule extends JERule {
 		ruleTemplateAttributes.put("ruleName", ruleId);
 		ruleTemplateAttributes.put("salience", ruleParameters.getSalience());
 		ruleTemplateAttributes.put("cronExpression", ruleParameters.getTimer());
-		ruleTemplateAttributes.put("enabled", String.valueOf(ruleParameters.isEnabled()));
+		ruleTemplateAttributes.put("enabled", ruleParameters.getEnabled());
 		ruleTemplateAttributes.put("condition", condition);
 		ruleTemplateAttributes.put("consequence", consequences);
 		ObjectDataCompiler objectDataCompiler = new ObjectDataCompiler();

@@ -29,6 +29,8 @@ public class ClassDefinition {
 	public void setClassId(String classId) {
 		this.classId = classId;
 	}
+	private ClassDefinition() {
+	}
 	
 	
 	
