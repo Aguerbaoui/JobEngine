@@ -1,6 +1,8 @@
 package blocks.basic;
 
 import blocks.WorkflowBlock;
+import io.je.utilities.constants.APIConstants;
+import io.je.utilities.string.JEStringUtils;
 
 public class StartBlock extends WorkflowBlock {
 
@@ -11,6 +13,10 @@ public class StartBlock extends WorkflowBlock {
     }
 
     public void setReference(String reference) {
-        this.reference = reference;
+        if (JEStringUtils.isEmpty(reference)) return;
+        if(reference.equalsIgnoreCase(APIConstants.DEFAULT))
+            this.reference = null;
+        else
+            this.reference = reference;
     }
 }

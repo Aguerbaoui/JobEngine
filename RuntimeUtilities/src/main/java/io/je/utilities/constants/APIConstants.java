@@ -31,5 +31,5 @@ public class APIConstants {
 
 	public static final String STOP_PROJECT = "/project/stopProject/";
 
-
+    public static final String DEFAULT =  "DEFAULT";
 }

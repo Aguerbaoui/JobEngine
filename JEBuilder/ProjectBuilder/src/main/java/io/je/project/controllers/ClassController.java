@@ -47,8 +47,8 @@ public class ClassController {
 		} catch (IOException e) {
 			
 			e.printStackTrace();
-			JELogger.info(WorkflowController.class, Errors.uknownError);
-            return ResponseEntity.badRequest().body(new JEResponse(ResponseCodes.UNKNOWN_ERROR, Errors.uknownError));
+			JELogger.info(WorkflowController.class, Errors.UKNOWN_ERROR);
+            return ResponseEntity.badRequest().body(new JEResponse(ResponseCodes.UNKNOWN_ERROR, Errors.UKNOWN_ERROR));
 		}
 		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.classAddedSuccessully));
 

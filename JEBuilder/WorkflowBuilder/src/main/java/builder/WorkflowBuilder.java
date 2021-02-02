@@ -4,12 +4,15 @@ import blocks.WorkflowBlock;
 import blocks.events.ThrowMessageEvent;
 import blocks.events.ThrowSignalEvent;
 import com.squareup.okhttp.Response;
+import io.je.utilities.apis.JERunnerAPIHandler;
 import io.je.utilities.beans.JEEvent;
 import io.je.utilities.constants.APIConstants;
 import io.je.utilities.constants.JEGlobalconfig;
+import io.je.utilities.exceptions.JERunnerErrorException;
 import io.je.utilities.logger.JELogger;
 import io.je.utilities.models.EventModel;
 import io.je.utilities.models.WorkflowModel;
+import io.je.utilities.network.JEResponse;
 import io.je.utilities.network.Network;
 import models.JEWorkflow;
 import org.springframework.ui.Model;
@@ -27,7 +30,7 @@ public class WorkflowBuilder {
     /*
     * Build workflow bpmn
     * */
-    public static void buildWorkflow(JEWorkflow workflow) throws IOException {
+    public static boolean buildWorkflow(JEWorkflow workflow) throws IOException, JERunnerErrorException {
         //JEToBpmnMapper.createBpmnFromJEWorkflow(workflow);
         //TODO fix this shit will u still just testing atm
         /*
@@ -55,8 +58,16 @@ public class WorkflowBuilder {
         }
         wf.setEvents(events);*/
         wf.setTriggeredByEvent(workflow.isTriggeredByEvent());
-        Response response = Network.makeNetworkCallWithJsonObjectBodyWithResponse(wf, JEGlobalconfig.RUNTIME_MANAGER_BASE_API + APIConstants.ADD_WORKFLOW);
-        JELogger.info(WorkflowBuilder.class, response.body().string());
+        workflow.setStatus(JEWorkflow.BUILDING);
+        JELogger.trace(WorkflowBuilder.class, "Building workflow with id = " + workflow.getJobEngineElementID());
+        JEResponse res = JERunnerAPIHandler.addWorkflow(wf);
+        if(res.getCode() != 200) {
+            return false;
+        }
+
+        //Network.makeNetworkCallWithJsonObjectBodyWithResponse(wf, JEGlobalconfig.RUNTIME_MANAGER_BASE_API + APIConstants.ADD_WORKFLOW);
+        workflow.setStatus(JEWorkflow.BUILT);
+        return true;
 
     }
 

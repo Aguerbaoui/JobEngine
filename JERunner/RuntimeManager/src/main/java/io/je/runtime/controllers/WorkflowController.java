@@ -2,7 +2,9 @@ package io.je.runtime.controllers;
 
 import io.je.runtime.services.RuntimeDispatcher;
 import io.je.utilities.constants.ResponseCodes;
+import io.je.utilities.exceptions.WorkflowAlreadyRunningException;
 import io.je.utilities.exceptions.WorkflowNotFoundException;
+import io.je.utilities.exceptions.WorkflwTriggeredByEventException;
 import io.je.utilities.models.WorkflowModel;
 import io.je.utilities.network.JEResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,7 +54,7 @@ public class WorkflowController {
         try {
             //JELogger.info(WorkflowController.class, "Executing");
             dispatcher.launchProcessWithoutVariables(projectId, key);
-        } catch (WorkflowNotFoundException e) {
+        } catch (WorkflowNotFoundException | WorkflowAlreadyRunningException | WorkflwTriggeredByEventException e) {
             return ResponseEntity.badRequest().body(new JEResponse(e.getCode(), e.getMessage()));
         }
         return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, EXECUTING_WORKFLOW));

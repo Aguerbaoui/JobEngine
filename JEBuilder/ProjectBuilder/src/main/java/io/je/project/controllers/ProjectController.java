@@ -2,22 +2,19 @@ package io.je.project.controllers;
 
 import io.je.project.beans.JEProject;
 import io.je.project.models.ProjectModel;
-import io.je.project.models.WorkflowModel;
 import io.je.project.services.ProjectService;
 import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.constants.Errors;
-import io.je.utilities.constants.ResponseMessages;
 import io.je.utilities.exceptions.*;
 import io.je.utilities.logger.JELogger;
 import io.je.utilities.network.JEResponse;
-import models.JEWorkflow;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.Arrays;
 
 import static io.je.utilities.constants.ResponseMessages.*;
 
@@ -40,13 +37,16 @@ public class ProjectController {
 	@PostMapping(value = "/addProject", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> addProject(@RequestBody ProjectModel m) {
 		JEProject p = new JEProject(m.getProjectId(), m.getProjectName(), m.getConfigurationPath());
+		JELogger.trace(ProjectController.class, "Creating project with id = " + m.getProjectId());
 		projectService.saveProject(p);
 		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, CREATED_PROJECT_SUCCESSFULLY));
 	}
 
 	@GetMapping("/getProject/{projectId}")
-	public JEProject getProject(@PathVariable String projectId) {
-		return projectService.getProject(projectId);
+	public ResponseEntity<?> getProject(@PathVariable String projectId) {
+		return ResponseEntity.ok(projectService.getProject(projectId) != null ?
+				projectService.getProject(projectId) :
+				new JEResponse(ResponseCodes.PROJECT_NOT_FOUND, Errors.PROJECT_NOT_FOUND));
 	}
 
 	/*
@@ -56,16 +56,16 @@ public class ProjectController {
 	public ResponseEntity<?> buildProject(@PathVariable String projectId) {
 		try {
 			projectService.buildAll(projectId);
-		} catch (ProjectNotFoundException | WorkflowNotFoundException | RuleBuildFailedException
-				| JERunnerErrorException | DataDefinitionUnreachableException | AddClassException | ClassLoadException  e) {
+		} catch (ProjectNotFoundException |  RuleBuildFailedException
+				| JERunnerErrorException e) {
+			JELogger.error(ProjectController.class, e.getMessage());
 			return ResponseEntity.badRequest().body(new JEResponse(e.getCode(), e.getMessage()));
 
 		} catch (Exception e) {
-			e.printStackTrace();
-			JELogger.info(ProjectController.class, e.getMessage());
-			return ResponseEntity.badRequest().body(new JEResponse(ResponseCodes.UNKNOWN_ERROR, Errors.uknownError));
+			JELogger.error(ProjectController.class, Arrays.toString(e.getStackTrace()));
+			return ResponseEntity.badRequest().body(new JEResponse(ResponseCodes.UNKNOWN_ERROR, Errors.UKNOWN_ERROR));
 		}
-		JELogger.info(ProjectController.class, BUILT_EVERYTHING_SUCCESSFULLY);
+		JELogger.trace(ProjectController.class, BUILT_EVERYTHING_SUCCESSFULLY);
 		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, BUILT_EVERYTHING_SUCCESSFULLY));
 	}
 
@@ -76,15 +76,13 @@ public class ProjectController {
 			try {
 				projectService.runAll(projectId);
 			} catch (JERunnerErrorException | ProjectRunException | ProjectNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			JELogger.error(ProjectController.class, e.getMessage());
 			return ResponseEntity.badRequest().body(new JEResponse(ResponseCodes.NETWORK_ERROR, Errors.NETWORK_ERROR));
 		} catch (Exception e) {
-			e.printStackTrace();
-			return ResponseEntity.badRequest().body(new JEResponse(ResponseCodes.UNKNOWN_ERROR, Errors.uknownError));
+			JELogger.error(ProjectController.class, Arrays.toString(e.getStackTrace()));
+			return ResponseEntity.badRequest().body(new JEResponse(ResponseCodes.UNKNOWN_ERROR, Errors.UKNOWN_ERROR));
 		}
 		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, PROJECT_RUNNING));
 	}
@@ -97,13 +95,13 @@ public class ProjectController {
 			
 				try {
 					projectService.stopProject(projectId);
-				} catch (ProjectNotFoundException | JERunnerErrorException | ProjectRunException
+				} catch (ProjectNotFoundException | JERunnerErrorException | ProjectRunException | ProjectStatusException
 						e) {
-					e.printStackTrace();
 					JELogger.error(RuleController.class, e.getMessage());
 					return ResponseEntity.badRequest().body(new JEResponse(e.getCode(), e.getMessage()));
 				} catch (Exception e) {
-					return ResponseEntity.badRequest().body(new JEResponse(ResponseCodes.UNKNOWN_ERROR, Errors.uknownError));
+					JELogger.error(ProjectController.class, Arrays.toString(e.getStackTrace()));
+					return ResponseEntity.badRequest().body(new JEResponse(ResponseCodes.UNKNOWN_ERROR, Errors.UKNOWN_ERROR));
 
 				}
 		

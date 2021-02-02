@@ -1,6 +1,8 @@
 package blocks.events;
 
 import blocks.WorkflowBlock;
+import io.je.utilities.constants.APIConstants;
+import io.je.utilities.string.JEStringUtils;
 
 public class MessageCatchEvent extends WorkflowBlock {
 
@@ -11,6 +13,9 @@ public class MessageCatchEvent extends WorkflowBlock {
     }
 
     public void setMessageRef(String messageRef) {
-        this.messageRef = messageRef;
+        if (JEStringUtils.isEmpty(messageRef)) return;
+        if(messageRef.equalsIgnoreCase(APIConstants.DEFAULT)) this.messageRef = null;
+        else
+            this.messageRef = messageRef;
     }
 }

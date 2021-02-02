@@ -32,8 +32,15 @@ public class JELogger {
     	rootConfig.setLevel(Level.DEBUG);
 
     	context.updateLoggers();
-    }
+    }*/
+
     /*
+    * Trace log level
+    * */
+     public static void trace(Class<?> clazz, String msg) {
+        logger.trace(clazz.toString() +" : "+ msg);
+
+    }
     /*
      * log level 1 : debug
      */
@@ -41,8 +48,10 @@ public class JELogger {
         logger.debug(clazz.toString() +" : "+ msg);
         
     }
-    
-    
+
+
+
+
     /*
      * log level 2 : info
      */

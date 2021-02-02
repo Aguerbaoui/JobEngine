@@ -1,6 +1,8 @@
 package blocks.events;
 
 import blocks.WorkflowBlock;
+import io.je.utilities.constants.APIConstants;
+import io.je.utilities.string.JEStringUtils;
 
 public class DateTimerEvent extends WorkflowBlock {
 
@@ -11,6 +13,9 @@ public class DateTimerEvent extends WorkflowBlock {
     }
 
     public void setTimeDate(String timeDate) {
-        this.timeDate = timeDate;
+        if (JEStringUtils.isEmpty(timeDate)) return;
+        if(timeDate.equalsIgnoreCase(APIConstants.DEFAULT)) this.timeDate = null;
+        else
+            this.timeDate = timeDate;
     }
 }

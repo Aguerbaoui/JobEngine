@@ -1,6 +1,8 @@
 package blocks.events;
 
 import blocks.WorkflowBlock;
+import io.je.utilities.constants.APIConstants;
+import io.je.utilities.string.JEStringUtils;
 
 public class CycleTimerEvent extends WorkflowBlock {
 
@@ -13,7 +15,10 @@ public class CycleTimerEvent extends WorkflowBlock {
     }
 
     public void setTimeCycle(String timeCycle) {
-        this.timeCycle = timeCycle;
+        if (JEStringUtils.isEmpty(timeCycle)) return;
+        if(timeCycle.equalsIgnoreCase(APIConstants.DEFAULT)) this.timeCycle = null;
+        else
+            this.timeCycle = timeCycle;
     }
 
     public String getEndDate() {
@@ -21,6 +26,9 @@ public class CycleTimerEvent extends WorkflowBlock {
     }
 
     public void setEndDate(String endDate) {
-        this.endDate = endDate;
+        if (JEStringUtils.isEmpty(endDate)) return;
+        if(endDate.equalsIgnoreCase(APIConstants.DEFAULT)) this.endDate = null;
+        else
+            this.endDate = endDate;
     }
 }

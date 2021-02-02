@@ -41,7 +41,6 @@ public class Network {
     }
     
     public static Response makeGetNetworkCallWithResponse(String url) throws IOException {
-//http://127.0.0.1:8081/project/runProject/0001
         Request request = new Request.Builder().url(url).get().build();
         Call call = client.newCall(request);
         JELogger.info(Network.class, url);

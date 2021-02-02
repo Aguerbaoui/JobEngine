@@ -2,12 +2,9 @@ package models;
 
 import blocks.WorkflowBlock;
 import blocks.basic.StartBlock;
-import io.je.utilities.beans.JEEvent;
-import io.je.utilities.constants.APIConstants;
 import io.je.utilities.constants.Errors;
 import io.je.utilities.exceptions.InvalidSequenceFlowException;
 import io.je.utilities.exceptions.WorkflowBlockNotFound;
-import io.je.utilities.logger.JELogger;
 import io.je.utilities.runtimeobject.JEObject;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -24,6 +21,8 @@ public class JEWorkflow extends JEObject {
     public final static String STOPPED = "STOPPED";
 
     public final static String BUILDING = "BUILDING";
+
+    public final static String BUILT = "BUILT";
     /*
      * Workflow name
      */
@@ -191,14 +190,21 @@ public class JEWorkflow extends JEObject {
      * Add a block to block list
      */
     public void addBlock(WorkflowBlock block) {
-        if (block instanceof StartBlock) {
-            workflowStartBlock = (StartBlock) block;
-            workflowStartBlock.setProcessed(false);
-            if(((StartBlock) block).getReference() != null) {
-                this.setTriggeredByEvent(true);
+        /*WorkflowBlock b = allBlocks.get(block.getJobEngineElementID());
+        if(b != null) {
+            if(block.getName() != null) b.setName(block.getName());
+        }*/
+       // else {
+            if (block instanceof StartBlock) {
+                workflowStartBlock = (StartBlock) block;
+                workflowStartBlock.setProcessed(false);
+                if (((StartBlock) block).getReference() != null) {
+                    this.setTriggeredByEvent(true);
+                }
+                else this.setTriggeredByEvent(false);
             }
-        }
-        allBlocks.put(block.getJobEngineElementID(), block);
+            allBlocks.put(block.getJobEngineElementID(), block);
+        //}
     }
 
     /*
@@ -218,7 +224,7 @@ public class JEWorkflow extends JEObject {
      * */
     public void deleteSequenceFlow(String sourceRef, String targetRef) throws InvalidSequenceFlowException {
         if (!allBlocks.get(sourceRef).getOutFlows().containsKey(targetRef) || !allBlocks.get(targetRef).getInflows().containsKey(sourceRef)) {
-            throw new InvalidSequenceFlowException(Errors.InvalidSequenceFlow);
+            throw new InvalidSequenceFlowException(Errors.INVALID_SEQUENCE_FLOW);
         }
         allBlocks.get(sourceRef).getOutFlows().remove(targetRef);
         allBlocks.get(targetRef).getInflows().remove(sourceRef);
@@ -239,7 +245,7 @@ public class JEWorkflow extends JEObject {
 
         WorkflowBlock b = allBlocks.get(id);
         if(b == null) {
-            throw new WorkflowBlockNotFound( Errors.workflowBlockNotFound);
+            throw new WorkflowBlockNotFound( Errors.WORKFLOW_BLOCK_NOT_FOUND);
         }
         allBlocks.remove(id);
         b = null;

@@ -2,22 +2,19 @@ package io.je.project.services;
 
 import io.je.project.beans.JEProject;
 import io.je.project.repository.ProjectRepository;
-import io.je.rulebuilder.components.JERule;
 import io.je.rulebuilder.components.UserDefinedRule;
 import io.je.utilities.apis.JERunnerAPIHandler;
 import io.je.utilities.constants.Errors;
 import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.exceptions.*;
+import io.je.utilities.logger.JELogger;
 import io.je.utilities.network.JEResponse;
-import io.je.utilities.runtimeobject.ClassDefinition;
 import models.JEWorkflow;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Optional;
 /*
 * Service class to handle business logic for projects
@@ -60,7 +57,7 @@ public class ProjectService {
 		// TODO remove project from jpa db
 
 		if (!loadedProjects.containsKey(id)) {
-			throw new ProjectNotFoundException(Errors.projectNotFound);
+			throw new ProjectNotFoundException(Errors.PROJECT_NOT_FOUND);
 		}
 		loadedProjects.remove(id);
 	}
@@ -69,6 +66,7 @@ public class ProjectService {
 	 * Add a workflow to project
 	 */
 	public void addWorkflowToProject(JEWorkflow wf) throws ProjectNotFoundException {
+		JELogger.trace(ProjectService.class, "Adding workflow with id = " + wf.getJobEngineElementID() + " to project with id = " + wf.getJobEngineProjectID());
 		workflowService.addWorkflow(wf);
 		saveProject(getProjectById(wf.getJobEngineProjectID()));
 	}
@@ -115,7 +113,7 @@ public class ProjectService {
 	 * Build a workflow by id
 	 */
 	public void buildWorkflow(String projectId, String workflowId)
-			throws WorkflowNotFoundException, ProjectNotFoundException, IOException {
+			throws WorkflowNotFoundException, ProjectNotFoundException, IOException, JERunnerErrorException {
 		workflowService.buildWorkflow(projectId, workflowId);
 	}
 
@@ -131,9 +129,9 @@ public class ProjectService {
 	 * Builds all the rules and workflows
 	 */
 	public void buildAll(String projectId)
-			throws WorkflowNotFoundException, ProjectNotFoundException, IOException, RuleBuildFailedException,
-			JERunnerErrorException, DataDefinitionUnreachableException, AddClassException, ClassLoadException {
-		// TODO add build all rules
+			throws  ProjectNotFoundException, IOException, RuleBuildFailedException,
+			JERunnerErrorException{
+		JELogger.trace(ProjectService.class, "Building the project with id = " + projectId);
 		ruleService.buildRules(projectId);
 		workflowService.buildWorkflows(projectId);
 		loadedProjects.get(projectId).setBuilt(true);
@@ -157,25 +155,26 @@ public class ProjectService {
 
 				} else {
 					throw new ProjectRunException(Errors.PROJECT_RUNNING);
-
 				}
 				if (jeRunnerResp.getCode() != ResponseCodes.CODE_OK) {
 					throw new ProjectRunException(jeRunnerResp.getMessage());
 				}
 			} else {
-				throw new ProjectRunException("Must Build Project First");
-
+				throw new ProjectRunException(Errors.PROJECT_NOT_BUILT);
 			}
 		} else {
-			throw new ProjectNotFoundException(Errors.projectNotFound);
+			throw new ProjectNotFoundException(Errors.PROJECT_NOT_FOUND);
 		}
 
 	}
 
+	/*
+	* Stop a running project
+	* */
 	public void stopProject(String projectId)
-			throws ProjectNotFoundException, JERunnerErrorException, IOException, ProjectRunException {
+			throws ProjectNotFoundException, JERunnerErrorException, IOException, ProjectRunException, ProjectStatusException {
 		if (!loadedProjects.containsKey(projectId)) {
-			throw new ProjectNotFoundException(Errors.projectNotFound);
+			throw new ProjectNotFoundException(Errors.PROJECT_NOT_FOUND);
 		}
 		JEProject project = loadedProjects.get(projectId);
 		JEResponse jeRunnerResp = null;
@@ -186,10 +185,9 @@ public class ProjectService {
 			}
 			project.setRunning(false);
 
-		} else {
-			// TODO change to another exception
-			throw new ProjectRunException("PROJECT IS ALREADY STOPPED");
 
+		} else {
+			throw new ProjectStatusException(ResponseCodes.PROJECT_STOPPED, Errors.PROJECT_STOPPED);
 		}
 
 	}
@@ -199,7 +197,7 @@ public class ProjectService {
 		if (loadedProjects.containsKey(projectId)) {
 			return loadedProjects.get(projectId).getWorkflows();
 		}
-		else throw new ProjectNotFoundException(Errors.projectNotFound);
+		else throw new ProjectNotFoundException(Errors.PROJECT_NOT_FOUND);
 	}
 
 	/* Return a workflow by id */
@@ -207,7 +205,7 @@ public class ProjectService {
 		if (loadedProjects.containsKey(projectId)) {
 			return loadedProjects.get(projectId).getWorkflows().get(key);
 		}
-		else throw new ProjectNotFoundException(Errors.projectNotFound);
+		else throw new ProjectNotFoundException(Errors.PROJECT_NOT_FOUND);
 	}
 
 	/*
@@ -218,9 +216,9 @@ public class ProjectService {
 			Optional<JEProject> p = projectRepository.findById(projectId);
 			JEProject project = p.isEmpty() ? null : p.get();
 			if (project != null) {
+				JELogger.trace(ProjectService.class, "Found project with id = " + projectId);
 				loadedProjects.put(projectId, project);
 			}
-			return project;
 		}
 		return loadedProjects.get(projectId);
 	}
