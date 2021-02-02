@@ -1,7 +1,5 @@
 package io.je.rulebuilder.models;
 
-import java.util.ArrayList;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.je.rulebuilder.config.AttributesMapping;
@@ -19,12 +17,16 @@ public class RuleModel {
     
     @JsonProperty(AttributesMapping.RULENAME)
     String ruleName;
+
+    @JsonProperty(AttributesMapping.DESC)
+    String description;
 	
+    
     @JsonProperty(AttributesMapping.SALIENCE)
-    int salience;
+    String salience;
 
     @JsonProperty(AttributesMapping.ENABLED)
-    boolean enabled;
+    String enabled;
 	
     @JsonProperty(AttributesMapping.DATEEFFECTIVE)
     String dateEffective;
@@ -46,17 +48,19 @@ public class RuleModel {
 		this.ruleId = ruleId;
 	}
 
+
 	
-	public int getSalience() {
+
+	public String getSalience() {
 		return salience;
 	}
-	public void setSalience(int salience) {
+	public void setSalience(String salience) {
 		this.salience = salience;
 	}
-	public boolean isEnabled() {
+	public String getEnabled() {
 		return enabled;
 	}
-	public void setEnabled(boolean enabled) {
+	public void setEnabled(String enabled) {
 		this.enabled = enabled;
 	}
 	public String getDateEffective() {
@@ -83,6 +87,12 @@ public class RuleModel {
 	}
 	public void setRuleName(String ruleName) {
 		this.ruleName = ruleName;
+	}
+	public String getDescription() {
+		return description;
+	}
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 

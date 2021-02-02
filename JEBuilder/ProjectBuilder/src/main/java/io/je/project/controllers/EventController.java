@@ -47,7 +47,7 @@ public class EventController {
 	/*
 	 * Retrieve all events in a project
 	 */
-	@GetMapping(value="{projectId}/getAllevents")
+	@GetMapping(value="{projectId}/getAllEvents")
 	@ResponseBody
 	public ResponseEntity<?> getAllEvents(@PathVariable("projectId") String projectId) {
 		Collection<?> events = null;
