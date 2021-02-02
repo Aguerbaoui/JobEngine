@@ -284,16 +284,17 @@ public class JEProject {
 	/*
 	 * update rule attributes
 	 */
-	public void updateRuleAttributes(RuleModel rule) {
-		UserDefinedRule ruleToUpdate = (UserDefinedRule) rules.get(rule.getRuleId());
-		ruleToUpdate.setRuleName(rule.getRuleName());
-		ruleToUpdate.getRuleParameters().setSalience(String.valueOf(rule.getSalience()));
-		ruleToUpdate.getRuleParameters().setDateEffective(rule.getDateEffective());
-		ruleToUpdate.getRuleParameters().setDateExpires(rule.getDateExpires());
-		ruleToUpdate.getRuleParameters().setEnabled(rule.isEnabled());
-		ruleToUpdate.getRuleParameters().setTimer(rule.getTimer());
+	public void updateRuleAttributes(RuleModel ruleModel) {
+		UserDefinedRule ruleToUpdate = (UserDefinedRule) rules.get(ruleModel.getRuleId());
+		ruleToUpdate.setRuleName(ruleModel.getRuleName());
+		ruleToUpdate.setDescription(ruleModel.getDescription());
+		ruleToUpdate.getRuleParameters().setSalience(String.valueOf(ruleModel.getSalience()));
+		ruleToUpdate.getRuleParameters().setDateEffective(ruleModel.getDateEffective());
+		ruleToUpdate.getRuleParameters().setDateExpires(ruleModel.getDateExpires());
+		ruleToUpdate.getRuleParameters().setEnabled(ruleModel.isEnabled());
+		ruleToUpdate.getRuleParameters().setTimer(ruleModel.getTimer());
 		ruleToUpdate.setBuilt(false);
-		rules.put(rule.getRuleId(), ruleToUpdate);
+		rules.put(ruleModel.getRuleId(), ruleToUpdate);
 
 	}
 	 

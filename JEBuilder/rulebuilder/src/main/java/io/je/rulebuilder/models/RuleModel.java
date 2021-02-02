@@ -19,7 +19,11 @@ public class RuleModel {
     
     @JsonProperty(AttributesMapping.RULENAME)
     String ruleName;
+
+    @JsonProperty(AttributesMapping.DESC)
+    String description;
 	
+    
     @JsonProperty(AttributesMapping.SALIENCE)
     int salience;
 
@@ -83,6 +87,12 @@ public class RuleModel {
 	}
 	public void setRuleName(String ruleName) {
 		this.ruleName = ruleName;
+	}
+	public String getDescription() {
+		return description;
+	}
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 

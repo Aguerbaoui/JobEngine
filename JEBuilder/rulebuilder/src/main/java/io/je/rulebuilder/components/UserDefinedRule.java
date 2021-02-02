@@ -48,6 +48,7 @@ public class UserDefinedRule extends JERule {
 
 	public UserDefinedRule(String projectId, RuleModel ruleModel) {
 		super(ruleModel.getRuleId(), projectId, ruleModel.getRuleName());
+		this.description= ruleModel.getDescription();
 		ruleParameters = new RuleParameters();
 		ruleParameters.setSalience(String.valueOf(ruleModel.getSalience()));
 		ruleParameters.setTimer(ruleModel.getTimer());

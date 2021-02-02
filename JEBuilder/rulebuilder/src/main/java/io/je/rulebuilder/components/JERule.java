@@ -27,6 +27,7 @@ public abstract class JERule extends JEObject  {
 	 */
 	boolean isAdded =  false;
 	
+	String description ;
 	
 	String ruleFrontConfig;
 	
@@ -79,8 +80,16 @@ public abstract class JERule extends JEObject  {
 		this.ruleFrontConfig = ruleFrontConfig;
 	}
 
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
 
 
+	
 	
 
 }
