@@ -10,7 +10,6 @@ public class ScriptedRule extends  JERule {
 
 	String script ;
 
-	List<ClassDefinition> topics;
 	
 
 	public ScriptedRule(String jobEngineProjectID , String jobEngineElementID, String script, String ruleName) {
@@ -45,17 +44,10 @@ public class ScriptedRule extends  JERule {
 
 
 
-	public List<ClassDefinition> getTopics() {
-		return topics;
-	}
 
 
 
 
-
-	public void setTopics(List<ClassDefinition> topics) {
-		this.topics = topics;
-	}
 
 
 	

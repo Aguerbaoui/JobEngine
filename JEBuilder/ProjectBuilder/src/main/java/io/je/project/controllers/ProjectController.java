@@ -62,6 +62,7 @@ public class ProjectController {
 			return ResponseEntity.badRequest().body(new JEResponse(e.getCode(), e.getMessage()));
 
 		} catch (Exception e) {
+			e.printStackTrace();
 			JELogger.error(ProjectController.class, Arrays.toString(e.getStackTrace()));
 			return ResponseEntity.badRequest().body(new JEResponse(ResponseCodes.UNKNOWN_ERROR, Errors.UKNOWN_ERROR));
 		}

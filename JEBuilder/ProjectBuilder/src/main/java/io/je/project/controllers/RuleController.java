@@ -244,25 +244,7 @@ public class RuleController {
 		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.RuleUpdateSucceeded));
 	}
 	
-	/*
-	 * update rule : update block
-	 */
-	@PutMapping(value = "/{projectId}/{ruleId}/updateBlock", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> updateBlock(@PathVariable("projectId") String projectId,@PathVariable("ruleId") String ruleId,@RequestBody BlockModel blockModel) {
 
-		try {
-			blockModel.setRuleId(ruleId);
-			blockModel.setProjectId(projectId);
-			ruleService.updateBlock(blockModel);
-			projectService.saveProject(ProjectService.getProjectById(projectId));
-		} catch (AddRuleBlockException | ProjectNotFoundException | RuleNotFoundException e) {
-			e.printStackTrace();
-			JELogger.error(RuleController.class, e.getMessage());
-			return ResponseEntity.badRequest().body(new JEResponse(e.getCode(), e.getMessage()));
-		}
-
-		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.RuleUpdateSucceeded));
-	}
 	
 	/*
 	 * update rule : delete block

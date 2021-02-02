@@ -7,9 +7,7 @@ import java.util.List;
 import java.util.Set;
 
 import io.je.rulebuilder.components.blocks.Block;
-import io.je.rulebuilder.components.blocks.ConditionBlock;
 import io.je.rulebuilder.components.blocks.ExecutionBlock;
-import io.je.rulebuilder.models.BlockModel;
 import io.je.utilities.constants.RuleBuilderErrors;
 import io.je.utilities.exceptions.AddRuleBlockException;
 import io.je.utilities.exceptions.RuleBuildFailedException;
@@ -29,25 +27,9 @@ public class BlockManager {
 	/*
 	 * add block
 	 */
-	public void addBlock(BlockModel blockModel) throws AddRuleBlockException {
-
-		verifyBlockFormatIsValid(blockModel);
-
-		Block block = BlockGenerator.createBlock(blockModel);
-		if (block == null) {
-			throw new AddRuleBlockException(RuleBuilderErrors.AddRuleBlockFailed + " : " + blockModel.getBlockName());
-		}
-		block.setInputBlockIds(blockModel.getInputBlocksIds());
-		block.setOutputBlockIds(blockModel.getOutputBlocksIds());
-		
-		
-		//retrieve topic names from getter blocks 
-		if(blockModel.getOperationId()== 4002 && blockModel.getBlockConfiguration() == null & blockModel.getBlockConfiguration().getClassId()!=null)
-		{
-			topics.add(new ClassDefinition(blockModel.getBlockConfiguration().getWorkspaceId(), blockModel.getBlockConfiguration().getClassId()) );
-		}
+	public void addBlock(Block block) throws AddRuleBlockException {
 		JELogger.info(getClass(), block.toString());
-		blocks.put(blockModel.getBlockId(), block);
+		blocks.put(block.getJobEngineElementID(), block);
 		
 
 	}
@@ -55,21 +37,10 @@ public class BlockManager {
 	/*
 	 * update block
 	 */
-	public void updateBlock(BlockModel blockModel) throws AddRuleBlockException {
-		if (!blocks.containsKey(blockModel.getBlockId())) {
-			throw new AddRuleBlockException(RuleBuilderErrors.BlockNotFound);
-		}
-		verifyBlockFormatIsValid(blockModel);
-
-		Block block = BlockGenerator.createBlock(blockModel);
-		if (block == null) {
-			throw new AddRuleBlockException(RuleBuilderErrors.FailedToUpdateBlock);
-		}
-
-		block.setInputBlockIds(blockModel.getInputBlocksIds());
-		block.setOutputBlockIds(blockModel.getOutputBlocksIds());
+	public void updateBlock(Block block) throws AddRuleBlockException {
 		JELogger.info(getClass(), block.toString());
-		blocks.put(blockModel.getBlockId(), block);
+		blocks.put(block.getJobEngineElementID(), block);
+		
 
 	}
 
@@ -104,24 +75,7 @@ public class BlockManager {
 			block.addOutput(blocks.get(outputId));
 		}
 	}
-	
-	public void verifyBlockFormatIsValid(BlockModel blockModel) throws AddRuleBlockException {
-		// block Id can't be null
-		if (blockModel == null || blockModel.getBlockId() == null || blockModel.getBlockId().isEmpty()) {
-			throw new AddRuleBlockException(RuleBuilderErrors.BlockIdentifierIsEmpty);
 
-		}
-
-		if (blockModel.getBlockName() == null || blockModel.getBlockName().isEmpty()) {
-			throw new AddRuleBlockException(RuleBuilderErrors.BlockNameIsEmpty);
-
-		}
-		// block operation id can't be empty
-		if (blockModel.getOperationId() == 0) {
-			throw new AddRuleBlockException(RuleBuilderErrors.BlockOperationIdUnknown);
-		}
-
-	}
 
 	public Set<Block> getRootBlocks() throws RuleBuildFailedException {
 		Set<Block> roots = new HashSet<>();
