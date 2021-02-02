@@ -123,8 +123,8 @@ public class BlockManager {
 
 	}
 
-	public Set<ConditionBlock> getRootBlocks() throws RuleBuildFailedException {
-		Set<ConditionBlock> roots = new HashSet<>();
+	public Set<Block> getRootBlocks() throws RuleBuildFailedException {
+		Set<Block> roots = new HashSet<>();
 
 		// number of execution blocks
 		int executionBlockCounter = 0;
@@ -135,9 +135,15 @@ public class BlockManager {
 				for (Block rootBlock : ruleBlock.getInputBlocks()) {
 					if(rootBlock!=null)
 					{
-						roots.add((ConditionBlock) blocks.get(rootBlock.getJobEngineElementID()));
+						roots.add( blocks.get(rootBlock.getJobEngineElementID()));
 					}
 					
+				}
+				
+				// if exec block has no root, it's a root
+				if(ruleBlock.getInputBlocks().isEmpty())
+				{
+					roots.add(ruleBlock);
 				}
 
 			}

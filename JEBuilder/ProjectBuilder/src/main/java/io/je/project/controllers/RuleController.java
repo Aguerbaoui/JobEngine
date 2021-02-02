@@ -215,6 +215,9 @@ public class RuleController {
 		
 		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.RuleUpdateSucceeded));
 	}
+
+
+
 	
 	/*
 	 * update rule : add block

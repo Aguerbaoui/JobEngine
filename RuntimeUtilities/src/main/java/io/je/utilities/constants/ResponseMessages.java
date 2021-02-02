@@ -29,7 +29,7 @@ public class ResponseMessages {
 
 	public static final String EVENT_TRIGGERED = "Event triggered";
 	
-	public static final String EVENT_ADDED = "Event was successfully ";
+	public static final String EVENT_ADDED = "Event was successfully added ";
 
 	
 	

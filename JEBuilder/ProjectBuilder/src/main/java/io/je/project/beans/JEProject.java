@@ -1,36 +1,25 @@
 package io.je.project.beans;
 
 import blocks.WorkflowBlock;
-import io.je.rulebuilder.builder.RuleBuilder;
 import io.je.rulebuilder.components.JERule;
 import io.je.rulebuilder.components.UserDefinedRule;
 import io.je.rulebuilder.models.BlockModel;
-import io.je.utilities.apis.JERunnerAPIHandler;
+import io.je.rulebuilder.models.RuleModel;
 import io.je.utilities.beans.JEEvent;
 import io.je.utilities.constants.Errors;
-import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.constants.RuleBuilderErrors;
 import io.je.utilities.exceptions.AddRuleBlockException;
 import io.je.utilities.exceptions.EventException;
 import io.je.utilities.exceptions.InvalidSequenceFlowException;
-import io.je.utilities.exceptions.JERunnerErrorException;
-import io.je.utilities.exceptions.ProjectRunException;
 import io.je.utilities.exceptions.RuleAlreadyExistsException;
 import io.je.utilities.exceptions.RuleBlockNotFoundException;
-import io.je.utilities.exceptions.RuleBuildFailedException;
-import io.je.utilities.exceptions.RuleNotAddedException;
 import io.je.utilities.exceptions.RuleNotFoundException;
 import io.je.utilities.exceptions.WorkflowBlockNotFound;
-import io.je.utilities.logger.JELogger;
-import io.je.utilities.network.JEResponse;
 import models.JEWorkflow;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map.Entry;
 
 @Document(collection="JEProject")
 public class JEProject {
@@ -283,9 +272,17 @@ public class JEProject {
 	/*
 	 * update rule attributes
 	 */
-	public void updateRuleAttributes(UserDefinedRule rule) {
-		UserDefinedRule ruleToUpdate = (UserDefinedRule) rules.get(rule.getJobEngineElementID());
-		//TODO: implement update
+	public void updateRuleAttributes(RuleModel ruleModel) {
+		UserDefinedRule ruleToUpdate = (UserDefinedRule) rules.get(ruleModel.getRuleId());
+		ruleToUpdate.setRuleName(ruleModel.getRuleName());
+		ruleToUpdate.setDescription(ruleModel.getDescription());
+		ruleToUpdate.getRuleParameters().setSalience(String.valueOf(ruleModel.getSalience()));
+		ruleToUpdate.getRuleParameters().setDateEffective(ruleModel.getDateEffective());
+		ruleToUpdate.getRuleParameters().setDateExpires(ruleModel.getDateExpires());
+		ruleToUpdate.getRuleParameters().setEnabled(ruleModel.getEnabled());
+		ruleToUpdate.getRuleParameters().setTimer(ruleModel.getTimer());
+		ruleToUpdate.setBuilt(false);
+		rules.put(ruleModel.getRuleId(), ruleToUpdate);
 
 	}
 	 
@@ -358,5 +355,6 @@ public class JEProject {
 	public void setEvents(HashMap<String, JEEvent> events) {
 		this.events = events;
 	}
-	
+
+
 }

@@ -2,9 +2,10 @@ package io.je.rulebuilder.components.blocks.event;
 
 
 import io.je.rulebuilder.components.blocks.Block;
+import io.je.rulebuilder.components.blocks.ConditionBlock;
 import io.je.rulebuilder.models.BlockModel;
 
-public  class AcceptEventBlock extends Block {
+public  class AcceptEventBlock extends ConditionBlock {
 	
 	String eventId = null;
 
@@ -49,7 +50,7 @@ public  class AcceptEventBlock extends Block {
 
 	@Override
 	public String getExpression() {
-		return "$"+blockName.replaceAll("\\s+", "")+" : JEEvent ( jobEngineElementID == "+eventId +", isTriggered() )";
+		return "$"+blockName.replaceAll("\\s+", "")+" : JEEvent ( jobEngineElementID == \""+eventId +"\", isTriggered() )";
 	}
 
 }
