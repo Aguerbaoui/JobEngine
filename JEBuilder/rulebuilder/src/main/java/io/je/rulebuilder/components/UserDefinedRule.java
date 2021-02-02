@@ -100,6 +100,7 @@ public class UserDefinedRule extends JERule {
 		Map<String, String> ruleTemplateAttributes = new HashMap<>();
 		ruleTemplateAttributes.put("ruleName", ruleId);
 		ruleTemplateAttributes.put("salience", ruleParameters.getSalience());
+		ruleTemplateAttributes.put("cronExpression", ruleParameters.getTimer());
 		ruleTemplateAttributes.put("enabled", String.valueOf(ruleParameters.isEnabled()));
 		ruleTemplateAttributes.put("condition", condition);
 		ruleTemplateAttributes.put("consequence", consequences);

@@ -50,7 +50,7 @@ public  class AcceptEventBlock extends ConditionBlock {
 
 	@Override
 	public String getExpression() {
-		return "$"+blockName.replaceAll("\\s+", "")+" : JEEvent ( jobEngineElementID == "+eventId +", isTriggered() )";
+		return "$"+blockName.replaceAll("\\s+", "")+" : JEEvent ( jobEngineElementID == \""+eventId +"\", isTriggered() )";
 	}
 
 }

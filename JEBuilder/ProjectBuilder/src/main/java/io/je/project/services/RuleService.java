@@ -92,14 +92,13 @@ public class RuleService {
 	 * TODO: individual update function for each attribute
 	 */
 	public void updateRule(String projectId, RuleModel ruleModel) throws RuleNotAddedException, ProjectNotFoundException, RuleNotFoundException {
-		UserDefinedRule rule = createRule(projectId,ruleModel);
 		JEProject project = ProjectService.getProjectById(projectId);
 		if (project == null) {
 			throw new ProjectNotFoundException( Errors.projectNotFound);
 		} else if (!project.ruleExists(ruleModel.getRuleId())) {
 			throw new RuleNotFoundException( RuleBuilderErrors.RuleNotFound);
 		}
-		project.updateRuleAttributes(rule);
+		project.updateRuleAttributes(ruleModel);
 		
 	}
 
@@ -274,6 +273,17 @@ public class RuleService {
 			throw new RuleNotFoundException( RuleBuilderErrors.RuleNotFound);
 		}
 		project.getRule(ruleId).setRuleFrontConfig(config);
+	}
+
+	public void updateRuleName(String projectId, String ruleId, String ruleName) throws ProjectNotFoundException, RuleNotFoundException {
+		JEProject project = ProjectService.getProjectById(projectId);
+		if (project == null) {
+			throw new ProjectNotFoundException( Errors.projectNotFound);
+		} else if (!project.ruleExists(ruleId)) {
+			throw new RuleNotFoundException( RuleBuilderErrors.RuleNotFound);
+		}
+		project.updateRuleName(ruleId,ruleName);
+		
 	}
 
 

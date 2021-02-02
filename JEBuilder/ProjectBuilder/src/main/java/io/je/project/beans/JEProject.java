@@ -5,6 +5,7 @@ import io.je.rulebuilder.builder.RuleBuilder;
 import io.je.rulebuilder.components.JERule;
 import io.je.rulebuilder.components.UserDefinedRule;
 import io.je.rulebuilder.models.BlockModel;
+import io.je.rulebuilder.models.RuleModel;
 import io.je.utilities.apis.JERunnerAPIHandler;
 import io.je.utilities.beans.JEEvent;
 import io.je.utilities.constants.Errors;
@@ -283,9 +284,16 @@ public class JEProject {
 	/*
 	 * update rule attributes
 	 */
-	public void updateRuleAttributes(UserDefinedRule rule) {
-		UserDefinedRule ruleToUpdate = (UserDefinedRule) rules.get(rule.getJobEngineElementID());
-		//TODO: implement update
+	public void updateRuleAttributes(RuleModel rule) {
+		UserDefinedRule ruleToUpdate = (UserDefinedRule) rules.get(rule.getRuleId());
+		ruleToUpdate.setRuleName(rule.getRuleName());
+		ruleToUpdate.getRuleParameters().setSalience(String.valueOf(rule.getSalience()));
+		ruleToUpdate.getRuleParameters().setDateEffective(rule.getDateEffective());
+		ruleToUpdate.getRuleParameters().setDateExpires(rule.getDateExpires());
+		ruleToUpdate.getRuleParameters().setEnabled(rule.isEnabled());
+		ruleToUpdate.getRuleParameters().setTimer(rule.getTimer());
+		ruleToUpdate.setBuilt(false);
+		rules.put(rule.getRuleId(), ruleToUpdate);
 
 	}
 	 
@@ -357,6 +365,11 @@ public class JEProject {
 
 	public void setEvents(HashMap<String, JEEvent> events) {
 		this.events = events;
+	}
+
+	public void updateRuleName(String ruleId, String ruleName) {
+		rules.get(ruleId).setRuleName(ruleName);
+		
 	}
 	
 }
