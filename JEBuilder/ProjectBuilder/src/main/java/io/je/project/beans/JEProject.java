@@ -369,6 +369,7 @@ public class JEProject {
 
 	public void updateRuleName(String ruleId, String ruleName) {
 		rules.get(ruleId).setRuleName(ruleName);
+		rules.get(ruleId).setBuilt(false);
 		
 	}
 	
