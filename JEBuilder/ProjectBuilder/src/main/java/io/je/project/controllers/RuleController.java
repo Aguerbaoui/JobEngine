@@ -217,26 +217,7 @@ public class RuleController {
 	}
 
 
-	/*
-	 * update rule name
-	 */
-	@PatchMapping(value = "/{projectId}/updateRuleName/{ruleId}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> updateRuleName(@PathVariable("projectId") String projectId, @PathVariable("ruleId") String ruleId,@RequestBody String ruleName) throws RuleNotAddedException {
-		
-			
-				try {
-					ruleService.updateRuleName(projectId,ruleId,ruleName);
-					projectService.saveProject(ProjectService.getProjectById(projectId));
-				} catch (ProjectNotFoundException | RuleNotFoundException e) {
-					e.printStackTrace();
-					JELogger.error(RuleController.class, e.getMessage());
-					return ResponseEntity.badRequest().body(new JEResponse(e.getCode(), e.getMessage()));
-				}
-			
-		
-		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.RuleUpdateSucceeded));
-	}
-	
+
 	
 	/*
 	 * update rule : add block

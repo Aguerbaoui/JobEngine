@@ -323,16 +323,5 @@ public class RuleService {
 		project.getRule(ruleId).setRuleFrontConfig(config);
 	}
 
-	public void updateRuleName(String projectId, String ruleId, String ruleName)
-			throws ProjectNotFoundException, RuleNotFoundException {
-		JEProject project = ProjectService.getProjectById(projectId);
-		if (project == null) {
-			throw new ProjectNotFoundException(Errors.projectNotFound);
-		} else if (!project.ruleExists(ruleId)) {
-			throw new RuleNotFoundException(RuleBuilderErrors.RuleNotFound);
-		}
-		project.updateRuleName(ruleId, ruleName);
-
-	}
 
 }
