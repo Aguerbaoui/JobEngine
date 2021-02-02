@@ -143,7 +143,7 @@ public class RuntimeDispatcher {
 	/*
 	 * Launch a workflow without variables
 	 */
-	public void launchProcessWithoutVariables(String projectId, String key) throws WorkflowNotFoundException {
+	public void launchProcessWithoutVariables(String projectId, String key) throws WorkflowNotFoundException, WorkflwTriggeredByEventException, WorkflowAlreadyRunningException {
 		try {
 			WorkflowEngineHandler.launchProcessWithoutVariables(projectId, key);
 		} catch (WorkflowAlreadyRunningException e) {

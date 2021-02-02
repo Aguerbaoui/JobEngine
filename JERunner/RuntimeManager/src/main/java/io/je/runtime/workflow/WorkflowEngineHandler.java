@@ -4,6 +4,7 @@ import io.je.JEProcess;
 import io.je.processes.ProcessManager;
 import io.je.utilities.exceptions.WorkflowAlreadyRunningException;
 import io.je.utilities.exceptions.WorkflowNotFoundException;
+import io.je.utilities.exceptions.WorkflwTriggeredByEventException;
 import io.je.utilities.logger.JELogger;
 
 import java.util.HashMap;
@@ -35,8 +36,8 @@ public class WorkflowEngineHandler {
     /*
      * Launch process without variables
      * */
-    public static void launchProcessWithoutVariables(String projectId, String processId) throws WorkflowNotFoundException, WorkflowAlreadyRunningException {
-        JELogger.info(WorkflowEngineHandler.class, "running workflow " + processId);
+    public static void launchProcessWithoutVariables(String projectId, String processId) throws WorkflowNotFoundException, WorkflowAlreadyRunningException, WorkflwTriggeredByEventException {
+        JELogger.info(WorkflowEngineHandler.class, " running workflow " + processId);
         processManagerHashMap.get(projectId).launchProcessByKeyWithoutVariables(processId);
     }
 

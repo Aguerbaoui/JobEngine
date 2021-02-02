@@ -184,7 +184,7 @@ public class JEProject {
     * */
     public void addWorkflowSequenceFlow(String workflowId, String sourceRef, String targetRef, String condition) throws WorkflowBlockNotFound {
         if(! workflows.get(workflowId).blockExists(sourceRef) || !workflows.get(workflowId).blockExists(targetRef)) {
-            throw new WorkflowBlockNotFound( Errors.workflowBlockNotFound);
+            throw new WorkflowBlockNotFound( Errors.WORKFLOW_BLOCK_NOT_FOUND);
         }
         workflows.get(workflowId).addBlockFlow(sourceRef, targetRef, condition);
     }

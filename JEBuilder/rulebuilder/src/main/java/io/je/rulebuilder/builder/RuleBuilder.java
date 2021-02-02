@@ -11,6 +11,7 @@ import io.je.utilities.apis.JERunnerAPIHandler;
 import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.exceptions.JERunnerErrorException;
 import io.je.utilities.exceptions.RuleBuildFailedException;
+import io.je.utilities.logger.JELogger;
 import io.je.utilities.mapping.JERunnerRuleMapping;
 import io.je.utilities.network.JEResponse;
 
@@ -31,6 +32,7 @@ public class RuleBuilder {
 			throws RuleBuildFailedException, JERunnerErrorException, IOException {
 		String rulePath = "";
 		boolean ruleIsAdded = jeRule.isBuilt();
+		JELogger.trace(RuleBuilder.class, "Building rule with id = " + jeRule.getJobEngineElementID());
 		if( jeRule instanceof UserDefinedRule) {
 			List<ScriptedRule> unitRules = ((UserDefinedRule) jeRule).scriptRule();
 			for (ScriptedRule rule : unitRules) {
@@ -68,6 +70,7 @@ public class RuleBuilder {
 			ruleMap.put(JERunnerRuleMapping.FORMAT, "DRL");
 			ruleMap.put(JERunnerRuleMapping.TOPICS, rule.getTopics());
 
+			JELogger.trace(RuleBuilder.class, "Sending rule build request to runner, project id = " + rule.getJobEngineProjectID() + "rule id = " + rule.getJobEngineElementID());
 			
 			JEResponse jeRunnerResp = null;
 			if(!ruleIsAdded)

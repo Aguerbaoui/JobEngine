@@ -38,5 +38,8 @@ public class ResponseCodes {
 	public static final int PROJECT_RUN_FAILED = 1025;
 	public static final int UNKNOWN_BLOCK = 1026;
 	public static final int EVENT_EXCEPTION = 1027;
-	
+	public static final int PROJECT_IS_BUILt = 1028;
+	public static final int PROJECT_STOPPED = 1029;
+	public static final int WORKFLOW_EVENT_TRIGGER = 1030;
+
 }

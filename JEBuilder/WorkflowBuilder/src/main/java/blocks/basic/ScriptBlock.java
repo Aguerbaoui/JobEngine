@@ -1,6 +1,8 @@
 package blocks.basic;
 
 import blocks.WorkflowBlock;
+import io.je.utilities.constants.APIConstants;
+import io.je.utilities.string.JEStringUtils;
 
 public class ScriptBlock extends WorkflowBlock {
 
@@ -11,6 +13,9 @@ public class ScriptBlock extends WorkflowBlock {
     }
 
     public void setScript(String script) {
-        this.script = script;
+        if (JEStringUtils.isEmpty(script)) return;
+        if(script.equalsIgnoreCase(APIConstants.DEFAULT)) this.script = null;
+        else
+            this.script = script;
     }
 }

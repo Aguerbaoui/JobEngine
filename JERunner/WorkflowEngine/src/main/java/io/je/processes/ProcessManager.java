@@ -2,14 +2,14 @@ package io.je.processes;
 
 import io.je.JEProcess;
 import io.je.callbacks.OnExecuteOperation;
-import io.je.utilities.constants.APIConstants;
 import io.je.utilities.constants.Errors;
+import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.exceptions.WorkflowAlreadyRunningException;
 import io.je.utilities.exceptions.WorkflowNotFoundException;
+import io.je.utilities.exceptions.WorkflwTriggeredByEventException;
 import io.je.utilities.logger.JELogger;
 import org.activiti.engine.*;
 import org.activiti.engine.runtime.Execution;
-import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 
 import java.util.HashMap;
@@ -117,16 +117,18 @@ public class ProcessManager {
     /*
      * Launch process by key without variables
      * */
-    public void launchProcessByKeyWithoutVariables(String id) throws WorkflowNotFoundException, WorkflowAlreadyRunningException {
+    public void launchProcessByKeyWithoutVariables(String id) throws WorkflowNotFoundException, WorkflowAlreadyRunningException, WorkflwTriggeredByEventException {
         if (processes.get(id) == null) {
-            throw new WorkflowNotFoundException( Errors.workflowNotFound);
+            throw new WorkflowNotFoundException( Errors.WORKFLOW_NOT_FOUND);
         }
         if(!processes.get(id).isRunning() && !processes.get(id).isTriggeredByEvent()) {
             processes.get(id).setRunning(true);
             runtimeService.startProcessInstanceByKey(id);
         }
-        else {
-            throw new WorkflowAlreadyRunningException(Errors.workflowAlreadyRunning);
+    else { if(processes.get(id).isTriggeredByEvent()) {
+            throw new WorkflwTriggeredByEventException(ResponseCodes.WORKFLOW_EVENT_TRIGGER, Errors.WORKFLOW_TRIGGERED_BY_EVENT);
+        }
+            throw new WorkflowAlreadyRunningException(Errors.WORKFLOW_ALREADY_RUNNING);
         }
 
 
@@ -276,7 +278,7 @@ public class ProcessManager {
             if(process.getProjectId().equals(projectId) && process.isDeployed() && !process.isRunning()) {
                 try {
                     launchProcessByKeyWithoutVariables(process.getKey());
-                } catch (WorkflowAlreadyRunningException e) {
+                } catch (WorkflowAlreadyRunningException | WorkflwTriggeredByEventException e) {
                     JELogger.error(ProcessManager.class, "Workflow running exception id = " + process.getKey());
                 }
             }

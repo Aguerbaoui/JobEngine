@@ -1,6 +1,8 @@
 package blocks.events;
 
 import blocks.WorkflowBlock;
+import io.je.utilities.constants.APIConstants;
+import io.je.utilities.string.JEStringUtils;
 
 public class ThrowSignalEvent extends WorkflowBlock {
 
@@ -11,6 +13,9 @@ public class ThrowSignalEvent extends WorkflowBlock {
     }
 
     public void setSignalRef(String signalRef) {
-        this.signalRef = signalRef;
+        if (JEStringUtils.isEmpty(signalRef)) return;
+        if(signalRef.equalsIgnoreCase(APIConstants.DEFAULT)) this.signalRef = null;
+        else
+            this.signalRef = signalRef;
     }
 }

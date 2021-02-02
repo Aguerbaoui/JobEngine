@@ -25,7 +25,7 @@ public class EventService {
 	public Collection<JEEvent> getAllEvents(String projectId) throws ProjectNotFoundException {
 		JEProject project = ProjectService.getProjectById(projectId);
 		if (project == null) {
-			throw new ProjectNotFoundException( Errors.projectNotFound);
+			throw new ProjectNotFoundException( Errors.PROJECT_NOT_FOUND);
 		}
 		return project.getEvents().values();
 	}
@@ -36,7 +36,7 @@ public class EventService {
 	public JEEvent getEvent(String projectId, String eventId) throws EventException, ProjectNotFoundException {
 		JEProject project = ProjectService.getProjectById(projectId);
 		if (project == null) {
-			throw new ProjectNotFoundException( Errors.projectNotFound);
+			throw new ProjectNotFoundException( Errors.PROJECT_NOT_FOUND);
 		}
 		return project.getEvent(eventId);
 	}
@@ -47,7 +47,7 @@ public class EventService {
 	public void addEvent(String projectId, EventModel eventModel) throws ProjectNotFoundException, JERunnerErrorException, IOException {
 		JEProject project = ProjectService.getProjectById(projectId);
 		if (project == null) {
-			throw new ProjectNotFoundException( Errors.projectNotFound);
+			throw new ProjectNotFoundException( Errors.PROJECT_NOT_FOUND);
 		}
 		JEEvent event = new JEEvent(eventModel.getEventId(), projectId, eventModel.getName(), eventModel.getType());
 		//TODO: add test on response
@@ -69,7 +69,7 @@ public class EventService {
 	public JEEvent deleteEvent(String projectId, String eventId) throws EventException, ProjectNotFoundException {
 		JEProject project = ProjectService.getProjectById(projectId);
 		if (project == null) {
-			throw new ProjectNotFoundException( Errors.projectNotFound);
+			throw new ProjectNotFoundException( Errors.PROJECT_NOT_FOUND);
 		}
 		return project.getEvents().remove(eventId);
 	}

@@ -58,7 +58,9 @@ public class ResponseMessages {
 	public static final String RuleDeletionSucceeded = "Rule deleted successfully";
 
 	public static final String WorkflowDeletionSucceeded = "Workflow deleted successfully";
-	
+
+	public static final String WORKFLOW_UPDATED_SUCCESS = "Workflow updated successfully";
+
 	public static final String RuleDeletionFailed ="";
 	
 	
@@ -83,5 +85,11 @@ public class ResponseMessages {
 	public static final String EXECUTING_WORKFLOW = "Executing workflow";
 
 	public static final String WORKFLOW_DEPLOYED = "Workflow deployed to engine";
+
+	public static final String ADDED_WORKFLOW_COMPONENT_SUCCESSFULLY = "Added workflow component successfully";
+
+	public static final String SEQUENCE_FLOW_DELETED_SUCCESSFULLY = "Sequence flow deleted successfully";
+
+	public static final String BLOCK_DELETED_SUCCESSFULLY = "Block deleted successfully";
 
 }
