@@ -4,6 +4,7 @@ import io.je.project.beans.JEProject;
 import io.je.project.repository.ProjectRepository;
 import io.je.rulebuilder.components.UserDefinedRule;
 import io.je.utilities.apis.JERunnerAPIHandler;
+import io.je.utilities.beans.JEEvent;
 import io.je.utilities.constants.Errors;
 import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.exceptions.*;
@@ -30,6 +31,9 @@ public class ProjectService {
 
     @Autowired
     RuleService ruleService;
+    
+    @Autowired 
+    EventService eventService;
 
 
     // TODO add repo jpa save later
@@ -193,13 +197,17 @@ public class ProjectService {
     /*
      * Return project by id
      */
-    public JEProject getProject(String projectId) {
+    public JEProject getProject(String projectId) throws ProjectNotFoundException, JERunnerErrorException, IOException {
         if (!loadedProjects.containsKey(projectId)) {
             Optional<JEProject> p = projectRepository.findById(projectId);
             JEProject project = p.isEmpty() ? null : p.get();
             if (project != null) {
 
                 loadedProjects.put(projectId, project);
+            }
+            for(JEEvent event : project.getEvents().values())
+            {
+            	eventService.registerEvent(event);
             }
         }
         JELogger.trace(ProjectService.class, "Found project with id = " + projectId);

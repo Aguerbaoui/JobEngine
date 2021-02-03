@@ -40,8 +40,8 @@ public class AttributeGetterBlock extends GetterBlock {
 			expression.append("\n");
 
 		}
-		expression.append("$" + blockName.replaceAll("\\s+", "") + " : " + classPath + " ( $" + getFinalAttributeName() + " : "
-				+ attributeName + " )"); // TODO: nested attributes
+		expression.append("$" + blockName.replaceAll("\\s+", "") + " : " + classPath + " ( $" + attributeName.replaceAll(".", "") + " : "
+				+ getFinalAttributeName() + " )"); // TODO: nested attributes
 		return expression.toString();
 	}
 

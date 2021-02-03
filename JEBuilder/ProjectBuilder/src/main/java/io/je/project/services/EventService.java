@@ -50,15 +50,28 @@ public class EventService {
 			throw new ProjectNotFoundException( Errors.PROJECT_NOT_FOUND);
 		}
 		JEEvent event = new JEEvent(eventModel.getEventId(), projectId, eventModel.getName(), eventModel.getType());
+		registerEvent(event);
+		
+	}
+	
+	/*
+	 * add new event
+	 */
+	public void registerEvent( JEEvent event ) throws ProjectNotFoundException, JERunnerErrorException, IOException {
+		JEProject project = ProjectService.getProjectById(event.getJobEngineProjectID());
+		if (project == null) {
+			throw new ProjectNotFoundException( Errors.PROJECT_NOT_FOUND);
+		}
+
 		//TODO: add test on response
 		HashMap<String,String> eventMap = new HashMap<String, String>();
-		eventMap.put(EventModelMapping.PROJECTID, eventModel.getProjectId());
-		eventMap.put(EventModelMapping.EVENTNAME, eventModel.getName());
-		eventMap.put(EventModelMapping.EVENTTYPE, eventModel.getType().toString());
-		eventMap.put(EventModelMapping.EVENTID, eventModel.getEventId());
+		eventMap.put(EventModelMapping.PROJECTID, event.getJobEngineProjectID());
+		eventMap.put(EventModelMapping.EVENTNAME, event.getName());
+		eventMap.put(EventModelMapping.EVENTTYPE, event.getType().toString());
+		eventMap.put(EventModelMapping.EVENTID, event.getJobEngineElementID());
 		
 		JERunnerAPIHandler.addEvent(eventMap);
-		project.getEvents().put(eventModel.getEventId(), event);
+		project.getEvents().put(event.getJobEngineElementID(), event);
 		
 	}
 	
