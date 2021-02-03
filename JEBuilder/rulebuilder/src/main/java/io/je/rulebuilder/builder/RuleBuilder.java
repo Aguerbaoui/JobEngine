@@ -55,7 +55,7 @@ public class RuleBuilder {
 	/*
 	 * send rule to JERunner
 	 */
-	public static void sendDRLToJeRunner(JERule rule, String path, boolean ruleIsAdded) throws JERunnerErrorException, IOException, RuleBuildFailedException
+	public static void sendDRLToJeRunner(JERule rule, String path, boolean ruleIsAdded) throws JERunnerErrorException, RuleBuildFailedException
 	{
 		
 

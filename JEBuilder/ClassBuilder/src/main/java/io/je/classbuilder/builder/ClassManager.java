@@ -157,8 +157,7 @@ public class ClassManager {
 	}
 
 	public static ClassType getClassType(String classId) {
-		ClassType t = jeClasses.get(classId).getClassType();
-		return t;
+		return jeClasses.get(classId).getClassType();
 		
 	}
 

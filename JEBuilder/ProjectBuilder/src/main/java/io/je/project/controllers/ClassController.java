@@ -1,6 +1,7 @@
 package io.je.project.controllers;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -41,14 +42,11 @@ public class ClassController {
 			classService.addClass(worksapceId, classId);
 		
 		} catch ( ClassLoadException | AddClassException | DataDefinitionUnreachableException | JERunnerErrorException e) {
-			e.printStackTrace();
 			JELogger.error(ClassController.class, e.getMessage());
-			return ResponseEntity.badRequest().body(new JEResponse(e.getCode(), e.getMessage()));
+			return ResponseEntity.ok().body(new JEResponse(e.getCode(), e.getMessage()));
 		} catch (IOException e) {
-			
-			e.printStackTrace();
-			JELogger.info(WorkflowController.class, Errors.UKNOWN_ERROR);
-            return ResponseEntity.badRequest().body(new JEResponse(ResponseCodes.UNKNOWN_ERROR, Errors.UKNOWN_ERROR));
+			JELogger.error(WorkflowController.class, Arrays.toString(e.getStackTrace()));
+            return ResponseEntity.ok().body(new JEResponse(ResponseCodes.DATA_DEF_UNREACHABLE, Errors.DATA_DEFINITION_API_UNREACHABLE));
 		}
 		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.classAddedSuccessully));
 

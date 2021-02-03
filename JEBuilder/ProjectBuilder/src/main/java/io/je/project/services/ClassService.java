@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import io.je.utilities.logger.JELogger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +28,9 @@ import io.je.utilities.runtimeobject.ClassDefinition;
 @Service
 public class ClassService {
 
+	public static final String CLASS_NAME = "className";
+	public static final String CLASS_PATH = "classPath";
+	public static final String CLASS_ID = "classId";
 	@Autowired
 	ClassRepository classRepository;
 
@@ -66,6 +70,7 @@ public class ClassService {
 			JERunnerErrorException, AddClassException, ClassLoadException {
 	
 		if (!loadedClasses.containsKey(classId)) {
+			JELogger.trace(ClassService.class, " Adding class to builder from data definition api with id = " + classId);
 			List<JEClass> builtClasses = ClassManager.buildClass(workspaceId, classId);
 			for (JEClass _class : builtClasses) {
 				// TODO: manage what happens when class addition fails
@@ -80,11 +85,12 @@ public class ClassService {
 	/*
 	 * send class to je runner to be loaded there
 	 */
-	private void addClassToJeRunner(JEClass clazz) throws IOException, AddClassException, JERunnerErrorException {
+	private void addClassToJeRunner(JEClass clazz) throws AddClassException, JERunnerErrorException {
 		HashMap<String, String> classMap = new HashMap<>();
-		classMap.put("className", clazz.getClassName());
-		classMap.put("classPath", clazz.getClassPath());
-		classMap.put("classId", clazz.getClassId());
+		classMap.put(CLASS_NAME, clazz.getClassName());
+		classMap.put(CLASS_PATH, clazz.getClassPath());
+		classMap.put(CLASS_ID, clazz.getClassId());
+		JELogger.trace(ClassService.class, " Adding class to runner from builder with id = " + clazz.getClassId());
 		JEResponse jeRunnerResp = JERunnerAPIHandler.addClass(classMap);
 		if (jeRunnerResp.getCode() != ResponseCodes.CODE_OK) {
 			throw new AddClassException(ClassBuilderErrors.classLoadFailed);
