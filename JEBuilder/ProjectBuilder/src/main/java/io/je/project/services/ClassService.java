@@ -35,16 +35,36 @@ public class ClassService {
 	public void addClasses(List<ClassDefinition> classDefinitions) throws DataDefinitionUnreachableException,
 			JERunnerErrorException, AddClassException, ClassLoadException, IOException {
 		for (ClassDefinition clazz : classDefinitions) {
-			addClass(clazz.getWorkspaceId(), clazz.getClassId());
+			addClass(clazz);
 		}
 	}
 
 	/*
 	 * add/update class
 	 */
+	public void addClass(ClassDefinition classDefinition) throws IOException, DataDefinitionUnreachableException,
+			JERunnerErrorException, AddClassException, ClassLoadException {
+		String classId= classDefinition.getClassId();
+		String workspaceId = classDefinition.getWorkspaceId();
+		if (!loadedClasses.containsKey(classId)) {
+			List<JEClass> builtClasses = ClassManager.buildClass(workspaceId, classId);
+			for (JEClass _class : builtClasses) {
+				// TODO: manage what happens when class addition fails
+				addClassToJeRunner(_class);
+				classRepository.save(_class);
+				loadedClasses.put(_class.getClassId(), _class);
+			}
+		}
+
+	}
+	
+	
+	/*
+	 * add/update class
+	 */
 	public void addClass(String workspaceId, String classId) throws IOException, DataDefinitionUnreachableException,
 			JERunnerErrorException, AddClassException, ClassLoadException {
-
+	
 		if (!loadedClasses.containsKey(classId)) {
 			List<JEClass> builtClasses = ClassManager.buildClass(workspaceId, classId);
 			for (JEClass _class : builtClasses) {

@@ -3,8 +3,7 @@ package io.je.project.beans;
 import blocks.WorkflowBlock;
 import io.je.rulebuilder.components.JERule;
 import io.je.rulebuilder.components.UserDefinedRule;
-import io.je.rulebuilder.models.BlockModel;
-import io.je.rulebuilder.models.RuleModel;
+import io.je.rulebuilder.components.blocks.Block;
 import io.je.utilities.beans.JEEvent;
 import io.je.utilities.constants.Errors;
 import io.je.utilities.constants.RuleBuilderErrors;
@@ -235,18 +234,18 @@ public class JEProject {
     /*
     * Add a block to a rule
     * */
-    public void addBlockToRule(BlockModel blockModel) throws AddRuleBlockException 
+    public void addBlockToRule(Block block) throws AddRuleBlockException 
     	
     {	
-    	((UserDefinedRule) rules.get(blockModel.getRuleId())).addBlock(blockModel);
+    	((UserDefinedRule) rules.get(block.getJobEngineElementID())).addBlock(block);
     }
     
 
     /*
      * update Block
      */
-	public void updateRuleBlock(BlockModel blockModel) throws AddRuleBlockException {
-		((UserDefinedRule) rules.get(blockModel.getRuleId())).updateBlock(blockModel);
+	public void updateRuleBlock(Block block) throws AddRuleBlockException {
+    	((UserDefinedRule) rules.get(block.getJobEngineElementID())).updateBlock(block);
 		
 	}
 	
@@ -268,24 +267,6 @@ public class JEProject {
 		rules.remove(ruleId);
 		
 	}
-
-	/*
-	 * update rule attributes
-	 */
-	public void updateRuleAttributes(RuleModel ruleModel) {
-		UserDefinedRule ruleToUpdate = (UserDefinedRule) rules.get(ruleModel.getRuleId());
-		ruleToUpdate.setRuleName(ruleModel.getRuleName());
-		ruleToUpdate.setDescription(ruleModel.getDescription());
-		ruleToUpdate.getRuleParameters().setSalience(String.valueOf(ruleModel.getSalience()));
-		ruleToUpdate.getRuleParameters().setDateEffective(ruleModel.getDateEffective());
-		ruleToUpdate.getRuleParameters().setDateExpires(ruleModel.getDateExpires());
-		ruleToUpdate.getRuleParameters().setEnabled(ruleModel.getEnabled());
-		ruleToUpdate.getRuleParameters().setTimer(ruleModel.getTimer());
-		ruleToUpdate.setBuilt(false);
-		rules.put(ruleModel.getRuleId(), ruleToUpdate);
-
-	}
-	 
 
 
 

@@ -13,13 +13,10 @@ import org.drools.template.ObjectDataCompiler;
 import io.je.rulebuilder.components.blocks.Block;
 import io.je.rulebuilder.components.blocks.ConditionBlock;
 import io.je.rulebuilder.config.RuleBuilderConfig;
-import io.je.rulebuilder.models.BlockModel;
-import io.je.rulebuilder.models.RuleModel;
 import io.je.utilities.constants.RuleBuilderErrors;
 import io.je.utilities.exceptions.AddRuleBlockException;
 import io.je.utilities.exceptions.RuleBuildFailedException;
 import io.je.utilities.logger.JELogger;
-import io.je.utilities.runtimeobject.ClassDefinition;
 
 /*
  * Rules defined graphically by the user.
@@ -46,17 +43,6 @@ public class UserDefinedRule extends JERule {
 
 	}
 
-	public UserDefinedRule(String projectId, RuleModel ruleModel) {
-		super(ruleModel.getRuleId(), projectId, ruleModel.getRuleName());
-		this.description= ruleModel.getDescription();
-		ruleParameters = new RuleParameters();
-		ruleParameters.setSalience(String.valueOf(ruleModel.getSalience()));
-		ruleParameters.setTimer(ruleModel.getTimer());
-		ruleParameters.setEnabled(ruleModel.getEnabled());
-		ruleParameters.setDateEffective(ruleModel.getDateEffective());
-		ruleParameters.setDateExpires(ruleModel.getDateExpires());
-
-	}
 
 	/*
 	 * generate script rules
@@ -120,16 +106,16 @@ public class UserDefinedRule extends JERule {
 	/*
 	 * add a block to this user defined rule
 	 */
-	public void addBlock(BlockModel blockModel) throws AddRuleBlockException {
-		blocks.addBlock(blockModel);
+	public void addBlock(Block block) throws AddRuleBlockException {
+		blocks.addBlock(block);
 		isBuilt = false;
 	}
 
 	/*
 	 * update a block in this user defined rule
 	 */
-	public void updateBlock(BlockModel blockModel) throws AddRuleBlockException {
-		blocks.updateBlock(blockModel);
+	public void updateBlock(Block block) throws AddRuleBlockException {
+		blocks.updateBlock(block);
 		isBuilt = false;
 
 	}
@@ -151,11 +137,6 @@ public class UserDefinedRule extends JERule {
 		this.ruleParameters = ruleParameters;
 		isBuilt = false;
 
-	}
-
-	@Override
-	public List<ClassDefinition> getTopics() {
-		return blocks.getTopics();
 	}
 
 }

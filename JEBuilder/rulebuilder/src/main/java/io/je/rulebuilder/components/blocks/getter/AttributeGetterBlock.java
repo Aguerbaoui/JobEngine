@@ -8,12 +8,14 @@ public class AttributeGetterBlock extends GetterBlock {
 
 	String classPath;
 	String attributeName;
+
 	// specific instances
 
 	public AttributeGetterBlock(BlockModel blockModel) {
 		super(blockModel);
 		classPath = blockModel.getBlockConfiguration().getClassName();
 		attributeName = blockModel.getBlockConfiguration().getAttributeName();
+
 	}
 
 	public AttributeGetterBlock() {
@@ -87,6 +89,8 @@ public class AttributeGetterBlock extends GetterBlock {
 	public void setAttributeName(String attributeName) {
 		this.attributeName = attributeName;
 	}
+
+
 
 	private String getFinalAttributeName() {
 		String s = "";

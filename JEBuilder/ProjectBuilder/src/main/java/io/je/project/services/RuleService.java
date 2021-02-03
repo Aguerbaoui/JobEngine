@@ -9,9 +9,12 @@ import org.springframework.stereotype.Service;
 
 import io.je.project.beans.JEProject;
 import io.je.rulebuilder.builder.RuleBuilder;
+import io.je.rulebuilder.components.BlockGenerator;
 import io.je.rulebuilder.components.JERule;
+import io.je.rulebuilder.components.RuleParameters;
 import io.je.rulebuilder.components.ScriptedRule;
 import io.je.rulebuilder.components.UserDefinedRule;
+import io.je.rulebuilder.components.blocks.Block;
 import io.je.rulebuilder.models.BlockModel;
 import io.je.rulebuilder.models.RuleModel;
 import io.je.rulebuilder.models.ScriptRuleModel;
@@ -29,6 +32,7 @@ import io.je.utilities.exceptions.RuleBuildFailedException;
 import io.je.utilities.exceptions.RuleNotAddedException;
 import io.je.utilities.exceptions.RuleNotFoundException;
 import io.je.utilities.logger.JELogger;
+import io.je.utilities.runtimeobject.ClassDefinition;
 
 /*
  * Service class to handle business logic for rules
@@ -41,29 +45,39 @@ public class RuleService {
 	@Autowired
 	ClassService classService;
 
-	/*
-	 * creates a new rule from the Rule Model
-	 */
-	private static UserDefinedRule createRule(String projectId, RuleModel rule) throws RuleNotAddedException {
 
-		if (rule.getRuleName() == null) {
-			throw new RuleNotAddedException("Rule name can't be empty");
-		}
-		return new UserDefinedRule(projectId, rule);
-	}
 
 	/*
 	 * Add a rule to a project
 	 */
 	public void addRule(String projectId, RuleModel ruleModel)
-			throws ProjectNotFoundException, RuleNotAddedException, RuleAlreadyExistsException {
-		UserDefinedRule rule = createRule(projectId, ruleModel);
+			throws ProjectNotFoundException, RuleAlreadyExistsException, RuleNotAddedException {
 		JEProject project = ProjectService.getProjectById(projectId);
 		if (project == null) {
-			throw new ProjectNotFoundException( Errors.PROJECT_NOT_FOUND);
+			throw new ProjectNotFoundException(Errors.PROJECT_NOT_FOUND);
 		} else if (project.ruleExists(ruleModel.getRuleId())) {
 			throw new RuleAlreadyExistsException(RuleBuilderErrors.RuleAlreadyExists);
 		}
+		
+		//TODO : remove harcoded msgs
+		if (ruleModel.getRuleId() == null) {
+			throw new RuleNotAddedException("Rule id can't be empty");
+		}
+		if (ruleModel.getRuleName() == null) {
+			throw new RuleNotAddedException("Rule name can't be empty");
+		}
+		UserDefinedRule rule = new UserDefinedRule();
+		rule.setJobEngineElementID(ruleModel.getRuleId());
+		rule.setJobEngineProjectID(projectId);
+		rule.setRuleName(ruleModel.getRuleName());
+		rule.setDescription(ruleModel.getDescription());
+		RuleParameters ruleParameters = new RuleParameters();
+		ruleParameters.setSalience(String.valueOf(ruleModel.getSalience()));
+		ruleParameters.setTimer(ruleModel.getTimer());
+		ruleParameters.setEnabled(ruleModel.getEnabled());
+		ruleParameters.setDateEffective(ruleModel.getDateEffective());
+		ruleParameters.setDateExpires(ruleModel.getDateExpires());
+		rule.setRuleParameters(ruleParameters);	
 		project.addRule(rule);
 	}
 
@@ -73,7 +87,7 @@ public class RuleService {
 	public void deleteRule(String projectId, String ruleId) throws ProjectNotFoundException, RuleNotFoundException {
 		JEProject project = ProjectService.getProjectById(projectId);
 		if (project == null) {
-			throw new ProjectNotFoundException( Errors.PROJECT_NOT_FOUND);
+			throw new ProjectNotFoundException(Errors.PROJECT_NOT_FOUND);
 		} else if (!project.ruleExists(ruleId)) {
 			throw new RuleNotFoundException(RuleBuilderErrors.RuleNotFound);
 		}
@@ -88,64 +102,64 @@ public class RuleService {
 			throws RuleNotAddedException, ProjectNotFoundException, RuleNotFoundException {
 		JEProject project = ProjectService.getProjectById(projectId);
 		if (project == null) {
-			throw new ProjectNotFoundException( Errors.PROJECT_NOT_FOUND);
+			throw new ProjectNotFoundException(Errors.PROJECT_NOT_FOUND);
 		} else if (!project.ruleExists(ruleModel.getRuleId())) {
 			throw new RuleNotFoundException(RuleBuilderErrors.RuleNotFound);
 		}
 		UserDefinedRule ruleToUpdate = (UserDefinedRule) project.getRules().get(ruleModel.getRuleId());
 
 		// update rule name
-		if (ruleModel.getRuleName() != null && !ruleModel.getRuleName().equals( DEFAULT_CONSTANT)) {
+		if (ruleModel.getRuleName() != null && !ruleModel.getRuleName().equals(DEFAULT_CONSTANT)) {
 			ruleToUpdate.setRuleName(ruleModel.getRuleName());
-		} else if (ruleModel.getRuleName().equals( DEFAULT_CONSTANT)) {
+		} else if (ruleModel.getRuleName().equals(DEFAULT_CONSTANT)) {
 			ruleToUpdate.setRuleName(null);
 
 		}
 
 		// update rule description
-		if (ruleModel.getDescription() != null && !ruleModel.getDescription().equals( DEFAULT_CONSTANT)) {
+		if (ruleModel.getDescription() != null && !ruleModel.getDescription().equals(DEFAULT_CONSTANT)) {
 			ruleToUpdate.setDescription(ruleModel.getDescription());
-		} else if (ruleModel.getDescription().equals( DEFAULT_CONSTANT)) {
+		} else if (ruleModel.getDescription().equals(DEFAULT_CONSTANT)) {
 			ruleToUpdate.setDescription(null);
 
 		}
 
 		// update Salience
-		if (ruleModel.getSalience() != null && !ruleModel.getSalience().equals( DEFAULT_CONSTANT)) {
+		if (ruleModel.getSalience() != null && !ruleModel.getSalience().equals(DEFAULT_CONSTANT)) {
 			ruleToUpdate.getRuleParameters().setSalience(ruleModel.getSalience());
-		} else if (ruleModel.getSalience().equals( DEFAULT_CONSTANT)) {
+		} else if (ruleModel.getSalience().equals(DEFAULT_CONSTANT)) {
 			ruleToUpdate.getRuleParameters().setSalience(null);
 
 		}
-		
+
 		// update DateEffective
-		if (ruleModel.getDateEffective() != null && !ruleModel.getDateEffective().equals( DEFAULT_CONSTANT)) {
+		if (ruleModel.getDateEffective() != null && !ruleModel.getDateEffective().equals(DEFAULT_CONSTANT)) {
 			ruleToUpdate.getRuleParameters().setDateEffective(ruleModel.getDateEffective());
-		} else if (ruleModel.getDateEffective().equals( DEFAULT_CONSTANT)) {
+		} else if (ruleModel.getDateEffective().equals(DEFAULT_CONSTANT)) {
 			ruleToUpdate.getRuleParameters().setDateEffective(null);
 
 		}
-		
+
 		// update DateExpires
-		if (ruleModel.getDateExpires() != null && !ruleModel.getDateExpires().equals( DEFAULT_CONSTANT)) {
+		if (ruleModel.getDateExpires() != null && !ruleModel.getDateExpires().equals(DEFAULT_CONSTANT)) {
 			ruleToUpdate.getRuleParameters().setDateExpires(ruleModel.getDateExpires());
-		} else if (ruleModel.getDateExpires().equals( DEFAULT_CONSTANT)) {
+		} else if (ruleModel.getDateExpires().equals(DEFAULT_CONSTANT)) {
 			ruleToUpdate.getRuleParameters().setDateExpires(null);
 
 		}
-		
+
 		// update Enabled
-		if (ruleModel.getEnabled() != null && !ruleModel.getEnabled().equals( DEFAULT_CONSTANT)) {
+		if (ruleModel.getEnabled() != null && !ruleModel.getEnabled().equals(DEFAULT_CONSTANT)) {
 			ruleToUpdate.getRuleParameters().setEnabled(ruleModel.getEnabled());
-		} else if (ruleModel.getEnabled().equals( DEFAULT_CONSTANT)) {
+		} else if (ruleModel.getEnabled().equals(DEFAULT_CONSTANT)) {
 			ruleToUpdate.getRuleParameters().setEnabled(null);
 
 		}
-		
+
 		// update Timer
-		if (ruleModel.getTimer() != null && !ruleModel.getTimer().equals( DEFAULT_CONSTANT)) {
+		if (ruleModel.getTimer() != null && !ruleModel.getTimer().equals(DEFAULT_CONSTANT)) {
 			ruleToUpdate.getRuleParameters().setTimer(ruleModel.getTimer());
-		} else if (ruleModel.getTimer().equals( DEFAULT_CONSTANT)) {
+		} else if (ruleModel.getTimer().equals(DEFAULT_CONSTANT)) {
 			ruleToUpdate.getRuleParameters().setTimer(null);
 
 		}
@@ -161,7 +175,6 @@ public class RuleService {
 			RuleNotFoundException, DataDefinitionUnreachableException, JERunnerErrorException, AddClassException,
 			ClassLoadException, IOException {
 
-		// JELogger.info(getClass(), " RECEIVED BLOCK : " + blockModel);
 		if (blockModel.getProjectId() == null) {
 			throw new AddRuleBlockException(RuleBuilderErrors.BlockProjectIdentifierIsEmpty);
 		}
@@ -172,41 +185,29 @@ public class RuleService {
 
 		JEProject project = ProjectService.getProjectById(blockModel.getProjectId());
 		if (project == null) {
-			throw new ProjectNotFoundException( Errors.PROJECT_NOT_FOUND);
+			throw new ProjectNotFoundException(Errors.PROJECT_NOT_FOUND);
 		} else if (!project.ruleExists(blockModel.getRuleId())) {
 			JELogger.error(getClass(), RuleBuilderErrors.RuleNotFound + " [ " + blockModel.getRuleId() + "]");
 			throw new RuleNotFoundException(RuleBuilderErrors.RuleNotFound);
 		}
-		project.addBlockToRule(blockModel);
-		if (blockModel.getOperationId() == 4002) {
-			// TODO: add null tests
-			classService.addClass(blockModel.getBlockConfiguration().getWorkspaceId(),
+		verifyBlockFormatIsValid(blockModel);
+		JERule rule = project.getRule(blockModel.getRuleId());
+		Block block = BlockGenerator.createBlock(blockModel);
+		block.setInputBlockIds(blockModel.getInputBlocksIds());
+		block.setOutputBlockIds(blockModel.getOutputBlocksIds());
+
+		// retrieve topic names from getter blocks
+		if (blockModel.getOperationId() == 4002 && blockModel.getBlockConfiguration() != null
+				& blockModel.getBlockConfiguration().getClassId() != null) {
+			ClassDefinition classDef = new ClassDefinition(blockModel.getBlockConfiguration().getWorkspaceId(),
 					blockModel.getBlockConfiguration().getClassId());
+			rule.addTopic(classDef.getClassId());
+			classService.addClass(classDef);
 		}
-	}
-
-	/*
-	 * update rule : update a block in the rule
-	 */
-	public void updateBlock(BlockModel blockModel)
-			throws AddRuleBlockException, ProjectNotFoundException, RuleNotFoundException {
-		if (blockModel.getProjectId() == null) {
-			throw new AddRuleBlockException(RuleBuilderErrors.BlockProjectIdentifierIsEmpty);
-		}
-
-		if (blockModel.getRuleId() == null) {
-			throw new AddRuleBlockException(RuleBuilderErrors.BlockRuleIdentifierIsEmpty);
-		}
-
-		JEProject project = ProjectService.getProjectById(blockModel.getProjectId());
-		if (project == null) {
-			throw new ProjectNotFoundException( Errors.PROJECT_NOT_FOUND);
-		} else if (!project.ruleExists(blockModel.getRuleId())) {
-			throw new RuleNotFoundException(RuleBuilderErrors.RuleNotFound);
-		}
-		project.updateRuleBlock(blockModel);
+		((UserDefinedRule) rule).addBlock(block);
 
 	}
+
 
 	/*
 	 * delete block
@@ -215,7 +216,7 @@ public class RuleService {
 			throws ProjectNotFoundException, RuleNotFoundException, RuleBlockNotFoundException {
 		JEProject project = ProjectService.getProjectById(projectId);
 		if (project == null) {
-			throw new ProjectNotFoundException( Errors.PROJECT_NOT_FOUND);
+			throw new ProjectNotFoundException(Errors.PROJECT_NOT_FOUND);
 		} else if (!project.ruleExists(ruleId)) {
 			throw new RuleNotFoundException(RuleBuilderErrors.RuleNotFound);
 		}
@@ -230,7 +231,7 @@ public class RuleService {
 			RuleBuildFailedException, JERunnerErrorException, IOException {
 		JEProject project = ProjectService.getProjectById(projectId);
 		if (project == null) {
-			throw new ProjectNotFoundException( Errors.PROJECT_NOT_FOUND);
+			throw new ProjectNotFoundException(Errors.PROJECT_NOT_FOUND);
 		} else if (!project.ruleExists(ruleId)) {
 			throw new RuleNotFoundException(RuleBuilderErrors.RuleNotFound);
 		}
@@ -238,19 +239,18 @@ public class RuleService {
 
 	}
 
-	/*
-	 * build rule : create drl + check for compilation errors + add to jerunner
-	 * TODO: handle the case where some rules are built while others aren't returns
-	 * list of class ids required by these rules
-	 */
 	public void buildRules(String projectId)
 			throws ProjectNotFoundException, RuleBuildFailedException, JERunnerErrorException, IOException {
 		JEProject project = ProjectService.getProjectById(projectId);
 		if (project == null) {
-			throw new ProjectNotFoundException( Errors.PROJECT_NOT_FOUND);
+			throw new ProjectNotFoundException(Errors.PROJECT_NOT_FOUND);
 		}
 
-		// return classIds;
+		for (Entry<String, JERule> entry : project.getRules().entrySet()) {
+			String key = entry.getKey();
+			RuleBuilder.buildRule(project.getRules().get(key), project.getConfigurationPath());
+			project.getRules().get(key).setBuilt(true);
+		}
 	}
 
 	/*
@@ -259,7 +259,7 @@ public class RuleService {
 	public Collection<JERule> getAllRules(String projectId) throws ProjectNotFoundException {
 		JEProject project = ProjectService.getProjectById(projectId);
 		if (project == null) {
-			throw new ProjectNotFoundException( Errors.PROJECT_NOT_FOUND);
+			throw new ProjectNotFoundException(Errors.PROJECT_NOT_FOUND);
 		}
 		return project.getRules().values();
 	}
@@ -267,8 +267,8 @@ public class RuleService {
 	public JERule getRule(String projectId, String ruleId) throws ProjectNotFoundException, RuleNotFoundException {
 		JEProject project = ProjectService.getProjectById(projectId);
 		if (project == null) {
-			throw new ProjectNotFoundException( Errors.PROJECT_NOT_FOUND);
-		
+			throw new ProjectNotFoundException(Errors.PROJECT_NOT_FOUND);
+
 		} else if (!project.ruleExists(ruleId)) {
 			throw new RuleNotFoundException(RuleBuilderErrors.RuleNotFound);
 		}
@@ -284,8 +284,8 @@ public class RuleService {
 				ruleModel.getRuleName());
 		JEProject project = ProjectService.getProjectById(projectId);
 		if (project == null) {
-			throw new ProjectNotFoundException( Errors.PROJECT_NOT_FOUND);
-		} 
+			throw new ProjectNotFoundException(Errors.PROJECT_NOT_FOUND);
+		}
 		project.addRule(rule);
 
 	}
@@ -299,7 +299,7 @@ public class RuleService {
 				ruleModel.getRuleName());
 		JEProject project = ProjectService.getProjectById(projectId);
 		if (project == null) {
-			throw new ProjectNotFoundException( Errors.PROJECT_NOT_FOUND);
+			throw new ProjectNotFoundException(Errors.PROJECT_NOT_FOUND);
 		}
 		project.updateRule(rule);
 
@@ -309,12 +309,28 @@ public class RuleService {
 			throws ProjectNotFoundException, RuleNotFoundException {
 		JEProject project = ProjectService.getProjectById(projectId);
 		if (project == null) {
-			throw new ProjectNotFoundException( Errors.PROJECT_NOT_FOUND);
-		}  else if (!project.ruleExists(ruleId)) {
-			throw new RuleNotFoundException( RuleBuilderErrors.RuleNotFound);
+			throw new ProjectNotFoundException(Errors.PROJECT_NOT_FOUND);
+		} else if (!project.ruleExists(ruleId)) {
+			throw new RuleNotFoundException(RuleBuilderErrors.RuleNotFound);
 		}
 		project.getRule(ruleId).setRuleFrontConfig(config);
 	}
 
+	public void verifyBlockFormatIsValid(BlockModel blockModel) throws AddRuleBlockException {
+		// block Id can't be null
+		if (blockModel == null || blockModel.getBlockId() == null || blockModel.getBlockId().isEmpty()) {
+			throw new AddRuleBlockException(RuleBuilderErrors.BlockIdentifierIsEmpty);
 
+		}
+
+		if (blockModel.getBlockName() == null || blockModel.getBlockName().isEmpty()) {
+			throw new AddRuleBlockException(RuleBuilderErrors.BlockNameIsEmpty);
+
+		}
+		// block operation id can't be empty
+		if (blockModel.getOperationId() == 0) {
+			throw new AddRuleBlockException(RuleBuilderErrors.BlockOperationIdUnknown);
+		}
+
+	}
 }
