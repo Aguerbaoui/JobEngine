@@ -8,6 +8,7 @@ import io.je.utilities.apis.JERunnerAPIHandler;
 import io.je.utilities.beans.JEEvent;
 import io.je.utilities.constants.APIConstants;
 import io.je.utilities.constants.JEGlobalconfig;
+import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.exceptions.JERunnerErrorException;
 import io.je.utilities.logger.JELogger;
 import io.je.utilities.models.EventModel;
@@ -59,12 +60,14 @@ public class WorkflowBuilder {
         wf.setEvents(events);*/
         wf.setTriggeredByEvent(workflow.isTriggeredByEvent());
         workflow.setStatus(JEWorkflow.BUILDING);
-        JELogger.trace(WorkflowBuilder.class, "Building workflow with id = " + workflow.getJobEngineElementID());
-        JEResponse res = JERunnerAPIHandler.addWorkflow(wf);
-        if(res.getCode() != 200) {
+        JELogger.trace(WorkflowBuilder.class, "Deploying in runner workflow with id = " + workflow.getJobEngineElementID());
+        try {
+            JERunnerAPIHandler.addWorkflow(wf);
+        }
+        catch (JERunnerErrorException e) {
+            JELogger.trace(WorkflowBuilder.class, "Dailed to deploy in runner workflow with id = " + workflow.getJobEngineElementID());
             return false;
         }
-
         //Network.makeNetworkCallWithJsonObjectBodyWithResponse(wf, JEGlobalconfig.RUNTIME_MANAGER_BASE_API + APIConstants.ADD_WORKFLOW);
         workflow.setStatus(JEWorkflow.BUILT);
         return true;
@@ -77,7 +80,6 @@ public class WorkflowBuilder {
      * */
     public static void runWorkflow(String projectId, String key) throws IOException {
         Response response = Network.makeGetNetworkCallWithResponse(JEGlobalconfig.RUNTIME_MANAGER_BASE_API + APIConstants.RUN_WORKFLOW + projectId + "/" + key);
-        JELogger.info(WorkflowBuilder.class, response.body().string());
 
     }
 

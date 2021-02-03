@@ -77,10 +77,8 @@ public class ProjectController {
 				projectService.runAll(projectId);
 			} catch (JERunnerErrorException | ProjectRunException | ProjectNotFoundException e) {
 			}
-		} catch (IOException e) {
-			JELogger.error(ProjectController.class, e.getMessage());
-			return ResponseEntity.badRequest().body(new JEResponse(ResponseCodes.NETWORK_ERROR, Errors.NETWORK_ERROR));
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			JELogger.error(ProjectController.class, Arrays.toString(e.getStackTrace()));
 			return ResponseEntity.badRequest().body(new JEResponse(ResponseCodes.UNKNOWN_ERROR, Errors.UKNOWN_ERROR));
 		}

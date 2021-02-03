@@ -1,11 +1,17 @@
 package io.je.project.beans;
 
+import io.je.utilities.exceptions.AddClassException;
+import io.je.utilities.exceptions.ClassLoadException;
+import io.je.utilities.exceptions.DataDefinitionUnreachableException;
+import io.je.utilities.exceptions.JERunnerErrorException;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import io.je.project.services.ClassService;
 import io.je.utilities.logger.JELogger;
+
+import java.io.IOException;
 
 @Component
 public class JEInitializingBean implements InitializingBean {
@@ -15,17 +21,15 @@ public class JEInitializingBean implements InitializingBean {
 	ClassService classService;
 
     @Override
-    public void afterPropertiesSet() throws Exception {
+    public void afterPropertiesSet() {
     	
     	//load existing classes from database
-        try
-        {
-        	classService.loadAllClasses();
+        try {
+            JELogger.trace(getClass(), " Loading classes from data definition ");
+            classService.loadAllClasses();
+        } catch (DataDefinitionUnreachableException | JERunnerErrorException | AddClassException | ClassLoadException | IOException e) {
+           JELogger.error(getClass(), e.getMessage());
         }
-        catch(Exception e)
-        {
-        	//TODO: remove hard-coded msg
-        	JELogger.error(getClass(), "Failed to load classes " + e.getMessage());
-        }
+
     }
 }

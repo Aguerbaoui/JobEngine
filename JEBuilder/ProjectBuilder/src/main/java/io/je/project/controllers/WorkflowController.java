@@ -43,6 +43,7 @@ public class WorkflowController {
         wf.setJobEngineProjectID(m.getProjectId());
         wf.setWorkflowName(m.getName());
         try {
+
             workflowService.addWorkflow(wf);
             projectService.saveProject(ProjectService.getProjectById(m.getProjectId()));
         } catch (ProjectNotFoundException e) {
@@ -88,8 +89,12 @@ public class WorkflowController {
             workflowService.runWorkflow(projectId, key);
         } catch (ProjectNotFoundException | WorkflowNotFoundException | WorkflowAlreadyRunningException e) {
             return ResponseEntity.badRequest().body(new JEResponse(e.getCode(), e.getMessage()));
-        } catch (Exception e) {
-            JELogger.info(ProjectController.class, e.getMessage());
+        } catch (IOException e) {
+            JELogger.trace(WorkflowController.class,  " Runner unreachable" );
+            return ResponseEntity.badRequest().body(new JEResponse(ResponseCodes.JERUNNER_ERROR, Errors.JERUNNER_UNREACHABLE));
+        }
+        catch (Exception e) {
+            JELogger.error(WorkflowController.class, Arrays.toString(e.getStackTrace()));
             return ResponseEntity.badRequest().body(new JEResponse(ResponseCodes.UNKNOWN_ERROR, Errors.UKNOWN_ERROR));
         }
         return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, EXECUTING_WORKFLOW));
@@ -166,12 +171,11 @@ public class WorkflowController {
             workflowService.addWorkflowBlock(block);
             projectService.saveProject(ProjectService.getProjectById(block.getProjectId()));
         } catch (WorkflowNotFoundException | WorkflowBlockNotFound e) {
-            JELogger.info(WorkflowController.class, e.getMessage());
+            JELogger.trace(WorkflowController.class, e.getMessage());
             return ResponseEntity.badRequest().body(new JEResponse(e.getCode(), e.getMessage()));
 
         } catch (Exception e) {
-            e.printStackTrace();
-            JELogger.info(WorkflowController.class, Errors.UKNOWN_ERROR);
+            JELogger.error(WorkflowController.class, Arrays.toString(e.getStackTrace()));
             return ResponseEntity.badRequest().body(new JEResponse(ResponseCodes.UNKNOWN_ERROR, Errors.UKNOWN_ERROR));
         }
 
@@ -190,8 +194,7 @@ public class WorkflowController {
             return ResponseEntity.badRequest().body(new JEResponse(e.getCode(), e.getMessage()));
 
         } catch (Exception e) {
-            JELogger.info(WorkflowController.class, e.getMessage());
-            e.printStackTrace();
+            JELogger.error(WorkflowController.class, Arrays.toString(e.getStackTrace()));
             return ResponseEntity.badRequest().body(new JEResponse(ResponseCodes.UNKNOWN_ERROR, Errors.UKNOWN_ERROR));
         }
         return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ADDED_WORKFLOW_COMPONENT_SUCCESSFULLY));

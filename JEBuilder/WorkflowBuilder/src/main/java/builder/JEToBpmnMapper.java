@@ -38,7 +38,7 @@ public class JEToBpmnMapper {
         parseWorkflowBlock(wf, wf.getWorkflowStartBlock(), process, null);
         model.addProcess(process);
         //new BpmnAutoLayout(model).execute();
-        String modelPath = WorkflowConstants.bpmnPath + wf.getWorkflowName().trim() + WorkflowConstants.bpmnExtension;
+        String modelPath = WorkflowConstants.BPMN_PATH + wf.getWorkflowName().trim() + WorkflowConstants.BPMN_EXTENSION;
         ModelBuilder.saveModel(model, modelPath);
         wf.resetBlocks();
         wf.setBpmnPath(modelPath);
@@ -49,13 +49,13 @@ public class JEToBpmnMapper {
      * */
     private static void addListeners(Process process) {
         ActivitiListener startProcessListener = new ActivitiListener();
-        startProcessListener.setImplementation(WorkflowConstants.processListenerImplementation);
-        startProcessListener.setEvent(WorkflowConstants.startProcess);
+        startProcessListener.setImplementation(WorkflowConstants.PROCESS_LISTENER_IMPLEMENTATION);
+        startProcessListener.setEvent(WorkflowConstants.START_PROCESS);
         startProcessListener.setImplementationType(ImplementationType.IMPLEMENTATION_TYPE_CLASS);
         ActivitiListener endProcessListener = new ActivitiListener();
-        endProcessListener.setImplementation(WorkflowConstants.processListenerImplementation);
+        endProcessListener.setImplementation(WorkflowConstants.PROCESS_LISTENER_IMPLEMENTATION);
         endProcessListener.setImplementationType(ImplementationType.IMPLEMENTATION_TYPE_CLASS);
-        endProcessListener.setEvent(WorkflowConstants.endProcess);
+        endProcessListener.setEvent(WorkflowConstants.END_PROCESS);
 
         ArrayList<ActivitiListener> listeners = new ArrayList<ActivitiListener>();
         listeners.add(startProcessListener);
@@ -102,10 +102,10 @@ public class JEToBpmnMapper {
                         block.generateBpmnOutflows(wf)));
             } else if (block instanceof DBWriteBlock && !block.isProcessed()) {
                 process.addFlowElement(ModelBuilder.createServiceTask(block.getJobEngineElementID(), block.getName(),
-                        WorkflowConstants.dbWriteTaskImplementation));
+                        WorkflowConstants.DB_WRITE_TASK_IMPLEMENTATION));
             } else if (block instanceof MailBlock && !block.isProcessed()) {
                 process.addFlowElement(ModelBuilder.createServiceTask(block.getJobEngineElementID(), block.getName(),
-                        WorkflowConstants.mailTaskImplementation));
+                        WorkflowConstants.MAIL_TASK_IMPLEMENTATION));
             }
             else if (block instanceof EventGatewayBlock && !block.isProcessed()) {
                 process.addFlowElement(ModelBuilder.createEventGateway(block.getJobEngineElementID(), block.getName(),
