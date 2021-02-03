@@ -44,9 +44,25 @@ public class ProjectController {
 
 	@GetMapping("/getProject/{projectId}")
 	public ResponseEntity<?> getProject(@PathVariable String projectId) {
-		return ResponseEntity.ok(projectService.getProject(projectId) != null ?
-				projectService.getProject(projectId) :
-				new JEResponse(ResponseCodes.PROJECT_NOT_FOUND, Errors.PROJECT_NOT_FOUND));
+	JEProject project=null;
+	try {
+		project = projectService.getProject(projectId);
+	} catch (ProjectNotFoundException | JERunnerErrorException  e) {
+		e.printStackTrace();
+		JELogger.error(RuleController.class, e.getMessage());
+		return ResponseEntity.ok((new JEResponse(e.getCode(), e.getMessage())));
+	} catch (IOException e) {
+		e.printStackTrace();
+
+		return ResponseEntity.badRequest().body(new JEResponse(ResponseCodes.UNKNOWN_ERROR, Errors.UKNOWN_ERROR));
+	}
+	if(project==null) {
+		return ResponseEntity.ok(new JEResponse(ResponseCodes.PROJECT_NOT_FOUND, Errors.PROJECT_NOT_FOUND));
+
+	}
+	
+	return ResponseEntity.ok(project);
+
 	}
 
 	/*
@@ -77,6 +93,8 @@ public class ProjectController {
 			try {
 				projectService.runAll(projectId);
 			} catch (JERunnerErrorException | ProjectRunException | ProjectNotFoundException e) {
+				JELogger.error(RuleController.class, e.getMessage());
+				return ResponseEntity.badRequest().body(new JEResponse(e.getCode(), e.getMessage()));
 			}
 		}
 		catch (Exception e) {
