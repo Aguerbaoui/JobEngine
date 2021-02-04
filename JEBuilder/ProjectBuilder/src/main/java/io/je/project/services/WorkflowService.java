@@ -31,9 +31,7 @@ public class WorkflowService {
     public static final String TIMECYCLE = "timecycle";
     public static final String TIMEDATE = "timedate";
     public static final String SCRIPT = "script";
-    public static final String SIGNAL_REF = "signalRef";
-    public static final String MESSAGE_REF = "messageRef";
-    public static final String REFERENCE = "reference";
+    public static final String EVENT_ID = "eventId";
     public static final String SOURCE_REF = "sourceRef";
     public static final String TARGET_REF = "targetRef";
     public static final String CONDITION = "condition";
@@ -80,7 +78,7 @@ public class WorkflowService {
         if (block.getType().equalsIgnoreCase(WorkflowConstants.START_TYPE)) {
             StartBlock b = new StartBlock();
             b.setName(block.getAttributes().get(NAME));
-            b.setReference(block.getAttributes().get(REFERENCE));
+            b.setEventId(block.getAttributes().get(EVENT_ID));
             b.setJobEngineProjectID(block.getProjectId());
             b.setWorkflowId(block.getWorkflowId());
             b.setJobEngineElementID(block.getId());
@@ -102,7 +100,7 @@ public class WorkflowService {
         } else if (block.getType().equalsIgnoreCase(WorkflowConstants.MESSAGEINTERMEDIATECATCHEVENT_TYPE)) {
             MessageCatchEvent b = new MessageCatchEvent();
             b.setName(block.getAttributes().get(NAME));
-            b.setMessageRef(block.getAttributes().get(MESSAGE_REF));
+            b.setEventId(block.getAttributes().get(EVENT_ID));
             b.setJobEngineProjectID(block.getProjectId());
             b.setWorkflowId(block.getWorkflowId());
             b.setJobEngineElementID(block.getId());
@@ -111,7 +109,7 @@ public class WorkflowService {
         } else if (block.getType().equalsIgnoreCase(WorkflowConstants.MESSAGE_THROW_EVENT_TYPE)) {
             ThrowMessageEvent b = new ThrowMessageEvent();
             b.setName(block.getAttributes().get(NAME));
-            b.setMessageRef(block.getAttributes().get(MESSAGE_REF));
+            b.setEventId(block.getAttributes().get(EVENT_ID));
             b.setJobEngineProjectID(block.getProjectId());
             b.setWorkflowId(block.getWorkflowId());
             b.setJobEngineElementID(block.getId());
@@ -119,7 +117,7 @@ public class WorkflowService {
         }else if (block.getType().equalsIgnoreCase(WorkflowConstants.SIGNALINTERMEDIATECATCHEVENT_TYPE)) {
             SignalCatchEvent b = new SignalCatchEvent();
             b.setName(block.getAttributes().get(NAME));
-            b.setSignalRef(block.getAttributes().get(SIGNAL_REF));
+            b.setEventId(block.getAttributes().get(EVENT_ID));
             b.setJobEngineProjectID(block.getProjectId());
             b.setWorkflowId(block.getWorkflowId());
             b.setJobEngineElementID(block.getId());
@@ -127,7 +125,7 @@ public class WorkflowService {
         }else if (block.getType().equalsIgnoreCase(WorkflowConstants.SIGNAL_THROW_EVENT_TYPE)) {
             ThrowSignalEvent b = new ThrowSignalEvent();
             b.setName(block.getAttributes().get(NAME));
-            b.setSignalRef(block.getAttributes().get(SIGNAL_REF));
+            b.setEventId(block.getAttributes().get(EVENT_ID));
             b.setJobEngineProjectID(block.getProjectId());
             b.setWorkflowId(block.getWorkflowId());
             b.setJobEngineElementID(block.getId());
@@ -336,7 +334,7 @@ public class WorkflowService {
         if (block.getType().equalsIgnoreCase(WorkflowConstants.START_TYPE)) {
             StartBlock b = (StartBlock) project.getWorkflowById(block.getWorkflowId()).getAllBlocks().get(block.getId());
             b.setName(block.getAttributes().get(NAME));
-            b.setReference(block.getAttributes().get(REFERENCE));
+            b.setEventId(block.getAttributes().get(EVENT_ID));
             project.addBlockToWorkflow(b);
         } else if (block.getType().equalsIgnoreCase(WorkflowConstants.END_TYPE)) {
             EndBlock b = (EndBlock) project.getWorkflowById(block.getWorkflowId()).getAllBlocks().get(block.getId());
@@ -349,23 +347,23 @@ public class WorkflowService {
         } else if (block.getType().equalsIgnoreCase(WorkflowConstants.MESSAGEINTERMEDIATECATCHEVENT_TYPE)) {
             MessageCatchEvent b = (MessageCatchEvent) project.getWorkflowById(block.getWorkflowId()).getAllBlocks().get(block.getId());
             b.setName(block.getAttributes().get(NAME));
-            b.setMessageRef(block.getAttributes().get(MESSAGE_REF));
+            b.setEventId(block.getAttributes().get(EVENT_ID));
             project.addBlockToWorkflow(b);
 
         } else if (block.getType().equalsIgnoreCase(WorkflowConstants.MESSAGE_THROW_EVENT_TYPE)) {
             ThrowMessageEvent b = (ThrowMessageEvent) project.getWorkflowById(block.getWorkflowId()).getAllBlocks().get(block.getId());
             b.setName(block.getAttributes().get(NAME));
-            b.setMessageRef(block.getAttributes().get(MESSAGE_REF));
+            b.setEventId(block.getAttributes().get(EVENT_ID));
             project.addBlockToWorkflow(b);
         }else if (block.getType().equalsIgnoreCase(WorkflowConstants.SIGNALINTERMEDIATECATCHEVENT_TYPE)) {
             SignalCatchEvent b = (SignalCatchEvent) project.getWorkflowById(block.getWorkflowId()).getAllBlocks().get(block.getId());
             b.setName(block.getAttributes().get(NAME));
-            b.setSignalRef(block.getAttributes().get(SIGNAL_REF));
+            b.setEventId(block.getAttributes().get(EVENT_ID));
             project.addBlockToWorkflow(b);
         }else if (block.getType().equalsIgnoreCase(WorkflowConstants.SIGNAL_THROW_EVENT_TYPE)) {
             ThrowSignalEvent b = (ThrowSignalEvent) project.getWorkflowById(block.getWorkflowId()).getAllBlocks().get(block.getId());
             b.setName(block.getAttributes().get(NAME));
-            b.setSignalRef(block.getAttributes().get(SIGNAL_REF));
+            b.setEventId(block.getAttributes().get(EVENT_ID));
             project.addBlockToWorkflow(b);
         }else if (block.getType().equalsIgnoreCase(WorkflowConstants.EXCLUSIVEGATEWAY_TYPE)) {
             ExclusiveGatewayBlock b = (ExclusiveGatewayBlock) project.getWorkflowById(block.getWorkflowId()).getAllBlocks().get(block.getId());

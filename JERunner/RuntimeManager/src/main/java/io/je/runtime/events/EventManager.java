@@ -63,15 +63,13 @@ public class EventManager {
             event.setTriggered(true);
             RuleEngineHandler.addEvent(event);
             if(event.getType().equals(EventType.MESSAGE_EVENT)) {
-                throwMessageEventInWorkflow(projectId, event.getReference());
+                throwMessageEventInWorkflow(projectId, event.getJobEngineElementID());
             }
             else if(event.getType().equals(EventType.SIGNAL_EVENT)) {
-                throwSignalEventInWorkflow(projectId, event.getReference());
+                throwSignalEventInWorkflow(projectId, event.getJobEngineElementID());
             }
             else if(event.getType().equals(EventType.START_WORKFLOW)) {
-                startProcessInstanceByMessage(projectId, event.getReference());
-
-
+                startProcessInstanceByMessage(projectId, event.getJobEngineElementID());
             }
         }
     }

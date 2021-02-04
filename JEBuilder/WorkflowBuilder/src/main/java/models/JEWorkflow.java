@@ -198,7 +198,7 @@ public class JEWorkflow extends JEObject {
             if (block instanceof StartBlock) {
                 workflowStartBlock = (StartBlock) block;
                 workflowStartBlock.setProcessed(false);
-                if (((StartBlock) block).getReference() != null) {
+                if (((StartBlock) block).getEventId() != null) {
                     this.setTriggeredByEvent(true);
                 }
                 else this.setTriggeredByEvent(false);

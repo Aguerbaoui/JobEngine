@@ -17,11 +17,6 @@ public class JEEvent extends JEObject {
 
     private boolean isTriggered = false;
 
-    /*
-    * The reference in case of a rule should be the rule id, in case of a workflow its the message or signal reference
-    * */
-    private String reference;
-
     public String getName() {
         return name;
     }
@@ -54,14 +49,6 @@ public class JEEvent extends JEObject {
         super(jobEngineElementID, jobEngineProjectID);
         this.name = name;
         this.type = type;
-    }
-
-    public String getReference() {
-        return reference;
-    }
-
-    public void setReference(String reference) {
-        this.reference = reference;
     }
 
 	public boolean isTriggered() {

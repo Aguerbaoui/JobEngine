@@ -67,9 +67,7 @@ public class EventService {
 		HashMap<String,String> eventMap = new HashMap<String, String>();
 		eventMap.put(EventModelMapping.PROJECTID, event.getJobEngineProjectID());
 		eventMap.put(EventModelMapping.EVENTNAME, event.getName());
-		eventMap.put(EventModelMapping.EVENTTYPE, event.getType().toString());
 		eventMap.put(EventModelMapping.EVENTID, event.getJobEngineElementID());
-		
 		JERunnerAPIHandler.addEvent(eventMap);
 		project.getEvents().put(event.getJobEngineElementID(), event);
 		

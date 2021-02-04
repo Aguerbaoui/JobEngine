@@ -6,17 +6,17 @@ import io.je.utilities.string.JEStringUtils;
 
 public class StartBlock extends WorkflowBlock {
 
-    private String reference = null;
+    private String eventId = null;
 
-    public String getReference() {
-        return reference;
+    public String getEventId() {
+        return eventId;
     }
 
-    public void setReference(String reference) {
-        if (JEStringUtils.isEmpty(reference)) return;
-        if(reference.equalsIgnoreCase(APIConstants.DEFAULT))
-            this.reference = null;
+    public void setEventId(String eventId) {
+        if (JEStringUtils.isEmpty(eventId)) return;
+        if(eventId.equalsIgnoreCase(APIConstants.DEFAULT))
+            this.eventId = null;
         else
-            this.reference = reference;
+            this.eventId = eventId;
     }
 }

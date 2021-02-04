@@ -236,10 +236,8 @@ public class RuntimeDispatcher {
 			JEEvent e = new JEEvent();
 			e.setName(eventModel.getName());
 			e.setTriggeredById(eventModel.getEventId());
-			e.setReference(eventModel.getReference());
 			e.setJobEngineElementID(eventModel.getEventId());
 			e.setJobEngineProjectID(eventModel.getProjectId());
-			e.setType(eventModel.getType());
 			EventManager.addEvent(eventModel.getProjectId(), e);
 		
 	}
