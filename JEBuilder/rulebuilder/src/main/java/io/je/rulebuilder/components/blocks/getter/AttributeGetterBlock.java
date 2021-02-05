@@ -35,12 +35,11 @@ public class AttributeGetterBlock extends GetterBlock {
 		StringBuilder expression = new StringBuilder();
 		if(!inputBlocks.isEmpty())
 		{
-			expression.append("\n");
 			expression.append(inputBlocks.get(0).getExpression());
 			expression.append("\n");
 
 		}
-		expression.append("$" + blockName.replaceAll("\\s+", "") + " : " + classPath + " ( $" + attributeName.replaceAll(".", "") + " : "
+		expression.append("$" + blockName.replaceAll("\\s+", "") + " : " + classPath + " ( $" + attributeName.replace(".", "") + " : "
 				+ getFinalAttributeName() + " )"); // TODO: nested attributes
 		return expression.toString();
 	}

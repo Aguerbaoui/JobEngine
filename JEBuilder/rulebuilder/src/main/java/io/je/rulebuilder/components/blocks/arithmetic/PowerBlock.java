@@ -12,6 +12,9 @@ public class PowerBlock extends ArithmeticBlock {
 		value = (blockModel.getBlockConfiguration().getValue());
 	}
 
+	private  PowerBlock() {
+		
+	}
 	@Override
 	public String getExpression() {
 		StringBuilder expression = new StringBuilder();
