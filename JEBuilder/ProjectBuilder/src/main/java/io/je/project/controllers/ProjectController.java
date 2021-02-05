@@ -15,8 +15,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 import static io.je.utilities.constants.ResponseMessages.*;
 
@@ -155,6 +157,19 @@ public class ProjectController {
 				}
 		
 		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, STOPPING_PROJECT));
+	}
+
+	/*
+	 * Stop the project
+	 * */
+	@GetMapping(value = "/getLog", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> getLog() {
+		//TODO: add failed to stop project exception
+
+		List l = new ArrayList(JELogger.getQueue());
+		JELogger.getQueue().removeAll(JELogger.getQueue());
+		return ResponseEntity.ok(l);
+
 	}
 
 }

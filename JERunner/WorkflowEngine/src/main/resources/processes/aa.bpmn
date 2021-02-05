@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="123">
+  <process id="aa" isExecutable="true">
+    <extensionElements>
+      <activiti:executionListener event="start" class="io.je.executionListeners.ProcessListener"></activiti:executionListener>
+      <activiti:executionListener event="end" class="io.je.executionListeners.ProcessListener"></activiti:executionListener>
+    </extensionElements>
+    <startEvent id="b-4256-f0bb-dee9-62ef"></startEvent>
+    <scriptTask id="b-3ecf-4164-0884-f8f3" name="Script2" scriptFormat="groovy" activiti:autoStoreVariables="false"></scriptTask>
+    <sequenceFlow sourceRef="b-4256-f0bb-dee9-62ef" targetRef="b-3ecf-4164-0884-f8f3"></sequenceFlow>
+    <endEvent id="b-58c8-15b9-424d-4e8d"></endEvent>
+    <sequenceFlow sourceRef="b-3ecf-4164-0884-f8f3" targetRef="b-58c8-15b9-424d-4e8d"></sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_aa">
+    <bpmndi:BPMNPlane bpmnElement="aa" id="BPMNPlane_aa"></bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

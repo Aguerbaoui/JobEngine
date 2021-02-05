@@ -7,12 +7,14 @@ import io.je.utilities.exceptions.ProjectAlreadyRunningException;
 import io.je.utilities.exceptions.RuleBuildFailedException;
 import io.je.utilities.exceptions.RulesNotFiredException;
 import io.je.utilities.exceptions.WorkflowNotFoundException;
+import io.je.utilities.logger.JELogger;
 import io.je.utilities.network.JEResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -88,5 +90,15 @@ public class ProjectController {
 
     }*/
 
+    /*
+     * Stop the project
+     * */
+    @GetMapping(value = "/getLog", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> getLog() {
+        //TODO: add failed to stop project exception
+        List l = new ArrayList(JELogger.getQueue());
+        JELogger.getQueue().removeAll(JELogger.getQueue());
+        return ResponseEntity.ok(l);
 
+    }
 }
