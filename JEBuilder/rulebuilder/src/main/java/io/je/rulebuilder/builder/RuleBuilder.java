@@ -31,7 +31,7 @@ public class RuleBuilder {
 	public static void buildRule(JERule jeRule, String buildPath)
 			throws RuleBuildFailedException, JERunnerErrorException, IOException {
 		String rulePath = "";
-		boolean ruleIsAdded = jeRule.isAdded();
+		boolean ruleIsAdded = jeRule.isBuilt();
 		JELogger.trace(RuleBuilder.class, "Building rule with id = " + jeRule.getJobEngineElementID());
 		if( jeRule instanceof UserDefinedRule) {
 			List<ScriptedRule> unitRules = ((UserDefinedRule) jeRule).scriptRule();
@@ -47,13 +47,15 @@ public class RuleBuilder {
 			sendDRLToJeRunner(jeRule,rulePath,ruleIsAdded);
 		}
 		
+		 jeRule.setAdded(true);
+		 jeRule.setBuilt(true);
 	}
 		
 	
 	/*
 	 * send rule to JERunner
 	 */
-	public static void sendDRLToJeRunner(JERule rule, String path, boolean ruleIsAdded) throws JERunnerErrorException, RuleBuildFailedException, IOException
+	public static void sendDRLToJeRunner(JERule rule, String path, boolean ruleIsAdded) throws JERunnerErrorException, RuleBuildFailedException
 	{
 		
 
@@ -74,7 +76,6 @@ public class RuleBuilder {
 			if(!ruleIsAdded)
 			{
 				 jeRunnerResp = JERunnerAPIHandler.addRule(ruleMap);
-
 
 			}
 			else

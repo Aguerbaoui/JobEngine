@@ -34,6 +34,7 @@ public abstract class ComparisonBlock extends PersistableBlock {
 	@Override
 	public String getExpression() {
 		StringBuilder expression = new StringBuilder();
+		expression.append("\n");
 		//single input
 		if(threshold !=null)
 		{
@@ -45,6 +46,7 @@ public abstract class ComparisonBlock extends PersistableBlock {
 		{
 			String firstOperand = inputBlocks.get(1).getExpression();
 			expression.append(firstOperand);
+			expression.append("\n");
 			String secondOperand = inputBlocks.get(0).getAsFirstOperandExpression().replaceAll(Keywords.toBeReplaced,  getOperator() + "\\$"+getInputRefName(1) );
 			expression.append(secondOperand);
 

@@ -13,7 +13,7 @@ public class RuleEngineErrors {
 
     //rules
     public static String buildingProjectContainerSuccessful = "Project Container built Succesfully";
-    public static String buildingProjectContainerFailed = "Project Container build failed";
+    public static String buildingProjectContainerFailed = "Project Container built failed";
     //running project
     public static String failedToUpdateContainer = "Failed to update kie container";
     public static String projectAlreadyRunning = "This project container is already running";

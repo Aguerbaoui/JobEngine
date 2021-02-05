@@ -250,7 +250,6 @@ public class RuleService {
 			String key = entry.getKey();
 			RuleBuilder.buildRule(project.getRules().get(key), project.getConfigurationPath());
 			project.getRules().get(key).setBuilt(true);
-			project.getRules().get(key).setAdded(true);
 		}
 	}
 

@@ -9,10 +9,6 @@ public class SumBlock extends ArithmeticBlock {
 	public SumBlock(BlockModel blockModel) {
 		super(blockModel);
 	}
-	
-	private SumBlock() {
-		
-	}
 
 	@Override
 	public String getExpression() {
@@ -20,40 +16,46 @@ public class SumBlock extends ArithmeticBlock {
 		expression.append("\n");
 		for (int i=0;i<inputBlocks.size();i++)
 		{
-			expression.append(inputBlocks.get(i).getExpression());
+			expression.append(inputBlocks.get(0).getExpression());
 			expression.append("\n");
 
 		}
-		expression.append("$"+blockName +" : Number() from " + asDouble( "$"+getInputRefName(0) ) );
+		expression.append("$"+blockName +" : Number() from " + " $"+inputBlocks.get(0).getBlockName()  );
 		for (int i=1;i<inputBlocks.size();i++)
 		{
-			expression.append("+ "  + asDouble( "$"+getInputRefName(i) ));
+			expression.append("+ "  + " $"+inputBlocks.get(i).getBlockName());
 		}
 		return expression.toString();
 	}
- 
+
 	@Override
 	public String getAsFirstOperandExpression() {
 		StringBuilder expression = new StringBuilder();
 		expression.append("\n");
 		for (int i=0;i<inputBlocks.size();i++)
 		{
-			expression.append(inputBlocks.get(i).getExpression());
+			expression.append(inputBlocks.get(0).getExpression());
 			expression.append("\n");
 
 		}
-		expression.append("$"+blockName +" : Number(doubleValue " + Keywords.toBeReplaced +") from " + asDouble( "$"+getInputRefName(0) ) );
+		expression.append("$"+blockName +" : Number(doubleValue " + Keywords.toBeReplaced +") from " +" $"+inputBlocks.get(0).getBlockName()  );
 		for (int i=1;i<inputBlocks.size();i++)
 		{
-			expression.append("+ "  + asDouble( "$"+getInputRefName(i) ));
+			expression.append("+ "  + " $"+inputBlocks.get(i).getBlockName());
 		}
 		return expression.toString();
 	}
 
 	@Override
 	public String getAsSecondOperandExpression() {
-		return null;
-
+		StringBuilder expression = new StringBuilder();
+		expression.append("\n");
+		expression.append(inputBlocks.get(0).getExpression());
+		expression.append("\n");
+		expression.append(inputBlocks.get(0).getExpression());
+		expression.append("\n");
+		expression.append("$"+blockName +" : Number( " + Keywords.toBeReplaced +" doubleValue ) from " + " $"+inputBlocks.get(0).getBlockName() + " + " + " $"+inputBlocks.get(1).getBlockName() );
+		return expression.toString();
 	}
 
 	@Override
