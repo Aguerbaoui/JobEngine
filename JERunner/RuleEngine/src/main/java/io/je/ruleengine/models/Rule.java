@@ -73,13 +73,14 @@ public class Rule extends JEObject {
     }
 
 
+
+
     @Override
-    public String toString() {
-        return name + " " + path;
+	public String toString() {
+		return "Rule [path=" + path + ", content=" + content + "]";
+	}
 
-    }
-
-    public ArrayList<JEEvent> getEvents() {
+	public ArrayList<JEEvent> getEvents() {
         return events;
     }
 

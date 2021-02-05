@@ -6,7 +6,6 @@ import com.squareup.okhttp.Response;
 import io.je.utilities.constants.APIConstants;
 import io.je.utilities.constants.Errors;
 import io.je.utilities.constants.JEGlobalconfig;
-import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.exceptions.JERunnerErrorException;
 import io.je.utilities.logger.JELogger;
 import io.je.utilities.models.WorkflowModel;
@@ -24,44 +23,49 @@ public class JERunnerAPIHandler {
     /*
      * run project
      */
-    public static JEResponse runProject(String projectId) throws JERunnerErrorException {
+    public static JEResponse runProject(String projectId) throws JERunnerErrorException, IOException {
         Response response = null;
         String requestUrl = JEGlobalconfig.RUNTIME_MANAGER_BASE_API + APIConstants.RUN_PROJECT + projectId;
-        JELogger.trace(JERunnerAPIHandler.class, " url = " + requestUrl);
-        try {
-            response = Network.makeGetNetworkCallWithResponse(requestUrl);
-            if (response.code() != ResponseCodes.CODE_OK) {
-                JELogger.error(JERunnerAPIHandler.class, "Error making network call for url = " + requestUrl + " response = " + response.body());
-                throw new JERunnerErrorException(Errors.JERUNNER_ERROR);
-            }
-            String respBody = response.body().string();
-            ObjectMapper objectMapper = new ObjectMapper();
-            return objectMapper.readValue(respBody, JEResponse.class);
-        } catch (IOException e) {
-            JELogger.error(JERunnerAPIHandler.class, "Error making network call for url = " + requestUrl + " response = " + response.body());
+        response = Network.makeGetNetworkCallWithResponse(requestUrl);
+
+
+        if (response == null) {
             throw new JERunnerErrorException(Errors.JERUNNER_UNREACHABLE);
+
         }
+
+        if (response.code() != 200) {
+            throw new JERunnerErrorException(Errors.JERUNNER_ERROR + " : " + response.body().string());
+        }
+
+        String respBody = response.body().string();
+        ObjectMapper objectMapper = new ObjectMapper();
+        return objectMapper.readValue(respBody, JEResponse.class);
     }
 
 
-    public static JEResponse stopProject(String projectId) throws JERunnerErrorException {
+    public static JEResponse stopProject(String projectId) throws JERunnerErrorException, IOException {
         Response response = null;
-        String requestUrl = JEGlobalconfig.RUNTIME_MANAGER_BASE_API + APIConstants.STOP_PROJECT + projectId;
         try {
-            JELogger.trace(JERunnerAPIHandler.class, " url = " + requestUrl);
+            String requestUrl = JEGlobalconfig.RUNTIME_MANAGER_BASE_API + APIConstants.STOP_PROJECT + projectId;
             response = Network.makeGetNetworkCallWithResponse(requestUrl);
-            if (response.code() != ResponseCodes.CODE_OK) {
-                JELogger.error(JERunnerAPIHandler.class, "Error making network call for url = " + requestUrl + " response = " + response.body());
-                throw new JERunnerErrorException(Errors.JERUNNER_ERROR + " : " + response.body().string());
-            }
 
-            String respBody = response.body().string();
-            ObjectMapper objectMapper = new ObjectMapper();
-            return objectMapper.readValue(respBody, JEResponse.class);
-        } catch (IOException e) {
-            JELogger.error(JERunnerAPIHandler.class, "Error making network call for url = " + requestUrl + " response = " + response.body());
+        } catch (Exception e) {
             throw new JERunnerErrorException(Errors.JERUNNER_UNREACHABLE);
         }
+        if (response == null) {
+            throw new JERunnerErrorException(Errors.JERUNNER_UNREACHABLE);
+
+        }
+
+        if (response.code() != 200) {
+            throw new JERunnerErrorException(Errors.JERUNNER_ERROR + " : " + response.body().string());
+        }
+
+        String respBody = response.body().string();
+        ObjectMapper objectMapper = new ObjectMapper();
+        return objectMapper.readValue(respBody, JEResponse.class);
+
     }
 
 
@@ -69,121 +73,127 @@ public class JERunnerAPIHandler {
 
 
     //add rule
-    public static JEResponse addRule(Object requestModel) throws JERunnerErrorException {
+    public static JEResponse addRule(Object requestModel) throws JERunnerErrorException, IOException {
         Response response = null;
-        String requestUrl = JEGlobalconfig.RUNTIME_MANAGER_BASE_API + APIConstants.ADD_RULE;
         try {
-            JELogger.trace(JERunnerAPIHandler.class, " url = " + requestUrl);
-            response = Network.makeNetworkCallWithJsonBodyWithResponse(requestModel, requestUrl);
+            response = Network.makeNetworkCallWithJsonBodyWithResponse(requestModel,
+                    JEGlobalconfig.RUNTIME_MANAGER_BASE_API + APIConstants.ADD_RULE);
 
-            if (response.code() != ResponseCodes.CODE_OK) {
-                JELogger.error(JERunnerAPIHandler.class, "Error making network call for url = " + requestUrl + " response = " + response.body());
-                throw new JERunnerErrorException(Errors.JERUNNER_ERROR + " : " + response.body().string());
-            }
-
-            String respBody = response.body().string();
-            ObjectMapper objectMapper = new ObjectMapper();
-            return objectMapper.readValue(respBody, JEResponse.class);
-        } catch (IOException e) {
-            JELogger.error(JERunnerAPIHandler.class, "Error making network call for url = " + requestUrl + " response = " + response.body());
+        } catch (Exception e) {
             throw new JERunnerErrorException(Errors.JERUNNER_UNREACHABLE);
         }
+        if (response == null) {
+            throw new JERunnerErrorException(Errors.JERUNNER_UNREACHABLE);
+
+        }
+
+        if (response.code() != 200) {
+            throw new JERunnerErrorException(Errors.JERUNNER_ERROR + " : " + response.body().string());
+        }
+
+        String respBody = response.body().string();
+        ObjectMapper objectMapper = new ObjectMapper();
+        return objectMapper.readValue(respBody, JEResponse.class);
+
 
     }
 
     //compile rule
-    public static JEResponse compileRule(HashMap<String, String> requestModel) throws JERunnerErrorException {
+    public static JEResponse compileRule(HashMap<String, String> requestModel) throws JERunnerErrorException, IOException {
         Response response = null;
-        String requestUrl = JEGlobalconfig.RUNTIME_MANAGER_BASE_API + APIConstants.COMPILERULE;
         try {
-            JELogger.trace(JERunnerAPIHandler.class, " url = " + requestUrl);
-            response = Network.makeNetworkCallWithJsonBodyWithResponse(requestModel, requestUrl
-            );
+            response = Network.makeNetworkCallWithJsonBodyWithResponse(requestModel,
+                    JEGlobalconfig.RUNTIME_MANAGER_BASE_API + APIConstants.COMPILERULE);
 
-
-            if (response.code() != ResponseCodes.CODE_OK) {
-                JELogger.error(JERunnerAPIHandler.class, "Error making network call for url = " + requestUrl + " response = " + response.body());
-                throw new JERunnerErrorException(Errors.JERUNNER_ERROR + " : " + response.body().string());
-            }
-
-            String respBody = response.body().string();
-            ObjectMapper objectMapper = new ObjectMapper();
-            return objectMapper.readValue(respBody, JEResponse.class);
-        } catch (IOException e) {
-            JELogger.error(JERunnerAPIHandler.class, "Error making network call for url = " + requestUrl + " response = " + response.body());
+        } catch (Exception e) {
             throw new JERunnerErrorException(Errors.JERUNNER_UNREACHABLE);
         }
+        if (response == null) {
+            throw new JERunnerErrorException(Errors.JERUNNER_UNREACHABLE);
+
+        }
+
+        if (response.code() != 200) {
+            throw new JERunnerErrorException(Errors.JERUNNER_ERROR + " : " + response.body().string());
+        }
+
+        String respBody = response.body().string();
+        ObjectMapper objectMapper = new ObjectMapper();
+        return objectMapper.readValue(respBody, JEResponse.class);
     }
 
     //update rule
-    public static JEResponse updateRule(Object requestModel) throws JERunnerErrorException {
+    public static JEResponse updateRule(Object requestModel) throws JERunnerErrorException, IOException {
         Response response = null;
-        String requestUrl = JEGlobalconfig.RUNTIME_MANAGER_BASE_API + APIConstants.UPDATERULE;
         try {
-            JELogger.trace(JERunnerAPIHandler.class, " url = " + requestUrl);
             response = Network.makeNetworkCallWithJsonBodyWithResponse(requestModel,
-                    requestUrl);
+                    JEGlobalconfig.RUNTIME_MANAGER_BASE_API + APIConstants.UPDATERULE);
 
-
-            if (response.code() != ResponseCodes.CODE_OK) {
-                JELogger.error(JERunnerAPIHandler.class, "Error making network call for url = " + requestUrl + " response = " + response.body());
-                throw new JERunnerErrorException(Errors.JERUNNER_ERROR + " : " + response.body().string());
-            }
-
-            String respBody = response.body().string();
-            ObjectMapper objectMapper = new ObjectMapper();
-            return objectMapper.readValue(respBody, JEResponse.class);
-        } catch (IOException e) {
-            JELogger.error(JERunnerAPIHandler.class, "Error making network call for url = " + requestUrl + " response = " + response.body());
+        } catch (Exception e) {
             throw new JERunnerErrorException(Errors.JERUNNER_UNREACHABLE);
         }
+        if (response == null) {
+            throw new JERunnerErrorException(Errors.JERUNNER_UNREACHABLE);
+
+        }
+
+        if (response.code() != 200) {
+            throw new JERunnerErrorException(Errors.JERUNNER_ERROR + " : " + response.body().string());
+        }
+
+        String respBody = response.body().string();
+        ObjectMapper objectMapper = new ObjectMapper();
+        return objectMapper.readValue(respBody, JEResponse.class);
     }
 
 
     ///// CLASSES ///////
 
-    public static JEResponse addClass(HashMap<String, String> requestModel) throws JERunnerErrorException{
+    public static JEResponse addClass(HashMap<String, String> requestModel) throws JERunnerErrorException, IOException {
         Response response = null;
-        String requestUrl = JEGlobalconfig.RUNTIME_MANAGER_BASE_API + APIConstants.ADD_CLASS;
         try {
-            JELogger.trace(JERunnerAPIHandler.class, " url = " + requestUrl);
-            response = Network.makeNetworkCallWithJsonBodyWithResponse(requestModel, requestUrl);
+            response = Network.makeNetworkCallWithJsonBodyWithResponse(requestModel, JEGlobalconfig.RUNTIME_MANAGER_BASE_API + "/addClass");
 
-            if (response.code() != ResponseCodes.CODE_OK) {
-                JELogger.error(JERunnerAPIHandler.class, "Error making network call for url = " + requestUrl + " response = " + response.body());
-                throw new JERunnerErrorException("JERunner Unexpected Error : " + response.body().toString());
-            }
-
-            String respBody = response.body().string();
-            ObjectMapper objectMapper = new ObjectMapper();
-            return objectMapper.readValue(respBody, JEResponse.class);
-        } catch (IOException e) {
-            JELogger.error(JERunnerAPIHandler.class, "Error making network call for url = " + requestUrl + " response = " + response.body());
-            throw new JERunnerErrorException(Errors.JERUNNER_UNREACHABLE);
+        } catch (Exception e) {
+            throw new JERunnerErrorException(Errors.JERUNNER_UNREACHABLE + " " + e.getMessage());
         }
+        if (response == null) {
+            throw new JERunnerErrorException(Errors.JERUNNER_UNREACHABLE);
+
+        }
+        if (response.code() != 200) {
+            throw new JERunnerErrorException("JERunner Unexpected Error : " + response.body().toString());
+        }
+
+        String respBody = response.body().string();
+        ObjectMapper objectMapper = new ObjectMapper();
+        return objectMapper.readValue(respBody, JEResponse.class);
+
+
     }
 
     /////////////////////////////////EVENTS//////////////////////////////
 
     public static JEResponse triggerEvent(String eventId, String projectId) throws JERunnerErrorException, IOException {
         Response response = null;
-        String requestUrl = JEGlobalconfig.RUNTIME_MANAGER_BASE_API + APIConstants.TRIGGER_EVENT + projectId + "/" + eventId;
         try {
-            JELogger.trace(JERunnerAPIHandler.class, " url = " + requestUrl);
-            response = Network.makeGetNetworkCallWithResponse(requestUrl);
+            response = Network.makeGetNetworkCallWithResponse(JEGlobalconfig.RUNTIME_MANAGER_BASE_API + "/event/triggerEvent/" + projectId + "/" + eventId);
 
-            if (response.code() != ResponseCodes.CODE_OK) {
-                JELogger.error(JERunnerAPIHandler.class, "Error making network call for url = " + requestUrl + " response = " + response.body());
-                throw new JERunnerErrorException("JERunner Unexpected Error : " + response.body().toString());
-            }
-
-            String respBody = response.body().string();
-            ObjectMapper objectMapper = new ObjectMapper();
-            return objectMapper.readValue(respBody, JEResponse.class);
-        } catch (IOException e) {
-            JELogger.error(JERunnerAPIHandler.class, "Error making network call for url = " + requestUrl + " response = " + response.body());
-            throw new JERunnerErrorException(Errors.JERUNNER_UNREACHABLE);
+        } catch (Exception e) {
+            throw new JERunnerErrorException(Errors.JERUNNER_UNREACHABLE + " " + e.getMessage());
         }
+        if (response == null) {
+            throw new JERunnerErrorException(Errors.JERUNNER_UNREACHABLE);
+
+        }
+        if (response.code() != 200) {
+            throw new JERunnerErrorException("JERunner Unexpected Error : " + response.body().toString());
+        }
+
+        String respBody = response.body().string();
+        ObjectMapper objectMapper = new ObjectMapper();
+        return objectMapper.readValue(respBody, JEResponse.class);
+
 
     }
 
@@ -191,25 +201,25 @@ public class JERunnerAPIHandler {
     //add event
     public static JEResponse addEvent(HashMap<String, String> requestModel) throws JERunnerErrorException, IOException {
         Response response = null;
-        String requestUrl = JEGlobalconfig.RUNTIME_MANAGER_BASE_API + APIConstants.ADD_EVENT;
         try {
-            JELogger.trace(JERunnerAPIHandler.class, " url = " + JEGlobalconfig.RUNTIME_MANAGER_BASE_API + APIConstants.ADD_EVENT);
             response = Network.makeNetworkCallWithJsonBodyWithResponse(requestModel,
-                    JEGlobalconfig.RUNTIME_MANAGER_BASE_API + APIConstants.ADD_EVENT);
+                    JEGlobalconfig.RUNTIME_MANAGER_BASE_API + "/event/addEvent");
 
-
-            if (response.code() != ResponseCodes.CODE_OK) {
-                JELogger.error(JERunnerAPIHandler.class, "Error making network call for url = " + requestUrl + " response = " + response.body());
-                throw new JERunnerErrorException(Errors.JERUNNER_ERROR + " : " + response.body().string());
-            }
-
-            String respBody = response.body().string();
-            ObjectMapper objectMapper = new ObjectMapper();
-            return objectMapper.readValue(respBody, JEResponse.class);
-        } catch (IOException e) {
-            JELogger.error(JERunnerAPIHandler.class, "Error making network call for url = " + requestUrl + " response = " + response.body());
+        } catch (Exception e) {
             throw new JERunnerErrorException(Errors.JERUNNER_UNREACHABLE);
         }
+        if (response == null) {
+            throw new JERunnerErrorException(Errors.JERUNNER_UNREACHABLE);
+
+        }
+
+        if (response.code() != 200) {
+            throw new JERunnerErrorException(Errors.JERUNNER_ERROR + " : " + response.body().string());
+        }
+
+        String respBody = response.body().string();
+        ObjectMapper objectMapper = new ObjectMapper();
+        return objectMapper.readValue(respBody, JEResponse.class);
     }
 
     //////////////Workflows
@@ -217,24 +227,24 @@ public class JERunnerAPIHandler {
     //add workflow
     public static JEResponse addWorkflow(WorkflowModel wf) throws JERunnerErrorException, IOException {
         Response response = null;
-        String requestUrl = JEGlobalconfig.RUNTIME_MANAGER_BASE_API + APIConstants.ADD_WORKFLOW;
         JELogger.trace(JERunnerAPIHandler.class, "Sending rule build request to runner, project id = " + wf.getProjectId() + "wf id = " + wf.getKey());
         try {
-            JELogger.trace(JERunnerAPIHandler.class, " url = " + requestUrl);
-            response = Network.makeNetworkCallWithJsonObjectBodyWithResponse(wf, requestUrl);
+            response = Network.makeNetworkCallWithJsonObjectBodyWithResponse(wf, JEGlobalconfig.RUNTIME_MANAGER_BASE_API + APIConstants.ADD_WORKFLOW);
 
-
-            if (response.code() != ResponseCodes.CODE_OK) {
-                JELogger.error(JERunnerAPIHandler.class, "Error making network call for url = " + requestUrl + " response = " + response.body());
-                throw new JERunnerErrorException(Errors.JERUNNER_ERROR + " : " + response.body().string());
-            }
-
-            String respBody = response.body().string();
-            ObjectMapper objectMapper = new ObjectMapper();
-            return objectMapper.readValue(respBody, JEResponse.class);
         } catch (IOException e) {
-            JELogger.error(JERunnerAPIHandler.class, "Error making network call for url = " + requestUrl + " response = " + response.body());
             throw new JERunnerErrorException(Errors.JERUNNER_UNREACHABLE);
         }
+        if (response == null) {
+            throw new JERunnerErrorException(Errors.JERUNNER_UNREACHABLE);
+
+        }
+
+        if (response.code() != 200) {
+            throw new JERunnerErrorException(Errors.JERUNNER_ERROR + " : " + response.body().string());
+        }
+
+        String respBody = response.body().string();
+        ObjectMapper objectMapper = new ObjectMapper();
+        return objectMapper.readValue(respBody, JEResponse.class);
     }
 }
