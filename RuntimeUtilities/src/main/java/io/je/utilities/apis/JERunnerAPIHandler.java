@@ -78,7 +78,7 @@ public class JERunnerAPIHandler {
         Response response = null;
         try {
             response = Network.makeNetworkCallWithJsonBodyWithResponse(requestModel,
-                    JEGlobalconfig.RUNTIME_MANAGER_BASE_API + APIConstants.ADD_RULE);
+                    JEGlobalconfig.RUNTIME_MANAGER_BASE_API + APIConstants.ADD_RULE).get();
 
         } catch (Exception e) {
             throw new JERunnerErrorException(Errors.JERUNNER_UNREACHABLE);
@@ -104,7 +104,7 @@ public class JERunnerAPIHandler {
         Response response = null;
         try {
             response = Network.makeNetworkCallWithJsonBodyWithResponse(requestModel,
-                    JEGlobalconfig.RUNTIME_MANAGER_BASE_API + APIConstants.COMPILERULE);
+                    JEGlobalconfig.RUNTIME_MANAGER_BASE_API + APIConstants.COMPILERULE).get();
 
         } catch (Exception e) {
             throw new JERunnerErrorException(Errors.JERUNNER_UNREACHABLE);
@@ -128,7 +128,7 @@ public class JERunnerAPIHandler {
         Response response = null;
         try {
             response = Network.makeNetworkCallWithJsonBodyWithResponse(requestModel,
-                    JEGlobalconfig.RUNTIME_MANAGER_BASE_API + APIConstants.UPDATERULE);
+                    JEGlobalconfig.RUNTIME_MANAGER_BASE_API + APIConstants.UPDATERULE).get();
 
         } catch (Exception e) {
             throw new JERunnerErrorException(Errors.JERUNNER_UNREACHABLE);
@@ -153,7 +153,7 @@ public class JERunnerAPIHandler {
     public static JEResponse addClass(HashMap<String, String> requestModel) throws JERunnerErrorException, IOException {
         Response response = null;
         try {
-            response = Network.makeNetworkCallWithJsonBodyWithResponse(requestModel, JEGlobalconfig.RUNTIME_MANAGER_BASE_API + "/addClass");
+            response = Network.makeNetworkCallWithJsonBodyWithResponse(requestModel, JEGlobalconfig.RUNTIME_MANAGER_BASE_API + "/addClass").get();
 
         } catch (Exception e) {
             throw new JERunnerErrorException(Errors.JERUNNER_UNREACHABLE + " " + e.getMessage());
@@ -204,7 +204,7 @@ public class JERunnerAPIHandler {
         Response response = null;
         try {
             response = Network.makeNetworkCallWithJsonBodyWithResponse(requestModel,
-                    JEGlobalconfig.RUNTIME_MANAGER_BASE_API + "/event/addEvent");
+                    JEGlobalconfig.RUNTIME_MANAGER_BASE_API + "/event/addEvent").get();
 
         } catch (Exception e) {
             throw new JERunnerErrorException(Errors.JERUNNER_UNREACHABLE);

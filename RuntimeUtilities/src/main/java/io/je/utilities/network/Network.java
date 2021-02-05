@@ -6,6 +6,10 @@ import com.squareup.okhttp.*;
 import io.je.utilities.logger.JELogger;
 
 import java.io.IOException;
+import java.util.concurrent.Future;
+
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.AsyncResult;
 
 public class Network {
 
@@ -42,8 +46,8 @@ public class Network {
         return call.execute();
     }
 
-
-    public static Response makeNetworkCallWithJsonBodyWithResponse(Object json, String url) throws IOException {
+    @Async
+    public static Future<Response> makeNetworkCallWithJsonBodyWithResponse(Object json, String url) throws IOException {
         String jsonStr = "";
         try {
             jsonStr = new ObjectMapper().writeValueAsString(json);
@@ -54,7 +58,7 @@ public class Network {
         RequestBody body = RequestBody.create(MediaType.parse("application/json"), jsonStr);
         Request request = new Request.Builder().url(url).post(body).build();
         Call call = client.newCall(request);
-        return call.execute();
+        return new AsyncResult<Response>( call.execute());
     }
 
     public static Response makeNetworkCallWithJsonObjectBodyWithResponse(Object json, String url) throws IOException {
