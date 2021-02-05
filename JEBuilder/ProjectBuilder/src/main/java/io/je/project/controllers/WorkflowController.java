@@ -59,11 +59,11 @@ public class WorkflowController {
     /*
      * Build workflow
      */
-    @PostMapping(value = "/buildWorkflow", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> buildWorkflow(@RequestBody WorkflowModel m) {
+    @PostMapping(value = "/buildWorkflow/{projectId}/{key}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> buildWorkflow(@PathVariable String projectId, @PathVariable String key) {
 
         try {
-            workflowService.buildWorkflow(m.getProjectId(), m.getKey());
+            workflowService.buildWorkflow(projectId, key);
         } catch (ProjectNotFoundException e) {
             JELogger.info(ProjectController.class, e.getMessage());
             return ResponseEntity.badRequest().body(new JEResponse(e.getCode(), Errors.PROJECT_NOT_FOUND));
