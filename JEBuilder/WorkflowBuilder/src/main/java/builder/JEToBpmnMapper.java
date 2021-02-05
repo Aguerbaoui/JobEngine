@@ -33,9 +33,10 @@ public class JEToBpmnMapper {
         BpmnModel model = ModelBuilder.createNewBPMNModel();
         model.setTargetNamespace(wf.getJobEngineProjectID());
         Process process = ModelBuilder.createProcess(wf.getWorkflowName().trim());
-        process.addFlowElement(ModelBuilder.createStartEvent(wf.getWorkflowStartBlock().getJobEngineElementID(), wf.getWorkflowStartBlock().getReference()));
+        process.addFlowElement(ModelBuilder.createStartEvent(wf.getWorkflowStartBlock().getJobEngineElementID(), wf.getWorkflowStartBlock().getEventId()));
         addListeners(process);
         parseWorkflowBlock(wf, wf.getWorkflowStartBlock(), process, null);
+
         model.addProcess(process);
         //new BpmnAutoLayout(model).execute();
         String modelPath = WorkflowConstants.BPMN_PATH + wf.getWorkflowName().trim() + WorkflowConstants.BPMN_EXTENSION;
@@ -83,16 +84,16 @@ public class JEToBpmnMapper {
                         block.generateBpmnInflows(wf), block.generateBpmnOutflows(wf)));
             } else if (block instanceof MessageCatchEvent && !block.isProcessed()) {
 				process.addFlowElement(ModelBuilder.createMessageIntermediateCatchEvent(block.getJobEngineElementID(), block.getName(),
-						((MessageCatchEvent) block).getMessageRef()));
+						((MessageCatchEvent) block).getEventId()));
 			} else if (block instanceof SignalCatchEvent && !block.isProcessed()) {
                 process.addFlowElement(ModelBuilder.createSignalIntermediateCatchEvent(block.getJobEngineElementID(), block.getName(),
-                        ((SignalCatchEvent) block).getSignalRef()));
+                        ((SignalCatchEvent) block).getEventId()));
             }else if (block instanceof ThrowMessageEvent && !block.isProcessed()) {
                 process.addFlowElement(ModelBuilder.createThrowMessageEvent(block.getJobEngineElementID(), block.getName(),
-                        ((ThrowMessageEvent) block).getMessageRef()));
+                        ((ThrowMessageEvent) block).getEventId()));
             }else if (block instanceof ThrowSignalEvent && !block.isProcessed()) {
                 process.addFlowElement(ModelBuilder.createThrowSignalEvent(block.getJobEngineElementID(), block.getName(),
-                        ((ThrowSignalEvent) block).getSignalRef()));
+                        ((ThrowSignalEvent) block).getEventId()));
             }else if (block instanceof ScriptBlock && !block.isProcessed()) {
                 process.addFlowElement(ModelBuilder.createScriptTask(block.getJobEngineElementID(), block.getName(),
                         ((ScriptBlock) block).getScript()));

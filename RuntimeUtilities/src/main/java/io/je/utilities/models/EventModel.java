@@ -5,9 +5,7 @@ import io.je.utilities.mapping.EventModelMapping;
 
 
 public class EventModel {
-	
-    @JsonProperty(EventModelMapping.EVENTTYPE)
-	private EventType type;
+
     @JsonProperty(EventModelMapping.EVENTID)
     private String eventId;
 
@@ -25,16 +23,6 @@ public class EventModel {
         this.projectId = projectId;
     }
 
-    public String getReference() {
-        return reference;
-    }
-
-    public void setReference(String reference) {
-        this.reference = reference;
-    }
-
-    private String reference;
-
     public String getName() {
         return name;
     }
@@ -43,10 +31,8 @@ public class EventModel {
         this.name = name;
     }
 
-    public EventModel(String id, String projectId, EventType type, String reference, String name) {
+    public EventModel(String id, String projectId, EventType type, String name) {
         super();
-        this.type = type;
-        this.reference = reference;
         this.name = name;
         this.eventId = id;
         this.projectId = projectId;
@@ -55,16 +41,6 @@ public class EventModel {
     public EventModel() {
         super();
     }
-
-    
-
-    public EventType getType() {
-		return type;
-	}
-
-	public void setType(EventType type) {
-		this.type = type;
-	}
 
 	public String getEventId() {
         return eventId;
