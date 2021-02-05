@@ -6,16 +6,16 @@ import io.je.utilities.string.JEStringUtils;
 
 public class ThrowSignalEvent extends WorkflowBlock {
 
-    private String signalRef;
+    private String eventId;
 
-    public String getSignalRef() {
-        return signalRef;
+    public String getEventId() {
+        return eventId;
     }
 
-    public void setSignalRef(String signalRef) {
-        if (JEStringUtils.isEmpty(signalRef)) return;
-        if(signalRef.equalsIgnoreCase(APIConstants.DEFAULT)) this.signalRef = null;
+    public void setEventId(String eventId) {
+        if (JEStringUtils.isEmpty(eventId)) return;
+        if(eventId.equalsIgnoreCase(APIConstants.DEFAULT)) this.eventId = null;
         else
-            this.signalRef = signalRef;
+            this.eventId = eventId;
     }
 }

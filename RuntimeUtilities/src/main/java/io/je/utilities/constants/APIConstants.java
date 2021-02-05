@@ -33,6 +33,8 @@ public class APIConstants {
 
 	public static final String ADD_EVENT = "/event/addEvent";
 
+	public static final String UPDATE_EVENT = "/event/updateEventType";
+
 	public static final String RUN_PROJECT = "/project/runProject/";
 
 	public static final String STOP_PROJECT = "/project/stopProject/";
