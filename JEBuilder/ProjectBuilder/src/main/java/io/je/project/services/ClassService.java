@@ -85,7 +85,7 @@ public class ClassService {
 	/*
 	 * send class to je runner to be loaded there
 	 */
-	private void addClassToJeRunner(JEClass clazz) throws AddClassException, JERunnerErrorException, IOException {
+	private void addClassToJeRunner(JEClass clazz) throws AddClassException, JERunnerErrorException {
 		HashMap<String, String> classMap = new HashMap<>();
 		classMap.put(CLASS_NAME, clazz.getClassName());
 		classMap.put(CLASS_PATH, clazz.getClassPath());

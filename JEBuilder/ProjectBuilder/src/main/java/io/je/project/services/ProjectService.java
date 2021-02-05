@@ -14,9 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Optional;
 /*
  * Service class to handle business logic for projects
@@ -145,7 +143,7 @@ public class ProjectService {
      * run project => send request to jeRunner to run project
      */
     public void runAll(String projectId)
-            throws ProjectNotFoundException, JERunnerErrorException, ProjectRunException, IOException {
+            throws ProjectNotFoundException, JERunnerErrorException, ProjectRunException {
         if (loadedProjects.containsKey(projectId)) {
             JEProject project = loadedProjects.get(projectId);
             if (project.isBuilt()) {
@@ -168,7 +166,7 @@ public class ProjectService {
      * Stop a running project
      * */
     public void stopProject(String projectId)
-            throws ProjectNotFoundException, JERunnerErrorException, ProjectRunException, ProjectStatusException, IOException {
+            throws ProjectNotFoundException, JERunnerErrorException, ProjectRunException, ProjectStatusException {
         if (!loadedProjects.containsKey(projectId)) {
             throw new ProjectNotFoundException(Errors.PROJECT_NOT_FOUND);
         }
@@ -215,19 +213,5 @@ public class ProjectService {
         JELogger.trace(ProjectService.class, "Found project with id = " + projectId);
         return loadedProjects.get(projectId);
     }
-
-	public Collection<?> getAllProjects() {
-		List<JEProject> projects = projectRepository.findAll();
-		for(JEProject project : projects)
-		{
-			if(!loadedProjects.containsKey(project.getProjectId()))
-			{
-				loadedProjects.put(project.getProjectId(), project);
-			}
-			 //TODO: register events? maybe!
-		}
-		return projects;
-		
-	}
 
 }
