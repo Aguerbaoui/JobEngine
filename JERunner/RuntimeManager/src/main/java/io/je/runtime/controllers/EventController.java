@@ -1,5 +1,7 @@
 package io.je.runtime.controllers;
 
+import io.je.utilities.exceptions.EventException;
+import io.je.utilities.exceptions.ProjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -33,7 +35,6 @@ public class EventController {
 	public ResponseEntity<?> addEvent(@RequestBody EventModel eventModel) {
 
 		runtimeDispatcher.addEvent(eventModel);
-
 		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.RuleAdditionSucceeded));
 	}
 	
@@ -47,5 +48,15 @@ public class EventController {
         return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.TOPIC_ADDED));
     }
 
+	@PostMapping(value = "/updateEventType/{projectId}/{eventId}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> updateEventType(@PathVariable("projectId") String projectId,@PathVariable("eventId") String eventId, @RequestBody String eventType) {
+
+		try {
+			runtimeDispatcher.updateEventType(projectId, eventId, eventType);
+		} catch (ProjectNotFoundException | EventException e) {
+			return ResponseEntity.badRequest().body(new JEResponse(e.getCode(), e.getMessage()));
+		}
+		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.RuleAdditionSucceeded));
+	}
 
 }

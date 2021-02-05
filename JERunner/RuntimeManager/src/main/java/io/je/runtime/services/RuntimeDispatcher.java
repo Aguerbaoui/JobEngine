@@ -6,6 +6,7 @@ import io.je.utilities.beans.JEData;
 import io.je.utilities.beans.JEEvent;
 import io.je.utilities.exceptions.*;
 import io.je.utilities.models.EventModel;
+import io.je.utilities.models.EventType;
 import io.je.utilities.models.WorkflowModel;
 import org.springframework.stereotype.Service;
 
@@ -238,11 +239,12 @@ public class RuntimeDispatcher {
 			e.setTriggeredById(eventModel.getEventId());
 			e.setJobEngineElementID(eventModel.getEventId());
 			e.setJobEngineProjectID(eventModel.getProjectId());
+			e.setType(EventType.GENERIC_EVENT);
 			EventManager.addEvent(eventModel.getProjectId(), e);
-		
 	}
-	
-	
 
-	
+
+	public void updateEventType(String projectId, String eventId, String eventType) throws ProjectNotFoundException, EventException {
+		EventManager.updateEventType(projectId, eventId, eventType);
+	}
 }

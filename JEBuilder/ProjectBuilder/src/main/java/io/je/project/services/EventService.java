@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 
+import io.je.utilities.models.EventType;
+import jdk.jfr.Event;
 import org.springframework.stereotype.Service;
 
 import io.je.project.beans.JEProject;
@@ -49,7 +51,7 @@ public class EventService {
 		if (project == null) {
 			throw new ProjectNotFoundException( Errors.PROJECT_NOT_FOUND);
 		}
-		JEEvent event = new JEEvent(eventModel.getEventId(), projectId, eventModel.getName(), eventModel.getType());
+		JEEvent event = new JEEvent(eventModel.getEventId(), projectId, eventModel.getName(), EventType.GENERIC_EVENT);
 		registerEvent(event);
 		
 	}

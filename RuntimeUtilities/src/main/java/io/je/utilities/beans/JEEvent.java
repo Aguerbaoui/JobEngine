@@ -33,8 +33,6 @@ public class JEEvent extends JEObject {
         this.triggeredById = triggeredById;
     }
 
-
-
     public EventType getType() {
 		return type;
 	}
