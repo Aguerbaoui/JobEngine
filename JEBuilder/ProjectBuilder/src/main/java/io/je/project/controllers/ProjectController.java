@@ -9,12 +9,14 @@ import io.je.utilities.exceptions.*;
 import io.je.utilities.logger.JELogger;
 import io.je.utilities.network.JEResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collection;
 
 import static io.je.utilities.constants.ResponseMessages.*;
 
@@ -30,6 +32,29 @@ public class ProjectController {
 	ProjectService projectService;
 
 //########################################### **PROJECT** ################################################################
+	
+	@GetMapping("/getAllProjects")
+	public ResponseEntity<?> getAllProject(@PathVariable String projectId) {
+		Collection<?> projects = null;
+		try {
+			projects = projectService.getAllProjects();
+			 if(projects.isEmpty())
+			 {
+					return ResponseEntity.noContent().build();
+
+			 }
+		} catch (Exception e) {
+			e.printStackTrace();
+			JELogger.error(RuleController.class, e.getMessage());
+			return ResponseEntity.badRequest().body(new JEResponse(ResponseCodes.UNKNOWN_ERROR, Errors.UKNOWN_ERROR));
+ 		}
+		
+		return	new ResponseEntity<Object>(projects,HttpStatus.OK);
+	
+}
+
+	
+	
 
 	/*
 	 * Add new project
@@ -72,6 +97,9 @@ public class ProjectController {
 	public ResponseEntity<?> buildProject(@PathVariable String projectId) {
 		try {
 			projectService.buildAll(projectId);
+			projectService.saveProject(ProjectService.getProjectById(projectId));
+
+
 		} catch (ProjectNotFoundException |  RuleBuildFailedException
 				| JERunnerErrorException e) {
 			JELogger.error(ProjectController.class, e.getMessage());
@@ -92,6 +120,8 @@ public class ProjectController {
 		try {
 			try {
 				projectService.runAll(projectId);
+				projectService.saveProject(ProjectService.getProjectById(projectId));
+
 			} catch (JERunnerErrorException | ProjectRunException | ProjectNotFoundException e) {
 				JELogger.error(RuleController.class, e.getMessage());
 				return ResponseEntity.badRequest().body(new JEResponse(e.getCode(), e.getMessage()));
@@ -112,6 +142,8 @@ public class ProjectController {
 			
 				try {
 					projectService.stopProject(projectId);
+					projectService.saveProject(ProjectService.getProjectById(projectId));
+
 				} catch (ProjectNotFoundException | JERunnerErrorException | ProjectRunException | ProjectStatusException
 						e) {
 					JELogger.error(RuleController.class, e.getMessage());

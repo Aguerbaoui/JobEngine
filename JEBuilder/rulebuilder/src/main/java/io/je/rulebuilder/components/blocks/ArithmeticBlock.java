@@ -21,4 +21,9 @@ public abstract class ArithmeticBlock extends ConditionBlock {
 
 	}
 
+	
+	public String asDouble(String val)
+	{
+		return " Double.valueOf( "+val+" )";
+	}
 }
