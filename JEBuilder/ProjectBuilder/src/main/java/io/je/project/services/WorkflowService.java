@@ -16,12 +16,15 @@ import io.je.utilities.constants.WorkflowConstants;
 import io.je.utilities.exceptions.*;
 import io.je.utilities.logger.JELogger;
 import models.JEWorkflow;
+
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 /*
  * Service class to handle business logic for workflows
  * */
+import java.util.concurrent.CompletableFuture;
 
 @Service
 public class WorkflowService {
@@ -40,20 +43,22 @@ public class WorkflowService {
     /*
      * Add a workflow to a project
      * */
-    public void addWorkflow(JEWorkflow wf) throws ProjectNotFoundException {
-        //TODO JPA save
+    @Async
+    public CompletableFuture<Void> addWorkflow(JEWorkflow wf) throws ProjectNotFoundException {
         JEProject project = ProjectService.getProjectById(wf.getJobEngineProjectID());
         if (project == null) {
             throw new ProjectNotFoundException(Errors.PROJECT_NOT_FOUND);
         }
         JELogger.trace(WorkflowService.class, " Adding new workflow with id = " + wf.getJobEngineElementID());
         project.addWorkflow(wf);
+        return CompletableFuture.completedFuture(null);
     }
 
     /*
      * Remove a workflow from a project
      * */
-    public void removeWorkflow(String projectId, String workflowId) throws ProjectNotFoundException, WorkflowNotFoundException {
+    @Async
+    public CompletableFuture<Void> removeWorkflow(String projectId, String workflowId) throws ProjectNotFoundException, WorkflowNotFoundException {
         JEProject project = ProjectService.getProjectById(projectId);
         if (project == null) {
             throw new ProjectNotFoundException(Errors.PROJECT_NOT_FOUND);
@@ -64,12 +69,14 @@ public class WorkflowService {
         }
         JELogger.trace(WorkflowService.class, " Removing workflow with id = " + workflowId);
         project.removeWorkflow(workflowId);
+        return CompletableFuture.completedFuture(null);
     }
 
     /*
      * Add a workflow block to a workflow
      * */
-    public void addWorkflowBlock(WorkflowBlockModel block) throws ProjectNotFoundException, WorkflowNotFoundException, InvalidSequenceFlowException, WorkflowBlockNotFound {
+    @Async
+    public CompletableFuture<Void> addWorkflowBlock(WorkflowBlockModel block) throws ProjectNotFoundException, WorkflowNotFoundException, InvalidSequenceFlowException, WorkflowBlockNotFound {
         JEProject project = ProjectService.getProjectById(block.getProjectId());
         if (project == null) {
             throw new ProjectNotFoundException(Errors.PROJECT_NOT_FOUND);
@@ -245,8 +252,9 @@ public class WorkflowService {
                     block.getAttributes().get(SOURCE_REF), block.getAttributes().get(TARGET_REF),
                     block.getAttributes().get(CONDITION));
         }
+        return CompletableFuture.completedFuture(null);
     }
-
+    
     private void updateEventType(String projectId, String eventId, String type) throws JERunnerErrorException {
         JERunnerAPIHandler.updateEventType(projectId, eventId, type);
     }
@@ -254,7 +262,8 @@ public class WorkflowService {
     /*
      * Delete a workflow block
      * */
-    public void deleteWorkflowBlock(String projectId, String workflowId, String blockId) throws ProjectNotFoundException, WorkflowNotFoundException, WorkflowBlockNotFound, InvalidSequenceFlowException {
+    @Async
+    public CompletableFuture<Void> deleteWorkflowBlock(String projectId, String workflowId, String blockId) throws ProjectNotFoundException, WorkflowNotFoundException, WorkflowBlockNotFound, InvalidSequenceFlowException {
         JEProject project = ProjectService.getProjectById(projectId);
         if (project == null) {
             throw new ProjectNotFoundException(Errors.PROJECT_NOT_FOUND);
@@ -264,12 +273,14 @@ public class WorkflowService {
         JELogger.trace(WorkflowService.class, " Deleting a workflow block with id = " + blockId + " in workflow with id = " + workflowId);
 
         project.deleteWorkflowBlock(workflowId, blockId);
+        return CompletableFuture.completedFuture(null);
     }
 
     /*
      * Delete a Sequence flow
      * */
-    public void deleteSequenceFlow(String projectId, String workflowId, String sourceRef, String targetRef) throws ProjectNotFoundException, WorkflowNotFoundException, WorkflowBlockNotFound, InvalidSequenceFlowException {
+    @Async
+    public CompletableFuture<Void> deleteSequenceFlow(String projectId, String workflowId, String sourceRef, String targetRef) throws ProjectNotFoundException, WorkflowNotFoundException, WorkflowBlockNotFound, InvalidSequenceFlowException {
         JEProject project = ProjectService.getProjectById(projectId);
         if (project == null) {
             throw new ProjectNotFoundException(Errors.PROJECT_NOT_FOUND);
@@ -278,12 +289,14 @@ public class WorkflowService {
         }
         JELogger.trace(WorkflowService.class, " Deleting a sequence flow with from " + sourceRef + " to  " + targetRef + " in workflow id = " + workflowId);
         project.deleteWorkflowSequenceFlow(workflowId, sourceRef, targetRef);
+        return CompletableFuture.completedFuture(null);
     }
 
     /*
      * Add a Sequence flow
      * */
-    public void addSequenceFlow(String projectId, String workflowId, String sourceRef, String targetRef, String condition) throws ProjectNotFoundException, WorkflowNotFoundException, WorkflowBlockNotFound, InvalidSequenceFlowException {
+    @Async
+    public CompletableFuture<Void> addSequenceFlow(String projectId, String workflowId, String sourceRef, String targetRef, String condition) throws ProjectNotFoundException, WorkflowNotFoundException, WorkflowBlockNotFound, InvalidSequenceFlowException {
         JEProject project = ProjectService.getProjectById(projectId);
         if (project == null) {
             throw new ProjectNotFoundException(Errors.PROJECT_NOT_FOUND);
@@ -292,12 +305,14 @@ public class WorkflowService {
         }
 
         project.addWorkflowSequenceFlow(workflowId, sourceRef, targetRef, condition);
+        return CompletableFuture.completedFuture(null);
     }
 
     /*
      * Build a workflow
      * */
-    public void buildWorkflow(String projectId, String workflowId) throws WorkflowNotFoundException, ProjectNotFoundException, IOException, JERunnerErrorException {
+    @Async
+    public CompletableFuture<Void> buildWorkflow(String projectId, String workflowId) throws WorkflowNotFoundException, ProjectNotFoundException, IOException, JERunnerErrorException {
         JEProject project = ProjectService.getProjectById(projectId);
         if (project == null) {
             throw new ProjectNotFoundException(Errors.PROJECT_NOT_FOUND);
@@ -306,12 +321,14 @@ public class WorkflowService {
         }
         JELogger.trace(WorkflowService.class, " Building workflow with id = " + workflowId);
         WorkflowBuilder.buildWorkflow(project.getWorkflowById(workflowId));
+        return CompletableFuture.completedFuture(null);
     }
 
     /*
      * Build all workflow
      * */
-    public void buildWorkflows(String projectId) throws ProjectNotFoundException, IOException, JERunnerErrorException {
+    @Async
+    public CompletableFuture<Void> buildWorkflows(String projectId) throws ProjectNotFoundException, IOException, JERunnerErrorException {
         JEProject project = ProjectService.getProjectById(projectId);
         if (project == null) {
             throw new ProjectNotFoundException(Errors.PROJECT_NOT_FOUND);
@@ -320,13 +337,16 @@ public class WorkflowService {
         for (JEWorkflow wf : project.getWorkflows().values()) {
             WorkflowBuilder.buildWorkflow(wf);
         }
+        return CompletableFuture.completedFuture(null);
+
 
     }
 
     /*
      * Run a workflow
      * */
-    public void runWorkflow(String projectId, String workflowId) throws WorkflowNotFoundException, ProjectNotFoundException, IOException, WorkflowAlreadyRunningException {
+    @Async
+    public CompletableFuture<Void> runWorkflow(String projectId, String workflowId) throws WorkflowNotFoundException, ProjectNotFoundException, IOException, WorkflowAlreadyRunningException {
         JEProject project = ProjectService.getProjectById(projectId);
         if (project == null) {
             throw new ProjectNotFoundException(Errors.PROJECT_NOT_FOUND);
@@ -342,12 +362,14 @@ public class WorkflowService {
         } else {
             throw new WorkflowAlreadyRunningException(Errors.WORKFLOW_ALREADY_RUNNING);
         }
+        return CompletableFuture.completedFuture(null);
     }
 
     /*
      * Run all workflows
      * */
-    public void runWorkflows(String projectId) throws ProjectNotFoundException, IOException {
+    @Async
+    public CompletableFuture<Void> runWorkflows(String projectId) throws ProjectNotFoundException, IOException {
         JEProject project = ProjectService.getProjectById(projectId);
         if (project == null) {
             throw new ProjectNotFoundException(Errors.PROJECT_NOT_FOUND);
@@ -355,13 +377,15 @@ public class WorkflowService {
         for (JEWorkflow wf : project.getWorkflows().values()) {
             WorkflowBuilder.runWorkflow(projectId, wf.getWorkflowName().trim());
         }
+        return CompletableFuture.completedFuture(null);
     }
 
     /*
      *
      * Update workflow block
      * */
-    public void updateWorkflowBlock(WorkflowBlockModel block) throws WorkflowBlockNotFound, WorkflowNotFoundException, ProjectNotFoundException {
+    @Async
+    public CompletableFuture<Void> updateWorkflowBlock(WorkflowBlockModel block) throws WorkflowBlockNotFound, WorkflowNotFoundException, ProjectNotFoundException {
         JEProject project = ProjectService.getProjectById(block.getProjectId());
         if (project == null) {
             throw new ProjectNotFoundException(Errors.PROJECT_NOT_FOUND);
@@ -490,10 +514,11 @@ public class WorkflowService {
             b.setName(block.getAttributes().get(NAME));
             project.addBlockToWorkflow(b);
         }
+        return CompletableFuture.completedFuture(null);
 
     }
-
-    public void addBpmn(String projectId, String workflowId, String bpmn) throws ProjectNotFoundException {
+    @Async
+    public CompletableFuture<Void> addBpmn(String projectId, String workflowId, String bpmn) throws ProjectNotFoundException {
         JEProject project = ProjectService.getProjectById(projectId);
         if (project == null) {
             throw new ProjectNotFoundException(Errors.PROJECT_NOT_FOUND);
@@ -508,10 +533,11 @@ public class WorkflowService {
         wf.setScript(bpmn);
         WorkflowBuilder.saveBpmn(wf, bpmn);
         project.addWorkflow(wf);
+        return CompletableFuture.completedFuture(null);
 
     }
-
-    public void updateWorkflow(String projectId, String workflowId, WorkflowModel m) throws WorkflowNotFoundException, ProjectNotFoundException {
+    @Async
+    public CompletableFuture<Void> updateWorkflow(String projectId, String workflowId, WorkflowModel m) throws WorkflowNotFoundException, ProjectNotFoundException {
         JEProject project = ProjectService.getProjectById(projectId);
         if (project == null) {
             throw new ProjectNotFoundException(Errors.PROJECT_NOT_FOUND);
@@ -525,6 +551,6 @@ public class WorkflowService {
             JELogger.trace(WorkflowService.class, " updating workflow with id = " + workflowId);
             project.getWorkflowById(workflowId).setWorkflowName(m.getName());
         }
-
+        return CompletableFuture.completedFuture(null);
     }
 }

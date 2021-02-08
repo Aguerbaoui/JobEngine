@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import io.je.rulebuilder.components.blocks.Block;
 import io.je.rulebuilder.components.blocks.ExecutionBlock;
@@ -17,7 +18,7 @@ import io.je.utilities.runtimeobject.ClassDefinition;
 public class BlockManager {
 
 	// key : block id, value : block
-	HashMap<String, Block> blocks = new HashMap<>();
+	ConcurrentHashMap<String, Block> blocks = new ConcurrentHashMap<>();
 
 	List<ClassDefinition> topics = new ArrayList<>();
 

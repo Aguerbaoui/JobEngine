@@ -1,8 +1,10 @@
 package io.je.project.services;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map.Entry;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
@@ -49,14 +51,15 @@ public class RuleService {
 	@Autowired
 	ClassService classService;
 
-
+	
 
 	/*
 	 * Add a rule to a project
 	 */
 	@Async
-	public Future<Boolean> addRule(String projectId, RuleModel ruleModel)
-			throws ProjectNotFoundException, RuleAlreadyExistsException, RuleNotAddedException {
+	public CompletableFuture<CompletableFuture<Void>> addRule(String projectId, RuleModel ruleModel)
+			throws ProjectNotFoundException, RuleAlreadyExistsException, RuleNotAddedException, InterruptedException,
+			ExecutionException {
 		JELogger.info(getClass(), "adding rule");
 		JEProject project = ProjectService.getProjectById(projectId);
 		if (project == null) {
@@ -64,8 +67,8 @@ public class RuleService {
 		} else if (project.ruleExists(ruleModel.getRuleId())) {
 			throw new RuleAlreadyExistsException(RuleBuilderErrors.RuleAlreadyExists);
 		}
-		
-		//TODO : remove harcoded msgs
+
+		// TODO : remove harcoded msgs
 		if (ruleModel.getRuleId() == null) {
 			throw new RuleNotAddedException("Rule id can't be empty");
 		}
@@ -83,16 +86,17 @@ public class RuleService {
 		ruleParameters.setEnabled(ruleModel.getEnabled());
 		ruleParameters.setDateEffective(ruleModel.getDateEffective());
 		ruleParameters.setDateExpires(ruleModel.getDateExpires());
-		rule.setRuleParameters(ruleParameters);	
+		rule.setRuleParameters(ruleParameters);
 		project.addRule(rule);
-		return new AsyncResult<>(true);
+		return CompletableFuture.completedFuture(null);
 	}
 
 	/*
 	 * delete rule from a project
 	 */
 	@Async
-	public void deleteRule(String projectId, String ruleId) throws ProjectNotFoundException, RuleNotFoundException {
+	public CompletableFuture<Void> deleteRule(String projectId, String ruleId)
+			throws ProjectNotFoundException, RuleNotFoundException, InterruptedException, ExecutionException {
 		JEProject project = ProjectService.getProjectById(projectId);
 		if (project == null) {
 			throw new ProjectNotFoundException(Errors.PROJECT_NOT_FOUND);
@@ -100,6 +104,9 @@ public class RuleService {
 			throw new RuleNotFoundException(RuleBuilderErrors.RuleNotFound);
 		}
 		project.deleteRule(ruleId);
+		
+
+		return CompletableFuture.completedFuture(null);
 	}
 
 	/*
@@ -107,8 +114,8 @@ public class RuleService {
 	 * each attribute
 	 */
 	@Async
-	public void updateRule(String projectId, RuleModel ruleModel)
-			throws RuleNotAddedException, ProjectNotFoundException, RuleNotFoundException {
+	public CompletableFuture<Void> updateRule(String projectId, RuleModel ruleModel) throws RuleNotAddedException,
+			ProjectNotFoundException, RuleNotFoundException, InterruptedException, ExecutionException {
 		JEProject project = ProjectService.getProjectById(projectId);
 		if (project == null) {
 			throw new ProjectNotFoundException(Errors.PROJECT_NOT_FOUND);
@@ -174,6 +181,9 @@ public class RuleService {
 		}
 		ruleToUpdate.setBuilt(false);
 		project.getRules().put(ruleModel.getRuleId(), ruleToUpdate);
+		
+
+		return CompletableFuture.completedFuture(null);
 
 	}
 
@@ -181,9 +191,9 @@ public class RuleService {
 	 * update rule : add block to rule
 	 */
 	@Async
-	public void addBlockToRule(BlockModel blockModel) throws AddRuleBlockException, ProjectNotFoundException,
-			RuleNotFoundException, DataDefinitionUnreachableException, JERunnerErrorException, AddClassException,
-			ClassLoadException, IOException, InterruptedException, ExecutionException {
+	public CompletableFuture<Void> addBlockToRule(BlockModel blockModel) throws AddRuleBlockException,
+			ProjectNotFoundException, RuleNotFoundException, DataDefinitionUnreachableException, JERunnerErrorException,
+			AddClassException, ClassLoadException, IOException, InterruptedException, ExecutionException {
 
 		if (blockModel.getProjectId() == null) {
 			throw new AddRuleBlockException(RuleBuilderErrors.BlockProjectIdentifierIsEmpty);
@@ -215,16 +225,18 @@ public class RuleService {
 			classService.addClass(classDef);
 		}
 		((UserDefinedRule) rule).addBlock(block);
+		
 
+		return CompletableFuture.completedFuture(null);
 	}
-
 
 	/*
 	 * delete block
 	 */
 	@Async
-	public void deleteBlock(String projectId, String ruleId, String blockId)
-			throws ProjectNotFoundException, RuleNotFoundException, RuleBlockNotFoundException {
+	public CompletableFuture<Void> deleteBlock(String projectId, String ruleId, String blockId)
+			throws ProjectNotFoundException, RuleNotFoundException, RuleBlockNotFoundException, InterruptedException,
+			ExecutionException {
 		JEProject project = ProjectService.getProjectById(projectId);
 		if (project == null) {
 			throw new ProjectNotFoundException(Errors.PROJECT_NOT_FOUND);
@@ -232,6 +244,9 @@ public class RuleService {
 			throw new RuleNotFoundException(RuleBuilderErrors.RuleNotFound);
 		}
 		project.deleteRuleBlock(ruleId, blockId);
+		
+
+		return CompletableFuture.completedFuture(null);
 
 	}
 
@@ -239,8 +254,9 @@ public class RuleService {
 	 * build rule : create drl + check for compilation errors
 	 */
 	@Async
-	public void buildRule(String projectId, String ruleId) throws ProjectNotFoundException, RuleNotFoundException,
-			RuleBuildFailedException, JERunnerErrorException, IOException {
+	public CompletableFuture<Void> buildRule(String projectId, String ruleId)
+			throws ProjectNotFoundException, RuleNotFoundException, RuleBuildFailedException, JERunnerErrorException,
+			IOException, InterruptedException, ExecutionException {
 		JEProject project = ProjectService.getProjectById(projectId);
 		if (project == null) {
 			throw new ProjectNotFoundException(Errors.PROJECT_NOT_FOUND);
@@ -248,37 +264,43 @@ public class RuleService {
 			throw new RuleNotFoundException(RuleBuilderErrors.RuleNotFound);
 		}
 		RuleBuilder.buildRule(project.getRule(ruleId), project.getConfigurationPath());
+		project.getRules().get(ruleId).setBuilt(true);
+		project.getRules().get(ruleId).setAdded(true);
+		return CompletableFuture.completedFuture(null);
 
 	}
+
 	@Async
-	public void buildRules(String projectId)
-			throws ProjectNotFoundException, RuleBuildFailedException, JERunnerErrorException, IOException {
+	public CompletableFuture<Void> buildRules(String projectId) throws ProjectNotFoundException,
+			RuleBuildFailedException, JERunnerErrorException, IOException, InterruptedException, ExecutionException, RuleNotFoundException {
 		JEProject project = ProjectService.getProjectById(projectId);
 		if (project == null) {
 			throw new ProjectNotFoundException(Errors.PROJECT_NOT_FOUND);
 		}
-
+		ArrayList<CompletableFuture<?>> ruleFuture = new ArrayList<>();
 		for (Entry<String, JERule> entry : project.getRules().entrySet()) {
-			String key = entry.getKey();
-			RuleBuilder.buildRule(project.getRules().get(key), project.getConfigurationPath());
-			project.getRules().get(key).setBuilt(true);
-			project.getRules().get(key).setAdded(true);
+			String ruleId = entry.getKey();
+			ruleFuture.add(buildRule(projectId, ruleId));
 		}
+		ruleFuture.forEach(CompletableFuture::join);
+		return CompletableFuture.completedFuture(null);
 	}
 
 	/*
 	 * Retrieve list of all rules that exist in a project.
 	 */
 	@Async
-	public Future<Collection<JERule>> getAllRules(String projectId) throws ProjectNotFoundException {
+	public Future<Collection<JERule>> getAllRules(String projectId)
+			throws ProjectNotFoundException, InterruptedException, ExecutionException {
 		JEProject project = ProjectService.getProjectById(projectId);
 		if (project == null) {
 			throw new ProjectNotFoundException(Errors.PROJECT_NOT_FOUND);
 		}
-		return new AsyncResult<>(project.getRules().values()) ;
+		return new AsyncResult<>(project.getRules().values());
 	}
 
-	public Future<JERule> getRule(String projectId, String ruleId) throws ProjectNotFoundException, RuleNotFoundException {
+	public Future<JERule> getRule(String projectId, String ruleId)
+			throws ProjectNotFoundException, RuleNotFoundException, InterruptedException, ExecutionException {
 		JEProject project = ProjectService.getProjectById(projectId);
 		if (project == null) {
 			throw new ProjectNotFoundException(Errors.PROJECT_NOT_FOUND);
@@ -293,8 +315,8 @@ public class RuleService {
 	 * add scripted rule
 	 */
 	@Async
-	public void addScriptedRule(String projectId, ScriptRuleModel ruleModel)
-			throws ProjectNotFoundException, RuleAlreadyExistsException {
+	public CompletableFuture<Void> addScriptedRule(String projectId, ScriptRuleModel ruleModel)
+			throws ProjectNotFoundException, RuleAlreadyExistsException, InterruptedException, ExecutionException {
 		ScriptedRule rule = new ScriptedRule(projectId, ruleModel.getRuleId(), ruleModel.getScript(),
 				ruleModel.getRuleName());
 		JEProject project = ProjectService.getProjectById(projectId);
@@ -302,14 +324,18 @@ public class RuleService {
 			throw new ProjectNotFoundException(Errors.PROJECT_NOT_FOUND);
 		}
 		project.addRule(rule);
+		
 
+		return CompletableFuture.completedFuture(null);
 	}
 
 	/*
 	 * update scripted rule
+	 * 
 	 */
-	public void updateScriptedRule(String projectId, ScriptRuleModel ruleModel)
-			throws ProjectNotFoundException, RuleNotFoundException {
+	@Async
+	public CompletableFuture<Void> updateScriptedRule(String projectId, ScriptRuleModel ruleModel)
+			throws ProjectNotFoundException, RuleNotFoundException, InterruptedException, ExecutionException {
 		ScriptedRule rule = new ScriptedRule(projectId, ruleModel.getRuleId(), ruleModel.getScript(),
 				ruleModel.getRuleName());
 		JEProject project = ProjectService.getProjectById(projectId);
@@ -317,11 +343,15 @@ public class RuleService {
 			throw new ProjectNotFoundException(Errors.PROJECT_NOT_FOUND);
 		}
 		project.updateRule(rule);
+		
+
+		return CompletableFuture.completedFuture(null);
 
 	}
 
-	public void saveRuleFrontConfig(String projectId, String ruleId, String config)
-			throws ProjectNotFoundException, RuleNotFoundException {
+	@Async
+	public CompletableFuture<Void> saveRuleFrontConfig(String projectId, String ruleId, String config)
+			throws ProjectNotFoundException, RuleNotFoundException, InterruptedException, ExecutionException {
 		JEProject project = ProjectService.getProjectById(projectId);
 		if (project == null) {
 			throw new ProjectNotFoundException(Errors.PROJECT_NOT_FOUND);
@@ -329,6 +359,9 @@ public class RuleService {
 			throw new RuleNotFoundException(RuleBuilderErrors.RuleNotFound);
 		}
 		project.getRule(ruleId).setRuleFrontConfig(config);
+		
+
+		return CompletableFuture.completedFuture(null);
 	}
 
 	public void verifyBlockFormatIsValid(BlockModel blockModel) throws AddRuleBlockException {
