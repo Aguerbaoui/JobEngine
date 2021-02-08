@@ -64,17 +64,25 @@ public class EventManager {
     //TODO update with rule events
     public static void triggerEvent(String projectId, String id) {
         JEEvent event = events.get(projectId).get(id);
+        if(event == null) {
+            for(JEEvent ev: events.get(projectId).values()) {
+                if(ev.getName().equalsIgnoreCase(id)) {
+                    event = ev;
+                    break;
+                }
+            }
+        }
         if(event != null) {
             event.setTriggered(true);
             RuleEngineHandler.addEvent(event);
             if(event.getType().equals(EventType.MESSAGE_EVENT)) {
-                throwMessageEventInWorkflow(projectId, event.getJobEngineElementID());
+                throwMessageEventInWorkflow(projectId, event.getName());
             }
             else if(event.getType().equals(EventType.SIGNAL_EVENT)) {
-                throwSignalEventInWorkflow(projectId, event.getJobEngineElementID());
+                throwSignalEventInWorkflow(projectId, event.getName());
             }
             else if(event.getType().equals(EventType.START_WORKFLOW)) {
-                startProcessInstanceByMessage(projectId, event.getJobEngineElementID());
+                startProcessInstanceByMessage(projectId, event.getName());
             }
         }
     }
@@ -92,14 +100,21 @@ public class EventManager {
 
 
     public static void updateEventType(String projectId, String eventId, String eventType) throws EventException, ProjectNotFoundException {
+        JEEvent event = null;
         if(!events.containsKey(projectId)) {
             throw new ProjectNotFoundException(Errors.PROJECT_NOT_FOUND);
         }
         if(!events.get(projectId).containsKey(eventId)) {
-            throw new EventException(Errors.EVENT_NOT_FOUND);
+            for(JEEvent ev: events.get(projectId).values()) {
+                if(ev.getName().equalsIgnoreCase(eventId)) {
+                    event = ev;
+                    break;
+                }
+            }
         }
+        if(event == null)   throw new EventException(Errors.EVENT_NOT_FOUND);
         EventType t = null;
-        if(eventType.equalsIgnoreCase("startWorkflow")) {
+        if(eventType.equalsIgnoreCase("start")) {
             t = EventType.START_WORKFLOW;
         }
         else if(eventType.equalsIgnoreCase("signal")) {
@@ -108,6 +123,6 @@ public class EventManager {
         else if(eventType.equalsIgnoreCase("message")) {
             t = EventType.MESSAGE_EVENT;
         }
-        events.get(projectId).get(eventId).setType(t);
+        event.setType(t);
     }
 }

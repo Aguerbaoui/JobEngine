@@ -229,6 +229,7 @@ public class RuntimeDispatcher {
 	}
 
 	public void triggerEvent(String projectId, String id) {
+
 		EventManager.triggerEvent(projectId, id);
 	}
 
@@ -240,6 +241,7 @@ public class RuntimeDispatcher {
 			e.setJobEngineElementID(eventModel.getEventId());
 			e.setJobEngineProjectID(eventModel.getProjectId());
 			e.setType(EventType.GENERIC_EVENT);
+			//TODO reload events when the app restarts from workflow, being sent as generic atm
 			EventManager.addEvent(eventModel.getProjectId(), e);
 	}
 

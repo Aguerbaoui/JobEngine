@@ -8,6 +8,7 @@ import io.je.utilities.exceptions.WorkflwTriggeredByEventException;
 import io.je.utilities.logger.JELogger;
 
 import java.util.HashMap;
+import java.util.ResourceBundle;
 
 /*
  * Workflow Engine handler class
@@ -52,6 +53,7 @@ public class WorkflowEngineHandler {
         }
         processManagerHashMap.get(projectId).addProcess(new JEProcess(processId, name, processPath, projectId, isTriggeredByEvent));
         registerWorkflow(projectId, processId);
+        ResourceBundle.clearCache(Thread.currentThread().getContextClassLoader());
         //deployBPMN(processPath);
     }
 
