@@ -8,17 +8,12 @@ import io.je.project.services.WorkflowService;
 import io.je.utilities.constants.Errors;
 import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.constants.ResponseMessages;
-import io.je.utilities.exceptions.*;
-import io.je.utilities.logger.JELogger;
 import io.je.utilities.network.JEResponse;
 import models.JEWorkflow;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.io.IOException;
-import java.util.Arrays;
 
 import static io.je.utilities.constants.ResponseMessages.*;
 
@@ -45,8 +40,8 @@ public class WorkflowController {
         wf.setWorkflowName(m.getName());
         try {
 
-            workflowService.addWorkflow(wf).get();
-            projectService.saveProject(m.getProjectId()).get();
+            workflowService.addWorkflow(wf);
+            projectService.saveProject(m.getProjectId());
         } catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
 
@@ -61,7 +56,7 @@ public class WorkflowController {
     public ResponseEntity<?> buildWorkflow(@PathVariable String projectId, @PathVariable String key) {
 
         try {
-            workflowService.buildWorkflow(projectId, key).get();
+            workflowService.buildWorkflow(projectId, key);
         }catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
 
@@ -76,8 +71,8 @@ public class WorkflowController {
     @PostMapping(value = "/runWorkflow/{projectId}/{key}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> runWorkflow(@PathVariable String projectId, @PathVariable String key) {
         try {
-            workflowService.runWorkflow(projectId, key).get();
-            projectService.saveProject(projectId).get();
+            workflowService.runWorkflow(projectId, key);
+            projectService.saveProject(projectId);
         }catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
 
@@ -94,8 +89,8 @@ public class WorkflowController {
                                             @PathVariable("workflowId") String workflowId) {
 
         try {
-            workflowService.removeWorkflow(projectId, workflowId).get();
-            projectService.saveProject(projectId).get();
+            workflowService.removeWorkflow(projectId, workflowId);
+            projectService.saveProject(projectId);
         } catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
 
@@ -112,8 +107,8 @@ public class WorkflowController {
                                             @PathVariable("workflowId") String workflowId, @RequestBody WorkflowModel m) {
 
         try {
-            workflowService.updateWorkflow(projectId, workflowId, m).get();
-            projectService.saveProject(projectId).get();
+            workflowService.updateWorkflow(projectId, workflowId, m);
+            projectService.saveProject(projectId);
         } catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
 
@@ -126,7 +121,7 @@ public class WorkflowController {
     @ResponseBody
     public ResponseEntity<?> getAllWorkflows(@PathVariable("projectId") String projectId) {
         try {
-            return ResponseEntity.ok(projectService.getAllWorkflows(projectId).get());
+            return ResponseEntity.ok(projectService.getAllWorkflows(projectId));
         } catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
 
@@ -138,7 +133,7 @@ public class WorkflowController {
     public ResponseEntity<?> getWorkflowById(@PathVariable("projectId") String projectId, @PathVariable("key") String key) {
         JEWorkflow w = null;
         try {
-            w = projectService.getWorkflowById(projectId, key).get();
+            w = projectService.getWorkflowById(projectId, key);
         }catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
 
@@ -156,8 +151,8 @@ public class WorkflowController {
     public ResponseEntity<?> addWorkflowBlock(@RequestBody WorkflowBlockModel block) {
         try {
 
-            workflowService.addWorkflowBlock(block).get();
-            projectService.saveProject(block.getProjectId()).get();
+            workflowService.addWorkflowBlock(block);
+            projectService.saveProject(block.getProjectId());
 
         } catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
@@ -171,8 +166,8 @@ public class WorkflowController {
 
 
         try {
-            workflowService.updateWorkflowBlock(block).get();
-            projectService.saveProject(block.getProjectId()).get();
+            workflowService.updateWorkflowBlock(block);
+            projectService.saveProject(block.getProjectId());
         } catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
 
@@ -187,8 +182,8 @@ public class WorkflowController {
     public ResponseEntity<?> deleteWorkflowBlock(@PathVariable String projectId, @PathVariable String key, @PathVariable String id) {
 
         try {
-            workflowService.deleteWorkflowBlock(projectId, key, id).get();
-            projectService.saveProject(projectId).get();
+            workflowService.deleteWorkflowBlock(projectId, key, id);
+            projectService.saveProject(projectId);
         } catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
 
@@ -203,8 +198,8 @@ public class WorkflowController {
     public ResponseEntity<?> deleteSequenceFlow(@PathVariable String projectId, @PathVariable String key, @PathVariable String from, @PathVariable String to) {
 
         try {
-            workflowService.deleteSequenceFlow(projectId, key, from, to).get();
-            projectService.saveProject(projectId).get();
+            workflowService.deleteSequenceFlow(projectId, key, from, to);
+            projectService.saveProject(projectId);
         } catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
 
@@ -220,8 +215,8 @@ public class WorkflowController {
     public ResponseEntity<?> addScriptedRule(@PathVariable("projectId") String projectId, @PathVariable("workflowId") String workflowId, @RequestBody String bpmn) {
 
         try {
-            workflowService.addBpmn(projectId, workflowId, bpmn).get();
-            projectService.saveProject(projectId).get();
+            workflowService.addBpmn(projectId, workflowId, bpmn);
+            projectService.saveProject(projectId);
 
         } catch (Exception e) {
 			return JEExceptionHandler.handleException(e);

@@ -48,7 +48,7 @@ public class EventController {
 	public ResponseEntity<?> getAllEvents(@PathVariable("projectId") String projectId) {
 		Collection<?> events = null;
 		try {
-			events = eventService.getAllEvents(projectId).get();
+			events = eventService.getAllEvents(projectId);
 			if (events.isEmpty()) {
 				return ResponseEntity.noContent().build();
 
@@ -71,7 +71,7 @@ public class EventController {
 			@PathVariable("eventId") String eventId) {
 		JEEvent event = null;
 		try {
-			event = eventService.getEvent(projectId, eventId).get();
+			event = eventService.getEvent(projectId, eventId);
 			if (event == null) {
 				return ResponseEntity.noContent().build();
 
@@ -92,8 +92,8 @@ public class EventController {
 	public ResponseEntity<?> addEvent(@PathVariable("projectId") String projectId, @RequestBody EventModel eventModel) {
 
 		try {
-			eventService.addEvent(projectId, eventModel).get();
-			projectService.saveProject(projectId).get();
+			eventService.addEvent(projectId, eventModel);
+			projectService.saveProject(projectId);
 			JELogger.info(getClass(), ResponseMessages.EVENT_ADDED);
 
 		} catch (Exception e) {
@@ -112,8 +112,8 @@ public class EventController {
 			@PathVariable("eventId") String eventId) {
 
 		try {
-			eventService.deleteEvent(projectId, eventId).get();
-			projectService.saveProject(projectId).get();
+			eventService.deleteEvent(projectId, eventId);
+			projectService.saveProject(projectId);
 			JELogger.info(getClass(), ResponseMessages.EVENT_ADDED);
 
 		} catch (Exception e) {

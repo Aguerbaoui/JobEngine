@@ -103,18 +103,17 @@ public class ProjectService {
     /*
      * Set loaded project in memory
      */
-    @Async
-    public static CompletableFuture<Void>  setLoadedProjects(ConcurrentHashMap<String, JEProject> loadedProjects) {
+    
+    public static void  setLoadedProjects(ConcurrentHashMap<String, JEProject> loadedProjects) {
         ProjectService.loadedProjects = loadedProjects;
-		return CompletableFuture.completedFuture(null);
 
     }
 
     /*
      * Builds all the rules and workflows
      */
-    @Async
-    public CompletableFuture<Void>  buildAll(String projectId)
+  
+    public void  buildAll(String projectId)
             throws ProjectNotFoundException, IOException, RuleBuildFailedException,
             JERunnerErrorException, InterruptedException, ExecutionException, RuleNotFoundException {
         JELogger.trace(ProjectService.class, "Building the project with id = " + projectId);
@@ -123,7 +122,6 @@ public class ProjectService {
         CompletableFuture.allOf(buildRules,buildWorkflows).join();
         loadedProjects.get(projectId).setBuilt(true);
         saveProject(projectId).get();
-		return CompletableFuture.completedFuture(null);
 
 
     }
@@ -131,8 +129,7 @@ public class ProjectService {
     /*
      * run project => send request to jeRunner to run project
      */
-    @Async
-    public CompletableFuture<Void>  runAll(String projectId)
+    public void  runAll(String projectId)
             throws ProjectNotFoundException, JERunnerErrorException, ProjectRunException, IOException, InterruptedException, ExecutionException {
         if (loadedProjects.containsKey(projectId)) {
             JEProject project = loadedProjects.get(projectId);
@@ -150,15 +147,13 @@ public class ProjectService {
         } else {
             throw new ProjectNotFoundException(Errors.PROJECT_NOT_FOUND);
         }
-		return CompletableFuture.completedFuture(null);
 
     }
 
     /*
      * Stop a running project
      * */
-    @Async
-    public CompletableFuture<Void>  stopProject(String projectId)
+    public void  stopProject(String projectId)
             throws ProjectNotFoundException, JERunnerErrorException, ProjectRunException, ProjectStatusException, IOException, InterruptedException, ExecutionException {
         if (!loadedProjects.containsKey(projectId)) {
             throw new ProjectNotFoundException(Errors.PROJECT_NOT_FOUND);
@@ -172,7 +167,6 @@ public class ProjectService {
         } else {
             throw new ProjectStatusException(ResponseCodes.PROJECT_STOPPED, Errors.PROJECT_STOPPED);
         }
-		return CompletableFuture.completedFuture(null);
 
     }
 
@@ -227,12 +221,11 @@ public class ProjectService {
     /*
      * Add a workflow to project
      */
-    @Async
-    public CompletableFuture<Void>  addWorkflowToProject(JEWorkflow wf) throws ProjectNotFoundException, InterruptedException, ExecutionException {
+    
+    public void addWorkflowToProject(JEWorkflow wf) throws ProjectNotFoundException, InterruptedException, ExecutionException {
         JELogger.trace(ProjectService.class, "Adding workflow with id = " + wf.getJobEngineElementID() + " to project with id = " + wf.getJobEngineProjectID());
-    	   workflowService.addWorkflow(wf).get();
+    	   workflowService.addWorkflow(wf);
            saveProject(getProjectById(wf.getJobEngineProjectID()));
-           return CompletableFuture.completedFuture(null);
 
     }
 
@@ -240,11 +233,10 @@ public class ProjectService {
      * Remove workflow from project
      */
     @Async
-    public CompletableFuture<Void>  deleteWorkflowFromProject(String projectId, String workflowId)
+    public void  deleteWorkflowFromProject(String projectId, String workflowId)
             throws ProjectNotFoundException, WorkflowNotFoundException {
         workflowService.removeWorkflow(projectId, workflowId);
         saveProject(getProjectById(projectId));
-		return CompletableFuture.completedFuture(null);
 
     }
 
@@ -253,39 +245,34 @@ public class ProjectService {
     /*
      * Build a workflow by id
      */
-    @Async
-    public CompletableFuture<Void>  buildWorkflow(String projectId, String workflowId)
+   
+    public void  buildWorkflow(String projectId, String workflowId)
             throws WorkflowNotFoundException, ProjectNotFoundException, IOException, JERunnerErrorException, InterruptedException, ExecutionException {
         workflowService.buildWorkflow(projectId, workflowId);
-		return CompletableFuture.completedFuture(null);
 
     }
 
     /*
      * Run a workflow by id
      */
-    @Async
-    public CompletableFuture<Void>  runWorkflow(String projectId, String workflowId)
+    public void  runWorkflow(String projectId, String workflowId)
             throws ProjectNotFoundException, IOException, WorkflowNotFoundException, WorkflowAlreadyRunningException, InterruptedException, ExecutionException {
         workflowService.runWorkflow(projectId, workflowId);
-		return CompletableFuture.completedFuture(null);
 
     }
 
 
     /* Return all currently available workflows in project */
-    @Async
-    public CompletableFuture<ConcurrentMap<String, JEWorkflow>> getAllWorkflows(String projectId) throws ProjectNotFoundException {
+    public ConcurrentMap<String, JEWorkflow> getAllWorkflows(String projectId) throws ProjectNotFoundException {
         if (loadedProjects.containsKey(projectId)) {
-            return CompletableFuture.completedFuture(loadedProjects.get(projectId).getWorkflows());
+            return loadedProjects.get(projectId).getWorkflows();
         } else throw new ProjectNotFoundException(Errors.PROJECT_NOT_FOUND);
     }
 
     /* Return a workflow by id */
-    @Async
-    public CompletableFuture<JEWorkflow> getWorkflowById(String projectId, String key) throws ProjectNotFoundException {
+    public JEWorkflow getWorkflowById(String projectId, String key) throws ProjectNotFoundException {
         if (loadedProjects.containsKey(projectId)) {
-            return CompletableFuture.completedFuture(loadedProjects.get(projectId).getWorkflows().get(key));
+            return loadedProjects.get(projectId).getWorkflows().get(key);
         } else throw new ProjectNotFoundException(Errors.PROJECT_NOT_FOUND);
     }
 

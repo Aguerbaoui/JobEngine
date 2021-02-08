@@ -146,7 +146,7 @@ public class ProjectController {
 		
 			
 				try {
-					projectService.stopProject(projectId).get();
+					projectService.stopProject(projectId);
 
 				} catch (Exception e) {
 					return JEExceptionHandler.handleException(e);

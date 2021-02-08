@@ -3,13 +3,9 @@ package io.je.project.services;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 import io.je.utilities.models.EventType;
-import jdk.jfr.Event;
-
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import io.je.project.beans.JEProject;
@@ -28,48 +24,46 @@ public class EventService {
 	/*
 	 * Retrieve list of all events that exist in a project.
 	 */
-	@Async
-	public CompletableFuture<Collection<JEEvent>> getAllEvents(String projectId) throws ProjectNotFoundException, InterruptedException, ExecutionException {
+	
+	public Collection<JEEvent> getAllEvents(String projectId) throws ProjectNotFoundException {
 		JEProject project = ProjectService.getProjectById(projectId);
 		if (project == null) {
 			throw new ProjectNotFoundException( Errors.PROJECT_NOT_FOUND);
 		}
-		return CompletableFuture.completedFuture(project.getEvents().values());
+		return project.getEvents().values();
 	}
 
 	/*
 	 * retrieve event from project by id
 	 */
-	@Async
-	public CompletableFuture<JEEvent> getEvent(String projectId, String eventId) throws EventException, ProjectNotFoundException, InterruptedException, ExecutionException {
+	
+	public JEEvent getEvent(String projectId, String eventId) throws EventException, ProjectNotFoundException {
 		JEProject project = ProjectService.getProjectById(projectId);
 		if (project == null) {
 			throw new ProjectNotFoundException( Errors.PROJECT_NOT_FOUND);
 		}
-		return CompletableFuture.completedFuture(project.getEvent(eventId));
+		return project.getEvent(eventId);
 	}
 
 	/*
 	 * add new event
 	 */
-	@Async
-	public CompletableFuture<Void> addEvent(String projectId, EventModel eventModel) throws ProjectNotFoundException, JERunnerErrorException, IOException, InterruptedException, ExecutionException {
+	public void addEvent(String projectId, EventModel eventModel) throws ProjectNotFoundException, JERunnerErrorException, IOException, InterruptedException, ExecutionException {
 		JEProject project = ProjectService.getProjectById(projectId);
 		if (project == null) {
 			throw new ProjectNotFoundException( Errors.PROJECT_NOT_FOUND);
 		}
 		JEEvent event = new JEEvent(eventModel.getEventId(), projectId, eventModel.getName(), EventType.GENERIC_EVENT);
-		registerEvent(event).join();
-		return CompletableFuture.completedFuture(null);
-
+		registerEvent(event);
+		
 		
 	}
 	
 	/*
 	 * add new event
 	 */
-	@Async
-	public CompletableFuture<Void> registerEvent( JEEvent event ) throws ProjectNotFoundException, JERunnerErrorException, IOException, InterruptedException, ExecutionException {
+	
+	public void registerEvent( JEEvent event ) throws ProjectNotFoundException, JERunnerErrorException, IOException, InterruptedException, ExecutionException {
 		JEProject project = ProjectService.getProjectById(event.getJobEngineProjectID());
 		if (project == null) {
 			throw new ProjectNotFoundException( Errors.PROJECT_NOT_FOUND);
@@ -83,7 +77,7 @@ public class EventService {
 		eventMap.put(EventModelMapping.EVENTID, event.getJobEngineElementID());
 		JERunnerAPIHandler.addEvent(eventMap);
 		project.getEvents().put(event.getJobEngineElementID(), event);
-		return CompletableFuture.completedFuture(null);
+	
 
 		
 	}
@@ -92,12 +86,12 @@ public class EventService {
 	/*
 	 * delete event
 	 */
-	@Async
-	public CompletableFuture<Void> deleteEvent(String projectId, String eventId) throws EventException, ProjectNotFoundException, InterruptedException, ExecutionException {
+	
+	public JEEvent deleteEvent(String projectId, String eventId) throws EventException, ProjectNotFoundException {
 		JEProject project = ProjectService.getProjectById(projectId);
 		if (project == null) {
 			throw new ProjectNotFoundException( Errors.PROJECT_NOT_FOUND);
 		}
-		return CompletableFuture.completedFuture(null);
+		return project.getEvents().remove(eventId);
 	}
 }
