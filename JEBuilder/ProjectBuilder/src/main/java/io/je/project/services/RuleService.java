@@ -110,7 +110,7 @@ public class RuleService {
 	 * update rule : update rule attributes TODO: individual update function for
 	 * each attribute
 	 */
-	@Async
+	
 	public void updateRule(String projectId, RuleModel ruleModel) throws RuleNotAddedException,
 			ProjectNotFoundException, RuleNotFoundException {
 		JEProject project = ProjectService.getProjectById(projectId);
@@ -227,7 +227,7 @@ public class RuleService {
 	/*
 	 * delete block
 	 */
-	@Async
+	
 	public void deleteBlock(String projectId, String ruleId, String blockId)
 			throws ProjectNotFoundException, RuleNotFoundException, RuleBlockNotFoundException, InterruptedException,
 			ExecutionException {
@@ -282,7 +282,7 @@ public class RuleService {
 	/*
 	 * Retrieve list of all rules that exist in a project.
 	 */
-	@Async
+	
 	public Collection<JERule> getAllRules(String projectId)
 			throws ProjectNotFoundException {
 		JEProject project = ProjectService.getProjectById(projectId);
@@ -307,7 +307,7 @@ public class RuleService {
 	/*
 	 * add scripted rule
 	 */
-	@Async
+	
 	public void addScriptedRule(String projectId, ScriptRuleModel ruleModel)
 			throws ProjectNotFoundException, RuleAlreadyExistsException {
 		ScriptedRule rule = new ScriptedRule(projectId, ruleModel.getRuleId(), ruleModel.getScript(),
@@ -325,7 +325,7 @@ public class RuleService {
 	 * update scripted rule
 	 * 
 	 */
-	@Async
+	
 	public void updateScriptedRule(String projectId, ScriptRuleModel ruleModel)
 			throws ProjectNotFoundException, RuleNotFoundException {
 		ScriptedRule rule = new ScriptedRule(projectId, ruleModel.getRuleId(), ruleModel.getScript(),
@@ -341,7 +341,7 @@ public class RuleService {
 
 	}
 
-	@Async
+	
 	public void saveRuleFrontConfig(String projectId, String ruleId, String config)
 			throws ProjectNotFoundException, RuleNotFoundException {
 		JEProject project = ProjectService.getProjectById(projectId);
