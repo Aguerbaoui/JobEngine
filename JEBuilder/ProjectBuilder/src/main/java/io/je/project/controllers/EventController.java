@@ -1,11 +1,8 @@
 package io.je.project.controllers;
 
-import java.io.IOException;
 import java.util.Collection;
 
-import io.je.project.beans.JEProject;
 import io.je.project.exception.JEExceptionHandler;
-import io.je.project.models.ProjectModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -25,14 +22,9 @@ import io.je.project.services.ProjectService;
 import io.je.utilities.beans.JEEvent;
 import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.constants.ResponseMessages;
-import io.je.utilities.exceptions.EventException;
-import io.je.utilities.exceptions.JERunnerErrorException;
-import io.je.utilities.exceptions.ProjectNotFoundException;
 import io.je.utilities.logger.JELogger;
 import io.je.utilities.models.EventModel;
 import io.je.utilities.network.JEResponse;
-
-import static io.je.utilities.constants.ResponseMessages.CREATED_PROJECT_SUCCESSFULLY;
 
 /*
  * Project Rest Controller

@@ -3,6 +3,7 @@ package io.je.rulebuilder.builder;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import io.je.rulebuilder.components.UserDefinedRule;
 import io.je.rulebuilder.components.JERule;
@@ -29,7 +30,7 @@ public class RuleBuilder {
 	 * generate drl file from rules and saves them to the provided path
 	 */
 	public static void buildRule(JERule jeRule, String buildPath)
-			throws RuleBuildFailedException, JERunnerErrorException, IOException {
+			throws RuleBuildFailedException, JERunnerErrorException, IOException, InterruptedException, ExecutionException {
 		String rulePath = "";
 		boolean ruleIsAdded = jeRule.isAdded();
 		JELogger.trace(RuleBuilder.class, "Building rule with id = " + jeRule.getJobEngineElementID());
@@ -53,7 +54,7 @@ public class RuleBuilder {
 	/*
 	 * send rule to JERunner
 	 */
-	public static void sendDRLToJeRunner(JERule rule, String path, boolean ruleIsAdded) throws JERunnerErrorException, RuleBuildFailedException, IOException
+	public static void sendDRLToJeRunner(JERule rule, String path, boolean ruleIsAdded) throws JERunnerErrorException, RuleBuildFailedException, IOException, InterruptedException, ExecutionException
 	{
 		
 

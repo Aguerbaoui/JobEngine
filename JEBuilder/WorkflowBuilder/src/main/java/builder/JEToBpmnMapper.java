@@ -136,7 +136,7 @@ public class JEToBpmnMapper {
     }
 
     //Test function
-    public static void launchBuildTest(JEWorkflow wf) {
+   /* public static void launchBuildTest(JEWorkflow wf) {
 		/*StartBlock start = new StartBlock();
 		start.setId("start");
 
@@ -168,7 +168,7 @@ public class JEToBpmnMapper {
 		end.getInflows().add(join);
 		join.getOutFlows().add(end);*/
 
-        createBpmnFromJEWorkflow( wf);
+    /*    createBpmnFromJEWorkflow( wf);
         HashMap<String, String> wfMap = new HashMap<String, String>();
         wfMap.put("key", wf.getJobEngineElementID());
         wfMap.put("path", "processes/" + wf.getWorkflowName() + ".bpmn");
@@ -179,7 +179,7 @@ public class JEToBpmnMapper {
             JELogger.info(JEToBpmnMapper.class, "Network Error");
         }
     }
-
+*/
     /*
      * Test JEToBpmn conversion
      * */

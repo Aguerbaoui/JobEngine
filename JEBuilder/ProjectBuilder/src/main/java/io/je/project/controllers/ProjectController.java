@@ -6,7 +6,6 @@ import io.je.project.models.ProjectModel;
 import io.je.project.services.ProjectService;
 import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.constants.Errors;
-import io.je.utilities.exceptions.*;
 import io.je.utilities.logger.JELogger;
 import io.je.utilities.network.JEResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,11 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.concurrent.ExecutionException;
-
 import static io.je.utilities.constants.ResponseMessages.*;
 
 /*
@@ -46,10 +41,9 @@ public class ProjectController {
 
 			 }
 		} catch (Exception e) {
-			e.printStackTrace();
-			JELogger.error(RuleController.class, e.getMessage());
-			return ResponseEntity.badRequest().body(new JEResponse(ResponseCodes.UNKNOWN_ERROR, Errors.UKNOWN_ERROR));
- 		}
+			return JEExceptionHandler.handleException(e);
+
+		}
 		
 		return	new ResponseEntity<Object>(projects,HttpStatus.OK);
 	

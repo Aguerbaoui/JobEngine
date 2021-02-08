@@ -255,7 +255,7 @@ public class ProjectService {
      */
     @Async
     public CompletableFuture<Void>  buildWorkflow(String projectId, String workflowId)
-            throws WorkflowNotFoundException, ProjectNotFoundException, IOException, JERunnerErrorException {
+            throws WorkflowNotFoundException, ProjectNotFoundException, IOException, JERunnerErrorException, InterruptedException, ExecutionException {
         workflowService.buildWorkflow(projectId, workflowId);
 		return CompletableFuture.completedFuture(null);
 
@@ -266,7 +266,7 @@ public class ProjectService {
      */
     @Async
     public CompletableFuture<Void>  runWorkflow(String projectId, String workflowId)
-            throws ProjectNotFoundException, IOException, WorkflowNotFoundException, WorkflowAlreadyRunningException {
+            throws ProjectNotFoundException, IOException, WorkflowNotFoundException, WorkflowAlreadyRunningException, InterruptedException, ExecutionException {
         workflowService.runWorkflow(projectId, workflowId);
 		return CompletableFuture.completedFuture(null);
 

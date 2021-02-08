@@ -21,6 +21,7 @@ import org.springframework.ui.Model;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.concurrent.ExecutionException;
 
 /*
  * Workflow Builder class
@@ -31,7 +32,7 @@ public class WorkflowBuilder {
     /*
     * Build workflow bpmn
     * */
-    public static boolean buildWorkflow(JEWorkflow workflow) throws IOException, JERunnerErrorException {
+    public static boolean buildWorkflow(JEWorkflow workflow) throws IOException, JERunnerErrorException, InterruptedException, ExecutionException {
         //JEToBpmnMapper.createBpmnFromJEWorkflow(workflow);
         //TODO fix this shit will u still just testing atm
         /*
@@ -78,8 +79,8 @@ public class WorkflowBuilder {
     /*
      * Run workflow in runtime engine
      * */
-    public static void runWorkflow(String projectId, String key) throws IOException {
-        Response response = Network.makeGetNetworkCallWithResponse(JEGlobalconfig.RUNTIME_MANAGER_BASE_API + APIConstants.RUN_WORKFLOW + projectId + "/" + key);
+    public static void runWorkflow(String projectId, String key) throws IOException, InterruptedException, ExecutionException {
+        Response response = Network.makeGetNetworkCallWithResponse(JEGlobalconfig.RUNTIME_MANAGER_BASE_API + APIConstants.RUN_WORKFLOW + projectId + "/" + key).get();
 
     }
 

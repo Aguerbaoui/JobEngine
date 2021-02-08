@@ -23,7 +23,7 @@ public  class DataDefinitionApiHandler {
 		JELogger.info(DataDefinitionApiHandler.class, requestURL);
 		Response resp = null;
 		try {
-			resp = Network.makeGetNetworkCallWithResponse(requestURL);
+			resp = Network.makeGetNetworkCallWithResponse(requestURL).get();
 
 		} catch (Exception e) {
 			throw new DataDefinitionUnreachableException(Errors.DATA_DEFINITION_API_UNREACHABLE +" : " + e.getMessage());
