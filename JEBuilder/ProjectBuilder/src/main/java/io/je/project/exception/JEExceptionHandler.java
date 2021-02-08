@@ -2,6 +2,7 @@ package io.je.project.exception;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.concurrent.CompletionException;
 import java.util.concurrent.ExecutionException;
 
 import org.springframework.http.ResponseEntity;
@@ -13,8 +14,9 @@ import io.je.utilities.logger.JELogger;
 import io.je.utilities.network.JEResponse;
 
 public class JEExceptionHandler {
-	
+
 	public static ResponseEntity<?> handleException(Exception e) {
+		//e.printStackTrace();
 		if (e instanceof JEException) {
 			JEException ex = (JEException) e;
 			JELogger.error(RuleController.class, Arrays.toString(ex.getStackTrace()));
@@ -31,6 +33,17 @@ public class JEExceptionHandler {
 			} catch (Exception e1) {
 				return ResponseEntity.badRequest().body(new JEResponse(ResponseCodes.UNKNOWN_ERROR, e.getMessage()));
 
+			}
+			
+				}
+		else if ( e instanceof CompletionException) {
+			try {
+				JEException ex = (JEException) e.getCause().getCause();
+				JELogger.error(RuleController.class, Arrays.toString(ex.getStackTrace()));
+
+				return ResponseEntity.badRequest().body(new JEResponse(ex.getCode(), ex.getMessage()));
+			} catch (Exception e1) {
+				return ResponseEntity.badRequest().body(new JEResponse(ResponseCodes.UNKNOWN_ERROR, e.getMessage()));
 			}
 
 		} else if (e instanceof IOException) {

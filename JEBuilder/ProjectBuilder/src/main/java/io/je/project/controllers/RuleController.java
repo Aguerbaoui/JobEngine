@@ -186,7 +186,7 @@ public class RuleController {
 			@PathVariable("ruleId") String ruleId) {
 
 		try {
-			ruleService.buildRule(projectId, ruleId).get();
+			//ruleService.buildRule(projectId, ruleId).get();
 			projectService.saveProject(projectId).get();
 		} catch (Exception e) {
 			return JEExceptionHandler.handleException(e);

@@ -7,10 +7,13 @@ import io.je.utilities.logger.JELogger;
 
 import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executor;
 import java.util.concurrent.Future;
 
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 public class Network {
 
@@ -19,16 +22,26 @@ public class Network {
     private Network() {
     }
 
-
-    @Async
-    public static CompletableFuture<Response> makeGetNetworkCallWithResponse(String url) throws IOException {
+    public static Executor getAsyncExecutor() {
+		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+		executor.setCorePoolSize(3);
+		executor.setMaxPoolSize(10);
+		executor.setQueueCapacity(100);
+		executor.setThreadNamePrefix("AsynchThread-");
+		executor.initialize();
+		return executor;
+	}
+    
+    public static Response makeGetNetworkCallWithResponse(String url) throws IOException, InterruptedException, ExecutionException {
         Request request = new Request.Builder().url(url).get().build();
-        Call call = client.newCall(request);
-        return CompletableFuture.completedFuture(call.execute());
+        CompletableFuture<Call> f = CompletableFuture.supplyAsync(() -> {
+            return client.newCall(request);
+        },getAsyncExecutor());
+        return f.get().execute();
     }
 
-    @Async
-    public static CompletableFuture<Response> makeNetworkCallWithJsonBodyWithResponse(Object json, String url) throws IOException {
+    
+    public static Response makeNetworkCallWithJsonBodyWithResponse(Object json, String url) throws IOException, InterruptedException, ExecutionException {
         String jsonStr = "";
         try {
             jsonStr = new ObjectMapper().writeValueAsString(json);
@@ -38,8 +51,10 @@ public class Network {
         }
         RequestBody body = RequestBody.create(MediaType.parse("application/json"), jsonStr);
         Request request = new Request.Builder().url(url).post(body).build();
-        Call call = client.newCall(request);
-        return CompletableFuture.completedFuture(call.execute());
+        CompletableFuture<Call> f = CompletableFuture.supplyAsync(() -> {
+            return client.newCall(request);
+        },getAsyncExecutor());
+        return f.get().execute();
     }
 
   

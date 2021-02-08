@@ -33,7 +33,7 @@ public class ScriptedRule extends  JERule {
 
 	public String generateDRL(String buildPath) {
 		String fileName = buildPath +"\\" + jobEngineElementID +".drl";
-        JELogger.info(getClass(), script);
+       // JELogger.info(getClass(), script);
         JEFileUtils.copyStringToFile(script, fileName, "UTF-8");
 		return fileName;
 		
