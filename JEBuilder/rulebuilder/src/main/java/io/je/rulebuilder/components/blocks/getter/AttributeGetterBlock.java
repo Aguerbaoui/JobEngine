@@ -8,7 +8,7 @@ public class AttributeGetterBlock extends GetterBlock {
 
 	String classPath;
 	String attributeName;
-
+	String specificInstance = "\"idOfSpecificInstance\""; //TODO: switch to list
 	// specific instances
 
 	public AttributeGetterBlock(BlockModel blockModel) {
@@ -40,7 +40,7 @@ public class AttributeGetterBlock extends GetterBlock {
 
 		}
 		expression.append("$" + blockName.replaceAll("\\s+", "") + " : " + classPath + " ( $" + attributeName.replace(".", "") + " : "
-				+ getFinalAttributeName() + " )"); // TODO: nested attributes
+				+ getFinalAttributeName() + " )"); 
 		return expression.toString();
 	}
 
@@ -55,24 +55,70 @@ public class AttributeGetterBlock extends GetterBlock {
 
 		}
 		expression.append("$" + blockName.replaceAll("\\s+", "") + " : " + classPath + " ( " + getFinalAttributeName() + " "
-				+ Keywords.toBeReplaced + " )"); // TODO: nested attributes
+				+ Keywords.toBeReplaced + " )"); 
 		return expression.toString();
 	}
 
 	@Override
-	public String getAsSecondOperandExpression() {
+	public String getJoinExpression() {
 		StringBuilder expression = new StringBuilder();
 		expression.append("$" + blockName.replaceAll("\\s+", "") + " : " + classPath + " ( " + Keywords.toBeReplaced
-				+ getFinalAttributeName() + " )"); // TODO: nested attributes
+				+ getFinalAttributeName() + " )"); 
 		return expression.toString();
 	}
 
 	@Override
-	public String getJoinedExpression() {
-		// TODO Auto-generated method stub
-		return null;
+	public String getJoinExpressionAsFirstOperand() {
+		StringBuilder expression = new StringBuilder();
+		if(!inputBlocks.isEmpty())
+		{
+			expression.append("\n");
+			expression.append(inputBlocks.get(0).getExpression());
+			expression.append("\n");
+
+		}
+		expression.append("$" + blockName.replaceAll("\\s+", "") + " : " + classPath + " ("+getJoinId()+ " : jobEngineElementID, jobEngineElementID =="+specificInstance+ ", " + getFinalAttributeName() + " "
+				+ Keywords.toBeReplaced + " )"); 
+		return expression.toString();
 	}
 
+	
+	@Override
+	public String getJoinId() {
+		
+		return " $" + blockName.replaceAll("\\s+", "") +"jobEngineElementID";
+	}
+	
+	@Override
+	public String getJoinedExpression(String joindId) {
+		StringBuilder expression = new StringBuilder();
+		if(!inputBlocks.isEmpty())
+		{
+			expression.append(inputBlocks.get(0).getExpression());
+			expression.append("\n");
+
+		}
+		expression.append(" $" + blockName.replaceAll("\\s+", "") + " : " + classPath + " ( " +"jobEngineElementID == "+joindId + ",$" + attributeName.replace(".", "") + " : "
+				+ getFinalAttributeName() + " )");
+		return expression.toString();
+	}
+
+	@Override
+	public String getJoinedExpressionAsFirstOperand(String joindId) {
+		StringBuilder expression = new StringBuilder();
+		if(!inputBlocks.isEmpty())
+		{
+			expression.append("\n");
+			expression.append(inputBlocks.get(0).getExpression());
+			expression.append("\n");
+
+		}
+		expression.append("$" + blockName.replaceAll("\\s+", "") + " : " +  classPath + " ( " +"jobEngineElementID == "+joindId + "," + getFinalAttributeName() + " "
+				+ Keywords.toBeReplaced + " )");
+		return expression.toString();
+	}
+	
+	
 	public String getClassPath() {
 		return classPath;
 	}
@@ -106,5 +152,8 @@ public class AttributeGetterBlock extends GetterBlock {
 		s = s + a[a.length - 1];
 		return s;
 	}
+
+
+
 
 }

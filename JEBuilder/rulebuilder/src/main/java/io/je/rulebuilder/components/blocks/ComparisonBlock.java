@@ -1,6 +1,5 @@
 package io.je.rulebuilder.components.blocks;
 
-import io.je.rulebuilder.components.blocks.getter.AttributeGetterBlock;
 import io.je.rulebuilder.config.Keywords;
 import io.je.rulebuilder.models.BlockModel;
 
@@ -56,31 +55,64 @@ public abstract class ComparisonBlock extends PersistableBlock {
 	public abstract String getOperator();
 
 	@Override
-	public String getAsFirstOperandExpression() {
-		return null;
+	public String getJoinExpression() {
+		StringBuilder expression = new StringBuilder();
+		//single input
+		String joinId= inputBlocks.get(0).getJoinId();
+
+		if(threshold !=null)
+		{
+			String inputExpression = inputBlocks.get(0).getJoinExpressionAsFirstOperand().replaceAll(Keywords.toBeReplaced, getOperator()+threshold);
+			expression.append(inputExpression);
+
+		}
+		else
+		{
+			String firstOperand = inputBlocks.get(1).getJoinedExpression(joinId);
+			expression.append(firstOperand);
+			String secondOperand = inputBlocks.get(0).getJoinExpression().replaceAll(Keywords.toBeReplaced,  getOperator() + "\\$"+getInputRefName(1) );
+			expression.append(secondOperand);
+
+
+		}
+		return expression.toString();
 	}
-
-
+	
 
 	@Override
-	public String getAsSecondOperandExpression() {
-		return null;
+	public String getJoinedExpression(String joinId) {
+		StringBuilder expression = new StringBuilder();
+
+		//single input
+		if(threshold !=null)
+		{
+			String inputExpression = inputBlocks.get(0).getJoinedExpressionAsFirstOperand(joinId).replaceAll(Keywords.toBeReplaced, getOperator()+threshold);
+			expression.append(inputExpression);
+
+		}
+		else
+		{
+			String firstOperand = inputBlocks.get(1).getJoinedExpression(joinId);
+			expression.append(firstOperand);
+			String secondOperand = inputBlocks.get(0).getJoinedExpressionAsFirstOperand(joinId).replaceAll(Keywords.toBeReplaced,  getOperator() + "\\$"+getInputRefName(1) );
+			expression.append(secondOperand);
+
+
+		}
+		return expression.toString();
 	}
-
-
 
 	@Override
-	public String getJoinedExpression() {
+	public String getJoinedExpressionAsFirstOperand(String joindId) {
+		// TODO Auto-generated method stub
 		return null;
 	}
 
-
-
-
-
-
-
-
+	@Override
+	public String getJoinExpressionAsFirstOperand() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 
 

@@ -50,25 +50,45 @@ public  class LogicBlock extends PersistableBlock {
 
 
 	@Override
-	public String getAsSecondOperandExpression() {
-		// not applicable for these blocks
-		return null;
-	}
-
-
-
-	@Override
-	public String getJoinedExpression() {
+	public String getJoinExpression() {
 		StringBuilder expression = new StringBuilder();
 		expression.append(operator +"(\n");
 		for(Block block : inputBlocks)
 		{
-			expression.append(block.getJoinedExpression());
+			expression.append(block.getJoinExpression());
 		}
 		expression.append("\n )");
 
 		return expression.toString();
 	}
+
+	@Override
+	public String getJoinedExpression(String joinId) {
+		StringBuilder expression = new StringBuilder();
+		expression.append(operator +"(\n");
+		for(Block block : inputBlocks)
+		{
+			expression.append(block.getJoinedExpression(joinId));
+		}
+		expression.append("\n )");
+
+		return expression.toString();
+	}
+
+	@Override
+	public String getJoinedExpressionAsFirstOperand(String joinId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getJoinExpressionAsFirstOperand() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+
 
 
 

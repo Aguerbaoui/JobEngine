@@ -44,6 +44,11 @@ public abstract class PersistableBlock extends ConditionBlock {
 	}
 
 	@Override
+	public String getAsFirstOperandExpression() {
+		return null;
+	}
+	
+	@Override
 	public String toString() {
 		return "Block [timePersistenceValue=" + timePersistenceValue + ", timePersistenceUnit="
 				+ timePersistenceUnit + ", ruleId=" + ruleId + ", inputBlocks=" + inputBlocks + ", outputBlocks="

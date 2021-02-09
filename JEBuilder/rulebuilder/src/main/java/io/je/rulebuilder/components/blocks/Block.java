@@ -69,18 +69,36 @@ public abstract class Block extends JEObject {
 		}
 	}
 	
+	//return drl expression of block 
 	public  abstract String getExpression();
 
+	//return drl expression of block as a first operand (used to optimise comparison blocks in order to avoid using eval)
 	public  abstract String getAsFirstOperandExpression();
 	
-	public  abstract String getAsSecondOperandExpression();
+	//get drl expression mapped to id (getter blocks) ex: Person($id == "123")
+	public  abstract String getJoinExpression();
 
+	//get id variable name used in drl ex: $id
+	public  String getJoinId()
+	{
+		if(!inputBlocks.isEmpty() && inputBlocks.get(0)!=null)
+		{
+			return inputBlocks.get(0).getJoinId();
+		}
+		return null;
+	}
 	
-	public  abstract String getJoinedExpression();
+	//get a joined expression. example : Person(jobEngineElementID == $id )
+	public  abstract String getJoinedExpression(String joinId);
+	
+	public  abstract String getJoinedExpressionAsFirstOperand(String joinId);
+	
+	public  abstract String getJoinExpressionAsFirstOperand();
+
 
 	public String getInputRefName(int index)
 	{
-		String var = "";
+		String var = ""; 
 		if(inputBlocks.get(index) instanceof AttributeGetterBlock)
 		{
 			var = (( AttributeGetterBlock )inputBlocks.get(index)).getAttributeName().replace(".", "");
