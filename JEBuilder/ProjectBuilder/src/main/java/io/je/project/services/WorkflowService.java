@@ -527,4 +527,17 @@ public class WorkflowService {
         }
 
     }
+
+    public void setFrontConfig(String projectId, String workflowId, String config) throws ProjectNotFoundException, WorkflowNotFoundException {
+        JEProject project = ProjectService.getProjectById(projectId);
+        if(project == null) {
+            throw new ProjectNotFoundException( Errors.PROJECT_NOT_FOUND);
+        }
+
+        if(! project.workflowExists(workflowId)) {
+            throw new WorkflowNotFoundException( Errors.WORKFLOW_NOT_FOUND);
+        }
+        project.getWorkflowById(workflowId).setFrontConfig(config);
+    }
+
 }

@@ -2,9 +2,11 @@ package io.je.utilities.beans;
 
 import io.je.utilities.models.EventType;
 import io.je.utilities.runtimeobject.JEObject;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.sql.Timestamp;
 
+@Document(collection="JEEvent")
 public class JEEvent extends JEObject {
 
    

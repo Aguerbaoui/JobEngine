@@ -256,7 +256,7 @@ public class JERunnerAPIHandler {
         JELogger.trace(JERunnerAPIHandler.class, "Sending update event request to runner, project id = " + projectId + "event id = " + eventId);
         try {
             JELogger.trace(JERunnerAPIHandler.class, " url = " + requestUrl);
-            response = Network.makeNetworkCallWithJsonObjectBodyWithResponse(type, requestUrl);
+            response = Network.makeNetworkCallWithStringObjectBodyWithResponse(type, requestUrl);
 
 
             if (response.code() != ResponseCodes.CODE_OK) {

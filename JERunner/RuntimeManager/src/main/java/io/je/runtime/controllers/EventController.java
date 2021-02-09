@@ -34,6 +34,7 @@ public class EventController {
 	@PostMapping(value = "/addEvent", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> addEvent(@RequestBody EventModel eventModel) {
 
+		eventModel.setEventId(eventModel.getEventId().replace("-", ""));
 		runtimeDispatcher.addEvent(eventModel);
 		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.RuleAdditionSucceeded));
 	}
@@ -44,7 +45,7 @@ public class EventController {
      * */
     @GetMapping(value = "/triggerEvent/{projectId}/{eventId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> triggerEvent(@PathVariable String projectId, @PathVariable String eventId) {
-    	runtimeDispatcher.triggerEvent(projectId, eventId);
+    	runtimeDispatcher.triggerEvent(projectId, eventId.replace("-", ""));
         return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.TOPIC_ADDED));
     }
 
@@ -52,7 +53,7 @@ public class EventController {
 	public ResponseEntity<?> updateEventType(@PathVariable("projectId") String projectId,@PathVariable("eventId") String eventId, @RequestBody String eventType) {
 
 		try {
-			runtimeDispatcher.updateEventType(projectId, eventId, eventType);
+			runtimeDispatcher.updateEventType(projectId, eventId.replace("-", ""), eventType.replace("\"\"","\""));
 		} catch (ProjectNotFoundException | EventException e) {
 			return ResponseEntity.badRequest().body(new JEResponse(e.getCode(), e.getMessage()));
 		}

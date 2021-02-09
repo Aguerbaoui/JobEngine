@@ -14,6 +14,7 @@ import org.activiti.engine.task.Task;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.ResourceBundle;
 
 
 public class ProcessManager {
@@ -84,6 +85,7 @@ public class ProcessManager {
         if (processes == null) {
             processes = new HashMap<String, JEProcess>();
         }
+
         processes.put(process.getKey(), process);
     }
 
@@ -106,9 +108,11 @@ public class ProcessManager {
      * Deploy a process to engine
      * */
     public void deployProcess(String key) {
+        ResourceBundle.clearCache(Thread.currentThread().getContextClassLoader());
+        //repoService.
         repoService.createDeployment()
                 .addClasspathResource(
-                        processes.get(key).getBpmnPath())
+                         processes.get(key).getBpmnPath())
                 .deploy();
         processes.get(key).setDeployed(true);
 

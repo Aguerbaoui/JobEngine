@@ -28,7 +28,7 @@ public class WorkflowConstants {
     public static final String BUILDING = "building";
     public static final String RUNNING = "running";
     public static final String STANDBY = "standby";
-    public static final String BPMN_PATH = "D:\\Job engine\\JERunner\\WorkflowEngine\\src\\main\\resources\\processes\\";
+    public static final String BPMN_PATH = "D:\\Job engine\\JERunner\\RuntimeManager\\src\\main\\resources\\processes\\";
     public static final String BPMN_EXTENSION = ".bpmn";
 
 }

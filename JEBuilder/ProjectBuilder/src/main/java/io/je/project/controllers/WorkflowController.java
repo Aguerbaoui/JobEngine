@@ -142,7 +142,7 @@ public class WorkflowController {
         try {
             return ResponseEntity.ok(projectService.getAllWorkflows(projectId));
         } catch (ProjectNotFoundException e) {
-            return ResponseEntity.ok(new JEResponse(ResponseCodes.PROJECT_NOT_FOUND, Errors.PROJECT_NOT_FOUND));
+            return ResponseEntity.badRequest().body(new JEResponse(ResponseCodes.PROJECT_NOT_FOUND, Errors.PROJECT_NOT_FOUND));
         }
     }
 
@@ -153,7 +153,7 @@ public class WorkflowController {
         try {
             w = projectService.getWorkflowById(projectId, key);
         } catch (ProjectNotFoundException e) {
-            return ResponseEntity.ok(new JEResponse(ResponseCodes.PROJECT_NOT_FOUND, Errors.PROJECT_NOT_FOUND));
+            return ResponseEntity.badRequest().body(new JEResponse(ResponseCodes.PROJECT_NOT_FOUND, Errors.PROJECT_NOT_FOUND));
         }
         if (w != null) {
             return ResponseEntity.ok(w);
@@ -168,6 +168,7 @@ public class WorkflowController {
     public ResponseEntity<?> addWorkflowBlock(@RequestBody WorkflowBlockModel block) {
         try {
 
+            //block.setId(block.getId().replace("-", ""));
             workflowService.addWorkflowBlock(block);
             projectService.saveProject(ProjectService.getProjectById(block.getProjectId()));
         } catch (WorkflowNotFoundException | WorkflowBlockNotFound e) {
@@ -187,6 +188,7 @@ public class WorkflowController {
 
 
         try {
+            //block.setId(block.getId().replace("-", ""));
             workflowService.updateWorkflowBlock(block);
             projectService.saveProject(ProjectService.getProjectById(block.getProjectId()));
         } catch (WorkflowNotFoundException | WorkflowBlockNotFound e) {
@@ -260,5 +262,20 @@ public class WorkflowController {
 
         return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.ADDED_WORKFLOW_SUCCESSFULLY));
     }
+
+    /*
+     * temporary function until autosave is implemented
+     */
+    @PostMapping(value = "/saveWorkflowFrontConfig/{projectId}/{workflowId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> saveWorkflowFrontConfig(@PathVariable("projectId") String projectId,@PathVariable("workflowId") String workflowId, @RequestBody String config) {
+        try {
+            workflowService.setFrontConfig(projectId, workflowId, config);
+        } catch (ProjectNotFoundException | WorkflowNotFoundException e) {
+            JELogger.error(RuleController.class, e.getMessage());
+            return ResponseEntity.badRequest().body(new JEResponse(e.getCode(), e.getMessage()));
+        }
+        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, FRONT_CONFIG));
+    }
+
 
 }
