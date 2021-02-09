@@ -1,18 +1,22 @@
-package io.je.rulebuilder.components.blocks.arithmetic;
+package io.je.rulebuilder.components.blocks.arithmetic.multipleInput;
+
 
 import io.je.rulebuilder.components.blocks.ArithmeticBlock;
 import io.je.rulebuilder.config.Keywords;
 import io.je.rulebuilder.models.BlockModel;
 
-public class SumBlock extends ArithmeticBlock {
-
-	public SumBlock(BlockModel blockModel) {
+public abstract class MultipleInputArithmeticBlock extends ArithmeticBlock {
+	
+	public MultipleInputArithmeticBlock(BlockModel blockModel) {
 		super(blockModel);
+
 	}
 	
-	private SumBlock() {
-		
+
+	protected MultipleInputArithmeticBlock() {
 	}
+
+
 
 	@Override
 	public String getExpression() {
@@ -27,7 +31,7 @@ public class SumBlock extends ArithmeticBlock {
 		expression.append("$"+blockName +" : Number() from " + asDouble( "$"+getInputRefName(0) ) );
 		for (int i=1;i<inputBlocks.size();i++)
 		{
-			expression.append("+ "  + asDouble( "$"+getInputRefName(i) ));
+			expression.append(getArithmeticFormula(0)  + asDouble( "$"+getInputRefName(i) ));
 		}
 		return expression.toString();
 	}
@@ -45,20 +49,37 @@ public class SumBlock extends ArithmeticBlock {
 		expression.append("$"+blockName +" : Number(doubleValue " + Keywords.toBeReplaced +") from " + asDouble( "$"+getInputRefName(0) ) );
 		for (int i=1;i<inputBlocks.size();i++)
 		{
-			expression.append("+ "  + asDouble( "$"+getInputRefName(i) ));
+			expression.append(getArithmeticFormula(0)  + asDouble( "$"+getInputRefName(i) ));
 		}
 		return expression.toString();
 	}
-
+	
+	
 	@Override
-	public String getAsSecondOperandExpression() {
-		return null;
-
-	}
-
-	@Override
-	public String getJoinedExpression() {
+	public String getJoinExpression() {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public String getJoinedExpression(String joinId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getJoinedExpressionAsFirstOperand(String joinId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getJoinExpressionAsFirstOperand() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	
+	
+	
 }

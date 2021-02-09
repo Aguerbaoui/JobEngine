@@ -2,15 +2,8 @@ package io.je.rulebuilder.components;
 
 import io.je.rulebuilder.components.blocks.Block;
 import io.je.rulebuilder.components.blocks.LogicBlock;
-import io.je.rulebuilder.components.blocks.arithmetic.BiasBlock;
-import io.je.rulebuilder.components.blocks.arithmetic.DivideBlock;
-import io.je.rulebuilder.components.blocks.arithmetic.GainBlock;
-import io.je.rulebuilder.components.blocks.arithmetic.MultiplyBlock;
-import io.je.rulebuilder.components.blocks.arithmetic.PowerBlock;
-import io.je.rulebuilder.components.blocks.arithmetic.SQRTBlock;
-import io.je.rulebuilder.components.blocks.arithmetic.SubtractBlock;
-import io.je.rulebuilder.components.blocks.arithmetic.SumBlock;
-import io.je.rulebuilder.components.blocks.arithmetic.UnitConversionBlock;
+import io.je.rulebuilder.components.blocks.arithmetic.multipleInput.*;
+import io.je.rulebuilder.components.blocks.arithmetic.singleinput.*;
 import io.je.rulebuilder.components.blocks.comparison.EqualsBlock;
 import io.je.rulebuilder.components.blocks.comparison.GreaterOrEqualBlock;
 import io.je.rulebuilder.components.blocks.comparison.GreaterThanBlock;
@@ -20,6 +13,7 @@ import io.je.rulebuilder.components.blocks.event.AcceptEventBlock;
 import io.je.rulebuilder.components.blocks.execution.LogBlock;
 import io.je.rulebuilder.components.blocks.execution.TriggerEventBlock;
 import io.je.rulebuilder.components.blocks.getter.AttributeGetterBlock;
+import io.je.rulebuilder.components.blocks.logic.JoinBlock;
 import io.je.rulebuilder.models.BlockModel;
 import io.je.utilities.constants.RuleBuilderErrors;
 import io.je.utilities.exceptions.AddRuleBlockException;
@@ -48,10 +42,10 @@ public class BlockGenerator {
 			return new DivideBlock(blockModel);
 		// Factorial
 		case 1005:
-			//switch (blockModel.getOperationId()) {blockModel, 1005);
+			return new FactorialBlock(blockModel);
 		// Square
 		case 1006:
-			//switch (blockModel.getOperationId()) {blockModel, 1006);
+			return new SquareBlock(blockModel);
 		// SquareRoot
 		case 1007:
 			return new SQRTBlock(blockModel);
@@ -60,41 +54,41 @@ public class BlockGenerator {
 			return new PowerBlock(blockModel);
 		// change sign
 		case 1009:
-			//switch (blockModel.getOperationId()) {blockModel, 1009);
+			return new ChangeSignBlock(blockModel);
 		case 1010:
 			return new BiasBlock(blockModel);
 		case 1011:
 			return new GainBlock(blockModel);
 		case 1012:
-			//switch (blockModel.getOperationId()) {blockModel, 1012);
+			return new MultiplicativeInverseBlock(blockModel);
 		case 1013:
-			//switch (blockModel.getOperationId()) {blockModel, 1013);
+			return new AbsBlock(blockModel);
 		case 1014:
-			//switch (blockModel.getOperationId()) {blockModel, 1014);
+			return new ExpBlock(blockModel);
 		case 1015:
-			//switch (blockModel.getOperationId()) {blockModel, 1015);
+			return new Log10Block(blockModel);
 		case 1016:
-			//switch (blockModel.getOperationId()) {blockModel, 1016);
+			return new TanBlock(blockModel);
 		case 1017:
-			//switch (blockModel.getOperationId()) {blockModel, 1017);
+			return new ArctanBlock(blockModel);
 		case 1018:
-			//switch (blockModel.getOperationId()) {blockModel, 1018);
+			return new ArccosBlock(blockModel);
 		case 1019:
-			//switch (blockModel.getOperationId()) {blockModel, 1019);
+			return new ArcsinBlock(blockModel);
 		case 1020:
-			//switch (blockModel.getOperationId()) {blockModel, 1020);
+			return new FloorBlock(blockModel);
 		case 1021:
-			//switch (blockModel.getOperationId()) {blockModel, 1021);
+			return new TruncateBlock(blockModel);
 		case 1022:
-			//switch (blockModel.getOperationId()) {blockModel, 1022);
+			return new CeilingBlock(blockModel);
 		case 1023:
-			//switch (blockModel.getOperationId()) {blockModel, 1023);
+			return new SinBlock(blockModel);
 		case 1024:
-			//switch (blockModel.getOperationId()) {blockModel, 1024);
+			return new CosBlock(blockModel);
 		case 1025:
-			//switch (blockModel.getOperationId()) {blockModel, 1025);
+			return new LnBlock(blockModel);
 		case 1026:
-			break;
+			return new LengthBlock(blockModel);
 		case 1027:
 			return new UnitConversionBlock(blockModel);
 
@@ -146,7 +140,7 @@ public class BlockGenerator {
 			//return new XorBlock(blockModel);
 		// Join Block
 		case 3004:
-			//return new JoinBlock(blockModel);
+			return new JoinBlock(blockModel);
 		// NOT Block
 		case 3005:
 			//return new NotBlock(blockModel);

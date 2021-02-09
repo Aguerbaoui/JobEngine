@@ -3,6 +3,7 @@ package io.je.rulebuilder.models;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.je.rulebuilder.components.enumerations.TimePersistenceUnit;
 import io.je.rulebuilder.config.AttributesMapping;
+import io.je.utilities.logger.JELogger;
 
 import java.util.ArrayList;
 
