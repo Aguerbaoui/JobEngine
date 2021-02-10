@@ -7,8 +7,10 @@ import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.exceptions.WorkflowAlreadyRunningException;
 import io.je.utilities.exceptions.WorkflowNotFoundException;
 import io.je.utilities.exceptions.WorkflwTriggeredByEventException;
+import io.je.utilities.files.JEFileUtils;
 import io.je.utilities.logger.JELogger;
 import org.activiti.engine.*;
+import org.activiti.engine.repository.DeploymentBuilder;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.task.Task;
 
@@ -77,6 +79,34 @@ public class ProcessManager {
         //taskService.createTaskQuery().taskId(id); not the same as execution.id this has to be the original task id from the bpmn so we can map them
     }
 
+    /*public static void main(String[] args) {
+        //ProcessManager p = new ProcessManager();
+        String processXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                "<definitions xmlns=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:activiti=\"http://activiti.org/bpmn\" xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\" xmlns:omgdc=\"http://www.omg.org/spec/DD/20100524/DC\" xmlns:omgdi=\"http://www.omg.org/spec/DD/20100524/DI\" typeLanguage=\"http://www.w3.org/2001/XMLSchema\" expressionLanguage=\"http://www.w3.org/1999/XPath\" targetNamespace=\"123\">\n" +
+                " \n" +
+                "  <process id=\"testGenerated\" isExecutable=\"true\">\n" +
+                "    <extensionElements                                     >\n" +
+                "      <activiti:executionListener event=\"start\" class=\"io.je.executionListeners.ProcessListener\"></activiti:executionListener>\n" +
+                "      <activiti:executionListener event=\"end\" class=\"io.je.executionListeners.ProcessListener\"></activiti:executionListener>\n" +
+                "    </extensionElements>\n" +
+                "    <startEvent id=\"start1\" activiti:isInterrupting=\"false\">\n" +
+                "\n" +
+                "    </startEvent>\n" +
+                "    <endEvent id=\"end1\"></endEvent>\n" +
+                "    <sequenceFlow sourceRef=\"start1\" targetRef=\"end1\"></sequenceFlow>\n" +
+                "  </process>\n" +
+                "  <bpmndi:BPMNDiagram id=\"BPMNDiagram_testGenerated\">\n" +
+                "    <bpmndi:BPMNPlane bpmnElement=\"testGenerated\" id=\"BPMNPlane_testGenerated\"></bpmndi:BPMNPlane>\n" +
+                "  </bpmndi:BPMNDiagram>\n" +
+                "</definitions>";
+        String processId = "testGenerated";
+        ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine();
+        DeploymentBuilder deploymentBuilder = processEngine.getRepositoryService().createDeployment().name(processId);
+        deploymentBuilder.addString(processId + ".bpmn", processXml);
+        deploymentBuilder.deploy();
+        RuntimeService runtimeService = processEngine.getRuntimeService();
+        runtimeService.startProcessInstanceByKey(processId);
+    }*/
     /*
      * Add a process to engine
      * */
@@ -110,10 +140,10 @@ public class ProcessManager {
     public void deployProcess(String key) {
         ResourceBundle.clearCache(Thread.currentThread().getContextClassLoader());
         //repoService.
-        repoService.createDeployment()
-                .addClasspathResource(
-                         processes.get(key).getBpmnPath())
-                .deploy();
+        String processXml = JEFileUtils.getStringFromFile(processes.get(key).getBpmnPath());
+        DeploymentBuilder deploymentBuilder = processEngine.getRepositoryService().createDeployment().name(key);
+        deploymentBuilder.addString(key + ".bpmn", processXml);
+        deploymentBuilder.deploy();
         processes.get(key).setDeployed(true);
 
     }
@@ -200,20 +230,7 @@ public class ProcessManager {
                 .messageEventSubscriptionName(messageId).singleResult();
 
     }
-	
-	/*public static void main(String[] args) {
-		init();
-		deployProcess("processes/test.bpmn");
-		try {
-			launchProcessByKeyWithoutVariables("Process_test");
-		} catch (WorkflowNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		String taskId = getMessageEventSubscription("userStartWf").getId();
-		throwMessageEvent("userStartWf",taskId);
-		
-	}*/
+
 
     /*
      * Get all execution callbacks
