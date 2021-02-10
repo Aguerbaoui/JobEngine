@@ -22,6 +22,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import static io.je.utilities.constants.WorkflowConstants.BPMN_EXTENSION;
+import static io.je.utilities.constants.WorkflowConstants.BPMN_PATH;
+
 /*
  * Workflow Builder class
  * */
@@ -46,7 +49,7 @@ public class WorkflowBuilder {
         wfMap.put("projectId", workflow.getJobEngineProjectID());*/
         WorkflowModel wf = new WorkflowModel();
         wf.setKey(workflow.getWorkflowName().trim());
-        wf.setPath("processes/" + workflow.getWorkflowName().trim() + ".bpmn");
+        wf.setPath(BPMN_PATH + workflow.getWorkflowName().trim() + BPMN_EXTENSION);
         wf.setProjectId(workflow.getJobEngineProjectID());
       /*  ArrayList<EventModel> events = new ArrayList<>();
         for(WorkflowBlock block: workflow.getAllBlocks().values()) {
