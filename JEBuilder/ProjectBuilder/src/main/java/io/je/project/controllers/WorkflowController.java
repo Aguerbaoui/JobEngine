@@ -233,9 +233,9 @@ public class WorkflowController {
     public ResponseEntity<?> saveWorkflowFrontConfig(@PathVariable("projectId") String projectId,@PathVariable("workflowId") String workflowId, @RequestBody String config) {
         try {
             workflowService.setFrontConfig(projectId, workflowId, config);
-        } catch (ProjectNotFoundException | WorkflowNotFoundException e) {
-            JELogger.error(RuleController.class, e.getMessage());
-            return ResponseEntity.badRequest().body(new JEResponse(e.getCode(), e.getMessage()));
+        } catch (Exception e) {
+            return JEExceptionHandler.handleException(e);
+
         }
         return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, FRONT_CONFIG));
     }
