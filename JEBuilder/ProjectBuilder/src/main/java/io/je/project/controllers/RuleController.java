@@ -1,6 +1,8 @@
 package io.je.project.controllers;
 
 import java.util.Collection;
+import java.util.List;
+
 import io.je.project.exception.JEExceptionHandler;
 import io.je.project.services.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -101,6 +103,23 @@ public class RuleController {
 		}
 		JELogger.info(getClass(), ResponseMessages.RuleAdditionSucceeded);
 		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.RuleAdditionSucceeded));
+	}
+
+	
+	@PostMapping(value = "/{projectId}/deleteRules", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> deleteRules(@PathVariable("projectId") String projectId, @RequestBody List<String> ruleIds) {
+
+		try {
+		
+			ruleService.deleteRules(projectId, ruleIds);
+			projectService.saveProject(projectId).get();
+			
+
+		} catch (Exception e) {
+			return JEExceptionHandler.handleException(e);
+		}
+		JELogger.info(getClass(), ResponseMessages.RuleAdditionSucceeded);
+		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.RuleDeletionSucceeded));
 	}
 
 	

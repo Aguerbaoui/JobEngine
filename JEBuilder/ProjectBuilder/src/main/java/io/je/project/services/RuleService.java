@@ -3,6 +3,8 @@ package io.je.project.services;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -25,6 +27,7 @@ import io.je.rulebuilder.models.BlockModel;
 import io.je.rulebuilder.models.RuleModel;
 import io.je.rulebuilder.models.ScriptRuleModel;
 import io.je.utilities.constants.Errors;
+import io.je.utilities.constants.ResponseMessages;
 import io.je.utilities.constants.RuleBuilderErrors;
 import io.je.utilities.exceptions.AddClassException;
 import io.je.utilities.exceptions.AddRuleBlockException;
@@ -35,6 +38,7 @@ import io.je.utilities.exceptions.ProjectNotFoundException;
 import io.je.utilities.exceptions.RuleAlreadyExistsException;
 import io.je.utilities.exceptions.RuleBlockNotFoundException;
 import io.je.utilities.exceptions.RuleBuildFailedException;
+import io.je.utilities.exceptions.RuleDeletionException;
 import io.je.utilities.exceptions.RuleNotAddedException;
 import io.je.utilities.exceptions.RuleNotFoundException;
 import io.je.utilities.logger.JELogger;
@@ -339,5 +343,45 @@ public class RuleService {
 			throw new AddRuleBlockException(RuleBuilderErrors.BlockOperationIdUnknown);
 		}
 
+	}
+
+	
+	/*
+	 * deletes multiple rules in a project using their id. 
+	 * returns nothing if rules were deleted successfully 
+	 * if some rules were not deleted, throws exception with map [ key: rule that was not deleted , value : cause of the deletion failure ]
+	 */
+	public void deleteRules(String projectId, List<String> ruleIds) throws ProjectNotFoundException, RuleDeletionException  {
+		JEProject project = ProjectService.getProjectById(projectId);
+		if (project == null) {
+			throw new ProjectNotFoundException(Errors.PROJECT_NOT_FOUND);
+		}
+		HashMap<String,String> undeletedRules = new HashMap<String, String>();
+		for(String ruleId : ruleIds)
+		{
+			if (project.ruleExists(ruleId)) {
+				try
+				{
+					JELogger.trace(getClass(), "deleting rule [id : "+ ruleId +")" );
+					project.deleteRule(ruleId);
+				}
+				catch (Exception e) {
+					undeletedRules.put(ruleId, e.getMessage());
+				}
+
+			}
+			else
+			{
+				undeletedRules.put(ruleId, RuleBuilderErrors.RuleNotFound);
+
+			}
+		}
+		
+		if(!undeletedRules.isEmpty())
+		{
+			throw new RuleDeletionException("Failed to delete the following rules : " + undeletedRules);
+		}
+		
+		
 	}
 }
