@@ -12,6 +12,7 @@ import io.je.project.services.ClassService;
 import io.je.utilities.logger.JELogger;
 
 import java.io.IOException;
+import java.util.concurrent.ExecutionException;
 
 @Component
 public class JEInitializingBean implements InitializingBean {
@@ -27,7 +28,7 @@ public class JEInitializingBean implements InitializingBean {
         try {
             JELogger.trace(getClass(), " Loading classes from data definition ");
             classService.loadAllClasses();
-        } catch (DataDefinitionUnreachableException | JERunnerErrorException | AddClassException | ClassLoadException | IOException e) {
+        } catch (DataDefinitionUnreachableException | JERunnerErrorException | AddClassException | ClassLoadException | IOException | InterruptedException | ExecutionException e) {
            JELogger.error(getClass(), e.getMessage());
         }
 

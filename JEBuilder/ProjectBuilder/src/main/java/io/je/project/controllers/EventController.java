@@ -1,10 +1,8 @@
 package io.je.project.controllers;
 
-import java.io.IOException;
 import java.util.Collection;
 
-import io.je.project.beans.JEProject;
-import io.je.project.models.ProjectModel;
+import io.je.project.exception.JEExceptionHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -24,14 +22,9 @@ import io.je.project.services.ProjectService;
 import io.je.utilities.beans.JEEvent;
 import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.constants.ResponseMessages;
-import io.je.utilities.exceptions.EventException;
-import io.je.utilities.exceptions.JERunnerErrorException;
-import io.je.utilities.exceptions.ProjectNotFoundException;
 import io.je.utilities.logger.JELogger;
 import io.je.utilities.models.EventModel;
 import io.je.utilities.network.JEResponse;
-
-import static io.je.utilities.constants.ResponseMessages.CREATED_PROJECT_SUCCESSFULLY;
 
 /*
  * Project Rest Controller
@@ -40,104 +33,94 @@ import static io.je.utilities.constants.ResponseMessages.CREATED_PROJECT_SUCCESS
 @RequestMapping(value = "/event")
 @CrossOrigin(maxAge = 3600)
 public class EventController {
-	
 
 	@Autowired
 	ProjectService projectService;
 
 	@Autowired
 	EventService eventService;
-	
+
 	/*
 	 * Retrieve all events in a project
 	 */
-	@GetMapping(value="{projectId}/getAllEvents")
+	@GetMapping(value = "{projectId}/getAllEvents")
 	@ResponseBody
 	public ResponseEntity<?> getAllEvents(@PathVariable("projectId") String projectId) {
 		Collection<?> events = null;
 		try {
-			 events = eventService.getAllEvents(projectId);
-			 if(events.isEmpty())
-			 {
-					return ResponseEntity.noContent().build();
+			events = eventService.getAllEvents(projectId);
+			if (events.isEmpty()) {
+				return ResponseEntity.noContent().build();
 
-			 }
-		} catch (ProjectNotFoundException e) {
-			e.printStackTrace();
-			JELogger.error(EventController.class, e.getMessage());
-			return ResponseEntity.badRequest().body(new JEResponse(e.getCode(), e.getMessage()));
+			}
+		} catch (Exception e) {
+			return JEExceptionHandler.handleException(e);
+
 		}
-		
-		return	new ResponseEntity<Object>(events,HttpStatus.OK);
-	
-}
-	
-	
+
+		return new ResponseEntity<Object>(events, HttpStatus.OK);
+
+	}
+
 	/*
 	 * Retrieve all events in a project
 	 */
-	@GetMapping(value="{projectId}/getEvent/{eventId}")
+	@GetMapping(value = "{projectId}/getEvent/{eventId}")
 	@ResponseBody
-	public ResponseEntity<?> getEvent(@PathVariable("projectId") String projectId,@PathVariable("eventId") String eventId)   {
+	public ResponseEntity<?> getEvent(@PathVariable("projectId") String projectId,
+			@PathVariable("eventId") String eventId) {
 		JEEvent event = null;
 		try {
-			 event = eventService.getEvent(projectId,eventId);
-			 if(event == null)
-			 {
-					return ResponseEntity.noContent().build();
+			event = eventService.getEvent(projectId, eventId);
+			if (event == null) {
+				return ResponseEntity.noContent().build();
 
-			 }
-		} catch (ProjectNotFoundException | EventException e) {
-			e.printStackTrace();
-			JELogger.error(EventController.class, e.getMessage());
-			return ResponseEntity.badRequest().body(new JEResponse(e.getCode(), e.getMessage()));
+			}
+		} catch (Exception e) {
+			return JEExceptionHandler.handleException(e);
+
 		}
-		
-		return	new ResponseEntity<Object>(event,HttpStatus.OK);
-	
-}
-	
+
+		return new ResponseEntity<Object>(event, HttpStatus.OK);
+
+	}
+
 	/*
 	 * add event
 	 */
 	@PostMapping(value = "/{projectId}/addEvent", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> addEvent(@PathVariable("projectId") String projectId, @RequestBody EventModel eventModel) {
-		
-			try {
-				eventService.addEvent(projectId,eventModel);
-				projectService.saveProject(ProjectService.getProjectById(projectId));
-				JELogger.info(getClass(), ResponseMessages.EVENT_ADDED);
 
-			} catch (ProjectNotFoundException | JERunnerErrorException  e) {
-				//e.printStackTrace();
-				JELogger.error(EventController.class, e.getMessage());
-				return ResponseEntity.badRequest().body(new JEResponse(e.getCode(), e.getMessage()));
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		
+		try {
+			eventService.addEvent(projectId, eventModel);
+			projectService.saveProject(projectId);
+			JELogger.info(getClass(), ResponseMessages.EVENT_ADDED);
+
+		} catch (Exception e) {
+			return JEExceptionHandler.handleException(e);
+
+		}
+
 		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.EVENT_ADDED));
 	}
 
-	
 	/*
 	 * delete event
 	 */
 	@DeleteMapping(value = "{projectId}/deleteEvent/{eventId}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> deleteEvent(@PathVariable("projectId") String projectId,@PathVariable("eventId") String eventId) {
-		
-			try {
-				eventService.deleteEvent(projectId,eventId);
-				projectService.saveProject(ProjectService.getProjectById(projectId));
-				JELogger.info(getClass(), ResponseMessages.EVENT_ADDED);
+	public ResponseEntity<?> deleteEvent(@PathVariable("projectId") String projectId,
+			@PathVariable("eventId") String eventId) {
 
-			} catch (ProjectNotFoundException | EventException e) {
-				//e.printStackTrace();
-				JELogger.error(EventController.class, e.getMessage());
-				return ResponseEntity.badRequest().body(new JEResponse(e.getCode(), e.getMessage()));
-			}
-		
+		try {
+			eventService.deleteEvent(projectId, eventId);
+			projectService.saveProject(projectId);
+			JELogger.info(getClass(), ResponseMessages.EVENT_ADDED);
+
+		} catch (Exception e) {
+			return JEExceptionHandler.handleException(e);
+
+		}
+
 		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.EVENT_ADDED));
 	}
 }

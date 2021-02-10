@@ -19,6 +19,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Document(collection="JEProject")
 public class JEProject {
@@ -42,18 +43,18 @@ public class JEProject {
     /*
     * Rules in a project
     * */
-    private HashMap<String, JERule> rules;
+    private ConcurrentHashMap<String, JERule> rules;
 
     /*
     * workflows in a project
     * */
-    private HashMap<String, JEWorkflow> workflows;
+    private ConcurrentHashMap<String, JEWorkflow> workflows;
     
     
     /*
      * Events in a project
      * */
-     private HashMap<String, JEEvent> events;
+     private ConcurrentHashMap<String, JEEvent> events;
 
     /*
     * Is the project running
@@ -69,9 +70,9 @@ public class JEProject {
     * Constructor
     * */
     public JEProject(String projectId, String projectName, String configurationPath) {
-        rules = new HashMap<>();
-        workflows = new HashMap<>();
-        events = new HashMap<>();
+        rules = new ConcurrentHashMap<>();
+        workflows = new ConcurrentHashMap<>();
+        events = new ConcurrentHashMap<>();
         this.projectId = projectId;
         this.projectName = projectName;
         this.configurationPath = configurationPath;
@@ -109,28 +110,28 @@ public class JEProject {
     /*
     * Get project rules
     * */
-    public HashMap<String, JERule> getRules() {
+    public ConcurrentHashMap<String, JERule> getRules() {
 		return rules;
 	}
 
 	/*
 	* Set project rules
 	* */
-	public void setRules(HashMap<String, JERule> rules) {
+	public void setRules(ConcurrentHashMap<String, JERule> rules) {
 		this.rules = rules;
 	}
 
 	/*
 	* Get all workflows
 	* */
-	public HashMap<String, JEWorkflow> getWorkflows() {
+	public ConcurrentHashMap<String, JEWorkflow> getWorkflows() {
         return workflows;
     }
 
     /*
     * Set all workflows
     * */
-    public void setWorkflows(HashMap<String, JEWorkflow> workflows) {
+    public void setWorkflows(ConcurrentHashMap<String, JEWorkflow> workflows) {
         this.workflows = workflows;
     }
 
@@ -329,11 +330,11 @@ public class JEProject {
 		return events.get(eventId);
 	}
 	
-	public HashMap<String, JEEvent> getEvents() {
+	public ConcurrentHashMap<String, JEEvent> getEvents() {
 		return events;
 	}
 
-	public void setEvents(HashMap<String, JEEvent> events) {
+	public void setEvents(ConcurrentHashMap<String, JEEvent> events) {
 		this.events = events;
 	}
 

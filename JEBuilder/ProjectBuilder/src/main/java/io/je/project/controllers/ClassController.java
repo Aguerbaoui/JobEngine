@@ -2,6 +2,7 @@ package io.je.project.controllers;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.concurrent.ExecutionException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -45,8 +46,12 @@ public class ClassController {
 			JELogger.error(ClassController.class, e.getMessage());
 			return ResponseEntity.ok().body(new JEResponse(e.getCode(), e.getMessage()));
 		} catch (IOException e) {
-			JELogger.error(WorkflowController.class, Arrays.toString(e.getStackTrace()));
+			JELogger.error(ClassController.class, Arrays.toString(e.getStackTrace()));
             return ResponseEntity.ok().body(new JEResponse(ResponseCodes.DATA_DEF_UNREACHABLE, Errors.DATA_DEFINITION_API_UNREACHABLE));
+		}catch ( InterruptedException | ExecutionException e) {
+			JELogger.error(ClassController.class, Arrays.toString(e.getStackTrace()));
+			JELogger.error(RuleController.class, e.getMessage());
+            return ResponseEntity.badRequest().body(new JEResponse(ResponseCodes.UNKNOWN_ERROR, e.getMessage()));
 		}
 		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.classAddedSuccessully));
 

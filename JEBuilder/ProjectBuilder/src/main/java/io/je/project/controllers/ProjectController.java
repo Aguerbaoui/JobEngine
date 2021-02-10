@@ -1,11 +1,11 @@
 package io.je.project.controllers;
 
 import io.je.project.beans.JEProject;
+import io.je.project.exception.JEExceptionHandler;
 import io.je.project.models.ProjectModel;
 import io.je.project.services.ProjectService;
 import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.constants.Errors;
-import io.je.utilities.exceptions.*;
 import io.je.utilities.logger.JELogger;
 import io.je.utilities.network.JEResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,17 +39,16 @@ public class ProjectController {
 	public ResponseEntity<?> getAllProject(@PathVariable String projectId) {
 		Collection<?> projects = null;
 		try {
-			projects = projectService.getAllProjects();
+			projects = projectService.getAllProjects().get();
 			 if(projects.isEmpty())
 			 {
 					return ResponseEntity.noContent().build();
 
 			 }
 		} catch (Exception e) {
-			e.printStackTrace();
-			JELogger.error(RuleController.class, e.getMessage());
-			return ResponseEntity.badRequest().body(new JEResponse(ResponseCodes.UNKNOWN_ERROR, Errors.UKNOWN_ERROR));
- 		}
+			return JEExceptionHandler.handleException(e);
+
+		}
 		
 		return	new ResponseEntity<Object>(projects,HttpStatus.OK);
 	
@@ -63,9 +62,34 @@ public class ProjectController {
 	 */
 	@PostMapping(value = "/addProject", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> addProject(@RequestBody ProjectModel m) {
-		JEProject p = new JEProject(m.getProjectId(), m.getProjectName(), m.getConfigurationPath());
-		JELogger.trace(ProjectController.class, "Creating project with id = " + m.getProjectId());
-		projectService.saveProject(p);
+
+		//TODO: add control if project exists
+
+		try {
+			JEProject p = new JEProject(m.getProjectId(), m.getProjectName(), m.getConfigurationPath());
+			JELogger.trace(ProjectController.class, "Creating project with id = " + m.getProjectId());
+			projectService.saveProject(p).get();
+		}catch (Exception e) {
+			return JEExceptionHandler.handleException(e);
+
+		}
+		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, CREATED_PROJECT_SUCCESSFULLY));
+	}
+
+	/*
+	 * Add new project
+	 */
+	@PostMapping(value = "/deleteProject/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> deleteProject(@PathVariable String projectId) {
+
+		//TODO: control if project exists
+
+		try {
+			projectService.removeProject(projectId).get();
+		}catch (Exception e) {
+			return JEExceptionHandler.handleException(e);
+
+		}
 		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, CREATED_PROJECT_SUCCESSFULLY));
 	}
 
@@ -73,15 +97,10 @@ public class ProjectController {
 	public ResponseEntity<?> getProject(@PathVariable String projectId) {
 	JEProject project=null;
 	try {
-		project = projectService.getProject(projectId);
-	} catch (ProjectNotFoundException | JERunnerErrorException  e) {
-		e.printStackTrace();
-		JELogger.error(RuleController.class, e.getMessage());
-		return ResponseEntity.ok((new JEResponse(e.getCode(), e.getMessage())));
-	} catch (IOException e) {
-		e.printStackTrace();
+		project = projectService.getProject(projectId).get();
+	} catch (Exception e) {
+		return JEExceptionHandler.handleException(e);
 
-		return ResponseEntity.badRequest().body(new JEResponse(ResponseCodes.UNKNOWN_ERROR, Errors.UKNOWN_ERROR));
 	}
 	if(project==null) {
 		return ResponseEntity.ok(new JEResponse(ResponseCodes.PROJECT_NOT_FOUND, Errors.PROJECT_NOT_FOUND));
@@ -99,18 +118,11 @@ public class ProjectController {
 	public ResponseEntity<?> buildProject(@PathVariable String projectId) {
 		try {
 			projectService.buildAll(projectId);
-			projectService.saveProject(ProjectService.getProjectById(projectId));
 
-
-		} catch (ProjectNotFoundException |  RuleBuildFailedException
-				| JERunnerErrorException e) {
-			JELogger.error(ProjectController.class, e.getMessage());
-			return ResponseEntity.badRequest().body(new JEResponse(e.getCode(), e.getMessage()));
 
 		} catch (Exception e) {
-			e.printStackTrace();
-			JELogger.error(ProjectController.class, Arrays.toString(e.getStackTrace()));
-			return ResponseEntity.badRequest().body(new JEResponse(ResponseCodes.UNKNOWN_ERROR, Errors.UKNOWN_ERROR));
+			return JEExceptionHandler.handleException(e);
+
 		}
 		JELogger.trace(ProjectController.class, BUILT_EVERYTHING_SUCCESSFULLY);
 		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, BUILT_EVERYTHING_SUCCESSFULLY));
@@ -120,18 +132,14 @@ public class ProjectController {
 	@PostMapping(value = "/runProject/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> runProject(@PathVariable String projectId) {
 		try {
-			try {
-				projectService.runAll(projectId);
-				projectService.saveProject(ProjectService.getProjectById(projectId));
 
-			} catch (JERunnerErrorException | ProjectRunException | ProjectNotFoundException e) {
-				JELogger.error(RuleController.class, e.getMessage());
-				return ResponseEntity.badRequest().body(new JEResponse(e.getCode(), e.getMessage()));
-			}
-		}
-		catch (Exception e) {
-			JELogger.error(ProjectController.class, Arrays.toString(e.getStackTrace()));
-			return ResponseEntity.badRequest().body(new JEResponse(ResponseCodes.UNKNOWN_ERROR, Errors.UKNOWN_ERROR));
+				projectService.runAll(projectId);
+
+
+
+		}catch (Exception e) {
+			return JEExceptionHandler.handleException(e);
+
 		}
 		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, PROJECT_RUNNING));
 	}
@@ -144,15 +152,9 @@ public class ProjectController {
 			
 				try {
 					projectService.stopProject(projectId);
-					projectService.saveProject(ProjectService.getProjectById(projectId));
 
-				} catch (ProjectNotFoundException | JERunnerErrorException | ProjectRunException | ProjectStatusException
-						e) {
-					JELogger.error(RuleController.class, e.getMessage());
-					return ResponseEntity.badRequest().body(new JEResponse(e.getCode(), e.getMessage()));
 				} catch (Exception e) {
-					JELogger.error(ProjectController.class, Arrays.toString(e.getStackTrace()));
-					return ResponseEntity.badRequest().body(new JEResponse(ResponseCodes.UNKNOWN_ERROR, Errors.UKNOWN_ERROR));
+					return JEExceptionHandler.handleException(e);
 
 				}
 		
