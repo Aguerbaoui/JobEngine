@@ -1,6 +1,7 @@
 package io.je.rulebuilder.models;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -56,6 +57,7 @@ public class RuleModel {
     String ruleFrontConfig;
     
     
+    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yyyy, h:mm:ss a");
 
 
     
@@ -65,8 +67,8 @@ public class RuleModel {
 		this.ruleName = rule.getRuleName();
 		this.description = rule.getDescription();
 		this.isBuilt = String.valueOf(rule.isBuilt());
-		this.createdAt = String.valueOf(rule.getJeObjectCreationDate());
-		this.lastModifiedAt = String.valueOf(rule.getJeObjectLastUpdate());
+		this.createdAt = rule.getJeObjectCreationDate().format(formatter);
+		this.lastModifiedAt = rule.getJeObjectLastUpdate().format(formatter);
 		if(rule instanceof UserDefinedRule) {
 			this.salience = ((UserDefinedRule)rule).getRuleParameters().getSalience();
 			this.enabled = ((UserDefinedRule)rule).getRuleParameters().getEnabled();
