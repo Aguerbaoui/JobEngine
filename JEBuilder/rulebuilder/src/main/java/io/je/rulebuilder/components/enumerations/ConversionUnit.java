@@ -1,7 +1,7 @@
 package io.je.rulebuilder.components.enumerations;
 
 
-//TODO: check with front about renaming these or switching to int codes
+//TODO: check with front about renaming these or switching to int codes or correcting typos such as "kilogramEs"
 public enum ConversionUnit {
 	Inches_To_Millimeters,
 	Feet_To_Meters,
