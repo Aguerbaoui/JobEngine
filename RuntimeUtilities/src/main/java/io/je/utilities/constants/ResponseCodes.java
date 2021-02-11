@@ -41,5 +41,6 @@ public class ResponseCodes {
 	public static final int PROJECT_IS_BUILt = 1028;
 	public static final int PROJECT_STOPPED = 1029;
 	public static final int WORKFLOW_EVENT_TRIGGER = 1030;
+	public static final int RULE_DELETION_ERROR = 1031;
 
 }

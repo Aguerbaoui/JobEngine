@@ -56,6 +56,9 @@ public class ResponseMessages {
 	//rule deletion
 	
 	public static final String RuleDeletionSucceeded = "Rule deleted successfully";
+	
+	public static final String RuleDeletionSucceededPartially = "Failed to delete all rules ";
+
 
 	public static final String WorkflowDeletionSucceeded = "Workflow deleted successfully";
 

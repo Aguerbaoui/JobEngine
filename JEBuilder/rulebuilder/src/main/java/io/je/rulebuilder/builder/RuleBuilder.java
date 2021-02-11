@@ -32,20 +32,19 @@ public class RuleBuilder {
 	public static void buildRule(JERule jeRule, String buildPath)
 			throws RuleBuildFailedException, JERunnerErrorException, IOException, InterruptedException, ExecutionException {
 		String rulePath = "";
-		boolean ruleIsAdded = jeRule.isAdded();
 		JELogger.trace(RuleBuilder.class, "Building rule with id = " + jeRule.getJobEngineElementID());
 		if( jeRule instanceof UserDefinedRule) {
 			List<ScriptedRule> unitRules = ((UserDefinedRule) jeRule).scriptRule();
 			for (ScriptedRule rule : unitRules) {
 				// generate drl
 				 rulePath = rule.generateDRL(buildPath);
-				sendDRLToJeRunner(jeRule,rulePath,ruleIsAdded);
+				sendDRLToJeRunner(jeRule,rulePath);
 				}
 		}
 		if( jeRule instanceof ScriptedRule)
 		{
 			 rulePath = ((ScriptedRule) jeRule).generateDRL(buildPath);
-			sendDRLToJeRunner(jeRule,rulePath,ruleIsAdded);
+			sendDRLToJeRunner(jeRule,rulePath);
 		}
 		
 	}
@@ -54,7 +53,7 @@ public class RuleBuilder {
 	/*
 	 * send rule to JERunner
 	 */
-	public static void sendDRLToJeRunner(JERule rule, String path, boolean ruleIsAdded) throws JERunnerErrorException, RuleBuildFailedException, IOException, InterruptedException, ExecutionException
+	public static void sendDRLToJeRunner(JERule rule, String path) throws JERunnerErrorException, RuleBuildFailedException, IOException, InterruptedException, ExecutionException
 	{
 		
 
@@ -72,18 +71,8 @@ public class RuleBuilder {
 			JELogger.trace(RuleBuilder.class, "Sending rule build request to runner, project id = " + rule.getJobEngineProjectID() + "rule id = " + rule.getJobEngineElementID());
 			
 			JEResponse jeRunnerResp = null;
-			if(!ruleIsAdded)
-			{
-				 jeRunnerResp = JERunnerAPIHandler.addRule(ruleMap);
+			 jeRunnerResp = JERunnerAPIHandler.updateRule(ruleMap);
 
-
-			}
-			else
-			{
-				 jeRunnerResp = JERunnerAPIHandler.updateRule(ruleMap);
-				
-
-			}
 			if (jeRunnerResp == null || jeRunnerResp.getCode() != ResponseCodes.CODE_OK) {
 				throw new RuleBuildFailedException(jeRunnerResp.getMessage());
 			}
