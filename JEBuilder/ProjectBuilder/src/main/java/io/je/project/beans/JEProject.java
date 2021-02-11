@@ -30,10 +30,7 @@ public class JEProject {
     @Id
     private String projectId;
 
-    /*
-    * Project name
-    * */
-    private String projectName;
+
 
     /*
     * Configuration path
@@ -69,12 +66,11 @@ public class JEProject {
     /*
     * Constructor
     * */
-    public JEProject(String projectId, String projectName, String configurationPath) {
+    public JEProject(String projectId, String configurationPath) {
         rules = new ConcurrentHashMap<>();
         workflows = new ConcurrentHashMap<>();
         events = new ConcurrentHashMap<>();
         this.projectId = projectId;
-        this.projectName = projectName;
         this.configurationPath = configurationPath;
 
     }
@@ -93,19 +89,7 @@ public class JEProject {
         this.projectId = projectId;
     }
 
-    /*
-    * Get project name
-    * */
-    public String getProjectName() {
-        return projectName;
-    }
 
-    /*
-    * Set project name
-    * */
-    public void setProjectName(String projectName) {
-        this.projectName = projectName;
-    }
 
     /*
     * Get project rules
