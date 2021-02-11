@@ -21,8 +21,8 @@ public class AttributesMapping {
     public static final String BLOCKNAME = "block_name";
     public static final String OPERATIONID = "operation_id";
     public static final String TIMEPERSISTENCEON = "time_persistence_on";
-    public static final String TIMEPERSISTENCEVALUE = "";
-    public static final String TIMEPERSISTENCEUNIT = "";
+    public static final String TIMEPERSISTENCEVALUE = "persistence_value";
+    public static final String TIMEPERSISTENCEUNIT = "persistence_unit";
     public static final String INPUTBLOCK = "input_blocks";
 	public static final String OUTPUTBLOCK = "output_blocks";
 

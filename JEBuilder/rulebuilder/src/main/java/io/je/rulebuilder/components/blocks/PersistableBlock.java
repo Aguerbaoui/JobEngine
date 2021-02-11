@@ -43,6 +43,29 @@ public abstract class PersistableBlock extends ConditionBlock {
 		this.timePersistenceUnit = timePersistenceUnit;
 	}
 
+	public String getUnitAsString()
+	{
+		switch(timePersistenceUnit)
+		{
+		
+		case hour:
+			return "h";
+		case minute:
+			return "m";
+		case second:
+			return "s";
+		default:
+			return "s";
+		
+		}
+	}
+	
+	public String getPersistanceExpression()
+	{
+		return String.valueOf(timePersistenceValue)+getUnitAsString();
+		
+	}
+	
 	@Override
 	public String getAsFirstOperandExpression() {
 		return null;
