@@ -7,6 +7,8 @@ import io.je.utilities.logger.JELogger;
 
 import java.util.ArrayList;
 
+import org.springframework.lang.Nullable;
+
 
 public class BlockModel {
 
@@ -26,9 +28,8 @@ public class BlockModel {
 
     @JsonProperty(AttributesMapping.TIMEPERSISTENCEVALUE)
     int timePersistenceValue;
-
     @JsonProperty(AttributesMapping.TIMEPERSISTENCEUNIT)
-    TimePersistenceUnit timePersistenceUnit;
+    String timePersistenceUnit;
 
     @JsonProperty(AttributesMapping.OPERATIONID)
 	int operationId;
@@ -106,11 +107,11 @@ public class BlockModel {
 		this.timePersistenceValue = timePersistenceValue;
 	}
 
-	public TimePersistenceUnit getTimePersistenceUnit() {
+	public String getTimePersistenceUnit() {
 		return timePersistenceUnit;
 	}
 
-	public void setTimePersistenceUnit(TimePersistenceUnit timePersistenceUnit) {
+	public void setTimePersistenceUnit(String timePersistenceUnit) {
 		this.timePersistenceUnit = timePersistenceUnit;
 	}
 

@@ -1,5 +1,7 @@
 package io.je.rulebuilder.components.blocks.getter;
 
+import java.util.List;
+
 import io.je.rulebuilder.components.blocks.GetterBlock;
 import io.je.rulebuilder.config.Keywords;
 import io.je.rulebuilder.models.BlockModel;
@@ -8,13 +10,14 @@ public class AttributeGetterBlock extends GetterBlock {
 
 	String classPath;
 	String attributeName;
-	String specificInstance = "\"idOfSpecificInstance\""; //TODO: switch to list
-	// specific instances
+	List<String> specificInstances ; 
 
 	public AttributeGetterBlock(BlockModel blockModel) {
 		super(blockModel);
 		classPath = blockModel.getBlockConfiguration().getClassName();
 		attributeName = blockModel.getBlockConfiguration().getAttributeName();
+		specificInstances = blockModel.getBlockConfiguration().getSpecificInstances();
+
 
 	}
 
@@ -77,8 +80,23 @@ public class AttributeGetterBlock extends GetterBlock {
 			expression.append("\n");
 
 		}
-		expression.append("$" + blockName.replaceAll("\\s+", "") + " : " + classPath + " ("+getJoinId()+ " : jobEngineElementID, jobEngineElementID =="+specificInstance+ ", " + getFinalAttributeName() + " "
-				+ Keywords.toBeReplaced + " )"); 
+		
+		if(specificInstances == null ||specificInstances.isEmpty() )
+		{
+			expression.append("$" + blockName.replaceAll("\\s+", "") + " : " + classPath + " ("+getJoinId()+ " : jobEngineElementID " + getFinalAttributeName() + " "
+					+ Keywords.toBeReplaced + " )"); 
+		}
+		else
+		{
+			String instanceIds = "";
+			for(String specificInstanceId: specificInstances)
+			{
+				instanceIds += " "+specificInstanceId;
+			}
+			expression.append("$" + blockName.replaceAll("\\s+", "") + " : " + classPath + " ("+getJoinId()+ " : jobEngineElementID, jobEngineElementID in ("+instanceIds+ "), " + getFinalAttributeName() + " "
+					+ Keywords.toBeReplaced + " )"); 
+		}
+		
 		return expression.toString();
 	}
 

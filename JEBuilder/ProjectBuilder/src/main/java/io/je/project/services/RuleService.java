@@ -384,4 +384,20 @@ public class RuleService {
 		
 		
 	}
+
+	/*
+	 * build rule : create drl + check for compilation errors
+	 */
+	public void buildRule(String projectId, String ruleId) throws ProjectNotFoundException, RuleNotFoundException,
+			RuleBuildFailedException, JERunnerErrorException, IOException, InterruptedException, ExecutionException {
+		JEProject project = ProjectService.getProjectById(projectId);
+		if (project == null) {
+			throw new ProjectNotFoundException(Errors.PROJECT_NOT_FOUND);
+		} else if (!project.ruleExists(ruleId)) {
+			throw new RuleNotFoundException(RuleBuilderErrors.RuleNotFound);
+		}
+		RuleBuilder.buildRule(project.getRule(ruleId), project.getConfigurationPath());
+
+	}
+
 }
