@@ -1,7 +1,11 @@
 package io.je.rulebuilder.models;
 
+import java.time.LocalDateTime;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import io.je.rulebuilder.components.JERule;
+import io.je.rulebuilder.components.UserDefinedRule;
 import io.je.rulebuilder.config.AttributesMapping;
 
 
@@ -37,10 +41,49 @@ public class RuleModel {
     @JsonProperty(AttributesMapping.TIMER)
     String timer;
 	
-
+    @JsonProperty(AttributesMapping.CREATEDAT)
+    String createdAt;
+    
+    @JsonProperty(AttributesMapping.LASTUPDATE)
+    String lastModifiedAt;
+    
+    @JsonProperty(AttributesMapping.BUILDSTATUS)
+    String isBuilt;
+    
+    
+    //temporary 
+    @JsonProperty(AttributesMapping.FRONTCONFIG)
+    String ruleFrontConfig;
     
     
 
+
+    
+    public RuleModel(JERule rule) {
+		super();
+		this.ruleId = rule.getJobEngineElementID();
+		this.ruleName = rule.getRuleName();
+		this.description = rule.getDescription();
+		this.isBuilt = String.valueOf(rule.isBuilt());
+		this.createdAt = String.valueOf(rule.getJeObjectCreationDate());
+		this.lastModifiedAt = String.valueOf(rule.getJeObjectLastUpdate());
+		if(rule instanceof UserDefinedRule) {
+			this.salience = ((UserDefinedRule)rule).getRuleParameters().getSalience();
+			this.enabled = ((UserDefinedRule)rule).getRuleParameters().getEnabled();
+			this.dateEffective = ((UserDefinedRule)rule).getRuleParameters().getDateEffective();
+			this.dateExpires = ((UserDefinedRule)rule).getRuleParameters().getDateExpires();
+			this.timer = ((UserDefinedRule)rule).getRuleParameters().getTimer();
+			this.ruleFrontConfig = ((UserDefinedRule)rule).getRuleFrontConfig();
+
+		}
+		
+	}
+
+
+
+	public RuleModel() {
+		super();
+	}
 	public String getRuleId() {
 		return ruleId;
 	}
@@ -93,6 +136,54 @@ public class RuleModel {
 	}
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+
+
+	public String getCreatedAt() {
+		return createdAt;
+	}
+
+
+
+	public void setCreatedAt(String createdAt) {
+		this.createdAt = createdAt;
+	}
+
+
+
+	public String getLastModifiedAt() {
+		return lastModifiedAt;
+	}
+
+
+
+	public void setLastModifiedAt(String lastModifiedAt) {
+		this.lastModifiedAt = lastModifiedAt;
+	}
+
+
+
+	public String getIsBuilt() {
+		return isBuilt;
+	}
+
+
+
+	public void setIsBuilt(String isBuilt) {
+		this.isBuilt = isBuilt;
+	}
+
+
+
+	public String getRuleFrontConfig() {
+		return ruleFrontConfig;
+	}
+
+
+
+	public void setRuleFrontConfig(String ruleFrontConfig) {
+		this.ruleFrontConfig = ruleFrontConfig;
 	}
 
 

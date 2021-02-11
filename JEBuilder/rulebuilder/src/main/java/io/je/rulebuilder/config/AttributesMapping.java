@@ -12,6 +12,10 @@ public class AttributesMapping {
     public static final String RULEID = "rule_id";
 	public static final String RULENAME = "rule_name";
 	public static final String DESC = "description";
+	public static final String CREATEDAT = "created_at";
+	public static final String LASTUPDATE = "last_update_at";
+	public static final String BUILDSTATUS = "isBuilt";
+
 
 
 
@@ -42,10 +46,11 @@ public class AttributesMapping {
 	public static final String ENABLED="enabled";
 	public static final String DATEEFFECTIVE="date_effective";
 	public static final String DATEEXPIRES="date_expires";
-	public static final String TIMER="timer";
+	public static final String TIMER="scheduler";
 	public static final String CLASSNAME = "class_name"; 
 	public static final String WORKSPACEID = "workspace_id";
 	public static final String CLASSES = "classes";
+	public static final String FRONTCONFIG = "ruleFrontConfig";
 
   
     

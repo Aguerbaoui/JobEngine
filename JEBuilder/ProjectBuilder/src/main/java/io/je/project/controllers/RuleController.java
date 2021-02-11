@@ -69,7 +69,7 @@ public class RuleController {
 	@ResponseBody
 	public ResponseEntity<?> getRule(@PathVariable("projectId") String projectId,
 			@PathVariable("ruleId") String ruleId) {
-		JERule rule = null;
+		RuleModel rule = null;
 
 		try {
 			rule = ruleService.getRule(projectId, ruleId);

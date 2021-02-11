@@ -15,6 +15,9 @@ public abstract class JEObject {
     protected String jobEngineProjectID;
 
     protected LocalDateTime jeObjectLastUpdate;
+    
+    protected LocalDateTime jeObjectCreationDate;
+
 
 
     public JEObject(String jobEngineElementID, String jobEngineProjectID) {
@@ -22,13 +25,15 @@ public abstract class JEObject {
         this.jobEngineElementID = jobEngineElementID;
         this.jobEngineProjectID = jobEngineProjectID;
         this.jeObjectLastUpdate = LocalDateTime.now();
+        this.jeObjectCreationDate = LocalDateTime.now();
+
         //TODO: add time config (format, timezone, etc ..)
         //set update time
     }
 
 
     //TODO: to be deleted. Only constructor with fields needs to be kept.
-    public JEObject() {
+    protected JEObject() {
 
     }
 
@@ -90,6 +95,17 @@ public abstract class JEObject {
     }
 
 
+	public LocalDateTime getJeObjectCreationDate() {
+		return jeObjectCreationDate;
+	}
+
+
+	public void setJeObjectCreationDate(LocalDateTime jeObjectCreationDate) {
+		this.jeObjectCreationDate = jeObjectCreationDate;
+	}
+
+    
+    
 } 
 	
 

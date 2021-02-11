@@ -18,6 +18,7 @@ import models.JEWorkflow;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -214,6 +215,8 @@ public class JEProject {
     				throw new RuleNotFoundException(RuleBuilderErrors.RuleNotFound);
     			}
         this.rules.put(rule.getJobEngineElementID(), rule);
+		rule.setJeObjectLastUpdate(  LocalDateTime.now());
+
     }
 
     /*
@@ -240,6 +243,8 @@ public class JEProject {
 
 	public void deleteRuleBlock(String ruleId, String blockId) throws RuleBlockNotFoundException {
 		((UserDefinedRule) rules.get(ruleId)).deleteBlock(blockId);
+		rules.get(ruleId).setJeObjectLastUpdate(  LocalDateTime.now());
+
 		
 	}
 
