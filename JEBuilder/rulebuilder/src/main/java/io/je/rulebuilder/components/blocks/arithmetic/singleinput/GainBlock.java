@@ -13,7 +13,8 @@ public class GainBlock extends SingleInputArithmeticBlock {
 		value = (blockModel.getBlockConfiguration().getValue());
 	}
 
-	
+
+	public GainBlock() {}
 	
 	
 	@Override

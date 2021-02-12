@@ -36,7 +36,7 @@ public class JEToBpmnMapper {
         process.addFlowElement(ModelBuilder.createStartEvent(wf.getWorkflowStartBlock().getJobEngineElementID(), wf.getWorkflowStartBlock().getEventId()));
         addListeners(process);
         parseWorkflowBlock(wf, wf.getWorkflowStartBlock(), process, null);
-
+//TODO send bpmn task information since they are dynamically created
         model.addProcess(process);
         //new BpmnAutoLayout(model).execute();
         String modelPath = WorkflowConstants.BPMN_PATH + wf.getWorkflowName().trim() + WorkflowConstants.BPMN_EXTENSION;

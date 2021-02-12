@@ -267,6 +267,7 @@ public class WorkflowService {
         }
         JELogger.trace(WorkflowService.class, " Deleting a workflow block with id = " + blockId + " in workflow with id = " + workflowId);
 
+
         project.deleteWorkflowBlock(workflowId, blockId);
     }
 

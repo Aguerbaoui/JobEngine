@@ -183,6 +183,7 @@ public class ProjectService {
                 loadedProjects.put(projectId, project);
                 for(JEEvent event : project.getEvents().values())
                 {
+                    //TODO update event types
                 	eventService.registerEvent(event);
                 }
             }

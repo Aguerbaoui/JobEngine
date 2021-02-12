@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 import io.je.runtime.data.DataListener;
 import io.je.runtime.models.ClassModel;
 import io.je.runtime.models.RuleModel;
-import io.je.runtime.objects.ClassManager;
+import io.je.utilities.classloader.ClassManager;
 import io.je.runtime.ruleenginehandler.RuleEngineHandler;
 import io.je.utilities.exceptions.ClassLoadException;
 import io.je.utilities.exceptions.DeleteRuleException;

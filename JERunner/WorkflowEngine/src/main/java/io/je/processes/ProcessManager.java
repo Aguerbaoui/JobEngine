@@ -14,6 +14,8 @@ import org.activiti.engine.repository.DeploymentBuilder;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.task.Task;
 
+import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -140,6 +142,7 @@ public class ProcessManager {
     public void deployProcess(String key) {
         ResourceBundle.clearCache(Thread.currentThread().getContextClassLoader());
         //repoService.
+        JELogger.trace(ProcessManager.class, " Deploying process with key = " + key);
         String processXml = JEFileUtils.getStringFromFile(processes.get(key).getBpmnPath());
         DeploymentBuilder deploymentBuilder = processEngine.getRepositoryService().createDeployment().name(key);
         deploymentBuilder.addString(key + ".bpmn", processXml);
@@ -173,7 +176,12 @@ public class ProcessManager {
      * */
     public void launchProcessByMessageWithoutVariables(String messageId) {
 
-        runtimeService.startProcessInstanceByMessage(messageId);
+        try {
+            runtimeService.startProcessInstanceByMessage(messageId);
+        }
+        catch(ActivitiObjectNotFoundException e) {
+            JELogger.error(ProcessManager.class, Arrays.toString(e.getStackTrace()));
+        }
     }
 
     /*
@@ -316,15 +324,26 @@ public class ProcessManager {
 
     public void stopProcess(String key) {
         if(processes.get(key).isRunning()) {
-            runtimeService.deleteProcessInstance(key, "User Stopped the execution");
-            processes.get(key).setRunning(false);
+            try {
+                runtimeService.deleteProcessInstance(key, "User Stopped the execution");
+                processes.get(key).setRunning(false);
+            }
+            catch (ActivitiObjectNotFoundException e) {
+                JELogger.trace(ProcessManager.class, " Error deleting a non existing process");
+            }
         }
     }
 
     public void stopProjectWorkflows(String projectId) {
         for(JEProcess process: processes.values()) {
             if(process.getProjectId().equals(projectId) && process.isRunning()) {
-                runtimeService.deleteProcessInstance(process.getKey(), "User Stopped the execution");
+                try {
+                    runtimeService.deleteProcessInstance(process.getKey(), "User Stopped the execution");
+                    process.setRunning(false);
+                }
+                catch (ActivitiObjectNotFoundException e) {
+                    JELogger.trace(ProcessManager.class, " Error deleting a non existing process");
+                }
             }
         }
     }

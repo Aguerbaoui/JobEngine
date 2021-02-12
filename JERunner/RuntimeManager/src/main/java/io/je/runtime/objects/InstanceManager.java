@@ -1,5 +1,6 @@
 package io.je.runtime.objects;
 
+import io.je.utilities.classloader.ClassManager;
 import org.json.JSONObject;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
