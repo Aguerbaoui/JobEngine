@@ -69,7 +69,7 @@ public class RuleController {
 	@ResponseBody
 	public ResponseEntity<?> getRule(@PathVariable("projectId") String projectId,
 			@PathVariable("ruleId") String ruleId) {
-		JERule rule = null;
+		RuleModel rule = null;
 
 		try {
 			rule = ruleService.getRule(projectId, ruleId);
@@ -205,7 +205,7 @@ public class RuleController {
 			@PathVariable("ruleId") String ruleId) {
 
 		try {
-			//ruleService.buildRule(projectId, ruleId).get();
+			ruleService.buildRule(projectId, ruleId);
 			projectService.saveProject(projectId).get();
 		} catch (Exception e) {
 			return JEExceptionHandler.handleException(e);

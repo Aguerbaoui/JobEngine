@@ -156,8 +156,7 @@ public class BlockGenerator {
 			return new AttributeGetterBlock(blockModel);
 		case 4003:
 			break;
-		case 6001:
-			return new AcceptEventBlock(blockModel);
+		
 		/*
 		 * Execution blocks
 		 */
@@ -165,7 +164,8 @@ public class BlockGenerator {
 			return new LogBlock(blockModel);
 		case 5002:
 			return new TriggerEventBlock(blockModel);
-
+		case 6001:
+			return new AcceptEventBlock(blockModel);
 		// no operation with such id
 		default:
 			throw new AddRuleBlockException( RuleBuilderErrors.BlockOperationIdUnknown);

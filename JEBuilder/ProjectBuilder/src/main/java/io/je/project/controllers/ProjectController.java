@@ -66,7 +66,7 @@ public class ProjectController {
 		//TODO: add control if project exists
 
 		try {
-			JEProject p = new JEProject(m.getProjectId(), m.getProjectName(), m.getConfigurationPath());
+			JEProject p = new JEProject(m.getProjectId(), m.getConfigurationPath());
 			JELogger.trace(ProjectController.class, "Creating project with id = " + m.getProjectId());
 			projectService.saveProject(p).get();
 		}catch (Exception e) {

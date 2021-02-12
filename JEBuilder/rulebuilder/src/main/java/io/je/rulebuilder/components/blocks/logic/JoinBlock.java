@@ -22,7 +22,6 @@ public class JoinBlock extends LogicBlock {
 		String joinId = inputBlocks.get(0).getJoinId();
 		expression.append(inputBlocks.get(0).getJoinExpression());
 		expression.append("\n");
-		expression.append("\n");
 		for (int i=1;i<inputBlocks.size();i++)
 		{
 			expression.append(inputBlocks.get(i).getJoinedExpression(joinId));

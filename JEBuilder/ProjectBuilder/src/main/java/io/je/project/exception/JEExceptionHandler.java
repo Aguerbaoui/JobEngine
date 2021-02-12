@@ -16,7 +16,7 @@ import io.je.utilities.network.JEResponse;
 public class JEExceptionHandler {
 
 	public static ResponseEntity<?> handleException(Exception e) {
-		//e.printStackTrace();
+		e.printStackTrace();
 		if (e instanceof JEException) {
 			JEException ex = (JEException) e;
 			JELogger.error(RuleController.class, Arrays.toString(ex.getStackTrace()));

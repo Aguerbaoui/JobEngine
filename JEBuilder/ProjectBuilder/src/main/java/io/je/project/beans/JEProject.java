@@ -18,6 +18,7 @@ import models.JEWorkflow;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -30,10 +31,7 @@ public class JEProject {
     @Id
     private String projectId;
 
-    /*
-    * Project name
-    * */
-    private String projectName;
+
 
     /*
     * Configuration path
@@ -69,12 +67,11 @@ public class JEProject {
     /*
     * Constructor
     * */
-    public JEProject(String projectId, String projectName, String configurationPath) {
+    public JEProject(String projectId, String configurationPath) {
         rules = new ConcurrentHashMap<>();
         workflows = new ConcurrentHashMap<>();
         events = new ConcurrentHashMap<>();
         this.projectId = projectId;
-        this.projectName = projectName;
         this.configurationPath = configurationPath;
 
     }
@@ -93,19 +90,7 @@ public class JEProject {
         this.projectId = projectId;
     }
 
-    /*
-    * Get project name
-    * */
-    public String getProjectName() {
-        return projectName;
-    }
 
-    /*
-    * Set project name
-    * */
-    public void setProjectName(String projectName) {
-        this.projectName = projectName;
-    }
 
     /*
     * Get project rules
@@ -230,6 +215,8 @@ public class JEProject {
     				throw new RuleNotFoundException(RuleBuilderErrors.RuleNotFound);
     			}
         this.rules.put(rule.getJobEngineElementID(), rule);
+		rule.setJeObjectLastUpdate(  LocalDateTime.now());
+
     }
 
     /*
@@ -256,6 +243,8 @@ public class JEProject {
 
 	public void deleteRuleBlock(String ruleId, String blockId) throws RuleBlockNotFoundException {
 		((UserDefinedRule) rules.get(ruleId)).deleteBlock(blockId);
+		rules.get(ruleId).setJeObjectLastUpdate(  LocalDateTime.now());
+
 		
 	}
 
