@@ -172,7 +172,7 @@ public class WorkflowController {
 			return JEExceptionHandler.handleException(e);
 
 		}
-        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ADDED_WORKFLOW_COMPONENT_SUCCESSFULLY));
+        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, WORKFLOW_UPDATED_SUCCESS));
     }
 
     /*

@@ -217,6 +217,8 @@ public class JEWorkflow extends JEObject {
         if (allBlocks.get(to) != null && allBlocks.get(to).getInflows() != null) {
             allBlocks.get(to).getInflows().put(from, from);
         }
+
+        workflowStartBlock = (StartBlock) allBlocks.get(workflowStartBlock.getJobEngineElementID());
     }
 
     /*
@@ -248,6 +250,7 @@ public class JEWorkflow extends JEObject {
             throw new WorkflowBlockNotFound( Errors.WORKFLOW_BLOCK_NOT_FOUND);
         }
         allBlocks.remove(id);
+        if(allBlocks.size()==0) workflowStartBlock = null;
         b = null;
 
     }

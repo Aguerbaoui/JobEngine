@@ -3,32 +3,46 @@ package io.je.utilities.network;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.squareup.okhttp.*;
+import io.je.utilities.apis.BodyType;
+import io.je.utilities.apis.HttpMethod;
 import io.je.utilities.logger.JELogger;
 
 import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
-import java.util.concurrent.Future;
 
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 public class Network {
 
     private static final OkHttpClient client = new OkHttpClient();
 
+    private HttpMethod method;
+
+    private BodyType bodyType;
+
+    private String body;
+
+    private boolean hasBody;
+
+    private String classType;
+
+    private String url;
+
     private Network() {
     }
-
+    private static ThreadPoolTaskExecutor executor = null;
     public static Executor getAsyncExecutor() {
-		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-		executor.setCorePoolSize(3);
-		executor.setMaxPoolSize(10);
-		executor.setQueueCapacity(100);
-		executor.setThreadNamePrefix("NetworkAsynchThread-");
-		executor.initialize();
+
+        if(executor == null) {
+            executor = new ThreadPoolTaskExecutor();
+            executor.setCorePoolSize(3);
+            executor.setMaxPoolSize(10);
+            executor.setQueueCapacity(10);
+            executor.setThreadNamePrefix("NetworkAsynchThread-");
+            executor.initialize();
+        }
 		return executor;
 	}
 
@@ -67,4 +81,68 @@ public class Network {
     }
 
 
+
+    /*
+    * Network object builder
+    * */
+    public static class Builder {
+        private HttpMethod method;
+        private BodyType bodyType;
+        private String body;
+        private String classType;
+        private String url;
+        private boolean hasBody;
+
+        public Builder withMethod(HttpMethod method) {
+            this.method = method;
+            return this;
+        }
+
+        public Builder (String url) {
+            this.url = url;
+        }
+
+        public Builder hasBody(boolean hasBody) {
+            this.hasBody = hasBody;
+            return this;
+        }
+        public Builder withBodyType(BodyType bodyType) {
+            this.bodyType = bodyType;
+            return this;
+        }
+
+        public Builder withBody(String body) {
+            this.body = body;
+            return this;
+        }
+
+        public Builder toClass(String classType) {
+            this.classType = classType;
+            return this;
+        }
+
+        public Network build() {
+            Network network = new Network();
+            network.body = this.body;
+            network.bodyType = this.bodyType;
+            network.classType = this.classType;
+            network.url = this.url;
+            network.method = this.method;
+            return network;
+        }
+    }
+
+    public Response call() throws IOException {
+
+        RequestBody requestBody = null;
+        Request request = null;
+        if (hasBody) {
+            if (bodyType == BodyType.JSON) {
+                requestBody = RequestBody.create(MediaType.parse("application/json"), body);
+            }
+            request = new Request.Builder().url(url).post(requestBody).build();
+        }
+        OkHttpClient client = new OkHttpClient();
+        return client.newCall(request).execute();
+    }
 }

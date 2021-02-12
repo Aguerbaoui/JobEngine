@@ -76,8 +76,10 @@ public abstract class PersistableBlock extends ConditionBlock {
 	
 	public String getPersistanceExpression()
 	{
-		return String.valueOf(timePersistenceValue)+getUnitAsString();
-		
+		if(timePersistenceValue != 0 && timePersistenceUnit != null) {
+			return String.valueOf(timePersistenceValue) + getUnitAsString();
+		}
+		return null;
 	}
 	
 	@Override
