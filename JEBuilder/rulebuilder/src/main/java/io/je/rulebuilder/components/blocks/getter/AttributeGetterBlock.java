@@ -5,6 +5,7 @@ import java.util.List;
 import io.je.rulebuilder.components.blocks.GetterBlock;
 import io.je.rulebuilder.config.Keywords;
 import io.je.rulebuilder.models.BlockModel;
+import io.je.utilities.exceptions.RuleBuildFailedException;
 
 public class AttributeGetterBlock extends GetterBlock {
 
@@ -65,7 +66,7 @@ public class AttributeGetterBlock extends GetterBlock {
 	 * example : $blockname : Person(id==2, $age:age)
 	 */
 	@Override
-	public String getExpression() {
+	public String getExpression() throws RuleBuildFailedException {
 		StringBuilder expression = new StringBuilder();
 		if(!inputBlocks.isEmpty())
 		{
@@ -90,7 +91,7 @@ public class AttributeGetterBlock extends GetterBlock {
 	 * return example $blockName: Person( $age Keywords.toBeReplaced )
 	 */
 	@Override
-	public String getAsFirstOperandExpression() {
+	public String getAsFirstOperandExpression() throws RuleBuildFailedException {
 		StringBuilder expression = new StringBuilder();
 		
 		//input blocks can be an event block
@@ -115,7 +116,7 @@ public class AttributeGetterBlock extends GetterBlock {
 	}
 
 	@Override
-	public String getJoinExpression() {
+	public String getJoinExpression() throws RuleBuildFailedException {
 		StringBuilder expression = new StringBuilder();
 		//add input blocks
 		if(!inputBlocks.isEmpty())
@@ -143,7 +144,7 @@ public class AttributeGetterBlock extends GetterBlock {
 	}
 
 	@Override
-	public String getJoinExpressionAsFirstOperand() {
+	public String getJoinExpressionAsFirstOperand() throws RuleBuildFailedException {
 		StringBuilder expression = new StringBuilder();
 		//add input blocks
 		if(!inputBlocks.isEmpty())
@@ -172,7 +173,7 @@ public class AttributeGetterBlock extends GetterBlock {
 
 	
 	@Override
-	public String getJoinedExpression(String joindId) {
+	public String getJoinedExpression(String joindId) throws RuleBuildFailedException {
 		StringBuilder expression = new StringBuilder();
 		if(!inputBlocks.isEmpty())
 		{
@@ -201,7 +202,7 @@ public class AttributeGetterBlock extends GetterBlock {
 	}
 
 	@Override
-	public String getJoinedExpressionAsFirstOperand(String joindId) {
+	public String getJoinedExpressionAsFirstOperand(String joindId) throws RuleBuildFailedException {
 		StringBuilder expression = new StringBuilder();
 		if(!inputBlocks.isEmpty())
 		{

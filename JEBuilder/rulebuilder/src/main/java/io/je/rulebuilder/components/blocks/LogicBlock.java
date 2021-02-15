@@ -1,6 +1,7 @@
 package io.je.rulebuilder.components.blocks;
 
 import io.je.rulebuilder.models.BlockModel;
+import io.je.utilities.exceptions.RuleBuildFailedException;
 
 public  class LogicBlock extends PersistableBlock {
 
@@ -28,7 +29,7 @@ public  class LogicBlock extends PersistableBlock {
 	}
 
 	@Override
-	public String getExpression() {
+	public String getExpression() throws RuleBuildFailedException {
 		StringBuilder expression = new StringBuilder();
 		expression.append(operator +"(\n");
 		for(Block block : inputBlocks)
@@ -50,7 +51,7 @@ public  class LogicBlock extends PersistableBlock {
 
 
 	@Override
-	public String getJoinExpression() {
+	public String getJoinExpression() throws RuleBuildFailedException {
 		StringBuilder expression = new StringBuilder();
 		expression.append(operator +"(\n");
 		for(Block block : inputBlocks)
@@ -63,7 +64,7 @@ public  class LogicBlock extends PersistableBlock {
 	}
 
 	@Override
-	public String getJoinedExpression(String joinId) {
+	public String getJoinedExpression(String joinId) throws RuleBuildFailedException {
 		StringBuilder expression = new StringBuilder();
 		expression.append(operator +"(\n");
 		for(Block block : inputBlocks)

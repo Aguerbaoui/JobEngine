@@ -2,6 +2,7 @@ package io.je.rulebuilder.components.blocks;
 
 import io.je.rulebuilder.config.Keywords;
 import io.je.rulebuilder.models.BlockModel;
+import io.je.utilities.exceptions.RuleBuildFailedException;
 
 /*
  * Comparison Block is a class that represents the comparison elements in a rule.
@@ -29,12 +30,29 @@ public abstract class ComparisonBlock extends PersistableBlock {
 		super();
 	}
 
+	
+	private boolean singleInput() throws RuleBuildFailedException
+	{
+		if(inputBlocks.size()==1)
+		{
+			return true;
+		}
+		else if(inputBlocks.size()==2)
+		{
+			return false;
+		}
+		else
+		{
+			//TODO: remove hardcoded message
+			throw new RuleBuildFailedException("Comparison block cannot have " + inputBlocks.size() + "input connexions" );
+		}
+	}
 
 	@Override
-	public String getExpression() {
+	public String getExpression() throws RuleBuildFailedException {
 		StringBuilder expression = new StringBuilder();
 		//single input
-		if(threshold !=null)
+		if(singleInput())
 		{
 			String inputExpression = inputBlocks.get(0).getAsFirstOperandExpression().replaceAll(Keywords.toBeReplaced, getOperator()+threshold);
 			expression.append(inputExpression);
@@ -55,12 +73,12 @@ public abstract class ComparisonBlock extends PersistableBlock {
 	public abstract String getOperator();
 
 	@Override
-	public String getJoinExpression() {
+	public String getJoinExpression() throws RuleBuildFailedException {
 		StringBuilder expression = new StringBuilder();
 		//single input
 		String joinId= inputBlocks.get(0).getJoinId();
 
-		if(threshold !=null)
+		if(singleInput())
 		{
 			String inputExpression = inputBlocks.get(0).getJoinExpressionAsFirstOperand().replaceAll(Keywords.toBeReplaced, getOperator()+threshold);
 			expression.append(inputExpression);
@@ -80,11 +98,11 @@ public abstract class ComparisonBlock extends PersistableBlock {
 	
 
 	@Override
-	public String getJoinedExpression(String joinId) {
+	public String getJoinedExpression(String joinId) throws RuleBuildFailedException {
 		StringBuilder expression = new StringBuilder();
 
 		//single input
-		if(threshold !=null)
+		if(singleInput())
 		{
 			String inputExpression = inputBlocks.get(0).getJoinedExpressionAsFirstOperand(joinId).replaceAll(Keywords.toBeReplaced, getOperator()+threshold);
 			expression.append(inputExpression);

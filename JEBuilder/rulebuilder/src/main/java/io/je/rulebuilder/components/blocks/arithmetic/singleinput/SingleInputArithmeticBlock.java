@@ -2,6 +2,7 @@ package io.je.rulebuilder.components.blocks.arithmetic.singleinput;
 
 import io.je.rulebuilder.components.blocks.ArithmeticBlock;
 import io.je.rulebuilder.models.BlockModel;
+import io.je.utilities.exceptions.RuleBuildFailedException;
 
 public abstract class SingleInputArithmeticBlock extends ArithmeticBlock {
 	
@@ -17,7 +18,7 @@ public abstract class SingleInputArithmeticBlock extends ArithmeticBlock {
 
 
 	@Override
-	public String getExpression() {
+	public String getExpression() throws RuleBuildFailedException {
 		StringBuilder expression = new StringBuilder();
 		expression.append("\n");
 		expression.append(inputBlocks.get(0).getExpression());
@@ -27,7 +28,7 @@ public abstract class SingleInputArithmeticBlock extends ArithmeticBlock {
 	}
 
 	@Override
-	public String getAsFirstOperandExpression() {
+	public String getAsFirstOperandExpression() throws RuleBuildFailedException {
 		StringBuilder expression = new StringBuilder();
 		expression.append("\n");
 		expression.append(inputBlocks.get(0).getExpression());
@@ -38,7 +39,7 @@ public abstract class SingleInputArithmeticBlock extends ArithmeticBlock {
 	}
 
 	@Override
-	public String getJoinExpression() {
+	public String getJoinExpression() throws RuleBuildFailedException {
 		StringBuilder expression = new StringBuilder();
 		expression.append("\n");
 		expression.append(inputBlocks.get(0).getJoinExpression());
@@ -50,7 +51,7 @@ public abstract class SingleInputArithmeticBlock extends ArithmeticBlock {
 
 
 	@Override
-	public String getJoinedExpression(String joinId) {
+	public String getJoinedExpression(String joinId) throws RuleBuildFailedException {
 		StringBuilder expression = new StringBuilder();
 		expression.append("\n");
 		expression.append(inputBlocks.get(0).getJoinedExpression(joinId));
@@ -60,7 +61,7 @@ public abstract class SingleInputArithmeticBlock extends ArithmeticBlock {
 	}
 
 	@Override
-	public String getJoinedExpressionAsFirstOperand(String joinId) {
+	public String getJoinedExpressionAsFirstOperand(String joinId) throws RuleBuildFailedException {
 		StringBuilder expression = new StringBuilder();
 		expression.append("\n");
 		expression.append(inputBlocks.get(0).getJoinedExpression(joinId));
@@ -71,7 +72,7 @@ public abstract class SingleInputArithmeticBlock extends ArithmeticBlock {
 	}
 
 	@Override
-	public String getJoinExpressionAsFirstOperand() {
+	public String getJoinExpressionAsFirstOperand() throws RuleBuildFailedException {
 		StringBuilder expression = new StringBuilder();
 		expression.append("\n");
 		expression.append(inputBlocks.get(0).getJoinExpression());
