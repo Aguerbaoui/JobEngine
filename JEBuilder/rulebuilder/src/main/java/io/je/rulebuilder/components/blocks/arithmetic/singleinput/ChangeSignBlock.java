@@ -20,13 +20,13 @@ public class ChangeSignBlock extends SingleInputArithmeticBlock {
 		switch(level)
 		{
 		case 0:
-			return "Number() from JECalculator.changeSign( " + asDouble(" $"+getInputRefName(0))+ ")";
+			return "Number() from JECalculator.changeSign( " + asDouble(getInputRefName(0))+ ")";
 		case 1:
-			return "Number(doubleValue " + Keywords.toBeReplaced +") " + "from JECalculator.changeSign( " + asDouble(" $"+getInputRefName(0))+ " ) ";
+			return "Number(doubleValue " + Keywords.toBeReplaced +") " + "from JECalculator.changeSign( " + asDouble(getInputRefName(0))+ " ) ";
 		case 2:
 			return "";
 		default: 
-			return "Number() from JECalculator.changeSign( " + asDouble(" $"+getInputRefName(0))+ ")";
+			return "Number() from JECalculator.changeSign( " + asDouble(getInputRefName(0))+ ")";
 		
 		}
 	

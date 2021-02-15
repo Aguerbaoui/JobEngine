@@ -27,6 +27,7 @@ import io.je.rulebuilder.components.blocks.Block;
 import io.je.rulebuilder.models.BlockModel;
 import io.je.rulebuilder.models.RuleModel;
 import io.je.rulebuilder.models.ScriptRuleModel;
+import io.je.utilities.apis.JERunnerAPIHandler;
 import io.je.utilities.constants.Errors;
 import io.je.utilities.constants.ResponseMessages;
 import io.je.utilities.constants.RuleBuilderErrors;
@@ -100,13 +101,14 @@ public class RuleService {
 	 * delete rule from a project
 	 */
 
-	public void deleteRule(String projectId, String ruleId) throws ProjectNotFoundException, RuleNotFoundException {
+	public void deleteRule(String projectId, String ruleId) throws ProjectNotFoundException, RuleNotFoundException, JERunnerErrorException, IOException, InterruptedException, ExecutionException {
 		JEProject project = ProjectService.getProjectById(projectId);
 		if (project == null) {
 			throw new ProjectNotFoundException(Errors.PROJECT_NOT_FOUND);
 		} else if (!project.ruleExists(ruleId)) {
 			throw new RuleNotFoundException(RuleBuilderErrors.RuleNotFound);
 		}
+		JERunnerAPIHandler.deleteRule(projectId,ruleId);
 		project.deleteRule(ruleId);
 
 	}
@@ -375,6 +377,7 @@ public class RuleService {
 				try
 				{
 					JELogger.trace(getClass(), "deleting rule [id : "+ ruleId +")" );
+					JERunnerAPIHandler.deleteRule(projectId,ruleId);
 					project.deleteRule(ruleId);
 				}
 				catch (Exception e) {

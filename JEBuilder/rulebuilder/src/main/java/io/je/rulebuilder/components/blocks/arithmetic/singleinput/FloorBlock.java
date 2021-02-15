@@ -19,13 +19,13 @@ public class FloorBlock extends SingleInputArithmeticBlock {
 		switch(level)
 		{
 		case 0:
-			return " Number() from " +  "Math.floor( $" +getInputRefName(0) + ")" ;
+			return " Number() from " +  "Math.floor(" +getInputRefName(0) + ")" ;
 		case 1:
-			return " Number(doubleValue " + Keywords.toBeReplaced +") from " + "Math.floor( $" +getInputRefName(0) + " )" ;
+			return " Number(doubleValue " + Keywords.toBeReplaced +") from " + "Math.floor(" +getInputRefName(0) + " )" ;
 		case 2:
 			return "";
 		default: 
-			return " Number() from " +  "Math.floor( $" +getInputRefName(0) + ")" ;
+			return " Number() from " +  "Math.floor(" +getInputRefName(0) + ")" ;
 		
 		}
 	

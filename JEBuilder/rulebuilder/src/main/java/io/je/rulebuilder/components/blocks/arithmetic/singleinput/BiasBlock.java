@@ -20,13 +20,13 @@ public class BiasBlock extends SingleInputArithmeticBlock {
 		switch(level)
 		{
 		case 0:
-			return "Number() from " + " $"+getInputRefName(0)+ " + " + value ;
+			return "Number() from " + getInputRefName(0)+ " + " + value ;
 		case 1:
-			return "Number(doubleValue " + Keywords.toBeReplaced +") from " + " $"+getInputRefName(0) + " + " + value;
+			return "Number(doubleValue " + Keywords.toBeReplaced +") from " + getInputRefName(0) + " + " + value;
 		case 2:
 			return "";
 		default: 
-			return "Number() from " + " $"+getInputRefName(0)+ " + " + value  ;
+			return "Number() from " + getInputRefName(0)+ " + " + value  ;
 		
 		}
 	
