@@ -69,6 +69,12 @@ public abstract class Block extends JEObject {
 		}
 	}
 	
+	
+	public String getBlockNameAsVariable()
+	{
+		return "$"+blockName ;
+	}
+	
 	//return drl expression of block 
 	public  abstract String getExpression();
 
@@ -101,11 +107,11 @@ public abstract class Block extends JEObject {
 		String var = ""; 
 		if(inputBlocks.get(index) instanceof AttributeGetterBlock)
 		{
-			var = (( AttributeGetterBlock )inputBlocks.get(index)).getAttributeName().replace(".", "");
+			var = (( AttributeGetterBlock )inputBlocks.get(index)).getAttributeVariableName();
 		}
 		else 
 		{
-			var = inputBlocks.get(index).getBlockName().replaceAll("\\s+","");
+			var =  inputBlocks.get(index).getBlockNameAsVariable();
 		}
 		return var;
 	}

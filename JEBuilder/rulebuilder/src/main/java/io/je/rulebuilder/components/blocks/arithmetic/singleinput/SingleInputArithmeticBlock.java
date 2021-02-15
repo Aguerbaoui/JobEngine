@@ -22,7 +22,7 @@ public abstract class SingleInputArithmeticBlock extends ArithmeticBlock {
 		expression.append("\n");
 		expression.append(inputBlocks.get(0).getExpression());
 		expression.append("\n");
-		expression.append( "$" + blockName.replaceAll("\\s+", "")+" : " +getArithmeticFormula (0));
+		expression.append( getBlockNameAsVariable()+" : " +getArithmeticFormula (0));
 		return expression.toString();
 	}
 
@@ -33,7 +33,7 @@ public abstract class SingleInputArithmeticBlock extends ArithmeticBlock {
 		expression.append(inputBlocks.get(0).getExpression());
 		expression.append("\n");
 	
-		expression.append( "$" + blockName.replaceAll("\\s+", "")+" : " +getArithmeticFormula (1));
+		expression.append( getBlockNameAsVariable()+" : " +getArithmeticFormula (1));
 		return expression.toString();
 	}
 
@@ -43,7 +43,7 @@ public abstract class SingleInputArithmeticBlock extends ArithmeticBlock {
 		expression.append("\n");
 		expression.append(inputBlocks.get(0).getJoinExpression());
 		expression.append("\n");
-		expression.append( "$" + blockName.replaceAll("\\s+", "")+" : " +getArithmeticFormula (0));
+		expression.append( getBlockNameAsVariable()+" : " +getArithmeticFormula (0));
 		return expression.toString();
 	}
 
@@ -55,7 +55,7 @@ public abstract class SingleInputArithmeticBlock extends ArithmeticBlock {
 		expression.append("\n");
 		expression.append(inputBlocks.get(0).getJoinedExpression(joinId));
 		expression.append("\n");
-		expression.append( "$" + blockName.replaceAll("\\s+", "")+" : " +getArithmeticFormula (0));
+		expression.append( getBlockNameAsVariable()+" : " +getArithmeticFormula (0));
 		return expression.toString();
 	}
 
@@ -63,10 +63,10 @@ public abstract class SingleInputArithmeticBlock extends ArithmeticBlock {
 	public String getJoinedExpressionAsFirstOperand(String joinId) {
 		StringBuilder expression = new StringBuilder();
 		expression.append("\n");
-		expression.append(inputBlocks.get(0).getJoinedExpressionAsFirstOperand(joinId));
+		expression.append(inputBlocks.get(0).getJoinedExpression(joinId));
 		expression.append("\n");
 	
-		expression.append( "$" + blockName.replaceAll("\\s+", "")+" : " +getArithmeticFormula (1));
+		expression.append( getBlockNameAsVariable()+" : " +getArithmeticFormula (1));
 		return expression.toString();
 	}
 
@@ -74,10 +74,10 @@ public abstract class SingleInputArithmeticBlock extends ArithmeticBlock {
 	public String getJoinExpressionAsFirstOperand() {
 		StringBuilder expression = new StringBuilder();
 		expression.append("\n");
-		expression.append(inputBlocks.get(0).getJoinExpressionAsFirstOperand());
+		expression.append(inputBlocks.get(0).getJoinExpression());
 		expression.append("\n");
 	
-		expression.append( "$" + blockName.replaceAll("\\s+", "")+" : " +getArithmeticFormula (1));
+		expression.append( getBlockNameAsVariable()+" : " +getArithmeticFormula (1));
 		return expression.toString();
 	}
 }

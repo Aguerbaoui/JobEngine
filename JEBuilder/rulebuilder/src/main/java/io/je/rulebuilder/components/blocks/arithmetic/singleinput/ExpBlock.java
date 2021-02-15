@@ -19,13 +19,13 @@ public class ExpBlock extends SingleInputArithmeticBlock {
 		switch(level)
 		{
 		case 0:
-			return " Number() from " +  "Math.exp( $" +getInputRefName(0) + ")" ;
+			return " Number() from " +  "Math.exp( " +getInputRefName(0) + ")" ;
 		case 1:
-			return " Number(doubleValue " + Keywords.toBeReplaced +") from " + "Math.exp( $" +getInputRefName(0) + " )" ;
+			return " Number(doubleValue " + Keywords.toBeReplaced +") from " + "Math.exp( " +getInputRefName(0) + " )" ;
 		case 2:
 			return "";
 		default: 
-			return " Number() from " +  "Math.exp( $" +getInputRefName(0) + ")" ;
+			return " Number() from " +  "Math.exp( " +getInputRefName(0) + ")" ;
 		
 		}
 	

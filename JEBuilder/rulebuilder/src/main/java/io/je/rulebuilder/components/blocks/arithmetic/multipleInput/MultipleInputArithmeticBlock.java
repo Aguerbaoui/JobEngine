@@ -28,10 +28,10 @@ public abstract class MultipleInputArithmeticBlock extends ArithmeticBlock {
 			expression.append("\n");
 
 		}
-		expression.append("$"+blockName +" : Number() from " + asDouble( "$"+getInputRefName(0) ) );
+		expression.append(getBlockNameAsVariable()+" : Number() from " + asDouble( getInputRefName(0) ) );
 		for (int i=1;i<inputBlocks.size();i++)
 		{
-			expression.append(getArithmeticFormula(0)  + asDouble( "$"+getInputRefName(i) ));
+			expression.append(getArithmeticFormula(0)  + asDouble( getInputRefName(i) ));
 		}
 		return expression.toString();
 	}
@@ -46,10 +46,10 @@ public abstract class MultipleInputArithmeticBlock extends ArithmeticBlock {
 			expression.append("\n");
 
 		}
-		expression.append("$"+blockName +" : Number(doubleValue " + Keywords.toBeReplaced +") from " + asDouble( "$"+getInputRefName(0) ) );
+		expression.append(getBlockNameAsVariable()+" : Number(doubleValue " + Keywords.toBeReplaced +") from " + asDouble( getInputRefName(0) ) );
 		for (int i=1;i<inputBlocks.size();i++)
 		{
-			expression.append(getArithmeticFormula(0)  + asDouble( "$"+getInputRefName(i) ));
+			expression.append(getArithmeticFormula(0)  + asDouble( getInputRefName(i) ));
 		}
 		return expression.toString();
 	}
@@ -57,26 +57,79 @@ public abstract class MultipleInputArithmeticBlock extends ArithmeticBlock {
 	
 	@Override
 	public String getJoinExpression() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+		StringBuilder expression = new StringBuilder();
+		expression.append("\n");
+		expression.append(inputBlocks.get(0).getJoinExpression());
+		String joinId = inputBlocks.get(0).getJoinId();
+		expression.append("\n");
+		for (int i=1;i<inputBlocks.size();i++)
+		{
+			expression.append(inputBlocks.get(i).getJoinedExpression(joinId));
+			expression.append("\n");
+
+		}
+		expression.append(getBlockNameAsVariable()+" : Number() from " + asDouble( getInputRefName(0) ) );
+		for (int i=1;i<inputBlocks.size();i++)
+		{
+			expression.append(getArithmeticFormula(0)  + asDouble( getInputRefName(i) ));
+		}
+		return expression.toString();	}
 
 	@Override
 	public String getJoinedExpression(String joinId) {
-		// TODO Auto-generated method stub
-		return null;
+		StringBuilder expression = new StringBuilder();
+		expression.append("\n");
+		for (int i=0;i<inputBlocks.size();i++)
+		{
+			expression.append(inputBlocks.get(i).getJoinedExpression(joinId));
+			expression.append("\n");
+
+		}
+		expression.append(getBlockNameAsVariable()+" : Number() from " + asDouble( getInputRefName(0) ) );
+		for (int i=1;i<inputBlocks.size();i++)
+		{
+			expression.append(getArithmeticFormula(0)  + asDouble( getInputRefName(i) ));
+		}
+		return expression.toString();
 	}
 
 	@Override
 	public String getJoinedExpressionAsFirstOperand(String joinId) {
-		// TODO Auto-generated method stub
-		return null;
+		StringBuilder expression = new StringBuilder();
+		expression.append("\n");
+		for (int i=0;i<inputBlocks.size();i++)
+		{
+			expression.append(inputBlocks.get(i).getJoinedExpression(joinId));
+			expression.append("\n");
+
+		}
+		expression.append(getBlockNameAsVariable()+" : Number(doubleValue " + Keywords.toBeReplaced +") from " + asDouble( getInputRefName(0) ) );
+		for (int i=1;i<inputBlocks.size();i++)
+		{
+			expression.append(getArithmeticFormula(0)  + asDouble( getInputRefName(i) ));
+		}
+		return expression.toString();
 	}
 
 	@Override
 	public String getJoinExpressionAsFirstOperand() {
-		// TODO Auto-generated method stub
-		return null;
+		StringBuilder expression = new StringBuilder();
+		expression.append("\n");
+		expression.append(inputBlocks.get(0).getJoinExpression());
+		String joinId = inputBlocks.get(0).getJoinId();
+		expression.append("\n");
+		for (int i=1;i<inputBlocks.size();i++)
+		{
+			expression.append(inputBlocks.get(i).getJoinedExpression(joinId));
+			expression.append("\n");
+
+		}
+		expression.append(getBlockNameAsVariable()+" : Number(doubleValue " + Keywords.toBeReplaced +") from " + asDouble( getInputRefName(0) ) );
+		for (int i=1;i<inputBlocks.size();i++)
+		{
+			expression.append(getArithmeticFormula(0)  + asDouble( getInputRefName(i) ));
+		}
+		return expression.toString();
 	}
 
 	
