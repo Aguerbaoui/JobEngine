@@ -1,14 +1,10 @@
 package io.je.rulebuilder.components;
 
 import io.je.rulebuilder.components.blocks.Block;
+import io.je.rulebuilder.components.blocks.ComparisonBlock;
 import io.je.rulebuilder.components.blocks.LogicBlock;
 import io.je.rulebuilder.components.blocks.arithmetic.multipleInput.*;
 import io.je.rulebuilder.components.blocks.arithmetic.singleinput.*;
-import io.je.rulebuilder.components.blocks.comparison.EqualsBlock;
-import io.je.rulebuilder.components.blocks.comparison.GreaterOrEqualBlock;
-import io.je.rulebuilder.components.blocks.comparison.GreaterThanBlock;
-import io.je.rulebuilder.components.blocks.comparison.LessOrEqualBlock;
-import io.je.rulebuilder.components.blocks.comparison.LessThanBlock;
 import io.je.rulebuilder.components.blocks.event.AcceptEventBlock;
 import io.je.rulebuilder.components.blocks.execution.LogBlock;
 import io.je.rulebuilder.components.blocks.execution.TriggerEventBlock;
@@ -23,6 +19,14 @@ public class BlockGenerator {
 	
 	public static Block createBlock(BlockModel blockModel) throws AddRuleBlockException
 	{
+		/*
+		 * Comparison blocks
+		 */
+		if(blockModel.getOperationId()>=2001 && blockModel.getOperationId() <= 2015)
+		{
+			return new ComparisonBlock(blockModel);
+		}
+		
 		switch (blockModel.getOperationId()) {
 		/*
 		 * Arithmetic blocks
@@ -92,39 +96,8 @@ public class BlockGenerator {
 		case 1027:
 			return new UnitConversionBlock(blockModel);
 
-		/*
-		 * Comparison blocks
-		 */
-		case 2001:
-			return new EqualsBlock(blockModel);
-		case 2002:
-			break;
-		case 2003:
-			return new GreaterThanBlock(blockModel);
-		case 2004:
-			return new GreaterOrEqualBlock(blockModel);
-		case 2005:
-			return new LessThanBlock(blockModel);
-		case 2006:
-			return new LessOrEqualBlock(blockModel);
-		case 2007:
-			break;
-		case 2008:
-			break;
-		case 2009:
-			break;
-		case 2010:
-			break;
-		case 2011:
-			break;
-		case 2012:
-			break;
-		case 2013:
-			break;
-		case 2014:
-			break;
-		case 2015:
-			break;
+	
+
 		/*
 		 * Logic blocks
 		 */
