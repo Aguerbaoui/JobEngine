@@ -26,7 +26,7 @@ import static io.je.utilities.constants.ResponseMessages.*;
  * Project Rest Controller
  * */
 @RestController
-@RequestMapping(value = "/project")
+@RequestMapping(value = "/jeproject")
 @CrossOrigin(maxAge = 3600)
 public class ProjectController {
 
