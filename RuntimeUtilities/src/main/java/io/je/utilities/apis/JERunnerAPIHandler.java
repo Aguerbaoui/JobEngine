@@ -50,7 +50,7 @@ public class JERunnerAPIHandler {
 			throws IOException, JERunnerErrorException, InterruptedException, ExecutionException {
 		Response response = null;
 		try {
-			JELogger.info(JERunnerAPIHandler.class, " url = " + requestUrl);
+			//JELogger.trace(JERunnerAPIHandler.class, " url = " + requestUrl);
 			response = Network.makeGetNetworkCallWithResponse(requestUrl);
 
 			if (response.code() != ResponseCodes.CODE_OK) {
@@ -149,7 +149,7 @@ public class JERunnerAPIHandler {
         String requestUrl = JEGlobalconfig.RUNTIME_MANAGER_BASE_API + APIConstants.UPDATE_EVENT + "/" + projectId + "/" + eventId;
         JELogger.trace(JERunnerAPIHandler.class, "Sending update event request to runner, project id = " + projectId + "event id = " + eventId);
         try {
-            JELogger.trace(JERunnerAPIHandler.class, " url = " + requestUrl);
+            //JELogger.trace(JERunnerAPIHandler.class, " url = " + requestUrl);
             response = Network.makeNetworkCallWithStringObjectBodyWithResponse(type, requestUrl);
 
 
