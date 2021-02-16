@@ -19,13 +19,13 @@ public class SquareBlock extends SingleInputArithmeticBlock {
 		switch(level)
 		{
 		case 0:
-			return " Number() from " +  "Math.pow( $" +getInputRefName(0) + " ,2)" ;
+			return " Number() from " +  "Math.pow( " +getInputRefName(0) + " ,2)" ;
 		case 1:
-			return " Number(doubleValue " + Keywords.toBeReplaced +") from " + "Math.pow( $" +getInputRefName(0) + " , 2 )" ;
+			return " Number(doubleValue " + Keywords.toBeReplaced +") from " + "Math.pow( " +getInputRefName(0) + " , 2 )" ;
 		case 2:
 			return "";
 		default: 
-			return " Number() from " +  "Math.pow( $" +getInputRefName(0) + " , 2)" ;
+			return " Number() from " +  "Math.pow( " +getInputRefName(0) + " , 2)" ;
 		
 		}
 	

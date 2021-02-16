@@ -12,11 +12,6 @@ import io.je.runtime.models.RuleModel;
 import io.je.runtime.services.RuntimeDispatcher;
 import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.constants.ResponseMessages;
-import io.je.utilities.exceptions.JEFileNotFoundException;
-import io.je.utilities.exceptions.RuleAlreadyExistsException;
-import io.je.utilities.exceptions.RuleCompilationException;
-import io.je.utilities.exceptions.RuleFormatNotValidException;
-import io.je.utilities.exceptions.RuleNotAddedException;
 import io.je.utilities.exceptions.*;
 import io.je.utilities.logger.JELogger;
 import io.je.utilities.network.JEResponse;
@@ -126,4 +121,29 @@ public class RuleController {
 
         return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.RuleUpdateSucceeded));
     }
+    
+    
+
+    /*
+     * compile  a  Rule
+     */
+    @GetMapping(value = "/deleteRule/{projectId}/{ruleId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> deleteRule(@PathVariable("projectId") String projectId,
+			@PathVariable("ruleId") String ruleId) {
+
+
+			try {
+				runtimeDispatcher.deleteRule(projectId, ruleId);
+			} catch (DeleteRuleException e) {
+				e.printStackTrace();
+				 JELogger.error(RuleController.class, e.getMessage());
+		            return ResponseEntity.badRequest().body(new JEResponse(e.getCode(), e.getMessage()));
+
+			}
+	
+		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.RuleDeletionSucceeded));
+	}
+
+
+
 }

@@ -3,6 +3,7 @@ package io.je.utilities.apis;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.squareup.okhttp.Response;
+
 import io.je.utilities.constants.APIConstants;
 import io.je.utilities.constants.Errors;
 import io.je.utilities.constants.JEGlobalconfig;
@@ -105,6 +106,11 @@ public class JERunnerAPIHandler {
 		return sendRequestWithBody(requestUrl, requestModel);
 	}
 
+	public static JEResponse deleteRule(String projectId,String ruleId) throws JERunnerErrorException, IOException, InterruptedException, ExecutionException {
+		String requestUrl = JEGlobalconfig.RUNTIME_MANAGER_BASE_API + APIConstants.DELETERULE+"/"+projectId+"/"+ruleId;
+		return sendRequest(requestUrl);
+	}
+	
 	///// CLASSES ///////
 
 	public static JEResponse addClass(HashMap<String, String> requestModel) throws JERunnerErrorException, IOException, InterruptedException, ExecutionException {
@@ -138,7 +144,7 @@ public class JERunnerAPIHandler {
 
 	}
 
-    public static JEResponse updateEventType(String projectId, String eventId, String type) throws JERunnerErrorException {
+    public static JEResponse updateEventType(String projectId, String eventId, String type) throws JERunnerErrorException, InterruptedException, ExecutionException {
         Response response = null;
         String requestUrl = JEGlobalconfig.RUNTIME_MANAGER_BASE_API + APIConstants.UPDATE_EVENT + "/" + projectId + "/" + eventId;
         JELogger.trace(JERunnerAPIHandler.class, "Sending update event request to runner, project id = " + projectId + "event id = " + eventId);
@@ -160,4 +166,6 @@ public class JERunnerAPIHandler {
             throw new JERunnerErrorException(Errors.JERUNNER_UNREACHABLE);
         }
     }
+
+	
 }

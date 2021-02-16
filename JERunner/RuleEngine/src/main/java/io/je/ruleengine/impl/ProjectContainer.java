@@ -145,6 +145,12 @@ public class ProjectContainer {
 	public void fireRules() throws RulesNotFiredException, RuleBuildFailedException, ProjectAlreadyRunningException {
 
 		JELogger.info(getClass(), "FIRING RULES : " + allRules.values());
+		if(allRules == null || allRules.isEmpty())
+		{
+			JELogger.info(getClass(), " This project has no rules ");
+
+		}
+		
 		// build project if not already built
 		if (buildStatus == BuildStatus.UNBUILT) {
 			buildProject();
@@ -206,9 +212,9 @@ public class ProjectContainer {
 	 */
 	private boolean buildKie() {
 
-		if (allRules.isEmpty()) {
+		/*if (allRules.isEmpty()) {
 			return false;
-		}
+		}*/
 
 		// TODO: only delete/re-add rule that have been modified
 		// empty kie file system
@@ -469,7 +475,6 @@ public class ProjectContainer {
 		Rule rule = allRules.get(ruleID);
 		allRules.remove(ruleID);
 		// if project is running, update container without interrupting project
-		if (status == Status.RUNNING) {
 			try {
 				deleteRuleFromKieFileSystem(rule);
 				updateContainer();
@@ -478,7 +483,8 @@ public class ProjectContainer {
 				throw new DeleteRuleException(RuleEngineErrors.failedToDeleteRule);
 			}
 
-		} else {
+			if (status != Status.RUNNING) {
+
 			buildStatus = BuildStatus.UNBUILT;
 		}
 
