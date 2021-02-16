@@ -109,7 +109,10 @@ public class AttributeGetterBlock extends GetterBlock {
 			expression.append(  " , " );
 
 		}
-		expression.append( getattributeGetterExpression() + " " + Keywords.toBeReplaced ); 
+		expression.append(getAttributeVariableName() + " : "+ getattributeGetterExpression() );
+		expression.append(  " , " );
+
+		expression.append( getAttributeVariableName() + " " + Keywords.toBeReplaced ); 
 		expression.append(  " ) " );
 
 		return expression.toString();
@@ -164,7 +167,8 @@ public class AttributeGetterBlock extends GetterBlock {
 			expression.append(  " , " );
 
 		}
-		
+		expression.append(getAttributeVariableName() + " : "+ getattributeGetterExpression() );
+		expression.append(  " , " );
 		expression.append(getAttributeVariableName() + " "+ Keywords.toBeReplaced );		
 		expression.append(  " ) " );
 
@@ -225,7 +229,9 @@ public class AttributeGetterBlock extends GetterBlock {
 
 
 		}
-		expression.append( getattributeGetterExpression() + " " + Keywords.toBeReplaced ); 
+		expression.append(getAttributeVariableName() + " : "+ getattributeGetterExpression() );
+		expression.append(  " , " );
+		expression.append( getAttributeVariableName() + " " + Keywords.toBeReplaced ); 
 		expression.append(  " ) " );
 		return expression.toString();
 	}
