@@ -49,7 +49,7 @@ public class WorkflowBuilder {
         wfMap.put("path", "processes/" + workflow.getWorkflowName().trim() + ".bpmn");
         wfMap.put("projectId", workflow.getJobEngineProjectID());*/
         WorkflowModel wf = new WorkflowModel();
-        wf.setKey(workflow.getWorkflowName().trim());
+        wf.setKey(workflow.getJobEngineElementID());
         wf.setPath(BPMN_PATH + workflow.getWorkflowName().trim() + BPMN_EXTENSION);
         wf.setProjectId(workflow.getJobEngineProjectID());
       /*  ArrayList<EventModel> events = new ArrayList<>();

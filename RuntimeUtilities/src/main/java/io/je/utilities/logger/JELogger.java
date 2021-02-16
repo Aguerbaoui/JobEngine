@@ -68,14 +68,14 @@ public class JELogger {
      */
     public static void info(Class<?> clazz, String msg) {
         synchronized (queue) {
-            queue.add(msg);
+            queue.add(new Timestamp(System.currentTimeMillis()) + " " + msg);
         }
         logger.info(clazz.toString() + msg);
     }
 
     public static void info( String msg) {
         synchronized (queue) {
-            queue.add( msg);
+            queue.add(new Timestamp(System.currentTimeMillis()) + " " + msg);
         }
 
         logger.info( msg);
@@ -94,7 +94,7 @@ public class JELogger {
     public static void error(Class<?> clazz, String msg) {
 
         synchronized (queue) {
-            queue.add(msg);
+            queue.add(new Timestamp(System.currentTimeMillis()) + " " + msg);
         }
         logger.error(clazz.toString() + msg);
 
