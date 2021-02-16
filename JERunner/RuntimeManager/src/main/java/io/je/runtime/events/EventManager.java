@@ -113,16 +113,7 @@ public class EventManager {
             }
         }
         if(event == null)   throw new EventException(Errors.EVENT_NOT_FOUND);
-        EventType t = null;
-        if(eventType.equalsIgnoreCase("start")) {
-            t = EventType.START_WORKFLOW;
-        }
-        else if(eventType.equalsIgnoreCase("signal")) {
-            t = EventType.SIGNAL_EVENT;
-        }
-        else if(eventType.equalsIgnoreCase("message")) {
-            t = EventType.MESSAGE_EVENT;
-        }
+        EventType t = EventType.valueOf(eventType);
         event.setType(t);
     }
 }

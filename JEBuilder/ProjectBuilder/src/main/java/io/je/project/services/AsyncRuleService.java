@@ -25,7 +25,7 @@ public class AsyncRuleService {
 	 */
 	@Async
 	public CompletableFuture<Void> buildRule(String projectId, String ruleId)
-			throws ProjectNotFoundException, RuleNotFoundException, RuleBuildFailedException, JERunnerErrorException,
+			throws RuleNotFoundException, RuleBuildFailedException, JERunnerErrorException,
 			IOException, InterruptedException, ExecutionException {
 		JEProject project = ProjectService.getProjectById(projectId);
 		 if (!project.ruleExists(ruleId)) {

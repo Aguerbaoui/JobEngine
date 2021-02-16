@@ -1,6 +1,8 @@
 package io.je.project.services;
 
+import io.je.classbuilder.entity.JEClass;
 import io.je.project.beans.JEProject;
+import io.je.project.exception.JEExceptionHandler;
 import io.je.project.repository.ProjectRepository;
 import io.je.utilities.apis.JERunnerAPIHandler;
 import io.je.utilities.beans.JEEvent;
@@ -17,13 +19,10 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.*;
 /*
  * Service class to handle business logic for projects
  * */
-import java.util.concurrent.ExecutionException;
 
 @Service
 public class ProjectService {
@@ -40,7 +39,11 @@ public class ProjectService {
     @Autowired 
     EventService eventService;
 
-    
+    @Autowired
+    ClassService classService;
+
+    static boolean runnerStatus = true;
+
     /* project management */
 
     private static ConcurrentHashMap<String, JEProject> loadedProjects = new ConcurrentHashMap<>();
@@ -154,7 +157,7 @@ public class ProjectService {
      * Stop a running project
      * */
     public void  stopProject(String projectId)
-            throws ProjectNotFoundException, JERunnerErrorException, ProjectRunException, ProjectStatusException, IOException, InterruptedException, ExecutionException {
+            throws ProjectNotFoundException, JERunnerErrorException, ProjectStatusException, IOException, InterruptedException, ExecutionException {
         if (!loadedProjects.containsKey(projectId)) {
             throw new ProjectNotFoundException(Errors.PROJECT_NOT_FOUND);
         }
@@ -257,7 +260,7 @@ public class ProjectService {
      * Run a workflow by id
      */
     public void  runWorkflow(String projectId, String workflowId)
-            throws ProjectNotFoundException, IOException, WorkflowNotFoundException, WorkflowAlreadyRunningException, InterruptedException, ExecutionException {
+            throws ProjectNotFoundException, IOException, WorkflowNotFoundException, WorkflowAlreadyRunningException, InterruptedException, ExecutionException, JERunnerErrorException {
         workflowService.runWorkflow(projectId, workflowId);
 
     }
@@ -278,4 +281,67 @@ public class ProjectService {
     }
 
 
+    public void initialize() throws EventException, ProjectNotFoundException, InterruptedException, JERunnerErrorException, ExecutionException, IOException, RuleBuildFailedException, RuleNotFoundException, ProjectRunException, AddClassException, ClassLoadException, DataDefinitionUnreachableException {
+        classService.loadAllClasses();
+    }
+
+    public void updateRunner() {
+
+        new Thread(() -> {
+            try {
+                boolean serverUp = false;
+                while (!serverUp) {
+                    Thread.sleep(2000);
+                    serverUp = checkRunnerHealth();
+                }
+
+                for (JEClass clazz : classService.getLoadedClasses().values()) {
+                    classService.addClassToJeRunner(clazz);
+                }
+
+                for(JEProject project: loadedProjects.values()) {
+                    project.setRunning(false);
+                    project.setBuilt(false);
+                    //TODO maybe reset workflows and rules too?
+                }
+
+                JELogger.info(ProjectService.class, "Runner is up updating now");
+                for (JEProject project : loadedProjects.values()) {
+                    for (JEEvent event : project.getEvents().values()) {
+                        eventService.updateEventType(project.getProjectId(), event.getJobEngineElementID(), event.getType().toString());
+                    }
+                    if (project.isBuilt()) {
+                        project.setBuilt(false);
+                        buildAll(project.getProjectId());
+                    }
+                    if (project.isRunning()) {
+                        project.setRunning(false);
+                        runAll(project.getProjectId());
+                    }
+                }
+            }
+            catch (Exception e) {
+                JEExceptionHandler.handleException(e);
+            }
+        }).start();
+
+    }
+    private boolean checkRunnerHealth()  {
+        try {
+            runnerStatus =  JERunnerAPIHandler.checkRunnerHealth();
+        } catch (InterruptedException | JERunnerErrorException | ExecutionException | IOException e) {
+            JEExceptionHandler.handleException(e);
+            return false;
+        }
+        return runnerStatus;
+    }
+
+
+    public static boolean isRunnerStatus() {
+        return runnerStatus;
+    }
+
+    public static void setRunnerStatus(boolean runnerStatus) {
+        runnerStatus = runnerStatus;
+    }
 }

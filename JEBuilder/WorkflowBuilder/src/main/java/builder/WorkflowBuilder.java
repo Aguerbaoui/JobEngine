@@ -49,7 +49,7 @@ public class WorkflowBuilder {
         wfMap.put("path", "processes/" + workflow.getWorkflowName().trim() + ".bpmn");
         wfMap.put("projectId", workflow.getJobEngineProjectID());*/
         WorkflowModel wf = new WorkflowModel();
-        wf.setKey(workflow.getJobEngineElementID());
+        wf.setKey(workflow.getWorkflowName().trim());
         wf.setPath(BPMN_PATH + workflow.getWorkflowName().trim() + BPMN_EXTENSION);
         wf.setProjectId(workflow.getJobEngineProjectID());
       /*  ArrayList<EventModel> events = new ArrayList<>();
@@ -70,6 +70,7 @@ public class WorkflowBuilder {
         }
         catch (JERunnerErrorException e) {
             JELogger.trace(WorkflowBuilder.class, "Dailed to deploy in runner workflow with id = " + workflow.getJobEngineElementID());
+            workflow.setStatus(JEWorkflow.NEEDS_BUILD);
             return false;
         }
         //Network.makeNetworkCallWithJsonObjectBodyWithResponse(wf, JEGlobalconfig.RUNTIME_MANAGER_BASE_API + APIConstants.ADD_WORKFLOW);
@@ -82,8 +83,8 @@ public class WorkflowBuilder {
     /*
      * Run workflow in runtime engine
      * */
-    public static void runWorkflow(String projectId, String key) throws IOException, InterruptedException, ExecutionException {
-        Network.makeGetNetworkCallWithResponse(JEGlobalconfig.RUNTIME_MANAGER_BASE_API + APIConstants.RUN_WORKFLOW + projectId + "/" + key);
+    public static void runWorkflow(String projectId, String key) throws IOException, InterruptedException, ExecutionException, JERunnerErrorException {
+        JERunnerAPIHandler.runWorkflow(JEGlobalconfig.RUNTIME_MANAGER_BASE_API + APIConstants.RUN_WORKFLOW + projectId + "/" + key);
 
     }
 

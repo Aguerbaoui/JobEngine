@@ -4,8 +4,9 @@ import io.je.project.beans.JEProject;
 import io.je.project.exception.JEExceptionHandler;
 import io.je.project.models.ProjectModel;
 import io.je.project.services.ProjectService;
-import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.constants.Errors;
+import io.je.utilities.constants.ResponseCodes;
+import io.je.utilities.exceptions.*;
 import io.je.utilities.logger.JELogger;
 import io.je.utilities.network.JEResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,10 +16,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import static io.je.utilities.constants.ResponseMessages.*;
 
@@ -172,6 +171,17 @@ public class ProjectController {
 		//JELogger.getQueue().removeAll(JELogger.getQueue());
 		return ResponseEntity.ok(JELogger.getQueue());
 
+	}
+
+	@GetMapping(value = "/updateRunner", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> updateRunner() {
+
+		try {
+			projectService.updateRunner();
+		} catch (Exception e) {
+			return JEExceptionHandler.handleException(e);
+		}
+		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, "Updated"));
 	}
 
 }
