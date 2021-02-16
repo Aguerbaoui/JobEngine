@@ -6,7 +6,6 @@ import io.je.project.models.ProjectModel;
 import io.je.project.services.ProjectService;
 import io.je.utilities.constants.Errors;
 import io.je.utilities.constants.ResponseCodes;
-import io.je.utilities.constants.ResponseMessages;
 import io.je.utilities.exceptions.*;
 import io.je.utilities.logger.JELogger;
 import io.je.utilities.network.JEResponse;
@@ -17,7 +16,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.sql.ResultSet;
 import java.util.Collection;
 import java.util.concurrent.ExecutionException;
 
@@ -179,11 +177,8 @@ public class ProjectController {
 	public ResponseEntity<?> updateRunner() {
 
 		try {
-			projectService.setupRunner();
-		} catch (EventException | ProjectNotFoundException | InterruptedException |
-				JERunnerErrorException | ExecutionException | IOException |
-				ProjectRunException | RuleBuildFailedException | RuleNotFoundException |
-				ClassLoadException | AddClassException | DataDefinitionUnreachableException e) {
+			projectService.updateRunner();
+		} catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
 		}
 		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, "Updated"));
