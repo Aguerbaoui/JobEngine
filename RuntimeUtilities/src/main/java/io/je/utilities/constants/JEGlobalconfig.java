@@ -7,6 +7,7 @@ public class JEGlobalconfig {
     //JERunner
     public  static String RUNTIME_MANAGER_BASE_API = "http://127.0.0.1:8081";
 
+    public  static String BUILDER_BASE_API = "http://127.0.0.1:8080";
 	//Data Definition
 	
     public  static String CLASS_DEFINITION_API = "http://192.168.7.51:1515/api";

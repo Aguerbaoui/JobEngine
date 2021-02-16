@@ -32,6 +32,7 @@ public class ClassService {
 	public static final String CLASS_NAME = "className";
 	public static final String CLASS_PATH = "classPath";
 	public static final String CLASS_ID = "classId";
+
 	@Autowired
 	ClassRepository classRepository;
 
@@ -83,10 +84,12 @@ public class ClassService {
 
 	}
 
+
+
 	/*
 	 * send class to je runner to be loaded there
 	 */
-	private void addClassToJeRunner(JEClass clazz) throws AddClassException, JERunnerErrorException, IOException, InterruptedException, ExecutionException {
+	public void addClassToJeRunner(JEClass clazz) throws AddClassException, JERunnerErrorException, IOException, InterruptedException, ExecutionException {
 		HashMap<String, String> classMap = new HashMap<>();
 		classMap.put(CLASS_NAME, clazz.getClassName());
 		classMap.put(CLASS_PATH, clazz.getClassPath());
@@ -108,5 +111,11 @@ public class ClassService {
 		}
 
 	}
+	public Map<String, JEClass> getLoadedClasses() {
+		return loadedClasses;
+	}
 
+	public void setLoadedClasses(Map<String, JEClass> loadedClasses) {
+		this.loadedClasses = loadedClasses;
+	}
 }

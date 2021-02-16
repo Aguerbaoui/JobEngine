@@ -1,5 +1,6 @@
 package io.je.project.services;
 
+import io.je.classbuilder.entity.JEClass;
 import io.je.project.beans.JEProject;
 import io.je.project.repository.ProjectRepository;
 import io.je.utilities.apis.JERunnerAPIHandler;
@@ -40,6 +41,10 @@ public class ProjectService {
     @Autowired 
     EventService eventService;
 
+    @Autowired
+    ClassService classService;
+
+    private boolean firstRun = true;
     
     /* project management */
 
@@ -154,7 +159,7 @@ public class ProjectService {
      * Stop a running project
      * */
     public void  stopProject(String projectId)
-            throws ProjectNotFoundException, JERunnerErrorException, ProjectRunException, ProjectStatusException, IOException, InterruptedException, ExecutionException {
+            throws ProjectNotFoundException, JERunnerErrorException, ProjectStatusException, IOException, InterruptedException, ExecutionException {
         if (!loadedProjects.containsKey(projectId)) {
             throw new ProjectNotFoundException(Errors.PROJECT_NOT_FOUND);
         }
@@ -257,7 +262,7 @@ public class ProjectService {
      * Run a workflow by id
      */
     public void  runWorkflow(String projectId, String workflowId)
-            throws ProjectNotFoundException, IOException, WorkflowNotFoundException, WorkflowAlreadyRunningException, InterruptedException, ExecutionException {
+            throws ProjectNotFoundException, IOException, WorkflowNotFoundException, WorkflowAlreadyRunningException, InterruptedException, ExecutionException, JERunnerErrorException {
         workflowService.runWorkflow(projectId, workflowId);
 
     }
@@ -277,5 +282,48 @@ public class ProjectService {
         } else throw new ProjectNotFoundException(Errors.PROJECT_NOT_FOUND);
     }
 
+
+    public void setupRunner() throws EventException, ProjectNotFoundException, InterruptedException, JERunnerErrorException, ExecutionException, IOException, RuleBuildFailedException, RuleNotFoundException, ProjectRunException, AddClassException, ClassLoadException, DataDefinitionUnreachableException {
+
+        boolean serverUp = false;
+        while (!serverUp && !firstRun) {
+            Thread.sleep(2000);
+            serverUp = checkRunnerHealth();
+        }
+
+        if(firstRun) {
+            for(JEProject project: loadedProjects.values()) {
+                project.setRunning(false);
+                project.setBuilt(false);
+                //TODO maybe reset workflows and rules too?
+            }
+            classService.loadAllClasses();
+        }
+        else {
+            for(JEClass clazz: classService.getLoadedClasses().values()) {
+                classService.addClassToJeRunner(clazz);
+            }
+        }
+
+        JELogger.info(ProjectService.class, "Runner is up updating now");
+        for(JEProject project: loadedProjects.values()) {
+            for(JEEvent event: project.getEvents().values()) {
+                eventService.updateEventType(project.getProjectId(), event.getJobEngineElementID(), event.getType().toString());
+            }
+            if(project.isBuilt()) {
+                project.setBuilt(false);
+                buildAll(project.getProjectId());
+            }
+            if(project.isRunning()) {
+                project.setRunning(false);
+                runAll(project.getProjectId());
+            }
+
+        }
+    }
+
+    private boolean checkRunnerHealth() throws InterruptedException, JERunnerErrorException, ExecutionException, IOException {
+        return JERunnerAPIHandler.checkRunnerHealth();
+    }
 
 }

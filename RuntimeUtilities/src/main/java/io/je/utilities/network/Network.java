@@ -73,7 +73,7 @@ public class Network {
 
 
 
-    public static Response makeNetworkCallWithStringObjectBodyWithResponse(String json, String url) throws IOException {
+    public static Response makeNetworkCallWithStringObjectBodyWithResponse(String json, String url) throws IOException, ExecutionException, InterruptedException {
         RequestBody body = RequestBody.create(MediaType.parse("application/json"), json);
         Request request = new Request.Builder().url(url).post(body).build();
         Call call = client.newCall(request);

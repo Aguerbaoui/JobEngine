@@ -15,8 +15,10 @@ import io.je.utilities.constants.Errors;
 import io.je.utilities.constants.WorkflowConstants;
 import io.je.utilities.exceptions.*;
 import io.je.utilities.logger.JELogger;
+import io.je.utilities.models.EventType;
 import models.JEWorkflow;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -41,6 +43,9 @@ public class WorkflowService {
     public static final String TARGET_REF = "targetRef";
     public static final String CONDITION = "condition";
 
+
+    @Autowired
+    EventService eventService;
     /*
      * Add a workflow to a project
      * */
@@ -73,7 +78,7 @@ public class WorkflowService {
     /*
      * Add a workflow block to a workflow
      * */
-    public void addWorkflowBlock(WorkflowBlockModel block) throws ProjectNotFoundException, WorkflowNotFoundException, InvalidSequenceFlowException, WorkflowBlockNotFound, IOException, InterruptedException, ExecutionException {
+    public void addWorkflowBlock(WorkflowBlockModel block) throws ProjectNotFoundException, WorkflowNotFoundException, InvalidSequenceFlowException, WorkflowBlockNotFound, EventException {
         JEProject project = ProjectService.getProjectById(block.getProjectId());
         if (project == null) {
             throw new ProjectNotFoundException(Errors.PROJECT_NOT_FOUND);
@@ -85,13 +90,9 @@ public class WorkflowService {
             StartBlock b = new StartBlock();
             b.setName(block.getAttributes().get(NAME));
             if (block.getAttributes().get(EVENT_ID) != null) {
-                try {
-                    updateEventType(block.getProjectId(), block.getAttributes().get(EVENT_ID), "start");
-                    //TODO throw exception in case runner didnt get the event
-                    b.setEventId(block.getAttributes().get(EVENT_ID));
-                } catch (JERunnerErrorException e) {
-                    JELogger.error(getClass(), "Failed to set event type");
-                }
+                eventService.updateEventType(block.getProjectId(), block.getAttributes().get(EVENT_ID), EventType.START_WORKFLOW.toString());
+                //TODO throw exception in case runner didnt get the event
+                b.setEventId(block.getAttributes().get(EVENT_ID));
             }
             b.setJobEngineProjectID(block.getProjectId());
             b.setWorkflowId(block.getWorkflowId());
@@ -116,12 +117,8 @@ public class WorkflowService {
             b.setName(block.getAttributes().get(NAME));
             if (block.getAttributes().get(EVENT_ID) != null) {
 
-                try {
-                    updateEventType(block.getProjectId(), block.getAttributes().get(EVENT_ID), "message");
-                    b.setEventId(block.getAttributes().get(EVENT_ID));
-                } catch (JERunnerErrorException e) {
-                    JELogger.error(getClass(), "Failed to set event type");
-                }
+                eventService.updateEventType(block.getProjectId(), block.getAttributes().get(EVENT_ID),  EventType.MESSAGE_EVENT.toString());
+                b.setEventId(block.getAttributes().get(EVENT_ID));
             }
             b.setJobEngineProjectID(block.getProjectId());
             b.setWorkflowId(block.getWorkflowId());
@@ -133,12 +130,8 @@ public class WorkflowService {
             b.setName(block.getAttributes().get(NAME));
             if (block.getAttributes().get(EVENT_ID) != null) {
 
-                try {
-                    updateEventType(block.getProjectId(), block.getAttributes().get(EVENT_ID), "message");
-                    b.setEventId(block.getAttributes().get(EVENT_ID));
-                } catch (JERunnerErrorException e) {
-                    JELogger.error(getClass(), "Failed to set event type");
-                }
+                eventService.updateEventType(block.getProjectId(), block.getAttributes().get(EVENT_ID),  EventType.MESSAGE_EVENT.toString());
+                b.setEventId(block.getAttributes().get(EVENT_ID));
             }
             b.setJobEngineProjectID(block.getProjectId());
             b.setWorkflowId(block.getWorkflowId());
@@ -149,12 +142,8 @@ public class WorkflowService {
             b.setName(block.getAttributes().get(NAME));
             if (block.getAttributes().get(EVENT_ID) != null) {
 
-                try {
-                    updateEventType(block.getProjectId(), block.getAttributes().get(EVENT_ID), "signal");
-                    b.setEventId(block.getAttributes().get(EVENT_ID));
-                } catch (JERunnerErrorException e) {
-                    JELogger.error(getClass(), "Failed to set event type");
-                }
+                eventService.updateEventType(block.getProjectId(), block.getAttributes().get(EVENT_ID),  EventType.SIGNAL_EVENT.toString());
+                b.setEventId(block.getAttributes().get(EVENT_ID));
             }
             b.setJobEngineProjectID(block.getProjectId());
             b.setWorkflowId(block.getWorkflowId());
@@ -165,12 +154,8 @@ public class WorkflowService {
             b.setName(block.getAttributes().get(NAME));
             if (block.getAttributes().get(EVENT_ID) != null) {
 
-                try {
-                    updateEventType(block.getProjectId(), block.getAttributes().get(EVENT_ID), "signal");
-                    b.setEventId(block.getAttributes().get(EVENT_ID));
-                } catch (JERunnerErrorException e) {
-                    JELogger.error(getClass(), "Failed to set event type");
-                }
+                eventService.updateEventType(block.getProjectId(), block.getAttributes().get(EVENT_ID),  EventType.SIGNAL_EVENT.toString());
+                b.setEventId(block.getAttributes().get(EVENT_ID));
             }
             b.setJobEngineProjectID(block.getProjectId());
             b.setWorkflowId(block.getWorkflowId());
@@ -251,9 +236,6 @@ public class WorkflowService {
         }
     }
 
-    private void updateEventType(String projectId, String eventId, String type) throws JERunnerErrorException, IOException, InterruptedException, ExecutionException {
-        JERunnerAPIHandler.updateEventType(projectId, eventId, type);
-    }
 
     /*
      * Delete a workflow block
@@ -333,7 +315,7 @@ public class WorkflowService {
     /*
      * Run a workflow
      * */
-    public void runWorkflow(String projectId, String workflowId) throws WorkflowNotFoundException, ProjectNotFoundException, IOException, WorkflowAlreadyRunningException, InterruptedException, ExecutionException {
+    public void runWorkflow(String projectId, String workflowId) throws WorkflowNotFoundException, ProjectNotFoundException, IOException, WorkflowAlreadyRunningException, InterruptedException, ExecutionException, JERunnerErrorException {
         JEProject project = ProjectService.getProjectById(projectId);
         if (project == null) {
             throw new ProjectNotFoundException(Errors.PROJECT_NOT_FOUND);
@@ -351,24 +333,12 @@ public class WorkflowService {
         }
     }
 
-    /*
-     * Run all workflows
-     * */
-    public void runWorkflows(String projectId) throws ProjectNotFoundException, IOException, InterruptedException, ExecutionException {
-        JEProject project = ProjectService.getProjectById(projectId);
-        if (project == null) {
-            throw new ProjectNotFoundException(Errors.PROJECT_NOT_FOUND);
-        }
-        for (JEWorkflow wf : project.getWorkflows().values()) {
-            WorkflowBuilder.runWorkflow(projectId, wf.getWorkflowName().trim());
-        }
-    }
 
     /*
      *
      * Update workflow block
      * */
-    public void updateWorkflowBlock(WorkflowBlockModel block) throws WorkflowBlockNotFound, WorkflowNotFoundException, ProjectNotFoundException, IOException, InterruptedException, ExecutionException {
+    public void updateWorkflowBlock(WorkflowBlockModel block) throws WorkflowBlockNotFound, WorkflowNotFoundException, ProjectNotFoundException, IOException, InterruptedException, ExecutionException, EventException {
         JEProject project = ProjectService.getProjectById(block.getProjectId());
         if (project == null) {
             throw new ProjectNotFoundException(Errors.PROJECT_NOT_FOUND);
@@ -385,13 +355,9 @@ public class WorkflowService {
             StartBlock b = (StartBlock) project.getWorkflowById(block.getWorkflowId()).getAllBlocks().get(block.getId());
             b.setName(block.getAttributes().get(NAME));
             if (block.getAttributes().get(EVENT_ID) != null) {
-                try {
-                    updateEventType(block.getProjectId(), block.getAttributes().get(EVENT_ID), "start");
-                    //TODO throw exception in case runner didnt get the event
-                    b.setEventId(block.getAttributes().get(EVENT_ID));
-                } catch (JERunnerErrorException e) {
-                    JELogger.error(getClass(), "Failed to set event type");
-                }
+                eventService.updateEventType(block.getProjectId(), block.getAttributes().get(EVENT_ID),  EventType.START_WORKFLOW.toString());
+                //TODO throw exception in case runner didnt get the event
+                b.setEventId(block.getAttributes().get(EVENT_ID));
             }
             project.addBlockToWorkflow(b);
         } else if (block.getType().equalsIgnoreCase(WorkflowConstants.END_TYPE)) {
@@ -407,12 +373,8 @@ public class WorkflowService {
             b.setName(block.getAttributes().get(NAME));
             if (block.getAttributes().get(EVENT_ID) != null) {
 
-                try {
-                    updateEventType(block.getProjectId(), block.getAttributes().get(EVENT_ID), "message");
-                    b.setEventId(block.getAttributes().get(EVENT_ID));
-                } catch (JERunnerErrorException e) {
-                    JELogger.error(getClass(), "Failed to set event type");
-                }
+                eventService.updateEventType(block.getProjectId(), block.getAttributes().get(EVENT_ID),  EventType.MESSAGE_EVENT.toString());
+                b.setEventId(block.getAttributes().get(EVENT_ID));
             }
             project.addBlockToWorkflow(b);
 
@@ -421,12 +383,8 @@ public class WorkflowService {
             b.setName(block.getAttributes().get(NAME));
             if (block.getAttributes().get(EVENT_ID) != null) {
 
-                try {
-                    updateEventType(block.getProjectId(), block.getAttributes().get(EVENT_ID), "message");
-                    b.setEventId(block.getAttributes().get(EVENT_ID));
-                } catch (JERunnerErrorException e) {
-                    JELogger.error(getClass(), "Failed to set event type");
-                }
+                eventService.updateEventType(block.getProjectId(), block.getAttributes().get(EVENT_ID),  EventType.MESSAGE_EVENT.toString());
+                b.setEventId(block.getAttributes().get(EVENT_ID));
             }
             project.addBlockToWorkflow(b);
         } else if (block.getType().equalsIgnoreCase(WorkflowConstants.SIGNALINTERMEDIATECATCHEVENT_TYPE)) {
@@ -434,12 +392,8 @@ public class WorkflowService {
             b.setName(block.getAttributes().get(NAME));
             if (block.getAttributes().get(EVENT_ID) != null) {
 
-                try {
-                    updateEventType(block.getProjectId(), block.getAttributes().get(EVENT_ID), "signal");
-                    b.setEventId(block.getAttributes().get(EVENT_ID));
-                } catch (JERunnerErrorException e) {
-                    JELogger.error(getClass(), "Failed to set event type");
-                }
+                eventService.updateEventType(block.getProjectId(), block.getAttributes().get(EVENT_ID),  EventType.SIGNAL_EVENT.toString());
+                b.setEventId(block.getAttributes().get(EVENT_ID));
             }
             project.addBlockToWorkflow(b);
         } else if (block.getType().equalsIgnoreCase(WorkflowConstants.SIGNAL_THROW_EVENT_TYPE)) {
@@ -447,12 +401,8 @@ public class WorkflowService {
             b.setName(block.getAttributes().get(NAME));
             if (block.getAttributes().get(EVENT_ID) != null) {
 
-                try {
-                    updateEventType(block.getProjectId(), block.getAttributes().get(EVENT_ID), "signal");
-                    b.setEventId(block.getAttributes().get(EVENT_ID));
-                } catch (JERunnerErrorException e) {
-                    JELogger.error(getClass(), "Failed to set event type");
-                }
+                eventService.updateEventType(block.getProjectId(), block.getAttributes().get(EVENT_ID),  EventType.SIGNAL_EVENT.toString());
+                b.setEventId(block.getAttributes().get(EVENT_ID));
             }
             project.addBlockToWorkflow(b);
         } else if (block.getType().equalsIgnoreCase(WorkflowConstants.EXCLUSIVEGATEWAY_TYPE)) {
@@ -546,5 +496,6 @@ public class WorkflowService {
         }
         project.getWorkflowById(workflowId).setFrontConfig(config);
     }
+
 
 }

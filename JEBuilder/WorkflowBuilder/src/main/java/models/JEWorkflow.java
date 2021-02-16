@@ -23,6 +23,8 @@ public class JEWorkflow extends JEObject {
     public final static String BUILDING = "BUILDING";
 
     public final static String BUILT = "BUILT";
+
+    public final static String NEEDS_BUILD = "NEEDS_BUILD";
     /*
      * Workflow name
      */

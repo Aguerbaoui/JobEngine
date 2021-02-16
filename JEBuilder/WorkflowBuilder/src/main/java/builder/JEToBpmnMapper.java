@@ -32,7 +32,7 @@ public class JEToBpmnMapper {
     public static void createBpmnFromJEWorkflow( JEWorkflow wf) {
         BpmnModel model = ModelBuilder.createNewBPMNModel();
         model.setTargetNamespace(wf.getJobEngineProjectID());
-        Process process = ModelBuilder.createProcess(wf.getJobEngineElementID());
+        Process process = ModelBuilder.createProcess(wf.getWorkflowName().trim());
         process.addFlowElement(ModelBuilder.createStartEvent(wf.getWorkflowStartBlock().getJobEngineElementID(), wf.getWorkflowStartBlock().getEventId()));
         addListeners(process);
         parseWorkflowBlock(wf, wf.getWorkflowStartBlock(), process, null);
