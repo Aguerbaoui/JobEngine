@@ -38,7 +38,8 @@ public class RuleBuilder {
 			for (ScriptedRule rule : unitRules) {
 				// generate drl
 				 rulePath = rule.generateDRL(buildPath);
-				sendDRLToJeRunner(jeRule,rulePath);
+				 JELogger.info("sending rule " + rule.getRuleName());
+				sendDRLToJeRunner(rule,rulePath);
 				}
 		}
 		if( jeRule instanceof ScriptedRule)

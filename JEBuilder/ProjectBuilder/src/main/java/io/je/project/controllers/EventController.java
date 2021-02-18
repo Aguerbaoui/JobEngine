@@ -112,15 +112,16 @@ public class EventController {
 			@PathVariable("eventId") String eventId) {
 
 		try {
+			JELogger.info(getClass(), " deleting event [ id="+eventId+"]");
 			eventService.deleteEvent(projectId, eventId);
 			projectService.saveProject(projectId);
-			JELogger.info(getClass(), ResponseMessages.EVENT_ADDED);
 
 		} catch (Exception e) {
+			JELogger.info(getClass(), "error deleting event");
 			return JEExceptionHandler.handleException(e);
-
+			
 		}
 
-		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.EVENT_ADDED));
+		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.EVENT_DELETED));
 	}
 }

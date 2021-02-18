@@ -216,7 +216,8 @@ public class RuleService {
 		Block block = BlockGenerator.createBlock(blockModel);
 		block.setInputBlockIds(blockModel.getInputBlocksIds());
 		block.setOutputBlockIds(blockModel.getOutputBlocksIds());
-
+		((UserDefinedRule) rule).addBlock(block);
+		rule.setJeObjectLastUpdate(  LocalDateTime.now());
 		// retrieve topic names from getter blocks
 		if (blockModel.getOperationId() == 4002 && blockModel.getBlockConfiguration() != null
 				& blockModel.getBlockConfiguration().getClassId() != null) {
@@ -225,8 +226,7 @@ public class RuleService {
 			rule.addTopic(classDef.getClassId());
 			classService.addClass(classDef);
 		}
-		((UserDefinedRule) rule).addBlock(block);
-		rule.setJeObjectLastUpdate(  LocalDateTime.now());
+		
 
 
 	}

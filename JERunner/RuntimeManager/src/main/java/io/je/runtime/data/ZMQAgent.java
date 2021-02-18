@@ -144,10 +144,10 @@ public class ZMQAgent implements Runnable {
 		while(listening)
     	{
     		 String data = this.getSubSocket().recvStr();
-            // JELogger.info(ZMQAgent.class, "read data " + data);
              try {
-            	 if(data != null && !data.equals(topic))
+            	 if( data !=null && !data.equals(topic) && !data.startsWith(topic))
 				{
+                     JELogger.info(ZMQAgent.class, "read data " + data);
             		 RuntimeDispatcher.injectData(new JEData(this.topic, data));
 				}
 			} catch (Exception e) {

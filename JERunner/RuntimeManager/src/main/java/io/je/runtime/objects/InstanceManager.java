@@ -19,7 +19,7 @@ public class InstanceManager {
 		Class<?> instanceClass = ClassManager.getClassById(instanceModel.getModelId());
 		if(instanceClass == null)
 		{
-			throw new InstanceCreationFailed("UNKNOWN TYPE :" + instanceModel.getInstanceId());
+			throw new InstanceCreationFailed("Loaded classes list does not recognize this id :" + instanceModel.getInstanceId());
 		}
 			
 		

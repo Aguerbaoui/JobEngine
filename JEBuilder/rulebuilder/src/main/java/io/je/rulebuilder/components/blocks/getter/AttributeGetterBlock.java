@@ -58,7 +58,7 @@ public class AttributeGetterBlock extends GetterBlock {
 	
 	public String getAttributeVariableName()
 	{
-		return "$" + blockName.replaceAll("\\s+", "") + attributeName.replace(".", "");
+ 		return "$" + blockName.replaceAll("\\s+", "") + attributeName.replace(".", "");
 	}
 	
 	/*
@@ -256,7 +256,8 @@ public class AttributeGetterBlock extends GetterBlock {
 
 	//TODO: remove this. All attribute names will starts with lowercase
 	private String getattributeGetterExpression() {
-		String s = "";
+		return attributeName;
+		/*String s = "";
 		String str = attributeName;
 		String[] a = str.split("\\.", 5);
 
@@ -268,7 +269,7 @@ public class AttributeGetterBlock extends GetterBlock {
 		a[a.length - 1] = a[a.length - 1].substring(0, 1).toUpperCase() + a[a.length - 1].substring(1);
 		a[a.length - 1] = "get" + a[a.length - 1] + "()";
 		s = s + a[a.length - 1];
-		return s;
+		return s;*/
 	}
 
 

@@ -17,17 +17,12 @@ public class JEInitializingBean implements InitializingBean {
 
 
 	@Autowired
-	ClassService classService;
-
-	@Autowired
     ProjectService projectService;
     @Override
     public void afterPropertiesSet() {
     	
     	//load existing classes from database
         try {
-            //JELogger.trace(getClass(), " Loading classes from data definition ");
-            //classService.loadAllClasses();
             projectService.initialize();
         } catch (DataDefinitionUnreachableException | JERunnerErrorException | AddClassException | ClassLoadException | IOException | InterruptedException | ExecutionException | EventException | ProjectRunException | RuleNotFoundException | RuleBuildFailedException | ProjectNotFoundException e) {
            JELogger.error(getClass(), e.getMessage());
