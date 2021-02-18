@@ -48,10 +48,14 @@ public class Network {
 
     public static Response makeGetNetworkCallWithResponse(String url) throws IOException, InterruptedException, ExecutionException {
         Request request = new Request.Builder().url(url).get().build();
-        CompletableFuture<Call> f = CompletableFuture.supplyAsync(() -> {
-            return client.newCall(request);
+        CompletableFuture<Response> f = CompletableFuture.supplyAsync(() -> {
+            try {
+                return client.newCall(request).execute();
+            } catch (IOException e) {
+                return null;
+            }
         },getAsyncExecutor());
-        return f.get().execute();
+        return f.get();
     }
 
 
@@ -65,10 +69,14 @@ public class Network {
         }
         RequestBody body = RequestBody.create(MediaType.parse("application/json"), jsonStr);
         Request request = new Request.Builder().url(url).post(body).build();
-        CompletableFuture<Call> f = CompletableFuture.supplyAsync(() -> {
-            return client.newCall(request);
+        CompletableFuture<Response> f = CompletableFuture.supplyAsync(() -> {
+            try {
+                return client.newCall(request).execute();
+            } catch (IOException e) {
+                return null;
+            }
         },getAsyncExecutor());
-        return f.get().execute();
+        return f.get();
     }
 
 
@@ -76,8 +84,14 @@ public class Network {
     public static Response makeNetworkCallWithStringObjectBodyWithResponse(String json, String url) throws IOException, ExecutionException, InterruptedException {
         RequestBody body = RequestBody.create(MediaType.parse("application/json"), json);
         Request request = new Request.Builder().url(url).post(body).build();
-        Call call = client.newCall(request);
-        return call.execute();
+        CompletableFuture<Response> f = CompletableFuture.supplyAsync(() -> {
+            try {
+                return client.newCall(request).execute();
+            } catch (IOException e) {
+                return null;
+            }
+        },getAsyncExecutor());
+        return f.get();
     }
 
 
