@@ -36,44 +36,28 @@ public class WorkflowBuilder {
     * Build workflow bpmn
     * */
     public static boolean buildWorkflow(JEWorkflow workflow) throws IOException, JERunnerErrorException, InterruptedException, ExecutionException {
-        //JEToBpmnMapper.createBpmnFromJEWorkflow(workflow);
-        //TODO fix this shit will u still just testing atm
+        //TODO fix this will u still just testing atm
         /*
          * testing purposes only
          * */
         if(!workflow.isScript()) {
             JEToBpmnMapper.createBpmnFromJEWorkflow(workflow);
         }
-     /*   HashMap<String, Object> wfMap = new HashMap<String, Object>();
-        wfMap.put("key", workflow.getWorkflowName().trim());
-        wfMap.put("path", "processes/" + workflow.getWorkflowName().trim() + ".bpmn");
-        wfMap.put("projectId", workflow.getJobEngineProjectID());*/
         WorkflowModel wf = new WorkflowModel();
         wf.setKey(workflow.getWorkflowName().trim());
         wf.setPath(BPMN_PATH + workflow.getWorkflowName().trim() + BPMN_EXTENSION);
         wf.setProjectId(workflow.getJobEngineProjectID());
-      /*  ArrayList<EventModel> events = new ArrayList<>();
-        for(WorkflowBlock block: workflow.getAllBlocks().values()) {
-            if(block instanceof ThrowMessageEvent) {
-                events.add(new EventModel(block.getJobEngineElementID(), block.getJobEngineProjectID(),  JEEvent.START_WORKFLOW, ((ThrowMessageEvent) block).getMessageRef(), block.getName()));
-            }
-            else if(block instanceof ThrowSignalEvent) {
-                events.add(new EventModel(block.getJobEngineElementID(), block.getJobEngineProjectID(),  JEEvent.START_WORKFLOW, ((ThrowSignalEvent) block).getMessageRef(), block.getName()));
-            }
-        }
-        wf.setEvents(events);*/
         wf.setTriggeredByEvent(workflow.isTriggeredByEvent());
         workflow.setStatus(JEWorkflow.BUILDING);
-        JELogger.trace(WorkflowBuilder.class, "Deploying in runner workflow with id = " + workflow.getJobEngineElementID());
+        JELogger.trace(WorkflowBuilder.class, " Deploying in runner workflow with id = " + workflow.getJobEngineElementID());
         try {
             JERunnerAPIHandler.addWorkflow(wf);
         }
         catch (JERunnerErrorException e) {
-            JELogger.trace(WorkflowBuilder.class, "Dailed to deploy in runner workflow with id = " + workflow.getJobEngineElementID());
+            JELogger.trace(WorkflowBuilder.class, " Failed to deploy in runner workflow with id = " + workflow.getJobEngineElementID());
             workflow.setStatus(JEWorkflow.NEEDS_BUILD);
             return false;
         }
-        //Network.makeNetworkCallWithJsonObjectBodyWithResponse(wf, JEGlobalconfig.RUNTIME_MANAGER_BASE_API + APIConstants.ADD_WORKFLOW);
         workflow.setStatus(JEWorkflow.BUILT);
         return true;
 

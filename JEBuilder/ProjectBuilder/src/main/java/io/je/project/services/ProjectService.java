@@ -182,7 +182,8 @@ public class ProjectService {
             Optional<JEProject> p = projectRepository.findById(projectId);
             JEProject project = p.isEmpty() ? null : p.get();
             if (project != null) {
-
+                project.setRunning(false);
+                project.setBuilt(false);
                 loadedProjects.put(projectId, project);
                 for(JEEvent event : project.getEvents().values())
                 {
@@ -220,50 +221,6 @@ public class ProjectService {
     
     
   //########################################### **Workflows** ################################################################
-
-
-    /*
-     * Add a workflow to project
-     */
-    
-    public void addWorkflowToProject(JEWorkflow wf) throws ProjectNotFoundException, InterruptedException, ExecutionException {
-        JELogger.trace(ProjectService.class, "Adding workflow with id = " + wf.getJobEngineElementID() + " to project with id = " + wf.getJobEngineProjectID());
-    	   workflowService.addWorkflow(wf);
-           saveProject(getProjectById(wf.getJobEngineProjectID()));
-
-    }
-
-    /*
-     * Remove workflow from project
-     */
-    @Async
-    public void  deleteWorkflowFromProject(String projectId, String workflowId)
-            throws ProjectNotFoundException, WorkflowNotFoundException {
-        workflowService.removeWorkflow(projectId, workflowId);
-        saveProject(getProjectById(projectId));
-
-    }
-
-
-
-    /*
-     * Build a workflow by id
-     */
-   
-    public void  buildWorkflow(String projectId, String workflowId)
-            throws WorkflowNotFoundException, ProjectNotFoundException, IOException, JERunnerErrorException, InterruptedException, ExecutionException {
-        workflowService.buildWorkflow(projectId, workflowId);
-
-    }
-
-    /*
-     * Run a workflow by id
-     */
-    public void  runWorkflow(String projectId, String workflowId)
-            throws ProjectNotFoundException, IOException, WorkflowNotFoundException, WorkflowAlreadyRunningException, InterruptedException, ExecutionException, JERunnerErrorException {
-        workflowService.runWorkflow(projectId, workflowId);
-
-    }
 
 
     /* Return all currently available workflows in project */
