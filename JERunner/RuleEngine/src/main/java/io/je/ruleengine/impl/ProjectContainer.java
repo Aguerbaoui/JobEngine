@@ -95,7 +95,7 @@ public class ProjectContainer {
 
 	private boolean isInitialised = false;
 
-	HashMap<String, FactHandle> facts = new HashMap<>();
+	ConcurrentHashMap<String, FactHandle> facts = new ConcurrentHashMap<>();
 
 	/*
 	 * Constructor
@@ -145,6 +145,7 @@ public class ProjectContainer {
 	public void fireRules() throws RulesNotFiredException, RuleBuildFailedException, ProjectAlreadyRunningException {
 
 		JELogger.info(getClass(), "FIRING RULES : " + allRules.values());
+		facts = new ConcurrentHashMap<String, FactHandle>();
 		if(allRules == null || allRules.isEmpty())
 		{
 			JELogger.info(getClass(), " This project has no rules ");
@@ -425,17 +426,16 @@ public class ProjectContainer {
 
 		// compile rule
 		compileRule(rule);
+		
+		if (status != Status.RUNNING) {
+			buildStatus = BuildStatus.UNBUILT;
+		}
 
 		// check that rule exists and add it if not
 		if (!ruleExists(rule)) {
 			allRules.put(rule.getJobEngineElementID(), rule);
 			addRuleToKieFileSystem(rule);
 			updateContainer();
-
-			// if project is running
-			if (status != Status.RUNNING) {
-				buildStatus = BuildStatus.UNBUILT;
-			}
 			return true;
 		}
 
@@ -453,10 +453,7 @@ public class ProjectContainer {
 			return false;
 		}
 
-		if (status != Status.RUNNING) {
-
-			buildStatus = BuildStatus.UNBUILT;
-		}
+		
 		return true;
 
 	}
@@ -585,22 +582,31 @@ public class ProjectContainer {
 			// JELogger.info(String.valueOf(fact.getJeObjectLastUpdate().until(LocalDateTime.now(),
 			// ChronoUnit.MILLIS)));
 			// kieSession.insert(fact);
+			synchronized (kieSession) {
+				try {
+					synchronized(facts)
+					{
+						if (facts.containsKey(fact.getJobEngineElementID())) {
+							kieSession.update(facts.get(fact.getJobEngineElementID()), fact);
+							// JELogger.info(ProjectContainer.class, " updating fact ");
 
-			try {
-				if (facts.containsKey(fact.getJobEngineElementID())) {
-					kieSession.update(facts.get(fact.getJobEngineElementID()), fact);
-				} else {
-					facts.put(fact.getJobEngineElementID(), kieSession.insert(fact));
+						} else {
+							facts.put(fact.getJobEngineElementID(), kieSession.insert(fact));
+							// JELogger.info(ProjectContainer.class, " inserting fact ");
+
+						}
+					}
+				
+					// JELogger.info(ProjectContainer.class, " inserting fact ");
+				} catch (Exception e) {
+					e.printStackTrace();
+					JELogger.error(ProjectContainer.class, " failed to insert fact into working memory [factId ="
+							+ fact.getJobEngineElementID() + "]: " + e.getMessage());
+
 				}
 
-				// JELogger.info(ProjectContainer.class, " inserting fact ");
-			} catch (Exception e) {
-				e.printStackTrace();
-				JELogger.error(ProjectContainer.class, " failed to insert fact into working memory [factId ="
-						+ fact.getJobEngineElementID() + "]: " + e.getMessage());
-
 			}
-
+			
 		}
 
 	}

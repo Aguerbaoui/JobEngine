@@ -102,12 +102,18 @@ public class ClassService {
 
 	}
 
+
 	public void loadAllClasses() throws DataDefinitionUnreachableException, JERunnerErrorException, AddClassException,
 			ClassLoadException, IOException, InterruptedException, ExecutionException {
 		List<JEClass> classes = classRepository.findAll();
 
 		for (JEClass clazz : classes) {
-			addClass(clazz.getWorkspaceId(), clazz.getClassId());
+			try
+			{
+				addClass(clazz.getWorkspaceId(), clazz.getClassId());
+			}catch (Exception e) {
+				JELogger.warning(getClass(), "Failed to load class : " + clazz.getClassName());
+			}
 		}
 
 	}
