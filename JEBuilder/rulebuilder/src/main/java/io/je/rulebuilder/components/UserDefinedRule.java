@@ -80,6 +80,7 @@ public class UserDefinedRule extends JERule {
 			JELogger.info(script);
 			ScriptedRule rule = new ScriptedRule(jobEngineProjectID, scriptedRuleid, script,
 					ruleName + scriptedRulesCounter);
+			rule.setTopics(topics);
 			scriptedRules.add(rule);
 		}
 		return scriptedRules;

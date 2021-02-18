@@ -31,7 +31,8 @@ public class ResponseMessages {
 	
 	public static final String EVENT_ADDED = "Event was successfully added ";
 
-	
+	public static final String EVENT_DELETED = "Event was sucessfully deleted ";
+
 	
 	
 	
@@ -96,5 +97,6 @@ public class ResponseMessages {
 	public static final String BLOCK_DELETED_SUCCESSFULLY = "Block deleted successfully";
 
 	public static final String FRONT_CONFIG = "Saved front config";
+
 
 }
