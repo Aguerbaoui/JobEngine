@@ -3,8 +3,8 @@
   <message id="event" name="event"></message>
   <process id="wf" isExecutable="true">
     <extensionElements>
-      <activiti:executionListener event="start" class="io.je.executionListeners.ProcessListener"></activiti:executionListener>
-      <activiti:executionListener event="end" class="io.je.executionListeners.ProcessListener"></activiti:executionListener>
+      <activiti:executionListener event="start" class="io.je.listeners.ProcessListener"></activiti:executionListener>
+      <activiti:executionListener event="end" class="io.je.listeners.ProcessListener"></activiti:executionListener>
     </extensionElements>
     <startEvent id="b-41e2-3e4d-0c71-11ef" activiti:isInterrupting="false">
       <messageEventDefinition messageRef="event"></messageEventDefinition>

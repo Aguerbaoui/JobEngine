@@ -6,7 +6,7 @@ import io.je.project.models.ProjectModel;
 import io.je.project.services.ProjectService;
 import io.je.utilities.constants.Errors;
 import io.je.utilities.constants.ResponseCodes;
-import io.je.utilities.exceptions.*;
+import io.je.utilities.constants.ResponseMessages;
 import io.je.utilities.logger.JELogger;
 import io.je.utilities.network.JEResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,9 +15,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
 import java.util.Collection;
-import java.util.concurrent.ExecutionException;
 
 import static io.je.utilities.constants.ResponseMessages.*;
 
@@ -49,7 +47,7 @@ public class ProjectController {
 
 		}
 		
-		return	new ResponseEntity<Object>(projects,HttpStatus.OK);
+		return	ResponseEntity.ok(projects);
 	
 }
 
@@ -61,9 +59,9 @@ public class ProjectController {
 	 */
 	@PostMapping(value = "/addProject", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> addProject(@RequestBody ProjectModel m) {
-
-		//TODO: add control if project exists
-
+		if(projectService.projectExists(m.getProjectId())) {
+			return ResponseEntity.ok(new JEResponse(ResponseCodes.PROJECT_EXISTS, ResponseMessages.PROJECT_EXISTS));
+		}
 		try {
 			JEProject p = new JEProject(m.getProjectId(), m.getConfigurationPath());
 			JELogger.trace(ProjectController.class, "Creating project with id = " + m.getProjectId());
@@ -84,6 +82,7 @@ public class ProjectController {
 		//TODO: control if project exists
 
 		try {
+			projectService.stopProject(projectId);
 			projectService.removeProject(projectId).get();
 		}catch (Exception e) {
 			return JEExceptionHandler.handleException(e);

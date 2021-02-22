@@ -42,6 +42,8 @@ public class Errors {
 
 	public static final String EVENT_NOT_FOUND = " No event with this id was found ";
 
+    public static final String NOT_ALPHABETICAL = " Should only contain alphabetical characters ";
+
 	public static final String WORKFLOW_TRIGGERED_BY_EVENT = " Workflow cant start manually";
 
 

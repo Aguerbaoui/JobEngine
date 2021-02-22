@@ -13,18 +13,16 @@ import java.util.HashMap;
 /*
  * Model class for a workflow
  * */
-@Document(collection="JEWorkflow")
+@Document(collection = "JEWorkflow")
 public class JEWorkflow extends JEObject {
 
     public final static String RUNNING = "RUNNING";
-
-    public final static String STOPPED = "STOPPED";
 
     public final static String BUILDING = "BUILDING";
 
     public final static String BUILT = "BUILT";
 
-    public final static String NEEDS_BUILD = "NEEDS_BUILD";
+    public final static String IDLE = "IDLE";
     /*
      * Workflow name
      */
@@ -41,13 +39,8 @@ public class JEWorkflow extends JEObject {
     private String bpmnPath;
 
     /*
-     * checks if the workflow needs a new build
+     * Current workflow status ( running, building, nothing)
      * */
-    private boolean needBuild;
-
-    /*
-    * Current workflow status ( running, building, nothing)
-    * */
     private String status;
 
     /*
@@ -56,24 +49,26 @@ public class JEWorkflow extends JEObject {
     private HashMap<String, WorkflowBlock> allBlocks;
 
     /*
-    * front configuration
-    * */
+     * front configuration
+     * */
     private String frontConfig;
 
     /*
-    * User scripted bpmn
-    * */
+     * User scripted bpmn
+     * */
     private boolean isScript = false;
 
     /*
-    * Bpmn script
-    * */
+     * Bpmn script
+     * */
     private String script;
 
     /*
-    * True if the workflow can be triggered by an event
-    * */
+     * True if the workflow can be triggered by an event
+     * */
     private boolean triggeredByEvent;
+
+    private String description;
 
     public String getScript() {
         return script;
@@ -89,7 +84,7 @@ public class JEWorkflow extends JEObject {
     public JEWorkflow() {
         super();
         allBlocks = new HashMap<String, WorkflowBlock>();
-        needBuild = true;
+        status = IDLE;
     }
 
     public boolean isTriggeredByEvent() {
@@ -98,14 +93,6 @@ public class JEWorkflow extends JEObject {
 
     public void setTriggeredByEvent(boolean triggeredByEvent) {
         this.triggeredByEvent = triggeredByEvent;
-    }
-
-    public boolean isNeedBuild() {
-        return needBuild;
-    }
-
-    public void setNeedBuild(boolean needBuild) {
-        this.needBuild = needBuild;
     }
 
     public String getStatus() {
@@ -192,21 +179,23 @@ public class JEWorkflow extends JEObject {
      * Add a block to block list
      */
     public void addBlock(WorkflowBlock block) {
-        /*WorkflowBlock b = allBlocks.get(block.getJobEngineElementID());
-        if(b != null) {
-            if(block.getName() != null) b.setName(block.getName());
-        }*/
-       // else {
-            if (block instanceof StartBlock) {
-                workflowStartBlock = (StartBlock) block;
-                workflowStartBlock.setProcessed(false);
-                if (((StartBlock) block).getEventId() != null) {
-                    this.setTriggeredByEvent(true);
-                }
-                else this.setTriggeredByEvent(false);
-            }
-            allBlocks.put(block.getJobEngineElementID(), block);
-        //}
+        if (block instanceof StartBlock) {
+            workflowStartBlock = (StartBlock) block;
+            workflowStartBlock.setProcessed(false);
+            if (((StartBlock) block).getEventId() != null) {
+                this.setTriggeredByEvent(true);
+            } else this.setTriggeredByEvent(false);
+        }
+        allBlocks.put(block.getJobEngineElementID(), block);
+        status = IDLE;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     /*
@@ -219,8 +208,8 @@ public class JEWorkflow extends JEObject {
         if (allBlocks.get(to) != null && allBlocks.get(to).getInflows() != null) {
             allBlocks.get(to).getInflows().put(from, from);
         }
-
         workflowStartBlock = (StartBlock) allBlocks.get(workflowStartBlock.getJobEngineElementID());
+        status = IDLE;
     }
 
     /*
@@ -232,6 +221,7 @@ public class JEWorkflow extends JEObject {
         }
         allBlocks.get(sourceRef).getOutFlows().remove(targetRef);
         allBlocks.get(targetRef).getInflows().remove(sourceRef);
+        status = IDLE;
     }
 
     /*
@@ -248,12 +238,13 @@ public class JEWorkflow extends JEObject {
         }
 
         WorkflowBlock b = allBlocks.get(id);
-        if(b == null) {
-            throw new WorkflowBlockNotFound( Errors.WORKFLOW_BLOCK_NOT_FOUND);
+        if (b == null) {
+            throw new WorkflowBlockNotFound(Errors.WORKFLOW_BLOCK_NOT_FOUND);
         }
         allBlocks.remove(id);
-        if(allBlocks.size()==0) workflowStartBlock = null;
+        if (allBlocks.size() == 0) workflowStartBlock = null;
         b = null;
+        status = IDLE;
 
     }
 
@@ -266,10 +257,11 @@ public class JEWorkflow extends JEObject {
     }
 
     public void resetBlocks() {
-        for(WorkflowBlock block: allBlocks.values()) {
+        for (WorkflowBlock block : allBlocks.values()) {
             block.setProcessed(false);
         }
         workflowStartBlock.setProcessed(false);
+        status = IDLE;
     }
 
 

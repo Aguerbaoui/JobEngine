@@ -1,9 +1,5 @@
 package io.je.project.controllers;
 
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.concurrent.ExecutionException;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -11,14 +7,8 @@ import org.springframework.web.bind.annotation.*;
 
 import io.je.project.exception.JEExceptionHandler;
 import io.je.project.services.ClassService;
-import io.je.utilities.constants.Errors;
 import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.constants.ResponseMessages;
-import io.je.utilities.exceptions.AddClassException;
-import io.je.utilities.exceptions.ClassLoadException;
-import io.je.utilities.exceptions.DataDefinitionUnreachableException;
-import io.je.utilities.exceptions.JERunnerErrorException;
-import io.je.utilities.logger.JELogger;
 import io.je.utilities.network.JEResponse;
 
 /*
@@ -48,7 +38,7 @@ public class ClassController {
 			return JEExceptionHandler.handleException(e);
 
 		}
-		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.classAddedSuccessully));
+		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.CLASS_WAS_ADDED_SUCCESSFULLY));
 
 	}
 	

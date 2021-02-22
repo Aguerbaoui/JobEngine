@@ -7,7 +7,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 
-import io.je.runtime.models.ClassModel;
 import io.je.runtime.models.RuleModel;
 import io.je.runtime.services.RuntimeDispatcher;
 import io.je.utilities.constants.ResponseCodes;
@@ -15,9 +14,6 @@ import io.je.utilities.constants.ResponseMessages;
 import io.je.utilities.exceptions.*;
 import io.je.utilities.logger.JELogger;
 import io.je.utilities.network.JEResponse;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -68,7 +64,7 @@ public class RuleController {
         }
 
 
-        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.RuleAdditionSucceeded));
+        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.RULE_ADDED_SUCCESSFULLY));
     }
 
     /*
@@ -94,7 +90,7 @@ public class RuleController {
         }
 
 
-        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.RuleUpdateSucceeded));
+        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.RULE_UPDATED_SUCCESSFULLY));
     }
 
 
@@ -119,7 +115,7 @@ public class RuleController {
         }
 
 
-        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.RuleUpdateSucceeded));
+        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.RULE_UPDATED_SUCCESSFULLY));
     }
     
     
@@ -134,6 +130,7 @@ public class RuleController {
 
 			try {
 				runtimeDispatcher.deleteRule(projectId, ruleId);
+                runtimeDispatcher.decrementTopicSubscriptionCount(projectId);
 			} catch (DeleteRuleException e) {
 				e.printStackTrace();
 				 JELogger.error(RuleController.class, e.getMessage());
@@ -141,7 +138,7 @@ public class RuleController {
 
 			}
 	
-		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.RuleDeletionSucceeded));
+		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.RULE_DELETED_SUCCESSFULLY));
 	}
 
 

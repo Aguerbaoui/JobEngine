@@ -7,19 +7,12 @@ import io.je.rulebuilder.components.blocks.Block;
 import io.je.utilities.beans.JEEvent;
 import io.je.utilities.constants.Errors;
 import io.je.utilities.constants.RuleBuilderErrors;
-import io.je.utilities.exceptions.AddRuleBlockException;
-import io.je.utilities.exceptions.EventException;
-import io.je.utilities.exceptions.InvalidSequenceFlowException;
-import io.je.utilities.exceptions.RuleAlreadyExistsException;
-import io.je.utilities.exceptions.RuleBlockNotFoundException;
-import io.je.utilities.exceptions.RuleNotFoundException;
-import io.je.utilities.exceptions.WorkflowBlockNotFound;
+import io.je.utilities.exceptions.*;
 import models.JEWorkflow;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Document(collection="JEProject")
@@ -140,7 +133,11 @@ public class JEProject {
     * Checks if a workflow exists
     * */
     public boolean workflowExists(String workflowId) {
-        return workflows.containsKey(workflowId);
+        if(workflows.containsKey(workflowId)) {
+            workflows.get(workflowId).setJeObjectLastUpdate(LocalDateTime.now());
+            return true;
+        }
+        return false;
     }
 
     /*
@@ -269,9 +266,17 @@ public class JEProject {
 			if(!rule.isBuilt())
 			{
 				isBuilt = false;
+				break;
 				//JELogger.info("Rule Not built : " + rule.getRuleName());
 			}
 		}
+
+		for(JEWorkflow workflow: workflows.values()) {
+		    if(!workflow.getStatus().equals(JEWorkflow.BUILT)) {
+		        isBuilt = false;
+		        break;
+            }
+        }
 		
 		return isBuilt;
 	}

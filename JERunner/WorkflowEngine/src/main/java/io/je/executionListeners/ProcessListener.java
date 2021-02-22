@@ -12,9 +12,9 @@ public class ProcessListener implements ExecutionListener {
         id = id.replace(id.substring(id.indexOf(':'), id.length()), "");
         JELogger.trace(ProcessListener.class, " Executing workflow " + id );
         JELogger.trace(ProcessListener.class, "Process " + execution.getEventName());
-       /* if(execution.getEventName().equalsIgnoreCase("end")) {
+       if(execution.getEventName().equalsIgnoreCase("end")) {
             ProcessManager.setRunning(execution.getProcessDefinitionId(), false);
-        }*/
+        }
     }
 
 }

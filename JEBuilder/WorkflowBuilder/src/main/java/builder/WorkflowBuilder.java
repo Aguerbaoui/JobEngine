@@ -1,26 +1,14 @@
 package builder;
 
-import blocks.WorkflowBlock;
-import blocks.events.ThrowMessageEvent;
-import blocks.events.ThrowSignalEvent;
-import com.squareup.okhttp.Response;
 import io.je.utilities.apis.JERunnerAPIHandler;
-import io.je.utilities.beans.JEEvent;
 import io.je.utilities.constants.APIConstants;
 import io.je.utilities.constants.JEGlobalconfig;
-import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.exceptions.JERunnerErrorException;
 import io.je.utilities.logger.JELogger;
-import io.je.utilities.models.EventModel;
 import io.je.utilities.models.WorkflowModel;
-import io.je.utilities.network.JEResponse;
-import io.je.utilities.network.Network;
 import models.JEWorkflow;
-import org.springframework.ui.Model;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
 
 import static io.je.utilities.constants.WorkflowConstants.BPMN_EXTENSION;
@@ -32,11 +20,12 @@ import static io.je.utilities.constants.WorkflowConstants.BPMN_PATH;
 public class WorkflowBuilder {
 
 
+    private WorkflowBuilder(){}
     /*
     * Build workflow bpmn
     * */
     public static boolean buildWorkflow(JEWorkflow workflow) throws IOException, JERunnerErrorException, InterruptedException, ExecutionException {
-        //TODO fix this will u still just testing atm
+        //TODO fix this will u? still just testing atm
         /*
          * testing purposes only
          * */
@@ -55,7 +44,7 @@ public class WorkflowBuilder {
         }
         catch (JERunnerErrorException e) {
             JELogger.trace(WorkflowBuilder.class, " Failed to deploy in runner workflow with id = " + workflow.getJobEngineElementID());
-            workflow.setStatus(JEWorkflow.NEEDS_BUILD);
+            workflow.setStatus(JEWorkflow.IDLE);
             return false;
         }
         workflow.setStatus(JEWorkflow.BUILT);

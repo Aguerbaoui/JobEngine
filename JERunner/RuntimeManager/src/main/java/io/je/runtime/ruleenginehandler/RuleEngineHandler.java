@@ -123,7 +123,6 @@ public class RuleEngineHandler {
 		
 	}
 
-
 	/*
 	 * compile rule 
 	 */
@@ -135,17 +134,17 @@ public class RuleEngineHandler {
 		
 	}
 
-
 	public static void deleteRule(String projectId,String ruleId) throws DeleteRuleException {
 		RuleEngine.deleteRule(projectId,ruleId);
 		
 	}
-
 
 	public static void addEvent(JEEvent event) {
 		RuleEngine.assertFact(event.getJobEngineProjectID(), event);
 		
 	}
 
-
+	public static void deleteProjectRules(String projectId) {
+		RuleEngine.deleteProjectRules(projectId);
+	}
 }

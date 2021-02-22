@@ -68,13 +68,14 @@ public class ProjectService {
      * delete project
      */
     @Async
-    public CompletableFuture<Void>  removeProject(String id) throws ProjectNotFoundException {
+    public CompletableFuture<Void>  removeProject(String id) throws ProjectNotFoundException, InterruptedException, JERunnerErrorException, ExecutionException, IOException {
         // TODO remove project from jpa db
         JELogger.trace(ProjectService.class, "deleting project with id = " + id);
 
         if (!loadedProjects.containsKey(id)) {
             throw new ProjectNotFoundException(Errors.PROJECT_NOT_FOUND);
         }
+        JERunnerAPIHandler.cleanProjectDataFromRunner(id);
         synchronized (projectRepository) {
             projectRepository.deleteById(id);
         }
@@ -256,17 +257,12 @@ public class ProjectService {
                     classService.addClassToJeRunner(clazz);
                 }
 
-                for(JEProject project: loadedProjects.values()) {
-                    project.setRunning(false);
-                    project.setBuilt(false);
-                    //TODO maybe reset workflows and rules too?
-                }
-
-                JELogger.info(ProjectService.class, "Runner is up updating now");
+                JELogger.info(ProjectService.class, "Runner is up, updating now");
                 for (JEProject project : loadedProjects.values()) {
                     for (JEEvent event : project.getEvents().values()) {
                         eventService.updateEventType(project.getProjectId(), event.getJobEngineElementID(), event.getType().toString());
                     }
+
                     if (project.isBuilt()) {
                         project.setBuilt(false);
                         buildAll(project.getProjectId());
@@ -300,5 +296,14 @@ public class ProjectService {
 
     public static void setRunnerStatus(boolean runnerStatus) {
         runnerStatus = runnerStatus;
+    }
+
+    public boolean projectExists(String projectId) {
+        if (!loadedProjects.containsKey(projectId)) {
+            Optional<JEProject> p = projectRepository.findById(projectId);
+            return p.isPresent();
+        }
+
+        return true;
     }
 }

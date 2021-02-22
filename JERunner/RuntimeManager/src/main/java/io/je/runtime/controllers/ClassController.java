@@ -1,7 +1,6 @@
 package io.je.runtime.controllers;
 
 
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -10,14 +9,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.je.runtime.config.InstanceModelMapping;
 import io.je.runtime.models.ClassModel;
-import io.je.runtime.models.InstanceModel;
 import io.je.runtime.services.RuntimeDispatcher;
 import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.constants.ResponseMessages;
 import io.je.utilities.exceptions.ClassLoadException;
-import io.je.utilities.logger.JELogger;
 import io.je.utilities.network.JEResponse;
 
 
@@ -50,7 +46,7 @@ public class ClassController {
 		
 			
 		
-		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.classAddedSuccessully));
+		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.CLASS_WAS_ADDED_SUCCESSFULLY));
 	}
 	
 	

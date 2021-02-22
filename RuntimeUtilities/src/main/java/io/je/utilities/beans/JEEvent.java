@@ -17,6 +17,8 @@ public class JEEvent extends JEObject {
 
     private EventType type;
 
+    private String description;
+
     private boolean isTriggered = false;
 
     public String getName() {
@@ -58,7 +60,12 @@ public class JEEvent extends JEObject {
 	public void setTriggered(boolean isTriggered) {
 		this.isTriggered = isTriggered;
 	}
-    
-    
-    
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
 }
