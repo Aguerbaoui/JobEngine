@@ -19,6 +19,8 @@ public class ResponseMessages {
 	
 	public static final String PROJECT_RUNNING = "Project started running successfully";
 
+	public static final String PROJECT_CLOSED = "Project was closed successfully";
+
 
 	public static final String STOPPING_PROJECT = "Stopped project";
 

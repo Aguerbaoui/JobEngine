@@ -2,6 +2,7 @@ package io.je.project.services;
 
 import io.je.classbuilder.entity.JEClass;
 import io.je.project.beans.JEProject;
+import io.je.project.enums.ProjectStatus;
 import io.je.project.exception.JEExceptionHandler;
 import io.je.project.repository.ProjectRepository;
 import io.je.utilities.apis.JERunnerAPIHandler;
@@ -53,7 +54,7 @@ public class ProjectService {
      */
     @Async
     public CompletableFuture<Void>  saveProject(JEProject project) {
-        // Todo add repo jpa save operation
+        //TODO: add test to see if project already exists
         synchronized (projectRepository) {
             projectRepository.save(project);
            
@@ -69,7 +70,6 @@ public class ProjectService {
      */
     @Async
     public CompletableFuture<Void>  removeProject(String id) throws ProjectNotFoundException, InterruptedException, JERunnerErrorException, ExecutionException, IOException {
-        // TODO remove project from jpa db
         JELogger.trace(ProjectService.class, "deleting project with id = " + id);
 
         if (!loadedProjects.containsKey(id)) {
@@ -124,7 +124,7 @@ public class ProjectService {
         CompletableFuture<?> buildRules = ruleService.buildRules(projectId);
         CompletableFuture<?> buildWorkflows = workflowService.buildWorkflows(projectId);
         CompletableFuture.allOf(buildRules,buildWorkflows).join();
-        loadedProjects.get(projectId).setBuilt(true);
+        loadedProjects.get(projectId).setProjectStatus(ProjectStatus.built);
         saveProject(projectId).get();
 
 
@@ -140,7 +140,7 @@ public class ProjectService {
             if (project.isBuilt()) {
                 if (!project.isRunning()) {
                     JERunnerAPIHandler.runProject(projectId);
-                    project.setRunning(true);
+                    project.setProjectStatus(ProjectStatus.running);
                     saveProject(projectId).get();
                 } else {
                     throw new ProjectRunException(Errors.PROJECT_RUNNING);
@@ -165,11 +165,11 @@ public class ProjectService {
         JEProject project = loadedProjects.get(projectId);
         if (project.isRunning()) {
             JERunnerAPIHandler.stopProject(projectId);
-            project.setRunning(false);
+            project.setProjectStatus(ProjectStatus.stopped);
             saveProject(projectId).get();
 
         } else {
-            throw new ProjectStatusException(ResponseCodes.PROJECT_STOPPED, Errors.PROJECT_STOPPED);
+            throw new ProjectStatusException(Errors.PROJECT_STOPPED);
         }
 
     }
@@ -183,8 +183,7 @@ public class ProjectService {
             Optional<JEProject> p = projectRepository.findById(projectId);
             JEProject project = p.isEmpty() ? null : p.get();
             if (project != null) {
-                project.setRunning(false);
-                project.setBuilt(false);
+                project.setProjectStatus(ProjectStatus.notBuilt);
                 loadedProjects.put(projectId, project);
                 for(JEEvent event : project.getEvents().values())
                 {
@@ -202,8 +201,11 @@ public class ProjectService {
 		List<JEProject> projects = projectRepository.findAll();
 		for(JEProject project : projects)
 		{
+			
+			//TODO: to be deleted. 
 			if(!loadedProjects.containsKey(project.getProjectId()))
 			{
+                project.setProjectStatus(ProjectStatus.notBuilt);
 				loadedProjects.put(project.getProjectId(), project);
 			}
 			 //TODO: register events? maybe!
@@ -239,7 +241,11 @@ public class ProjectService {
     }
 
 
-    public void initialize() throws EventException, ProjectNotFoundException, InterruptedException, JERunnerErrorException, ExecutionException, IOException, RuleBuildFailedException, RuleNotFoundException, ProjectRunException, AddClassException, ClassLoadException, DataDefinitionUnreachableException {
+    
+    //TODO : move to config service
+    //########################################### **BUILDER** ################################################################
+
+    public void initialize() throws  InterruptedException, JERunnerErrorException, ExecutionException, IOException, RuleBuildFailedException, RuleNotFoundException, ProjectRunException, AddClassException, ClassLoadException, DataDefinitionUnreachableException {
         classService.loadAllClasses();
     }
 
@@ -264,11 +270,11 @@ public class ProjectService {
                     }
 
                     if (project.isBuilt()) {
-                        project.setBuilt(false);
+                    	project.setProjectStatus(ProjectStatus.notBuilt);
                         buildAll(project.getProjectId());
                     }
                     if (project.isRunning()) {
-                        project.setRunning(false);
+                    	project.setProjectStatus(ProjectStatus.stopped);
                         runAll(project.getProjectId());
                     }
                 }
@@ -294,8 +300,8 @@ public class ProjectService {
         return runnerStatus;
     }
 
-    public static void setRunnerStatus(boolean runnerStatus) {
-        runnerStatus = runnerStatus;
+    public static void setRunnerStatus(boolean status) {
+        runnerStatus = status;
     }
 
     public boolean projectExists(String projectId) {
@@ -305,5 +311,21 @@ public class ProjectService {
         }
 
         return true;
+    }
+
+    /*
+     * delete project
+     */
+    @Async
+    public CompletableFuture<Void>  closeProject(String id) throws ProjectNotFoundException, InterruptedException, JERunnerErrorException, ExecutionException, IOException {
+        JELogger.trace(ProjectService.class, "closing project with id = " + id);
+
+        if (!loadedProjects.containsKey(id)) {
+            throw new ProjectNotFoundException(Errors.PROJECT_NOT_FOUND);
+        }
+        JERunnerAPIHandler.cleanProjectDataFromRunner(id);
+        loadedProjects.remove(id);
+		return CompletableFuture.completedFuture(null);
+
     }
 }

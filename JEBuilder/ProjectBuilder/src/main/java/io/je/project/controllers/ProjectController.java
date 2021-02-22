@@ -33,7 +33,7 @@ public class ProjectController {
 //########################################### **PROJECT** ################################################################
 	
 	@GetMapping("/getAllProjects")
-	public ResponseEntity<?> getAllProject(@PathVariable String projectId) {
+	public ResponseEntity<?> getAllProjects(@PathVariable String projectId) {
 		Collection<?> projects = null;
 		try {
 			projects = projectService.getAllProjects().get();
@@ -52,7 +52,20 @@ public class ProjectController {
 }
 
 	
+	@GetMapping("/getProjectStatus/{projectId}")
+	public ResponseEntity<?> getProjectStatus(@PathVariable String projectId) {
+		JEProject project = null;
+		try {
+			project = projectService.getProject(projectId).get();
+			
+		} catch (Exception e) {
+			return JEExceptionHandler.handleException(e);
+
+		}
+		
+		return	ResponseEntity.ok(project.getProjectStatus());
 	
+}
 
 	/*
 	 * Add new project
@@ -181,6 +194,23 @@ public class ProjectController {
 			return JEExceptionHandler.handleException(e);
 		}
 		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, "Updated"));
+	}
+	
+	
+	/*
+	 * remove project from builder and runner 
+	 * */
+	@GetMapping(value = "/closeProject/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> closeProject(@PathVariable String projectId){
+		try {
+
+			projectService.closeProject(projectId);
+	}catch (Exception e) {
+		return JEExceptionHandler.handleException(e);
+
+	}
+	return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, PROJECT_CLOSED));
+
 	}
 
 }

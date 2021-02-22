@@ -1,6 +1,7 @@
 package io.je.project.beans;
 
 import blocks.WorkflowBlock;
+import io.je.project.enums.ProjectStatus;
 import io.je.rulebuilder.components.JERule;
 import io.je.rulebuilder.components.UserDefinedRule;
 import io.je.rulebuilder.components.blocks.Block;
@@ -48,14 +49,11 @@ public class JEProject {
      private ConcurrentHashMap<String, JEEvent> events;
 
     /*
-    * Is the project running
+    * project Status
     * */
-    private boolean isRunning = false;
+     
+     private ProjectStatus projectStatus;
     
-    /*
-    * Is the project built \\TODO: set true during build, set false everytime rules/wfs get added/updated/deleted 
-    * */
-    private boolean isBuilt = false;
 
     /*
     * Constructor
@@ -66,9 +64,14 @@ public class JEProject {
         events = new ConcurrentHashMap<>();
         this.projectId = projectId;
         this.configurationPath = configurationPath;
+        projectStatus = ProjectStatus.notBuilt;
 
     }
 
+    
+	/******************************************************** PROJECT **********************************************************************/
+
+    
     /*
     * Get project Id
     * */
@@ -84,6 +87,49 @@ public class JEProject {
     }
 
 
+	public ProjectStatus getProjectStatus() {
+		return projectStatus;
+	}
+	
+
+
+	public void setProjectStatus(ProjectStatus projectStatus) {
+		this.projectStatus = projectStatus;
+	}
+
+
+	public String getConfigurationPath() {
+		return configurationPath;
+	}
+
+	public void setConfigurationPath(String configurationPath) {
+		this.configurationPath = configurationPath;
+	}
+
+	public boolean isBuilt() {
+		//TODO: check for unbuilt workflows
+		for(JERule rule : this.getRules().values())
+		{
+			if(!rule.isBuilt())
+			{
+				projectStatus = ProjectStatus.notBuilt;
+				break;
+
+			}
+		}
+
+		for(JEWorkflow workflow: workflows.values()) {
+		    if(!workflow.getStatus().equals(JEWorkflow.BUILT)) {
+				projectStatus = ProjectStatus.notBuilt;
+		        break;
+            }
+        }
+		
+		return false;
+	}
+ 
+	/******************************************************** RULES **********************************************************************/
+
 
     /*
     * Get project rules
@@ -96,9 +142,102 @@ public class JEProject {
 	* Set project rules
 	* */
 	public void setRules(ConcurrentHashMap<String, JERule> rules) {
+		projectStatus = ProjectStatus.notBuilt;
 		this.rules = rules;
 	}
 
+	
+	  public boolean ruleExists(String ruleId)
+	    {
+	    	return rules.containsKey(ruleId);
+	    }
+	    
+	    public JERule getRule(String ruleId)
+	    {
+	    	return rules.get(ruleId);
+	    }
+	    
+	    /*
+	     * add a new rule to project
+	     */
+	    public void addRule(JERule rule) throws RuleAlreadyExistsException {
+	    	if(rules.containsKey(rule.getJobEngineElementID()))
+	    			{
+	    				throw new RuleAlreadyExistsException(RuleBuilderErrors.RuleAlreadyExists);
+	    			}
+	        this.rules.put(rule.getJobEngineElementID(), rule);
+			projectStatus = ProjectStatus.notBuilt;
+
+	    }
+	    
+	    /*
+	     * update rule to project
+	     */
+	    public void updateRule(JERule rule) throws RuleNotFoundException {
+	    	if(!rules.containsKey(rule.getJobEngineElementID()))
+	    			{
+	    				throw new RuleNotFoundException(RuleBuilderErrors.RuleNotFound);
+	    			}
+	        rules.put(rule.getJobEngineElementID(), rule);
+			rule.setJeObjectLastUpdate( LocalDateTime.now());
+			projectStatus = ProjectStatus.notBuilt;
+
+
+	    }
+
+	    /*
+	    * Add a block to a rule
+	    * */
+	    public void addBlockToRule(Block block) throws AddRuleBlockException 
+	    	
+	    {	
+	    	((UserDefinedRule) rules.get(block.getJobEngineElementID())).addBlock(block);
+			projectStatus = ProjectStatus.notBuilt;
+
+	    }
+	    
+
+	    /*
+	     * update Block
+	     */
+		public void updateRuleBlock(Block block) throws AddRuleBlockException {
+	    	((UserDefinedRule) rules.get(block.getJobEngineElementID())).updateBlock(block);
+			projectStatus = ProjectStatus.notBuilt;
+
+			
+		}
+		
+		/*
+		 * delete Block
+		 */
+
+		public void deleteRuleBlock(String ruleId, String blockId) throws RuleBlockNotFoundException {
+			((UserDefinedRule) rules.get(ruleId)).deleteBlock(blockId);
+			rules.get(ruleId).setJeObjectLastUpdate(  LocalDateTime.now());
+			projectStatus = ProjectStatus.notBuilt;
+
+			
+		}
+
+		/*
+		 * delete rule
+		 */
+		public void deleteRule(String ruleId) throws RuleNotFoundException {
+			if(!rules.containsKey(ruleId))
+			{
+				throw new RuleNotFoundException(RuleBuilderErrors.RuleNotFound);
+			}
+			//TODO: delete file
+			rules.remove(ruleId);
+			projectStatus = ProjectStatus.notBuilt;
+
+			
+		}
+
+	
+	/******************************************************** Workflows **********************************************************************/
+
+	
 	/*
 	* Get all workflows
 	* */
@@ -110,6 +249,7 @@ public class JEProject {
     * Set all workflows
     * */
     public void setWorkflows(ConcurrentHashMap<String, JEWorkflow> workflows) {
+		projectStatus = ProjectStatus.notBuilt;
         this.workflows = workflows;
     }
 
@@ -118,6 +258,8 @@ public class JEProject {
     * */
     public void addWorkflow(JEWorkflow wf) {
         this.workflows.put(wf.getJobEngineElementID(), wf);
+		projectStatus = ProjectStatus.notBuilt;
+
     }
 
     /*
@@ -127,6 +269,8 @@ public class JEProject {
         JEWorkflow wf = workflows.get(id);
         workflows.remove(id);
         wf = null;
+		projectStatus = ProjectStatus.notBuilt;
+
     }
 
     /*
@@ -145,6 +289,8 @@ public class JEProject {
     * */
     public void addBlockToWorkflow(WorkflowBlock block) {
         workflows.get(block.getWorkflowId()).addBlock(block);
+		projectStatus = ProjectStatus.notBuilt;
+
     }
 
     /*
@@ -152,6 +298,8 @@ public class JEProject {
     * */
     public void deleteWorkflowBlock(String workflowId, String blockId) throws InvalidSequenceFlowException, WorkflowBlockNotFound {
         workflows.get(workflowId).deleteWorkflowBlock(blockId);
+		projectStatus = ProjectStatus.notBuilt;
+
     }
 
     /*
@@ -159,6 +307,8 @@ public class JEProject {
     * */
     public void deleteWorkflowSequenceFlow(String workflowId, String sourceRef, String targetRef) throws InvalidSequenceFlowException {
         workflows.get(workflowId).deleteSequenceFlow(sourceRef, targetRef);
+		projectStatus = ProjectStatus.notBuilt;
+
     }
 
     /*
@@ -169,6 +319,8 @@ public class JEProject {
             throw new WorkflowBlockNotFound( Errors.WORKFLOW_BLOCK_NOT_FOUND);
         }
         workflows.get(workflowId).addBlockFlow(sourceRef, targetRef, condition);
+		projectStatus = ProjectStatus.notBuilt;
+
     }
 
     /*
@@ -178,128 +330,15 @@ public class JEProject {
         return workflows.get(workflowId);
     }
     
-    /*
-     * Rule Management 
-     */
 
-    public boolean ruleExists(String ruleId)
-    {
-    	return rules.containsKey(ruleId);
-    }
-    
-    public JERule getRule(String ruleId)
-    {
-    	return rules.get(ruleId);
-    }
-    
-    /*
-     * add a new rule to project
-     */
-    public void addRule(JERule rule) throws RuleAlreadyExistsException {
-    	if(rules.containsKey(rule.getJobEngineElementID()))
-    			{
-    				throw new RuleAlreadyExistsException(RuleBuilderErrors.RuleAlreadyExists);
-    			}
-        this.rules.put(rule.getJobEngineElementID(), rule);
-    }
-    
-    /*
-     * update rule to project
-     */
-    public void updateRule(JERule rule) throws RuleNotFoundException {
-    	if(!rules.containsKey(rule.getJobEngineElementID()))
-    			{
-    				throw new RuleNotFoundException(RuleBuilderErrors.RuleNotFound);
-    			}
-        this.rules.put(rule.getJobEngineElementID(), rule);
-		rule.setJeObjectLastUpdate(  LocalDateTime.now());
 
-    }
-
-    /*
-    * Add a block to a rule
-    * */
-    public void addBlockToRule(Block block) throws AddRuleBlockException 
-    	
-    {	
-    	((UserDefinedRule) rules.get(block.getJobEngineElementID())).addBlock(block);
-    }
-    
-
-    /*
-     * update Block
-     */
-	public void updateRuleBlock(Block block) throws AddRuleBlockException {
-    	((UserDefinedRule) rules.get(block.getJobEngineElementID())).updateBlock(block);
-		
-	}
-	
-	/*
-	 * delete Block
-	 */
-
-	public void deleteRuleBlock(String ruleId, String blockId) throws RuleBlockNotFoundException {
-		((UserDefinedRule) rules.get(ruleId)).deleteBlock(blockId);
-		rules.get(ruleId).setJeObjectLastUpdate(  LocalDateTime.now());
-
-		
-	}
-
-	/*
-	 * delete rule
-	 */
-	public void deleteRule(String ruleId) {
-		//TODO: send request to JERunner to delete Rule 
-		//TODO: delete file
-		rules.remove(ruleId);
-		
-	}
+  
 
 
 
 
 
-	public boolean isBuilt() {
-		//TODO: check for unbuilt workflows
-		for(JERule rule : this.getRules().values())
-		{
-			if(!rule.isBuilt())
-			{
-				isBuilt = false;
-				break;
-				//JELogger.info("Rule Not built : " + rule.getRuleName());
-			}
-		}
 
-		for(JEWorkflow workflow: workflows.values()) {
-		    if(!workflow.getStatus().equals(JEWorkflow.BUILT)) {
-		        isBuilt = false;
-		        break;
-            }
-        }
-		
-		return isBuilt;
-	}
-
-	public void setBuilt(boolean isBuilt) {
-		this.isBuilt = isBuilt;
-	}
-
-	public boolean isRunning() {
-		return isRunning;
-	}
-
-	public void setRunning(boolean isRunning) {
-		this.isRunning = isRunning;
-	}
-
-	public String getConfigurationPath() {
-		return configurationPath;
-	}
-
-	public void setConfigurationPath(String configurationPath) {
-		this.configurationPath = configurationPath;
-	}
 
 	
 
@@ -310,9 +349,9 @@ public class JEProject {
 	{
 		return events.containsKey(eventId);
 	}
-	public void addEvent(String eventId)
+	public void addEvent(JEEvent event)
 	{
-		
+		events.put(event.getJobEngineElementID(), event);
 	}
 	
 	public JEEvent getEvent(String eventId) throws EventException
@@ -323,14 +362,22 @@ public class JEProject {
 		}
 		return events.get(eventId);
 	}
-	
+
+
 	public ConcurrentHashMap<String, JEEvent> getEvents() {
 		return events;
 	}
 
+
 	public void setEvents(ConcurrentHashMap<String, JEEvent> events) {
 		this.events = events;
 	}
+
+
+	public boolean isRunning() {
+		return projectStatus==ProjectStatus.running;
+	}
+	
 
 
 }

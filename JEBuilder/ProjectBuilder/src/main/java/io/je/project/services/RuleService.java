@@ -17,6 +17,7 @@ import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 
 import io.je.project.beans.JEProject;
+import io.je.project.enums.ProjectStatus;
 import io.je.rulebuilder.builder.RuleBuilder;
 import io.je.rulebuilder.components.BlockGenerator;
 import io.je.rulebuilder.components.JERule;
@@ -65,12 +66,10 @@ public class RuleService {
 	 */
 	public void addRule(String projectId, RuleModel ruleModel)
 			throws ProjectNotFoundException, RuleAlreadyExistsException, RuleNotAddedException {
-		JELogger.info(getClass(), "adding rule");
+		JELogger.info(getClass(), "adding rule " + ruleModel.getRuleName());
 		JEProject project = ProjectService.getProjectById(projectId);
 		if (project == null) {
 			throw new ProjectNotFoundException(Errors.PROJECT_NOT_FOUND);
-		} else if (project.ruleExists(ruleModel.getRuleId())) {
-			throw new RuleAlreadyExistsException(RuleBuilderErrors.RuleAlreadyExists);
 		}
 
 		// TODO : remove harcoded msgs
@@ -105,8 +104,6 @@ public class RuleService {
 		JEProject project = ProjectService.getProjectById(projectId);
 		if (project == null) {
 			throw new ProjectNotFoundException(Errors.PROJECT_NOT_FOUND);
-		} else if (!project.ruleExists(ruleId)) {
-			throw new RuleNotFoundException(RuleBuilderErrors.RuleNotFound);
 		}
 		JERunnerAPIHandler.deleteRule(projectId,ruleId);
 		project.deleteRule(ruleId);
@@ -114,19 +111,16 @@ public class RuleService {
 	}
 
 	/*
-	 * update rule : update rule attributes TODO: individual update function for
-	 * each attribute
+	 * update rule : update rule attributes 
 	 */
 
 	public void updateRule(String projectId, RuleModel ruleModel)
-			throws RuleNotAddedException, ProjectNotFoundException, RuleNotFoundException {
+			throws  ProjectNotFoundException, RuleNotFoundException {
 		JEProject project = ProjectService.getProjectById(projectId);
 		if (project == null) {
 			throw new ProjectNotFoundException(Errors.PROJECT_NOT_FOUND);
-		} else if (!project.ruleExists(ruleModel.getRuleId())) {
-			throw new RuleNotFoundException(RuleBuilderErrors.RuleNotFound);
-		}
-		UserDefinedRule ruleToUpdate = (UserDefinedRule) project.getRules().get(ruleModel.getRuleId());
+		} 
+		UserDefinedRule ruleToUpdate = (UserDefinedRule) project.getRule(ruleModel.getRuleId());
 		ruleToUpdate.setJeObjectLastUpdate(  LocalDateTime.now());
 
 		// update rule name
@@ -185,8 +179,7 @@ public class RuleService {
 
 		}
 		ruleToUpdate.setBuilt(false);
-		project.getRules().put(ruleModel.getRuleId(), ruleToUpdate);
-
+		project.setProjectStatus(ProjectStatus.notBuilt);
 	}
 
 	/*
@@ -226,7 +219,8 @@ public class RuleService {
 			rule.addTopic(classDef.getClassId());
 			classService.addClass(classDef);
 		}
-		
+		project.setProjectStatus(ProjectStatus.notBuilt);
+
 
 
 	}
@@ -263,7 +257,6 @@ public class RuleService {
 		}
 
 		ruleFuture.forEach(CompletableFuture::join);
-
 		return CompletableFuture.completedFuture(null);
 	}
 
@@ -396,7 +389,7 @@ public class RuleService {
 		{
 			throw new RuleDeletionException("Failed to delete the following rules : " + undeletedRules);
 		}
-		
+
 		
 	}
 

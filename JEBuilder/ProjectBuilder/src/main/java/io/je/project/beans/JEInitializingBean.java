@@ -24,7 +24,7 @@ public class JEInitializingBean implements InitializingBean {
     	//load existing classes from database
         try {
             projectService.initialize();
-        } catch (DataDefinitionUnreachableException | JERunnerErrorException | AddClassException | ClassLoadException | IOException | InterruptedException | ExecutionException | EventException | ProjectRunException | RuleNotFoundException | RuleBuildFailedException | ProjectNotFoundException e) {
+        } catch (DataDefinitionUnreachableException | JERunnerErrorException | AddClassException | ClassLoadException | IOException | InterruptedException | ExecutionException  | ProjectRunException | RuleNotFoundException | RuleBuildFailedException  e) {
            JELogger.error(getClass(), e.getMessage());
         }
 
