@@ -8,7 +8,7 @@ import io.je.utilities.exceptions.WorkflowBlockNotFound;
 import io.je.utilities.runtimeobject.JEObject;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 /*
  * Model class for a workflow
@@ -46,7 +46,7 @@ public class JEWorkflow extends JEObject {
     /*
      * List of all workflow blocks
      */
-    private HashMap<String, WorkflowBlock> allBlocks;
+    private ConcurrentHashMap<String, WorkflowBlock> allBlocks;
 
     /*
      * front configuration
@@ -83,7 +83,7 @@ public class JEWorkflow extends JEObject {
      * */
     public JEWorkflow() {
         super();
-        allBlocks = new HashMap<String, WorkflowBlock>();
+        allBlocks = new ConcurrentHashMap<String, WorkflowBlock>();
         status = IDLE;
     }
 
@@ -164,14 +164,14 @@ public class JEWorkflow extends JEObject {
     /*
      * Returns all Workflow blocks
      */
-    public HashMap<String, WorkflowBlock> getAllBlocks() {
+    public ConcurrentHashMap<String, WorkflowBlock> getAllBlocks() {
         return allBlocks;
     }
 
     /*
      * set all Workflow blocks
      */
-    public void setAllBlocks(HashMap<String, WorkflowBlock> allBlocks) {
+    public void setAllBlocks(ConcurrentHashMap<String, WorkflowBlock> allBlocks) {
         this.allBlocks = allBlocks;
     }
 
