@@ -1,35 +1,48 @@
 package io.je.rulebuilder.components.blocks.arithmetic.singleinput;
 
+import io.je.rulebuilder.config.Keywords;
 import io.je.rulebuilder.models.BlockModel;
 
 public class UnitConversionBlock extends SingleInputArithmeticBlock {
 
-	String value = null;
+	String inputUnit;
+	String outputUnit;
 	public UnitConversionBlock(BlockModel blockModel) {
 		super(blockModel);
-		value = (blockModel.getBlockConfiguration().getValue());
+		inputUnit = blockModel.getBlockConfiguration().getInputUnit();
+		outputUnit = blockModel.getBlockConfiguration().getOutputUnit();
+
+
 	}
 
-	public UnitConversionBlock() {
+	private  UnitConversionBlock() {
 		
 	}
+	
 	
 	@Override
 	protected String getArithmeticFormula(int level) {
 		switch(level)
 		{
 		case 0:
-			return "" ;
+			return " Number() from " +  "JEConverter.convert( " +getInputRefName(0) + ","+ inputUnit +","+ outputUnit+")" ;
 		case 1:
-			return "" ;
+			return " Number(doubleValue " + Keywords.toBeReplaced +") from " + "JEConverter.convert( " +getInputRefName(0) + ","+ inputUnit +","+ outputUnit+")" ;
 		case 2:
 			return "";
 		default: 
-			return ""  ;
+			return " Number() from " +  "JEConverter.convert( " +getInputRefName(0) + ","+ inputUnit +","+ outputUnit+")" ;
 		
 		}
 	
 	}
+
+	
+	
+
+
+	
+
 
 
 }
