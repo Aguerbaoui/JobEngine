@@ -1,9 +1,8 @@
-package io.je.runtime.objects;
+package io.je.utilities.classloader;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import io.je.utilities.classloader.JEClassLoader;
 import io.je.utilities.constants.ClassBuilderConfig;
 import io.je.utilities.constants.JEGlobalconfig;
 import io.je.utilities.exceptions.ClassLoadException;
@@ -21,18 +20,19 @@ public class ClassManager {
 	 */
 	public static void loadClass(String classId,String className,  String classPath) throws ClassLoadException
 	{
-		//create .class file
-		JEClassLoader.loadClass(classPath, classLoadPath);
-       
-        // Load the target class using its binary name
-		Class<?> loadedClass;
-        try {
-			 loadedClass = classLoader.loadClass(ClassBuilderConfig.genrationPackageName+"."+className);
-		} catch (ClassNotFoundException e) {
-			throw new ClassLoadException(""); //TODO add error msg
+		if(!loadedClasses.containsKey(classId)) {
+			//create .class file
+			JEClassLoader.loadClass(classPath, classLoadPath);
+
+			// Load the target class using its binary name
+			Class<?> loadedClass;
+			try {
+				loadedClass = classLoader.loadClass(ClassBuilderConfig.genrationPackageName + "." + className);
+			} catch (ClassNotFoundException e) {
+				throw new ClassLoadException(""); //TODO add error msg
+			}
+			loadedClasses.put(classId, loadedClass);
 		}
-        loadedClasses.put(classId, loadedClass);
-		
 
 	}
 	

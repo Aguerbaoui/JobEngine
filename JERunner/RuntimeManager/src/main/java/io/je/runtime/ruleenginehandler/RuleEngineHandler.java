@@ -90,7 +90,7 @@ public class RuleEngineHandler {
     try
     {
     	JSONObject instanceJson = new JSONObject(data.getData());
-		JELogger.info(RuleEngineHandler.class, instanceJson.toString());
+		//JELogger.info(RuleEngineHandler.class, instanceJson.toString());
 
 		InstanceModel instanceModel = new InstanceModel();
 		instanceModel.setInstanceId(instanceJson.getString(InstanceModelMapping.INSTANCEID));
@@ -100,9 +100,9 @@ public class RuleEngineHandler {
 		instanceData.setJeObjectLastUpdate(LocalDateTime.now());
 		//JELogger.info("Data : "+ instanceJson );
         RuleEngine.assertFact(projectId,instanceData);
-    }catch(Exception e)
+    }catch(InstanceCreationFailed e)
     {
-    //	JELogger.info("failed to inject data  " );
+    	JELogger.warning(RuleEngineHandler.class, " failed to create instance" + e.getMessage());
     	}
     	
         
@@ -123,7 +123,6 @@ public class RuleEngineHandler {
 		
 	}
 
-
 	/*
 	 * compile rule 
 	 */
@@ -135,17 +134,17 @@ public class RuleEngineHandler {
 		
 	}
 
-
 	public static void deleteRule(String projectId,String ruleId) throws DeleteRuleException {
 		RuleEngine.deleteRule(projectId,ruleId);
 		
 	}
-
 
 	public static void addEvent(JEEvent event) {
 		RuleEngine.assertFact(event.getJobEngineProjectID(), event);
 		
 	}
 
-
+	public static void deleteProjectRules(String projectId) {
+		RuleEngine.deleteProjectRules(projectId);
+	}
 }

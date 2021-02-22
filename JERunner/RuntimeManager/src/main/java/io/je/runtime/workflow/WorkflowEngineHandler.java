@@ -16,7 +16,7 @@ import java.util.ResourceBundle;
 public class WorkflowEngineHandler {
 
 
-    private static HashMap<String, ProcessManager> processManagerHashMap = new HashMap<>();
+     private static final  HashMap<String, ProcessManager> processManagerHashMap = new HashMap<>();
 
 
     /*
@@ -54,7 +54,6 @@ public class WorkflowEngineHandler {
         processManagerHashMap.get(projectId).addProcess(new JEProcess(processId, name, processPath, projectId, isTriggeredByEvent));
         registerWorkflow(projectId, processId);
         ResourceBundle.clearCache(Thread.currentThread().getContextClassLoader());
-        //deployBPMN(processPath);
     }
 
     /*
@@ -75,23 +74,7 @@ public class WorkflowEngineHandler {
      * Main test
      * */
     public static void main(String[] args) {
-		/*JELogger.info("running workflow ");
-		addProcess("testGenerated", "processes/testGenerated.bpmn");
-		try {
-			launchProcessWithoutVariables("testGenerated");
-		} catch (WorkflowNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}*/
-
     }
-
-    /*
-    * Run all existing workflows
-    * */
-   /* public static void runAllWorkflows() throws WorkflowNotFoundException {
-        ProcessManager.runAll();
-    }*/
 
     /*
     * Run all deployed workflows
@@ -138,5 +121,14 @@ public class WorkflowEngineHandler {
             processManagerHashMap.get(projectId).launchProcessByMessageWithoutVariables(messageEvent);
 
     	}
+    }
+
+    public static void deleteProjectProcesses(String projectId) {
+        if(processManagerHashMap.containsKey(projectId)) {
+            stopProjectWorfklows(projectId);
+            processManagerHashMap.remove(projectId);
+        }
+
+
     }
 }

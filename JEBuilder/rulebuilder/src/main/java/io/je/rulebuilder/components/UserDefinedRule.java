@@ -12,6 +12,7 @@ import org.drools.template.ObjectDataCompiler;
 
 import io.je.rulebuilder.components.blocks.Block;
 import io.je.rulebuilder.components.blocks.ConditionBlock;
+import io.je.rulebuilder.components.blocks.PersistableBlock;
 import io.je.rulebuilder.config.RuleBuilderConfig;
 import io.je.utilities.constants.RuleBuilderErrors;
 import io.je.utilities.exceptions.AddRuleBlockException;
@@ -49,6 +50,7 @@ public class UserDefinedRule extends JERule {
 	 */
 	public List<ScriptedRule> scriptRule() throws RuleBuildFailedException {
 		blocks.init();
+		String duration = null;
 		int scriptedRulesCounter = 0;
 		String scriptedRuleid = "";
 		List<ScriptedRule> scriptedRules = new ArrayList<>();
@@ -64,15 +66,21 @@ public class UserDefinedRule extends JERule {
 			String consequences = "";
 			if (root instanceof ConditionBlock) {
 				consequences = ((ConditionBlock) root).getConsequences();
+				if(root instanceof PersistableBlock)
+				{
+					duration = ((PersistableBlock)root).getPersistanceExpression();
+				}
 
 			} else {
 				consequences = root.getExpression();
 			}
-
-			String script = generateScript(scriptedRuleid, condition, consequences);
+			//add time persistence 
+			
+			String script = generateScript(scriptedRuleid, duration,condition, consequences);
 			JELogger.info(script);
 			ScriptedRule rule = new ScriptedRule(jobEngineProjectID, scriptedRuleid, script,
 					ruleName + scriptedRulesCounter);
+			rule.setTopics(topics);
 			scriptedRules.add(rule);
 		}
 		return scriptedRules;
@@ -80,7 +88,7 @@ public class UserDefinedRule extends JERule {
 
 	/* generate DRL for this rule */
 
-	private String generateScript(String ruleId, String condition, String consequences)
+	private String generateScript(String ruleId, String duration,String condition, String consequences)
 			throws RuleBuildFailedException {
 
 		// set rule attributes
@@ -91,6 +99,10 @@ public class UserDefinedRule extends JERule {
 		ruleTemplateAttributes.put("enabled", ruleParameters.getEnabled());
 		ruleTemplateAttributes.put("condition", condition);
 		ruleTemplateAttributes.put("consequence", consequences);
+		ruleTemplateAttributes.put("duration", duration);
+
+		
+		
 		ObjectDataCompiler objectDataCompiler = new ObjectDataCompiler();
 		String ruleContent = "";
 		try {

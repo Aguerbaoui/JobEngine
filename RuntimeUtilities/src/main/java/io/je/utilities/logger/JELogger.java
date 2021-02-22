@@ -7,6 +7,7 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 
+import java.sql.Timestamp;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -42,7 +43,7 @@ public class JELogger {
     * */
      public static void trace(Class<?> clazz, String msg) {
          synchronized (queue) {
-             queue.add(clazz.toString() +" : "+ msg);
+             queue.add(new Timestamp(System.currentTimeMillis()) + " " + msg);
          }
 
         logger.trace(clazz.toString() +" : "+ msg);
@@ -67,14 +68,14 @@ public class JELogger {
      */
     public static void info(Class<?> clazz, String msg) {
         synchronized (queue) {
-            queue.add(clazz.toString() +" : "+ msg);
+            queue.add(new Timestamp(System.currentTimeMillis()) + " " + msg);
         }
         logger.info(clazz.toString() + msg);
     }
 
     public static void info( String msg) {
         synchronized (queue) {
-            queue.add( msg);
+            queue.add(new Timestamp(System.currentTimeMillis()) + " " + msg);
         }
 
         logger.info( msg);
@@ -93,7 +94,7 @@ public class JELogger {
     public static void error(Class<?> clazz, String msg) {
 
         synchronized (queue) {
-            queue.add(clazz.toString() +" : "+ msg);
+            queue.add(new Timestamp(System.currentTimeMillis()) + " " + msg);
         }
         logger.error(clazz.toString() + msg);
 

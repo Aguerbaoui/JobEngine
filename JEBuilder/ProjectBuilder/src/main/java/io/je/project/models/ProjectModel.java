@@ -4,7 +4,6 @@ public class ProjectModel {
 
     private String projectId;
 
-    private String projectName;
     
     private String configurationPath;
 
@@ -16,14 +15,6 @@ public class ProjectModel {
     
     public void setProjectId(String projectId) {
         this.projectId = projectId;
-    }
-
-    public String getProjectName() {
-        return projectName;
-    }
-
-    public void setProjectName(String projectName) {
-        this.projectName = projectName;
     }
 
 

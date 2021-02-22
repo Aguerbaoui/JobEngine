@@ -90,11 +90,19 @@ public abstract class JERule extends JEObject  {
 	}
 
 	public void addTopic(String topic) {
-		topics.add(topic);
+		if(!topics.contains(topic))
+		{
+			topics.add(topic);
+		}
 	}
+		
 
 	public List<String> getTopics() {
 		return topics;
+	}
+
+	public void setTopics(List<String> topics) {
+		this.topics = topics;
 	}
 
 

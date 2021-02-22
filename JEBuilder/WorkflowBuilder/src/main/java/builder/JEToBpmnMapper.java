@@ -36,7 +36,7 @@ public class JEToBpmnMapper {
         process.addFlowElement(ModelBuilder.createStartEvent(wf.getWorkflowStartBlock().getJobEngineElementID(), wf.getWorkflowStartBlock().getEventId()));
         addListeners(process);
         parseWorkflowBlock(wf, wf.getWorkflowStartBlock(), process, null);
-
+//TODO send bpmn task information since they are dynamically created
         model.addProcess(process);
         //new BpmnAutoLayout(model).execute();
         String modelPath = WorkflowConstants.BPMN_PATH + wf.getWorkflowName().trim() + WorkflowConstants.BPMN_EXTENSION;
@@ -135,59 +135,4 @@ public class JEToBpmnMapper {
         }
     }
 
-    //Test function
-    public static void launchBuildTest(JEWorkflow wf) {
-		/*StartBlock start = new StartBlock();
-		start.setId("start");
-
-		ScriptBlock script = new ScriptBlock();
-		script.setScript("execution.setVariable(\"rowCount\", 50)");
-		start.getOutFlows().add(script);
-		script.getInflows().add(start);
-		script.setId("script");
-		ParallelGatewayBlock split = new ParallelGatewayBlock();
-		split.setId("split");
-		split.getInflows().add(script);
-		script.getOutFlows().add(split);
-		DBWriteBlock write = new DBWriteBlock();
-		write.setId("write");
-		write.getInflows().add(split);
-		MailBlock mail = new MailBlock();
-		mail.getInflows().add(split);
-		mail.setId("mail");
-		split.getOutFlows().add(write);
-		split.getOutFlows().add(mail);
-		SynchronizeBlock join = new SynchronizeBlock();
-		join.setId("join");
-		join.getInflows().add(write);
-		join.getInflows().add(mail);
-		write.getOutFlows().add(join);
-		mail.getOutFlows().add(join);
-		EndBlock end = new EndBlock();
-		end.setId("end");
-		end.getInflows().add(join);
-		join.getOutFlows().add(end);*/
-
-        createBpmnFromJEWorkflow( wf);
-        HashMap<String, String> wfMap = new HashMap<String, String>();
-        wfMap.put("key", wf.getJobEngineElementID());
-        wfMap.put("path", "processes/" + wf.getWorkflowName() + ".bpmn");
-        wfMap.put("projectId", wf.getJobEngineProjectID());
-        try {
-            Network.makeNetworkCallWithJsonBody(wfMap, "http://127.0.0.1:8081/addWorkflow");
-        } catch (IOException e) {
-            JELogger.info(JEToBpmnMapper.class, "Network Error");
-        }
-    }
-
-    /*
-     * Test JEToBpmn conversion
-     * */
-    public static void main(String[] args) {
-
-
-       // FlowElement element = ModelBuilder.createStartEvent();
-
-
-    }
 }

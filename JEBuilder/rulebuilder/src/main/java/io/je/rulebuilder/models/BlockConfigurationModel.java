@@ -35,8 +35,8 @@ public class BlockConfigurationModel {
     @JsonProperty(AttributesMapping.ATTRIBUTENAME)
 	String attributeName;
 
-  //  @JsonProperty(AttributesMapping.SPECIFICINSTANCES)
-   // List<String> specificInstances;
+    @JsonProperty(AttributesMapping.SPECIFICINSTANCES)
+    List<String> specificInstances;
 	
     
 	
@@ -95,13 +95,13 @@ public class BlockConfigurationModel {
 	
 	
 	
-	/*public List<String> getSpecificInstances() {
+	public List<String> getSpecificInstances() {
 		return specificInstances;
 	}
 	public void setSpecificInstances(List<String> specificInstances) {
 		this.specificInstances = specificInstances;
 	}
-*/
+
 	
 	
 	

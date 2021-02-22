@@ -1,7 +1,7 @@
 package io.je.runtime.controllers;
 
-import io.je.utilities.exceptions.EventException;
-import io.je.utilities.exceptions.ProjectNotFoundException;
+import io.je.project.exception.JEExceptionHandler;
+import io.je.utilities.logger.JELogger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -34,9 +34,8 @@ public class EventController {
 	@PostMapping(value = "/addEvent", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> addEvent(@RequestBody EventModel eventModel) {
 
-		eventModel.setEventId(eventModel.getEventId().replace("-", ""));
 		runtimeDispatcher.addEvent(eventModel);
-		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.RuleAdditionSucceeded));
+		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.RULE_ADDED_SUCCESSFULLY));
 	}
 	
 
@@ -45,19 +44,42 @@ public class EventController {
      * */
     @GetMapping(value = "/triggerEvent/{projectId}/{eventId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> triggerEvent(@PathVariable String projectId, @PathVariable String eventId) {
-    	runtimeDispatcher.triggerEvent(projectId, eventId.replace("-", ""));
-        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.TOPIC_ADDED));
+		try {
+			runtimeDispatcher.triggerEvent(projectId, eventId);
+		} catch (Exception e) {
+			return JEExceptionHandler.handleException(e);
+		}
+		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.TOPIC_ADDED));
     }
 
 	@PostMapping(value = "/updateEventType/{projectId}/{eventId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> updateEventType(@PathVariable("projectId") String projectId,@PathVariable("eventId") String eventId, @RequestBody String eventType) {
 
 		try {
-			runtimeDispatcher.updateEventType(projectId, eventId.replace("-", ""), eventType.replace("\"\"","\""));
-		} catch (ProjectNotFoundException | EventException e) {
-			return ResponseEntity.badRequest().body(new JEResponse(e.getCode(), e.getMessage()));
+			runtimeDispatcher.updateEventType(projectId, eventId, eventType);
+		} catch (Exception e) {
+			return JEExceptionHandler.handleException(e);
 		}
-		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.RuleAdditionSucceeded));
+		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.EVENT_ADDED));
+	}
+
+	/*
+	 * delete event
+	 */
+	@DeleteMapping(value = "/deleteEvent/{projectId}/{eventId}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> deleteEvent(@PathVariable("projectId") String projectId,
+										 @PathVariable("eventId") String eventId) {
+
+		try {
+			JELogger.info(getClass(), " deleting event [ id="+eventId+"]");
+			runtimeDispatcher.deleteEvent(projectId, eventId);
+
+		} catch (Exception e) {
+			JELogger.info(getClass(), "error deleting event");
+			return JEExceptionHandler.handleException(e);
+		}
+
+		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.EVENT_DELETED));
 	}
 
 }

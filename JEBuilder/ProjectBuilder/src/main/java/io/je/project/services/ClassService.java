@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 import io.je.utilities.logger.JELogger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,13 +32,14 @@ public class ClassService {
 	public static final String CLASS_NAME = "className";
 	public static final String CLASS_PATH = "classPath";
 	public static final String CLASS_ID = "classId";
+
 	@Autowired
 	ClassRepository classRepository;
 
 	Map<String, JEClass> loadedClasses = new HashMap<String, JEClass>();
 
 	public void addClasses(List<ClassDefinition> classDefinitions) throws DataDefinitionUnreachableException,
-			JERunnerErrorException, AddClassException, ClassLoadException, IOException {
+			JERunnerErrorException, AddClassException, ClassLoadException, IOException, InterruptedException, ExecutionException {
 		for (ClassDefinition clazz : classDefinitions) {
 			addClass(clazz);
 		}
@@ -47,7 +49,7 @@ public class ClassService {
 	 * add/update class
 	 */
 	public void addClass(ClassDefinition classDefinition) throws IOException, DataDefinitionUnreachableException,
-			JERunnerErrorException, AddClassException, ClassLoadException {
+			JERunnerErrorException, AddClassException, ClassLoadException, InterruptedException, ExecutionException {
 		String classId= classDefinition.getClassId();
 		String workspaceId = classDefinition.getWorkspaceId();
 		if (!loadedClasses.containsKey(classId)) {
@@ -67,7 +69,7 @@ public class ClassService {
 	 * add/update class
 	 */
 	public void addClass(String workspaceId, String classId) throws IOException, DataDefinitionUnreachableException,
-			JERunnerErrorException, AddClassException, ClassLoadException {
+			JERunnerErrorException, AddClassException, ClassLoadException, InterruptedException, ExecutionException {
 	
 		if (!loadedClasses.containsKey(classId)) {
 			JELogger.trace(ClassService.class, " Adding class to builder from data definition api with id = " + classId);
@@ -82,10 +84,12 @@ public class ClassService {
 
 	}
 
+
+
 	/*
 	 * send class to je runner to be loaded there
 	 */
-	private void addClassToJeRunner(JEClass clazz) throws AddClassException, JERunnerErrorException, IOException {
+	public void addClassToJeRunner(JEClass clazz) throws AddClassException, JERunnerErrorException, IOException, InterruptedException, ExecutionException {
 		HashMap<String, String> classMap = new HashMap<>();
 		classMap.put(CLASS_NAME, clazz.getClassName());
 		classMap.put(CLASS_PATH, clazz.getClassPath());
@@ -98,14 +102,26 @@ public class ClassService {
 
 	}
 
+
 	public void loadAllClasses() throws DataDefinitionUnreachableException, JERunnerErrorException, AddClassException,
-			ClassLoadException, IOException {
+			ClassLoadException, IOException, InterruptedException, ExecutionException {
 		List<JEClass> classes = classRepository.findAll();
 
 		for (JEClass clazz : classes) {
-			addClass(clazz.getWorkspaceId(), clazz.getClassId());
+			try
+			{
+				addClass(clazz.getWorkspaceId(), clazz.getClassId());
+			}catch (Exception e) {
+				JELogger.warning(getClass(), "Failed to load class : " + clazz.getClassName());
+			}
 		}
 
 	}
+	public Map<String, JEClass> getLoadedClasses() {
+		return loadedClasses;
+	}
 
+	public void setLoadedClasses(Map<String, JEClass> loadedClasses) {
+		this.loadedClasses = loadedClasses;
+	}
 }

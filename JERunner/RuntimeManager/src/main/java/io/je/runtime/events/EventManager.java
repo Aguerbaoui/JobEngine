@@ -62,7 +62,10 @@ public class EventManager {
     * Check what type of event we have to trigger
     * */
     //TODO update with rule events
-    public static void triggerEvent(String projectId, String id) {
+    public static void triggerEvent(String projectId, String id) throws ProjectNotFoundException, EventException {
+        if(!events.containsKey(projectId)) {
+            throw new ProjectNotFoundException(Errors.PROJECT_NOT_FOUND);
+        }
         JEEvent event = events.get(projectId).get(id);
         if(event == null) {
             for(JEEvent ev: events.get(projectId).values()) {
@@ -73,7 +76,6 @@ public class EventManager {
             }
         }
         if(event != null) {
-            event.setTriggered(true);
             RuleEngineHandler.addEvent(event);
             if(event.getType().equals(EventType.MESSAGE_EVENT)) {
                 throwMessageEventInWorkflow(projectId, event.getName());
@@ -84,6 +86,10 @@ public class EventManager {
             else if(event.getType().equals(EventType.START_WORKFLOW)) {
                 startProcessInstanceByMessage(projectId, event.getName());
             }
+            event.setTriggered(true);
+        }
+        else {
+            throw new EventException(Errors.EVENT_NOT_FOUND);
         }
     }
 
@@ -100,11 +106,14 @@ public class EventManager {
 
 
     public static void updateEventType(String projectId, String eventId, String eventType) throws EventException, ProjectNotFoundException {
-        JEEvent event = null;
+
         if(!events.containsKey(projectId)) {
             throw new ProjectNotFoundException(Errors.PROJECT_NOT_FOUND);
         }
-        if(!events.get(projectId).containsKey(eventId)) {
+
+        JEEvent event = events.get(projectId).get(eventId);
+
+        if(event == null) {
             for(JEEvent ev: events.get(projectId).values()) {
                 if(ev.getName().equalsIgnoreCase(eventId)) {
                     event = ev;
@@ -112,17 +121,34 @@ public class EventManager {
                 }
             }
         }
-        if(event == null)   throw new EventException(Errors.EVENT_NOT_FOUND);
-        EventType t = null;
-        if(eventType.equalsIgnoreCase("start")) {
-            t = EventType.START_WORKFLOW;
-        }
-        else if(eventType.equalsIgnoreCase("signal")) {
-            t = EventType.SIGNAL_EVENT;
-        }
-        else if(eventType.equalsIgnoreCase("message")) {
-            t = EventType.MESSAGE_EVENT;
-        }
+        if(event == null) throw new EventException(Errors.EVENT_NOT_FOUND);
+        EventType t = EventType.valueOf(eventType);
         event.setType(t);
+    }
+
+    public static void deleteEvent(String projectId, String eventId) throws ProjectNotFoundException, EventException {
+        if(!events.containsKey(projectId)) {
+            throw new ProjectNotFoundException(Errors.PROJECT_NOT_FOUND);
+        }
+        JEEvent event = events.get(projectId).get(eventId);
+
+        if(event == null) {
+            for(JEEvent ev: events.get(projectId).values()) {
+                if(ev.getName().equalsIgnoreCase(eventId)) {
+                    event = events.get(projectId).remove(ev.getJobEngineElementID());
+                    break;
+                }
+            }
+            if(event == null) throw new EventException(Errors.EVENT_NOT_FOUND);
+        }
+        else  events.get(projectId).remove(eventId);
+    }
+
+    public static void deleteProjectEvents(String projectId){
+        if(events.containsKey(projectId)) {
+            events.remove(projectId);
+        }
+
+
     }
 }

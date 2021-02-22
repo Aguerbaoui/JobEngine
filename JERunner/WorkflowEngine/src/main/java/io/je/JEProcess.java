@@ -16,6 +16,8 @@ public class JEProcess {
 
     private String projectId;
 
+    private String activitiKey;
+
     public JEProcess(String key, String name, String bpmnPath, String projectId, boolean triggeredByEvent) {
         super();
         this.key = key;
@@ -37,6 +39,14 @@ public class JEProcess {
 
     public void setKey(String key) {
         this.key = key;
+    }
+
+    public String getActivitiKey() {
+        return activitiKey;
+    }
+
+    public void setActivitiKey(String activitiKey) {
+        this.activitiKey = activitiKey;
     }
 
     public String getName() {

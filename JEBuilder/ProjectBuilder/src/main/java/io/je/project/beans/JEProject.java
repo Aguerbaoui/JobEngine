@@ -7,18 +7,13 @@ import io.je.rulebuilder.components.blocks.Block;
 import io.je.utilities.beans.JEEvent;
 import io.je.utilities.constants.Errors;
 import io.je.utilities.constants.RuleBuilderErrors;
-import io.je.utilities.exceptions.AddRuleBlockException;
-import io.je.utilities.exceptions.EventException;
-import io.je.utilities.exceptions.InvalidSequenceFlowException;
-import io.je.utilities.exceptions.RuleAlreadyExistsException;
-import io.je.utilities.exceptions.RuleBlockNotFoundException;
-import io.je.utilities.exceptions.RuleNotFoundException;
-import io.je.utilities.exceptions.WorkflowBlockNotFound;
+import io.je.utilities.exceptions.*;
 import models.JEWorkflow;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.HashMap;
+import java.time.LocalDateTime;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Document(collection="JEProject")
 public class JEProject {
@@ -29,10 +24,7 @@ public class JEProject {
     @Id
     private String projectId;
 
-    /*
-    * Project name
-    * */
-    private String projectName;
+
 
     /*
     * Configuration path
@@ -42,18 +34,18 @@ public class JEProject {
     /*
     * Rules in a project
     * */
-    private HashMap<String, JERule> rules;
+    private ConcurrentHashMap<String, JERule> rules;
 
     /*
     * workflows in a project
     * */
-    private HashMap<String, JEWorkflow> workflows;
+    private ConcurrentHashMap<String, JEWorkflow> workflows;
     
     
     /*
      * Events in a project
      * */
-     private HashMap<String, JEEvent> events;
+     private ConcurrentHashMap<String, JEEvent> events;
 
     /*
     * Is the project running
@@ -68,12 +60,11 @@ public class JEProject {
     /*
     * Constructor
     * */
-    public JEProject(String projectId, String projectName, String configurationPath) {
-        rules = new HashMap<>();
-        workflows = new HashMap<>();
-        events = new HashMap<>();
+    public JEProject(String projectId, String configurationPath) {
+        rules = new ConcurrentHashMap<>();
+        workflows = new ConcurrentHashMap<>();
+        events = new ConcurrentHashMap<>();
         this.projectId = projectId;
-        this.projectName = projectName;
         this.configurationPath = configurationPath;
 
     }
@@ -92,45 +83,33 @@ public class JEProject {
         this.projectId = projectId;
     }
 
-    /*
-    * Get project name
-    * */
-    public String getProjectName() {
-        return projectName;
-    }
 
-    /*
-    * Set project name
-    * */
-    public void setProjectName(String projectName) {
-        this.projectName = projectName;
-    }
 
     /*
     * Get project rules
     * */
-    public HashMap<String, JERule> getRules() {
+    public ConcurrentHashMap<String, JERule> getRules() {
 		return rules;
 	}
 
 	/*
 	* Set project rules
 	* */
-	public void setRules(HashMap<String, JERule> rules) {
+	public void setRules(ConcurrentHashMap<String, JERule> rules) {
 		this.rules = rules;
 	}
 
 	/*
 	* Get all workflows
 	* */
-	public HashMap<String, JEWorkflow> getWorkflows() {
+	public ConcurrentHashMap<String, JEWorkflow> getWorkflows() {
         return workflows;
     }
 
     /*
     * Set all workflows
     * */
-    public void setWorkflows(HashMap<String, JEWorkflow> workflows) {
+    public void setWorkflows(ConcurrentHashMap<String, JEWorkflow> workflows) {
         this.workflows = workflows;
     }
 
@@ -154,7 +133,11 @@ public class JEProject {
     * Checks if a workflow exists
     * */
     public boolean workflowExists(String workflowId) {
-        return workflows.containsKey(workflowId);
+        if(workflows.containsKey(workflowId)) {
+            workflows.get(workflowId).setJeObjectLastUpdate(LocalDateTime.now());
+            return true;
+        }
+        return false;
     }
 
     /*
@@ -229,6 +212,8 @@ public class JEProject {
     				throw new RuleNotFoundException(RuleBuilderErrors.RuleNotFound);
     			}
         this.rules.put(rule.getJobEngineElementID(), rule);
+		rule.setJeObjectLastUpdate(  LocalDateTime.now());
+
     }
 
     /*
@@ -255,6 +240,8 @@ public class JEProject {
 
 	public void deleteRuleBlock(String ruleId, String blockId) throws RuleBlockNotFoundException {
 		((UserDefinedRule) rules.get(ruleId)).deleteBlock(blockId);
+		rules.get(ruleId).setJeObjectLastUpdate(  LocalDateTime.now());
+
 		
 	}
 
@@ -279,9 +266,17 @@ public class JEProject {
 			if(!rule.isBuilt())
 			{
 				isBuilt = false;
+				break;
 				//JELogger.info("Rule Not built : " + rule.getRuleName());
 			}
 		}
+
+		for(JEWorkflow workflow: workflows.values()) {
+		    if(!workflow.getStatus().equals(JEWorkflow.BUILT)) {
+		        isBuilt = false;
+		        break;
+            }
+        }
 		
 		return isBuilt;
 	}
@@ -329,11 +324,11 @@ public class JEProject {
 		return events.get(eventId);
 	}
 	
-	public HashMap<String, JEEvent> getEvents() {
+	public ConcurrentHashMap<String, JEEvent> getEvents() {
 		return events;
 	}
 
-	public void setEvents(HashMap<String, JEEvent> events) {
+	public void setEvents(ConcurrentHashMap<String, JEEvent> events) {
 		this.events = events;
 	}
 

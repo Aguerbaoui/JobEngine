@@ -10,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.je.rulebuilder.components.blocks.getter.AttributeGetterBlock;
 import io.je.rulebuilder.config.AttributesMapping;
+import io.je.utilities.exceptions.RuleBuildFailedException;
 import io.je.utilities.runtimeobject.JEObject;
 
 /*
@@ -69,14 +70,20 @@ public abstract class Block extends JEObject {
 		}
 	}
 	
+	
+	public String getBlockNameAsVariable()
+	{
+		return "$"+blockName ;
+	}
+	
 	//return drl expression of block 
-	public  abstract String getExpression();
+	public  abstract String getExpression() throws RuleBuildFailedException;
 
 	//return drl expression of block as a first operand (used to optimise comparison blocks in order to avoid using eval)
-	public  abstract String getAsFirstOperandExpression();
+	public  abstract String getAsFirstOperandExpression() throws RuleBuildFailedException;
 	
 	//get drl expression mapped to id (getter blocks) ex: Person($id == "123")
-	public  abstract String getJoinExpression();
+	public  abstract String getJoinExpression() throws RuleBuildFailedException;
 
 	//get id variable name used in drl ex: $id
 	public  String getJoinId()
@@ -89,11 +96,11 @@ public abstract class Block extends JEObject {
 	}
 	
 	//get a joined expression. example : Person(jobEngineElementID == $id )
-	public  abstract String getJoinedExpression(String joinId);
+	public  abstract String getJoinedExpression(String joinId) throws RuleBuildFailedException;
 	
-	public  abstract String getJoinedExpressionAsFirstOperand(String joinId);
+	public  abstract String getJoinedExpressionAsFirstOperand(String joinId) throws RuleBuildFailedException;
 	
-	public  abstract String getJoinExpressionAsFirstOperand();
+	public  abstract String getJoinExpressionAsFirstOperand() throws RuleBuildFailedException;
 
 
 	public String getInputRefName(int index)
@@ -101,11 +108,11 @@ public abstract class Block extends JEObject {
 		String var = ""; 
 		if(inputBlocks.get(index) instanceof AttributeGetterBlock)
 		{
-			var = (( AttributeGetterBlock )inputBlocks.get(index)).getAttributeName().replace(".", "");
+			var = (( AttributeGetterBlock )inputBlocks.get(index)).getAttributeVariableName();
 		}
 		else 
 		{
-			var = inputBlocks.get(index).getBlockName().replaceAll("\\s+","");
+			var =  inputBlocks.get(index).getBlockNameAsVariable();
 		}
 		return var;
 	}

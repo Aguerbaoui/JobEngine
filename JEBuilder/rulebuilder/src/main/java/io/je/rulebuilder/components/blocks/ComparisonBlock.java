@@ -1,12 +1,14 @@
 package io.je.rulebuilder.components.blocks;
 
+
 import io.je.rulebuilder.config.Keywords;
 import io.je.rulebuilder.models.BlockModel;
+import io.je.utilities.exceptions.RuleBuildFailedException;
 
 /*
  * Comparison Block is a class that represents the comparison elements in a rule.
  */
-public abstract class ComparisonBlock extends PersistableBlock {
+public  class ComparisonBlock extends PersistableBlock {
 	
 	protected String operator;
 	String threshold=null;
@@ -15,12 +17,14 @@ public abstract class ComparisonBlock extends PersistableBlock {
 		super(blockModel.getBlockId(), blockModel.getProjectId(), blockModel.getRuleId(),blockModel.getBlockName(),
 				blockModel.getDescription() ,
 				blockModel.getTimePersistenceValue(),blockModel.getTimePersistenceUnit());
-
+		
 
 		if(blockModel.getBlockConfiguration()!=null && blockModel.getBlockConfiguration().getValue()!=null)
 		{
 			threshold = blockModel.getBlockConfiguration().getValue();
 		}
+		
+		operator = getOperatorByOperationId(blockModel.getOperationId());
 		
 	}
 	
@@ -29,12 +33,29 @@ public abstract class ComparisonBlock extends PersistableBlock {
 		super();
 	}
 
+	
+	private boolean singleInput() throws RuleBuildFailedException
+	{
+		if(inputBlocks.size()==1)
+		{
+			return true;
+		}
+		else if(inputBlocks.size()==2)
+		{
+			return false;
+		}
+		else
+		{
+			//TODO: remove hardcoded message
+			throw new RuleBuildFailedException("Comparison block cannot have " + inputBlocks.size() + "input connexions" );
+		}
+	}
 
 	@Override
-	public String getExpression() {
+	public String getExpression() throws RuleBuildFailedException {
 		StringBuilder expression = new StringBuilder();
 		//single input
-		if(threshold !=null)
+		if(singleInput())
 		{
 			String inputExpression = inputBlocks.get(0).getAsFirstOperandExpression().replaceAll(Keywords.toBeReplaced, getOperator()+threshold);
 			expression.append(inputExpression);
@@ -52,15 +73,18 @@ public abstract class ComparisonBlock extends PersistableBlock {
 		return expression.toString();
 	}
 	
-	public abstract String getOperator();
+	public String getOperator()
+	{
+		return operator;
+	}
 
 	@Override
-	public String getJoinExpression() {
+	public String getJoinExpression() throws RuleBuildFailedException {
 		StringBuilder expression = new StringBuilder();
 		//single input
 		String joinId= inputBlocks.get(0).getJoinId();
 
-		if(threshold !=null)
+		if(singleInput())
 		{
 			String inputExpression = inputBlocks.get(0).getJoinExpressionAsFirstOperand().replaceAll(Keywords.toBeReplaced, getOperator()+threshold);
 			expression.append(inputExpression);
@@ -80,11 +104,11 @@ public abstract class ComparisonBlock extends PersistableBlock {
 	
 
 	@Override
-	public String getJoinedExpression(String joinId) {
+	public String getJoinedExpression(String joinId) throws RuleBuildFailedException {
 		StringBuilder expression = new StringBuilder();
 
 		//single input
-		if(threshold !=null)
+		if(singleInput())
 		{
 			String inputExpression = inputBlocks.get(0).getJoinedExpressionAsFirstOperand(joinId).replaceAll(Keywords.toBeReplaced, getOperator()+threshold);
 			expression.append(inputExpression);
@@ -124,7 +148,44 @@ public abstract class ComparisonBlock extends PersistableBlock {
 	}
 	
 	
-
+	public String getOperatorByOperationId(int operationId)
+	{
+		switch(operationId)
+		{
+		case 2001:
+			return "==";
+		case 2002:
+			return "!=";
+		case 2003:
+			return ">";
+		case 2004:
+			return ">=";
+		case 2005:
+			return "<";
+		case 2006:
+			return "<=";
+		case 2007:
+			return " contains ";
+		case 2008:
+			return " not contains ";
+		case 2009:
+			return " matches ";
+		case 2010:
+			return " not matches ";
+		case 2011:
+			return " str[startsWith] ";
+		case 2012:
+			return " str[endsWith] ";
+		case 2013:
+			return "";
+		case 2014:
+			return "==";
+		case 2015:
+			return "==";
+		}
+		
+		return null;
+	}
 
 
 	

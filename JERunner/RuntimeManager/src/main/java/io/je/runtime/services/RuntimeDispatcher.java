@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 import io.je.runtime.data.DataListener;
 import io.je.runtime.models.ClassModel;
 import io.je.runtime.models.RuleModel;
-import io.je.runtime.objects.ClassManager;
+import io.je.utilities.classloader.ClassManager;
 import io.je.runtime.ruleenginehandler.RuleEngineHandler;
 import io.je.utilities.exceptions.ClassLoadException;
 import io.je.utilities.exceptions.DeleteRuleException;
@@ -166,26 +166,6 @@ public class RuntimeDispatcher {
 		WorkflowEngineHandler.deployBPMN(projectId, key);
 	}
 
-	/*
-	*  Start workflow with message event
-	* */
-	/*public static void startProcessInstanceByMessage(String messageEvent) {
-		EventManager.startProcessInstanceByMessage(messageEvent);
-	}*/
-
-	/*
-	 *  Throw message event for workflow execution
-	 * */
-	/*public static void throwMessageEventInWorkflow(String messageEvent) {
-		EventManager.throwMessageEventInWorkflow(messageEvent);
-	}*/
-
-	/*
-	* Throw signal event for workflow execution
-	* */
-	/*public static void throwSignalEventInWorkflow(String messageEvent) {
-		EventManager.throwSignalEventInWorkflow(messageEvent);
-	}*/
 	///////////////////////////// Classes
 	// add class
 	public void addClass(ClassModel classModel) throws ClassLoadException {
@@ -223,12 +203,15 @@ public class RuntimeDispatcher {
 					projectsByTopic.get(topic).add(projectId);
 					DataListener.subscribeToTopic(topic);
 				}
+				else {
+					DataListener.incrementSubscriptionCount(topic);
+				}
 				
 			}
 		}
 	}
 
-	public void triggerEvent(String projectId, String id) {
+	public void triggerEvent(String projectId, String id) throws EventException, ProjectNotFoundException {
 
 		EventManager.triggerEvent(projectId, id);
 	}
@@ -240,7 +223,7 @@ public class RuntimeDispatcher {
 			e.setTriggeredById(eventModel.getEventId());
 			e.setJobEngineElementID(eventModel.getEventId());
 			e.setJobEngineProjectID(eventModel.getProjectId());
-			e.setType(EventType.GENERIC_EVENT);
+			e.setType(EventType.valueOf(eventModel.getEventType()));
 			//TODO reload events when the app restarts from workflow, being sent as generic atm
 			EventManager.addEvent(eventModel.getProjectId(), e);
 	}
@@ -248,5 +231,30 @@ public class RuntimeDispatcher {
 
 	public void updateEventType(String projectId, String eventId, String eventType) throws ProjectNotFoundException, EventException {
 		EventManager.updateEventType(projectId, eventId, eventType);
+	}
+
+	public void deleteEvent(String projectId, String eventId) throws ProjectNotFoundException, EventException {
+		EventManager.deleteEvent(projectId, eventId);
+	}
+
+	//clean project data from runner
+	//Remove events, topics to listen to, rules and workflows
+	public void removeProjectData(String projectId) {
+		EventManager.deleteProjectEvents(projectId);
+		WorkflowEngineHandler.deleteProjectProcesses(projectId);
+		RuleEngineHandler.deleteProjectRules(projectId);
+		decrementTopicSubscriptionCount(projectId);
+	}
+
+	//decrement topic subscription count for a project
+	public void decrementTopicSubscriptionCount(String projectId) {
+		for(String topic: projectsByTopic.keySet()) {
+			HashSet<String> set = (HashSet<String>) projectsByTopic.get(topic);
+			for(String id: set) {
+				if(id.equalsIgnoreCase(projectId)) {
+					DataListener.decrementSubscriptionCount(topic);
+				}
+			}
+		}
 	}
 }
