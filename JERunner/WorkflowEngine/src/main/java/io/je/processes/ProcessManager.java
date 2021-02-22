@@ -3,19 +3,17 @@ package io.je.processes;
 import io.je.JEProcess;
 import io.je.callbacks.OnExecuteOperation;
 import io.je.utilities.constants.Errors;
-import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.exceptions.WorkflowAlreadyRunningException;
 import io.je.utilities.exceptions.WorkflowNotFoundException;
-import io.je.utilities.exceptions.WorkflwTriggeredByEventException;
 import io.je.utilities.files.JEFileUtils;
 import io.je.utilities.logger.JELogger;
 import org.activiti.engine.*;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.DeploymentBuilder;
 import org.activiti.engine.runtime.Execution;
+import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 
-import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -51,6 +49,7 @@ public class ProcessManager {
      * */
     private DynamicBpmnService dyService;
 
+    private HistoryService historyService;
 
     /*
      * Repository service for activiti
@@ -79,6 +78,7 @@ public class ProcessManager {
         repoService = processEngine.getRepositoryService();
         runtimeService = processEngine.getRuntimeService();
         taskService = processEngine.getTaskService();
+        historyService = processEngine.getHistoryService();
         //taskService.createTaskQuery().taskId(id); not the same as execution.id this has to be the original task id from the bpmn so we can map them
     }
 
@@ -156,7 +156,7 @@ public class ProcessManager {
     /*
      * Launch process by key without variables
      * */
-    public void launchProcessByKeyWithoutVariables(String id) throws WorkflowNotFoundException, WorkflowAlreadyRunningException, WorkflwTriggeredByEventException {
+    public void launchProcessByKeyWithoutVariables(String id) throws WorkflowNotFoundException, WorkflowAlreadyRunningException {
         if (processes.get(id) == null) {
             throw new WorkflowNotFoundException( Errors.WORKFLOW_NOT_FOUND);
         }
@@ -165,7 +165,7 @@ public class ProcessManager {
             runtimeService.startProcessInstanceByKey(id);
         }
     else { if(processes.get(id).isTriggeredByEvent()) {
-            throw new WorkflwTriggeredByEventException(ResponseCodes.WORKFLOW_EVENT_TRIGGER, Errors.WORKFLOW_TRIGGERED_BY_EVENT);
+            JELogger.error(ProcessManager.class, " Process has to be triggered by event");
         }
             throw new WorkflowAlreadyRunningException(Errors.WORKFLOW_ALREADY_RUNNING);
         }
@@ -228,7 +228,12 @@ public class ProcessManager {
 
         String executionId = runtimeService.createExecutionQuery()
                 .messageEventSubscriptionName(messageId).singleResult().getId();
-        runtimeService.messageEventReceived(messageId, executionId);
+        if(executionId != null) {
+            throwMessageEvent(messageId, executionId);
+        }
+        else {
+            launchProcessByMessageWithoutVariables(messageId);
+        }
     }
 
     /*
@@ -242,12 +247,6 @@ public class ProcessManager {
     }
 
 
-    /*
-     * Get all execution callbacks
-     * */
-    public HashMap<String, OnExecuteOperation> getAllCallbacks() {
-        return allCallbacks;
-    }
 
     /*
      * Get workflow Engine
@@ -304,7 +303,7 @@ public class ProcessManager {
             if(process.getProjectId().equals(projectId) && process.isDeployed() && !process.isRunning()) {
                 try {
                     launchProcessByKeyWithoutVariables(process.getKey());
-                } catch (WorkflowAlreadyRunningException | WorkflwTriggeredByEventException e) {
+                } catch (WorkflowAlreadyRunningException  e) {
                     JELogger.error(ProcessManager.class, "Workflow running exception id = " + process.getKey());
                 }
             }

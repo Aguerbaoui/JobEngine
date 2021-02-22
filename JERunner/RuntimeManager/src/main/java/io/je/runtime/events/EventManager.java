@@ -145,9 +145,7 @@ public class EventManager {
     }
 
     public static void deleteProjectEvents(String projectId){
-        if(events.containsKey(projectId)) {
-            events.remove(projectId);
-        }
+        events.remove(projectId);
 
 
     }
