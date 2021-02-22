@@ -18,6 +18,9 @@ public class EventModel {
     @JsonProperty(EventModelMapping.EVENTTYPE)
     private String eventType;
 
+    @JsonProperty(EventModelMapping.DESCRIPTION)
+    private String description;
+
     public String getProjectId() {
         return projectId;
     }
@@ -55,6 +58,14 @@ public class EventModel {
 
     public String getEventType() {
         return eventType;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public void setEventType(String eventType) {

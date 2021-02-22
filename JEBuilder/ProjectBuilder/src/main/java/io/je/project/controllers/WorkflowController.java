@@ -2,18 +2,21 @@ package io.je.project.controllers;
 
 import io.je.project.exception.JEExceptionHandler;
 import io.je.project.models.WorkflowBlockModel;
-import io.je.project.models.WorkflowModel;
 import io.je.project.services.ProjectService;
 import io.je.project.services.WorkflowService;
 import io.je.utilities.constants.Errors;
 import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.constants.ResponseMessages;
+import io.je.utilities.exceptions.ProjectNotFoundException;
+import io.je.utilities.models.WorkflowModel;
 import io.je.utilities.network.JEResponse;
 import models.JEWorkflow;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 import static io.je.utilities.constants.ResponseMessages.*;
 
@@ -34,13 +37,9 @@ public class WorkflowController {
 
     @PostMapping(value = "/addWorkflow", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> addWorkflow(@RequestBody WorkflowModel m) {
-        JEWorkflow wf = new JEWorkflow();
-        wf.setJobEngineElementID(m.getKey());
-        wf.setJobEngineProjectID(m.getProjectId());
-        wf.setWorkflowName(m.getName());
         try {
 
-            workflowService.addWorkflow(wf);
+            workflowService.addWorkflow(m);
             projectService.saveProject(m.getProjectId());
         } catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
@@ -96,7 +95,7 @@ public class WorkflowController {
 
 		}
 
-        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.WorkflowDeletionSucceeded));
+        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.WORKFLOW_DELETED_SUCCESSFULLY));
     }
 
     /*
@@ -240,5 +239,14 @@ public class WorkflowController {
         return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, FRONT_CONFIG));
     }
 
+    @PostMapping(value = "/deleteWorkflows/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> deleteRules(@PathVariable("projectId") String projectId, @RequestBody List<String> ids) {
+        try {
+            workflowService.removeWorkflows(projectId, ids);
+        } catch (Exception e) {
+            return JEExceptionHandler.handleException(e);
+        }
+        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, WORKFLOW_DELETED_SUCCESSFULLY));
+    }
 
 }

@@ -1,5 +1,6 @@
 package io.je.runtime.controllers;
 
+import io.je.project.exception.JEExceptionHandler;
 import io.je.runtime.services.RuntimeDispatcher;
 import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.constants.ResponseMessages;
@@ -14,7 +15,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -71,27 +71,20 @@ public class ProjectController {
     }
 
     /*
-     * Add topics
+     * Delete whole project data ( rules and workflows and events)
      * */
-    @PostMapping(value = "/addTopics/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> addTopics(@PathVariable String projectId, @RequestBody List<String> topics) {
-        //Stop listening via data listener do not forget plz
-        dispatcher.addTopics(projectId, topics);
-        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.TOPIC_ADDED));
+    @GetMapping(value = "/removeProjectData/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> removeProjectData(@PathVariable String projectId) {
+        try {
+            dispatcher.removeProjectData(projectId);
+        } catch (Exception e) {
+            return JEExceptionHandler.handleException(e);
+        }
+        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.PROJECT_DELETED));
+
     }
-
     /*
-     * Initialize the project
-     * */
-  /*  @RequestMapping(value = "/initProject", method = RequestMethod.GET)
-    public ResponseEntity<?> initProject() {
-        WorkflowEngineHandler.initWorkflowEngine();
-        return new ResponseEntity<Object>(HttpStatus.OK).ok("Workflow Initialized");
-
-    }*/
-
-    /*
-     * Stop the project
+     * Get app log
      * */
     @GetMapping(value = "/getLog", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getLog() {

@@ -8,6 +8,8 @@ public class WorkflowModel {
 
     private String name;
 
+    private String description;
+
     public WorkflowModel() {
         super();
     }
@@ -34,5 +36,13 @@ public class WorkflowModel {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

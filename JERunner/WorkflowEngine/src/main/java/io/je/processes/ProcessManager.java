@@ -10,6 +10,7 @@ import io.je.utilities.exceptions.WorkflwTriggeredByEventException;
 import io.je.utilities.files.JEFileUtils;
 import io.je.utilities.logger.JELogger;
 import org.activiti.engine.*;
+import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.DeploymentBuilder;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.task.Task;
@@ -60,7 +61,7 @@ public class ProcessManager {
     /*
      * List of all active processes
      * */
-    private HashMap<String, JEProcess> processes = new HashMap<>();
+    private static HashMap<String, JEProcess> processes = new HashMap<>();
 
 
     /*
@@ -146,7 +147,8 @@ public class ProcessManager {
         String processXml = JEFileUtils.getStringFromFile(processes.get(key).getBpmnPath());
         DeploymentBuilder deploymentBuilder = processEngine.getRepositoryService().createDeployment().name(key);
         deploymentBuilder.addString(key + ".bpmn", processXml);
-        deploymentBuilder.deploy();
+        Deployment dep = deploymentBuilder.deploy();
+        JELogger.info(ProcessManager.class, " id = " + dep.getId());
         processes.get(key).setDeployed(true);
 
     }
@@ -296,11 +298,6 @@ public class ProcessManager {
         return processes;
     }
 
-   /* public void runAll() throws WorkflowNotFoundException {
-        for(String key: processes.keySet()) {
-            launchProcessByKeyWithoutVariables(key);
-        }
-    }*/
 
     public void runAll(String projectId) throws WorkflowNotFoundException{
         for(JEProcess process: processes.values()) {
@@ -325,7 +322,7 @@ public class ProcessManager {
     public void stopProcess(String key) {
         if(processes.get(key).isRunning()) {
             try {
-                runtimeService.deleteProcessInstance(key, "User Stopped the execution");
+                runtimeService.deleteProcessInstance(processes.get(key).getActivitiKey(), "User Stopped the execution");
                 processes.get(key).setRunning(false);
             }
             catch (ActivitiObjectNotFoundException e) {
@@ -338,7 +335,7 @@ public class ProcessManager {
         for(JEProcess process: processes.values()) {
             if(process.getProjectId().equals(projectId) && process.isRunning()) {
                 try {
-                    runtimeService.deleteProcessInstance(process.getKey(), "User Stopped the execution");
+                    runtimeService.deleteProcessInstance(process.getActivitiKey(), "User Stopped the execution");
                     process.setRunning(false);
                 }
                 catch (ActivitiObjectNotFoundException e) {
@@ -348,8 +345,10 @@ public class ProcessManager {
         }
     }
 
-    public void setRunning(String id, boolean b) {
-        processes.get(id.replace(id.substring(id.indexOf(':'), id.length()), "")).setRunning(b);
+    public static void setRunning(String id, boolean b) {
+        String key = id.substring(id.indexOf(':'), id.length());
+        processes.get(id.replace(key, "")).setRunning(b);
+        processes.get(id.replace(key, "")).setActivitiKey(id);
     }
 
 }

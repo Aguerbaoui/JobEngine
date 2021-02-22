@@ -25,6 +25,10 @@ import static io.je.utilities.constants.APIConstants.*;
 public class JERunnerAPIHandler {
 
 
+    private JERunnerAPIHandler() {}
+    /*
+    * POST with json
+    * */
     private static JEResponse sendRequestWithBody(String requestUrl, Object requestBody)
             throws JERunnerErrorException, InterruptedException, ExecutionException {
         Response response = null;
@@ -49,8 +53,37 @@ public class JERunnerAPIHandler {
         }
     }
 
+    /*
+    * DELETE with no json
+    * */
+    private static JEResponse sendDeleteRequest(String requestUrl)
+            throws JERunnerErrorException, InterruptedException, ExecutionException {
+        Response response = null;
+        try {
+            response = Network.makeDeleteNetworkCallWithResponse(requestUrl);
+
+            if (response == null) throw new JERunnerErrorException(Errors.JERUNNER_UNREACHABLE);
+            if (response.code() != ResponseCodes.CODE_OK) {
+                JELogger.error(JERunnerAPIHandler.class,
+                        "Error making network call for url = " + requestUrl);
+                throw new JERunnerErrorException(Errors.JERUNNER_ERROR + " : " + response.body().string());
+            }
+
+            String respBody = response.body().string();
+            ObjectMapper objectMapper = new ObjectMapper();
+            return objectMapper.readValue(respBody, JEResponse.class);
+        } catch (IOException e) {
+            JELogger.error(JERunnerAPIHandler.class,
+                    "Error making network call for url = " + requestUrl);
+            throw new JERunnerErrorException(Errors.JERUNNER_UNREACHABLE);
+        }
+    }
+
+    /*
+    * GET with no body
+    * */
     private static JEResponse sendRequest(String requestUrl)
-            throws IOException, JERunnerErrorException, InterruptedException, ExecutionException {
+            throws JERunnerErrorException, InterruptedException, ExecutionException {
         Response response = null;
         try {
             response = Network.makeGetNetworkCallWithResponse(requestUrl);
@@ -72,6 +105,9 @@ public class JERunnerAPIHandler {
         }
     }
 
+    /*
+    * POST with string body
+    * */
     private static JEResponse sendRequestWithStringBody(String requestUrl, String requestBody)
             throws JERunnerErrorException, IOException, InterruptedException, ExecutionException {
         Response response = null;
@@ -168,25 +204,27 @@ public class JERunnerAPIHandler {
 
     }
 
+    //run workflow
     public static JEResponse runWorkflow(String requestUrl) throws JERunnerErrorException, IOException, InterruptedException, ExecutionException {
         return sendRequest(requestUrl);
 
     }
 
-    public static JEResponse updateEventType(String projectId, String eventId, String type) throws JERunnerErrorException, InterruptedException, ExecutionException, IOException {
-        Response response = null;
+    //update event type
+    public static void updateEventType(String projectId, String eventId, String type) throws JERunnerErrorException, InterruptedException, ExecutionException, IOException {
         String requestUrl = JEGlobalconfig.RUNTIME_MANAGER_BASE_API + APIConstants.UPDATE_EVENT + "/" + projectId + "/" + eventId;
         JELogger.trace(JERunnerAPIHandler.class, "Sending update event request to runner, project id = " + projectId + "event id = " + eventId);
-        return sendRequestWithStringBody(requestUrl, type);
+        sendRequestWithStringBody(requestUrl, type);
 
     }
 
-
-    public static JEResponse requestUpdateFromBuilder() throws InterruptedException, JERunnerErrorException, ExecutionException, IOException {
+    // request update from builder
+    public static JEResponse requestUpdateFromBuilder() throws InterruptedException, JERunnerErrorException, ExecutionException {
         String requestUrl = JEGlobalconfig.BUILDER_BASE_API + PROJECT_UPDATE_RUNNER;
         return sendRequest(requestUrl);
     }
 
+    // check runner health
     public static boolean checkRunnerHealth() throws InterruptedException, JERunnerErrorException, ExecutionException, IOException {
         String requestUrl = JEGlobalconfig.RUNTIME_MANAGER_BASE_API + ACTUATOR_HEALTH;
         Response response = null;
@@ -214,5 +252,19 @@ public class JERunnerAPIHandler {
             throw new JERunnerErrorException(Errors.JERUNNER_UNREACHABLE);
         }
         return false;
+    }
+
+    //delete event from runner
+    public static JEResponse deleteEvent(String projectId, String eventId) throws InterruptedException, JERunnerErrorException, ExecutionException {
+        String requestUrl = JEGlobalconfig.RUNTIME_MANAGER_BASE_API + DELETE_EVENT + "/" + projectId + "/" + eventId;
+        JELogger.trace(JERunnerAPIHandler.class, "Sending delete event request to runner, project id = " + projectId + "event id = " + eventId);
+        return sendDeleteRequest(requestUrl);
+    }
+
+    // clean project data from runner
+    public static void cleanProjectDataFromRunner(String projectId) throws InterruptedException, JERunnerErrorException, ExecutionException {
+        String requestUrl = JEGlobalconfig.RUNTIME_MANAGER_BASE_API + CLEAN_HOUSE + "/" + projectId ;
+        JELogger.trace(JERunnerAPIHandler.class, "Sending delete event request to runner, project id = " + projectId);
+        sendRequest(requestUrl);
     }
 }

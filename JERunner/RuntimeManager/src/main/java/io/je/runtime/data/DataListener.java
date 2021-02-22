@@ -1,19 +1,15 @@
 package io.je.runtime.data;
 
-import io.je.utilities.constants.APIConstants;
-import io.je.utilities.constants.Errors;
 import io.je.utilities.constants.JEGlobalconfig;
-import io.je.utilities.constants.ResponseCodes;
-import io.je.utilities.exceptions.DataListenerNotFoundException;
+import io.je.utilities.logger.JELogger;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 
 public class DataListener {
 
     /*
-     * Map of modelId-InstanceId
+     * Map of topic-listener
      * */
     private static HashMap<String , Thread> activeThreads = new HashMap<String, Thread>();
     private static HashMap<String, ZMQAgent> agents = new HashMap<String, ZMQAgent>();
@@ -28,6 +24,9 @@ public class DataListener {
         if(!agents.containsKey(topic)) {
             ZMQAgent agent = new ZMQAgent(JEGlobalconfig.DATA_MANAGER_BASE_API, JEGlobalconfig.SUBSCRIBER_PORT, JEGlobalconfig.REQUEST_PORT, topic);
             agents.put(topic, agent);
+        }
+        else {
+            agents.get(topic).incrementSubscriptionCount();
         }
     }
 
@@ -47,10 +46,29 @@ public class DataListener {
         for (String id : topics)
         {
             agents.get(id).setListening(false);
-        	activeThreads.remove(id);
+            try {
+                activeThreads.remove(id);
+            }
+            catch (Exception e) {
+                JELogger.error(DataListener.class, "Error interrupting thread for topic = " + id);
+            }
         }
-        //activeThreads = null;
     }
+
+    public static void decrementSubscriptionCount(String topic) {
+        if(agents.containsKey(topic)) {
+            agents.get(topic).decrementSubscriptionCount();
+            if (agents.get(topic).getSubscribers() <= 0) {
+                ZMQAgent agent = agents.remove(topic);
+                agent = null;
+            }
+        }
+    }
+
+    public static void incrementSubscriptionCount(String topic) {
+        agents.get(topic).incrementSubscriptionCount();
+    }
+
 /*
     public static void startListeningOnTopic(String topic) throws DataListenerNotFoundException {
         if(!activeTopics.containsKey(topic)) {

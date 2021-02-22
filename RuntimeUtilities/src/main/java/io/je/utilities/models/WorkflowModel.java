@@ -12,6 +12,8 @@ public class WorkflowModel {
 
     private String name;
 
+    private String description;
+
     private boolean triggeredByEvent;
 
     private ArrayList<EventModel> events;
@@ -27,6 +29,14 @@ public class WorkflowModel {
         this.events = events;
         this.tasks = tasks;
         this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public boolean isTriggeredByEvent() {

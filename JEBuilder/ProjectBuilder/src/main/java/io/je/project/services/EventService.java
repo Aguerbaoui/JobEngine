@@ -7,6 +7,7 @@ import java.util.concurrent.ExecutionException;
 
 import io.je.utilities.logger.JELogger;
 import io.je.utilities.models.EventType;
+import io.je.utilities.string.JEStringUtils;
 import org.springframework.stereotype.Service;
 
 import io.je.project.beans.JEProject;
@@ -49,15 +50,17 @@ public class EventService {
 	/*
 	 * add new event
 	 */
-	public void addEvent(String projectId, EventModel eventModel) throws ProjectNotFoundException, JERunnerErrorException, IOException, InterruptedException, ExecutionException {
+	public void addEvent(String projectId, EventModel eventModel) throws ProjectNotFoundException, JERunnerErrorException, IOException, InterruptedException, ExecutionException, EventException {
 		JEProject project = ProjectService.getProjectById(projectId);
 		if (project == null) {
 			throw new ProjectNotFoundException( Errors.PROJECT_NOT_FOUND);
 		}
+
+		if(!JEStringUtils.isStringOnlyAlphabet(eventModel.getName())) {
+			throw new EventException(Errors.NOT_ALPHABETICAL);
+		}
 		JEEvent event = new JEEvent(eventModel.getEventId(), projectId, eventModel.getName(), EventType.GENERIC_EVENT);
 		registerEvent(event);
-
-
 	}
 	
 	/*
@@ -105,10 +108,9 @@ public class EventService {
 		}
 
 		EventType t = EventType.valueOf(eventType);
-
-		event.setType(t);
 		try {
 			JERunnerAPIHandler.updateEventType(projectId, eventId, eventType);
+			event.setType(t);
 		} catch (JERunnerErrorException | InterruptedException | ExecutionException | IOException e) {
 			JELogger.error(EventService.class, "Failed to set event type in runner");
 		}
@@ -118,11 +120,27 @@ public class EventService {
 	 * delete event
 	 */
 	
-	public JEEvent deleteEvent(String projectId, String eventId) throws EventException, ProjectNotFoundException {
+	public void deleteEvent(String projectId, String eventId) throws EventException, ProjectNotFoundException, InterruptedException, JERunnerErrorException, ExecutionException, IOException {
 		JEProject project = ProjectService.getProjectById(projectId);
 		if (project == null) {
 			throw new ProjectNotFoundException( Errors.PROJECT_NOT_FOUND);
 		}
-		return project.getEvents().remove(eventId);
+
+		JEEvent event = project.getEvents().get(eventId);
+		if(event == null) {
+			for(JEEvent ev: project.getEvents().values()) {
+				if(ev.getName().equalsIgnoreCase(eventId)) {
+					event = ev;
+					break;
+				}
+			}
+		}
+
+		if(event == null)  {
+			throw new EventException(Errors.EVENT_NOT_FOUND);
+		}
+
+		JERunnerAPIHandler.deleteEvent(projectId, eventId);
+		project.getEvents().remove(eventId);
 	}
 }

@@ -58,6 +58,17 @@ public class Network {
         return f.get();
     }
 
+    public static Response makeDeleteNetworkCallWithResponse(String url) throws IOException, InterruptedException, ExecutionException {
+        Request request = new Request.Builder().url(url).delete().build();
+        CompletableFuture<Response> f = CompletableFuture.supplyAsync(() -> {
+            try {
+                return client.newCall(request).execute();
+            } catch (IOException e) {
+                return null;
+            }
+        },getAsyncExecutor());
+        return f.get();
+    }
 
     public static Response makeNetworkCallWithJsonBodyWithResponse(Object json, String url) throws IOException, InterruptedException, ExecutionException {
         String jsonStr = "";

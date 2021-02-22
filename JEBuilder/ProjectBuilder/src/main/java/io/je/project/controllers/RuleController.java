@@ -12,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import io.je.project.services.RuleService;
-import io.je.rulebuilder.components.JERule;
 import io.je.rulebuilder.models.BlockModel;
 import io.je.rulebuilder.models.RuleModel;
 import io.je.rulebuilder.models.ScriptRuleModel;
@@ -101,8 +100,8 @@ public class RuleController {
 		} catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
 		}
-		JELogger.info(getClass(), ResponseMessages.RuleAdditionSucceeded);
-		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.RuleAdditionSucceeded));
+		JELogger.info(getClass(), ResponseMessages.RULE_ADDED_SUCCESSFULLY);
+		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.RULE_ADDED_SUCCESSFULLY));
 	}
 
 	
@@ -118,8 +117,8 @@ public class RuleController {
 		} catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
 		}
-		JELogger.info(getClass(), ResponseMessages.RuleAdditionSucceeded);
-		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.RuleDeletionSucceeded));
+		JELogger.info(getClass(), ResponseMessages.RULE_ADDED_SUCCESSFULLY);
+		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.RULE_DELETED_SUCCESSFULLY));
 	}
 
 	
@@ -140,7 +139,7 @@ public class RuleController {
 			return JEExceptionHandler.handleException(e);
 
 		}
-		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.RuleDeletionSucceeded));
+		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.RULE_DELETED_SUCCESSFULLY));
 	}
 
 	/*
@@ -157,7 +156,7 @@ public class RuleController {
 
 		}
 
-		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.RuleUpdateSucceeded));
+		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.RULE_UPDATED_SUCCESSFULLY));
 	}
 
 	/*
@@ -176,7 +175,7 @@ public class RuleController {
 			return JEExceptionHandler.handleException(e);
 		}
 
-		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.RuleUpdateSucceeded));
+		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.RULE_UPDATED_SUCCESSFULLY));
 	}
 
 	/*
@@ -193,7 +192,7 @@ public class RuleController {
 
 		}
 
-		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.RuleUpdateSucceeded));
+		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.RULE_UPDATED_SUCCESSFULLY));
 
 	}
 
@@ -211,7 +210,7 @@ public class RuleController {
 			return JEExceptionHandler.handleException(e);
 		}
 
-		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.RuleBuiltSuccessfully));
+		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.RULE_WAS_BUILT_SUCCESSFULLY));
 	}
 
 	/*
@@ -224,13 +223,13 @@ public class RuleController {
 		try {
 			ruleService.saveRuleFrontConfig(projectId, ruleId, config);
 			projectService.saveProject(projectId).get();
-			JELogger.info(getClass(), ResponseMessages.RuleAdditionSucceeded);
+			JELogger.info(getClass(), ResponseMessages.RULE_ADDED_SUCCESSFULLY);
 
 		} catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
 		}
 
-		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.RuleAdditionSucceeded));
+		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.RULE_ADDED_SUCCESSFULLY));
 	}
 
 	
@@ -253,7 +252,7 @@ public class RuleController {
 
 		}
 
-		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.RuleAdditionSucceeded));
+		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.RULE_ADDED_SUCCESSFULLY));
 	}
 
 	/*
@@ -272,7 +271,7 @@ public class RuleController {
 
 		}
 
-		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.RuleAdditionSucceeded));
+		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.RULE_ADDED_SUCCESSFULLY));
 	}
 
 	

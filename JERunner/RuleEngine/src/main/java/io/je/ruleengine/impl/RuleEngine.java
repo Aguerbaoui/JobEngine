@@ -59,6 +59,10 @@ public class RuleEngine {
 		return false;
 	}
 
+	public static void deleteProjectRules(String projectId) {
+		//TODO confirm with manél
+		projectManager.deleteProjectContainer(projectId);
+	}
 
 
 	public boolean addRules(List<Rule> rules) throws RuleAlreadyExistsException, RuleCompilationException,
