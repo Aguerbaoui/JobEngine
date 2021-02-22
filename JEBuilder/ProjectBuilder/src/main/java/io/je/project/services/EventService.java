@@ -81,7 +81,7 @@ public class EventService {
 		eventMap.put(EventModelMapping.EVENTID, event.getJobEngineElementID());
 		eventMap.put(EventModelMapping.EVENTTYPE, event.getType().toString());
 		JERunnerAPIHandler.addEvent(eventMap);
-		project.getEvents().put(event.getJobEngineElementID(), event);
+		project.addEvent(event);
 	
 
 		
