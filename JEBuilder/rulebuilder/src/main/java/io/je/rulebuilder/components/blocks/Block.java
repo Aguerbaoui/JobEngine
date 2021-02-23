@@ -206,7 +206,7 @@ public abstract class Block extends JEObject {
 	}
 
 	//ignore block 
-	protected void ignoreBlock()
+	public void ignoreBlock()
 	{
 		for(Block inputBlock : inputBlocks)
 		{
