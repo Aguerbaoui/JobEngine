@@ -14,25 +14,13 @@ public class ArcsinBlock extends SingleInputArithmeticBlock {
 	}
 	
 	
+
+
 	@Override
-	protected String getArithmeticFormula(int level) {
-		switch(level)
-		{
-		case 0:
-			return " Number() from " +  "Math.asin( " +getInputRefName(0) + ")" ;
-		case 1:
-			return " Number(doubleValue " + Keywords.toBeReplaced +") from " + "Math.asin( " +getInputRefName(0) + " )" ;
-		case 2:
-			return "";
-		default: 
-			return " Number() from " +  "Math.asin( " +getInputRefName(0) + ")" ;
-		
-		}
-	
+	protected String getFormula() {
+		return "Math.asin( " +getInputRefName(0) + " )" ;
 	}
 
-	
-	
 
 
 	

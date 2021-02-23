@@ -14,25 +14,13 @@ public class Log10Block extends SingleInputArithmeticBlock {
 	}
 	
 	
-	@Override
-	protected String getArithmeticFormula(int level) {
-		switch(level)
-		{
-		case 0:
-			return " Number() from " +  "Math.log10( " +getInputRefName(0) + ")" ;
-		case 1:
-			return " Number(doubleValue " + Keywords.toBeReplaced +") from " + "Math.log10( " +getInputRefName(0) + " )" ;
-		case 2:
-			return "";
-		default: 
-			return " Number() from " +  "Math.log10( " +getInputRefName(0) + ")" ;
-		
-		}
-	
-	}
 
 	
 	
+	@Override
+	protected String getFormula() {
+		return "Math.log10( " +getInputRefName(0) + ")" ;
+	}
 
 
 	

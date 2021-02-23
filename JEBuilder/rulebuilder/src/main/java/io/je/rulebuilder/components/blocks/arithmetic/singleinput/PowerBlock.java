@@ -16,25 +16,11 @@ public class PowerBlock extends SingleInputArithmeticBlock {
 	}
 	
 	
+	
 	@Override
-	protected String getArithmeticFormula(int level) {
-		switch(level)
-		{
-		case 0:
-			return " Number() from " +  "Math.pow( " +getInputRefName(0) + " , " + value + ")" ;
-		case 1:
-			return " Number(doubleValue " + Keywords.toBeReplaced +") from " + "Math.pow( " +getInputRefName(0) + " , " + value + ")" ;
-		case 2:
-			return "";
-		default: 
-			return " Number() from " +  "Math.pow( " +getInputRefName(0) + " , " + value + ")" ;
-		
-		}
-	
+	protected String getFormula() {
+		return "Math.pow( " +getInputRefName(0) + " , " + value + ")";
 	}
-
-	
-	
 
 
 	
