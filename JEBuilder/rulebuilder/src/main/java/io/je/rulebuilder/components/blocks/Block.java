@@ -205,6 +205,20 @@ public abstract class Block extends JEObject {
 		this.outputBlockIds = outputBlockIds;
 	}
 
+	//ignore block 
+	protected void ignoreBlock()
+	{
+		for(Block inputBlock : inputBlocks)
+		{
+			inputBlock.outputBlocks.addAll(outputBlocks);
+		}
+		
+		for(Block outputBlock : outputBlocks)
+		{
+			outputBlock.inputBlocks.addAll(inputBlocks);
+		}
+	}
+
 
 
 
