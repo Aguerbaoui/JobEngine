@@ -143,7 +143,7 @@ public class BlockGenerator {
 		default:
 			throw new AddRuleBlockException( RuleBuilderErrors.BlockOperationIdUnknown);
 		}
-		return null;
+		throw new AddRuleBlockException( RuleBuilderErrors.BlockOperationIdUnknown);
 
 	}
 }
