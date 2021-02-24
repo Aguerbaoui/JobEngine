@@ -37,7 +37,10 @@ public class JEUnitConverter {
         VOLUME,
         VOLTAGE,
         WORK,
-        BLOOD_GLUCOSE
+        BLOOD_GLUCOSE,
+        DENSITY,
+        FLOW,
+        VISCOSITY
     }
     public enum UnitDefinition {
         // Length
@@ -169,6 +172,8 @@ public class JEUnitConverter {
         WATT_HOUR(new Unit(Category.ENERGY, "W*h", "Watt hour", new BigDecimal("3600"))),
         KILOWATT_SECOND(new Unit(Category.ENERGY, "kW*s", "Kilowatt second", new BigDecimal("1000"))),
         KILOWATT_HOUR(new Unit(Category.ENERGY, "kW*h", "Kilowatt hour", new BigDecimal("3600000"))),
+        BTU(new Unit(Category.ENERGY, "btu", "British thermal unit", new BigDecimal("1055.055853"))),
+
 
         // Force
         NEWTON(new Unit(Category.FORCE, "N", "Newton", new BigDecimal("1.0"))),
@@ -241,7 +246,34 @@ public class JEUnitConverter {
 
         // Blood Glucose
         MILLIGRAM_PER_DECILITER(new Unit(Category.BLOOD_GLUCOSE, "mg/dl", "Milligram per deciliter", new BigDecimal("0.0555"))),
-        MILLIMOL_PER_LITER(new Unit(Category.BLOOD_GLUCOSE, "mmol/l", "Millimols per liter", new BigDecimal("1.0")));
+        MILLIMOL_PER_LITER(new Unit(Category.BLOOD_GLUCOSE, "mmol/l", "Millimols per liter", new BigDecimal("1.0"))),
+    	
+        
+        /*
+         * offset x : 1 newUnit = x baseUnit
+         */
+    	//DENSITY
+        KILOGRAM_PER_CUBIC_METER(new Unit(Category.DENSITY,"kg/m\u00b3","Kilogram per cubic meter", new BigDecimal("1.0E0"))),
+        GRAM_PER_CUBIC_CENTIMETER(new Unit(Category.DENSITY,"g/cm\u00b3","gram per cubic centimeter", new BigDecimal("1.0E3"))),
+    	GRAM_PER_CUBIC_METER(new Unit(Category.DENSITY,"g/m\u00b3","Gram per cubic meter", new BigDecimal("1.0E-3"))),
+    	MILLIGRAM_PER_CUBIC_METER(new Unit(Category.DENSITY,"mg/m\u00b3","Milligram per cubic meter", new BigDecimal("1.0E-6"))),
+    	POUND_PER_CUBIC_FOOT(new Unit(Category.DENSITY,"ib/ft\u00b3","Pound per cubic foot", new BigDecimal("16.01846352"))),
+    	OUNCE_PER_GALLON(new Unit(Category.DENSITY,"oz/gal","Ounce per gallon", new BigDecimal("7.489151776"))) ,
+    	
+    	//FLOW
+        KILOGRAM_PER_SECOND(new Unit(Category.FLOW,"kg/s","Kilogram per second", new BigDecimal("1.0E0"))),
+        KILOGRAM_PER_HOUR(new Unit(Category.FLOW,"kg/h","Kilogram per hour", new BigDecimal("0.00027778"))),
+        CUBIC_FOOT_PER_MINUTE(new Unit(Category.FLOW,"ft\u00b3/mn","Cubic foot per minute", new BigDecimal("0.35"))),
+        CUBIC_METER_PER_SECOND(new Unit(Category.FLOW,"m\u00b3/s","Cubic meter per second", new BigDecimal("739.33"))),
+        GALLON_UPS_PER_MINUTE(new Unit(Category.FLOW,"gal/mn","Gallon US per minute", new BigDecimal("0.047"))),
+
+
+    	//VISCOSITY 
+        CENTIPOISE(new Unit(Category.FLOW,"cP","Centipoise", new BigDecimal("1.0E-3"))),
+        KILOGRAM_PER_METER_SECOND(new Unit(Category.FLOW,"kg/(m.s)","Kilogram per meter second", new BigDecimal("1.0E0"))),
+        POUND_PER_FOOT_HOUR(new Unit(Category.FLOW,"lb/(ft.h)","Pound per foot hour", new BigDecimal("0.00041")));
+
+
 
 
         public final Unit UNIT;
@@ -278,6 +310,9 @@ public class JEUnitConverter {
             put(Category.VOLTAGE, UnitDefinition.VOLT);
             put(Category.WORK, UnitDefinition.WATT);
             put(Category.BLOOD_GLUCOSE, UnitDefinition.MILLIMOL_PER_LITER);
+            put(Category.DENSITY,UnitDefinition.KILOGRAM_PER_CUBIC_METER);
+            put(Category.FLOW,UnitDefinition.KILOGRAM_PER_SECOND);
+            put(Category.VISCOSITY,UnitDefinition.KILOGRAM_PER_METER_SECOND);
         }
     };
 
