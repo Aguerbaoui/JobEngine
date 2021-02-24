@@ -135,7 +135,7 @@ public class WorkflowService {
             b.setThrowMessage(false);
             project.addBlockToWorkflow(b);
 
-        } else if (block.getType().equalsIgnoreCase(WorkflowConstants.MESSAGE_THROW_EVENT_TYPE)) {
+        } /*else if (block.getType().equalsIgnoreCase(WorkflowConstants.MESSAGE_THROW_EVENT_TYPE)) {
             MessageEvent b = new MessageEvent();
             b.setName(block.getAttributes().get(NAME));
             if (!JEStringUtils.isEmpty(block.getAttributes().get(EVENT_ID))) {
@@ -148,7 +148,7 @@ public class WorkflowService {
             b.setJobEngineElementID(block.getId());
             b.setThrowMessage(true);
             project.addBlockToWorkflow(b);
-        } else if (block.getType().equalsIgnoreCase(WorkflowConstants.SIGNALINTERMEDIATECATCHEVENT_TYPE)) {
+        }*/ else if (block.getType().equalsIgnoreCase(WorkflowConstants.SIGNALINTERMEDIATECATCHEVENT_TYPE)) {
             SignalEvent b = new SignalEvent();
             b.setName(block.getAttributes().get(NAME));
             if (!JEStringUtils.isEmpty(block.getAttributes().get(EVENT_ID))) {
@@ -247,6 +247,9 @@ public class WorkflowService {
                     block.getAttributes().get(SOURCE_REF), block.getAttributes().get(TARGET_REF),
                     block.getAttributes().get(CONDITION));
         }
+        else {
+            throw new WorkflowBlockNotFound(Errors.WORKFLOW_BLOCK_NOT_FOUND);
+        }
     }
 
 
@@ -341,7 +344,13 @@ public class WorkflowService {
         if (!project.getWorkflowById(workflowId).getStatus().equals(JEWorkflow.RUNNING)) {
             JELogger.trace(WorkflowService.class, " Running workflow with id = " + workflowId);
             project.getWorkflowById(workflowId).setStatus(JEWorkflow.RUNNING);
-            WorkflowBuilder.runWorkflow(projectId, workflowId);
+            try {
+                WorkflowBuilder.runWorkflow(projectId, project.getWorkflowById(workflowId).getWorkflowName().trim());
+            }
+            catch(JERunnerErrorException e ) {
+                project.getWorkflowById(workflowId).setStatus(JEWorkflow.IDLE);
+                JELogger.error(WorkflowService.class, " Error running workflow in runner msg = " + e.getMessage());
+            }
         } else {
             throw new WorkflowAlreadyRunningException(Errors.WORKFLOW_ALREADY_RUNNING);
         }

@@ -82,34 +82,6 @@ public class ProcessManager {
         //taskService.createTaskQuery().taskId(id); not the same as execution.id this has to be the original task id from the bpmn so we can map them
     }
 
-    /*public static void main(String[] args) {
-        //ProcessManager p = new ProcessManager();
-        String processXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-                "<definitions xmlns=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:activiti=\"http://activiti.org/bpmn\" xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\" xmlns:omgdc=\"http://www.omg.org/spec/DD/20100524/DC\" xmlns:omgdi=\"http://www.omg.org/spec/DD/20100524/DI\" typeLanguage=\"http://www.w3.org/2001/XMLSchema\" expressionLanguage=\"http://www.w3.org/1999/XPath\" targetNamespace=\"123\">\n" +
-                " \n" +
-                "  <process id=\"testGenerated\" isExecutable=\"true\">\n" +
-                "    <extensionElements                                     >\n" +
-                "      <activiti:executionListener event=\"start\" class=\"io.je.executionListeners.ProcessListener\"></activiti:executionListener>\n" +
-                "      <activiti:executionListener event=\"end\" class=\"io.je.executionListeners.ProcessListener\"></activiti:executionListener>\n" +
-                "    </extensionElements>\n" +
-                "    <startEvent id=\"start1\" activiti:isInterrupting=\"false\">\n" +
-                "\n" +
-                "    </startEvent>\n" +
-                "    <endEvent id=\"end1\"></endEvent>\n" +
-                "    <sequenceFlow sourceRef=\"start1\" targetRef=\"end1\"></sequenceFlow>\n" +
-                "  </process>\n" +
-                "  <bpmndi:BPMNDiagram id=\"BPMNDiagram_testGenerated\">\n" +
-                "    <bpmndi:BPMNPlane bpmnElement=\"testGenerated\" id=\"BPMNPlane_testGenerated\"></bpmndi:BPMNPlane>\n" +
-                "  </bpmndi:BPMNDiagram>\n" +
-                "</definitions>";
-        String processId = "testGenerated";
-        ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine();
-        DeploymentBuilder deploymentBuilder = processEngine.getRepositoryService().createDeployment().name(processId);
-        deploymentBuilder.addString(processId + ".bpmn", processXml);
-        deploymentBuilder.deploy();
-        RuntimeService runtimeService = processEngine.getRuntimeService();
-        runtimeService.startProcessInstanceByKey(processId);
-    }*/
     /*
      * Add a process to engine
      * */

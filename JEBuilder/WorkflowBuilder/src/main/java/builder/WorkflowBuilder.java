@@ -29,6 +29,7 @@ public class WorkflowBuilder {
         /*
          * testing purposes only
          * */
+        if(workflow.getWorkflowStartBlock() == null || workflow.getAllBlocks() == null || workflow.getAllBlocks().size() == 0) return false;
         if(!workflow.isScript()) {
             JEToBpmnMapper.createBpmnFromJEWorkflow(workflow);
         }
