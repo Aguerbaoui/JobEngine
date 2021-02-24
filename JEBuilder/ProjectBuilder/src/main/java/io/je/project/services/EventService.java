@@ -90,10 +90,10 @@ public class EventService {
 	public void updateEventType(String projectId, String eventId, String eventType) throws ProjectNotFoundException, EventException {
 		JEProject project = ProjectService.getProjectById(projectId);
 		if (project == null) {
-			throw new ProjectNotFoundException( Errors.PROJECT_NOT_FOUND);
+			throw new ProjectNotFoundException( Errors.PROJECT_NOT_FOUND); //cdc47cf6-28e9-ff1d-996f-b6b1732771a2 -> {JEEvent@10436}
 		}
 
-		JEEvent event = null;
+		JEEvent event = project.getEvents().get(eventId);
 		if(!project.getEvents().containsKey(eventId)) {
 			for(JEEvent ev: project.getEvents().values()) {
 				if(ev.getName().equalsIgnoreCase(eventId)) {
