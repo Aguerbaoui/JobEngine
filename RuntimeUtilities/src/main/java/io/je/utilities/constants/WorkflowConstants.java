@@ -2,6 +2,8 @@ package io.je.utilities.constants;
 
 public class WorkflowConstants {
 
+    public static final String LOG_TASK_IMPLEMENTATION = "io.je.serviceTasks.MailServiceTask";
+
     private WorkflowConstants() {}
     public static final  String PROCESS_LISTENER_IMPLEMENTATION = "io.je.executionListeners.ProcessListener";
     public static final  String START_PROCESS = "start";

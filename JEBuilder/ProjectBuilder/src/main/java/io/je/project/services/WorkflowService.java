@@ -23,7 +23,6 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
@@ -123,7 +122,7 @@ public class WorkflowService {
             b.setJobEngineElementID(block.getId());
             project.addBlockToWorkflow(b);
         } else if (block.getType().equalsIgnoreCase(WorkflowConstants.MESSAGEINTERMEDIATECATCHEVENT_TYPE)) {
-            MessageCatchEvent b = new MessageCatchEvent();
+            MessageEvent b = new MessageEvent();
             b.setName(block.getAttributes().get(NAME));
             if (!JEStringUtils.isEmpty(block.getAttributes().get(EVENT_ID))) {
 
@@ -133,10 +132,11 @@ public class WorkflowService {
             b.setJobEngineProjectID(block.getProjectId());
             b.setWorkflowId(block.getWorkflowId());
             b.setJobEngineElementID(block.getId());
+            b.setThrowMessage(false);
             project.addBlockToWorkflow(b);
 
-        } else if (block.getType().equalsIgnoreCase(WorkflowConstants.MESSAGE_THROW_EVENT_TYPE)) {
-            ThrowMessageEvent b = new ThrowMessageEvent();
+        } /*else if (block.getType().equalsIgnoreCase(WorkflowConstants.MESSAGE_THROW_EVENT_TYPE)) {
+            MessageEvent b = new MessageEvent();
             b.setName(block.getAttributes().get(NAME));
             if (!JEStringUtils.isEmpty(block.getAttributes().get(EVENT_ID))) {
 
@@ -146,9 +146,10 @@ public class WorkflowService {
             b.setJobEngineProjectID(block.getProjectId());
             b.setWorkflowId(block.getWorkflowId());
             b.setJobEngineElementID(block.getId());
+            b.setThrowMessage(true);
             project.addBlockToWorkflow(b);
-        } else if (block.getType().equalsIgnoreCase(WorkflowConstants.SIGNALINTERMEDIATECATCHEVENT_TYPE)) {
-            SignalCatchEvent b = new SignalCatchEvent();
+        }*/ else if (block.getType().equalsIgnoreCase(WorkflowConstants.SIGNALINTERMEDIATECATCHEVENT_TYPE)) {
+            SignalEvent b = new SignalEvent();
             b.setName(block.getAttributes().get(NAME));
             if (!JEStringUtils.isEmpty(block.getAttributes().get(EVENT_ID))) {
 
@@ -158,9 +159,10 @@ public class WorkflowService {
             b.setJobEngineProjectID(block.getProjectId());
             b.setWorkflowId(block.getWorkflowId());
             b.setJobEngineElementID(block.getId());
+            b.setThrowSignal(false);
             project.addBlockToWorkflow(b);
         } else if (block.getType().equalsIgnoreCase(WorkflowConstants.SIGNAL_THROW_EVENT_TYPE)) {
-            ThrowSignalEvent b = new ThrowSignalEvent();
+            SignalEvent b = new SignalEvent();
             b.setName(block.getAttributes().get(NAME));
             if (!JEStringUtils.isEmpty(block.getAttributes().get(EVENT_ID))) {
 
@@ -170,6 +172,7 @@ public class WorkflowService {
             b.setJobEngineProjectID(block.getProjectId());
             b.setWorkflowId(block.getWorkflowId());
             b.setJobEngineElementID(block.getId());
+            b.setThrowSignal(true);
             project.addBlockToWorkflow(b);
         } else if (block.getType().equalsIgnoreCase(WorkflowConstants.EXCLUSIVEGATEWAY_TYPE)) {
             ExclusiveGatewayBlock b = new ExclusiveGatewayBlock();
@@ -243,6 +246,9 @@ public class WorkflowService {
             addSequenceFlow(block.getProjectId(), block.getWorkflowId(),
                     block.getAttributes().get(SOURCE_REF), block.getAttributes().get(TARGET_REF),
                     block.getAttributes().get(CONDITION));
+        }
+        else {
+            throw new WorkflowBlockNotFound(Errors.WORKFLOW_BLOCK_NOT_FOUND);
         }
     }
 
@@ -338,7 +344,13 @@ public class WorkflowService {
         if (!project.getWorkflowById(workflowId).getStatus().equals(JEWorkflow.RUNNING)) {
             JELogger.trace(WorkflowService.class, " Running workflow with id = " + workflowId);
             project.getWorkflowById(workflowId).setStatus(JEWorkflow.RUNNING);
-            WorkflowBuilder.runWorkflow(projectId, workflowId);
+            try {
+                WorkflowBuilder.runWorkflow(projectId, project.getWorkflowById(workflowId).getWorkflowName().trim());
+            }
+            catch(JERunnerErrorException e ) {
+                project.getWorkflowById(workflowId).setStatus(JEWorkflow.IDLE);
+                JELogger.error(WorkflowService.class, " Error running workflow in runner msg = " + e.getMessage());
+            }
         } else {
             throw new WorkflowAlreadyRunningException(Errors.WORKFLOW_ALREADY_RUNNING);
         }
@@ -383,7 +395,7 @@ public class WorkflowService {
             b.setName(block.getAttributes().get(NAME));
             project.addBlockToWorkflow(b);
         } else if (block.getType().equalsIgnoreCase(WorkflowConstants.MESSAGEINTERMEDIATECATCHEVENT_TYPE)) {
-            MessageCatchEvent b = (MessageCatchEvent) project.getWorkflowById(block.getWorkflowId()).getAllBlocks().get(block.getId());
+            MessageEvent b = (MessageEvent) project.getWorkflowById(block.getWorkflowId()).getAllBlocks().get(block.getId());
             b.setName(block.getAttributes().get(NAME));
             if (!JEStringUtils.isEmpty(block.getAttributes().get(EVENT_ID))) {
 
@@ -393,10 +405,11 @@ public class WorkflowService {
             else {
                 b.setEventId(null);
             }
+            b.setThrowMessage(false);
             project.addBlockToWorkflow(b);
 
         } else if (block.getType().equalsIgnoreCase(WorkflowConstants.MESSAGE_THROW_EVENT_TYPE)) {
-            ThrowMessageEvent b = (ThrowMessageEvent) project.getWorkflowById(block.getWorkflowId()).getAllBlocks().get(block.getId());
+            MessageEvent b = (MessageEvent) project.getWorkflowById(block.getWorkflowId()).getAllBlocks().get(block.getId());
             b.setName(block.getAttributes().get(NAME));
             if (!JEStringUtils.isEmpty(block.getAttributes().get(EVENT_ID))) {
 
@@ -406,9 +419,10 @@ public class WorkflowService {
             else {
                 b.setEventId(null);
             }
+            b.setThrowMessage(true);
             project.addBlockToWorkflow(b);
         } else if (block.getType().equalsIgnoreCase(WorkflowConstants.SIGNALINTERMEDIATECATCHEVENT_TYPE)) {
-            SignalCatchEvent b = (SignalCatchEvent) project.getWorkflowById(block.getWorkflowId()).getAllBlocks().get(block.getId());
+            SignalEvent b = (SignalEvent) project.getWorkflowById(block.getWorkflowId()).getAllBlocks().get(block.getId());
             b.setName(block.getAttributes().get(NAME));
             if (!JEStringUtils.isEmpty(block.getAttributes().get(EVENT_ID))) {
 
@@ -418,9 +432,10 @@ public class WorkflowService {
             else {
                 b.setEventId(null);
             }
+            b.setThrowSignal(false);
             project.addBlockToWorkflow(b);
         } else if (block.getType().equalsIgnoreCase(WorkflowConstants.SIGNAL_THROW_EVENT_TYPE)) {
-            ThrowSignalEvent b = (ThrowSignalEvent) project.getWorkflowById(block.getWorkflowId()).getAllBlocks().get(block.getId());
+            SignalEvent b = (SignalEvent) project.getWorkflowById(block.getWorkflowId()).getAllBlocks().get(block.getId());
             b.setName(block.getAttributes().get(NAME));
             if (!JEStringUtils.isEmpty(block.getAttributes().get(EVENT_ID))){
 
@@ -430,6 +445,7 @@ public class WorkflowService {
             else {
                 b.setEventId(null);
             }
+            b.setThrowSignal(true);
             project.addBlockToWorkflow(b);
         } else if (block.getType().equalsIgnoreCase(WorkflowConstants.EXCLUSIVEGATEWAY_TYPE)) {
             ExclusiveGatewayBlock b = (ExclusiveGatewayBlock) project.getWorkflowById(block.getWorkflowId()).getAllBlocks().get(block.getId());
