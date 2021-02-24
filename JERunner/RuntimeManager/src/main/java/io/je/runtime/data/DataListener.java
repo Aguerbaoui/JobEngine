@@ -66,7 +66,12 @@ public class DataListener {
     }
 
     public static void incrementSubscriptionCount(String topic) {
-        agents.get(topic).incrementSubscriptionCount();
+        if(agents.get(topic)==null)
+        {
+        	createNewZmqAgent(topic);
+        }
+    	agents.get(topic).incrementSubscriptionCount();
+
     }
 
 /*
