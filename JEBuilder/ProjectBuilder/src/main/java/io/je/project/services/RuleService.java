@@ -1,6 +1,7 @@
 package io.je.project.services;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -44,6 +45,7 @@ import io.je.utilities.exceptions.RuleBuildFailedException;
 import io.je.utilities.exceptions.RuleDeletionException;
 import io.je.utilities.exceptions.RuleNotAddedException;
 import io.je.utilities.exceptions.RuleNotFoundException;
+import io.je.utilities.files.JEFileUtils;
 import io.je.utilities.logger.JELogger;
 import io.je.utilities.runtimeobject.ClassDefinition;
 
@@ -105,7 +107,21 @@ public class RuleService {
 		if (project == null) {
 			throw new ProjectNotFoundException(Errors.PROJECT_NOT_FOUND);
 		}
-		JERunnerAPIHandler.deleteRule(projectId,ruleId);
+		if(project.getRule(ruleId) instanceof UserDefinedRule)
+		{
+			UserDefinedRule rule = (UserDefinedRule) project.getRule(ruleId);
+			for (String subRuleId : rule.getSubRules())
+			{
+				
+				JERunnerAPIHandler.deleteRule(projectId,subRuleId);
+
+			}
+		}
+		else
+		{
+			JERunnerAPIHandler.deleteRule(projectId,ruleId);
+
+		}
 		project.deleteRule(ruleId);
 
 	}
@@ -249,6 +265,8 @@ public class RuleService {
 		if (project == null) {
 			throw new ProjectNotFoundException(Errors.PROJECT_NOT_FOUND);
 		}
+		
+		cleanUpRules(project);
 		ArrayList<CompletableFuture<?>> ruleFuture = new ArrayList<>();
 
 		for (Entry<String, JERule> entry : project.getRules().entrySet()) {
@@ -259,6 +277,26 @@ public class RuleService {
 		ruleFuture.forEach(CompletableFuture::join);
 		return CompletableFuture.completedFuture(null);
 	}
+
+	private void cleanUpRules(JEProject project) throws JERunnerErrorException, IOException, InterruptedException, ExecutionException {
+		
+		for (JERule rule : project.getRules().values())
+		{
+			cleanUpRule(project,rule.getJobEngineElementID());
+		}
+		
+	}
+	
+	private void cleanUpRule(JEProject project,String ruleId) throws JERunnerErrorException, IOException, InterruptedException, ExecutionException {
+
+			String rulePrefix = "["+ruleId+"]";
+			JEFileUtils.deleteFilesForPathByPrefix(project.getConfigurationPath(),rulePrefix);
+		JERunnerAPIHandler.deleteRule(project.getProjectId(), ruleId);
+		
+	}
+	
+	
+	
 
 	/*
 	 * Retrieve list of all rules that exist in a project.
@@ -370,6 +408,7 @@ public class RuleService {
 				try
 				{
 					JELogger.trace(getClass(), "deleting rule [id : "+ ruleId +")" );
+					//TODO: delete subrules
 					JERunnerAPIHandler.deleteRule(projectId,ruleId);
 					project.deleteRule(ruleId);
 				}
@@ -404,6 +443,7 @@ public class RuleService {
 		} else if (!project.ruleExists(ruleId)) {
 			throw new RuleNotFoundException(RuleBuilderErrors.RuleNotFound);
 		}
+		cleanUpRule(project, ruleId);
 		RuleBuilder.buildRule(project.getRule(ruleId), project.getConfigurationPath());
 
 	}

@@ -21,7 +21,7 @@ import io.je.utilities.logger.JELogger;
 
 /*
  * Rules defined graphically by the user.
- * One GraphicalRule can be equivalents to multiple JobEngine rules ( or drls)
+ * One UserDefinedRule can be equivalents to multiple drl rules 
  * Each Job engine rule is defined by a root block ( a logic or comparison block that precedes and execution sequence)
  */
 public class UserDefinedRule extends JERule {
@@ -37,8 +37,11 @@ public class UserDefinedRule extends JERule {
 	BlockManager blocks = new BlockManager();
 
 	/*
-	 * class names - data model topics -
+	 *  * One UserDefinedRule can be equivalents to multiple drl rules 
+		List of all the subRules
 	 */
+
+	List<String> subRules;
 
 	public UserDefinedRule() {
 
@@ -50,6 +53,7 @@ public class UserDefinedRule extends JERule {
 	 */
 	public List<ScriptedRule> scriptRule() throws RuleBuildFailedException {
 		blocks.init();
+		subRules = new ArrayList<String>();
 		String duration = null;
 		int scriptedRulesCounter = 0;
 		String scriptedRuleid = "";
@@ -82,6 +86,7 @@ public class UserDefinedRule extends JERule {
 					ruleName + scriptedRulesCounter);
 			rule.setTopics(topics);
 			scriptedRules.add(rule);
+			subRules.add(scriptedRuleid);
 		}
 		return scriptedRules;
 	}
@@ -150,5 +155,27 @@ public class UserDefinedRule extends JERule {
 		isBuilt = false;
 
 	}
+
+
+	public BlockManager getBlocks() {
+		return blocks;
+	}
+
+
+	public void setBlocks(BlockManager blocks) {
+		this.blocks = blocks;
+	}
+
+
+	public List<String> getSubRules() {
+		return subRules;
+	}
+
+
+	public void setSubRules(List<String> subRules) {
+		this.subRules = subRules;
+	}
+	
+	
 
 }

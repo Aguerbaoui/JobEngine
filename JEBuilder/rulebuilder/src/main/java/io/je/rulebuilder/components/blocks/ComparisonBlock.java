@@ -179,9 +179,9 @@ public  class ComparisonBlock extends PersistableBlock {
 		case 2013:
 			return "";
 		case 2014:
-			return "==";
+			return "<";
 		case 2015:
-			return "==";
+			return ">";
 		}
 		
 		return null;

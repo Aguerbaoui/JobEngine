@@ -20,8 +20,11 @@ public abstract class ConditionBlock extends Block{
 		StringBuilder consequences = new StringBuilder();
 		for(Block block : getOutputBlocks())
 		{
-			consequences.append(block.getExpression());
-			consequences.append("\n");
+			if(block instanceof ExecutionBlock)
+			{
+				consequences.append(block.getExpression());
+				consequences.append("\n");
+			}
 		}
 		return consequences.toString();
 	}

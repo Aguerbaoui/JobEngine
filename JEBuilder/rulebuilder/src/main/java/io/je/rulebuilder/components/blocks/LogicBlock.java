@@ -31,13 +31,20 @@ public  class LogicBlock extends PersistableBlock {
 	@Override
 	public String getExpression() throws RuleBuildFailedException {
 		StringBuilder expression = new StringBuilder();
-		expression.append(operator +"(\n");
-		for(Block block : inputBlocks)
-		{
-			expression.append(block.getExpression());
-		}
-		expression.append("\n )");
+		expression.append("\n");
+		expression.append("(");
+		expression.append(inputBlocks.get(0).getExpression());
+		expression.append(")");
+		expression.append("\n");
 
+		for(int i=1; i<inputBlocks.size();i++)
+		{
+			expression.append(operator);
+			expression.append("\n");
+			expression.append("(");
+			expression.append(inputBlocks.get(i).getExpression());
+			expression.append(")");
+		}
 		return expression.toString();
 	}
 
@@ -53,26 +60,42 @@ public  class LogicBlock extends PersistableBlock {
 	@Override
 	public String getJoinExpression() throws RuleBuildFailedException {
 		StringBuilder expression = new StringBuilder();
-		expression.append(operator +"(\n");
-		for(Block block : inputBlocks)
-		{
-			expression.append(block.getJoinExpression());
-		}
-		expression.append("\n )");
+		String joinId = inputBlocks.get(0).getJoinId();
+		expression.append("\n");
+		expression.append("(");
+		expression.append(inputBlocks.get(0).getJoinExpression());
+		expression.append(")");
+		expression.append("\n");
 
+		for(int i=1; i<inputBlocks.size();i++)
+		{
+			expression.append(operator);
+			expression.append("\n");
+			expression.append("(");
+			expression.append(inputBlocks.get(i).getJoinedExpression(joinId));
+			expression.append(")");
+		}
 		return expression.toString();
+	
 	}
 
 	@Override
 	public String getJoinedExpression(String joinId) throws RuleBuildFailedException {
 		StringBuilder expression = new StringBuilder();
-		expression.append(operator +"(\n");
-		for(Block block : inputBlocks)
-		{
-			expression.append(block.getJoinedExpression(joinId));
-		}
-		expression.append("\n )");
+		expression.append("\n");
+		expression.append("(");
+		expression.append(inputBlocks.get(0).getJoinedExpressionAsFirstOperand(joinId));
+		expression.append(")");
+		expression.append("\n");
 
+		for(int i=1; i<inputBlocks.size();i++)
+		{
+			expression.append(operator);
+			expression.append("\n");
+			expression.append("(");
+			expression.append(inputBlocks.get(i).getJoinedExpression(joinId));
+			expression.append(")");
+		}
 		return expression.toString();
 	}
 

@@ -1,6 +1,7 @@
 package io.je.rulebuilder.components.blocks.arithmetic.singleinput;
 
 import io.je.rulebuilder.components.blocks.ArithmeticBlock;
+import io.je.rulebuilder.config.Keywords;
 import io.je.rulebuilder.models.BlockModel;
 import io.je.utilities.exceptions.RuleBuildFailedException;
 
@@ -15,6 +16,23 @@ public abstract class SingleInputArithmeticBlock extends ArithmeticBlock {
 	protected SingleInputArithmeticBlock() {
 	}
 
+	
+	protected abstract String getFormula();
+
+	
+	@Override
+	protected String getArithmeticFormula(int level) {
+		switch(level)
+		{
+		case 0:
+			return " Number() from " +  getFormula() ;
+		case 1:
+			return " Number(doubleValue " + Keywords.toBeReplaced +") from " + getFormula() ;
+		default: 
+			return " Number() from " + getFormula() ;
+		
+		}
+	}
 
 
 	@Override

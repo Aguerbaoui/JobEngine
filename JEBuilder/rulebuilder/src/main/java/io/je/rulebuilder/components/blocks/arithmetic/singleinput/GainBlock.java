@@ -17,23 +17,12 @@ public class GainBlock extends SingleInputArithmeticBlock {
 	public GainBlock() {}
 	
 	
+
+
 	@Override
-	protected String getArithmeticFormula(int level) {
-		switch(level)
-		{
-		case 0:
-			return " Number() from " + getInputRefName(0)+ " * " + value  ;
-		case 1:
-			return " Number(doubleValue " + Keywords.toBeReplaced +") from " + getInputRefName(0) + " * " + value;
-		case 2:
-			return "";
-		default: 
-			return " Number() from " + getInputRefName(0)+ " * " + value  ;
-		
-		}
-	
+	protected String getFormula() {
+		return getInputRefName(0)+ " * " + value  ;
 	}
 
-	
 
 }

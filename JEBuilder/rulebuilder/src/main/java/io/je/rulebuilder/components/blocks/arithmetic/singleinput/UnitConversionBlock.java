@@ -19,26 +19,13 @@ public class UnitConversionBlock extends SingleInputArithmeticBlock {
 		
 	}
 	
-	
-	@Override
-	protected String getArithmeticFormula(int level) {
-		switch(level)
-		{
-		case 0:
-			return " Number() from " +  "JEConverter.convert( " +getInputRefName(0) + ","+ inputUnit +","+ outputUnit+")" ;
-		case 1:
-			return " Number(doubleValue " + Keywords.toBeReplaced +") from " + "JEConverter.convert( " +getInputRefName(0) + ","+ inputUnit +","+ outputUnit+")" ;
-		case 2:
-			return "";
-		default: 
-			return " Number() from " +  "JEConverter.convert( " +getInputRefName(0) + ","+ inputUnit +","+ outputUnit+")" ;
-		
-		}
-	
-	}
 
 	
-	
+	@Override
+	protected String getFormula() {
+		return "JEConverter.convert( " +getInputRefName(0) + ","+ inputUnit +","+ outputUnit+")" ;
+	}
+
 
 
 	

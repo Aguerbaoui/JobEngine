@@ -15,24 +15,9 @@ public class TanBlock extends SingleInputArithmeticBlock {
 	
 	
 	@Override
-	protected String getArithmeticFormula(int level) {
-		switch(level)
-		{
-		case 0:
-			return " Number() from " +  "Math.tan( " +getInputRefName(0) + ")" ;
-		case 1:
-			return " Number(doubleValue " + Keywords.toBeReplaced +") from " + "Math.tan( " +getInputRefName(0) + " )" ;
-		case 2:
-			return "";
-		default: 
-			return " Number() from " +  "Math.tan( " +getInputRefName(0) + ")" ;
-		
-		}
-	
+	protected String getFormula() {
+		return "Math.tan( " +getInputRefName(0) + ")" ;
 	}
-
-	
-	
 
 
 	

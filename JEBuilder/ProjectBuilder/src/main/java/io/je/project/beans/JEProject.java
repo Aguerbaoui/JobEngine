@@ -108,11 +108,13 @@ public class JEProject {
 
 	public boolean isBuilt() {
 		//TODO: check for unbuilt workflows
+		boolean isBuilt = true;
 		for(JERule rule : this.getRules().values())
 		{
 			if(!rule.isBuilt())
 			{
 				projectStatus = ProjectStatus.notBuilt;
+				isBuilt=false;
 				break;
 
 			}
@@ -121,11 +123,12 @@ public class JEProject {
 		for(JEWorkflow workflow: workflows.values()) {
 		    if(!workflow.getStatus().equals(JEWorkflow.BUILT)) {
 				projectStatus = ProjectStatus.notBuilt;
+				isBuilt=false;
 		        break;
             }
         }
 		
-		return false;
+		return isBuilt;
 	}
  
 	/******************************************************** RULES **********************************************************************/

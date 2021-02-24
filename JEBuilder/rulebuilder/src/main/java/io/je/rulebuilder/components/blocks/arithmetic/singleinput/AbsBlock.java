@@ -12,23 +12,9 @@ public class AbsBlock extends SingleInputArithmeticBlock {
 	private  AbsBlock() {
 		
 	}
-	
-	
 	@Override
-	protected String getArithmeticFormula(int level) {
-		switch(level)
-		{
-		case 0:
-			return " Number() from " +  "Math.abs( " +getInputRefName(0) + ")" ;
-		case 1:
-			return " Number(doubleValue " + Keywords.toBeReplaced +") from " + "Math.abs( " +getInputRefName(0) + " )" ;
-		case 2:
-			return "";
-		default: 
-			return " Number() from " +  "Math.abs( " +getInputRefName(0) + ")" ;
-		
-		}
-	
+	protected String getFormula() {
+		return "Math.abs( " +getInputRefName(0) + ")" ;
 	}
 
 	
