@@ -1,9 +1,14 @@
 package io.je.utilities.models;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import io.je.utilities.beans.JEEvent;
 import io.je.utilities.mapping.EventModelMapping;
 
-
+@JsonInclude(Include.NON_NULL)
 public class EventModel {
 
     @JsonProperty(EventModelMapping.EVENTID)
@@ -21,6 +26,17 @@ public class EventModel {
     @JsonProperty(EventModelMapping.DESCRIPTION)
     private String description;
 
+    @JsonProperty(EventModelMapping.CREATEDAT)
+    String createdAt;
+    
+    @JsonProperty(EventModelMapping.LASTUPDATE)
+    String lastModifiedAt;
+    
+    @JsonProperty(EventModelMapping.TRIGGERED)
+    String triggered;
+    
+    
+    
     public String getProjectId() {
         return projectId;
     }
@@ -47,6 +63,16 @@ public class EventModel {
     public EventModel() {
         super();
     }
+
+	public EventModel(JEEvent event) {
+		this.name = event.getName();
+        this.eventId = event.getJobEngineElementID();
+        this.projectId = event.getJobEngineProjectID();
+        this.description = event.getDescription();
+        this.createdAt = event.getJeObjectCreationDate().toString();
+        this.lastModifiedAt = event.getJeObjectLastUpdate().toString();
+        this.triggered = String.valueOf(event.isTriggered());
+	}
 
 	public String getEventId() {
         return eventId;

@@ -38,6 +38,8 @@ public class ResponseMessages {
 
 	public static final String EVENT_DELETED = "Event was sucessfully deleted ";
 
+	public static final String EVENT_UPDATED = "Event was successfully updated ";
+
 	
 	
 	

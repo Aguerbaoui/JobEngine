@@ -68,4 +68,5 @@ public class JEEvent extends JEObject {
     public void setDescription(String description) {
         this.description = description;
     }
+    
 }

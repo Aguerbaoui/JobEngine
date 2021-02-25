@@ -46,6 +46,8 @@ public class Errors {
 
 	public static final String WORKFLOW_TRIGGERED_BY_EVENT = " Workflow cant start manually";
 
+	public static final String EVENT_ALREADY_EXISTS = "An event with this id already exists";
+
 
 
 

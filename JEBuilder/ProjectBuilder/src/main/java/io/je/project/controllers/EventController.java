@@ -70,6 +70,8 @@ public class EventController {
 	public ResponseEntity<?> getEvent(@PathVariable("projectId") String projectId,
 			@PathVariable("eventId") String eventId) {
 		JEEvent event = null;
+		JELogger.info(getClass(), " getting event [ id="+eventId+"]");
+
 		try {
 			event = eventService.getEvent(projectId, eventId);
 			if (event == null) {
@@ -81,7 +83,7 @@ public class EventController {
 
 		}
 
-		return new ResponseEntity<Object>(event, HttpStatus.OK);
+		return new ResponseEntity<Object>(new EventModel(event), HttpStatus.OK);
 
 	}
 
@@ -92,6 +94,7 @@ public class EventController {
 	public ResponseEntity<?> addEvent(@PathVariable("projectId") String projectId, @RequestBody EventModel eventModel) {
 
 		try {
+			JELogger.info(getClass(), " adding event [ id="+eventModel.getEventId()+"]");
 			eventService.addEvent(projectId, eventModel);
 			projectService.saveProject(projectId);
 			JELogger.info(getClass(), ResponseMessages.EVENT_ADDED);
@@ -100,9 +103,32 @@ public class EventController {
 			return JEExceptionHandler.handleException(e);
 
 		}
-
+		JELogger.info(getClass(), "  event [ id="+eventModel.getEventId()+"] added successfully");
 		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.EVENT_ADDED));
 	}
+	
+	
+
+	/*
+	 * update event
+	 */
+	@PostMapping(value = "/{projectId}/updateEvent", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> updateEvent(@PathVariable("projectId") String projectId, @RequestBody EventModel eventModel) {
+
+		try {
+			JELogger.info(getClass(), " updating event [ id="+eventModel.getEventId()+"]");
+			eventService.updateEvent(projectId, eventModel);
+			projectService.saveProject(projectId);
+			JELogger.info(getClass(), ResponseMessages.EVENT_ADDED);
+
+		} catch (Exception e) {
+			return JEExceptionHandler.handleException(e);
+
+		}
+		JELogger.info(getClass(), "  event [ id="+eventModel.getEventId()+"] updated successfully");
+		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.EVENT_UPDATED));
+	}
+
 
 	/*
 	 * delete event
@@ -121,7 +147,7 @@ public class EventController {
 			return JEExceptionHandler.handleException(e);
 			
 		}
-
+		JELogger.info(getClass(), "  event [ id="+eventId+"] deleted successfully");
 		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.EVENT_DELETED));
 	}
 }

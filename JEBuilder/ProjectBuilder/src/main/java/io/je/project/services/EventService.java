@@ -1,6 +1,7 @@
 package io.je.project.services;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
@@ -27,12 +28,18 @@ public class EventService {
 	 * Retrieve list of all events that exist in a project.
 	 */
 	
-	public Collection<JEEvent> getAllEvents(String projectId) throws ProjectNotFoundException {
+	public Collection<EventModel> getAllEvents(String projectId) throws ProjectNotFoundException {
 		JEProject project = ProjectService.getProjectById(projectId);
 		if (project == null) {
 			throw new ProjectNotFoundException( Errors.PROJECT_NOT_FOUND);
 		}
-		return project.getEvents().values();
+		ArrayList<EventModel> eventModels = new ArrayList<EventModel>();
+		for(JEEvent event: project.getEvents().values())
+		{
+			eventModels.add(new EventModel(event));
+		}
+	
+		return eventModels;
 	}
 
 	/*
@@ -55,11 +62,39 @@ public class EventService {
 		if (project == null) {
 			throw new ProjectNotFoundException( Errors.PROJECT_NOT_FOUND);
 		}
+		
+		if(project.getEvents().contains(eventModel.getEventId()))
+		{
+			throw new EventException(Errors.EVENT_ALREADY_EXISTS);
+		}
 
 		if(!JEStringUtils.isStringOnlyAlphabet(eventModel.getName())) {
 			throw new EventException(Errors.NOT_ALPHABETICAL);
 		}
 		JEEvent event = new JEEvent(eventModel.getEventId(), projectId, eventModel.getName(), EventType.GENERIC_EVENT);
+		event.setDescription(eventModel.getDescription());
+		registerEvent(event);
+	}
+	
+	/*
+	 * add new event
+	 */
+	public void updateEvent(String projectId, EventModel eventModel) throws ProjectNotFoundException, JERunnerErrorException, IOException, InterruptedException, ExecutionException, EventException {
+		JEProject project = ProjectService.getProjectById(projectId);
+		if (project == null) {
+			throw new ProjectNotFoundException( Errors.PROJECT_NOT_FOUND);
+		}
+		
+		if(!project.getEvents().contains(eventModel.getEventId()))
+		{
+			throw new EventException(Errors.EVENT_NOT_FOUND);
+		}
+
+		if(!JEStringUtils.isStringOnlyAlphabet(eventModel.getName())) {
+			throw new EventException(Errors.NOT_ALPHABETICAL);
+		}
+		JEEvent event = new JEEvent(eventModel.getEventId(), projectId, eventModel.getName(), EventType.GENERIC_EVENT);
+		event.setDescription(eventModel.getDescription());
 		registerEvent(event);
 	}
 	
