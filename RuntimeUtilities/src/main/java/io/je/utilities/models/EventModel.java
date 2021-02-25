@@ -97,4 +97,5 @@ public class EventModel {
     public void setEventType(String eventType) {
         this.eventType = eventType;
     }
+    
 }

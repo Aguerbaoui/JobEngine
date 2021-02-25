@@ -77,7 +77,7 @@ public class EventService {
 	}
 	
 	/*
-	 * add new event
+	 * update new event
 	 */
 	public void updateEvent(String projectId, EventModel eventModel) throws ProjectNotFoundException, JERunnerErrorException, IOException, InterruptedException, ExecutionException, EventException {
 		JEProject project = ProjectService.getProjectById(projectId);
@@ -85,7 +85,7 @@ public class EventService {
 			throw new ProjectNotFoundException( Errors.PROJECT_NOT_FOUND);
 		}
 		
-		if(!project.getEvents().contains(eventModel.getEventId()))
+		if(!project.getEvents().containsKey(eventModel.getEventId()))
 		{
 			throw new EventException(Errors.EVENT_NOT_FOUND);
 		}

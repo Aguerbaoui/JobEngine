@@ -97,7 +97,6 @@ public class EventController {
 			JELogger.info(getClass(), " adding event [ id="+eventModel.getEventId()+"]");
 			eventService.addEvent(projectId, eventModel);
 			projectService.saveProject(projectId);
-			JELogger.info(getClass(), ResponseMessages.EVENT_ADDED);
 
 		} catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
@@ -119,7 +118,6 @@ public class EventController {
 			JELogger.info(getClass(), " updating event [ id="+eventModel.getEventId()+"]");
 			eventService.updateEvent(projectId, eventModel);
 			projectService.saveProject(projectId);
-			JELogger.info(getClass(), ResponseMessages.EVENT_ADDED);
 
 		} catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
