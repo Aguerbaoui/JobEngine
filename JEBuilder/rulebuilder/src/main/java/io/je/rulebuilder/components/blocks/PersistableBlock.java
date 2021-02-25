@@ -17,10 +17,24 @@ public abstract class PersistableBlock extends ConditionBlock {
 
 	public PersistableBlock(String jobEngineElementID, String jobEngineProjectID, String ruleId, String blockName,
 			String blockDescription, int timePersistenceValue,
-			TimePersistenceUnit timePersistenceUnit) {
+			String timePersistenceUnit) {
 		super(jobEngineElementID, jobEngineProjectID, ruleId, blockName, blockDescription);
 		this.timePersistenceValue = timePersistenceValue;
-		this.timePersistenceUnit = timePersistenceUnit;
+		switch(timePersistenceUnit)
+		{
+		case "second":
+			this.timePersistenceUnit = TimePersistenceUnit.second;
+			break;
+		case "minute":
+			this.timePersistenceUnit = TimePersistenceUnit.minute;
+			break;
+		case "hour":
+			this.timePersistenceUnit = TimePersistenceUnit.hour;
+			break;
+		default:
+			this.timePersistenceUnit = TimePersistenceUnit.second;
+
+		}
 	}
 
 	public PersistableBlock() {
@@ -43,6 +57,36 @@ public abstract class PersistableBlock extends ConditionBlock {
 		this.timePersistenceUnit = timePersistenceUnit;
 	}
 
+	public String getUnitAsString()
+	{
+		switch(timePersistenceUnit)
+		{
+		
+		case hour:
+			return "h";
+		case minute:
+			return "m";
+		case second:
+			return "s";
+		default:
+			return "s";
+		
+		}
+	}
+	
+	public String getPersistanceExpression()
+	{
+		if(timePersistenceValue != 0 && timePersistenceUnit != null) {
+			return String.valueOf(timePersistenceValue) + getUnitAsString();
+		}
+		return null;
+	}
+	
+	@Override
+	public String getAsFirstOperandExpression() {
+		return null;
+	}
+	
 	@Override
 	public String toString() {
 		return "Block [timePersistenceValue=" + timePersistenceValue + ", timePersistenceUnit="

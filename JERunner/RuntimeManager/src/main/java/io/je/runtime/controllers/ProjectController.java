@@ -1,5 +1,6 @@
 package io.je.runtime.controllers;
 
+import io.je.project.exception.JEExceptionHandler;
 import io.je.runtime.services.RuntimeDispatcher;
 import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.constants.ResponseMessages;
@@ -7,6 +8,7 @@ import io.je.utilities.exceptions.ProjectAlreadyRunningException;
 import io.je.utilities.exceptions.RuleBuildFailedException;
 import io.je.utilities.exceptions.RulesNotFiredException;
 import io.je.utilities.exceptions.WorkflowNotFoundException;
+import io.je.utilities.logger.JELogger;
 import io.je.utilities.network.JEResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -47,7 +49,6 @@ public class ProjectController {
      * */
     @GetMapping(value = "/runProject/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> runProject(@PathVariable String projectId) {
-        //Start listening via data listener do not forget plz
         try {
             dispatcher.runProject(projectId);
         } catch (RulesNotFiredException | RuleBuildFailedException | ProjectAlreadyRunningException | WorkflowNotFoundException e) {
@@ -62,35 +63,35 @@ public class ProjectController {
      * */
     @GetMapping(value = "/stopProject/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> stopProject(@PathVariable String projectId) {
-        try {
+    	//TODO: add failed to stop project exception
             dispatcher.stopProject(projectId);
-        } catch (RulesNotFiredException | RuleBuildFailedException | ProjectAlreadyRunningException e) {
-            e.printStackTrace();
-            return ResponseEntity.badRequest().body(new JEResponse(e.getCode(), e.getMessage()));
-        }
+
         return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.STOPPING_PROJECT));
 
     }
 
     /*
-     * Add topics
+     * Delete whole project data ( rules and workflows and events)
      * */
-    @PostMapping(value = "/addTopics/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> addTopics(@PathVariable String projectId, @RequestBody List<String> topics) {
-        //Stop listening via data listener do not forget plz
-        dispatcher.addTopics(projectId, topics);
-        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.TOPIC_ADDED));
+    @GetMapping(value = "/removeProjectData/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> removeProjectData(@PathVariable String projectId) {
+        try {
+            dispatcher.removeProjectData(projectId);
+        } catch (Exception e) {
+            return JEExceptionHandler.handleException(e);
+        }
+        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.PROJECT_DELETED));
+
     }
-
     /*
-     * Initialize the project
+     * Get app log
      * */
-  /*  @RequestMapping(value = "/initProject", method = RequestMethod.GET)
-    public ResponseEntity<?> initProject() {
-        WorkflowEngineHandler.initWorkflowEngine();
-        return new ResponseEntity<Object>(HttpStatus.OK).ok("Workflow Initialized");
+    @GetMapping(value = "/getLog", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> getLog() {
+        //TODO: add failed to stop project exception
+       // List l = new ArrayList(JELogger.getQueue());
+        //JELogger.getQueue().removeAll(JELogger.getQueue());
+        return ResponseEntity.ok(JELogger.getQueue());
 
-    }*/
-
-
+    }
 }

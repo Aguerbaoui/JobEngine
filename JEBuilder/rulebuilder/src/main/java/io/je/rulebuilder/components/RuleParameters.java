@@ -10,7 +10,7 @@ public class RuleParameters {
 	/*
 	 * rule parameter that indicates whether a rule is enabled or disabled
 	 */
-	private boolean enabled;
+	private String enabled;
 
 	/*
 	 * rule parameter that indicates when the rule should be activated
@@ -39,11 +39,13 @@ public class RuleParameters {
 		this.salience = salience;
 	}
 
-	public boolean isEnabled() {
+
+
+	public String getEnabled() {
 		return enabled;
 	}
 
-	public void setEnabled(boolean enabled) {
+	public void setEnabled(String enabled) {
 		this.enabled = enabled;
 	}
 

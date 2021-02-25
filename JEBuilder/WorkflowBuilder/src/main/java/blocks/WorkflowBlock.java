@@ -9,6 +9,7 @@ import org.activiti.bpmn.model.SequenceFlow;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 /*
  * Model class for a workflow block
@@ -18,12 +19,12 @@ public class WorkflowBlock extends JEObject {
     /*
      * Incoming flows
      * */
-    private HashMap<String, String> inflows;
+    private ConcurrentHashMap<String, String> inflows;
 
     /*
      * Outgoing flows
      * */
-    private HashMap<String, String> outFlows;
+    private ConcurrentHashMap<String, String> outFlows;
 
     /*
      * Condition to reach the block
@@ -49,36 +50,36 @@ public class WorkflowBlock extends JEObject {
      * Constructor
      * */
     public WorkflowBlock() {
-        inflows = new HashMap<String, String>();
-        outFlows = new HashMap<String, String>();
+        inflows = new ConcurrentHashMap<String, String>();
+        outFlows = new ConcurrentHashMap<String, String>();
         processed = false;
     }
 
     /*
      * Returns incoming flows
      * */
-    public HashMap<String, String> getInflows() {
+    public ConcurrentHashMap<String, String> getInflows() {
         return inflows;
     }
 
     /*
      * Sets incoming flows
      * */
-    public void setInflows(HashMap<String, String> inflows) {
+    public void setInflows(ConcurrentHashMap<String, String> inflows) {
         this.inflows = inflows;
     }
 
     /*
      * Returns outgoing flows
      * */
-    public HashMap<String, String> getOutFlows() {
+    public ConcurrentHashMap<String, String> getOutFlows() {
         return outFlows;
     }
 
     /*
      * Set outgoing flows
      * */
-    public void setOutFlows(HashMap<String, String> outFlows) {
+    public void setOutFlows(ConcurrentHashMap<String, String> outFlows) {
         this.outFlows = outFlows;
     }
 

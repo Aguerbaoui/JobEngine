@@ -1,9 +1,12 @@
 package io.je.rulebuilder.models;
 
-import java.util.ArrayList;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import io.je.rulebuilder.components.JERule;
+import io.je.rulebuilder.components.UserDefinedRule;
 import io.je.rulebuilder.config.AttributesMapping;
 
 
@@ -19,12 +22,16 @@ public class RuleModel {
     
     @JsonProperty(AttributesMapping.RULENAME)
     String ruleName;
+
+    @JsonProperty(AttributesMapping.DESC)
+    String description;
 	
+    
     @JsonProperty(AttributesMapping.SALIENCE)
-    int salience;
+    String salience;
 
     @JsonProperty(AttributesMapping.ENABLED)
-    boolean enabled;
+    String enabled;
 	
     @JsonProperty(AttributesMapping.DATEEFFECTIVE)
     String dateEffective;
@@ -35,10 +42,50 @@ public class RuleModel {
     @JsonProperty(AttributesMapping.TIMER)
     String timer;
 	
-
+    @JsonProperty(AttributesMapping.CREATEDAT)
+    String createdAt;
+    
+    @JsonProperty(AttributesMapping.LASTUPDATE)
+    String lastModifiedAt;
+    
+    @JsonProperty(AttributesMapping.BUILDSTATUS)
+    String isBuilt;
     
     
+    //temporary 
+    @JsonProperty(AttributesMapping.FRONTCONFIG)
+    String ruleFrontConfig;
+    
+    
+    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yyyy, h:mm:ss a");
 
+
+    
+    public RuleModel(JERule rule) {
+		super();
+		this.ruleId = rule.getJobEngineElementID();
+		this.ruleName = rule.getRuleName();
+		this.description = rule.getDescription();
+		this.isBuilt = String.valueOf(rule.isBuilt());
+		this.createdAt = rule.getJeObjectCreationDate().format(formatter);
+		this.lastModifiedAt = rule.getJeObjectLastUpdate().format(formatter);
+		if(rule instanceof UserDefinedRule) {
+			this.salience = ((UserDefinedRule)rule).getRuleParameters().getSalience();
+			this.enabled = ((UserDefinedRule)rule).getRuleParameters().getEnabled();
+			this.dateEffective = ((UserDefinedRule)rule).getRuleParameters().getDateEffective();
+			this.dateExpires = ((UserDefinedRule)rule).getRuleParameters().getDateExpires();
+			this.timer = ((UserDefinedRule)rule).getRuleParameters().getTimer();
+			this.ruleFrontConfig = ((UserDefinedRule)rule).getRuleFrontConfig();
+
+		}
+		
+	}
+
+
+
+	public RuleModel() {
+		super();
+	}
 	public String getRuleId() {
 		return ruleId;
 	}
@@ -46,17 +93,19 @@ public class RuleModel {
 		this.ruleId = ruleId;
 	}
 
+
 	
-	public int getSalience() {
+
+	public String getSalience() {
 		return salience;
 	}
-	public void setSalience(int salience) {
+	public void setSalience(String salience) {
 		this.salience = salience;
 	}
-	public boolean isEnabled() {
+	public String getEnabled() {
 		return enabled;
 	}
-	public void setEnabled(boolean enabled) {
+	public void setEnabled(String enabled) {
 		this.enabled = enabled;
 	}
 	public String getDateEffective() {
@@ -83,6 +132,60 @@ public class RuleModel {
 	}
 	public void setRuleName(String ruleName) {
 		this.ruleName = ruleName;
+	}
+	public String getDescription() {
+		return description;
+	}
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+
+
+	public String getCreatedAt() {
+		return createdAt;
+	}
+
+
+
+	public void setCreatedAt(String createdAt) {
+		this.createdAt = createdAt;
+	}
+
+
+
+	public String getLastModifiedAt() {
+		return lastModifiedAt;
+	}
+
+
+
+	public void setLastModifiedAt(String lastModifiedAt) {
+		this.lastModifiedAt = lastModifiedAt;
+	}
+
+
+
+	public String getIsBuilt() {
+		return isBuilt;
+	}
+
+
+
+	public void setIsBuilt(String isBuilt) {
+		this.isBuilt = isBuilt;
+	}
+
+
+
+	public String getRuleFrontConfig() {
+		return ruleFrontConfig;
+	}
+
+
+
+	public void setRuleFrontConfig(String ruleFrontConfig) {
+		this.ruleFrontConfig = ruleFrontConfig;
 	}
 
 

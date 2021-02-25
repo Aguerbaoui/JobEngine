@@ -3,15 +3,15 @@ package io.je.utilities.constants;
 public class Errors {
 
 
-    public final static String workflowNotFound = "Workflow not found";
+    public final static String WORKFLOW_NOT_FOUND = "Workflow not found";
 
-    public final static String workflowBlockNotFound = "Workflow block not found";
+    public final static String WORKFLOW_BLOCK_NOT_FOUND = "Workflow block not found";
 
-    public final static String projectNotFound = "Project not found";
+    public final static String PROJECT_NOT_FOUND = "Project not found";
 
-    public final static String uknownError = "Uknown error";
+    public final static String UKNOWN_ERROR = "Uknown error";
 
-    public final static String InvalidSequenceFlow = "Invalid Sequence flow";
+    public final static String INVALID_SEQUENCE_FLOW = "Invalid Sequence flow";
 
     public final static String NETWORK_ERROR = "Error connecting to runtime manager api";
 
@@ -31,6 +31,26 @@ public class Errors {
 
     
     public final static String PROJECT_RUNNING = "PROJECT ALREADY RUNNING";
-    
+
+    public final static String PROJECT_BUILT = "PROJECT ALREADY BUILT";
+
+    public final static String PROJECT_NOT_BUILT = "PROJECT NEEDS BUILD";
+
+    public final static String PROJECT_STOPPED = "PROJECT ALREADY STOPPED";
+
+    public final static String WORKFLOW_ALREADY_RUNNING = "Workflow ALREADY RUNNING";
+
+	public static final String EVENT_NOT_FOUND = " No event with this id was found ";
+
+    public static final String NOT_ALPHABETICAL = " Should only contain alphabetical characters ";
+
+	public static final String WORKFLOW_TRIGGERED_BY_EVENT = " Workflow cant start manually";
+
+	public static final String EVENT_ALREADY_EXISTS = "An event with this id already exists";
+
+
+
+
+
 
 }

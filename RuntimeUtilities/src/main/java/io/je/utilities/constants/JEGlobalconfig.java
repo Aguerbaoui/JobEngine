@@ -7,16 +7,17 @@ public class JEGlobalconfig {
     //JERunner
     public  static String RUNTIME_MANAGER_BASE_API = "http://127.0.0.1:8081";
 
+    public  static String BUILDER_BASE_API = "http://127.0.0.1:8080";
 	//Data Definition
 	
-    public  static String CLASS_DEFINITION_API = "http://192.168.7.51:1515/api";
+    public  static String CLASS_DEFINITION_API = "http://192.168.0.169:13123/api";
 
 	
 	
 	//Data Model
-    public  static String DATA_MANAGER_BASE_API = "tcp://192.168.7.51";
+    public  static String DATA_MANAGER_BASE_API = "tcp://192.168.0.169";
 
-    public  static int SUBSCRIBER_PORT = 5554;
+    public  static int SUBSCRIBER_PORT = 5556;
 
     public  static int REQUEST_PORT = 6638;
     
@@ -60,7 +61,6 @@ public class JEGlobalconfig {
     public static String builderClassLoadPath = System.getProperty("catalina.base") + "\\webapps\\ProjectBuilder\\WEB-INF\\classes\\";
 
     // path where runner loads classes
-    public static String runnerClassLoadPath = System.getProperty("catalina.base") + "\\webapps\\RuntimeManager\\WEB-INF\\classes\\";
+    public static String runnerClassLoadPath = System.getProperty("catalina.base") + "\\webapps\\RuntimeManager\\WEB-INF\\classes\\";*/
 
-*/
 }

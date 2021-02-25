@@ -1,8 +1,8 @@
 package io.je.rulebuilder.components;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import org.json.JSONObject;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import io.je.utilities.runtimeobject.ClassDefinition;
@@ -27,6 +27,9 @@ public abstract class JERule extends JEObject  {
 	 */
 	boolean isAdded =  false;
 	
+	List<String> topics = new ArrayList<>();
+	
+	String description ;
 	
 	String ruleFrontConfig;
 	
@@ -39,7 +42,6 @@ public abstract class JERule extends JEObject  {
 	}
 
 
-	public abstract List<ClassDefinition> getTopics();
 	
 	public String getRuleName() {
 		return ruleName;
@@ -79,8 +81,33 @@ public abstract class JERule extends JEObject  {
 		this.ruleFrontConfig = ruleFrontConfig;
 	}
 
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public void addTopic(String topic) {
+		if(!topics.contains(topic))
+		{
+			topics.add(topic);
+		}
+	}
+		
+
+	public List<String> getTopics() {
+		return topics;
+	}
+
+	public void setTopics(List<String> topics) {
+		this.topics = topics;
+	}
 
 
+
+	
 	
 
 }

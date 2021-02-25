@@ -1,21 +1,14 @@
 package io.je.project.controllers;
 
-import java.io.IOException;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import io.je.project.exception.JEExceptionHandler;
 import io.je.project.services.ClassService;
-import io.je.utilities.constants.Errors;
 import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.constants.ResponseMessages;
-import io.je.utilities.exceptions.AddClassException;
-import io.je.utilities.exceptions.ClassLoadException;
-import io.je.utilities.exceptions.DataDefinitionUnreachableException;
-import io.je.utilities.exceptions.JERunnerErrorException;
-import io.je.utilities.logger.JELogger;
 import io.je.utilities.network.JEResponse;
 
 /*
@@ -31,26 +24,21 @@ public class ClassController {
 	
 	
 	/*
-	 * add new class
+	 * add new class 
+	 * TODO: 
 	 */
 	@PostMapping(value = "/addclass/{worksapceId}/{classId}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<JEResponse> addClass(@PathVariable("worksapceId") String worksapceId, @PathVariable("classId") String classId)
+	public ResponseEntity<?> addClass(@PathVariable("worksapceId") String worksapceId, @PathVariable("classId") String classId)
 	{
 		try {
 		
 			classService.addClass(worksapceId, classId);
 		
-		} catch ( ClassLoadException | AddClassException | DataDefinitionUnreachableException | JERunnerErrorException e) {
-			e.printStackTrace();
-			JELogger.error(ClassController.class, e.getMessage());
-			return ResponseEntity.badRequest().body(new JEResponse(e.getCode(), e.getMessage()));
-		} catch (IOException e) {
-			
-			e.printStackTrace();
-			JELogger.info(WorkflowController.class, Errors.uknownError);
-            return ResponseEntity.badRequest().body(new JEResponse(ResponseCodes.UNKNOWN_ERROR, Errors.uknownError));
+		} catch (Exception e) {
+			return JEExceptionHandler.handleException(e);
+
 		}
-		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.classAddedSuccessully));
+		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.CLASS_WAS_ADDED_SUCCESSFULLY));
 
 	}
 	

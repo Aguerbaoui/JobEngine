@@ -7,6 +7,9 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 
+import java.sql.Timestamp;
+import java.util.LinkedList;
+import java.util.Queue;
 
 
 /*
@@ -16,6 +19,7 @@ import org.apache.logging.log4j.core.config.LoggerConfig;
  */
 public class JELogger {
 
+    private static Queue<String> queue = new LinkedList<>();
     private static  Logger logger = LogManager.getLogger(JELogger.class);
   /*  private static int logLevel = 2;
     static LoggerContext context = (LoggerContext) LogManager.getContext(false);
@@ -32,25 +36,48 @@ public class JELogger {
     	rootConfig.setLevel(Level.DEBUG);
 
     	context.updateLoggers();
-    }
+    }*/
+
     /*
+    * Trace log level
+    * */
+     public static void trace(Class<?> clazz, String msg) {
+         synchronized (queue) {
+             queue.add(new Timestamp(System.currentTimeMillis()) + " " + msg);
+         }
+
+        logger.trace(clazz.toString() +" : "+ msg);
+
+    }
     /*
      * log level 1 : debug
      */
     public static void debug(Class<?> clazz, String msg) {
+
         logger.debug(clazz.toString() +" : "+ msg);
         
     }
-    
-    
+
+
+    public static Queue<String> getQueue() {
+        return queue;
+    }
+
     /*
      * log level 2 : info
      */
     public static void info(Class<?> clazz, String msg) {
+        synchronized (queue) {
+            queue.add(new Timestamp(System.currentTimeMillis()) + " " + msg);
+        }
         logger.info(clazz.toString() + msg);
     }
 
     public static void info( String msg) {
+        synchronized (queue) {
+            queue.add(new Timestamp(System.currentTimeMillis()) + " " + msg);
+        }
+
         logger.info( msg);
     }
     /*
@@ -65,6 +92,10 @@ public class JELogger {
      * log level 4 : error
      */
     public static void error(Class<?> clazz, String msg) {
+
+        synchronized (queue) {
+            queue.add(new Timestamp(System.currentTimeMillis()) + " " + msg);
+        }
         logger.error(clazz.toString() + msg);
 
 

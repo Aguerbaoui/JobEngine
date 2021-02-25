@@ -35,8 +35,8 @@ public class BlockConfigurationModel {
     @JsonProperty(AttributesMapping.ATTRIBUTENAME)
 	String attributeName;
 
-  //  @JsonProperty(AttributesMapping.SPECIFICINSTANCES)
-   // List<String> specificInstances;
+    @JsonProperty(AttributesMapping.SPECIFICINSTANCES)
+    List<String> specificInstances;
 	
     
 	
@@ -85,17 +85,23 @@ public class BlockConfigurationModel {
 	public void setWorkspaceId(String workspaceId) {
 		this.workspaceId = workspaceId;
 	}
+	@Override
+	public String toString() {
+		return "BlockConfigurationModel [value=" + value + ", inputUnit=" + inputUnit + ", outputUnit=" + outputUnit
+				+ ", classId=" + classId + ", className=" + className + ", workspaceId=" + workspaceId
+				+ ", attributeName=" + attributeName + "]";
+	}
 	
 	
 	
 	
-	/*public List<String> getSpecificInstances() {
+	public List<String> getSpecificInstances() {
 		return specificInstances;
 	}
 	public void setSpecificInstances(List<String> specificInstances) {
 		this.specificInstances = specificInstances;
 	}
-*/
+
 	
 	
 	

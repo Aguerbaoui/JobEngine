@@ -1,221 +1,331 @@
 package io.je.project.services;
 
+import io.je.classbuilder.entity.JEClass;
 import io.je.project.beans.JEProject;
+import io.je.project.enums.ProjectStatus;
+import io.je.project.exception.JEExceptionHandler;
 import io.je.project.repository.ProjectRepository;
-import io.je.rulebuilder.components.JERule;
-import io.je.rulebuilder.components.UserDefinedRule;
 import io.je.utilities.apis.JERunnerAPIHandler;
+import io.je.utilities.beans.JEEvent;
 import io.je.utilities.constants.Errors;
 import io.je.utilities.constants.ResponseCodes;
-import io.je.utilities.exceptions.AddClassException;
-import io.je.utilities.exceptions.ClassLoadException;
-import io.je.utilities.exceptions.DataDefinitionUnreachableException;
-import io.je.utilities.exceptions.JERunnerErrorException;
-import io.je.utilities.exceptions.ProjectNotFoundException;
-import io.je.utilities.exceptions.ProjectRunException;
-import io.je.utilities.exceptions.RuleAlreadyExistsException;
-import io.je.utilities.exceptions.RuleBuildFailedException;
-import io.je.utilities.exceptions.WorkflowNotFoundException;
-import io.je.utilities.network.JEResponse;
-import io.je.utilities.runtimeobject.ClassDefinition;
+import io.je.utilities.exceptions.*;
+import io.je.utilities.logger.JELogger;
 import models.JEWorkflow;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.*;
 /*
-* Service class to handle business logic for projects
-* */
+ * Service class to handle business logic for projects
+ * */
 
 @Service
 public class ProjectService {
 
-	@Autowired
-	ProjectRepository projectRepository;
+    @Autowired
+    ProjectRepository projectRepository;
 
-	@Autowired
-	WorkflowService workflowService;
+    @Autowired
+    WorkflowService workflowService;
 
-	@Autowired
-	RuleService ruleService;
+    @Autowired
+    RuleService ruleService;
+    
+    @Autowired 
+    EventService eventService;
 
-	
+    @Autowired
+    ClassService classService;
 
-	// TODO add repo jpa save later
-	private static HashMap<String, JEProject> loadedProjects = new HashMap<String, JEProject>();
+    static boolean runnerStatus = true;
 
-	/*
-	 * Add a new project
-	 */
-	public void saveProject(JEProject project) {
-		// Todo add repo jpa save operation
-		projectRepository.save(project);
-		loadedProjects.put(project.getProjectId(), project);
-	}
+    /* project management */
 
-	/*
-	 * Most likely won't be used
-	 */
-	public void removeProject(String id) throws ProjectNotFoundException {
-		// TODO remove project from jpa db
+    private static ConcurrentHashMap<String, JEProject> loadedProjects = new ConcurrentHashMap<>();
 
-		if (!loadedProjects.containsKey(id)) {
-			throw new ProjectNotFoundException(Errors.projectNotFound);
-		}
-		loadedProjects.remove(id);
-	}
+    /*
+     * Add a new project
+     */
+    @Async
+    public CompletableFuture<Void>  saveProject(JEProject project) {
+        //TODO: add test to see if project already exists
+        synchronized (projectRepository) {
+            projectRepository.save(project);
+           
+        }
+        loadedProjects.put(project.getProjectId(), project);
+		return CompletableFuture.completedFuture(null);
 
-	/*
-	 * Add a workflow to project
-	 */
-	public void addWorkflowToProject(JEWorkflow wf) throws ProjectNotFoundException {
-		workflowService.addWorkflow(wf);
-		saveProject(getProjectById(wf.getJobEngineProjectID()));
-	}
 
-	/*
-	 * Remove workflow from project
-	 */
-	public void deleteWorkflowFromProject(String projectId, String workflowId)
-			throws ProjectNotFoundException, WorkflowNotFoundException {
-		workflowService.removeWorkflow(projectId, workflowId);
-		saveProject(getProjectById(projectId));
-	}
+    }
 
-	/*
-	 * Add a rule to project
-	 */
-	public void addRuleToProject(UserDefinedRule rule) throws RuleAlreadyExistsException {
-		loadedProjects.get(rule.getJobEngineProjectID()).addRule(rule);
-	}
+    /*
+     * delete project
+     */
+    @Async
+    public CompletableFuture<Void>  removeProject(String id) throws ProjectNotFoundException, InterruptedException, JERunnerErrorException, ExecutionException, IOException {
+        JELogger.trace(ProjectService.class, "deleting project with id = " + id);
 
-	/*
-	 * Get all loaded Projects
-	 */
-	public static HashMap<String, JEProject> getLoadedProjects() {
-		return loadedProjects;
-	}
+        if (!loadedProjects.containsKey(id)) {
+            throw new ProjectNotFoundException(Errors.PROJECT_NOT_FOUND);
+        }
+        JERunnerAPIHandler.cleanProjectDataFromRunner(id);
+        synchronized (projectRepository) {
+            projectRepository.deleteById(id);
+        }
+        loadedProjects.remove(id);
+		return CompletableFuture.completedFuture(null);
 
-	/*
-	 * Return a project loaded in memory
-	 */
-	public static JEProject getProjectById(String id) {
-		return loadedProjects.get(id);
+    }
+    
 
-	}
+    /*
+     * Get all loaded Projects
+     */
+    
+    public static ConcurrentMap<String, JEProject> getLoadedProjects() {
+        return loadedProjects;
+    }
 
-	/*
-	 * Set loaded project in memory
-	 */
-	public static void setLoadedProjects(HashMap<String, JEProject> loadedProjects) {
-		ProjectService.loadedProjects = loadedProjects;
-	}
+    /*
+     * Return a project loaded in memory
+     */
+    
+    public static JEProject getProjectById(String id) {
+        return loadedProjects.get(id);
 
-	/*
-	 * Build a workflow by id
-	 */
-	public void buildWorkflow(String projectId, String workflowId)
-			throws WorkflowNotFoundException, ProjectNotFoundException, IOException {
-		workflowService.buildWorkflow(projectId, workflowId);
-	}
+    }
 
-	/*
-	 * Run a workflow by id
-	 */
-	public void runWorkflow(String projectId, String workflowId)
-			throws ProjectNotFoundException, IOException, WorkflowNotFoundException {
-		workflowService.runWorkflow(projectId, workflowId);
-	}
 
-	/*
-	 * Builds all the rules and workflows
-	 */
-	public void buildAll(String projectId)
-			throws WorkflowNotFoundException, ProjectNotFoundException, IOException, RuleBuildFailedException,
-			JERunnerErrorException, DataDefinitionUnreachableException, AddClassException, ClassLoadException {
-		// TODO add build all rules
-		ruleService.buildRules(projectId);
-		workflowService.buildWorkflows(projectId);
-		loadedProjects.get(projectId).setBuilt(true);
 
-	}
+    /*
+     * Set loaded project in memory
+     */
+    
+    public static void  setLoadedProjects(ConcurrentHashMap<String, JEProject> loadedProjects) {
+        ProjectService.loadedProjects = loadedProjects;
 
-	/*
-	 * run project => send request to jeRunner to run project
-	 */
-	public void runAll(String projectId)
-			throws IOException, ProjectNotFoundException, JERunnerErrorException, ProjectRunException {
-		if (loadedProjects.containsKey(projectId)) {
-			JEProject project = loadedProjects.get(projectId);
-			JEResponse jeRunnerResp = null;
+    }
 
-			if (project.isBuilt()) {
+    /*
+     * Builds all the rules and workflows
+     */
+  
+    public void  buildAll(String projectId)
+            throws ProjectNotFoundException, IOException, RuleBuildFailedException,
+            JERunnerErrorException, InterruptedException, ExecutionException, RuleNotFoundException {
+        JELogger.trace(ProjectService.class, "Building the project with id = " + projectId);
+        CompletableFuture<?> buildRules = ruleService.buildRules(projectId);
+        CompletableFuture<?> buildWorkflows = workflowService.buildWorkflows(projectId);
+        CompletableFuture.allOf(buildRules,buildWorkflows).join();
+        loadedProjects.get(projectId).setProjectStatus(ProjectStatus.built);
+        saveProject(projectId).get();
 
-				if (!project.isRunning()) {
-					jeRunnerResp = JERunnerAPIHandler.runProject(projectId);
-					project.setRunning(true);
 
-				} else {
-					throw new ProjectRunException(Errors.PROJECT_RUNNING);
+    }
 
-				}
-				if (jeRunnerResp.getCode() != ResponseCodes.CODE_OK) {
-					throw new ProjectRunException(jeRunnerResp.getMessage());
-				}
-			} else {
-				throw new ProjectRunException("Must Build Project First");
+    /*
+     * run project => send request to jeRunner to run project
+     */
+    public void  runAll(String projectId)
+            throws ProjectNotFoundException, JERunnerErrorException, ProjectRunException, IOException, InterruptedException, ExecutionException {
+        if (loadedProjects.containsKey(projectId)) {
+            JEProject project = loadedProjects.get(projectId);
+            if (project.isBuilt()) {
+                if (!project.isRunning()) {
+                    JERunnerAPIHandler.runProject(projectId);
+                    project.setProjectStatus(ProjectStatus.running);
+                    saveProject(projectId).get();
+                } else {
+                    throw new ProjectRunException(Errors.PROJECT_RUNNING);
+                }
+            } else {
+                throw new ProjectRunException(Errors.PROJECT_NOT_BUILT);
+            }
+        } else {
+            throw new ProjectNotFoundException(Errors.PROJECT_NOT_FOUND);
+        }
 
+    }
+
+    /*
+     * Stop a running project
+     * */
+    public void  stopProject(String projectId)
+            throws ProjectNotFoundException, JERunnerErrorException, ProjectStatusException, IOException, InterruptedException, ExecutionException {
+        if (!loadedProjects.containsKey(projectId)) {
+            throw new ProjectNotFoundException(Errors.PROJECT_NOT_FOUND);
+        }
+        JEProject project = loadedProjects.get(projectId);
+        if (project.isRunning()) {
+            JERunnerAPIHandler.stopProject(projectId);
+            project.setProjectStatus(ProjectStatus.stopped);
+            saveProject(projectId).get();
+
+        } else {
+            throw new ProjectStatusException(Errors.PROJECT_STOPPED);
+        }
+
+    }
+
+    /*
+     * Return project by id
+     */
+    @Async
+    public CompletableFuture<JEProject> getProject(String projectId) throws ProjectNotFoundException, JERunnerErrorException, IOException, InterruptedException, ExecutionException {
+        if (!loadedProjects.containsKey(projectId)) {
+            Optional<JEProject> p = projectRepository.findById(projectId);
+            JEProject project = p.isEmpty() ? null : p.get();
+            if (project != null) {
+                project.setProjectStatus(ProjectStatus.notBuilt);
+                loadedProjects.put(projectId, project);
+                for(JEEvent event : project.getEvents().values())
+                {
+                    //TODO update event types
+                	eventService.registerEvent(event);
+                }
+            }
+          
+        }
+        JELogger.trace(ProjectService.class, "Found project with id = " + projectId);
+        return CompletableFuture.completedFuture(loadedProjects.get(projectId));
+    }
+
+	public CompletableFuture<Collection<?>> getAllProjects() {
+		List<JEProject> projects = projectRepository.findAll();
+		for(JEProject project : projects)
+		{
+			
+			//TODO: to be deleted. 
+			if(!loadedProjects.containsKey(project.getProjectId()))
+			{
+                project.setProjectStatus(ProjectStatus.notBuilt);
+				loadedProjects.put(project.getProjectId(), project);
 			}
-		} else {
-			throw new ProjectNotFoundException(Errors.projectNotFound);
+			 //TODO: register events? maybe!
 		}
-
+		return CompletableFuture.completedFuture(projects);
+		
 	}
 
-	public void stopProject(String projectId)
-			throws ProjectNotFoundException, JERunnerErrorException, IOException, ProjectRunException {
-		if (!loadedProjects.containsKey(projectId)) {
-			throw new ProjectNotFoundException(Errors.projectNotFound);
-		}
-		JEProject project = loadedProjects.get(projectId);
-		JEResponse jeRunnerResp = null;
-		if (project.isRunning()) {
-			jeRunnerResp = JERunnerAPIHandler.stopProject(projectId);
-			if (jeRunnerResp.getCode() != ResponseCodes.CODE_OK) {
-				throw new ProjectRunException(jeRunnerResp.getMessage());
-			}
-			project.setRunning(false);
+	 @Async
+    public CompletableFuture<Void>  saveProject(String projectId) {
+        synchronized (projectRepository) {
+            projectRepository.save(loadedProjects.get(projectId));           
+        }
+		return CompletableFuture.completedFuture(null);
+    }
+    
+    
+  //########################################### **Workflows** ################################################################
 
-		} else {
-			// TODO change to another exception
-			throw new ProjectRunException("PROJECT IS ALREADY STOPPED");
 
-		}
+    /* Return all currently available workflows in project */
+    public ConcurrentMap<String, JEWorkflow> getAllWorkflows(String projectId) throws ProjectNotFoundException {
+        if (loadedProjects.containsKey(projectId)) {
+            return loadedProjects.get(projectId).getWorkflows();
+        } else throw new ProjectNotFoundException(Errors.PROJECT_NOT_FOUND);
+    }
 
-	}
+    /* Return a workflow by id */
+    public JEWorkflow getWorkflowById(String projectId, String key) throws ProjectNotFoundException {
+        if (loadedProjects.containsKey(projectId)) {
+            return loadedProjects.get(projectId).getWorkflows().get(key);
+        } else throw new ProjectNotFoundException(Errors.PROJECT_NOT_FOUND);
+    }
 
-	/* Return all currently available workflows in project */
-	public HashMap<String, JEWorkflow> getAllWorkflows(String projectId) {
-		return loadedProjects.get(projectId).getWorkflows();
-	}
 
-	/*
-	 * Return project by id
-	 */
-	public JEProject getProject(String projectId) {
-		if (!loadedProjects.containsKey(projectId)) {
-			Optional<JEProject> p = projectRepository.findById(projectId);
-			JEProject project = p.isEmpty() ? null : p.get();
-			if (project != null) {
-				loadedProjects.put(projectId, project);
-			}
-			return project;
-		}
-		return loadedProjects.get(projectId);
-	}
+    
+    //TODO : move to config service
+    //########################################### **BUILDER** ################################################################
 
+    public void initialize() throws  InterruptedException, JERunnerErrorException, ExecutionException, IOException, RuleBuildFailedException, RuleNotFoundException, ProjectRunException, AddClassException, ClassLoadException, DataDefinitionUnreachableException {
+        classService.loadAllClasses();
+    }
+
+    public void updateRunner() {
+
+        new Thread(() -> {
+            try {
+                boolean serverUp = false;
+                while (!serverUp) {
+                    Thread.sleep(2000);
+                    serverUp = checkRunnerHealth();
+                }
+
+                for (JEClass clazz : classService.getLoadedClasses().values()) {
+                    classService.addClassToJeRunner(clazz);
+                }
+
+                JELogger.info(ProjectService.class, "Runner is up, updating now");
+                for (JEProject project : loadedProjects.values()) {
+                    for (JEEvent event : project.getEvents().values()) {
+                        eventService.updateEventType(project.getProjectId(), event.getJobEngineElementID(), event.getType().toString());
+                    }
+
+                    if (project.isBuilt()) {
+                    	project.setProjectStatus(ProjectStatus.notBuilt);
+                        buildAll(project.getProjectId());
+                    }
+                    if (project.isRunning()) {
+                    	project.setProjectStatus(ProjectStatus.stopped);
+                        runAll(project.getProjectId());
+                    }
+                }
+            }
+            catch (Exception e) {
+                JEExceptionHandler.handleException(e);
+            }
+        }).start();
+
+    }
+    private boolean checkRunnerHealth()  {
+        try {
+            runnerStatus =  JERunnerAPIHandler.checkRunnerHealth();
+        } catch (InterruptedException | JERunnerErrorException | ExecutionException | IOException e) {
+            JEExceptionHandler.handleException(e);
+            return false;
+        }
+        return runnerStatus;
+    }
+
+
+    public static boolean isRunnerStatus() {
+        return runnerStatus;
+    }
+
+    public static void setRunnerStatus(boolean status) {
+        runnerStatus = status;
+    }
+
+    public boolean projectExists(String projectId) {
+        if (!loadedProjects.containsKey(projectId)) {
+            Optional<JEProject> p = projectRepository.findById(projectId);
+            return p.isPresent();
+        }
+
+        return true;
+    }
+
+    /*
+     * delete project
+     */
+    @Async
+    public CompletableFuture<Void>  closeProject(String id) throws ProjectNotFoundException, InterruptedException, JERunnerErrorException, ExecutionException, IOException {
+        JELogger.trace(ProjectService.class, "closing project with id = " + id);
+
+        if (!loadedProjects.containsKey(id)) {
+            throw new ProjectNotFoundException(Errors.PROJECT_NOT_FOUND);
+        }
+        JERunnerAPIHandler.cleanProjectDataFromRunner(id);
+        loadedProjects.remove(id);
+		return CompletableFuture.completedFuture(null);
+
+    }
 }

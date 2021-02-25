@@ -10,7 +10,6 @@ public class ScriptedRule extends  JERule {
 
 	String script ;
 
-	List<ClassDefinition> topics;
 	
 
 	public ScriptedRule(String jobEngineProjectID , String jobEngineElementID, String script, String ruleName) {
@@ -34,7 +33,7 @@ public class ScriptedRule extends  JERule {
 
 	public String generateDRL(String buildPath) {
 		String fileName = buildPath +"\\" + jobEngineElementID +".drl";
-        JELogger.info(getClass(), script);
+       // JELogger.info(getClass(), script);
         JEFileUtils.copyStringToFile(script, fileName, "UTF-8");
 		return fileName;
 		
@@ -45,17 +44,10 @@ public class ScriptedRule extends  JERule {
 
 
 
-	public List<ClassDefinition> getTopics() {
-		return topics;
-	}
 
 
 
 
-
-	public void setTopics(List<ClassDefinition> topics) {
-		this.topics = topics;
-	}
 
 
 	
