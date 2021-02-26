@@ -2,7 +2,6 @@ package io.je.project.services;
 
 import io.je.classbuilder.entity.JEClass;
 import io.je.project.beans.JEProject;
-import io.je.project.enums.ProjectStatus;
 import io.je.project.exception.JEExceptionHandler;
 import io.je.project.repository.ProjectRepository;
 import io.je.utilities.apis.JERunnerAPIHandler;
@@ -123,7 +122,7 @@ public class ProjectService {
         CompletableFuture<?> buildRules = ruleService.buildRules(projectId);
         CompletableFuture<?> buildWorkflows = workflowService.buildWorkflows(projectId);
         CompletableFuture.allOf(buildRules,buildWorkflows).join();
-        loadedProjects.get(projectId).setProjectStatus(ProjectStatus.built);
+        loadedProjects.get(projectId).setBuilt(true);
         saveProject(projectId).get();
 
 
@@ -139,7 +138,7 @@ public class ProjectService {
             if (project.isBuilt()) {
                 if (!project.isRunning()) {
                     JERunnerAPIHandler.runProject(projectId);
-                    project.setProjectStatus(ProjectStatus.running);
+                    project.setRunning(true);
                     saveProject(projectId).get();
                 } else {
                     throw new ProjectRunException(Errors.PROJECT_RUNNING);
@@ -164,7 +163,7 @@ public class ProjectService {
         JEProject project = loadedProjects.get(projectId);
         if (project.isRunning()) {
             JERunnerAPIHandler.stopProject(projectId);
-            project.setProjectStatus(ProjectStatus.stopped);
+            project.setRunning(false);
             saveProject(projectId).get();
 
         } else {
@@ -182,7 +181,7 @@ public class ProjectService {
             Optional<JEProject> p = projectRepository.findById(projectId);
             JEProject project = p.isEmpty() ? null : p.get();
             if (project != null) {
-                project.setProjectStatus(ProjectStatus.notBuilt);
+                project.setBuilt(false);
                 loadedProjects.put(projectId, project);
                 for(JEEvent event : project.getEvents().values())
                 {
@@ -204,7 +203,7 @@ public class ProjectService {
 			//TODO: to be deleted. 
 			if(!loadedProjects.containsKey(project.getProjectId()))
 			{
-                project.setProjectStatus(ProjectStatus.notBuilt);
+                project.setBuilt(false);
 				loadedProjects.put(project.getProjectId(), project);
 			}
 			 //TODO: register events? maybe!
@@ -281,11 +280,11 @@ public class ProjectService {
             }
 
             if (project.isBuilt()) {
-            	project.setProjectStatus(ProjectStatus.notBuilt);
+                project.setBuilt(false);
                 buildAll(project.getProjectId());
             }
             if (project.isRunning()) {
-            	project.setProjectStatus(ProjectStatus.stopped);
+                project.setRunning(false);
                 runAll(project.getProjectId());
             }
         }
