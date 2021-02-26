@@ -30,7 +30,6 @@ public class JEConfiguration {
 		if (dataDefinitionURL != null)
 		{
 			JEConfiguration.dataDefinitionURL = dataDefinitionURL;
-			DataDefinitionApiHandler.setDataManagerURL(dataManagerURL);
 
 		}
 	}

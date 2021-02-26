@@ -378,7 +378,7 @@ public class JEProject {
 
 
 	public boolean isRunning() {
-		return projectStatus==ProjectStatus.running;
+		return projectStatus!=ProjectStatus.stopped;
 	}
 	
 

@@ -17,25 +17,15 @@ import io.je.utilities.network.Network;
  */
 public  class DataDefinitionApiHandler {
 	
-	private static String dataManagerURL = JEConfiguration.getDataDefinitionURL();
 	
 	
 	
-	public static String getDataManagerURL() {
-		return dataManagerURL;
-	}
-
-
-
-	public static void setDataManagerURL(String dataManagerURL) {
-		DataDefinitionApiHandler.dataManagerURL = dataManagerURL;
-	}
 
 
 
 	public static String loadClassDefinition(String workspaceId, String classId) throws DataDefinitionUnreachableException, ClassLoadException, IOException
 	{
-		String requestURL = dataManagerURL + "/Class/" + classId + "/workspace/" + workspaceId;
+		String requestURL = JEConfiguration.getDataDefinitionURL() + "/Class/" + classId + "/workspace/" + workspaceId;
 		JELogger.info(DataDefinitionApiHandler.class, requestURL);
 		Response resp = null;
 		try {
