@@ -3,12 +3,14 @@ package io.je.utilities.apis;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.squareup.okhttp.Response;
+
+import io.je.utilities.config.JEConfiguration;
 import io.je.utilities.constants.APIConstants;
 import io.je.utilities.constants.Errors;
-import io.je.utilities.constants.JEGlobalconfig;
 import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.exceptions.JERunnerErrorException;
 import io.je.utilities.logger.JELogger;
+import io.je.utilities.models.ConfigModel;
 import io.je.utilities.models.WorkflowModel;
 import io.je.utilities.network.JEResponse;
 import io.je.utilities.network.Network;
@@ -26,10 +28,22 @@ public class JERunnerAPIHandler {
 
 
     private JERunnerAPIHandler() {}
-    /*
+
+    
+    private static String runtimeManagerBaseApi = JEConfiguration.getRuntimeManagerURL();
+  
+	public static void setRuntimeManagerBaseApi(String runtimeUrl) {
+		runtimeManagerBaseApi = runtimeUrl;	
+	}
+
+    public static String getRuntimeManagerBaseApi() {
+		return runtimeManagerBaseApi;
+	}
+
+	/*
     * POST with json
     * */
-    private static JEResponse sendRequestWithBody(String requestUrl, Object requestBody)
+	private static JEResponse sendRequestWithBody(String requestUrl, Object requestBody)
             throws JERunnerErrorException, InterruptedException, ExecutionException {
         Response response = null;
         try {
@@ -134,13 +148,13 @@ public class JERunnerAPIHandler {
      */
     public static JEResponse runProject(String projectId)
             throws JERunnerErrorException, IOException, InterruptedException, ExecutionException {
-        String requestUrl = JEGlobalconfig.RUNTIME_MANAGER_BASE_API + APIConstants.RUN_PROJECT + projectId;
+        String requestUrl = runtimeManagerBaseApi + APIConstants.RUN_PROJECT + projectId;
         return sendRequest(requestUrl);
     }
 
     public static JEResponse stopProject(String projectId)
             throws JERunnerErrorException, IOException, InterruptedException, ExecutionException {
-        String requestUrl = JEGlobalconfig.RUNTIME_MANAGER_BASE_API + APIConstants.STOP_PROJECT + projectId;
+        String requestUrl = runtimeManagerBaseApi + APIConstants.STOP_PROJECT + projectId;
         return sendRequest(requestUrl);
     }
 
@@ -148,7 +162,7 @@ public class JERunnerAPIHandler {
 
     // add rule
     public static JEResponse addRule(Object requestModel) throws JERunnerErrorException, IOException, InterruptedException, ExecutionException {
-        String requestUrl = JEGlobalconfig.RUNTIME_MANAGER_BASE_API + APIConstants.ADD_RULE;
+        String requestUrl = runtimeManagerBaseApi + APIConstants.ADD_RULE;
         return sendRequestWithBody(requestUrl, requestModel);
 
     }
@@ -156,25 +170,25 @@ public class JERunnerAPIHandler {
     // compile rule
     public static JEResponse compileRule(HashMap<String, String> requestModel)
             throws JERunnerErrorException, IOException, InterruptedException, ExecutionException {
-        String requestUrl = JEGlobalconfig.RUNTIME_MANAGER_BASE_API + APIConstants.COMPILERULE;
+        String requestUrl = runtimeManagerBaseApi + APIConstants.COMPILERULE;
         return sendRequestWithBody(requestUrl, requestModel);
     }
 
     // update rule
     public static JEResponse updateRule(Object requestModel) throws JERunnerErrorException, IOException, InterruptedException, ExecutionException {
-        String requestUrl = JEGlobalconfig.RUNTIME_MANAGER_BASE_API + APIConstants.UPDATERULE;
+        String requestUrl = runtimeManagerBaseApi + APIConstants.UPDATERULE;
         return sendRequestWithBody(requestUrl, requestModel);
     }
 
     public static JEResponse deleteRule(String projectId, String ruleId) throws JERunnerErrorException, IOException, InterruptedException, ExecutionException {
-        String requestUrl = JEGlobalconfig.RUNTIME_MANAGER_BASE_API + APIConstants.DELETERULE + "/" + projectId + "/" + ruleId;
+        String requestUrl = runtimeManagerBaseApi + APIConstants.DELETERULE + "/" + projectId + "/" + ruleId;
         return sendRequest(requestUrl);
     }
 
     ///// CLASSES ///////
 
     public static JEResponse addClass(HashMap<String, String> requestModel) throws JERunnerErrorException, IOException, InterruptedException, ExecutionException {
-        String requestUrl = JEGlobalconfig.RUNTIME_MANAGER_BASE_API + ADD_CLASS;
+        String requestUrl = runtimeManagerBaseApi + ADD_CLASS;
         return sendRequestWithBody(requestUrl, requestModel);
 
     }
@@ -182,7 +196,7 @@ public class JERunnerAPIHandler {
     ///////////////////////////////// EVENTS//////////////////////////////
 
     public static JEResponse triggerEvent(String eventId, String projectId) throws JERunnerErrorException, IOException, InterruptedException, ExecutionException {
-        String requestUrl = JEGlobalconfig.RUNTIME_MANAGER_BASE_API + EVENT_TRIGGER_EVENT + projectId + "/" + eventId;
+        String requestUrl = runtimeManagerBaseApi + EVENT_TRIGGER_EVENT + projectId + "/" + eventId;
         return sendRequest(requestUrl);
 
 
@@ -190,7 +204,7 @@ public class JERunnerAPIHandler {
 
     // add event
     public static JEResponse addEvent(HashMap<String, String> requestModel) throws JERunnerErrorException, IOException, InterruptedException, ExecutionException {
-        String requestUrl = JEGlobalconfig.RUNTIME_MANAGER_BASE_API + EVENT_ADD_EVENT;
+        String requestUrl = runtimeManagerBaseApi + EVENT_ADD_EVENT;
         return sendRequestWithBody(requestUrl, requestModel);
     }
 
@@ -199,7 +213,7 @@ public class JERunnerAPIHandler {
     // add workflow
     public static JEResponse addWorkflow(WorkflowModel wf) throws JERunnerErrorException, IOException, InterruptedException, ExecutionException {
         Response response = null;
-        String requestUrl = JEGlobalconfig.RUNTIME_MANAGER_BASE_API + APIConstants.ADD_WORKFLOW;
+        String requestUrl = runtimeManagerBaseApi + APIConstants.ADD_WORKFLOW;
         return sendRequestWithBody(requestUrl, wf);
 
     }
@@ -212,21 +226,16 @@ public class JERunnerAPIHandler {
 
     //update event type
     public static void updateEventType(String projectId, String eventId, String type) throws JERunnerErrorException, InterruptedException, ExecutionException, IOException {
-        String requestUrl = JEGlobalconfig.RUNTIME_MANAGER_BASE_API + APIConstants.UPDATE_EVENT + "/" + projectId + "/" + eventId;
+        String requestUrl = runtimeManagerBaseApi + APIConstants.UPDATE_EVENT + "/" + projectId + "/" + eventId;
         JELogger.trace(JERunnerAPIHandler.class, "Sending update event request to runner, project id = " + projectId + "event id = " + eventId);
         sendRequestWithStringBody(requestUrl, type);
 
     }
 
-    // request update from builder
-    public static JEResponse requestUpdateFromBuilder() throws InterruptedException, JERunnerErrorException, ExecutionException {
-        String requestUrl = JEGlobalconfig.BUILDER_BASE_API + PROJECT_UPDATE_RUNNER;
-        return sendRequest(requestUrl);
-    }
 
     // check runner health
     public static boolean checkRunnerHealth() throws InterruptedException, JERunnerErrorException, ExecutionException, IOException {
-        String requestUrl = JEGlobalconfig.RUNTIME_MANAGER_BASE_API + ACTUATOR_HEALTH;
+        String requestUrl = runtimeManagerBaseApi + ACTUATOR_HEALTH;
         Response response = null;
         try {
             //JELogger.trace(JERunnerAPIHandler.class, " url = " + requestUrl);
@@ -256,15 +265,24 @@ public class JERunnerAPIHandler {
 
     //delete event from runner
     public static JEResponse deleteEvent(String projectId, String eventId) throws InterruptedException, JERunnerErrorException, ExecutionException {
-        String requestUrl = JEGlobalconfig.RUNTIME_MANAGER_BASE_API + DELETE_EVENT + "/" + projectId + "/" + eventId;
+        String requestUrl = runtimeManagerBaseApi + DELETE_EVENT + "/" + projectId + "/" + eventId;
         JELogger.trace(JERunnerAPIHandler.class, "Sending delete event request to runner, project id = " + projectId + "event id = " + eventId);
         return sendDeleteRequest(requestUrl);
     }
 
     // clean project data from runner
     public static void cleanProjectDataFromRunner(String projectId) throws InterruptedException, JERunnerErrorException, ExecutionException {
-        String requestUrl = JEGlobalconfig.RUNTIME_MANAGER_BASE_API + CLEAN_HOUSE + "/" + projectId ;
+        String requestUrl = runtimeManagerBaseApi + CLEAN_HOUSE + "/" + projectId ;
         JELogger.trace(JERunnerAPIHandler.class, "Sending delete event request to runner, project id = " + projectId);
         sendRequest(requestUrl);
     }
+
+
+	public static JEResponse updateRunnerSettings(Object requestModel) throws JERunnerErrorException, InterruptedException, ExecutionException {
+	       String requestUrl = runtimeManagerBaseApi + APIConstants.UPDATE_CONFIG ;
+	        JELogger.trace(JERunnerAPIHandler.class, "updating JERunner config");
+	        return sendRequestWithBody(requestUrl, requestModel);
+
+		
+	}
 }

@@ -15,9 +15,9 @@ import io.je.classbuilder.entity.JEClass;
 import io.je.classbuilder.models.ClassModel;
 import io.je.utilities.apis.DataDefinitionApiHandler;
 import io.je.utilities.classloader.JEClassLoader;
+import io.je.utilities.config.ConfigurationConstants;
 import io.je.utilities.constants.ClassBuilderConfig;
 import io.je.utilities.constants.ClassBuilderErrors;
-import io.je.utilities.constants.JEGlobalconfig;
 import io.je.utilities.exceptions.AddClassException;
 import io.je.utilities.exceptions.ClassLoadException;
 import io.je.utilities.exceptions.DataDefinitionUnreachableException;
@@ -33,8 +33,8 @@ public class ClassManager {
 	static Map<String, String> classNames = new ConcurrentHashMap<>(); // key = name, value = classid
 
 	static ClassLoader classLoader = ClassManager.class.getClassLoader();
-	static String loadPath = JEGlobalconfig.builderClassLoadPath;
-	static String generationPath = JEGlobalconfig.classGenerationPath;
+	static String loadPath =  ConfigurationConstants.builderClassLoadPath;
+	static String generationPath = ConfigurationConstants.classGenerationPath;
 
 	/*
 	 * build class (generate .java then load Class )

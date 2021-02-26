@@ -43,7 +43,6 @@ public class ProjectService {
     @Autowired
     ClassService classService;
 
-    static boolean runnerStatus = true;
 
     /* project management */
 
@@ -245,64 +244,10 @@ public class ProjectService {
     //TODO : move to config service
     //########################################### **BUILDER** ################################################################
 
-    public void initialize() throws  InterruptedException, JERunnerErrorException, ExecutionException, IOException, RuleBuildFailedException, RuleNotFoundException, ProjectRunException, AddClassException, ClassLoadException, DataDefinitionUnreachableException {
-        classService.loadAllClasses();
-    }
-
-    public void updateRunner() {
-
-        new Thread(() -> {
-            try {
-                boolean serverUp = false;
-                while (!serverUp) {
-                    Thread.sleep(2000);
-                    serverUp = checkRunnerHealth();
-                }
-
-                for (JEClass clazz : classService.getLoadedClasses().values()) {
-                    classService.addClassToJeRunner(clazz);
-                }
-
-                JELogger.info(ProjectService.class, "Runner is up, updating now");
-                for (JEProject project : loadedProjects.values()) {
-                    for (JEEvent event : project.getEvents().values()) {
-                        eventService.updateEventType(project.getProjectId(), event.getJobEngineElementID(), event.getType().toString());
-                    }
-
-                    if (project.isBuilt()) {
-                    	project.setProjectStatus(ProjectStatus.notBuilt);
-                        buildAll(project.getProjectId());
-                    }
-                    if (project.isRunning()) {
-                    	project.setProjectStatus(ProjectStatus.stopped);
-                        runAll(project.getProjectId());
-                    }
-                }
-            }
-            catch (Exception e) {
-                JEExceptionHandler.handleException(e);
-            }
-        }).start();
-
-    }
-    private boolean checkRunnerHealth()  {
-        try {
-            runnerStatus =  JERunnerAPIHandler.checkRunnerHealth();
-        } catch (InterruptedException | JERunnerErrorException | ExecutionException | IOException e) {
-            JEExceptionHandler.handleException(e);
-            return false;
-        }
-        return runnerStatus;
-    }
+   
 
 
-    public static boolean isRunnerStatus() {
-        return runnerStatus;
-    }
-
-    public static void setRunnerStatus(boolean status) {
-        runnerStatus = status;
-    }
+   
 
     public boolean projectExists(String projectId) {
         if (!loadedProjects.containsKey(projectId)) {
@@ -328,4 +273,22 @@ public class ProjectService {
 		return CompletableFuture.completedFuture(null);
 
     }
+
+	public void resetProjects() throws ProjectNotFoundException, EventException, RuleBuildFailedException, JERunnerErrorException, RuleNotFoundException, IOException, InterruptedException, ExecutionException, ProjectRunException {
+		for (JEProject project : loadedProjects.values()) {
+            for (JEEvent event : project.getEvents().values()) {
+                eventService.updateEventType(project.getProjectId(), event.getJobEngineElementID(), event.getType().toString());
+            }
+
+            if (project.isBuilt()) {
+            	project.setProjectStatus(ProjectStatus.notBuilt);
+                buildAll(project.getProjectId());
+            }
+            if (project.isRunning()) {
+            	project.setProjectStatus(ProjectStatus.stopped);
+                runAll(project.getProjectId());
+            }
+        }
+		
+	}
 }

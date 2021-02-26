@@ -184,17 +184,6 @@ public class ProjectController {
 
 	}
 
-	@GetMapping(value = "/updateRunner", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> updateRunner() {
-
-		try {
-			projectService.updateRunner();
-		} catch (Exception e) {
-			return JEExceptionHandler.handleException(e);
-		}
-		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, "Updated"));
-	}
-	
 	
 	/*
 	 * remove project from builder and runner 

@@ -2,8 +2,7 @@ package io.je.runtime;
 
 import java.util.Collections;
 
-import io.je.utilities.apis.JERunnerAPIHandler;
-import io.je.utilities.logger.JELogger;
+import io.je.utilities.apis.JEBuilderApiHandler;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -22,7 +21,7 @@ public class JERunnerApplication {
 
     @PreDestroy
     public void onDestroy() throws Exception {
-        JERunnerAPIHandler.requestUpdateFromBuilder();
+    	JEBuilderApiHandler.requestUpdateFromBuilder();
     }
 }
 

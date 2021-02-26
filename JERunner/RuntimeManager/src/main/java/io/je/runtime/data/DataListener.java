@@ -1,6 +1,6 @@
 package io.je.runtime.data;
 
-import io.je.utilities.constants.JEGlobalconfig;
+import io.je.utilities.config.JEConfiguration;
 import io.je.utilities.logger.JELogger;
 
 import java.util.HashMap;
@@ -22,7 +22,7 @@ public class DataListener {
 
     private static void createNewZmqAgent(String topic) {
         if(!agents.containsKey(topic)) {
-            ZMQAgent agent = new ZMQAgent(JEGlobalconfig.DATA_MANAGER_BASE_API, JEGlobalconfig.SUBSCRIBER_PORT, JEGlobalconfig.REQUEST_PORT, topic);
+            ZMQAgent agent = new ZMQAgent(JEConfiguration.getDataManagerURL(), JEConfiguration.getSubscriberPort(), JEConfiguration.getRequestPort(), topic);
             agents.put(topic, agent);
         }
         else {

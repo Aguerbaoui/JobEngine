@@ -3,14 +3,14 @@ package io.je.utilities.classloader;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import io.je.utilities.config.ConfigurationConstants;
 import io.je.utilities.constants.ClassBuilderConfig;
-import io.je.utilities.constants.JEGlobalconfig;
 import io.je.utilities.exceptions.ClassLoadException;
 
 public class ClassManager {
 	
 	static Map<String,Class<?>> loadedClasses = new ConcurrentHashMap<>();
-	static String classLoadPath = JEGlobalconfig.runnerClassLoadPath;
+	static String classLoadPath = ConfigurationConstants.runnerClassLoadPath;
 	  // Create a new JavaClassLoader 
     static ClassLoader classLoader = ClassManager.class.getClassLoader();
 	

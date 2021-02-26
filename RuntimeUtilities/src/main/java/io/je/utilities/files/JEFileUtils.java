@@ -39,17 +39,20 @@ public class JEFileUtils {
 	}
 
 	public static void deleteFilesForPathByPrefix(final String path, final String prefix) {
+		try {
 		File directory = new File(path);
-		for (File f : directory.listFiles()) {
+		if(directory.listFiles()!=null)
+		{for (File f : directory.listFiles()) {
 			if (f.getName().startsWith(prefix)) {
-				try {
+				f.delete();
 
-					f.delete();
-				} catch (Exception e) {
-					JELogger.error(JEFileUtils.class, "Failed to delete file " + f.getAbsolutePath());
-				}
-			}
-
+		} 
 		}
+		}
+		}catch (Exception e) {
+			JELogger.error(JEFileUtils.class, "Failed to delete file " );
+		}
+
+		
 	}
 }
