@@ -1,6 +1,5 @@
 package io.je.utilities.config;
 
-import io.je.utilities.apis.DataDefinitionApiHandler;
 import io.je.utilities.apis.JERunnerAPIHandler;
 import io.je.utilities.models.ConfigModel;
 

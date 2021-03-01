@@ -27,7 +27,7 @@ public class JEInitializingBean implements InitializingBean {
     	
         try {
         	configService.init();
-        } catch (DataDefinitionUnreachableException | JERunnerErrorException | AddClassException | ClassLoadException | IOException | InterruptedException | ExecutionException   e) {
+        } catch (DataDefinitionUnreachableException | JERunnerErrorException | AddClassException | ClassLoadException | IOException | InterruptedException | ExecutionException | ProjectNotFoundException   e) {
            JELogger.error(getClass(), e.getMessage());
         }
 

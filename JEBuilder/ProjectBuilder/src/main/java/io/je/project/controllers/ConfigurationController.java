@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.je.project.exception.JEExceptionHandler;
 import io.je.project.services.ConfigurationService;
+import io.je.utilities.config.JEConfiguration;
 import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.constants.ResponseMessages;
 import io.je.utilities.models.ConfigModel;
@@ -44,7 +45,7 @@ public class ConfigurationController {
 	public ResponseEntity<?> updateRunner() {
 
 		try {
-			configService.updateRunner();
+			configService.updateRunner(JEConfiguration.getInstance());
 		} catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
 		}

@@ -27,7 +27,7 @@ public class ClassController {
 	 * add new class 
 	 * TODO: 
 	 */
-	@PostMapping(value = "/addclass/{worksapceId}/{classId}", produces = MediaType.APPLICATION_JSON_VALUE)
+/*	@PostMapping(value = "/addclass/{worksapceId}/{classId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> addClass(@PathVariable("worksapceId") String worksapceId, @PathVariable("classId") String classId)
 	{
 		try {
@@ -39,7 +39,7 @@ public class ClassController {
 		}
 		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.CLASS_WAS_ADDED_SUCCESSFULLY));
 
-	}
+	} */
 	
 	/*@PostMapping(value = "/{projectId}/addclass", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Response> addClass(@PathVariable("projectId") String projectId, @RequestBody ClassModel classModel)
