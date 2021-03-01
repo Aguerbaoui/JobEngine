@@ -1,13 +1,10 @@
 package io.je.project.services;
 
-import io.je.classbuilder.entity.JEClass;
 import io.je.project.beans.JEProject;
-import io.je.project.exception.JEExceptionHandler;
 import io.je.project.repository.ProjectRepository;
 import io.je.utilities.apis.JERunnerAPIHandler;
 import io.je.utilities.beans.JEEvent;
 import io.je.utilities.constants.Errors;
-import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.exceptions.*;
 import io.je.utilities.logger.JELogger;
 import models.JEWorkflow;
@@ -135,7 +132,7 @@ public class ProjectService {
             throws ProjectNotFoundException, JERunnerErrorException, ProjectRunException, IOException, InterruptedException, ExecutionException {
         if (loadedProjects.containsKey(projectId)) {
             JEProject project = loadedProjects.get(projectId);
-            if (project.isBuilt()) {
+            if (!project.isBuilt()) {
                 if (!project.isRunning()) {
                     JERunnerAPIHandler.runProject(projectId);
                     project.setRunning(true);

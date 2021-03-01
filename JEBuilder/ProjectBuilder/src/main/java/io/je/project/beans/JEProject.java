@@ -113,7 +113,6 @@ public class JEProject {
 	}
 
 	public boolean isBuilt() {
-		//TODO: check for unbuilt workflows
 		for(JERule rule : this.getRules().values())
 		{
 			if(!rule.isBuilt())
