@@ -110,6 +110,7 @@ public class ConfigurationService {
 		JEConfiguration.setSubscriberPort( config.getSubscriberPort());
 		JEConfiguration.setRequestPort(config.getRequestPort());
 		JEConfiguration.setRuntimeManagerURL(config.getRuntimeManagerURL());
+		JEConfiguration.setProjectBuilderURL(config.getProjectBuilderURL());
 		configRepository.save(JEConfiguration.getInstance());
 		
 	}
