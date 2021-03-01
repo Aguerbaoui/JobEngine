@@ -36,7 +36,6 @@ public class ClassController {
 		
 		} catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
-
 		}
 		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.CLASS_WAS_ADDED_SUCCESSFULLY));
 
