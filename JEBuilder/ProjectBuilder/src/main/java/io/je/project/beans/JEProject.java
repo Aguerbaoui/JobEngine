@@ -113,7 +113,7 @@ public class JEProject {
 	}
 
 	public boolean isBuilt() {
-		for(JERule rule : this.getRules().values())
+	/*	for(JERule rule : this.getRules().values())
 		{
 			if(!rule.isBuilt())
 			{
@@ -129,7 +129,7 @@ public class JEProject {
 		        break;
             }
         }
-		
+	*/	
 		return isBuilt;
 	}
 	

@@ -126,7 +126,7 @@ public class ProjectService {
 			IOException, InterruptedException, ExecutionException {
 		if (loadedProjects.containsKey(projectId)) {
 			JEProject project = loadedProjects.get(projectId);
-			if (!project.isBuilt()) {
+			if (project.isBuilt()) {
 				if (!project.isRunning()) {
 					JERunnerAPIHandler.runProject(projectId);
 					project.setRunning(true);
