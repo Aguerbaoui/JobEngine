@@ -18,6 +18,7 @@ public class ConfigModel {
 	 String projectBuilderURL;
 	 int subscriberPort;
 	 int requestPort;
+	 String droolsDateFormat;
 
 	public String getDataDefinitionURL() {
 		return dataDefinitionURL;
@@ -61,6 +62,13 @@ public class ConfigModel {
 	public void setProjectBuilderURL(String projectBuilderURL) {
 		this.projectBuilderURL = projectBuilderURL;
 	}
+	public String getDroolsDateFormat() {
+		return droolsDateFormat;
+	}
+	public void setDroolsDateFormat(String droolsDateFormat) {
+		this.droolsDateFormat = droolsDateFormat;
+	}
+	
 	
 	
 

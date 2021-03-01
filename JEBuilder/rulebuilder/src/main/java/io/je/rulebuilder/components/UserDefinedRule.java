@@ -105,6 +105,10 @@ public class UserDefinedRule extends JERule {
 		ruleTemplateAttributes.put("condition", condition);
 		ruleTemplateAttributes.put("consequence", consequences);
 		ruleTemplateAttributes.put("duration", duration);
+		ruleTemplateAttributes.put("dateEffective", ruleParameters.getDateEffective());
+		ruleTemplateAttributes.put("dateExpires", ruleParameters.getDateExpires());
+
+
 
 		
 		

@@ -100,12 +100,7 @@ public class ConfigurationService {
 	
 	public void updateAll(ConfigModel config)
 	{
-		JEConfiguration.setDataDefinitionURL(config.getDataDefinitionURL());
-		JEConfiguration.setDataManagerURL(config.getDataManagerURL());
-		JEConfiguration.setSubscriberPort( config.getSubscriberPort());
-		JEConfiguration.setRequestPort(config.getRequestPort());
-		JEConfiguration.setRuntimeManagerURL(config.getRuntimeManagerURL());
-		JEConfiguration.setProjectBuilderURL(config.getProjectBuilderURL());
+		JEConfiguration.updateConfig(config);
 		configRepository.save(JEConfiguration.getInstance());
 		
 	}
