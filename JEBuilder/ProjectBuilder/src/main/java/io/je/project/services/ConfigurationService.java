@@ -1,25 +1,208 @@
 package io.je.project.services;
 
+import java.io.IOException;
+import java.util.Optional;
+import java.util.concurrent.ExecutionException;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import io.je.classbuilder.entity.JEClass;
+import io.je.project.exception.JEExceptionHandler;
+import io.je.project.repository.ConfigRepository;
+import io.je.utilities.apis.JERunnerAPIHandler;
+import io.je.utilities.config.JEConfiguration;
+import io.je.utilities.constants.Errors;
+import io.je.utilities.exceptions.AddClassException;
+import io.je.utilities.exceptions.ClassLoadException;
+import io.je.utilities.exceptions.DataDefinitionUnreachableException;
+import io.je.utilities.exceptions.JERunnerErrorException;
+import io.je.utilities.logger.JELogger;
+import io.je.utilities.models.ConfigModel;
 
-import io.je.project.models.JEBuilderConfigModel;
-import io.je.utilities.constants.APIConstants;
-import io.je.utilities.constants.JEGlobalconfig;
-
+/*
+ * class responsible for application configuration
+ */
 @Service
 public class ConfigurationService {
 
-	public void updateConfig(JEBuilderConfigModel configModel) {
-		if(configModel.getDataDefinitionIpAddress() != null && configModel.getDataDefinitionPort() !=null)
-		{
-			JEGlobalconfig.CLASS_DEFINITION_API = configModel.getDataDefinitionIpAddress() + ":" +configModel.getDataDefinitionPort();
-		}
-		if(configModel.getJeRunnerIpAddress()!=null && configModel.getJeRunnerPort()!=null)
-		{
-			JEGlobalconfig.RUNTIME_MANAGER_BASE_API = configModel.getJeRunnerIpAddress()+":"+configModel.getJeRunnerPort();
-		}
+	@Autowired
+	ConfigRepository configRepository;
+	
+    @Autowired
+    ProjectService projectService;
+
+    @Autowired
+    ClassService classService;
+
+    static boolean runnerStatus = true;
+	
+
+	
+	/*
+	 * init configuration :
+	 * > load config from database
+	 * >update config
+	 */
+	public void init() throws JERunnerErrorException, InterruptedException, ExecutionException, DataDefinitionUnreachableException, AddClassException, ClassLoadException, IOException
+	{
+		ConfigModel configModel = loadConfigFromDb();
+		updateConfigSettings(configModel);
+        classService.loadAllClasses();
+
 		
+	}
+	
+	/*
+	 * update builder config
+	 */
+	private void updateConfigSettings(ConfigModel configModel) throws JERunnerErrorException, InterruptedException, ExecutionException {
+		updateBuilderSettings(configModel);
+		updateRunnerSettings(configModel);
 		
+	}
+
+	/*
+	 * update runner config
+	 */
+	private void updateBuilderSettings(ConfigModel configModel) throws JERunnerErrorException, InterruptedException, ExecutionException {
+		JEConfiguration.updateConfig(configModel);
+		
+	}
+
+	private void updateRunnerSettings(ConfigModel configModel) throws JERunnerErrorException, InterruptedException, ExecutionException {
+		JERunnerAPIHandler.updateRunnerSettings(configModel);
+		
+	}
+
+
+	
+
+
+	/*
+	 * load config from db
+	 */
+	public ConfigModel loadConfigFromDb() {
+
+		// load config from db
+		Optional<ConfigModel> config = configRepository.findById("ConfigJE");
+		if (config.isEmpty()) {
+			JELogger.warning(getClass(), Errors.MISSING_CONFIG);
+		}
+		return config.get();
+
+	}
+
+	/*
+	 * check that there is no missing config
+	 */
+	public boolean applicationIsConfiguredProperly() {
+		return (JEConfiguration.getDataDefinitionURL() != null && JEConfiguration.getDataManagerURL() != null
+				&& JEConfiguration.getRuntimeManagerURL() != null && JEConfiguration.getSubscriberPort() != 0
+				&& JEConfiguration.getRequestPort() != 0);
+
+	}
+	
+	public void updateAll(ConfigModel config)
+	{
+		//TODO: add control can't be empty
+		JEConfiguration.setDataDefinitionURL(config.getDataDefinitionURL());
+		JEConfiguration.setDataManagerURL(config.getDataManagerURL());
+		JEConfiguration.setSubscriberPort( config.getSubscriberPort());
+		JEConfiguration.setRequestPort(config.getRequestPort());
+		JEConfiguration.setRuntimeManagerURL(config.getRuntimeManagerURL());
+		configRepository.save(JEConfiguration.getInstance());
+		
+	}
+
+	    public void updateRunner() {
+
+	        new Thread(() -> {
+	            try {
+	                boolean serverUp = false;
+	                while (!serverUp) {
+	                	JELogger.info(getClass(), "runner down");
+	                    Thread.sleep(2000);
+	                    serverUp = checkRunnerHealth();
+	                }
+
+	                for (JEClass clazz : classService.getLoadedClasses().values()) {
+	                    classService.addClassToJeRunner(clazz);
+	                }
+
+	                JELogger.info(ProjectService.class, "Runner is up, updating now");
+	                projectService.resetProjects();
+	            }
+	            catch (Exception e) {
+	                JEExceptionHandler.handleException(e);
+	            }
+	        }).start();
+
+	    }
+	    private boolean checkRunnerHealth()  {
+	        try {
+	            runnerStatus =  JERunnerAPIHandler.checkRunnerHealth();
+	        } catch (InterruptedException | JERunnerErrorException | ExecutionException | IOException e) {
+	            JEExceptionHandler.handleException(e);
+	            return false;
+	        }
+	        return runnerStatus;
+	    }
+	
+	
+	    public static boolean isRunnerStatus() {
+	        return runnerStatus;
+	    }
+
+	    public static void setRunnerStatus(boolean status) {
+	        runnerStatus = status;
+	    }
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+	public void setDataDefinitionURL(String dataDefinitionURL) {
+		JEConfiguration.setDataDefinitionURL(dataDefinitionURL);
+		configRepository.save(JEConfiguration.getInstance());
+
+	}
+	
+
+	public void setDataManagerURL(String dataManagerURL) {
+		JEConfiguration.setDataManagerURL(dataManagerURL);
+		configRepository.save(JEConfiguration.getInstance());
+
+	}
+	
+
+	public void setRuntimeManagerURL(String runtimeManagerURL) {
+		JEConfiguration.setRuntimeManagerURL(runtimeManagerURL);
+		JERunnerAPIHandler.setRuntimeManagerBaseApi(runtimeManagerURL);
+		configRepository.save(JEConfiguration.getInstance());
+
+	}
+	
+
+	public void setSubscriberPort(int subscriberPort) {
+		JEConfiguration.setSubscriberPort( subscriberPort);
+		configRepository.save(JEConfiguration.getInstance());
+
+	}
+	
+
+	public void setRequestPort(int requestPort) {
+		JEConfiguration.setRequestPort(requestPort);
+		configRepository.save(JEConfiguration.getInstance());
+
 	}
 
 }

@@ -1,8 +1,8 @@
 package builder;
 
 import io.je.utilities.apis.JERunnerAPIHandler;
+import io.je.utilities.config.JEConfiguration;
 import io.je.utilities.constants.APIConstants;
-import io.je.utilities.constants.JEGlobalconfig;
 import io.je.utilities.exceptions.JERunnerErrorException;
 import io.je.utilities.logger.JELogger;
 import io.je.utilities.models.WorkflowModel;
@@ -58,7 +58,7 @@ public class WorkflowBuilder {
      * Run workflow in runtime engine
      * */
     public static void runWorkflow(String projectId, String key) throws IOException, InterruptedException, ExecutionException, JERunnerErrorException {
-        JERunnerAPIHandler.runWorkflow(JEGlobalconfig.RUNTIME_MANAGER_BASE_API + APIConstants.RUN_WORKFLOW + projectId + "/" + key);
+        JERunnerAPIHandler.runWorkflow(JEConfiguration.getRuntimeManagerURL()+ APIConstants.RUN_WORKFLOW + projectId + "/" + key);
 
     }
 

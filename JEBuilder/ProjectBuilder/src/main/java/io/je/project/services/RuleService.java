@@ -18,7 +18,6 @@ import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 
 import io.je.project.beans.JEProject;
-import io.je.project.enums.ProjectStatus;
 import io.je.rulebuilder.builder.RuleBuilder;
 import io.je.rulebuilder.components.BlockGenerator;
 import io.je.rulebuilder.components.JERule;
@@ -110,11 +109,14 @@ public class RuleService {
 		if(project.getRule(ruleId) instanceof UserDefinedRule)
 		{
 			UserDefinedRule rule = (UserDefinedRule) project.getRule(ruleId);
-			for (String subRuleId : rule.getSubRules())
+			if (rule.getSubRules()!=null)
 			{
-				
-				JERunnerAPIHandler.deleteRule(projectId,subRuleId);
+				for (String subRuleId : rule.getSubRules())
+				{
+					
+					JERunnerAPIHandler.deleteRule(projectId,subRuleId);
 
+				}
 			}
 		}
 		else
@@ -195,7 +197,7 @@ public class RuleService {
 
 		}
 		ruleToUpdate.setBuilt(false);
-		project.setProjectStatus(ProjectStatus.notBuilt);
+		project.setBuilt(false);
 	}
 
 	/*
@@ -235,7 +237,7 @@ public class RuleService {
 			rule.addTopic(classDef.getClassId());
 			classService.addClass(classDef);
 		}
-		project.setProjectStatus(ProjectStatus.notBuilt);
+		project.setBuilt(false);
 
 
 
@@ -408,8 +410,24 @@ public class RuleService {
 				try
 				{
 					JELogger.trace(getClass(), "deleting rule [id : "+ ruleId +")" );
-					//TODO: delete subrules
-					JERunnerAPIHandler.deleteRule(projectId,ruleId);
+					if(project.getRule(ruleId) instanceof UserDefinedRule)
+					{
+						UserDefinedRule rule = (UserDefinedRule) project.getRule(ruleId);
+						if (rule.getSubRules()!=null)
+						{
+							for (String subRuleId : rule.getSubRules())
+							{
+								
+								JERunnerAPIHandler.deleteRule(projectId,subRuleId);
+
+							}
+						}
+					}
+					else
+					{
+						JERunnerAPIHandler.deleteRule(projectId,ruleId);
+
+					}
 					project.deleteRule(ruleId);
 				}
 				catch (Exception e) {

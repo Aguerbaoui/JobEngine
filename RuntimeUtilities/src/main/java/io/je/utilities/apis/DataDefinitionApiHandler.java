@@ -5,8 +5,8 @@ import java.net.ConnectException;
 
 import com.squareup.okhttp.Response;
 
+import io.je.utilities.config.JEConfiguration;
 import io.je.utilities.constants.Errors;
-import io.je.utilities.constants.JEGlobalconfig;
 import io.je.utilities.exceptions.ClassLoadException;
 import io.je.utilities.exceptions.DataDefinitionUnreachableException;
 import io.je.utilities.logger.JELogger;
@@ -17,9 +17,15 @@ import io.je.utilities.network.Network;
  */
 public  class DataDefinitionApiHandler {
 	
+	
+	
+	
+
+
+
 	public static String loadClassDefinition(String workspaceId, String classId) throws DataDefinitionUnreachableException, ClassLoadException, IOException
 	{
-		String requestURL = JEGlobalconfig.CLASS_DEFINITION_API + "/Class/" + classId + "/workspace/" + workspaceId;
+		String requestURL = JEConfiguration.getDataDefinitionURL() + "/Class/" + classId + "/workspace/" + workspaceId;
 		JELogger.info(DataDefinitionApiHandler.class, requestURL);
 		Response resp = null;
 		try {

@@ -51,8 +51,8 @@ public class ProjectController {
 }
 
 	
-	@GetMapping("/getProjectStatus/{projectId}")
-	public ResponseEntity<?> getProjectStatus(@PathVariable String projectId) {
+	@GetMapping("/getProjectRunStatus/{projectId}")
+	public ResponseEntity<?> getProjectRunStatus(@PathVariable String projectId) {
 		JEProject project = null;
 		try {
 			project = projectService.getProject(projectId).get();
@@ -62,7 +62,22 @@ public class ProjectController {
 
 		}
 		
-		return	ResponseEntity.ok(project.getProjectStatus());
+		return	ResponseEntity.ok(project.isRunning());
+	
+}
+	
+	@GetMapping("/getProjectBuildStatus/{projectId}")
+	public ResponseEntity<?> getProjectBuildStatus(@PathVariable String projectId) {
+		JEProject project = null;
+		try {
+			project = projectService.getProject(projectId).get();
+			
+		} catch (Exception e) {
+			return JEExceptionHandler.handleException(e);
+
+		}
+		
+		return	ResponseEntity.ok(project.isBuilt());
 	
 }
 
@@ -184,17 +199,6 @@ public class ProjectController {
 
 	}
 
-	@GetMapping(value = "/updateRunner", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> updateRunner() {
-
-		try {
-			projectService.updateRunner();
-		} catch (Exception e) {
-			return JEExceptionHandler.handleException(e);
-		}
-		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, "Updated"));
-	}
-	
 	
 	/*
 	 * remove project from builder and runner 

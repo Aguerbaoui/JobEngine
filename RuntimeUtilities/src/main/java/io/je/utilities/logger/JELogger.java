@@ -70,7 +70,7 @@ public class JELogger {
         synchronized (queue) {
             queue.add(new Timestamp(System.currentTimeMillis()) + " " + msg);
         }
-        logger.info(clazz.toString() + msg);
+        logger.info(clazz.toString() +" : " + msg);
     }
 
     public static void info( String msg) {

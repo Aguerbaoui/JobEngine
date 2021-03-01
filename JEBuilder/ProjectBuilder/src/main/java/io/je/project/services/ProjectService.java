@@ -2,7 +2,6 @@ package io.je.project.services;
 
 import io.je.classbuilder.entity.JEClass;
 import io.je.project.beans.JEProject;
-import io.je.project.enums.ProjectStatus;
 import io.je.project.exception.JEExceptionHandler;
 import io.je.project.repository.ProjectRepository;
 import io.je.utilities.apis.JERunnerAPIHandler;
@@ -43,7 +42,6 @@ public class ProjectService {
     @Autowired
     ClassService classService;
 
-    static boolean runnerStatus = true;
 
     /* project management */
 
@@ -124,7 +122,7 @@ public class ProjectService {
         CompletableFuture<?> buildRules = ruleService.buildRules(projectId);
         CompletableFuture<?> buildWorkflows = workflowService.buildWorkflows(projectId);
         CompletableFuture.allOf(buildRules,buildWorkflows).join();
-        loadedProjects.get(projectId).setProjectStatus(ProjectStatus.built);
+        loadedProjects.get(projectId).setBuilt(true);
         saveProject(projectId).get();
 
 
@@ -140,7 +138,7 @@ public class ProjectService {
             if (project.isBuilt()) {
                 if (!project.isRunning()) {
                     JERunnerAPIHandler.runProject(projectId);
-                    project.setProjectStatus(ProjectStatus.running);
+                    project.setRunning(true);
                     saveProject(projectId).get();
                 } else {
                     throw new ProjectRunException(Errors.PROJECT_RUNNING);
@@ -165,7 +163,7 @@ public class ProjectService {
         JEProject project = loadedProjects.get(projectId);
         if (project.isRunning()) {
             JERunnerAPIHandler.stopProject(projectId);
-            project.setProjectStatus(ProjectStatus.stopped);
+            project.setRunning(false);
             saveProject(projectId).get();
 
         } else {
@@ -183,7 +181,7 @@ public class ProjectService {
             Optional<JEProject> p = projectRepository.findById(projectId);
             JEProject project = p.isEmpty() ? null : p.get();
             if (project != null) {
-                project.setProjectStatus(ProjectStatus.notBuilt);
+                project.setBuilt(false);
                 loadedProjects.put(projectId, project);
                 for(JEEvent event : project.getEvents().values())
                 {
@@ -205,7 +203,7 @@ public class ProjectService {
 			//TODO: to be deleted. 
 			if(!loadedProjects.containsKey(project.getProjectId()))
 			{
-                project.setProjectStatus(ProjectStatus.notBuilt);
+                project.setBuilt(false);
 				loadedProjects.put(project.getProjectId(), project);
 			}
 			 //TODO: register events? maybe!
@@ -245,64 +243,10 @@ public class ProjectService {
     //TODO : move to config service
     //########################################### **BUILDER** ################################################################
 
-    public void initialize() throws  InterruptedException, JERunnerErrorException, ExecutionException, IOException, RuleBuildFailedException, RuleNotFoundException, ProjectRunException, AddClassException, ClassLoadException, DataDefinitionUnreachableException {
-        classService.loadAllClasses();
-    }
-
-    public void updateRunner() {
-
-        new Thread(() -> {
-            try {
-                boolean serverUp = false;
-                while (!serverUp) {
-                    Thread.sleep(2000);
-                    serverUp = checkRunnerHealth();
-                }
-
-                for (JEClass clazz : classService.getLoadedClasses().values()) {
-                    classService.addClassToJeRunner(clazz);
-                }
-
-                JELogger.info(ProjectService.class, "Runner is up, updating now");
-                for (JEProject project : loadedProjects.values()) {
-                    for (JEEvent event : project.getEvents().values()) {
-                        eventService.updateEventType(project.getProjectId(), event.getJobEngineElementID(), event.getType().toString());
-                    }
-
-                    if (project.isBuilt()) {
-                    	project.setProjectStatus(ProjectStatus.notBuilt);
-                        buildAll(project.getProjectId());
-                    }
-                    if (project.isRunning()) {
-                    	project.setProjectStatus(ProjectStatus.stopped);
-                        runAll(project.getProjectId());
-                    }
-                }
-            }
-            catch (Exception e) {
-                JEExceptionHandler.handleException(e);
-            }
-        }).start();
-
-    }
-    private boolean checkRunnerHealth()  {
-        try {
-            runnerStatus =  JERunnerAPIHandler.checkRunnerHealth();
-        } catch (InterruptedException | JERunnerErrorException | ExecutionException | IOException e) {
-            JEExceptionHandler.handleException(e);
-            return false;
-        }
-        return runnerStatus;
-    }
+   
 
 
-    public static boolean isRunnerStatus() {
-        return runnerStatus;
-    }
-
-    public static void setRunnerStatus(boolean status) {
-        runnerStatus = status;
-    }
+   
 
     public boolean projectExists(String projectId) {
         if (!loadedProjects.containsKey(projectId)) {
@@ -328,4 +272,22 @@ public class ProjectService {
 		return CompletableFuture.completedFuture(null);
 
     }
+
+	public void resetProjects() throws ProjectNotFoundException, EventException, RuleBuildFailedException, JERunnerErrorException, RuleNotFoundException, IOException, InterruptedException, ExecutionException, ProjectRunException {
+		for (JEProject project : loadedProjects.values()) {
+            for (JEEvent event : project.getEvents().values()) {
+                eventService.updateEventType(project.getProjectId(), event.getJobEngineElementID(), event.getType().toString());
+            }
+
+            if (project.isBuilt()) {
+                project.setBuilt(false);
+                buildAll(project.getProjectId());
+            }
+            if (project.isRunning()) {
+                project.setRunning(false);
+                runAll(project.getProjectId());
+            }
+        }
+		
+	}
 }

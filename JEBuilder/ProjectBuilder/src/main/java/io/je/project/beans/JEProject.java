@@ -1,7 +1,6 @@
 package io.je.project.beans;
 
 import blocks.WorkflowBlock;
-import io.je.project.enums.ProjectStatus;
 import io.je.rulebuilder.components.JERule;
 import io.je.rulebuilder.components.UserDefinedRule;
 import io.je.rulebuilder.components.blocks.Block;
@@ -47,12 +46,18 @@ public class JEProject {
      * Events in a project
      * */
      private ConcurrentHashMap<String, JEEvent> events;
+     
+     
+     private boolean isRunning=false;
+     
+     private boolean isBuilt=false;
+     
 
     /*
     * project Status
     * */
      
-     private ProjectStatus projectStatus;
+    
     
 
     /*
@@ -64,7 +69,7 @@ public class JEProject {
         events = new ConcurrentHashMap<>();
         this.projectId = projectId;
         this.configurationPath = configurationPath;
-        projectStatus = ProjectStatus.notBuilt;
+        isBuilt = false;
 
     }
 
@@ -87,14 +92,15 @@ public class JEProject {
     }
 
 
-	public ProjectStatus getProjectStatus() {
-		return projectStatus;
+
+
+	public void setRunning(boolean isRunning) {
+		this.isRunning = isRunning;
 	}
-	
 
 
-	public void setProjectStatus(ProjectStatus projectStatus) {
-		this.projectStatus = projectStatus;
+	public void setBuilt(boolean isBuilt) {
+		this.isBuilt = isBuilt;
 	}
 
 
@@ -108,12 +114,10 @@ public class JEProject {
 
 	public boolean isBuilt() {
 		//TODO: check for unbuilt workflows
-		boolean isBuilt = true;
 		for(JERule rule : this.getRules().values())
 		{
 			if(!rule.isBuilt())
 			{
-				projectStatus = ProjectStatus.notBuilt;
 				isBuilt=false;
 				break;
 
@@ -122,7 +126,6 @@ public class JEProject {
 
 		for(JEWorkflow workflow: workflows.values()) {
 		    if(!workflow.getStatus().equals(JEWorkflow.BUILT)) {
-				projectStatus = ProjectStatus.notBuilt;
 				isBuilt=false;
 		        break;
             }
@@ -130,6 +133,11 @@ public class JEProject {
 		
 		return isBuilt;
 	}
+	
+	public boolean isRunning() {
+		return isRunning;
+	}
+	
  
 	/******************************************************** RULES **********************************************************************/
 
@@ -145,7 +153,7 @@ public class JEProject {
 	* Set project rules
 	* */
 	public void setRules(ConcurrentHashMap<String, JERule> rules) {
-		projectStatus = ProjectStatus.notBuilt;
+		isBuilt=false;	
 		this.rules = rules;
 	}
 
@@ -169,7 +177,7 @@ public class JEProject {
 	    				throw new RuleAlreadyExistsException(RuleBuilderErrors.RuleAlreadyExists);
 	    			}
 	        this.rules.put(rule.getJobEngineElementID(), rule);
-			projectStatus = ProjectStatus.notBuilt;
+	        isBuilt=false;
 
 	    }
 	    
@@ -183,7 +191,7 @@ public class JEProject {
 	    			}
 	        rules.put(rule.getJobEngineElementID(), rule);
 			rule.setJeObjectLastUpdate( LocalDateTime.now());
-			projectStatus = ProjectStatus.notBuilt;
+			isBuilt=false;
 
 
 	    }
@@ -195,7 +203,7 @@ public class JEProject {
 	    	
 	    {	
 	    	((UserDefinedRule) rules.get(block.getJobEngineElementID())).addBlock(block);
-			projectStatus = ProjectStatus.notBuilt;
+	    	isBuilt=false;
 
 	    }
 	    
@@ -205,7 +213,7 @@ public class JEProject {
 	     */
 		public void updateRuleBlock(Block block) throws AddRuleBlockException {
 	    	((UserDefinedRule) rules.get(block.getJobEngineElementID())).updateBlock(block);
-			projectStatus = ProjectStatus.notBuilt;
+	    	isBuilt=false;
 
 			
 		}
@@ -217,7 +225,7 @@ public class JEProject {
 		public void deleteRuleBlock(String ruleId, String blockId) throws RuleBlockNotFoundException {
 			((UserDefinedRule) rules.get(ruleId)).deleteBlock(blockId);
 			rules.get(ruleId).setJeObjectLastUpdate(  LocalDateTime.now());
-			projectStatus = ProjectStatus.notBuilt;
+			isBuilt=false;
 
 			
 		}
@@ -232,7 +240,7 @@ public class JEProject {
 			}
 			//TODO: delete file
 			rules.remove(ruleId);
-			projectStatus = ProjectStatus.notBuilt;
+			isBuilt=false;
 
 			
 		}
@@ -252,7 +260,7 @@ public class JEProject {
     * Set all workflows
     * */
     public void setWorkflows(ConcurrentHashMap<String, JEWorkflow> workflows) {
-		projectStatus = ProjectStatus.notBuilt;
+    	isBuilt=false;
         this.workflows = workflows;
     }
 
@@ -261,7 +269,7 @@ public class JEProject {
     * */
     public void addWorkflow(JEWorkflow wf) {
         this.workflows.put(wf.getJobEngineElementID(), wf);
-		projectStatus = ProjectStatus.notBuilt;
+        isBuilt=false;
 
     }
 
@@ -272,7 +280,7 @@ public class JEProject {
         JEWorkflow wf = workflows.get(id);
         workflows.remove(id);
         wf = null;
-		projectStatus = ProjectStatus.notBuilt;
+        isBuilt=false;
 
     }
 
@@ -292,7 +300,7 @@ public class JEProject {
     * */
     public void addBlockToWorkflow(WorkflowBlock block) {
         workflows.get(block.getWorkflowId()).addBlock(block);
-		projectStatus = ProjectStatus.notBuilt;
+		isBuilt=false;
 
     }
 
@@ -301,7 +309,7 @@ public class JEProject {
     * */
     public void deleteWorkflowBlock(String workflowId, String blockId) throws InvalidSequenceFlowException, WorkflowBlockNotFound {
         workflows.get(workflowId).deleteWorkflowBlock(blockId);
-		projectStatus = ProjectStatus.notBuilt;
+		isBuilt=false;
 
     }
 
@@ -310,7 +318,7 @@ public class JEProject {
     * */
     public void deleteWorkflowSequenceFlow(String workflowId, String sourceRef, String targetRef) throws InvalidSequenceFlowException {
         workflows.get(workflowId).deleteSequenceFlow(sourceRef, targetRef);
-		projectStatus = ProjectStatus.notBuilt;
+		isBuilt=false;
 
     }
 
@@ -322,7 +330,7 @@ public class JEProject {
             throw new WorkflowBlockNotFound( Errors.WORKFLOW_BLOCK_NOT_FOUND);
         }
         workflows.get(workflowId).addBlockFlow(sourceRef, targetRef, condition);
-		projectStatus = ProjectStatus.notBuilt;
+		isBuilt=false;
 
     }
 
@@ -377,10 +385,7 @@ public class JEProject {
 	}
 
 
-	public boolean isRunning() {
-		return projectStatus==ProjectStatus.running;
-	}
-	
+
 
 
 }
