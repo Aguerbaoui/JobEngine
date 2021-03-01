@@ -13,8 +13,7 @@ public class JEConfiguration {
 	static String dataDefinitionURL;
 	static String dataManagerURL;
 	static String runtimeManagerURL;
-	//TODO: remove harcoded config
-	static String projectBuilderURL ="http://127.0.0.1:8484";
+	static String projectBuilderURL ;
 	static int subscriberPort;
 	static int requestPort;
 
@@ -75,6 +74,8 @@ public class JEConfiguration {
 		if (requestPort != 0)
 			JEConfiguration.requestPort = requestPort;
 	}
+	
+	
 
 	public static ConfigModel getInstance() {
 		if (instance == null) {
@@ -110,6 +111,7 @@ public class JEConfiguration {
 		setRequestPort(configModel.getRequestPort());
 		setSubscriberPort(configModel.getSubscriberPort());
 		setRuntimeManagerURL(configModel.getRuntimeManagerURL());
+		setProjectBuilderURL(configModel.getProjectBuilderURL());
 
 
 	}
