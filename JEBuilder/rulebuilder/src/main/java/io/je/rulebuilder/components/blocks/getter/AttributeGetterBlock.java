@@ -40,10 +40,10 @@ public class AttributeGetterBlock extends GetterBlock {
 	private String getInstances()
 	{
 		String instanceIds = "";
-		instanceIds += specificInstances.get(0);
+		instanceIds += "\""+ specificInstances.get(0)+ "\"";
 		for(int i = 1  ; i<specificInstances.size(); i++)
 		{
-			instanceIds += " , "+specificInstances.get(i);
+			instanceIds += " , " +"\""+specificInstances.get(i)+"\"";
 		}
 		return instanceIds;
 	}

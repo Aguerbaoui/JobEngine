@@ -6,12 +6,11 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-
+import io.je.project.exception.JEExceptionHandler;
 import io.je.runtime.models.RuleModel;
 import io.je.runtime.services.RuntimeDispatcher;
 import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.constants.ResponseMessages;
-import io.je.utilities.exceptions.*;
 import io.je.utilities.logger.JELogger;
 import io.je.utilities.network.JEResponse;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -51,17 +50,9 @@ public class RuleController {
         	JELogger.info(getClass(),"rule added successfully");
 
 
-        } catch (RuleAlreadyExistsException | JEFileNotFoundException | RuleFormatNotValidException | RuleNotAddedException e) {
-            e.printStackTrace();
-            JELogger.error(RuleController.class, e.getMessage());
-            return ResponseEntity.badRequest().body(new JEResponse(e.getCode(), e.getMessage()));
-
-        } catch (RuleCompilationException e) {
-
-            JELogger.error(RuleController.class, e.getMessage());
-            return ResponseEntity.badRequest().body(new JEResponse(e.getCode(), e.getCompilationError()));
-
-        }
+        } catch (Exception e) {
+			return JEExceptionHandler.handleException(e);
+		}
 
 
         return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.RULE_ADDED_SUCCESSFULLY));
@@ -77,17 +68,9 @@ public class RuleController {
             runtimeDispatcher.updateRule(ruleModel);
             runtimeDispatcher.addTopics(ruleModel.getProjectId(), ruleModel.getTopics());
 
-        } catch (JEFileNotFoundException | RuleFormatNotValidException e) {
-            e.printStackTrace();
-            JELogger.error(RuleController.class, e.getMessage());
-            return ResponseEntity.badRequest().body(new JEResponse(e.getCode(), e.getMessage()));
-
-        } catch (RuleCompilationException e) {
-
-            JELogger.error(RuleController.class, e.getMessage());
-            return ResponseEntity.badRequest().body(new JEResponse(e.getCode(), e.getCompilationError()));
-
-        }
+        } catch (Exception e) {
+			return JEExceptionHandler.handleException(e);
+		}
 
 
         return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.RULE_UPDATED_SUCCESSFULLY));
@@ -102,17 +85,9 @@ public class RuleController {
 
         try {
             runtimeDispatcher.compileRule(ruleModel);
-        } catch (JEFileNotFoundException | RuleFormatNotValidException e) {
-            e.printStackTrace();
-            JELogger.error(RuleController.class, e.getMessage());
-            return ResponseEntity.badRequest().body(new JEResponse(e.getCode(), e.getMessage()));
-
-        } catch (RuleCompilationException e) {
-
-            JELogger.error(RuleController.class, e.getMessage());
-            return ResponseEntity.badRequest().body(new JEResponse(e.getCode(), e.getCompilationError()));
-
-        }
+        } catch (Exception e) {
+			return JEExceptionHandler.handleException(e);
+		}
 
 
         return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.RULE_UPDATED_SUCCESSFULLY));
@@ -131,11 +106,8 @@ public class RuleController {
 			try {
 				runtimeDispatcher.deleteRule(projectId, ruleId);
                 runtimeDispatcher.decrementTopicSubscriptionCount(projectId);
-			} catch (DeleteRuleException e) {
-				e.printStackTrace();
-				 JELogger.error(RuleController.class, e.getMessage());
-		            return ResponseEntity.badRequest().body(new JEResponse(e.getCode(), e.getMessage()));
-
+			} catch (Exception e) {
+				return JEExceptionHandler.handleException(e);
 			}
 	
 		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.RULE_DELETED_SUCCESSFULLY));

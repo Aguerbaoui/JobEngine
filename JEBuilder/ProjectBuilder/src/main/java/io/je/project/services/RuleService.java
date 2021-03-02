@@ -1,7 +1,6 @@
 package io.je.project.services;
 
 import java.io.IOException;
-import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -10,11 +9,8 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 
 import io.je.project.beans.JEProject;
@@ -30,7 +26,6 @@ import io.je.rulebuilder.models.RuleModel;
 import io.je.rulebuilder.models.ScriptRuleModel;
 import io.je.utilities.apis.JERunnerAPIHandler;
 import io.je.utilities.constants.Errors;
-import io.je.utilities.constants.ResponseMessages;
 import io.je.utilities.constants.RuleBuilderErrors;
 import io.je.utilities.exceptions.AddClassException;
 import io.je.utilities.exceptions.AddRuleBlockException;

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.je.project.exception.JEExceptionHandler;
 import io.je.runtime.models.ClassModel;
 import io.je.runtime.services.RuntimeDispatcher;
 import io.je.utilities.constants.ResponseCodes;
@@ -39,9 +40,8 @@ public class ClassController {
 	
 			try {
 				runtimeDispatcher.addClass(classModel);
-			} catch (ClassLoadException e) {
-				e.printStackTrace();
-				return ResponseEntity.badRequest().body(new JEResponse(e.getCode(), e.getMessage()));
+			} catch (Exception e) {
+				return JEExceptionHandler.handleException(e);
 			}
 		
 			
