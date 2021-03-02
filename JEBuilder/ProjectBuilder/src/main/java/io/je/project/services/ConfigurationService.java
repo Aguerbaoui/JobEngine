@@ -45,8 +45,11 @@ public class ConfigurationService {
 	 */
 	public void init() throws JERunnerErrorException, InterruptedException, ExecutionException, DataDefinitionUnreachableException, AddClassException, ClassLoadException, IOException
 	{
-		ConfigModel configModel = loadConfigFromDb();
-		updateConfigSettings(configModel);
+		try {
+			ConfigModel configModel = loadConfigFromDb();
+			updateConfigSettings(configModel);
+		}
+		catch (Exception e) {}
         classService.loadAllClasses();
 
 		

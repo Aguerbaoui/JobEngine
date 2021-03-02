@@ -1,11 +1,12 @@
 package io.je.utilities.logger;
 
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.LoggerConfig;
+import org.apache.logging.log4j.core.appender.ConsoleAppender;
+import org.apache.logging.log4j.core.config.Configurator;
+import org.apache.logging.log4j.core.config.builder.api.*;
+import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
 
 import java.sql.Timestamp;
 import java.util.LinkedList;
@@ -20,23 +21,11 @@ import java.util.Queue;
 public class JELogger {
 
     private static Queue<String> queue = new LinkedList<>();
-    private static  Logger logger = LogManager.getLogger(JELogger.class);
-  /*  private static int logLevel = 2;
-    static LoggerContext context = (LoggerContext) LogManager.getContext(false);
-	static Configuration config = context.getConfiguration();
-	static LoggerConfig rootConfig = config.getLoggerConfig(LogManager.ROOT_LOGGER_NAME);
-    public static void setLogLevel(int logLevel)
-    {
-    	
-    	switch(logLevel)
-    	{case 1:
-    	rootConfig.setLevel(Level.DEBUG);
-    	break;
-    	}
-    	rootConfig.setLevel(Level.DEBUG);
+    private static  Logger logger = null;
 
-    	context.updateLoggers();
-    }*/
+    private static final String jeBuilderLog = "D:\\logs\\jeBuilder.log";
+    private static final String jeRunnerLog = "D:\\logs\\jeRunner.log";
+    private static final String pattern = "%d %p %c [%t] %m%n";
 
     /*
     * Trace log level
@@ -101,5 +90,82 @@ public class JELogger {
 
     }
 
+    public static void initBuilderLogger() {
+        //TODO Remove the old logger context initialization (spring/activiti/drools)
+
+
+        ConfigurationBuilder<BuiltConfiguration> builder = ConfigurationBuilderFactory.newConfigurationBuilder();
+
+        builder.setStatusLevel(Level.OFF);
+        builder.setConfigurationName("JobEngineBuilderLogger");
+        RootLoggerComponentBuilder rootLogger = builder.newRootLogger(Level.ALL);
+        // create a console appender
+        AppenderComponentBuilder consoleAppender = builder.newAppender("Console", "CONSOLE").addAttribute("target",
+                ConsoleAppender.Target.SYSTEM_OUT);
+        consoleAppender.add(builder.newLayout("PatternLayout")
+                .addAttribute("pattern", pattern));
+        rootLogger.add(builder.newAppenderRef("Console"));
+
+        builder.add(consoleAppender);
+
+        // create a rolling file appender
+        LayoutComponentBuilder layoutBuilder = builder.newLayout("PatternLayout")
+                .addAttribute("pattern", pattern);
+        ComponentBuilder triggeringPolicy = builder.newComponent("Policies")
+                .addComponent(builder.newComponent("SizeBasedTriggeringPolicy").addAttribute("size", "1KB"));
+        AppenderComponentBuilder appenderBuilder = builder.newAppender("LogToRollingFile", "RollingFile")
+                .addAttribute("fileName", jeBuilderLog)
+                .addAttribute("filePattern", jeBuilderLog + "-%d{MM-dd-yy-HH}.log.")
+                .add(layoutBuilder)
+                .addComponent(triggeringPolicy);
+        builder.add(appenderBuilder);
+
+        rootLogger.add(builder.newAppenderRef("LogToRollingFile"));
+        builder.add(rootLogger);
+        LoggerContext context = Configurator.initialize(builder.build());
+        Configurator.shutdown(context);
+        context = Configurator.initialize(builder.build());
+        logger = context.getLogger("JobEngineLogger");
+        trace(JELogger.class, "Builder Logger initialized");
+    }
+
+    public static void initRunnerLogger() {
+        //TODO Remove the old logger context initialization (spring/activiti/drools)
+
+        ConfigurationBuilder<BuiltConfiguration> builder = ConfigurationBuilderFactory.newConfigurationBuilder();
+
+        builder.setStatusLevel(Level.OFF);
+        builder.setConfigurationName("JobEngineRunnerLogger");
+        RootLoggerComponentBuilder rootLogger = builder.newRootLogger(Level.ALL);
+        // create a console appender
+        AppenderComponentBuilder consoleAppender = builder.newAppender("Console", "CONSOLE").addAttribute("target",
+                ConsoleAppender.Target.SYSTEM_OUT);
+        consoleAppender.add(builder.newLayout("PatternLayout")
+                .addAttribute("pattern", pattern));
+        rootLogger.add(builder.newAppenderRef("Console"));
+
+        builder.add(consoleAppender);
+
+        // create a rolling file appender
+        LayoutComponentBuilder layoutBuilder = builder.newLayout("PatternLayout")
+                .addAttribute("pattern", pattern);
+        ComponentBuilder triggeringPolicy = builder.newComponent("Policies")
+                .addComponent(builder.newComponent("SizeBasedTriggeringPolicy").addAttribute("size", "1KB"));
+        AppenderComponentBuilder appenderBuilder = builder.newAppender("LogToRollingFile", "RollingFile")
+                .addAttribute("fileName", jeRunnerLog)
+                .addAttribute("filePattern", jeRunnerLog + "-%d{MM-dd-yy-HH}.log.")
+                .add(layoutBuilder)
+                .addComponent(triggeringPolicy);
+        builder.add(appenderBuilder);
+
+        rootLogger.add(builder.newAppenderRef("LogToRollingFile"));
+        builder.add(rootLogger);
+        LoggerContext context = Configurator.initialize(builder.build());
+        Configurator.shutdown(context);
+        context = Configurator.initialize(builder.build());
+        logger = context.getLogger("JobEngineLogger");
+        trace(JELogger.class, "Runtime Logger initialized");
+
+    }
 
 }
