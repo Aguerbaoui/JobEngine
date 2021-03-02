@@ -98,9 +98,10 @@ public class ConfigurationService {
 
 	}
 	
-	public void updateAll(ConfigModel config)
+	public void updateAll(ConfigModel config) throws JERunnerErrorException, InterruptedException, ExecutionException
 	{
-		JEConfiguration.updateConfig(config);
+		updateBuilderSettings(config);
+		updateRunnerSettings(config);
 		configRepository.save(JEConfiguration.getInstance());
 		
 	}

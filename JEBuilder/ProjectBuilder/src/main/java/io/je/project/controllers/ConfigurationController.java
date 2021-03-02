@@ -28,7 +28,11 @@ public class ConfigurationController {
 	
 	@PostMapping(value = "/updateConfig", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> updateConfig(@RequestBody ConfigModel config		){
-		configService.updateAll(config);
+		try{
+			configService.updateAll(config);
+		}catch (Exception e) {
+			return JEExceptionHandler.handleException(e);
+		}
 		
 		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.ConfigUpdated));
 	}
