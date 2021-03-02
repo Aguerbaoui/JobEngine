@@ -1,5 +1,6 @@
 package io.je.runtime.controllers;
 
+import io.je.project.exception.JEExceptionHandler;
 import io.je.runtime.services.RuntimeDispatcher;
 import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.exceptions.WorkflowAlreadyRunningException;
@@ -54,9 +55,9 @@ public class WorkflowController {
         try {
             //JELogger.info(WorkflowController.class, "Executing");
             dispatcher.launchProcessWithoutVariables(projectId, key);
-        } catch (WorkflowNotFoundException | WorkflowAlreadyRunningException | WorkflwTriggeredByEventException e) {
-            return ResponseEntity.badRequest().body(new JEResponse(e.getCode(), e.getMessage()));
-        }
+        } catch (Exception e) {
+			return JEExceptionHandler.handleException(e);
+		}
         return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, EXECUTING_WORKFLOW));
 
     }
@@ -68,9 +69,9 @@ public class WorkflowController {
     public ResponseEntity<?> runAllWorkflows(@PathVariable String projectId) {
         try {
             dispatcher.runAllWorkflows(projectId);
-        } catch (WorkflowNotFoundException e) {
-            return ResponseEntity.badRequest().body(new JEResponse(e.getCode(), e.getMessage()));
-        }
+        } catch (Exception e) {
+			return JEExceptionHandler.handleException(e);
+		}
         return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, EXECUTING_WORKFLOW));
     }
 

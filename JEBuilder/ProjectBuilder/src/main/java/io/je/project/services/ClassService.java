@@ -38,12 +38,6 @@ public class ClassService {
 
 	Map<String, JEClass> loadedClasses = new HashMap<String, JEClass>();
 
-	public void addClasses(List<ClassDefinition> classDefinitions) throws DataDefinitionUnreachableException,
-			JERunnerErrorException, AddClassException, ClassLoadException, IOException, InterruptedException, ExecutionException {
-		for (ClassDefinition clazz : classDefinitions) {
-			addClass(clazz);
-		}
-	}
 
 	/*
 	 * add/update class
@@ -52,15 +46,7 @@ public class ClassService {
 			JERunnerErrorException, AddClassException, ClassLoadException, InterruptedException, ExecutionException {
 		String classId= classDefinition.getClassId();
 		String workspaceId = classDefinition.getWorkspaceId();
-		if (!loadedClasses.containsKey(classId)) {
-			List<JEClass> builtClasses = ClassManager.buildClass(workspaceId, classId);
-			for (JEClass _class : builtClasses) {
-				// TODO: manage what happens when class addition fails
-				addClassToJeRunner(_class);
-				classRepository.save(_class);
-				loadedClasses.put(_class.getClassId(), _class);
-			}
-		}
+		addClass(workspaceId,classId);
 
 	}
 	
@@ -103,14 +89,21 @@ public class ClassService {
 	}
 
 
-	public void loadAllClasses() throws DataDefinitionUnreachableException, JERunnerErrorException, AddClassException,
+	public void loadAllClassesToBuilder() throws DataDefinitionUnreachableException, JERunnerErrorException, AddClassException,
 			ClassLoadException, IOException, InterruptedException, ExecutionException {
 		List<JEClass> classes = classRepository.findAll();
-
 		for (JEClass clazz : classes) {
 			try
 			{
-				addClass(clazz.getWorkspaceId(), clazz.getClassId());
+				String classId= clazz.getClassId();
+				String workspaceId = clazz.getWorkspaceId();
+				if (!loadedClasses.containsKey(classId)) {
+					List<JEClass> builtClasses = ClassManager.buildClass(workspaceId, classId);
+					for (JEClass _class : builtClasses) {
+						loadedClasses.put(_class.getClassId(), _class);
+					}
+				}
+
 			}catch (Exception e) {
 				JELogger.warning(getClass(), "Failed to load class : " + clazz.getClassName());
 			}

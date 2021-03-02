@@ -33,6 +33,11 @@ public class ConfigurationController {
 	public ResponseEntity<?> updateConfig(@RequestBody ConfigModel configModel) {
 
 		JEConfiguration.updateConfig(configModel);
+		if(JEConfiguration.getDroolsDateFormat()!=null)
+		{
+	        System.setProperty("drools.dateformat", JEConfiguration.getDroolsDateFormat());
+
+		}
 
 		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.ConfigUpdated));
 	}

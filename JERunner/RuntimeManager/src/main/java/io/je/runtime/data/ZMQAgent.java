@@ -172,7 +172,7 @@ public class ZMQAgent implements Runnable {
 			}
              
              try {
-				Thread.sleep(1000);
+				Thread.sleep(100);
 			} catch (InterruptedException e) {
                  JELogger.error(ZMQAgent.class, " Thread interrupted while listening to data");
 			}

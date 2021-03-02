@@ -16,6 +16,7 @@ import io.je.utilities.exceptions.AddClassException;
 import io.je.utilities.exceptions.ClassLoadException;
 import io.je.utilities.exceptions.DataDefinitionUnreachableException;
 import io.je.utilities.exceptions.JERunnerErrorException;
+import io.je.utilities.exceptions.ProjectNotFoundException;
 import io.je.utilities.logger.JELogger;
 import io.je.utilities.models.ConfigModel;
 
@@ -43,31 +44,23 @@ public class ConfigurationService {
 	 * > load config from database
 	 * >update config
 	 */
-	public void init() throws JERunnerErrorException, InterruptedException, ExecutionException, DataDefinitionUnreachableException, AddClassException, ClassLoadException, IOException
+	public void init() throws JERunnerErrorException, InterruptedException, ExecutionException, DataDefinitionUnreachableException, AddClassException, ClassLoadException, IOException, ProjectNotFoundException
 	{
-		try {
-			ConfigModel configModel = loadConfigFromDb();
-			updateConfigSettings(configModel);
-		}
-		catch (Exception e) {}
-        classService.loadAllClasses();
+		ConfigModel configModel = loadConfigFromDb();
+		updateBuilderSettings(configModel);
+        classService.loadAllClassesToBuilder();
+		projectService.loadAllProjects();
+		updateRunner(configModel);
 
 		
 	}
 	
-	/*
-	 * update builder config
-	 */
-	private void updateConfigSettings(ConfigModel configModel) throws JERunnerErrorException, InterruptedException, ExecutionException {
-		updateBuilderSettings(configModel);
-		updateRunnerSettings(configModel);
-		
-	}
+
 
 	/*
 	 * update runner config
 	 */
-	private void updateBuilderSettings(ConfigModel configModel) throws JERunnerErrorException, InterruptedException, ExecutionException {
+	private void updateBuilderSettings(ConfigModel configModel)  {
 		JEConfiguration.updateConfig(configModel);
 		
 	}
@@ -105,19 +98,15 @@ public class ConfigurationService {
 
 	}
 	
-	public void updateAll(ConfigModel config)
+	public void updateAll(ConfigModel config) throws JERunnerErrorException, InterruptedException, ExecutionException
 	{
-		//TODO: add control can't be empty
-		JEConfiguration.setDataDefinitionURL(config.getDataDefinitionURL());
-		JEConfiguration.setDataManagerURL(config.getDataManagerURL());
-		JEConfiguration.setSubscriberPort( config.getSubscriberPort());
-		JEConfiguration.setRequestPort(config.getRequestPort());
-		JEConfiguration.setRuntimeManagerURL(config.getRuntimeManagerURL());
+		updateBuilderSettings(config);
+		updateRunnerSettings(config);
 		configRepository.save(JEConfiguration.getInstance());
 		
 	}
 
-	    public void updateRunner() {
+	    public void updateRunner(ConfigModel config) {
 
 	        new Thread(() -> {
 	            try {
@@ -128,6 +117,9 @@ public class ConfigurationService {
 	                    serverUp = checkRunnerHealth();
 	                }
 
+		        		updateRunnerSettings(config);
+
+	                
 	                for (JEClass clazz : classService.getLoadedClasses().values()) {
 	                    classService.addClassToJeRunner(clazz);
 	                }

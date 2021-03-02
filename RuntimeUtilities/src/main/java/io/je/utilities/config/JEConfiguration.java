@@ -1,6 +1,5 @@
 package io.je.utilities.config;
 
-import io.je.utilities.apis.DataDefinitionApiHandler;
 import io.je.utilities.apis.JERunnerAPIHandler;
 import io.je.utilities.models.ConfigModel;
 
@@ -16,10 +15,32 @@ public class JEConfiguration {
 	static String projectBuilderURL ;
 	static int subscriberPort;
 	static int requestPort;
+	static String droolsDateFormat;
 
 	private JEConfiguration() {
 
 	}
+	
+	
+	
+	
+
+	public static String getDroolsDateFormat() {
+		return droolsDateFormat;
+	}
+
+
+
+
+
+	public static void setDroolsDateFormat(String droolsDateFormat) {
+		if(droolsDateFormat!=null)
+			JEConfiguration.droolsDateFormat = droolsDateFormat;
+	}
+
+
+
+
 
 	public static String getDataDefinitionURL() {
 		return dataDefinitionURL;
@@ -88,6 +109,7 @@ public class JEConfiguration {
 		configModel.setRuntimeManagerURL(runtimeManagerURL);
 		configModel.setSubscriberPort(subscriberPort);
 		configModel.setProjectBuilderURL(projectBuilderURL);
+		configModel.setDroolsDateFormat(droolsDateFormat);
 		return configModel;
 	}
 	
@@ -112,7 +134,7 @@ public class JEConfiguration {
 		setSubscriberPort(configModel.getSubscriberPort());
 		setRuntimeManagerURL(configModel.getRuntimeManagerURL());
 		setProjectBuilderURL(configModel.getProjectBuilderURL());
-
+		setDroolsDateFormat(configModel.getDroolsDateFormat());
 
 	}
 

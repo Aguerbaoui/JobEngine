@@ -36,9 +36,9 @@ public class ProjectController {
     public ResponseEntity<?> buildProject(@RequestBody String input) {
         try {
             dispatcher.buildProject(input);
-        } catch (RuleBuildFailedException e) {
-            return ResponseEntity.badRequest().body(new JEResponse(e.getCode(), e.getMessage()));
-        }
+        } catch (Exception e) {
+			return JEExceptionHandler.handleException(e);
+		}
 
         return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.BUILT_EVERYTHING_SUCCESSFULLY));
 
@@ -51,9 +51,9 @@ public class ProjectController {
     public ResponseEntity<?> runProject(@PathVariable String projectId) {
         try {
             dispatcher.runProject(projectId);
-        } catch (RulesNotFiredException | RuleBuildFailedException | ProjectAlreadyRunningException | WorkflowNotFoundException e) {
-            return ResponseEntity.badRequest().body(new JEResponse(e.getCode(), e.getMessage()));
-        }
+        } catch (Exception e) {
+			return JEExceptionHandler.handleException(e);
+		}
         return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.EXECUTING_PROJECT));
 
     }
@@ -78,8 +78,8 @@ public class ProjectController {
         try {
             dispatcher.removeProjectData(projectId);
         } catch (Exception e) {
-            return JEExceptionHandler.handleException(e);
-        }
+			return JEExceptionHandler.handleException(e);
+		}
         return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.PROJECT_DELETED));
 
     }
