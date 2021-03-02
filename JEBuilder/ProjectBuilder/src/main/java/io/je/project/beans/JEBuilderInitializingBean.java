@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
 @Component
-public class JEInitializingBean implements InitializingBean {
+public class JEBuilderInitializingBean implements InitializingBean {
 
 
 	@Autowired
@@ -26,6 +26,7 @@ public class JEInitializingBean implements InitializingBean {
     public void afterPropertiesSet() {
     	
         try {
+            JELogger.initBuilderLogger();
         	configService.init();
         } catch (DataDefinitionUnreachableException | JERunnerErrorException | AddClassException | ClassLoadException | IOException | InterruptedException | ExecutionException | ProjectNotFoundException   e) {
            JELogger.error(getClass(), e.getMessage());
