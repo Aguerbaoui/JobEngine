@@ -144,11 +144,11 @@ public class ProjectContainer {
 	 */
 	public void fireRules() throws RulesNotFiredException, RuleBuildFailedException, ProjectAlreadyRunningException {
 
-		JELogger.info(getClass(), "FIRING RULES : " + allRules.values());
+		JELogger.debug(getClass(), "Rule Engine - [projectId ="+projectID+"] firing all rules..");
 		facts = new ConcurrentHashMap<String, FactHandle>();
 		if(allRules == null || allRules.isEmpty())
 		{
-			JELogger.info(getClass(), " This project has no rules ");
+			JELogger.warning(getClass(), "Rule Engine - [projectId ="+projectID+"]  This project has no rules ");
 
 		}
 		
@@ -212,7 +212,7 @@ public class ProjectContainer {
 	 * creating the project's kie container.
 	 */
 	private boolean buildKie() {
-
+		JELogger.debug(getClass(), "Rule Engine - [projectId ="+projectID+"] building kie ..");
 		/*if (allRules.isEmpty()) {
 			return false;
 		}*/
@@ -237,6 +237,7 @@ public class ProjectContainer {
 			return initKieBase();
 
 		} else {
+			JELogger.debug(getClass(), "Rule Engine - [projectId ="+projectID+"] kie built.");
 			return true;
 		}
 
@@ -244,6 +245,7 @@ public class ProjectContainer {
 
 	private boolean initKieBase() {
 		if (!isInitialised) {
+			JELogger.debug(getClass(), "Rule Engine - [projectId ="+projectID+"] Initialising kieBase");
 			if (releaseId != null) {
 				// create container
 				try {
@@ -253,6 +255,7 @@ public class ProjectContainer {
 
 				} catch (Exception e) {
 					e.printStackTrace();
+					JELogger.warning(getClass(), "Rule Engine - [projectId ="+projectID+"] failed to initialise kie base");
 					return false;
 				}
 
@@ -264,6 +267,7 @@ public class ProjectContainer {
 		} else {
 			return true;
 		}
+		
 	}
 
 	/*
@@ -400,6 +404,8 @@ public class ProjectContainer {
 	 */
 	public void addRule(Rule rule)
 			throws RuleCompilationException, RuleAlreadyExistsException, JEFileNotFoundException {
+		
+		JELogger.debug(getClass(), "Rule Engine - [projectId ="+projectID+"] adding rule ["+rule.getName()+"]");
 
 		// check if rule already exists
 		if (ruleExists(rule)) {
@@ -423,6 +429,7 @@ public class ProjectContainer {
 	 * rule exists => rule will be updates
 	 */
 	public boolean updateRule(Rule rule) throws RuleCompilationException, JEFileNotFoundException {
+		JELogger.debug(getClass(), "Rule Engine - [projectId ="+projectID+"] updating rule ["+rule.getName()+"]..");
 
 		// compile rule
 		compileRule(rule);
@@ -462,6 +469,7 @@ public class ProjectContainer {
 	 * delete rule from engine
 	 */
 	public void deleteRule(String ruleID) throws DeleteRuleException {
+		JELogger.debug(getClass(), "Rule Engine - [projectId ="+projectID+"] deleting rule [id : "+ruleID+"]..");
 
 		// check that rule exists
 		if (!ruleExists(ruleID)) {
@@ -493,7 +501,7 @@ public class ProjectContainer {
 	public void compileRule(Rule rule) throws RuleCompilationException, JEFileNotFoundException {
 
 		// load rule content from rule path
-
+		JELogger.debug(getClass(), "Rule Engine - [projectId ="+projectID+"] compiling rule ["+rule.getName()+"]..");
 		RuleLoader.loadRuleContent(rule);
 		String filename = generateResourceName(ResourceType.DRL, rule.getName());
 		kfsToCompile.write(filename, rule.getContent());
@@ -512,6 +520,8 @@ public class ProjectContainer {
 	 * this method compiles all the rules in this project container
 	 */
 	public boolean compileAllRules() {
+		JELogger.debug(getClass(), "Rule Engine - [projectId ="+projectID+"] compiling all rules..");
+
 		KieBuilder kieBuilder = kieServices.newKieBuilder(kieFileSystem, null).buildAll(null);
 		Results results = kieBuilder.getResults();
 		if (results.hasMessages(Message.Level.ERROR)) {
@@ -586,9 +596,11 @@ public class ProjectContainer {
 				try {
 					synchronized(facts)
 					{
+						JELogger.debug(getClass(), "Rule Engine - [projectId ="+projectID+"] updating fact [factId :"+fact.getJobEngineElementID()+"]..");
+
 						if (facts.containsKey(fact.getJobEngineElementID())) {
 							kieSession.update(facts.get(fact.getJobEngineElementID()), fact);
-							// JELogger.info(ProjectContainer.class, " updating fact ");
+
 
 						} else {
 							facts.put(fact.getJobEngineElementID(), kieSession.insert(fact));
