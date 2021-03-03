@@ -2,6 +2,11 @@ package io.je.utilities.config;
 
 public class ConfigurationConstants {
  
+	
+	public static String defaultjeBuilderLogPath = "D:\\logs\\jeBuilder.log";
+	public static String defaultjeRunnerLogPath = "D:\\logs\\jeRunner.log";
+
+	
     
     /*
      * Config for testing on the IDE

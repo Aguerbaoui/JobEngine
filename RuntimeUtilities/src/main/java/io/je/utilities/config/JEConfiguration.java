@@ -16,14 +16,44 @@ public class JEConfiguration {
 	static int subscriberPort;
 	static int requestPort;
 	static String droolsDateFormat;
-
+	
 	private JEConfiguration() {
 
 	}
 	
 	
+
+	public static ConfigModel getInstance() {
+		if (instance == null) {
+			instance = new JEConfiguration();
+		}
+		ConfigModel configModel = new ConfigModel();
+		configModel.setDataDefinitionURL(dataDefinitionURL);
+		configModel.setDataManagerURL(dataManagerURL);
+		configModel.setRequestPort(requestPort);
+		configModel.setRuntimeManagerURL(runtimeManagerURL);
+		configModel.setSubscriberPort(subscriberPort);
+		configModel.setProjectBuilderURL(projectBuilderURL);
+		configModel.setDroolsDateFormat(droolsDateFormat);
+		return configModel;
+	}
+	
+	public static void updateConfig(ConfigModel configModel) {
+		setDataDefinitionURL(configModel.getDataDefinitionURL());
+		setDataManagerURL(configModel.getDataManagerURL());
+		setRequestPort(configModel.getRequestPort());
+		setSubscriberPort(configModel.getSubscriberPort());
+		setRuntimeManagerURL(configModel.getRuntimeManagerURL());
+		setProjectBuilderURL(configModel.getProjectBuilderURL());
+		setDroolsDateFormat(configModel.getDroolsDateFormat());
+
+	}
 	
 	
+	
+
+
+
 
 	public static String getDroolsDateFormat() {
 		return droolsDateFormat;
@@ -98,20 +128,6 @@ public class JEConfiguration {
 	
 	
 
-	public static ConfigModel getInstance() {
-		if (instance == null) {
-			instance = new JEConfiguration();
-		}
-		ConfigModel configModel = new ConfigModel();
-		configModel.setDataDefinitionURL(dataDefinitionURL);
-		configModel.setDataManagerURL(dataManagerURL);
-		configModel.setRequestPort(requestPort);
-		configModel.setRuntimeManagerURL(runtimeManagerURL);
-		configModel.setSubscriberPort(subscriberPort);
-		configModel.setProjectBuilderURL(projectBuilderURL);
-		configModel.setDroolsDateFormat(droolsDateFormat);
-		return configModel;
-	}
 	
 	
 
@@ -127,15 +143,6 @@ public class JEConfiguration {
 		}
 	}
 
-	public static void updateConfig(ConfigModel configModel) {
-		setDataDefinitionURL(configModel.getDataDefinitionURL());
-		setDataManagerURL(configModel.getDataManagerURL());
-		setRequestPort(configModel.getRequestPort());
-		setSubscriberPort(configModel.getSubscriberPort());
-		setRuntimeManagerURL(configModel.getRuntimeManagerURL());
-		setProjectBuilderURL(configModel.getProjectBuilderURL());
-		setDroolsDateFormat(configModel.getDroolsDateFormat());
 
-	}
 
 }
