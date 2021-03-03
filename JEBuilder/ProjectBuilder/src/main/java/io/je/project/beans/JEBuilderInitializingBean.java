@@ -6,6 +6,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import io.je.project.config.BuilderProperties;
 import io.je.project.services.ConfigurationService;
 import io.je.utilities.logger.JELogger;
 
@@ -21,12 +22,14 @@ public class JEBuilderInitializingBean implements InitializingBean {
 	
 	@Autowired 
 	ConfigurationService configService;
-
+	
+	@Autowired
+	BuilderProperties builderProperties;
     @Override
     public void afterPropertiesSet() {
     	
         try {
-            JELogger.initBuilderLogger();
+            JELogger.initBuilderLogger(builderProperties.getJeBuilderLogPath());
         	configService.init();
         } catch (DataDefinitionUnreachableException | JERunnerErrorException | AddClassException | ClassLoadException | IOException | InterruptedException | ExecutionException | ProjectNotFoundException   e) {
            JELogger.error(getClass(), e.getMessage());

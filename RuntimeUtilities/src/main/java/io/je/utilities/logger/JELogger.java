@@ -23,8 +23,6 @@ public class JELogger {
     private static Queue<String> queue = new LinkedList<>();
     private static  Logger logger = null;
 
-    private static final String jeBuilderLog = "D:\\logs\\jeBuilder.log";
-    private static final String jeRunnerLog = "D:\\logs\\jeRunner.log";
     private static final String pattern = "%d %p %c [%t] %m%n";
 
     /*
@@ -90,7 +88,7 @@ public class JELogger {
 
     }
 
-    public static void initBuilderLogger() {
+    public static void initBuilderLogger(String jeBuilderLogPath) {
         //TODO Remove the old logger context initialization (spring/activiti/drools)
 
 
@@ -112,10 +110,10 @@ public class JELogger {
         LayoutComponentBuilder layoutBuilder = builder.newLayout("PatternLayout")
                 .addAttribute("pattern", pattern);
         ComponentBuilder triggeringPolicy = builder.newComponent("Policies")
-                .addComponent(builder.newComponent("SizeBasedTriggeringPolicy").addAttribute("size", "1KB"));
+                .addComponent(builder.newComponent("SizeBasedTriggeringPolicy").addAttribute("size", "10KB"));
         AppenderComponentBuilder appenderBuilder = builder.newAppender("LogToRollingFile", "RollingFile")
-                .addAttribute("fileName", jeBuilderLog)
-                .addAttribute("filePattern", jeBuilderLog + "-%d{MM-dd-yy-HH}.log.")
+                .addAttribute("fileName", jeBuilderLogPath)
+                .addAttribute("filePattern", jeBuilderLogPath + "-%d{MM-dd-yy-HH}.log.")
                 .add(layoutBuilder)
                 .addComponent(triggeringPolicy);
         builder.add(appenderBuilder);
@@ -129,7 +127,7 @@ public class JELogger {
         trace(JELogger.class, "Builder Logger initialized");
     }
 
-    public static void initRunnerLogger() {
+    public static void initRunnerLogger(String jeRunnerLogPath) {
         //TODO Remove the old logger context initialization (spring/activiti/drools)
 
         ConfigurationBuilder<BuiltConfiguration> builder = ConfigurationBuilderFactory.newConfigurationBuilder();
@@ -150,10 +148,10 @@ public class JELogger {
         LayoutComponentBuilder layoutBuilder = builder.newLayout("PatternLayout")
                 .addAttribute("pattern", pattern);
         ComponentBuilder triggeringPolicy = builder.newComponent("Policies")
-                .addComponent(builder.newComponent("SizeBasedTriggeringPolicy").addAttribute("size", "1KB"));
+                .addComponent(builder.newComponent("SizeBasedTriggeringPolicy").addAttribute("size", "10KB"));
         AppenderComponentBuilder appenderBuilder = builder.newAppender("LogToRollingFile", "RollingFile")
-                .addAttribute("fileName", jeRunnerLog)
-                .addAttribute("filePattern", jeRunnerLog + "-%d{MM-dd-yy-HH}.log.")
+                .addAttribute("fileName", jeRunnerLogPath)
+                .addAttribute("filePattern", jeRunnerLogPath + "-%d{MM-dd-yy-HH}.log.")
                 .add(layoutBuilder)
                 .addComponent(triggeringPolicy);
         builder.add(appenderBuilder);
