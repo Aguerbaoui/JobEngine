@@ -38,7 +38,6 @@ public class RuleBuilder {
 			for (ScriptedRule rule : unitRules) {
 				// generate drl
 				 rulePath = rule.generateDRL(buildPath);
-				 JELogger.info("sending rule " + rule.getRuleName());
 				sendDRLToJeRunner(rule,rulePath);
 				}
 		}
@@ -75,6 +74,7 @@ public class RuleBuilder {
 			 jeRunnerResp = JERunnerAPIHandler.updateRule(ruleMap);
 
 			if (jeRunnerResp == null || jeRunnerResp.getCode() != ResponseCodes.CODE_OK) {
+				JELogger.error(RuleBuilder.class, "[rule Id ="+rule.getRuleName()+" ]Rule Build Failed : " + jeRunnerResp.getMessage());
 				throw new RuleBuildFailedException(jeRunnerResp.getMessage());
 			}
 

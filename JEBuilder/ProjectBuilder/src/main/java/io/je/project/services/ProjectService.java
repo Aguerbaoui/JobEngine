@@ -51,6 +51,8 @@ public class ProjectService {
 		// TODO: add test to see if project already exists
 		synchronized (projectRepository) {
 			projectRepository.save(project);
+			JELogger.debug(getClass(), "saving project with id = " + project.getProjectId());
+
 
 		}
 		loadedProjects.put(project.getProjectId(), project);
@@ -64,7 +66,7 @@ public class ProjectService {
 	@Async
 	public CompletableFuture<Void> removeProject(String id) throws ProjectNotFoundException, InterruptedException,
 			JERunnerErrorException, ExecutionException, IOException {
-		JELogger.trace(ProjectService.class, "deleting project with id = " + id);
+		JELogger.info(ProjectService.class, "deleting project with id = " + id);
 
 		if (!loadedProjects.containsKey(id)) {
 			throw new ProjectNotFoundException(Errors.PROJECT_NOT_FOUND);
@@ -187,6 +189,7 @@ public class ProjectService {
 	}
 
 	public CompletableFuture<Collection<?>> getAllProjects() {
+		JELogger.debug(getClass(), "loading all projects from database ..");
 		List<JEProject> projects = projectRepository.findAll();
 		for (JEProject project : projects) {
 
