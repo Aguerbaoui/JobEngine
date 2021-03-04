@@ -89,9 +89,9 @@ public class ClassService {
 	}
 
 
-	public void loadAllClassesToBuilder() throws DataDefinitionUnreachableException, JERunnerErrorException, AddClassException,
-			ClassLoadException, IOException, InterruptedException, ExecutionException {
+	public void loadAllClassesToBuilder() {
 		List<JEClass> classes = classRepository.findAll();
+		JELogger.trace(" Loading all classes from db to memory");
 		for (JEClass clazz : classes) {
 			try
 			{

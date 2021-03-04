@@ -38,7 +38,7 @@ public class WorkflowEngineHandler {
      * Launch process without variables
      * */
     public static void launchProcessWithoutVariables(String projectId, String processId) throws WorkflowNotFoundException, WorkflowAlreadyRunningException, WorkflwTriggeredByEventException {
-        JELogger.info(WorkflowEngineHandler.class, " running workflow " + processId);
+        JELogger.trace( " running workflow " + processId);
         processManagerHashMap.get(projectId).launchProcessByKeyWithoutVariables(processId);
     }
 
@@ -106,7 +106,7 @@ public class WorkflowEngineHandler {
     public static void stopProjectWorfklows(String projectId) {
     	if(processManagerHashMap.containsKey(projectId))
     	{
-    		JELogger.info(WorkflowEngineHandler.class, "Stopping workflow executions for project id = " + projectId);
+    		JELogger.trace("Stopping workflow executions for project id = " + projectId);
             processManagerHashMap.get(projectId).stopProjectWorkflows(projectId);
 
     	}
@@ -124,6 +124,7 @@ public class WorkflowEngineHandler {
     }
 
     public static void deleteProjectProcesses(String projectId) {
+        JELogger.info( " deleting workflows in project id = " + projectId);
         if(processManagerHashMap.containsKey(projectId)) {
             stopProjectWorfklows(projectId);
             processManagerHashMap.remove(projectId);

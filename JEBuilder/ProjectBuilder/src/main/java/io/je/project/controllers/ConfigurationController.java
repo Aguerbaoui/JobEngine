@@ -27,7 +27,7 @@ public class ConfigurationController {
 	ConfigurationService configService;
 	
 	@PostMapping(value = "/updateConfig", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> updateConfig(@RequestBody ConfigModel config		){
+	public ResponseEntity<?> updateConfig(@RequestBody ConfigModel config){
 		try{
 			configService.updateAll(config);
 		}catch (Exception e) {

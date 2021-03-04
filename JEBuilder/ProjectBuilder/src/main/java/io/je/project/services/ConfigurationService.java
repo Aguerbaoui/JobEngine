@@ -44,6 +44,7 @@ public class ConfigurationService {
 			throws JERunnerErrorException, InterruptedException, ExecutionException, DataDefinitionUnreachableException,
 			AddClassException, ClassLoadException, IOException, ProjectNotFoundException {
 
+		JELogger.trace(" Initializing builder");
 		ConfigModel configModel = loadConfigFromDb();
 		if (configModel != null) {
 			updateBuilderSettings(configModel);
@@ -95,6 +96,7 @@ public class ConfigurationService {
 	}
 
 	public void updateAll(ConfigModel config) throws JERunnerErrorException, InterruptedException, ExecutionException {
+		JELogger.trace(" Updating builder and runner configuration");
 		updateBuilderSettings(config);
 		updateRunnerSettings(config);
 		configRepository.save(JEConfiguration.getInstance());
@@ -103,11 +105,12 @@ public class ConfigurationService {
 
 	public void updateRunner(ConfigModel config) {
 
+		JELogger.trace(" Updating runner configuration, config = " + config.toString());
 		new Thread(() -> {
 			try {
 				boolean serverUp = false;
 				while (!serverUp) {
-					JELogger.info(getClass(), "runner down");
+					JELogger.info(getClass(), "Runner is down, checking again in 2 seconds");
 					Thread.sleep(2000);
 					serverUp = checkRunnerHealth();
 				}
@@ -146,6 +149,7 @@ public class ConfigurationService {
 	}
 
 	public void setDataDefinitionURL(String dataDefinitionURL) {
+		JELogger.trace(" Setting data definition url from controller url = " + dataDefinitionURL);
 		JEConfiguration.setDataDefinitionURL(dataDefinitionURL);
 		configRepository.save(JEConfiguration.getInstance());
 

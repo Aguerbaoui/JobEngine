@@ -293,7 +293,7 @@ public class WorkflowService {
         } else if (!project.workflowExists(workflowId)) {
             throw new WorkflowNotFoundException(Errors.WORKFLOW_NOT_FOUND);
         }
-
+        JELogger.trace(WorkflowService.class, " Adding a sequence flow with from " + sourceRef + " to  " + targetRef + " in workflow id = " + workflowId);
         project.addWorkflowSequenceFlow(workflowId, sourceRef, targetRef, condition);
     }
 
@@ -321,7 +321,7 @@ public class WorkflowService {
         if (project == null) {
             throw new ProjectNotFoundException(Errors.PROJECT_NOT_FOUND);
         }
-
+        JELogger.trace(" Building workflows in project id = " + projectId);
         for (JEWorkflow wf : project.getWorkflows().values()) {
             WorkflowBuilder.buildWorkflow(wf);
         }
@@ -546,6 +546,7 @@ public class WorkflowService {
             throw new ProjectNotFoundException(Errors.PROJECT_NOT_FOUND);
         }
 
+        JELogger.trace(" Removing workflows " + ids + " in project id = " + projectId);
         for(String id: ids) {
             try {
                 removeWorkflow(projectId, id);

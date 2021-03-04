@@ -26,194 +26,194 @@ import static io.je.utilities.constants.ResponseMessages.*;
 @CrossOrigin(maxAge = 3600)
 public class ProjectController {
 
-	@Autowired
-	ProjectService projectService;
+    @Autowired
+    ProjectService projectService;
 
 //########################################### **PROJECT** ################################################################
-	
-	@GetMapping("/getAllProjects")
-	public ResponseEntity<?> getAllProjects(@PathVariable String projectId) {
-		Collection<?> projects = null;
-		try {
-			projects = projectService.getAllProjects().get();
-			 if(projects.isEmpty())
-			 {
-					return ResponseEntity.noContent().build();
-
-			 }
-		} catch (Exception e) {
-			return JEExceptionHandler.handleException(e);
-
-		}
-		
-		return	ResponseEntity.ok(projects);
-	
-}
-
-	
-	@GetMapping("/getProjectRunStatus/{projectId}")
-	public ResponseEntity<?> getProjectRunStatus(@PathVariable String projectId) {
-		JEProject project = null;
-		try {
-			project = projectService.getProject(projectId).get();
-			
-		} catch (Exception e) {
-			return JEExceptionHandler.handleException(e);
-
-		}
-		
-		return	ResponseEntity.ok(project.isRunning());
-	
-}
-	
-	@GetMapping("/getProjectBuildStatus/{projectId}")
-	public ResponseEntity<?> getProjectBuildStatus(@PathVariable String projectId) {
-		JEProject project = null;
-		try {
-			project = projectService.getProject(projectId).get();
-			
-		} catch (Exception e) {
-			return JEExceptionHandler.handleException(e);
-
-		}
-		
-		return	ResponseEntity.ok(project.isBuilt());
-	
-}
-
 	/*
-	 * Add new project
-	 */
-	@PostMapping(value = "/addProject", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> addProject(@RequestBody ProjectModel m) {
-		if(projectService.projectExists(m.getProjectId())) {
-			return ResponseEntity.ok(new JEResponse(ResponseCodes.PROJECT_EXISTS, ResponseMessages.PROJECT_EXISTS));
-		}
-		try {
-			JEProject p = new JEProject(m.getProjectId(), m.getConfigurationPath());
-			JELogger.trace(ProjectController.class, "Creating project with id = " + m.getProjectId());
-			projectService.saveProject(p).get();
-		}catch (Exception e) {
-			return JEExceptionHandler.handleException(e);
-
-		}
-		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, CREATED_PROJECT_SUCCESSFULLY));
-	}
-
-	/*
-	 * Add new project
-	 */
-	@PostMapping(value = "/deleteProject/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> deleteProject(@PathVariable String projectId) {
-
-		//TODO: control if project exists
-
-		try {
-			projectService.stopProject(projectId);
-			projectService.removeProject(projectId).get();
-		}catch (Exception e) {
-			return JEExceptionHandler.handleException(e);
-
-		}
-		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, CREATED_PROJECT_SUCCESSFULLY));
-	}
-
-	@GetMapping("/getProject/{projectId}")
-	public ResponseEntity<?> getProject(@PathVariable String projectId) {
-	JEProject project=null;
-	try {
-		project = projectService.getProject(projectId).get();
-	} catch (Exception e) {
-		return JEExceptionHandler.handleException(e);
-
-	}
-	if(project==null) {
-		return ResponseEntity.ok(new JEResponse(ResponseCodes.PROJECT_NOT_FOUND, Errors.PROJECT_NOT_FOUND));
-
-	}
-	
-	return ResponseEntity.ok(project);
-
-	}
-
-	/*
-	 * Build entire project files
-	 */
-	@PostMapping(value = "/buildProject/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> buildProject(@PathVariable String projectId) {
-		try {
-			projectService.buildAll(projectId);
-
-
-		} catch (Exception e) {
-			return JEExceptionHandler.handleException(e);
-
-		}
-		JELogger.trace(ProjectController.class, BUILT_EVERYTHING_SUCCESSFULLY);
-		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, BUILT_EVERYTHING_SUCCESSFULLY));
-	}
-
-	/* Run project */
-	@PostMapping(value = "/runProject/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> runProject(@PathVariable String projectId) {
-		try {
-
-				projectService.runAll(projectId);
-
-
-
-		}catch (Exception e) {
-			return JEExceptionHandler.handleException(e);
-
-		}
-		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, PROJECT_RUNNING));
-	}
-	
-	
-	/* Stop project */
-	@PostMapping(value = "/stopProject/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> stopProject(@PathVariable String projectId) {
-		
-			
-				try {
-					projectService.stopProject(projectId);
-
-				} catch (Exception e) {
-					return JEExceptionHandler.handleException(e);
-
-				}
-		
-		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, STOPPING_PROJECT));
-	}
-
-	/*
-	 * Stop the project
+	 * Get the list of all projects
 	 * */
-	@GetMapping(value = "/getLog", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> getLog() {
-		//TODO: add failed to stop project exception
+    @GetMapping("/getAllProjects")
+    public ResponseEntity<?> getAllProjects(@PathVariable String projectId) {
+        Collection<?> projects = null;
+        try {
+            projects = projectService.getAllProjects().get();
+            if (projects.isEmpty()) {
+                return ResponseEntity.noContent().build();
 
-		//List l = new ArrayList(JELogger.getQueue());
-		//JELogger.getQueue().removeAll(JELogger.getQueue());
-		return ResponseEntity.ok(JELogger.getQueue());
+            }
+        } catch (Exception e) {
+            return JEExceptionHandler.handleException(e);
 
-	}
+        }
+        return ResponseEntity.ok(projects);
 
-	
+    }
+
 	/*
-	 * remove project from builder and runner 
+	* Get project running status
+	* */
+    @GetMapping("/getProjectRunStatus/{projectId}")
+    public ResponseEntity<?> getProjectRunStatus(@PathVariable String projectId) {
+        JEProject project = null;
+        try {
+            project = projectService.getProject(projectId).get();
+
+        } catch (Exception e) {
+            return JEExceptionHandler.handleException(e);
+
+        }
+        return ResponseEntity.ok(project.isRunning());
+
+    }
+
+	/*
+	 * Get project built status
 	 * */
-	@GetMapping(value = "/closeProject/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> closeProject(@PathVariable String projectId){
-		try {
+    @GetMapping("/getProjectBuildStatus/{projectId}")
+    public ResponseEntity<?> getProjectBuildStatus(@PathVariable String projectId) {
+        JEProject project = null;
+        try {
+            project = projectService.getProject(projectId).get();
 
-			projectService.closeProject(projectId);
-	}catch (Exception e) {
-		return JEExceptionHandler.handleException(e);
+        } catch (Exception e) {
+            return JEExceptionHandler.handleException(e);
 
-	}
-	return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, PROJECT_CLOSED));
+        }
 
-	}
+        return ResponseEntity.ok(project.isBuilt());
+
+    }
+
+    /*
+     * Add new project
+     */
+    @PostMapping(value = "/addProject", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> addProject(@RequestBody ProjectModel m) {
+        if (projectService.projectExists(m.getProjectId())) {
+            return ResponseEntity.ok(new JEResponse(ResponseCodes.PROJECT_EXISTS, ResponseMessages.PROJECT_EXISTS));
+        }
+        try {
+            JEProject p = new JEProject(m.getProjectId(), m.getConfigurationPath());
+            projectService.saveProject(p).get();
+        } catch (Exception e) {
+            return JEExceptionHandler.handleException(e);
+        }
+        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, CREATED_PROJECT_SUCCESSFULLY));
+    }
+
+    /*
+     * Add new project
+     */
+    @PostMapping(value = "/deleteProject/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> deleteProject(@PathVariable String projectId) {
+		if (!projectService.projectExists(projectId)) {
+			return ResponseEntity.badRequest().body(new JEResponse(ResponseCodes.PROJECT_NOT_FOUND, Errors.PROJECT_NOT_FOUND));
+		}
+
+        try {
+            projectService.stopProject(projectId);
+            projectService.removeProject(projectId).get();
+        } catch (Exception e) {
+            return JEExceptionHandler.handleException(e);
+
+        }
+        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, CREATED_PROJECT_SUCCESSFULLY));
+    }
+
+    @GetMapping("/getProject/{projectId}")
+    public ResponseEntity<?> getProject(@PathVariable String projectId) {
+        JEProject project = null;
+        try {
+            project = projectService.getProject(projectId).get();
+        } catch (Exception e) {
+            return JEExceptionHandler.handleException(e);
+
+        }
+        if (project == null) {
+            return ResponseEntity.ok(new JEResponse(ResponseCodes.PROJECT_NOT_FOUND, Errors.PROJECT_NOT_FOUND));
+
+        }
+
+        return ResponseEntity.ok(project);
+
+    }
+
+    /*
+     * Build entire project files
+     */
+    @PostMapping(value = "/buildProject/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> buildProject(@PathVariable String projectId) {
+        try {
+            projectService.buildAll(projectId);
+        } catch (Exception e) {
+            return JEExceptionHandler.handleException(e);
+
+        }
+        JELogger.trace(ProjectController.class, BUILT_EVERYTHING_SUCCESSFULLY);
+        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, BUILT_EVERYTHING_SUCCESSFULLY));
+    }
+
+    /* Run project */
+    @PostMapping(value = "/runProject/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> runProject(@PathVariable String projectId) {
+        try {
+
+            projectService.runAll(projectId);
+
+
+        } catch (Exception e) {
+            return JEExceptionHandler.handleException(e);
+
+        }
+        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, PROJECT_RUNNING));
+    }
+
+
+    /* Stop project */
+    @PostMapping(value = "/stopProject/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> stopProject(@PathVariable String projectId) {
+
+
+        try {
+            projectService.stopProject(projectId);
+
+        } catch (Exception e) {
+            return JEExceptionHandler.handleException(e);
+
+        }
+
+        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, STOPPING_PROJECT));
+    }
+
+    /*
+     * Stop the project
+     * */
+    @GetMapping(value = "/getLog", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> getLog() {
+        //TODO: add failed to stop project exception
+
+        //List l = new ArrayList(JELogger.getQueue());
+        //JELogger.getQueue().removeAll(JELogger.getQueue());
+        return ResponseEntity.ok(JELogger.getQueue());
+
+    }
+
+
+    /*
+     * remove project from builder and runner
+     * */
+    @GetMapping(value = "/closeProject/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> closeProject(@PathVariable String projectId) {
+        try {
+
+            projectService.closeProject(projectId);
+        } catch (Exception e) {
+            return JEExceptionHandler.handleException(e);
+
+        }
+        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, PROJECT_CLOSED));
+
+    }
 
 }

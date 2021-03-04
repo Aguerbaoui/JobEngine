@@ -48,6 +48,7 @@ public class Network {
 
     public static Response makeGetNetworkCallWithResponse(String url) throws IOException, InterruptedException, ExecutionException {
         Request request = new Request.Builder().url(url).get().build();
+        JELogger.trace(" Making Get network call to url = " + url);
         CompletableFuture<Response> f = CompletableFuture.supplyAsync(() -> {
             try {
                 return client.newCall(request).execute();
@@ -60,6 +61,7 @@ public class Network {
 
     public static Response makeDeleteNetworkCallWithResponse(String url) throws IOException, InterruptedException, ExecutionException {
         Request request = new Request.Builder().url(url).delete().build();
+        JELogger.trace(" Making Delete network call to url = " + url);
         CompletableFuture<Response> f = CompletableFuture.supplyAsync(() -> {
             try {
                 return client.newCall(request).execute();
@@ -78,6 +80,7 @@ public class Network {
         } catch (JsonProcessingException e) {
             JELogger.info(Network.class, e.getMessage());
         }
+        JELogger.trace(" Making POST network call to url = " + url);
         RequestBody body = RequestBody.create(MediaType.parse("application/json"), jsonStr);
         Request request = new Request.Builder().url(url).post(body).build();
         CompletableFuture<Response> f = CompletableFuture.supplyAsync(() -> {
@@ -95,6 +98,7 @@ public class Network {
     public static Response makeNetworkCallWithStringObjectBodyWithResponse(String json, String url) throws IOException, ExecutionException, InterruptedException {
         RequestBody body = RequestBody.create(MediaType.parse("application/json"), json);
         Request request = new Request.Builder().url(url).post(body).build();
+        JELogger.trace(" Making network String POST call to url = " + url);
         CompletableFuture<Response> f = CompletableFuture.supplyAsync(() -> {
             try {
                 return client.newCall(request).execute();

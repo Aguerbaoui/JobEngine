@@ -29,6 +29,7 @@ public class EventService {
 	 */
 	
 	public Collection<EventModel> getAllEvents(String projectId) throws ProjectNotFoundException {
+		JELogger.trace(" Loading events in project id = " + projectId);
 		JEProject project = ProjectService.getProjectById(projectId);
 		if (project == null) {
 			throw new ProjectNotFoundException( Errors.PROJECT_NOT_FOUND);
@@ -38,7 +39,8 @@ public class EventService {
 		{
 			eventModels.add(new EventModel(event));
 		}
-	
+
+		JELogger.trace(" Found " + eventModels.size() + " events");
 		return eventModels;
 	}
 
@@ -47,6 +49,7 @@ public class EventService {
 	 */
 	
 	public JEEvent getEvent(String projectId, String eventId) throws EventException, ProjectNotFoundException {
+		JELogger.info(getClass(), " getting event [ id="+eventId+"] in project id =  " + projectId);
 		JEProject project = ProjectService.getProjectById(projectId);
 		if (project == null) {
 			throw new ProjectNotFoundException( Errors.PROJECT_NOT_FOUND);
@@ -58,6 +61,7 @@ public class EventService {
 	 * add new event
 	 */
 	public void addEvent(String projectId, EventModel eventModel) throws ProjectNotFoundException, JERunnerErrorException, IOException, InterruptedException, ExecutionException, EventException {
+		JELogger.info(getClass(), " adding event [ id="+eventModel.getEventId()+"] in project id = " + projectId);
 		JEProject project = ProjectService.getProjectById(projectId);
 		if (project == null) {
 			throw new ProjectNotFoundException( Errors.PROJECT_NOT_FOUND);
@@ -80,6 +84,7 @@ public class EventService {
 	 * update new event
 	 */
 	public void updateEvent(String projectId, EventModel eventModel) throws ProjectNotFoundException, JERunnerErrorException, IOException, InterruptedException, ExecutionException, EventException {
+		JELogger.info(getClass(), " updating event [ id="+eventModel.getEventId()+"] in project id = " + projectId);
 		JEProject project = ProjectService.getProjectById(projectId);
 		if (project == null) {
 			throw new ProjectNotFoundException( Errors.PROJECT_NOT_FOUND);
@@ -107,7 +112,6 @@ public class EventService {
 		if (project == null) {
 			throw new ProjectNotFoundException( Errors.PROJECT_NOT_FOUND);
 		}
-		
 
 		//TODO: add test on response
 		HashMap<String,String> eventMap = new HashMap<String, String>();
@@ -115,6 +119,7 @@ public class EventService {
 		eventMap.put(EventModelMapping.EVENTNAME, event.getName());
 		eventMap.put(EventModelMapping.EVENTID, event.getJobEngineElementID());
 		eventMap.put(EventModelMapping.EVENTTYPE, event.getType().toString());
+		JELogger.trace(" Registering event in runner");
 		JERunnerAPIHandler.addEvent(eventMap);
 		project.addEvent(event);
 	
@@ -123,6 +128,7 @@ public class EventService {
 	}
 
 	public void updateEventType(String projectId, String eventId, String eventType) throws ProjectNotFoundException, EventException {
+		JELogger.trace(" Updating event type " + eventType + " for event id = " + eventId + " in project id = " + projectId);
 		JEProject project = ProjectService.getProjectById(projectId);
 		if (project == null) {
 			throw new ProjectNotFoundException( Errors.PROJECT_NOT_FOUND); //cdc47cf6-28e9-ff1d-996f-b6b1732771a2 -> {JEEvent@10436}
@@ -144,6 +150,7 @@ public class EventService {
 
 		EventType t = EventType.valueOf(eventType);
 		try {
+			JELogger.trace(" Updating event type in runner");
 			JERunnerAPIHandler.updateEventType(projectId, eventId, eventType);
 			event.setType(t);
 		} catch (JERunnerErrorException | InterruptedException | ExecutionException | IOException e) {
@@ -156,6 +163,7 @@ public class EventService {
 	 */
 	
 	public void deleteEvent(String projectId, String eventId) throws EventException, ProjectNotFoundException, InterruptedException, JERunnerErrorException, ExecutionException, IOException {
+		JELogger.info(getClass(), " deleting event [ id="+eventId+"] in project id = " + projectId);
 		JEProject project = ProjectService.getProjectById(projectId);
 		if (project == null) {
 			throw new ProjectNotFoundException( Errors.PROJECT_NOT_FOUND);
@@ -174,7 +182,7 @@ public class EventService {
 		if(event == null)  {
 			throw new EventException(Errors.EVENT_NOT_FOUND);
 		}
-
+		JELogger.info(getClass(), " deleting event in runner");
 		JERunnerAPIHandler.deleteEvent(projectId, eventId);
 		project.getEvents().remove(eventId);
 	}
