@@ -13,7 +13,7 @@ import org.drools.template.ObjectDataCompiler;
 import io.je.rulebuilder.components.blocks.Block;
 import io.je.rulebuilder.components.blocks.ConditionBlock;
 import io.je.rulebuilder.components.blocks.PersistableBlock;
-import io.je.rulebuilder.config.RuleBuilderConfig;
+import io.je.utilities.config.ConfigurationConstants;
 import io.je.utilities.constants.RuleBuilderErrors;
 import io.je.utilities.exceptions.AddRuleBlockException;
 import io.je.utilities.exceptions.RuleBuildFailedException;
@@ -116,7 +116,7 @@ public class UserDefinedRule extends JERule {
 		String ruleContent = "";
 		try {
 			ruleContent = objectDataCompiler.compile(Arrays.asList(ruleTemplateAttributes),
-					new FileInputStream(RuleBuilderConfig.ruleTemplatePath));
+					new FileInputStream(ConfigurationConstants.ruleTemplatePath));
 		} catch (Exception e) {
 			throw new RuleBuildFailedException(RuleBuilderErrors.RuleBuildFailed + e.getMessage());
 		}
