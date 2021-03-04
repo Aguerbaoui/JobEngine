@@ -23,8 +23,8 @@ public class JEClassLoader {
 	public static void loadClass(String filePath, String loadPath) throws ClassLoadException {
 		
 		try {
-			JELogger.info(JEClassLoader.class, " loadPath = " + loadPath);
-			JELogger.info(JEClassLoader.class, " Filepath = "+ filePath);
+			JELogger.debug(JEClassLoader.class, " loadPath = " + loadPath);
+			JELogger.debug(JEClassLoader.class, " Filepath = "+ filePath);
 			File sourceFile = new File(filePath);
 			JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
 			StandardJavaFileManager fileManager = compiler.getStandardFileManager(null, null, null);
@@ -53,8 +53,8 @@ public class JEClassLoader {
 		}catch (Exception e) {
 			//TODO: move msg to error class
 			e.printStackTrace();
-			JELogger.info(JEClassLoader.class, e.getMessage());
-			throw new ClassLoadException("failed to load class");
+			JELogger.error(JEClassLoader.class, "Failed to load class :" + e.getMessage());
+			throw new ClassLoadException("Failed to load class");
 		}
 		
 	}

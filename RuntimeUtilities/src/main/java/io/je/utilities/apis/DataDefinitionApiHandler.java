@@ -1,9 +1,9 @@
 package io.je.utilities.apis;
 
 import java.io.IOException;
-import java.net.ConnectException;
 
 import com.squareup.okhttp.Response;
+
 
 import io.je.utilities.config.JEConfiguration;
 import io.je.utilities.constants.Errors;
@@ -26,7 +26,8 @@ public  class DataDefinitionApiHandler {
 	public static String loadClassDefinition(String workspaceId, String classId) throws DataDefinitionUnreachableException, ClassLoadException, IOException
 	{
 		String requestURL = JEConfiguration.getDataDefinitionURL() + "/Class/" + classId + "/workspace/" + workspaceId;
-		JELogger.info(DataDefinitionApiHandler.class, requestURL);
+		JELogger.debug(DataDefinitionApiHandler.class, "loading class definiton [classID = "+classId+"]");
+
 		Response resp = null;
 		try {
 			resp = Network.makeGetNetworkCallWithResponse(requestURL);
@@ -39,6 +40,7 @@ public  class DataDefinitionApiHandler {
 
 
 		}else if (resp.code() == 204) {
+			
 			throw new ClassLoadException(Errors.DATA_DEFINITION_CLASS_NOT_FOUND + " : [ id = " + classId + " ]");
 		}else if ( resp.code() != 200 && resp.code() != 204)
 		{

@@ -29,7 +29,7 @@ public class JEBuilderInitializingBean implements InitializingBean {
     public void afterPropertiesSet() {
     	
         try {
-            JELogger.initBuilderLogger(builderProperties.getJeBuilderLogPath());
+            JELogger.initBuilderLogger(builderProperties.getJeBuilderLogPath(),builderProperties.getJeBuilderLogLevel());
         	configService.init();
         } catch (DataDefinitionUnreachableException | JERunnerErrorException | AddClassException | ClassLoadException | IOException | InterruptedException | ExecutionException | ProjectNotFoundException   e) {
            JELogger.error(getClass(), e.getMessage());

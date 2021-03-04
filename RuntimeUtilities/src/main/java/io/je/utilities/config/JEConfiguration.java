@@ -1,6 +1,7 @@
 package io.je.utilities.config;
 
 import io.je.utilities.apis.JERunnerAPIHandler;
+import io.je.utilities.logger.JELogger;
 import io.je.utilities.models.ConfigModel;
 
 /*
@@ -79,6 +80,7 @@ public class JEConfiguration {
 	public static void setDataDefinitionURL(String dataDefinitionURL) {
 		if (dataDefinitionURL != null)
 		{
+			JELogger.info("updating data defintion url to : " + dataDefinitionURL);
 			JEConfiguration.dataDefinitionURL = dataDefinitionURL;
 
 		}
@@ -91,6 +93,7 @@ public class JEConfiguration {
 	public static void setDataManagerURL(String dataManagerURL) {
 		if (dataManagerURL != null)
 		{
+			JELogger.info("updating data Manager url to : " + dataManagerURL);
 			JEConfiguration.dataManagerURL = dataManagerURL;
 		}
 	}
@@ -103,6 +106,7 @@ public class JEConfiguration {
 		if (runtimeManagerURL != null) {
 			{
 				JEConfiguration.runtimeManagerURL = runtimeManagerURL;
+				JELogger.info("updating runtime Manager url to : " + runtimeManagerURL);
 				JERunnerAPIHandler.setRuntimeManagerBaseApi(runtimeManagerURL);
 			}
 		}

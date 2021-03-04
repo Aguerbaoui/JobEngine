@@ -40,6 +40,7 @@ public class ClassBuilder {
 		//check if class format is valid
 		if(classModel.getName()==null)
 		{
+			JELogger.error(ClassBuilder.class, ClassBuilderErrors.classNameNull);
 			throw new AddClassException(ClassBuilderErrors.classNameNull);
 		}
 		
@@ -111,6 +112,7 @@ public class ClassBuilder {
 			// extend class
 			if(inheritedClass != null)
 			{
+				JELogger.error(ClassBuilder.class, ClassBuilderErrors.invalidClassFormat + "INTERFACE CAN'T INHERIT FROM CLASS");
 				throw new ClassLoadException(ClassBuilderErrors.invalidClassFormat + "INTERFACE CAN'T INHERIT FROM CLASS");
 				
 			}
@@ -224,7 +226,9 @@ public class ClassBuilder {
 					inheritedInterfaces.add(classId);
 				}	//count number of inherited class
 				
-			    if(ClassManager.getClassType(classId) == ClassType.ENUM) { throw new ClassLoadException(ClassBuilderErrors.invalidClassFormat + " : " + ClassBuilderErrors.enumAsInheritedClass); }
+			    if(ClassManager.getClassType(classId) == ClassType.ENUM) {
+					JELogger.error(ClassBuilder.class, ClassBuilderErrors.invalidClassFormat + " : " + ClassBuilderErrors.enumAsInheritedClass);
+			    	throw new ClassLoadException(ClassBuilderErrors.invalidClassFormat + " : " + ClassBuilderErrors.enumAsInheritedClass); }
 				
 				
 			}
@@ -236,7 +240,8 @@ public class ClassBuilder {
 			}
 			//multiple inheritance not supported
 			else if (inheritedClass.size()>1)
-			{
+			{	
+				JELogger.error(ClassBuilder.class, ClassBuilderErrors.invalidClassFormat + " : " + ClassBuilderErrors.multipleInheritance);
 				throw new ClassLoadException(ClassBuilderErrors.invalidClassFormat + " : " + ClassBuilderErrors.multipleInheritance);
 			}
 			//if base types contains class 
