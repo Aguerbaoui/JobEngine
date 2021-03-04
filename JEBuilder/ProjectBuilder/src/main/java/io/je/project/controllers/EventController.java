@@ -58,7 +58,7 @@ public class EventController {
 
 		}
 
-		return new ResponseEntity<Object>(events, HttpStatus.OK);
+		return ResponseEntity.ok(events);
 
 	}
 
@@ -70,7 +70,7 @@ public class EventController {
 	public ResponseEntity<?> getEvent(@PathVariable("projectId") String projectId,
 			@PathVariable("eventId") String eventId) {
 		JEEvent event = null;
-		JELogger.info(getClass(), " getting event [ id="+eventId+"]");
+
 
 		try {
 			event = eventService.getEvent(projectId, eventId);
@@ -83,7 +83,7 @@ public class EventController {
 
 		}
 
-		return new ResponseEntity<Object>(new EventModel(event), HttpStatus.OK);
+		return ResponseEntity.ok(new EventModel(event));
 
 	}
 
@@ -94,7 +94,7 @@ public class EventController {
 	public ResponseEntity<?> addEvent(@PathVariable("projectId") String projectId, @RequestBody EventModel eventModel) {
 
 		try {
-			JELogger.info(getClass(), " adding event [ id="+eventModel.getEventId()+"]");
+
 			eventService.addEvent(projectId, eventModel);
 			projectService.saveProject(projectId);
 
@@ -115,7 +115,7 @@ public class EventController {
 	public ResponseEntity<?> updateEvent(@PathVariable("projectId") String projectId, @RequestBody EventModel eventModel) {
 
 		try {
-			JELogger.info(getClass(), " updating event [ id="+eventModel.getEventId()+"]");
+
 			eventService.updateEvent(projectId, eventModel);
 			projectService.saveProject(projectId);
 
@@ -136,7 +136,7 @@ public class EventController {
 			@PathVariable("eventId") String eventId) {
 
 		try {
-			JELogger.info(getClass(), " deleting event [ id="+eventId+"]");
+
 			eventService.deleteEvent(projectId, eventId);
 			projectService.saveProject(projectId);
 

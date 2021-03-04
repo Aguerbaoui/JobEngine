@@ -31,6 +31,7 @@ public class DataListener {
     }
 
     public static void startListening(List<String> topics) {
+        JELogger.info(" Listening on topics = " + topics);
     	for (String id : topics)
     	{
     		ZMQAgent agent = agents.get(id);
@@ -43,6 +44,7 @@ public class DataListener {
     }
 
     public static void stopListening(List<String> topics) {
+        JELogger.info(" Stopping Listening on topics = " + topics);
         for (String id : topics)
         {
             agents.get(id).setListening(false);

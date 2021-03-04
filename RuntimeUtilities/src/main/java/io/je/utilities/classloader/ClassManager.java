@@ -6,6 +6,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import io.je.utilities.config.ConfigurationConstants;
 import io.je.utilities.constants.ClassBuilderConfig;
 import io.je.utilities.exceptions.ClassLoadException;
+import io.je.utilities.logger.JELogger;
 
 public class ClassManager {
 	
@@ -26,6 +27,7 @@ public class ClassManager {
 
 			// Load the target class using its binary name
 			Class<?> loadedClass;
+			JELogger.trace(" Loading class in runner id = " + classId + " class name = " + className + " class path = " + classPath);
 			try {
 				loadedClass = classLoader.loadClass(ClassBuilderConfig.genrationPackageName + "." + className);
 			} catch (ClassNotFoundException e) {

@@ -189,7 +189,7 @@ public class ProjectContainer {
 	 * This method stops the rule execution
 	 */
 	public boolean stopRuleExecution() {
-		JELogger.info(ProjectContainer.class, RuleEngineErrors.stoppingProjectContainer);
+		JELogger.info(RuleEngineErrors.stoppingProjectContainer);
 		try {
 
 			kieSession.halt();

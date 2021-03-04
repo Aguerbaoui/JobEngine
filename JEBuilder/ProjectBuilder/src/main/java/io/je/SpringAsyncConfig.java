@@ -2,6 +2,7 @@ package io.je;
 
 import java.util.concurrent.Executor;
 
+import io.je.utilities.logger.JELogger;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.AsyncConfigurer;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -13,6 +14,7 @@ public class SpringAsyncConfig implements AsyncConfigurer {
 
 	@Override
 	public Executor getAsyncExecutor() {
+		JELogger.trace(" Setting async executor parameters");
 		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
 		executor.setCorePoolSize(3);
 		executor.setMaxPoolSize(10);

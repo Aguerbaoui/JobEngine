@@ -27,9 +27,9 @@ public class JEBuilderInitializingBean implements InitializingBean {
 	BuilderProperties builderProperties;
     @Override
     public void afterPropertiesSet() {
-    	
         try {
             JELogger.initBuilderLogger(builderProperties.getJeBuilderLogPath(),builderProperties.getJeBuilderLogLevel());
+            JELogger.trace(" Logger Initialized");
         	configService.init();
         } catch (DataDefinitionUnreachableException | JERunnerErrorException | AddClassException | ClassLoadException | IOException | InterruptedException | ExecutionException | ProjectNotFoundException   e) {
            JELogger.error(getClass(), e.getMessage());

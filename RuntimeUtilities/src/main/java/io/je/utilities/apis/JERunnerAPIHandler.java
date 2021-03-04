@@ -280,7 +280,7 @@ public class JERunnerAPIHandler {
 
 	public static JEResponse updateRunnerSettings(Object requestModel) throws JERunnerErrorException, InterruptedException, ExecutionException {
 	       String requestUrl = runtimeManagerBaseApi + APIConstants.UPDATE_CONFIG ;
-	        JELogger.trace(JERunnerAPIHandler.class, "updating JERunner config");
+	        JELogger.trace(" updating JERunner config");
 	        return sendRequestWithBody(requestUrl, requestModel);
 
 		

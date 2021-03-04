@@ -145,6 +145,7 @@ public class RuleEngineHandler {
 	}
 
 	public static void deleteProjectRules(String projectId) {
+		JELogger.trace(" Deleting rules in project id = " + projectId);
 		RuleEngine.deleteProjectRules(projectId);
 	}
 }

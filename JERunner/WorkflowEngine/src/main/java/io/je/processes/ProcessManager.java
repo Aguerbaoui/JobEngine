@@ -271,6 +271,7 @@ public class ProcessManager {
 
 
     public void runAll(String projectId) throws WorkflowNotFoundException{
+        JELogger.trace(" Running all workflows in project id = " + projectId);
         for(JEProcess process: processes.values()) {
             if(process.getProjectId().equals(projectId) && process.isDeployed() && !process.isRunning()) {
                 try {
@@ -283,6 +284,7 @@ public class ProcessManager {
     }
 
     public void buildProjectWorkflows(String projectId) {
+        JELogger.info(" Building workflows in project id = " + projectId);
         for(JEProcess process: processes.values()) {
             if(process.getProjectId().equals(projectId) && !process.isDeployed()) {
                 deployProcess(process.getKey());
@@ -303,6 +305,7 @@ public class ProcessManager {
     }
 
     public void stopProjectWorkflows(String projectId) {
+        JELogger.info(" Stopping workflows in project id = " + projectId);
         for(JEProcess process: processes.values()) {
             if(process.getProjectId().equals(projectId) && process.isRunning()) {
                 try {

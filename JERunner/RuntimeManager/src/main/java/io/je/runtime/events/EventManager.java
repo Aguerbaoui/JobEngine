@@ -9,6 +9,7 @@ import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.constants.ResponseMessages;
 import io.je.utilities.exceptions.EventException;
 import io.je.utilities.exceptions.ProjectNotFoundException;
+import io.je.utilities.logger.JELogger;
 import io.je.utilities.models.EventType;
 
 import java.util.ArrayList;
@@ -76,6 +77,7 @@ public class EventManager {
             }
         }
         if(event != null) {
+            JELogger.trace(" Found event with id = " + id + " triggering now");
             RuleEngineHandler.addEvent(event);
             if(event.getType().equals(EventType.MESSAGE_EVENT)) {
                 throwMessageEventInWorkflow(projectId, event.getName());
@@ -122,6 +124,7 @@ public class EventManager {
             }
         }
         if(event == null) throw new EventException(Errors.EVENT_NOT_FOUND);
+        JELogger.trace(" Found event with id = " + eventId + " updating type now");
         EventType t = EventType.valueOf(eventType);
         event.setType(t);
     }
@@ -141,10 +144,14 @@ public class EventManager {
             }
             if(event == null) throw new EventException(Errors.EVENT_NOT_FOUND);
         }
-        else  events.get(projectId).remove(eventId);
+        else {
+            JELogger.trace(" Found event with id = " + eventId + " removing now");
+            events.get(projectId).remove(eventId);
+        }
     }
 
     public static void deleteProjectEvents(String projectId){
+        JELogger.trace(" removing all events in project id = " + projectId );
         events.remove(projectId);
 
 

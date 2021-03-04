@@ -33,7 +33,7 @@ public class RuleController {
 
 
     @Autowired
-    RuntimeDispatcher runtimeDispatcher = new RuntimeDispatcher();
+    RuntimeDispatcher runtimeDispatcher;
 
     /*
      * add a new Rule
