@@ -1,15 +1,14 @@
 package io.je.runtime.data;
 
-import io.je.ruleengine.impl.RuleEngine;
-import io.je.runtime.ruleenginehandler.RuleEngineHandler;
 import io.je.runtime.services.RuntimeDispatcher;
 import io.je.utilities.beans.JEData;
 import io.je.utilities.constants.APIConstants;
-import io.je.utilities.exceptions.InstanceCreationFailed;
 import io.je.utilities.logger.JELogger;
 import org.zeromq.SocketType;
 import org.zeromq.ZContext;
 import org.zeromq.ZMQ;
+
+import java.util.Arrays;
 
 public class ZMQAgent implements Runnable {
 
@@ -27,6 +26,8 @@ public class ZMQAgent implements Runnable {
 
     private String topic;
 
+    private int subscribers = 0;
+
     private boolean listening = true;
 
     public ZMQAgent(String url,int subPort, int requestPort, String topic) {
@@ -35,6 +36,7 @@ public class ZMQAgent implements Runnable {
         this.topic = topic;
         this.requestPort = requestPort;
         this.context = new ZContext();
+        subscribers += 1;
     }
 
     public ZMQ.Socket getSubSocket() {
@@ -53,14 +55,29 @@ public class ZMQAgent implements Runnable {
         return subSocket;
     }
 
-    /*public static void main(String[] args) {
-        ZMQAgent agent = new ZMQAgent("tcp://192.168.0.128", 5554, 6638, "");
-        while(true) {
-            String log = agent.getSubSocket().recvStr();
-            JELogger.info(ZMQAgent.class, log);
-        }
+    public void incrementSubscriptionCount() {
+        subscribers += 1;
+    }
 
-    }*/
+    public void decrementSubscriptionCount() {
+        subscribers -=1;
+    }
+    public int getSubscribers() {
+        return subscribers;
+    }
+
+    public void setSubscribers(int subscribers) {
+        this.subscribers = subscribers;
+    }
+
+    /*public static void main(String[] args) {
+            ZMQAgent agent = new ZMQAgent("tcp://192.168.0.128", 5554, 6638, "");
+            while(true) {
+                String log = agent.getSubSocket().recvStr();
+                JELogger.info(ZMQAgent.class, log);
+            }
+
+        }*/
     public String sendRequest(String request) {
         String reply = "";
         try {
@@ -144,11 +161,20 @@ public class ZMQAgent implements Runnable {
 		while(listening)
     	{
     		 String data = this.getSubSocket().recvStr();
-            // JELogger.info(ZMQAgent.class, "read data " + data);
              try {
-				RuntimeDispatcher.injectData(new JEData(this.topic, data));
+            	 if( data !=null && !data.equals(topic) && !data.startsWith(topic))
+				{
+                     JELogger.info(ZMQAgent.class, "read data " + data);
+            		 RuntimeDispatcher.injectData(new JEData(this.topic, data));
+				}
 			} catch (Exception e) {
-				e.printStackTrace();
+				JELogger.error(ZMQAgent.class, Arrays.toString(e.getStackTrace()));
+			}
+             
+             try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+                 JELogger.error(ZMQAgent.class, " Thread interrupted while listening to data");
 			}
     	}
 		

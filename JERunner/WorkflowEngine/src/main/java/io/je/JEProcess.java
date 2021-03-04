@@ -8,7 +8,7 @@ public class JEProcess {
 
     private String bpmnPath;
 
-
+    private boolean triggeredByEvent;
 
     private boolean running = false;
 
@@ -16,20 +16,37 @@ public class JEProcess {
 
     private String projectId;
 
-    public JEProcess(String key, String name, String bpmnPath, String projectId) {
+    private String activitiKey;
+
+    public JEProcess(String key, String name, String bpmnPath, String projectId, boolean triggeredByEvent) {
         super();
         this.key = key;
         this.name = name;
         this.bpmnPath = bpmnPath;
         this.projectId = projectId;
+        this.triggeredByEvent = triggeredByEvent;
+    }
+    public boolean isTriggeredByEvent() {
+        return triggeredByEvent;
     }
 
+    public void setTriggeredByEvent(boolean triggeredByEvent) {
+        this.triggeredByEvent = triggeredByEvent;
+    }
     public String getKey() {
         return key;
     }
 
     public void setKey(String key) {
         this.key = key;
+    }
+
+    public String getActivitiKey() {
+        return activitiKey;
+    }
+
+    public void setActivitiKey(String activitiKey) {
+        this.activitiKey = activitiKey;
     }
 
     public String getName() {

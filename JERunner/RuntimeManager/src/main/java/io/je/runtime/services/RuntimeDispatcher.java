@@ -1,17 +1,19 @@
 package io.je.runtime.services;
 
-import io.je.runtime.models.WorkflowModel;
+import io.je.runtime.events.EventManager;
 import io.je.runtime.workflow.WorkflowEngineHandler;
 import io.je.utilities.beans.JEData;
+import io.je.utilities.beans.JEEvent;
 import io.je.utilities.exceptions.*;
+import io.je.utilities.models.EventModel;
+import io.je.utilities.models.EventType;
+import io.je.utilities.models.WorkflowModel;
 import org.springframework.stereotype.Service;
 
 import io.je.runtime.data.DataListener;
 import io.je.runtime.models.ClassModel;
-import io.je.runtime.models.InstanceModel;
 import io.je.runtime.models.RuleModel;
-import io.je.runtime.objects.ClassManager;
-import io.je.runtime.objects.InstanceManager;
+import io.je.utilities.classloader.ClassManager;
 import io.je.runtime.ruleenginehandler.RuleEngineHandler;
 import io.je.utilities.exceptions.ClassLoadException;
 import io.je.utilities.exceptions.DeleteRuleException;
@@ -24,8 +26,6 @@ import io.je.utilities.exceptions.RuleCompilationException;
 import io.je.utilities.exceptions.RuleFormatNotValidException;
 import io.je.utilities.exceptions.RuleNotAddedException;
 import io.je.utilities.exceptions.RulesNotFiredException;
-import io.je.utilities.logger.JELogger;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -44,6 +44,8 @@ public class RuntimeDispatcher {
 	static Map<String, Set<String>> projectsByTopic = new HashMap<>(); // key : topic, value: list of projects																							// of projects
 	static Map<String, Boolean> projectStatus = new HashMap<>(); //key: project id, value : true if project is running, false if not
 
+
+
 	///////////////////////////////// PROJECT
 	// build project
 	public void buildProject(String projectId) throws RuleBuildFailedException
@@ -61,19 +63,6 @@ public class RuntimeDispatcher {
 			ProjectAlreadyRunningException, WorkflowNotFoundException {
 		
 
-		/* TODO: to delete : hardcoded for test */
-		String testTopic = "00fd4e5d-5f19-4b8a-9c89-66e05be497b4";
-		if(projectsByTopic.get(testTopic)==null)
-		{
-	        projectsByTopic.put(testTopic,new HashSet<>() );
-
-		}
-		projectsByTopic.get(testTopic).add(projectId);
-        
-        DataListener.subscribeToTopic(testTopic);
-     
-
-       /* ------------------------------ */
 		
        projectStatus.put(projectId, true);
 		ArrayList<String> topics = new ArrayList<>();
@@ -92,8 +81,7 @@ public class RuntimeDispatcher {
 
 	// stop project
 	// run project
-	public void stopProject(String projectId)
-			throws RulesNotFiredException, RuleBuildFailedException, ProjectAlreadyRunningException {
+	public void stopProject(String projectId) {
 		
 		// stop workflows
 		
@@ -120,8 +108,10 @@ public class RuntimeDispatcher {
 	// add rule
 	public void addRule(RuleModel ruleModel) throws RuleAlreadyExistsException, RuleCompilationException,
 			RuleNotAddedException, JEFileNotFoundException, RuleFormatNotValidException {
-		RuleEngineHandler.addRule(ruleModel);
 
+
+
+		RuleEngineHandler.addRule(ruleModel);
 	}
 
 	// update rule
@@ -148,28 +138,32 @@ public class RuntimeDispatcher {
 	 * Add a workflow to the engine
 	 */
 	public void addWorkflow(WorkflowModel wf) {
-		WorkflowEngineHandler.addProcess(wf.getKey(), wf.getName(), wf.getPath(), wf.getProjectId());
+		WorkflowEngineHandler.addProcess(wf.getKey(), wf.getName(), wf.getPath(), wf.getProjectId(), wf.isTriggeredByEvent());
 	}
 
 	/*
 	 * Launch a workflow without variables
 	 */
-	public void launchProcessWithoutVariables(String key) throws WorkflowNotFoundException {
-		WorkflowEngineHandler.launchProcessWithoutVariables(key);
+	public void launchProcessWithoutVariables(String projectId, String key) throws WorkflowNotFoundException, WorkflwTriggeredByEventException, WorkflowAlreadyRunningException {
+		try {
+			WorkflowEngineHandler.launchProcessWithoutVariables(projectId, key);
+		} catch (WorkflowAlreadyRunningException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/*
 	 * Run all workflows deployed in the engine without project specification
 	 */
-	public void runAllWorkflows() throws WorkflowNotFoundException {
-		WorkflowEngineHandler.runAllWorkflows();
+	public void runAllWorkflows(String projectId) throws WorkflowNotFoundException {
+		WorkflowEngineHandler.runAllWorkflows(projectId);
 	}
 
 	/*
 	 * Deploy a workflow to the engine
 	 */
-	public void buildWorkflow(String key) {
-		WorkflowEngineHandler.deployBPMN(key);
+	public void buildWorkflow(String projectId, String key) {
+		WorkflowEngineHandler.deployBPMN(projectId, key);
 	}
 
 	///////////////////////////// Classes
@@ -183,11 +177,7 @@ public class RuntimeDispatcher {
 	// update class
 	// delete class
 
-	/////////////////////////////// instance creation example : TODO to be deleted 
-	public void addInstanceTest(InstanceModel instanceModel) throws InstanceCreationFailed {
-		JELogger.info(getClass(), instanceModel.toString());
-		InstanceManager.createInstance(instanceModel);
-	}
+
 
 	public static void injectData(JEData jeData) throws InstanceCreationFailed {
 		for (String projectId : projectsByTopic.get(jeData.getTopic())) {
@@ -213,7 +203,57 @@ public class RuntimeDispatcher {
 					projectsByTopic.get(topic).add(projectId);
 					DataListener.subscribeToTopic(topic);
 				}
+				else {
+					DataListener.incrementSubscriptionCount(topic);
+				}
 				
+			}
+		}
+	}
+
+	public void triggerEvent(String projectId, String id) throws EventException, ProjectNotFoundException {
+
+		EventManager.triggerEvent(projectId, id);
+	}
+
+
+	public void addEvent(EventModel eventModel) {	
+			JEEvent e = new JEEvent();
+			e.setName(eventModel.getName());
+			e.setTriggeredById(eventModel.getEventId());
+			e.setJobEngineElementID(eventModel.getEventId());
+			e.setJobEngineProjectID(eventModel.getProjectId());
+			e.setType(EventType.valueOf(eventModel.getEventType()));
+			//TODO reload events when the app restarts from workflow, being sent as generic atm
+			EventManager.addEvent(eventModel.getProjectId(), e);
+	}
+
+
+	public void updateEventType(String projectId, String eventId, String eventType) throws ProjectNotFoundException, EventException {
+		EventManager.updateEventType(projectId, eventId, eventType);
+	}
+
+	public void deleteEvent(String projectId, String eventId) throws ProjectNotFoundException, EventException {
+		EventManager.deleteEvent(projectId, eventId);
+	}
+
+	//clean project data from runner
+	//Remove events, topics to listen to, rules and workflows
+	public void removeProjectData(String projectId) {
+		EventManager.deleteProjectEvents(projectId);
+		WorkflowEngineHandler.deleteProjectProcesses(projectId);
+		RuleEngineHandler.deleteProjectRules(projectId);
+		decrementTopicSubscriptionCount(projectId);
+	}
+
+	//decrement topic subscription count for a project
+	public void decrementTopicSubscriptionCount(String projectId) {
+		for(String topic: projectsByTopic.keySet()) {
+			HashSet<String> set = (HashSet<String>) projectsByTopic.get(topic);
+			for(String id: set) {
+				if(id.equalsIgnoreCase(projectId)) {
+					DataListener.decrementSubscriptionCount(topic);
+				}
 			}
 		}
 	}

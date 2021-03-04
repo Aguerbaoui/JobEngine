@@ -27,9 +27,34 @@ public class APIConstants {
 
 	public static final String UPDATERULE = "/rule/updateRule";
 
+	public static final String ADD_CLASS = "/addClass";
+
+	public static final String TRIGGER_EVENT = "/event/triggerEvent/";
+
+	public static final String ADD_EVENT = "/event/addEvent";
+
+	public static final String UPDATE_EVENT = "/event/updateEventType";
+
+	public static final String DELETE_EVENT = "/event/deleteEvent";
+
 	public static final String RUN_PROJECT = "/project/runProject/";
+
+	public static final String CLEAN_HOUSE = "/project/removeProjectData/";
 
 	public static final String STOP_PROJECT = "/project/stopProject/";
 
+    public static final String DEFAULT =  "DEFAULT";
+
+	public static final String DELETERULE = "/rule/deleteRule";
+
+	public static final String ACTUATOR_HEALTH = "/actuator/health";
+
+	public static final String PROJECT_UPDATE_RUNNER = "/config/updateRunner";
+
+	public static final String EVENT_ADD_EVENT = "/event/addEvent";
+
+	public static final String EVENT_TRIGGER_EVENT = "/event/triggerEvent/";
+
+	public static final String UPDATE_CONFIG = "/updateConfig";
 
 }

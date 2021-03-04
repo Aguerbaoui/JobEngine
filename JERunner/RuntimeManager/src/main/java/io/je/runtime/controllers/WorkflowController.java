@@ -1,10 +1,12 @@
 package io.je.runtime.controllers;
 
-import io.je.runtime.models.WorkflowModel;
+import io.je.project.exception.JEExceptionHandler;
 import io.je.runtime.services.RuntimeDispatcher;
-import io.je.utilities.constants.Errors;
 import io.je.utilities.constants.ResponseCodes;
+import io.je.utilities.exceptions.WorkflowAlreadyRunningException;
 import io.je.utilities.exceptions.WorkflowNotFoundException;
+import io.je.utilities.exceptions.WorkflwTriggeredByEventException;
+import io.je.utilities.models.WorkflowModel;
 import io.je.utilities.network.JEResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -31,7 +33,7 @@ public class WorkflowController {
     public ResponseEntity<?> addWorkflow(@RequestBody WorkflowModel wf) {
         //JELogger.info(WorkflowController.class, wf.toString());
         dispatcher.addWorkflow(wf);
-        dispatcher.buildWorkflow(wf.getKey());
+        dispatcher.buildWorkflow(wf.getProjectId(), wf.getKey());
         return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ADDED_WORKFLOW_SUCCESSFULLY));
 
     }
@@ -39,25 +41,23 @@ public class WorkflowController {
     /*
      * Build and deploy workflow
      * */
-    @PostMapping(value = "/buildWorkflow/{key}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> buildWorkflow(@PathVariable String key) {
-        dispatcher.buildWorkflow(key);
+    @PostMapping(value = "/buildWorkflow/{projectId}/{key}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> buildWorkflow(@PathVariable String projectId, @PathVariable String key) {
+        dispatcher.buildWorkflow(projectId, key);
         return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, WORKFLOW_DEPLOYED));
     }
 
     /*
      * Run workflow
      * */
-    @GetMapping(value = "/runWorkflow/{key}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> runWorkflow(@PathVariable String key) {
+    @GetMapping(value = "/runWorkflow/{projectId}/{key}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> runWorkflow(@PathVariable String projectId, @PathVariable String key) {
         try {
             //JELogger.info(WorkflowController.class, "Executing");
-            dispatcher.launchProcessWithoutVariables(key);
-        } catch (WorkflowNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-            return ResponseEntity.badRequest().body(new JEResponse(e.getCode(), e.getMessage()));
-        }
+            dispatcher.launchProcessWithoutVariables(projectId, key);
+        } catch (Exception e) {
+			return JEExceptionHandler.handleException(e);
+		}
         return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, EXECUTING_WORKFLOW));
 
     }
@@ -65,13 +65,13 @@ public class WorkflowController {
     /*
      * Run all available and deployed workflows
      * */
-    @PostMapping(value = "/runAllWorkflows", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> runAllWorkflows() {
+    @PostMapping(value = "/runAllWorkflows/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> runAllWorkflows(@PathVariable String projectId) {
         try {
-            dispatcher.runAllWorkflows();
-        } catch (WorkflowNotFoundException e) {
-            return ResponseEntity.badRequest().body(new JEResponse(e.getCode(), e.getMessage()));
-        }
+            dispatcher.runAllWorkflows(projectId);
+        } catch (Exception e) {
+			return JEExceptionHandler.handleException(e);
+		}
         return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, EXECUTING_WORKFLOW));
     }
 

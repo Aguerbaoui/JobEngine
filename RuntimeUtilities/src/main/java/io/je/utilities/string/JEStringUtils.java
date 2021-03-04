@@ -9,12 +9,16 @@ public class JEStringUtils {
     }
 
     public static boolean isEmpty(String str) {
-        // TODO Auto-generated method stub
         return StringUtils.isEmpty(str);
     }
     
     public static String capitalize(String str)
     {
     	return StringUtils.capitalize(str);
+    }
+
+    public static boolean isStringOnlyAlphabet(String str) {
+        return (str != null) &&((!str.equals(""))
+                && (str.matches("^[a-zA-Z]*$")));
     }
 }

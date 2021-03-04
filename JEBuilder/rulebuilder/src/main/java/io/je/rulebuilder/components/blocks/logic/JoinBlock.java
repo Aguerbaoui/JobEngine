@@ -2,41 +2,33 @@ package io.je.rulebuilder.components.blocks.logic;
 
 import io.je.rulebuilder.components.blocks.LogicBlock;
 import io.je.rulebuilder.models.BlockModel;
+import io.je.utilities.exceptions.RuleBuildFailedException;
 
 public class JoinBlock extends LogicBlock {
 	
-	String joinId;
-
+	
 	public JoinBlock(BlockModel blockModel) {
 		super(blockModel);
-		joinId="joinId";
+	}
+
+	private JoinBlock() {
 	}
 
 	
-	
-
-
-
 	@Override
-	public String getAsFirstOperandExpression() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	public String getExpression() throws RuleBuildFailedException {
+		StringBuilder expression = new StringBuilder();
+		String joinId = inputBlocks.get(0).getJoinId();
+		expression.append(inputBlocks.get(0).getJoinExpression());
+		expression.append("\n");
+		for (int i=1;i<inputBlocks.size();i++)
+		{
+			expression.append(inputBlocks.get(i).getJoinedExpression(joinId));
+			expression.append("\n");
 
+		}
 
-
-	@Override
-	public String getAsSecondOperandExpression() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
-
-	@Override
-	public String getJoinedExpression() {
-		// TODO Auto-generated method stub
-		return null;
+		return expression.toString();
 	}
 
 
@@ -44,11 +36,7 @@ public class JoinBlock extends LogicBlock {
 
 
 
-	@Override
-	public String getExpression() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+
 
 
 

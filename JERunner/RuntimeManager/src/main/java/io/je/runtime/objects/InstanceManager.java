@@ -1,5 +1,6 @@
 package io.je.runtime.objects;
 
+import io.je.utilities.classloader.ClassManager;
 import org.json.JSONObject;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -18,7 +19,7 @@ public class InstanceManager {
 		Class<?> instanceClass = ClassManager.getClassById(instanceModel.getModelId());
 		if(instanceClass == null)
 		{
-			throw new InstanceCreationFailed("UNKNOWN TYPE :" + instanceModel.getInstanceId());
+			throw new InstanceCreationFailed("Loaded classes list does not recognize this id :" + instanceModel.getInstanceId());
 		}
 			
 		

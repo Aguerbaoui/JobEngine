@@ -3,8 +3,11 @@ package io.je.rulebuilder.models;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.je.rulebuilder.components.enumerations.TimePersistenceUnit;
 import io.je.rulebuilder.config.AttributesMapping;
+import io.je.utilities.logger.JELogger;
 
 import java.util.ArrayList;
+
+import org.springframework.lang.Nullable;
 
 
 public class BlockModel {
@@ -25,9 +28,8 @@ public class BlockModel {
 
     @JsonProperty(AttributesMapping.TIMEPERSISTENCEVALUE)
     int timePersistenceValue;
-
     @JsonProperty(AttributesMapping.TIMEPERSISTENCEUNIT)
-    TimePersistenceUnit timePersistenceUnit;
+    String timePersistenceUnit;
 
     @JsonProperty(AttributesMapping.OPERATIONID)
 	int operationId;
@@ -105,11 +107,11 @@ public class BlockModel {
 		this.timePersistenceValue = timePersistenceValue;
 	}
 
-	public TimePersistenceUnit getTimePersistenceUnit() {
+	public String getTimePersistenceUnit() {
 		return timePersistenceUnit;
 	}
 
-	public void setTimePersistenceUnit(TimePersistenceUnit timePersistenceUnit) {
+	public void setTimePersistenceUnit(String timePersistenceUnit) {
 		this.timePersistenceUnit = timePersistenceUnit;
 	}
 
@@ -145,6 +147,17 @@ public class BlockModel {
 
 	public void setBlockConfiguration(BlockConfigurationModel blockConfiguration) {
 		this.blockConfiguration = blockConfiguration;
+	}
+
+
+
+	@Override
+	public String toString() {
+		return "BlockModel [projectId=" + projectId + ", ruleId=" + ruleId + ", blockId=" + blockId + ", blockName="
+				+ blockName + ", description=" + description + ", timePersistenceValue=" + timePersistenceValue
+				+ ", timePersistenceUnit=" + timePersistenceUnit + ", operationId=" + operationId + ", inputBlocksIds="
+				+ inputBlocksIds + ", outputBlocksIds=" + outputBlocksIds + ", blockConfiguration=" + blockConfiguration
+				+ "]";
 	}
 
 

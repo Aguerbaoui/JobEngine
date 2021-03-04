@@ -1,5 +1,6 @@
 package io.je.rulebuilder.components.blocks;
 
+import io.je.rulebuilder.config.Keywords;
 import io.je.rulebuilder.models.BlockModel;
 
 public abstract class ArithmeticBlock extends ConditionBlock {
@@ -20,5 +21,17 @@ public abstract class ArithmeticBlock extends ConditionBlock {
 				+ ", jobEngineProjectID=" + jobEngineProjectID + ", jeObjectLastUpdate=" + jeObjectLastUpdate + "]";
 
 	}
+
+	
+	public String asDouble(String val)
+	{
+		return " Double.valueOf( "+val+" )";
+	}
+	
+	protected abstract String getArithmeticFormula(int level);
+	
+
+	
+	
 
 }

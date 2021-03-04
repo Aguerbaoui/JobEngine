@@ -71,11 +71,17 @@ public class ModelBuilder {
     /*
      * Create a user start event and return it
      * */
-    public static StartEvent createStartEvent(String id) {
+    public static StartEvent createStartEvent(String id, String reference) {
         StartEvent startEvent = new StartEvent();
         startEvent.setId(id);
+        if(reference != null) {
+            MessageEventDefinition eventDefinition = new MessageEventDefinition();
+            eventDefinition.setMessageRef(reference);
+            startEvent.addEventDefinition(eventDefinition);
+        }
         return startEvent;
     }
+
 
     /*
      * Create an end event and return it
@@ -112,10 +118,88 @@ public class ModelBuilder {
     }
 
     /*
+     * Create an event based gateway and returns it
+     * */
+    public static EventGateway createEventGateway(String id, String name, boolean exclusive, List<SequenceFlow> inFlows, List<SequenceFlow> outFlows) {
+        EventGateway gateway = new EventGateway();
+        gateway.setName(name);
+        gateway.setId(id);
+        gateway.setExclusive(exclusive);
+        gateway.setIncomingFlows(inFlows);
+        gateway.setOutgoingFlows(outFlows);
+        return gateway;
+    }
+
+    /*
+     * Create an inclusive gateway and returns it
+     * */
+    public static InclusiveGateway createInclusiveGateway(String id, String name, boolean exclusive, List<SequenceFlow> inFlows, List<SequenceFlow> outFlows) {
+        InclusiveGateway gateway = new InclusiveGateway();
+        gateway.setName(name);
+        gateway.setId(id);
+        gateway.setExclusive(exclusive);
+        gateway.setIncomingFlows(inFlows);
+        gateway.setOutgoingFlows(outFlows);
+        return gateway;
+    }
+
+    /*
+     * Create a date timer event and returns it
+     * */
+    public static ThrowEvent createDateTimerEvent(String id, String name, String timeDate) {
+        ThrowEvent event = new ThrowEvent();
+        event.setName(name);
+        event.setId(id);
+        TimerEventDefinition timerEventDefinition = new TimerEventDefinition();
+        timerEventDefinition.setTimeDate(timeDate);
+        event.addEventDefinition(timerEventDefinition);
+        return event;
+    }
+
+    /*
+     * Create a cycle timer event and returns it
+     * */
+    public static ThrowEvent createCycleTimerEvent(String id, String name, String timeCycle, String endDate) {
+        ThrowEvent event = new ThrowEvent();
+        event.setName(name);
+        event.setId(id);
+        TimerEventDefinition timerEventDefinition = new TimerEventDefinition();
+        timerEventDefinition.setTimeCycle(timeCycle);
+        timerEventDefinition.setEndDate(endDate);
+        event.addEventDefinition(timerEventDefinition);
+        return event;
+    }
+
+    /*
+     * Create a cycle timer event and returns it
+     * */
+    public static ThrowEvent createDurationTimerEvent(String id, String name, String timeDuration) {
+        ThrowEvent event = new ThrowEvent();
+        event.setName(name);
+        event.setId(id);
+        TimerEventDefinition timerEventDefinition = new TimerEventDefinition();
+        timerEventDefinition.setTimeDuration(timeDuration);
+        event.addEventDefinition(timerEventDefinition);
+        return event;
+    }
+
+    /*
      * Create a parallel gateway and return it
      * */
     public static ParallelGateway createParallelGateway(String id, String name, List<SequenceFlow> inFlows, List<SequenceFlow> outFlows) {
         ParallelGateway gateway = new ParallelGateway();
+        gateway.setName(name);
+        gateway.setId(id);
+        gateway.setIncomingFlows(inFlows);
+        gateway.setOutgoingFlows(outFlows);
+        return gateway;
+    }
+
+    /*
+    * Create an event base gateway
+    * */
+    public static EventGateway createEventGateway(String id, String name, List<SequenceFlow> inFlows, List<SequenceFlow> outFlows) {
+        EventGateway gateway = new EventGateway();
         gateway.setName(name);
         gateway.setId(id);
         gateway.setIncomingFlows(inFlows);
@@ -132,6 +216,36 @@ public class ModelBuilder {
         event.setId(id);
         MessageEventDefinition eventDefinition = new MessageEventDefinition();
         eventDefinition.setMessageRef(messageRef);
+        event.addEventDefinition(eventDefinition);
+        return event;
+    }
+
+    public static IntermediateCatchEvent createSignalIntermediateCatchEvent(String id, String name, String messageRef) {
+        IntermediateCatchEvent event = new IntermediateCatchEvent();
+        event.setName(name);
+        event.setId(id);
+        SignalEventDefinition eventDefinition = new SignalEventDefinition();
+        eventDefinition.setSignalRef(messageRef);
+        event.addEventDefinition(eventDefinition);
+        return event;
+    }
+
+    public static ThrowEvent createThrowMessageEvent(String id, String name, String reference) {
+        ThrowEvent event = new ThrowEvent();
+        event.setName(name);
+        event.setId(id);
+        MessageEventDefinition eventDefinition = new MessageEventDefinition();
+        eventDefinition.setMessageRef(reference);
+        event.addEventDefinition(eventDefinition);
+        return event;
+    }
+
+    public static ThrowEvent createThrowSignalEvent(String id, String name, String reference) {
+        ThrowEvent event = new ThrowEvent();
+        event.setName(name);
+        event.setId(id);
+        SignalEventDefinition eventDefinition = new SignalEventDefinition();
+        eventDefinition.setSignalRef(reference);
         event.addEventDefinition(eventDefinition);
         return event;
     }

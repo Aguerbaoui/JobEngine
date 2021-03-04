@@ -1,29 +1,29 @@
 package io.je.classbuilder.builder;
 
 import java.io.IOException;
-import java.net.ConnectException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.squareup.okhttp.Response;
-
 import io.je.classbuilder.entity.ClassType;
 import io.je.classbuilder.entity.JEClass;
 import io.je.classbuilder.models.ClassModel;
 import io.je.utilities.apis.DataDefinitionApiHandler;
 import io.je.utilities.classloader.JEClassLoader;
+import io.je.utilities.config.ConfigurationConstants;
 import io.je.utilities.constants.ClassBuilderConfig;
 import io.je.utilities.constants.ClassBuilderErrors;
-import io.je.utilities.constants.JEGlobalconfig;
 import io.je.utilities.exceptions.AddClassException;
 import io.je.utilities.exceptions.ClassLoadException;
 import io.je.utilities.exceptions.DataDefinitionUnreachableException;
 import io.je.utilities.logger.JELogger;
-import io.je.utilities.network.Network;
 
+
+/*
+ * Class to manage user defined Models 
+ */
 public class ClassManager {
 
 	static Map<String, JEClass> jeClasses = new ConcurrentHashMap<>(); // key = is, value = jeclass
@@ -31,16 +31,16 @@ public class ClassManager {
 	
 	//TODO: see with islem if possible to change field type to class id instead of name
 	static Map<String, String> classNames = new ConcurrentHashMap<>(); // key = name, value = classid
-
 	static ClassLoader classLoader = ClassManager.class.getClassLoader();
-	static String loadPath = JEGlobalconfig.builderClassLoadPath;
-	static String generationPath = JEGlobalconfig.classGenerationPath;
+	static String loadPath =  ConfigurationConstants.builderClassLoadPath;
+	static String generationPath = ConfigurationConstants.classGenerationPath;
 
 	/*
 	 * build class (generate .java then load Class )
 	 */
 	public static List<JEClass> buildClass(String workspaceId, String classId)
 			throws AddClassException, DataDefinitionUnreachableException, IOException, ClassLoadException {
+		JELogger.debug(ClassManager.class, "building Class [classID = "+classId+"]");
 		ArrayList<JEClass> classes = new ArrayList<>();
 
 		// load class definition from data model rest api
@@ -78,7 +78,6 @@ public class ClassManager {
 
 		// create .java
 		String filePath = ClassBuilder.buildClass(classModel, generationPath);
-		JELogger.info(ClassManager.class, " Class ["+classModel.getName()+"] built");
 		JEClassLoader.loadClass(filePath, loadPath);
 		// load class
 		// Load the target class using its binary name
@@ -157,8 +156,7 @@ public class ClassManager {
 	}
 
 	public static ClassType getClassType(String classId) {
-		ClassType t = jeClasses.get(classId).getClassType();
-		return t;
+		return jeClasses.get(classId).getClassType();
 		
 	}
 
