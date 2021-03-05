@@ -2,6 +2,8 @@ package io.je.runtime.ruleenginehandler;
 
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.json.JSONObject;
 
@@ -73,6 +75,7 @@ public class RuleEngineHandler {
 
     	verifyRuleIsValid(ruleModel); 
         Rule rule = new Rule(ruleModel.getRuleId(), ruleModel.getProjectId(), ruleModel.getRuleId(), ruleModel.getFormat(), ruleModel.getRulePath());
+        rule.setTopics(ruleModel.getTopics());
         RuleEngine.updateRule(rule);
 
     }
@@ -90,19 +93,18 @@ public class RuleEngineHandler {
     try
     {
     	JSONObject instanceJson = new JSONObject(data.getData());
-		//JELogger.info(RuleEngineHandler.class, instanceJson.toString());
-
+		//JELogger.debug(RuleEngineHandler.class, instanceJson.toString());
 		InstanceModel instanceModel = new InstanceModel();
 		instanceModel.setInstanceId(instanceJson.getString(InstanceModelMapping.INSTANCEID));
 		instanceModel.setModelId(instanceJson.getString(InstanceModelMapping.MODELID));
 		instanceModel.setPayload(instanceJson.getJSONObject(InstanceModelMapping.PAYLOAD));
 		JEObject instanceData = (JEObject) InstanceManager.createInstance(instanceModel);
 		instanceData.setJeObjectLastUpdate(LocalDateTime.now());
-		//JELogger.info("Data : "+ instanceJson );
+		//JELogger.debug("Data : "+ instanceJson );
         RuleEngine.assertFact(projectId,instanceData);
     }catch(InstanceCreationFailed e)
     {
-    	JELogger.warning(RuleEngineHandler.class, " failed to create instance" + e.getMessage());
+    	JELogger.warning(RuleEngineHandler.class, " failed to create instance ["+data.getData()+"]" + e.getMessage());
     	}
     	
         
@@ -147,5 +149,15 @@ public class RuleEngineHandler {
 	public static void deleteProjectRules(String projectId) {
 		JELogger.trace(" Deleting rules in project id = " + projectId);
 		RuleEngine.deleteProjectRules(projectId);
+	}
+
+
+	public static List<String> getRuleTopics(String projectId, String ruleId) {
+		Rule rule = RuleEngine.getRule(projectId,ruleId);
+		if(rule!=null)
+		{
+			return rule.getTopics();
+		}
+		return new ArrayList<>();
 	}
 }

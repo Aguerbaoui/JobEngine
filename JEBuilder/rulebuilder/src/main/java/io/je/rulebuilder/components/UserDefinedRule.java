@@ -42,7 +42,7 @@ public class UserDefinedRule extends JERule {
 	 * the subRules
 	 */
 
-	List<String> subRules;
+	List<String> subRules = new ArrayList<String>();
 
 	public UserDefinedRule() {
 
@@ -60,7 +60,7 @@ public class UserDefinedRule extends JERule {
 		List<ScriptedRule> scriptedRules = new ArrayList<>();
 		Set<Block> rootBlocks = blocks.getRootBlocks();
 		for (Block root : rootBlocks) {
-			scriptedRuleid = "[" + jobEngineElementID + "]" + ruleName + ++scriptedRulesCounter;
+			scriptedRuleid = "-" + jobEngineElementID + "-" + ruleName + ++scriptedRulesCounter;
 			String condition = "";
 			if (root instanceof ConditionBlock) {
 				condition = root.getExpression();
@@ -83,7 +83,7 @@ public class UserDefinedRule extends JERule {
 			JELogger.debug(getClass(), "generated DRL : \n" + script);
 			ScriptedRule rule = new ScriptedRule(jobEngineProjectID, scriptedRuleid, script,
 					ruleName + scriptedRulesCounter);
-			rule.setTopics(topics);
+			rule.setTopics(getTopics());
 			scriptedRules.add(rule);
 			subRules.add(scriptedRuleid);
 		}
@@ -146,7 +146,7 @@ public class UserDefinedRule extends JERule {
 	public void deleteBlock(String blockId) {
 		if (blocks.getBlock(blockId) instanceof AttributeGetterBlock) {
 			AttributeGetterBlock getter = (AttributeGetterBlock) blocks.getBlock(blockId);
-			topics.remove(getter.getClassId());
+			removeTopic(getter.getClassId());
 		}
 		blocks.deleteBlock(blockId);
 		isBuilt = false;

@@ -44,8 +44,8 @@ public class RuleController {
         try {
         	JELogger.info(getClass(),"adding rule : " + ruleModel.getRuleName());
             runtimeDispatcher.addRule(ruleModel);
-        	JELogger.info(getClass(),"adding rule topics : " + ruleModel.getRuleName());
-
+        
+            JELogger.debug(getClass(),"adding rule topics : " + ruleModel.getRuleName());
             runtimeDispatcher.addTopics(ruleModel.getProjectId(), ruleModel.getTopics());
         	JELogger.info(getClass(),"rule added successfully");
 
@@ -65,7 +65,10 @@ public class RuleController {
     public ResponseEntity<?> updateRule(@RequestBody RuleModel ruleModel) {
 
         try {
+            JELogger.debug(getClass(),"updating rule : " + ruleModel.getRuleName());
             runtimeDispatcher.updateRule(ruleModel);
+            JELogger.debug(getClass(),"adding topics : " +  ruleModel.getTopics());
+
             runtimeDispatcher.addTopics(ruleModel.getProjectId(), ruleModel.getTopics());
 
         } catch (Exception e) {
@@ -104,8 +107,8 @@ public class RuleController {
 
 
 			try {
+                runtimeDispatcher.removeRuleTopics(projectId,ruleId);
 				runtimeDispatcher.deleteRule(projectId, ruleId);
-                runtimeDispatcher.decrementTopicSubscriptionCount(projectId);
 			} catch (Exception e) {
 				return JEExceptionHandler.handleException(e);
 			}

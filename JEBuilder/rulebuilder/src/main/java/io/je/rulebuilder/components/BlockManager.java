@@ -9,6 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import io.je.rulebuilder.components.blocks.Block;
 import io.je.rulebuilder.components.blocks.ExecutionBlock;
+import io.je.rulebuilder.components.blocks.getter.AttributeGetterBlock;
 import io.je.utilities.constants.RuleBuilderErrors;
 import io.je.utilities.exceptions.AddRuleBlockException;
 import io.je.utilities.exceptions.RuleBuildFailedException;
@@ -20,7 +21,6 @@ public class BlockManager {
 	// key : block id, value : block
 	ConcurrentHashMap<String, Block> blocks = new ConcurrentHashMap<>();
 
-	List<ClassDefinition> topics = new ArrayList<>();
 
 
 
@@ -28,8 +28,8 @@ public class BlockManager {
 	/*
 	 * add block
 	 */
-	public void addBlock(Block block) throws AddRuleBlockException {
-		JELogger.info(getClass(), block.toString());
+	public void addBlock(Block block)  {
+		JELogger.debug(getClass(), block.toString());
 		blocks.put(block.getJobEngineElementID(), block);
 		
 
@@ -38,7 +38,7 @@ public class BlockManager {
 	/*
 	 * update block
 	 */
-	public void updateBlock(Block block) throws AddRuleBlockException {
+	public void updateBlock(Block block)  {
 		JELogger.info(getClass(), block.toString());
 		blocks.put(block.getJobEngineElementID(), block);
 		
@@ -46,7 +46,7 @@ public class BlockManager {
 	}
 
 	public void deleteBlock(String blockId) {
-		//TODO: delete topic if getter block
+		
 		blocks.remove(blockId);
 
 
@@ -105,16 +105,22 @@ public class BlockManager {
 		}
 		// if this rule has no execution block, then it is not valid.
 		if (executionBlockCounter == 0) {
+			JELogger.error(getClass(), RuleBuilderErrors.NoExecutionBlock);
 			throw new RuleBuildFailedException(RuleBuilderErrors.NoExecutionBlock);
 		}
 
 		return roots;
 	}
 
-	public List<ClassDefinition> getTopics() {
-		return topics;
+
+	public Block getBlock(String blockId)
+	{
+		return blocks.get(blockId);
 	}
 
+	public boolean containsBlock(String blockId) {
+		return blocks.containsKey(blockId);
+	}
 
 	
 	

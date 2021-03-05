@@ -160,6 +160,11 @@ public class RuleEngine {
 		
 	}
 
+	public static Rule getRule(String projectId, String ruleId) {
+		ProjectContainer project = projectManager.getProjectContainer(projectId);
+		return project.getRule(ruleId);
+	}
+
 
 
 }
