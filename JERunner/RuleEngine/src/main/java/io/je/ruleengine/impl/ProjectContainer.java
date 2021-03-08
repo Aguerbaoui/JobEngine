@@ -501,7 +501,7 @@ public class ProjectContainer {
 	public void compileRule(Rule rule) throws RuleCompilationException, JEFileNotFoundException {
 
 		// load rule content from rule path
-		JELogger.debug(getClass(), "Rule Engine - [projectId ="+projectID+"] compiling rule ["+rule.getName()+"]..");
+		JELogger.trace( "Rule Engine - [projectId ="+projectID+"] compiling rule ["+rule.getName()+"]..");
 		RuleLoader.loadRuleContent(rule);
 		String filename = generateResourceName(ResourceType.DRL, rule.getName());
 		kfsToCompile.write(filename, rule.getContent());

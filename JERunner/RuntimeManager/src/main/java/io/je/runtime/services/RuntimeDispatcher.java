@@ -102,13 +102,14 @@ public class RuntimeDispatcher {
     public void addRule(RuleModel ruleModel) throws RuleAlreadyExistsException, RuleCompilationException,
             RuleNotAddedException, JEFileNotFoundException, RuleFormatNotValidException {
 
-
+        JELogger.trace("adding rule : " + ruleModel.getRuleName());
         RuleEngineHandler.addRule(ruleModel);
     }
 
     // update rule
     public void updateRule(RuleModel ruleModel)
             throws RuleCompilationException, JEFileNotFoundException, RuleFormatNotValidException {
+        JELogger.trace("updating rule : " + ruleModel.getRuleName());
         RuleEngineHandler.updateRule(ruleModel);
 
     }
@@ -116,11 +117,13 @@ public class RuntimeDispatcher {
     // compile rule
     public void compileRule(RuleModel ruleModel)
             throws RuleFormatNotValidException, RuleCompilationException, JEFileNotFoundException {
+        JELogger.trace("Compiling rule : " + ruleModel.getRuleName());
         RuleEngineHandler.compileRule(ruleModel);
     }
 
     // delete rule
     public void deleteRule(String projectId, String ruleId) throws DeleteRuleException {
+        JELogger.trace("Deleting rule id = " + ruleId + " in project id = " + projectId);
         RuleEngineHandler.deleteRule(projectId, ruleId);
     }
 
@@ -129,6 +132,7 @@ public class RuntimeDispatcher {
      * Add a workflow to the engine
      */
     public void addWorkflow(WorkflowModel wf) {
+        JELogger.trace(" Adding workflow to engine with key = " + wf.getKey() + " in project id = " + wf.getProjectId());
         WorkflowEngineHandler.addProcess(wf.getKey(), wf.getName(), wf.getPath(), wf.getProjectId(), wf.isTriggeredByEvent());
     }
 
@@ -137,6 +141,7 @@ public class RuntimeDispatcher {
      */
     public void launchProcessWithoutVariables(String projectId, String key) throws WorkflowNotFoundException, WorkflwTriggeredByEventException, WorkflowAlreadyRunningException {
         try {
+            JELogger.trace(" Running workflow with key = " + key + " in project id = " + projectId);
             WorkflowEngineHandler.launchProcessWithoutVariables(projectId, key);
         } catch (WorkflowAlreadyRunningException e) {
             e.printStackTrace();
@@ -147,6 +152,7 @@ public class RuntimeDispatcher {
      * Run all workflows deployed in the engine without project specification
      */
     public void runAllWorkflows(String projectId) throws WorkflowNotFoundException {
+        JELogger.trace(" Running all workflows in project id = " + projectId);
         WorkflowEngineHandler.runAllWorkflows(projectId);
     }
 
@@ -154,13 +160,14 @@ public class RuntimeDispatcher {
      * Deploy a workflow to the engine
      */
     public void buildWorkflow(String projectId, String key) {
+        JELogger.trace(" Deploying workflow with key = " + key + " in project id = " + projectId);
         WorkflowEngineHandler.deployBPMN(projectId, key);
     }
 
     ///////////////////////////// Classes
     // add class
     public void addClass(ClassModel classModel) throws ClassLoadException {
-
+        JELogger.trace(" Adding class to runner, class name =  " + classModel.getClassName());
         ClassManager.loadClass(classModel.getClassId(), classModel.getClassName(), classModel.getClassPath());
 
     }
@@ -170,8 +177,7 @@ public class RuntimeDispatcher {
 
 
     public static void injectData(JEData jeData) throws InstanceCreationFailed {
-    	
-    	
+        JELogger.debug(" Injecting data in runner from listener");
         for (String projectId : projectsByTopic.get(jeData.getTopic())) {
             if (Boolean.TRUE.equals(projectStatus.get(projectId))) {
                 RuleEngineHandler.injectData(projectId, jeData);
@@ -184,6 +190,7 @@ public class RuntimeDispatcher {
      * add a topic
      */
     public void addTopics(String projectId, List<String> topics) {
+        JELogger.trace("adding topics : " + topics);
         if (topics != null) {
             for (String topic : topics) {
                 if (!projectsByTopic.containsKey(topic)) {
