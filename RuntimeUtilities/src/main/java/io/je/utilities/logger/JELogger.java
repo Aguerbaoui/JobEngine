@@ -26,7 +26,6 @@ public class JELogger {
     private static  Logger logger = null;
     private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
 
-    private static final String pattern = "[%d] [%p] JobEngine :: %m%n";
 
     /*
     * Trace log level
@@ -77,6 +76,8 @@ public class JELogger {
         synchronized (queue) {
             queue.add(new Timestamp(System.currentTimeMillis()) + " " + msg);
         }
+        logger.info(logger.getName() + ": " + logger);
+
         logger.info( msg);
     }
 
@@ -132,7 +133,7 @@ public class JELogger {
     public static void initBuilderLogger(String jeBuilderLogPath, String level) {
         //TODO Remove the old logger context initialization (spring/activiti/drools)
 
-
+    	String pattern = "[%d] [%p] JEBuilder :: %m%n";
         ConfigurationBuilder<BuiltConfiguration> builder = ConfigurationBuilderFactory.newConfigurationBuilder();
 
         builder.setStatusLevel(Level.OFF);
@@ -172,6 +173,7 @@ public class JELogger {
 
     public static void initRunnerLogger(String jeRunnerLogPath, String level) {
         //TODO Remove the old logger context initialization (spring/activiti/drools)
+    	String pattern = "[%d] [%p] JERunner :: %m%n";
 
         ConfigurationBuilder<BuiltConfiguration> builder = ConfigurationBuilderFactory.newConfigurationBuilder();
 
