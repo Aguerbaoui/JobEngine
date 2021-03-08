@@ -32,7 +32,7 @@ public class RuleBuilder {
 	public static void buildRule(JERule jeRule, String buildPath)
 			throws RuleBuildFailedException, JERunnerErrorException, IOException, InterruptedException, ExecutionException {
 		String rulePath = "";
-		JELogger.trace(RuleBuilder.class, "Building rule with id = " + jeRule.getJobEngineElementID());
+		JELogger.trace(RuleBuilder.class, " Building rule with id = " + jeRule.getJobEngineElementID());
 		if( jeRule instanceof UserDefinedRule) {
 			List<ScriptedRule> unitRules = ((UserDefinedRule) jeRule).scriptRule();
 			for (ScriptedRule rule : unitRules) {
@@ -66,10 +66,10 @@ public class RuleBuilder {
 
 			// TODO: remove hard-coded rule format
 			ruleMap.put(JERunnerRuleMapping.FORMAT, "DRL");
-			ruleMap.put(JERunnerRuleMapping.TOPICS, rule.getTopics());
+			ruleMap.put(JERunnerRuleMapping.TOPICS, rule.getTopics().keySet());
 
-			JELogger.trace(RuleBuilder.class, "Sending rule build request to runner, project id = " + rule.getJobEngineProjectID() + "rule id = " + rule.getJobEngineElementID());
-			
+			JELogger.trace(RuleBuilder.class, " Sending rule build request to runner, project id = " + rule.getJobEngineProjectID() + "rule id = " + rule.getJobEngineElementID());
+			JELogger.debug(RuleBuilder.class, " Rule : " + ruleMap);
 			JEResponse jeRunnerResp = null;
 			 jeRunnerResp = JERunnerAPIHandler.updateRule(ruleMap);
 

@@ -40,6 +40,7 @@ public class JEConfiguration {
 	}
 	
 	public static void updateConfig(ConfigModel configModel) {
+		JELogger.trace(" Updating configuration = " + configModel.toString());
 		setDataDefinitionURL(configModel.getDataDefinitionURL());
 		setDataManagerURL(configModel.getDataManagerURL());
 		setRequestPort(configModel.getRequestPort());

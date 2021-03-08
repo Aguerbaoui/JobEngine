@@ -264,5 +264,20 @@ public class JEWorkflow extends JEObject {
         status = IDLE;
     }
 
-
+    @Override
+    public String toString() {
+        return "JEWorkflow{" +
+                "id='" + jobEngineElementID + '\'' +
+                "workflowName='" + workflowName + '\'' +
+                ", workflowStartBlock=" + workflowStartBlock +
+                ", bpmnPath='" + bpmnPath + '\'' +
+                ", status='" + status + '\'' +
+                ", allBlocks=" + allBlocks +
+                ", frontConfig='" + frontConfig + '\'' +
+                ", isScript=" + isScript +
+                ", script='" + script + '\'' +
+                ", triggeredByEvent=" + triggeredByEvent +
+                ", description='" + description + '\'' +
+                '}';
+    }
 }

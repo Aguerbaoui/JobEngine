@@ -8,6 +8,7 @@ import blocks.control.InclusiveGatewayBlock;
 import blocks.control.ParallelGatewayBlock;
 import blocks.events.*;
 import io.je.utilities.constants.WorkflowConstants;
+import io.je.utilities.logger.JELogger;
 import models.JEWorkflow;
 import org.activiti.bpmn.model.*;
 import org.activiti.bpmn.model.Process;
@@ -26,15 +27,15 @@ public class JEToBpmnMapper {
      * Generate and save bpmn workflow from JE workflow
      * */
     public static void createBpmnFromJEWorkflow( JEWorkflow wf) {
+
+        JELogger.trace(" Building bpmn from jeworkflow id = " + wf.getJobEngineElementID());
         BpmnModel model = ModelBuilder.createNewBPMNModel();
         model.setTargetNamespace(wf.getJobEngineProjectID());
         Process process = ModelBuilder.createProcess(wf.getWorkflowName().trim());
         process.addFlowElement(ModelBuilder.createStartEvent(wf.getWorkflowStartBlock().getJobEngineElementID(), wf.getWorkflowStartBlock().getEventId()));
         addListeners(process);
         parseWorkflowBlock(wf, wf.getWorkflowStartBlock(), process, null);
-//TODO send bpmn task information since they are dynamically created
         model.addProcess(process);
-        //new BpmnAutoLayout(model).execute();
         String modelPath = WorkflowConstants.BPMN_PATH + wf.getWorkflowName().trim() + WorkflowConstants.BPMN_EXTENSION;
         ModelBuilder.saveModel(model, modelPath);
         wf.resetBlocks();
@@ -45,6 +46,7 @@ public class JEToBpmnMapper {
      * Set the start and end execution listeners for the workflow
      * */
     private static void addListeners(Process process) {
+        JELogger.trace(" Adding listeners to process id = " + process.getName());
         ActivitiListener startProcessListener = new ActivitiListener();
         startProcessListener.setImplementation(WorkflowConstants.PROCESS_LISTENER_IMPLEMENTATION);
         startProcessListener.setEvent(WorkflowConstants.START_PROCESS);
@@ -53,7 +55,6 @@ public class JEToBpmnMapper {
         endProcessListener.setImplementation(WorkflowConstants.PROCESS_LISTENER_IMPLEMENTATION);
         endProcessListener.setImplementationType(ImplementationType.IMPLEMENTATION_TYPE_CLASS);
         endProcessListener.setEvent(WorkflowConstants.END_PROCESS);
-
         ArrayList<ActivitiListener> listeners = new ArrayList<ActivitiListener>();
         listeners.add(startProcessListener);
         listeners.add(endProcessListener);
@@ -65,11 +66,11 @@ public class JEToBpmnMapper {
      * Parse job engine blocks to bpmn blocks
      * */
     private static void parseWorkflowBlock(JEWorkflow wf, WorkflowBlock startBlock, Process process, WorkflowBlock previous) {
-
         if (previous != null) {
             process.addFlowElement(ModelBuilder.createSequenceFlow(previous.getJobEngineElementID(), startBlock.getJobEngineElementID(), previous.getCondition()));
         }
         if (startBlock.isProcessed()) return;
+        JELogger.trace(" Processing block name = " + startBlock.getName() + " in workflow name = " + wf.getWorkflowName());
         startBlock.setProcessed(true);
         for (String id : startBlock.getOutFlows().values()) {
             WorkflowBlock block = wf.getBlockById(id);

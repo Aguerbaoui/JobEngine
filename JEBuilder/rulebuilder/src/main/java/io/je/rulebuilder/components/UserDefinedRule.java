@@ -13,7 +13,8 @@ import org.drools.template.ObjectDataCompiler;
 import io.je.rulebuilder.components.blocks.Block;
 import io.je.rulebuilder.components.blocks.ConditionBlock;
 import io.je.rulebuilder.components.blocks.PersistableBlock;
-import io.je.utilities.config.ConfigurationConstants;
+import io.je.rulebuilder.components.blocks.getter.AttributeGetterBlock;
+import io.je.rulebuilder.config.RuleBuilderConfig;
 import io.je.utilities.constants.RuleBuilderErrors;
 import io.je.utilities.exceptions.AddRuleBlockException;
 import io.je.utilities.exceptions.RuleBuildFailedException;
@@ -37,16 +38,15 @@ public class UserDefinedRule extends JERule {
 	BlockManager blocks = new BlockManager();
 
 	/*
-	 *  * One UserDefinedRule can be equivalents to multiple drl rules 
-		List of all the subRules
+	 * * One UserDefinedRule can be equivalents to multiple drl rules List of all
+	 * the subRules
 	 */
 
-	List<String> subRules;
+	List<String> subRules = new ArrayList<String>();
 
 	public UserDefinedRule() {
 
 	}
-
 
 	/*
 	 * generate script rules
@@ -60,7 +60,7 @@ public class UserDefinedRule extends JERule {
 		List<ScriptedRule> scriptedRules = new ArrayList<>();
 		Set<Block> rootBlocks = blocks.getRootBlocks();
 		for (Block root : rootBlocks) {
-			scriptedRuleid = "[" + jobEngineElementID + "]" + ruleName + ++scriptedRulesCounter;
+			scriptedRuleid = "-" + jobEngineElementID + "-" + ruleName + ++scriptedRulesCounter;
 			String condition = "";
 			if (root instanceof ConditionBlock) {
 				condition = root.getExpression();
@@ -70,21 +70,20 @@ public class UserDefinedRule extends JERule {
 			String consequences = "";
 			if (root instanceof ConditionBlock) {
 				consequences = ((ConditionBlock) root).getConsequences();
-				if(root instanceof PersistableBlock)
-				{
-					duration = ((PersistableBlock)root).getPersistanceExpression();
+				if (root instanceof PersistableBlock) {
+					duration = ((PersistableBlock) root).getPersistanceExpression();
 				}
 
 			} else {
 				consequences = root.getExpression();
 			}
-			//add time persistence 
-			
-			String script = generateScript(scriptedRuleid, duration,condition, consequences);
-			JELogger.info(script);
+			// add time persistence
+
+			String script = generateScript(scriptedRuleid, duration, condition, consequences);
+			JELogger.debug(getClass(), "generated DRL : \n" + script);
 			ScriptedRule rule = new ScriptedRule(jobEngineProjectID, scriptedRuleid, script,
 					ruleName + scriptedRulesCounter);
-			rule.setTopics(topics);
+			rule.setTopics(getTopics());
 			scriptedRules.add(rule);
 			subRules.add(scriptedRuleid);
 		}
@@ -93,7 +92,7 @@ public class UserDefinedRule extends JERule {
 
 	/* generate DRL for this rule */
 
-	private String generateScript(String ruleId, String duration,String condition, String consequences)
+	private String generateScript(String ruleId, String duration, String condition, String consequences)
 			throws RuleBuildFailedException {
 
 		// set rule attributes
@@ -105,13 +104,13 @@ public class UserDefinedRule extends JERule {
 		ruleTemplateAttributes.put("condition", condition);
 		ruleTemplateAttributes.put("consequence", consequences);
 		ruleTemplateAttributes.put("duration", duration);
-		ruleTemplateAttributes.put("dateEffective", "\"" + ruleParameters.getDateEffective()+"\"");
-		ruleTemplateAttributes.put("dateExpires","\""+ ruleParameters.getDateExpires()+"\"");
+		if (ruleParameters.getDateEffective() != null && !ruleParameters.getDateEffective().isEmpty()) {
+			ruleTemplateAttributes.put("dateEffective", "\"" + ruleParameters.getDateEffective() + "\"");
+		}
+		if (ruleParameters.getDateExpires() != null && !ruleParameters.getDateExpires().isEmpty()) {
+			ruleTemplateAttributes.put("dateExpires", "\"" + ruleParameters.getDateExpires() + "\"");
+		}
 
-
-
-		
-		
 		ObjectDataCompiler objectDataCompiler = new ObjectDataCompiler();
 		String ruleContent = "";
 		try {
@@ -145,6 +144,10 @@ public class UserDefinedRule extends JERule {
 	 * delete a block in this user defined rule
 	 */
 	public void deleteBlock(String blockId) {
+		if (blocks.getBlock(blockId) instanceof AttributeGetterBlock) {
+			AttributeGetterBlock getter = (AttributeGetterBlock) blocks.getBlock(blockId);
+			removeTopic(getter.getClassId());
+		}
 		blocks.deleteBlock(blockId);
 		isBuilt = false;
 
@@ -160,26 +163,24 @@ public class UserDefinedRule extends JERule {
 
 	}
 
-
 	public BlockManager getBlocks() {
 		return blocks;
 	}
-
 
 	public void setBlocks(BlockManager blocks) {
 		this.blocks = blocks;
 	}
 
-
 	public List<String> getSubRules() {
 		return subRules;
 	}
 
-
 	public void setSubRules(List<String> subRules) {
 		this.subRules = subRules;
 	}
-	
-	
+
+	public boolean containsBlock(String blockId) {
+		return blocks.containsBlock(blockId);
+	}
 
 }

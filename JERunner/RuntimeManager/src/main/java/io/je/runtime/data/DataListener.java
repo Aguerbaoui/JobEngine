@@ -31,18 +31,25 @@ public class DataListener {
     }
 
     public static void startListening(List<String> topics) {
+        JELogger.info(" Listening on topics = " + topics);
     	for (String id : topics)
     	{
     		ZMQAgent agent = agents.get(id);
-    		agent.setListening(true);
-    		Thread thread = new Thread(agent);
-    		activeThreads.put(id, thread);
-    		thread.start();
+    		{
+    			if (agent!=null)
+    			{
+    				agent.setListening(true);
+    	    		Thread thread = new Thread(agent);
+    	    		activeThreads.put(id, thread);
+    	    		thread.start();
+    			}
+    		}
     	}
     
     }
 
     public static void stopListening(List<String> topics) {
+        JELogger.info(" Stopping Listening on topics = " + topics);
         for (String id : topics)
         {
             agents.get(id).setListening(false);
@@ -73,6 +80,11 @@ public class DataListener {
     	agents.get(topic).incrementSubscriptionCount();
 
     }
+
+	public static String getTopics() {
+		return agents.keySet().toString();
+		
+	}
 
 /*
     public static void startListeningOnTopic(String topic) throws DataListenerNotFoundException {

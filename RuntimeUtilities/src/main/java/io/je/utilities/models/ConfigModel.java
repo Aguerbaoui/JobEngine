@@ -68,8 +68,19 @@ public class ConfigModel {
 	public void setDroolsDateFormat(String droolsDateFormat) {
 		this.droolsDateFormat = droolsDateFormat;
 	}
-	
-	
-	
 
+
+	@Override
+	public String toString() {
+		return "ConfigModel{" +
+				"identifier='" + identifier + '\'' +
+				", dataDefinitionURL='" + dataDefinitionURL + '\'' +
+				", dataManagerURL='" + dataManagerURL + '\'' +
+				", runtimeManagerURL='" + runtimeManagerURL + '\'' +
+				", projectBuilderURL='" + projectBuilderURL + '\'' +
+				", subscriberPort=" + subscriberPort +
+				", requestPort=" + requestPort +
+				", droolsDateFormat='" + droolsDateFormat + '\'' +
+				'}';
+	}
 }

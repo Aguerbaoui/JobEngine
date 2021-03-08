@@ -179,7 +179,7 @@ public class ProjectContainer {
 			if (t1 != null) {
 				kieSession.halt();
 			}
-			JELogger.error(ProjectContainer.class, RuleEngineErrors.failedToFireRules);
+			JELogger.error(ProjectContainer.class, RuleEngineErrors.FailedToFireRules);
 			throw new RulesNotFiredException("");
 		}
 
@@ -189,7 +189,7 @@ public class ProjectContainer {
 	 * This method stops the rule execution
 	 */
 	public boolean stopRuleExecution() {
-		JELogger.info(ProjectContainer.class, RuleEngineErrors.stoppingProjectContainer);
+		JELogger.info(RuleEngineErrors.stoppingProjectContainer);
 		try {
 
 			kieSession.halt();
@@ -373,7 +373,7 @@ public class ProjectContainer {
 			kieContainer.updateToVersion(releaseId);
 			kScanner.scanNow();
 		} catch (Exception e) {
-			JELogger.error(ProjectContainer.class, RuleEngineErrors.failedToUpdateContainer + e.getMessage());
+			JELogger.error(ProjectContainer.class, RuleEngineErrors.FailedToUpdateContainer + e.getMessage());
 		}
 
 		return true;
@@ -456,7 +456,7 @@ public class ProjectContainer {
 			addRuleToKieFileSystem(rule);
 			updateContainer();
 		} catch (Exception e) {
-			JELogger.error(ProjectContainer.class, RuleEngineErrors.failedToUpdateRule + e.getMessage());
+			JELogger.error(ProjectContainer.class, RuleEngineErrors.FailedToUpdateRule + e.getMessage());
 			return false;
 		}
 
@@ -484,8 +484,8 @@ public class ProjectContainer {
 				deleteRuleFromKieFileSystem(rule);
 				updateContainer();
 			} catch (Exception e) {
-				JELogger.error(ProjectContainer.class, RuleEngineErrors.failedToDeleteRule + e.getMessage());
-				throw new DeleteRuleException(RuleEngineErrors.failedToDeleteRule);
+				JELogger.error(ProjectContainer.class, RuleEngineErrors.FailedToDeleteRule + e.getMessage());
+				throw new DeleteRuleException(RuleEngineErrors.FailedToDeleteRule);
 			}
 
 			if (status != Status.RUNNING) {
@@ -501,7 +501,7 @@ public class ProjectContainer {
 	public void compileRule(Rule rule) throws RuleCompilationException, JEFileNotFoundException {
 
 		// load rule content from rule path
-		JELogger.debug(getClass(), "Rule Engine - [projectId ="+projectID+"] compiling rule ["+rule.getName()+"]..");
+		JELogger.trace( "Rule Engine - [projectId ="+projectID+"] compiling rule ["+rule.getName()+"]..");
 		RuleLoader.loadRuleContent(rule);
 		String filename = generateResourceName(ResourceType.DRL, rule.getName());
 		kfsToCompile.write(filename, rule.getContent());
@@ -631,6 +631,11 @@ public class ProjectContainer {
 	public boolean updateFact(JEObject fact) {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	public Rule getRule(String ruleId) {
+		return allRules.get(ruleId);
+		
 	}
 
 }

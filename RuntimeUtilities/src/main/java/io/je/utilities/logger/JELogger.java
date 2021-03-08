@@ -35,7 +35,16 @@ public class JELogger {
              queue.add(new Timestamp(System.currentTimeMillis()) + " " + msg);
          }
 
-        logger.trace( msg);
+        logger.info( msg);
+
+    }
+
+    public static void trace(String msg) {
+        synchronized (queue) {
+            queue.add(new Timestamp(System.currentTimeMillis()) + " " + msg);
+        }
+
+        logger.info( msg);
 
     }
     /*
@@ -47,6 +56,14 @@ public class JELogger {
         
     }
 
+    /*
+     * log level 1 : debug
+     */
+    public static void debug(String msg) {
+
+        logger.debug(msg);
+
+    }
 
     public static Queue<String> getQueue() {
         return queue;
@@ -203,7 +220,7 @@ public class JELogger {
     			+ "==                                     "+appName+"                                     ==\r\n"
     			+ "==                                 Version : 1.0.0                                  ==\r\n"
     			+ "==                                 Build Date : "+LocalDateTime.now().format(formatter)+"                            ==\r\n"
-    			+ "==                       Copyright © 2020 Integration Objects                       ==\r\n"
+    			+ "==                       Copyright ï¿½ 2020 Integration Objects                       ==\r\n"
     			+ "======================================================================================\r\n"
     			+ "==                             Trace level : [ "+level+" ]                              ==\r\n"
     			+ "======================================================================================";
