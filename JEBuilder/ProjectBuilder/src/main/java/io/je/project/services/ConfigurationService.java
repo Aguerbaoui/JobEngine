@@ -110,8 +110,8 @@ public class ConfigurationService {
 			try {
 				boolean serverUp = false;
 				while (!serverUp) {
-					JELogger.info(getClass(), "Runner is down, checking again in 2 seconds");
-					Thread.sleep(2000);
+					JELogger.debug(getClass(), " Runner is down, checking again in 5 seconds");
+					Thread.sleep(5000);
 					serverUp = checkRunnerHealth();
 				}
 

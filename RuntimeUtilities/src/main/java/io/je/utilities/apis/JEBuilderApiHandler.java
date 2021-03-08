@@ -23,6 +23,7 @@ public class JEBuilderApiHandler {
 	            throws JERunnerErrorException, InterruptedException, ExecutionException {
 	        Response response = null;
 	        try {
+				JELogger.info(" Runner is shutting down");
 	            response = Network.makeGetNetworkCallWithResponse(requestUrl);
 
 	            if (response == null) throw new JERunnerErrorException(Errors.JEBUILDER_UNREACHABLE);
@@ -44,9 +45,10 @@ public class JEBuilderApiHandler {
 	
 	
     // request update from builder
-    public static JEResponse requestUpdateFromBuilder() throws InterruptedException, JERunnerErrorException, ExecutionException {
+    public static void requestUpdateFromBuilder() throws InterruptedException, JERunnerErrorException, ExecutionException {
+
         String requestUrl = JEConfiguration.getProjectBuilderURL() + PROJECT_UPDATE_RUNNER;
-        return sendRequest(requestUrl);
+        sendRequest(requestUrl);
     }
 
 

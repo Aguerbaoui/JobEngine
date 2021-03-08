@@ -256,10 +256,9 @@ public class ModelBuilder {
     public static void saveModel(BpmnModel model, String fileName) {
         BpmnXMLConverter bpmnXMLConverter = new BpmnXMLConverter();
         try {
-            JELogger.info(ModelBuilder.class, fileName);
-            JELogger.info(ModelBuilder.class, model.toString());
+            JELogger.trace("Saving pmn file to path = " + fileName);
             String bpmn20Xml = new String(bpmnXMLConverter.convertToXML(model), "UTF-8");
-            JELogger.info(ModelBuilder.class, bpmn20Xml);
+            JELogger.info("bpmn = \n" +  bpmn20Xml);
             JEFileUtils.copyStringToFile(bpmn20Xml, fileName, "utf-8");
         } catch (Exception e) {
             e.printStackTrace();
@@ -268,8 +267,6 @@ public class ModelBuilder {
 
     public static void saveModel(String bpmn, String fileName) {
         try {
-            JELogger.info(ModelBuilder.class, fileName);
-            JELogger.info(ModelBuilder.class, bpmn);
             JEFileUtils.copyStringToFile(bpmn, fileName, "utf-8");
         } catch (Exception e) {
             e.printStackTrace();

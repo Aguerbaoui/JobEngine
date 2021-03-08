@@ -51,7 +51,7 @@ public class ResponseMessages {
 
 	public static final String RULE_BUILD_ERROR = "Error while building a rule";
 
-	public static final String RULE_ADDED_SUCCESSFULLY = "Rule added successfully.";
+	public static final String RULE_ADDED_SUCCESSFULLY = " Rule added successfully.";
 
 	public static final String FAILED_TO_ADD_RULE = "Failed to add rule.";
 	
@@ -82,7 +82,7 @@ public class ResponseMessages {
 	//****************************************WORKFLOW**************************************************
 	public static final String CREATED_PROJECT_SUCCESSFULLY = "Created project successfully";
 
-	public static final String BUILT_EVERYTHING_SUCCESSFULLY = "Built everything successfully";
+	public static final String BUILT_EVERYTHING_SUCCESSFULLY = " Built everything successfully";
 
 	public static final String BUILT_EVERYTHING_SUCCESSFULLY1 = "Built everything successfully";
 

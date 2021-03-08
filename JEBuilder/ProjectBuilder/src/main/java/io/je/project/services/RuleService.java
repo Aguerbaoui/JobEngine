@@ -48,7 +48,6 @@ public class RuleService {
      */
     public void addRule(String projectId, RuleModel ruleModel)
             throws ProjectNotFoundException, RuleAlreadyExistsException, RuleNotAddedException {
-        JELogger.info(getClass(), "adding rule " + ruleModel.getRuleName());
         JEProject project = ProjectService.getProjectById(projectId);
         if (project == null) {
             throw new ProjectNotFoundException(Errors.PROJECT_NOT_FOUND);
