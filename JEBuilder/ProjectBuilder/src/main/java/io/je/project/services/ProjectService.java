@@ -189,7 +189,7 @@ public class ProjectService {
             }
 
         }
-        JELogger.trace(ProjectService.class, "Found project with id = " + projectId);
+        JELogger.trace(" Found project with id = " + projectId);
         return CompletableFuture.completedFuture(loadedProjects.get(projectId));
     }
 

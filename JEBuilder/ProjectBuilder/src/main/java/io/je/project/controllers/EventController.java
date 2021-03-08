@@ -102,7 +102,7 @@ public class EventController {
 			return JEExceptionHandler.handleException(e);
 
 		}
-		JELogger.info(getClass(), "  event [ id="+eventModel.getEventId()+"] added successfully");
+		JELogger.info(getClass(), " Event [ id="+eventModel.getEventId()+"] added successfully");
 		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.EVENT_ADDED));
 	}
 	
@@ -123,7 +123,7 @@ public class EventController {
 			return JEExceptionHandler.handleException(e);
 
 		}
-		JELogger.info(getClass(), "  event [ id="+eventModel.getEventId()+"] updated successfully");
+		JELogger.info(getClass(), " Event [ id="+eventModel.getEventId()+"] updated successfully");
 		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.EVENT_UPDATED));
 	}
 
@@ -145,7 +145,7 @@ public class EventController {
 			return JEExceptionHandler.handleException(e);
 			
 		}
-		JELogger.info(getClass(), "  event [ id="+eventId+"] deleted successfully");
+		JELogger.info(getClass(), " Event [ id="+eventId+"] deleted successfully");
 		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.EVENT_DELETED));
 	}
 }

@@ -47,7 +47,6 @@ public class JERunnerAPIHandler {
             throws JERunnerErrorException, InterruptedException, ExecutionException {
         Response response = null;
         try {
-            JELogger.info(JERunnerAPIHandler.class, " url = " + requestUrl);
             response = Network.makeNetworkCallWithJsonBodyWithResponse(requestBody, requestUrl);
 
             if (response == null) throw new JERunnerErrorException(Errors.JERUNNER_UNREACHABLE);
@@ -227,7 +226,7 @@ public class JERunnerAPIHandler {
     //update event type
     public static void updateEventType(String projectId, String eventId, String type) throws JERunnerErrorException, InterruptedException, ExecutionException, IOException {
         String requestUrl = runtimeManagerBaseApi + APIConstants.UPDATE_EVENT + "/" + projectId + "/" + eventId;
-        JELogger.trace(JERunnerAPIHandler.class, "Sending update event request to runner, project id = " + projectId + "event id = " + eventId);
+        JELogger.trace(JERunnerAPIHandler.class, " Sending update event request to runner, project id = " + projectId + "event id = " + eventId);
         sendRequestWithStringBody(requestUrl, type);
 
     }
@@ -266,7 +265,7 @@ public class JERunnerAPIHandler {
     //delete event from runner
     public static JEResponse deleteEvent(String projectId, String eventId) throws InterruptedException, JERunnerErrorException, ExecutionException {
         String requestUrl = runtimeManagerBaseApi + DELETE_EVENT + "/" + projectId + "/" + eventId;
-        JELogger.trace(JERunnerAPIHandler.class, "Sending delete event request to runner, project id = " + projectId + "event id = " + eventId);
+        JELogger.trace(" Sending delete event request to runner, project id = " + projectId + "event id = " + eventId);
         return sendDeleteRequest(requestUrl);
     }
 

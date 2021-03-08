@@ -220,13 +220,13 @@ public class RuntimeDispatcher {
         e.setJobEngineElementID(eventModel.getEventId());
         e.setJobEngineProjectID(eventModel.getProjectId());
         e.setType(EventType.valueOf(eventModel.getEventType()));
-        JELogger.trace(" Adding event ");
+        JELogger.trace(" Adding event with id = " + e.getJobEngineElementID());
         EventManager.addEvent(eventModel.getProjectId(), e);
     }
 
 
     public void updateEventType(String projectId, String eventId, String eventType) throws ProjectNotFoundException, EventException {
-        JELogger.trace(" updating event id = " + eventId + " in project id = " + projectId);
+        JELogger.trace(" updating event id = " + eventId + " in project id = " + projectId + " to type = " + eventType);
         EventManager.updateEventType(projectId, eventId, eventType);
     }
 

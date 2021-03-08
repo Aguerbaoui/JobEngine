@@ -22,7 +22,7 @@ public class JERunnerApplication {
 
     @PreDestroy
     public void onDestroy() throws Exception {
-        JELogger.info(" Runner is shutting down");
+
     	JEBuilderApiHandler.requestUpdateFromBuilder();
     }
 }
