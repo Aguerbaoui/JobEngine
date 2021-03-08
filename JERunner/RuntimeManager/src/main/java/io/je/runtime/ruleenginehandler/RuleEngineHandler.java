@@ -32,6 +32,7 @@ public class RuleEngineHandler {
     
     private static String verifyRuleIsValid(RuleModel ruleModel) throws RuleFormatNotValidException
     {
+    	JELogger.trace("Checking rule validity");
     	String errorMsg = null;
     	if(ruleModel.getRuleId() == null || ruleModel.getRuleId().isEmpty())
     	{

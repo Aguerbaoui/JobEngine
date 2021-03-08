@@ -57,6 +57,14 @@ public class JELogger {
         
     }
 
+    /*
+     * log level 1 : debug
+     */
+    public static void debug(String msg) {
+
+        logger.debug(msg);
+
+    }
 
     public static Queue<String> getQueue() {
         return queue;

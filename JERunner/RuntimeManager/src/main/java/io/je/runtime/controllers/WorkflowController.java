@@ -31,7 +31,6 @@ public class WorkflowController {
      * */
     @PostMapping(value = "/addWorkflow", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> addWorkflow(@RequestBody WorkflowModel wf) {
-        //JELogger.info(WorkflowController.class, wf.toString());
         dispatcher.addWorkflow(wf);
         dispatcher.buildWorkflow(wf.getProjectId(), wf.getKey());
         return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ADDED_WORKFLOW_SUCCESSFULLY));
@@ -53,7 +52,6 @@ public class WorkflowController {
     @GetMapping(value = "/runWorkflow/{projectId}/{key}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> runWorkflow(@PathVariable String projectId, @PathVariable String key) {
         try {
-            //JELogger.info(WorkflowController.class, "Executing");
             dispatcher.launchProcessWithoutVariables(projectId, key);
         } catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
