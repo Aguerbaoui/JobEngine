@@ -1,6 +1,7 @@
 package io.je.ruleengine.models;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import io.je.ruleengine.enumerations.RuleFormat;
@@ -21,6 +22,8 @@ public class Rule extends JEObject {
     String path;
     //Rule file content
     String content;
+    //topics rule is subscribed to
+    List<String> topics = new ArrayList<String>();
 
     ArrayList<JEEvent> events;
 
@@ -94,5 +97,15 @@ public class Rule extends JEObject {
         }
         events.add(e);
     }
+
+	public List<String> getTopics() {
+		return topics;
+	}
+
+	public void setTopics(List<String> topics) {
+		this.topics = topics;
+	}
+    
+    
 }
 

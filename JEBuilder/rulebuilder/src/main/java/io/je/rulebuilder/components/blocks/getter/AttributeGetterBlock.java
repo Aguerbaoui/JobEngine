@@ -9,12 +9,14 @@ import io.je.utilities.exceptions.RuleBuildFailedException;
 
 public class AttributeGetterBlock extends GetterBlock {
 
+	String classId;
 	String classPath;
 	String attributeName;
 	List<String> specificInstances ; 
 
 	public AttributeGetterBlock(BlockModel blockModel) {
 		super(blockModel);
+		classId=blockModel.getBlockConfiguration().getClassId();
 		classPath = blockModel.getBlockConfiguration().getClassName();
 		attributeName = blockModel.getBlockConfiguration().getAttributeName();
 		specificInstances = blockModel.getBlockConfiguration().getSpecificInstances();
@@ -270,6 +272,14 @@ public class AttributeGetterBlock extends GetterBlock {
 		a[a.length - 1] = "get" + a[a.length - 1] + "()";
 		s = s + a[a.length - 1];
 		return s;*/
+	}
+
+	public String getClassId() {
+		return classId;
+	}
+
+	public void setClassId(String classId) {
+		this.classId = classId;
 	}
 
 

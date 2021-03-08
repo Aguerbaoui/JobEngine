@@ -4,6 +4,7 @@ import io.je.project.beans.JEProject;
 import io.je.rulebuilder.builder.RuleBuilder;
 import io.je.rulebuilder.components.*;
 import io.je.rulebuilder.components.blocks.Block;
+import io.je.rulebuilder.components.blocks.getter.AttributeGetterBlock;
 import io.je.rulebuilder.models.BlockModel;
 import io.je.rulebuilder.models.RuleModel;
 import io.je.rulebuilder.models.ScriptRuleModel;
@@ -178,7 +179,7 @@ public class RuleService {
     }
 
     /*
-     * update rule : add block to rule
+     * update rule : add/update block to rule
      */
     public void addBlockToRule(BlockModel blockModel) throws AddRuleBlockException, ProjectNotFoundException,
             RuleNotFoundException, DataDefinitionUnreachableException, JERunnerErrorException, AddClassException,
@@ -200,21 +201,51 @@ public class RuleService {
             throw new RuleNotFoundException(RuleBuilderErrors.RuleNotFound + " [ " + blockModel.getRuleId() + "]");
         }
         verifyBlockFormatIsValid(blockModel);
-        JELogger.trace(getClass(), " Adding block name = " + blockModel.getBlockName() + " to rule [id : " + blockModel.getRuleId() + ")");
-        JERule rule = project.getRule(blockModel.getRuleId());
+        
+        
+        
+        UserDefinedRule rule = (UserDefinedRule) project.getRule(blockModel.getRuleId());
+        
+        //check if block already exists
+        boolean blockExists = rule.containsBlock(blockModel.getBlockId());
+        Block oldblock = rule.getBlocks().getBlock(blockModel.getBlockId());
+        if(blockExists)
+        {
+            JELogger.trace(getClass(), " updating block : " + blockModel.getBlockName() + " to rule [id : " + blockModel.getRuleId() + "]");
+
+        }
+        else
+        {
+            JELogger.trace(getClass(), " Adding block : " + blockModel.getBlockName() + " to rule [id : " + blockModel.getRuleId() + "]");
+
+        }
+
+        //create block
         Block block = BlockGenerator.createBlock(blockModel);
         block.setInputBlockIds(blockModel.getInputBlocksIds());
-        block.setOutputBlockIds(blockModel.getOutputBlocksIds());
-        ((UserDefinedRule) rule).addBlock(block);
+        block.setOutputBlockIds(blockModel.getOutputBlocksIds()); 
+        
+        //add block to rule
+        rule.addBlock(block);
         rule.setJeObjectLastUpdate(LocalDateTime.now());
+        
+        
         // retrieve topic names from getter blocks
         if (blockModel.getOperationId() == 4002 && blockModel.getBlockConfiguration() != null
-                & blockModel.getBlockConfiguration().getClassId() != null) {
+                && blockModel.getBlockConfiguration().getClassId() != null) {
             ClassDefinition classDef = new ClassDefinition(blockModel.getBlockConfiguration().getWorkspaceId(),
                     blockModel.getBlockConfiguration().getClassId());
-            rule.addTopic(classDef.getClassId());
+           if (blockExists)
+           {
+        	   rule.updateTopic(((AttributeGetterBlock)oldblock).getClassId(), classDef.getClassId());
+           }
+           else
+           {
+        	   rule.addTopic(classDef.getClassId());
+           }
             classService.addClass(classDef);
         }
+        
         project.setBuilt(false);
 
 
@@ -225,7 +256,7 @@ public class RuleService {
      */
 
     public void deleteBlock(String projectId, String ruleId, String blockId) throws ProjectNotFoundException,
-            RuleNotFoundException, RuleBlockNotFoundException, InterruptedException, ExecutionException {
+            RuleNotFoundException, RuleBlockNotFoundException {
         JEProject project = ProjectService.getProjectById(projectId);
         if (project == null) {
             throw new ProjectNotFoundException(Errors.PROJECT_NOT_FOUND);
@@ -269,10 +300,17 @@ public class RuleService {
 
     private void cleanUpRule(JEProject project, String ruleId) throws JERunnerErrorException, IOException, InterruptedException, ExecutionException {
 
-        String rulePrefix = "[" + ruleId + "]";
+        String rulePrefix = "-" + ruleId + "-";
         JEFileUtils.deleteFilesForPathByPrefix(project.getConfigurationPath(), rulePrefix);
         JELogger.trace(" Deleting rule from runner");
-        JERunnerAPIHandler.deleteRule(project.getProjectId(), ruleId);
+       if( project.getRule(ruleId) instanceof UserDefinedRule)
+       {
+    	   UserDefinedRule rule = (UserDefinedRule ) project.getRule(ruleId);
+    	   for (String subRuleId : rule.getSubRules())
+    	   {
+    		   JERunnerAPIHandler.deleteRule(project.getProjectId(), subRuleId);
+    	   }
+       }
 
     }
 

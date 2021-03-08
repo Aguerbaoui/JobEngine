@@ -18,7 +18,7 @@ public class JEExceptionHandler {
 		e.printStackTrace();
 		if (e instanceof JEException) {
 			JEException ex = (JEException) e;
-			JELogger.error(JEExceptionHandler.class, Arrays.toString(ex.getStackTrace()));
+			JELogger.error(JEExceptionHandler.class, e.getMessage());
 
 			return ResponseEntity.badRequest().body(new JEResponse(ex.getCode(), ex.getMessage()));
 		}
@@ -38,7 +38,7 @@ public class JEExceptionHandler {
 		else if ( e instanceof CompletionException) {
 			try {
 				JEException ex = (JEException) e.getCause().getCause();
-				JELogger.error(JEExceptionHandler.class, Arrays.toString(ex.getStackTrace()));
+				JELogger.error(JEExceptionHandler.class, ex.getMessage());
 
 				return ResponseEntity.badRequest().body(new JEResponse(ex.getCode(), ex.getMessage()));
 			} catch (Exception e1) {

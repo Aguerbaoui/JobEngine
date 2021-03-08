@@ -106,7 +106,7 @@ public class JERunnerAPIHandler {
             if (response.code() != ResponseCodes.CODE_OK) {
                 JELogger.error(JERunnerAPIHandler.class,
                         "Error making network call for url = " + requestUrl);
-                throw new JERunnerErrorException(Errors.JERUNNER_ERROR + " : " + response.body().string());
+                throw new JERunnerErrorException(Errors.JERUNNER_ERROR + " : " + response.message());
             }
 
             String respBody = response.body().string();

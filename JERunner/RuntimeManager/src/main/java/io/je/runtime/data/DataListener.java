@@ -35,10 +35,15 @@ public class DataListener {
     	for (String id : topics)
     	{
     		ZMQAgent agent = agents.get(id);
-    		agent.setListening(true);
-    		Thread thread = new Thread(agent);
-    		activeThreads.put(id, thread);
-    		thread.start();
+    		{
+    			if (agent!=null)
+    			{
+    				agent.setListening(true);
+    	    		Thread thread = new Thread(agent);
+    	    		activeThreads.put(id, thread);
+    	    		thread.start();
+    			}
+    		}
     	}
     
     }
@@ -75,6 +80,11 @@ public class DataListener {
     	agents.get(topic).incrementSubscriptionCount();
 
     }
+
+	public static String getTopics() {
+		return agents.keySet().toString();
+		
+	}
 
 /*
     public static void startListeningOnTopic(String topic) throws DataListenerNotFoundException {
