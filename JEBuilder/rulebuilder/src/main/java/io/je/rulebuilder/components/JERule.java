@@ -1,10 +1,13 @@
 package io.je.rulebuilder.components;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import io.je.utilities.logger.JELogger;
 import io.je.utilities.runtimeobject.ClassDefinition;
 import io.je.utilities.runtimeobject.JEObject;
 
@@ -27,7 +30,7 @@ public abstract class JERule extends JEObject  {
 	 */
 	boolean isAdded =  false;
 	
-	List<String> topics = new ArrayList<>();
+	private Map<String,Integer> topics = new HashMap<>();
 	
 	String description ;
 	
@@ -90,20 +93,47 @@ public abstract class JERule extends JEObject  {
 	}
 
 	public void addTopic(String topic) {
-		if(!topics.contains(topic))
+		if(!topics.containsKey(topic))
 		{
-			topics.add(topic);
+			topics.put(topic,1);
+		}
+		else {
+			topics.put(topic,topics.get(topic)+1);
+		}
+
+	}
+	
+	
+	public void updateTopic(String oldTopic, String newTopic) {
+			removeTopic(oldTopic);
+			addTopic(newTopic);
+
+		
+	}
+	
+	public void removeTopic(String topic)
+	{
+		if(topics.containsKey(topic))
+		{
+			topics.put(topic,topics.get(topic)-1);
+			if(topics.get(topic)==0)
+			{
+				topics.remove(topic);
+			}
 		}
 	}
-		
 
-	public List<String> getTopics() {
+	public Map<String, Integer> getTopics() {
 		return topics;
 	}
 
-	public void setTopics(List<String> topics) {
+	public void setTopics(Map<String, Integer> topics) {
 		this.topics = topics;
 	}
+
+	
+		
+
 
 
 

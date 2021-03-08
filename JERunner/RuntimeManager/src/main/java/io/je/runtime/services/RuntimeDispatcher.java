@@ -56,9 +56,20 @@ public class RuntimeDispatcher {
 
         }
         JELogger.trace(" Running rules,workflows and data listener for project id = " + projectId);
-        DataListener.startListening(topics);
-        RuleEngineHandler.runRuleEngineProject(projectId);
-        WorkflowEngineHandler.runAllWorkflows(projectId);
+        try
+        {
+        	DataListener.startListening(topics);
+            RuleEngineHandler.runRuleEngineProject(projectId);
+            WorkflowEngineHandler.runAllWorkflows(projectId);
+        }catch (JEException e) {
+            JELogger.warning(getClass()," Failed to run project id = " + projectId);
+			DataListener.stopListening(topics);
+			RuleEngineHandler.stopRuleEngineProjectExecution(projectId);
+			WorkflowEngineHandler.stopProjectWorfklows(projectId);
+	        projectStatus.put(projectId, false);
+			throw e;
+		}
+        
     }
 
     // stop project
@@ -98,7 +109,6 @@ public class RuntimeDispatcher {
     // update rule
     public void updateRule(RuleModel ruleModel)
             throws RuleCompilationException, JEFileNotFoundException, RuleFormatNotValidException {
-
         RuleEngineHandler.updateRule(ruleModel);
 
     }
@@ -160,6 +170,8 @@ public class RuntimeDispatcher {
 
 
     public static void injectData(JEData jeData) throws InstanceCreationFailed {
+    	
+    	
         for (String projectId : projectsByTopic.get(jeData.getTopic())) {
             if (Boolean.TRUE.equals(projectStatus.get(projectId))) {
                 RuleEngineHandler.injectData(projectId, jeData);
@@ -238,4 +250,15 @@ public class RuntimeDispatcher {
             }
         }
     }
+
+	public void removeRuleTopics(String projectId, String ruleId) {
+		ArrayList<String> oldTopics =  (ArrayList<String>) RuleEngineHandler.getRuleTopics(projectId,ruleId);
+        JELogger.debug(getClass(),"old rule topics : " + oldTopics);
+
+		for(String topic : oldTopics)
+		{
+			DataListener.decrementSubscriptionCount(topic);
+		}
+		
+	}
 }

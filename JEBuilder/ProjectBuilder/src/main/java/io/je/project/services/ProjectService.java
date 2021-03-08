@@ -158,12 +158,13 @@ public class ProjectService {
         }
         JEProject project = loadedProjects.get(projectId);
         if (project.isRunning()) {
-            JELogger.trace(" Stropping project id = " + projectId);
+            JELogger.trace(" Stopping project id = " + projectId);
             JERunnerAPIHandler.stopProject(projectId);
             project.setRunning(false);
             saveProject(projectId).get();
 
         } else {
+            JELogger.error(getClass(), Errors.PROJECT_STOPPED +" " + projectId);
             throw new ProjectStatusException(Errors.PROJECT_STOPPED);
         }
 
