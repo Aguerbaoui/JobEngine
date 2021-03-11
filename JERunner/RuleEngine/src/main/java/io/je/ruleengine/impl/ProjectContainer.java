@@ -5,7 +5,6 @@ import io.je.ruleengine.listener.RuleListener;
 import io.je.ruleengine.loader.RuleLoader;
 import io.je.ruleengine.models.Rule;
 import io.je.utilities.constants.RuleEngineErrors;
-import io.je.utilities.beans.JEData;
 import io.je.utilities.exceptions.*;
 import io.je.utilities.logger.JELogger;
 import io.je.utilities.runtimeobject.JEObject;
@@ -25,13 +24,9 @@ import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.runtime.rule.FactHandle;
 
 import java.io.FileNotFoundException;
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.*;
 
 enum Status {
 	RUNNING, STOPPED,
@@ -226,8 +221,7 @@ public class ProjectContainer {
 
 		// build all rules
 		try {
-			classLoader = Thread.currentThread().getContextClassLoader().getClass().getClassLoader();
-			kieServices.newKieBuilder(kieFileSystem, classLoader).buildAll(null);
+			kieServices.newKieBuilder(kieFileSystem, null).buildAll(null);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
@@ -249,7 +243,7 @@ public class ProjectContainer {
 			if (releaseId != null) {
 				// create container
 				try {
-					kieContainer = kieServices.newKieContainer(releaseId, classLoader);
+					kieContainer = kieServices.newKieContainer(releaseId, null);
 					kScanner = kieServices.newKieScanner(kieContainer);
 					kieBase = kieContainer.getKieBase("kie-base");
 
