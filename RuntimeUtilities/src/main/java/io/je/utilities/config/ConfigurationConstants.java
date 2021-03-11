@@ -18,7 +18,7 @@ public class ConfigurationConstants {
     
     */
 	
-	public final static String ruleTemplatePath = "C:\\Users\\messid.INTEG-OBJECTS\\git\\JobEngine\\ConfigFiles\\JEBuilder\\RuleTemplate.drl";
+	public final static String ruleTemplatePath = "D:\\ProgramData\\Integration Objects\\JobEngine\\JEBuilder\\RuleTemplate.drl";
     
     /*
      * Config for tomcat

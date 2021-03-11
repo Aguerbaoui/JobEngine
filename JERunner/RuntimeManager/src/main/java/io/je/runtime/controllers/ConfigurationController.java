@@ -33,9 +33,13 @@ public class ConfigurationController {
 	@PostMapping(value = "/updateConfig", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> updateConfig(@RequestBody ConfigModel configModel) {
 
+		  System.setProperty("drools.compiler", "JANINO");
+		  System.setProperty("drools.dialect.java.compiler", "JANINO");
+	        JELogger.info(" drools compiler is : " + System.getProperty("drools.compiler"));
 		JEConfiguration.updateConfig(configModel);
 		if(JEConfiguration.getDroolsDateFormat()!=null)
 		{
+			
 	        System.setProperty("drools.dateformat", JEConfiguration.getDroolsDateFormat());
 
 		}

@@ -2,6 +2,7 @@ package io.je.runtime;
 
 import io.je.runtime.config.ConfigurationConstants;
 import io.je.utilities.apis.JEBuilderApiHandler;
+import io.je.utilities.config.JEConfiguration;
 import io.je.utilities.logger.JELogger;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -18,6 +19,10 @@ public class JERunnerApplication {
     public static void main(String[] args) {
         SpringApplication.run(JERunnerApplication.class, args);
         JELogger.info(" Runner started successfully");
+        System.setProperty("drools.compiler", "JANINO");
+        JELogger.info(" drools compiler is : " + System.getProperty("drools.compiler"));
+
+
     }
 
     @PreDestroy
