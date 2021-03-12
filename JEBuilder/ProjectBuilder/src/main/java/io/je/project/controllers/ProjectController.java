@@ -106,7 +106,7 @@ public class ProjectController {
 	/*
 	 * Add new project
 	 */
-	@PostMapping(value = "/deleteProject/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@DeleteMapping(value = "/deleteProject/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> deleteProject(@PathVariable String projectId) {
 		if (!projectService.projectExists(projectId)) {
 			return ResponseEntity.badRequest()
@@ -114,7 +114,7 @@ public class ProjectController {
 		}
 
 		try {
-			projectService.stopProject(projectId);
+
 			projectService.removeProject(projectId).get();
 		} catch (Exception e) {
 			return JEExceptionHandler.handleException(e);

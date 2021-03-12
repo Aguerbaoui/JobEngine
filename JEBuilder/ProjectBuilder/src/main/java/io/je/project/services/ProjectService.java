@@ -73,6 +73,10 @@ public class ProjectService {
             throw new ProjectNotFoundException(Errors.PROJECT_NOT_FOUND);
         }
 
+        try {
+            stopProject(id);
+        }
+        catch (Exception e) {}
         JELogger.trace("deleting project with id = " + id);
         JERunnerAPIHandler.cleanProjectDataFromRunner(id);
         synchronized (projectRepository) {
