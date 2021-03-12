@@ -109,7 +109,7 @@ public class RuntimeDispatcher {
     // update rule
     public void updateRule(RuleModel ruleModel)
             throws RuleCompilationException, JEFileNotFoundException, RuleFormatNotValidException {
-        JELogger.trace("updating rule : " + ruleModel.getRuleName());
+        JELogger.trace("updating rule : " + ruleModel.getRuleId());
         RuleEngineHandler.updateRule(ruleModel);
 
     }
@@ -117,7 +117,7 @@ public class RuntimeDispatcher {
     // compile rule
     public void compileRule(RuleModel ruleModel)
             throws RuleFormatNotValidException, RuleCompilationException, JEFileNotFoundException {
-        JELogger.trace("Compiling rule : " + ruleModel.getRuleName());
+        JELogger.trace("Compiling rule : " + ruleModel.getRuleId());
         RuleEngineHandler.compileRule(ruleModel);
     }
 
