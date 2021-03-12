@@ -328,8 +328,9 @@ public class ProcessManager {
     public void removeProcess(String workflowId) {
         try {
 
-            runtimeService.deleteProcessInstance(processes.get(workflowId).getName().trim(), "User Deleted the process");
             processes.remove(workflowId);
+            runtimeService.deleteProcessInstance(workflowId, "User Deleted the process");
+
         }
         catch(ActivitiObjectNotFoundException e) {
             JELogger.trace( " Error deleting a non existing process");
