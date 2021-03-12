@@ -268,4 +268,9 @@ public class RuntimeDispatcher {
 		}
 		
 	}
+
+    public void removeWorkflow(String projectId, String workflowId) {
+        JELogger.info("Removing workflow from runner with id = " + workflowId + " in project id = " + projectId);
+        WorkflowEngineHandler.deleteProcess(projectId,workflowId);
+    }
 }
