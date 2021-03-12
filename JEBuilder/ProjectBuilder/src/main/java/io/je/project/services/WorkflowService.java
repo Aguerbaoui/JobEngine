@@ -73,12 +73,10 @@ public class WorkflowService {
     /*
      * Remove a workflow from a project
      * */
-<<<<<<< JEBuilder/ProjectBuilder/src/main/java/io/je/project/services/WorkflowService.java
-    public void removeWorkflow(String projectId, String workflowId) throws ProjectNotFoundException, WorkflowNotFoundException, InterruptedException, JERunnerErrorException, ExecutionException {
-=======
-    public void removeWorkflow(String projectId, String workflowId) throws ProjectNotFoundException, WorkflowNotFoundException, ConfigException {
+
+    public void removeWorkflow(String projectId, String workflowId) throws ProjectNotFoundException, WorkflowNotFoundException, ConfigException, InterruptedException, JERunnerErrorException, ExecutionException {
     	ConfigurationService.checkConfig();
->>>>>>> JEBuilder/ProjectBuilder/src/main/java/io/je/project/services/WorkflowService.java
+
         JEProject project = ProjectService.getProjectById(projectId);
         if (project == null) {
             throw new ProjectNotFoundException(Errors.PROJECT_NOT_FOUND);
@@ -559,7 +557,7 @@ public class WorkflowService {
     }
 
 
-    public void removeWorkflows(String projectId, List<String> ids) throws ProjectNotFoundException, WorkflowNotFoundException, InterruptedException, JERunnerErrorException, ExecutionException, ConfigException {
+    public void removeWorkflows(String projectId, List<String> ids) throws ProjectNotFoundException, ConfigException {
     	ConfigurationService.checkConfig();
         JEProject project = ProjectService.getProjectById(projectId);
         if (project == null) {
