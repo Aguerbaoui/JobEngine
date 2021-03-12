@@ -37,7 +37,7 @@ public class ConfigurationService {
 	ClassService classService;
 
 	static boolean runnerStatus = true;
-	
+
 	static boolean isConfiguredProperly = false;
 
 	/*
@@ -51,14 +51,11 @@ public class ConfigurationService {
 		ConfigModel configModel = loadConfigFromDb();
 		if (configModel != null) {
 			updateBuilderSettings(configModel);
-			if(isConfiguredProperly)
-			{
+			if (isConfiguredProperly) {
 				classService.loadAllClassesToBuilder();
 				projectService.loadAllProjects();
 				updateRunner(configModel);
-			}
-			else
-			{
+			} else {
 				JELogger.warning(ConfigurationService.class, Errors.MISSING_CONFIG);
 
 			}
@@ -71,8 +68,7 @@ public class ConfigurationService {
 	 */
 	private void updateBuilderSettings(ConfigModel configModel) {
 		JEConfiguration.updateConfig(configModel);
-		if(applicationIsConfiguredProperly())
-		{
+		if (applicationIsConfiguredProperly()) {
 			ConfigurationService.setConfiguredProperly(true);
 		}
 
@@ -99,24 +95,45 @@ public class ConfigurationService {
 		}
 		return null;
 	}
-	
-	public static void checkConfig() throws ConfigException
-	{
-		if(!isConfiguredProperly)
-		{
+
+	public static void checkConfig() throws ConfigException {
+		if (!isConfiguredProperly) {
 			JELogger.error(ConfigurationService.class, Errors.MISSING_CONFIG);
 			throw new ConfigException(Errors.MISSING_CONFIG);
 		}
 	}
-	
 
 	/*
 	 * check that there is no missing config
 	 */
 	public boolean applicationIsConfiguredProperly() {
-		return (JEConfiguration.getDataDefinitionURL() != null && JEConfiguration.getDataManagerURL() != null
-				&& JEConfiguration.getRuntimeManagerURL() != null && JEConfiguration.getSubscriberPort() != 0
-				&& JEConfiguration.getRequestPort() != 0);
+		boolean configurationIsValid = true;
+		if (JEConfiguration.getDataDefinitionURL() == null) {
+			configurationIsValid = false;
+			JELogger.warning(getClass(), "Data definition URL is missing");
+		}
+		if (JEConfiguration.getDataManagerURL() == null) {
+			configurationIsValid = false;
+			JELogger.warning(getClass(), "Data Manager URL is missing");
+		}
+		if (JEConfiguration.getRuntimeManagerURL() == null) {
+			configurationIsValid = false;
+			JELogger.warning(getClass(), "JERunner URL is missing");
+		}
+		if (JEConfiguration.getSubscriberPort() == 0) {
+			configurationIsValid = false;
+			JELogger.warning(getClass(), "Subscriber port is missing");
+		}
+		if (JEConfiguration.getRequestPort() == 0) {
+			configurationIsValid = false;
+			JELogger.warning(getClass(), "Request port is missing");
+		}
+		if (JEConfiguration.getDroolsDateFormat() == null) {
+			configurationIsValid = false;
+			JELogger.warning(getClass(), "Drools date format is not specified");
+		}
+
+		return configurationIsValid;
 
 	}
 
@@ -212,7 +229,5 @@ public class ConfigurationService {
 	public static void setConfiguredProperly(boolean isConfiguredProperly) {
 		ConfigurationService.isConfiguredProperly = isConfiguredProperly;
 	}
-	
-	
 
 }
