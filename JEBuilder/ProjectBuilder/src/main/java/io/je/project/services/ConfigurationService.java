@@ -14,6 +14,7 @@ import io.je.utilities.config.JEConfiguration;
 import io.je.utilities.constants.Errors;
 import io.je.utilities.exceptions.AddClassException;
 import io.je.utilities.exceptions.ClassLoadException;
+import io.je.utilities.exceptions.ConfigException;
 import io.je.utilities.exceptions.DataDefinitionUnreachableException;
 import io.je.utilities.exceptions.JERunnerErrorException;
 import io.je.utilities.exceptions.ProjectNotFoundException;
@@ -36,21 +37,31 @@ public class ConfigurationService {
 	ClassService classService;
 
 	static boolean runnerStatus = true;
+	
+	static boolean isConfiguredProperly = false;
 
 	/*
 	 * init configuration : > load config from database >update config
 	 */
 	public void init()
 			throws JERunnerErrorException, InterruptedException, ExecutionException, DataDefinitionUnreachableException,
-			AddClassException, ClassLoadException, IOException, ProjectNotFoundException {
+			AddClassException, ClassLoadException, IOException, ProjectNotFoundException, ConfigException {
 
 		JELogger.trace(" Initializing builder");
 		ConfigModel configModel = loadConfigFromDb();
 		if (configModel != null) {
 			updateBuilderSettings(configModel);
-			classService.loadAllClassesToBuilder();
-			projectService.loadAllProjects();
-			updateRunner(configModel);
+			if(isConfiguredProperly)
+			{
+				classService.loadAllClassesToBuilder();
+				projectService.loadAllProjects();
+				updateRunner(configModel);
+			}
+			else
+			{
+				JELogger.warning(ConfigurationService.class, Errors.MISSING_CONFIG);
+
+			}
 		}
 
 	}
@@ -60,6 +71,10 @@ public class ConfigurationService {
 	 */
 	private void updateBuilderSettings(ConfigModel configModel) {
 		JEConfiguration.updateConfig(configModel);
+		if(applicationIsConfiguredProperly())
+		{
+			ConfigurationService.setConfiguredProperly(true);
+		}
 
 	}
 
@@ -84,6 +99,16 @@ public class ConfigurationService {
 		}
 		return null;
 	}
+	
+	public static void checkConfig() throws ConfigException
+	{
+		if(!isConfiguredProperly)
+		{
+			JELogger.error(ConfigurationService.class, Errors.MISSING_CONFIG);
+			throw new ConfigException(Errors.MISSING_CONFIG);
+		}
+	}
+	
 
 	/*
 	 * check that there is no missing config
@@ -179,5 +204,15 @@ public class ConfigurationService {
 		configRepository.save(JEConfiguration.getInstance());
 
 	}
+
+	public static boolean isConfiguredProperly() {
+		return isConfiguredProperly;
+	}
+
+	public static void setConfiguredProperly(boolean isConfiguredProperly) {
+		ConfigurationService.isConfiguredProperly = isConfiguredProperly;
+	}
+	
+	
 
 }
