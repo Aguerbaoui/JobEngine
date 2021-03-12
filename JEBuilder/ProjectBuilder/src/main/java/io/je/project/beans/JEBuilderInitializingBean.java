@@ -31,7 +31,7 @@ public class JEBuilderInitializingBean implements InitializingBean {
             JELogger.initBuilderLogger(builderProperties.getJeBuilderLogPath(),builderProperties.getJeBuilderLogLevel());
             JELogger.trace(" Logger Initialized");
         	configService.init();
-        } catch (DataDefinitionUnreachableException | JERunnerErrorException | AddClassException | ClassLoadException | IOException | InterruptedException | ExecutionException | ProjectNotFoundException   e) {
+        } catch (DataDefinitionUnreachableException | JERunnerErrorException | AddClassException | ClassLoadException | IOException | InterruptedException | ExecutionException | ProjectNotFoundException | ConfigException   e) {
            JELogger.error(getClass(), e.getMessage());
         }
 

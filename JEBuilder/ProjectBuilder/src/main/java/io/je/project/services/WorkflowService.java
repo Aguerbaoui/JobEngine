@@ -53,7 +53,8 @@ public class WorkflowService {
     /*
      * Add a workflow to a project
      * */
-    public void addWorkflow(io.je.utilities.models.WorkflowModel m) throws ProjectNotFoundException {
+    public void addWorkflow(io.je.utilities.models.WorkflowModel m) throws ProjectNotFoundException, ConfigException {
+    	ConfigurationService.checkConfig();
         JEProject project = ProjectService.getProjectById(m.getProjectId());
         if (project == null) {
             throw new ProjectNotFoundException(Errors.PROJECT_NOT_FOUND);
@@ -72,7 +73,12 @@ public class WorkflowService {
     /*
      * Remove a workflow from a project
      * */
+<<<<<<< JEBuilder/ProjectBuilder/src/main/java/io/je/project/services/WorkflowService.java
     public void removeWorkflow(String projectId, String workflowId) throws ProjectNotFoundException, WorkflowNotFoundException, InterruptedException, JERunnerErrorException, ExecutionException {
+=======
+    public void removeWorkflow(String projectId, String workflowId) throws ProjectNotFoundException, WorkflowNotFoundException, ConfigException {
+    	ConfigurationService.checkConfig();
+>>>>>>> JEBuilder/ProjectBuilder/src/main/java/io/je/project/services/WorkflowService.java
         JEProject project = ProjectService.getProjectById(projectId);
         if (project == null) {
             throw new ProjectNotFoundException(Errors.PROJECT_NOT_FOUND);
@@ -90,8 +96,9 @@ public class WorkflowService {
     /*
      * Add a workflow block to a workflow
      * */
-    public void addWorkflowBlock(WorkflowBlockModel block) throws ProjectNotFoundException, WorkflowNotFoundException, InvalidSequenceFlowException, WorkflowBlockNotFound, EventException {
-        JEProject project = ProjectService.getProjectById(block.getProjectId());
+    public void addWorkflowBlock(WorkflowBlockModel block) throws ProjectNotFoundException, WorkflowNotFoundException, InvalidSequenceFlowException, WorkflowBlockNotFound, EventException, ConfigException {
+    	ConfigurationService.checkConfig();
+    	JEProject project = ProjectService.getProjectById(block.getProjectId());
         if (project == null) {
             throw new ProjectNotFoundException(Errors.PROJECT_NOT_FOUND);
         } else if (!project.workflowExists(block.getWorkflowId())) {
@@ -259,8 +266,9 @@ public class WorkflowService {
     /*
      * Delete a workflow block
      * */
-    public void deleteWorkflowBlock(String projectId, String workflowId, String blockId) throws ProjectNotFoundException, WorkflowNotFoundException, WorkflowBlockNotFound, InvalidSequenceFlowException {
-        JEProject project = ProjectService.getProjectById(projectId);
+    public void deleteWorkflowBlock(String projectId, String workflowId, String blockId) throws ProjectNotFoundException, WorkflowNotFoundException, WorkflowBlockNotFound, InvalidSequenceFlowException, ConfigException {
+    	ConfigurationService.checkConfig();
+    	JEProject project = ProjectService.getProjectById(projectId);
         if (project == null) {
             throw new ProjectNotFoundException(Errors.PROJECT_NOT_FOUND);
         } else if (!project.workflowExists(workflowId)) {
@@ -275,8 +283,9 @@ public class WorkflowService {
     /*
      * Delete a Sequence flow
      * */
-    public void deleteSequenceFlow(String projectId, String workflowId, String sourceRef, String targetRef) throws ProjectNotFoundException, WorkflowNotFoundException, WorkflowBlockNotFound, InvalidSequenceFlowException {
-        JEProject project = ProjectService.getProjectById(projectId);
+    public void deleteSequenceFlow(String projectId, String workflowId, String sourceRef, String targetRef) throws ProjectNotFoundException, WorkflowNotFoundException, WorkflowBlockNotFound, InvalidSequenceFlowException, ConfigException {
+    	ConfigurationService.checkConfig();
+    	JEProject project = ProjectService.getProjectById(projectId);
         if (project == null) {
             throw new ProjectNotFoundException(Errors.PROJECT_NOT_FOUND);
         } else if (!project.workflowExists(workflowId)) {
@@ -289,8 +298,9 @@ public class WorkflowService {
     /*
      * Add a Sequence flow
      * */
-    public void addSequenceFlow(String projectId, String workflowId, String sourceRef, String targetRef, String condition) throws ProjectNotFoundException, WorkflowNotFoundException, WorkflowBlockNotFound, InvalidSequenceFlowException {
-        JEProject project = ProjectService.getProjectById(projectId);
+    public void addSequenceFlow(String projectId, String workflowId, String sourceRef, String targetRef, String condition) throws ProjectNotFoundException, WorkflowNotFoundException, WorkflowBlockNotFound, InvalidSequenceFlowException, ConfigException {
+    	ConfigurationService.checkConfig();
+    	JEProject project = ProjectService.getProjectById(projectId);
         if (project == null) {
             throw new ProjectNotFoundException(Errors.PROJECT_NOT_FOUND);
         } else if (!project.workflowExists(workflowId)) {
@@ -303,8 +313,9 @@ public class WorkflowService {
     /*
      * Build a workflow
      * */
-    public void buildWorkflow(String projectId, String workflowId) throws WorkflowNotFoundException, ProjectNotFoundException, IOException, JERunnerErrorException, InterruptedException, ExecutionException {
-        JEProject project = ProjectService.getProjectById(projectId);
+    public void buildWorkflow(String projectId, String workflowId) throws WorkflowNotFoundException, ProjectNotFoundException, IOException, JERunnerErrorException, InterruptedException, ExecutionException, ConfigException {
+    	ConfigurationService.checkConfig();
+    	JEProject project = ProjectService.getProjectById(projectId);
         if (project == null) {
             throw new ProjectNotFoundException(Errors.PROJECT_NOT_FOUND);
         } else if (!project.workflowExists(workflowId)) {
@@ -319,8 +330,9 @@ public class WorkflowService {
      * Build all workflow
      * */
     @Async
-    public CompletableFuture<Void> buildWorkflows(String projectId) throws ProjectNotFoundException, IOException, JERunnerErrorException, InterruptedException, ExecutionException {
-        JEProject project = ProjectService.getProjectById(projectId);
+    public CompletableFuture<Void> buildWorkflows(String projectId) throws ProjectNotFoundException, IOException, JERunnerErrorException, InterruptedException, ExecutionException, ConfigException {
+    	ConfigurationService.checkConfig();
+    	JEProject project = ProjectService.getProjectById(projectId);
         if (project == null) {
             throw new ProjectNotFoundException(Errors.PROJECT_NOT_FOUND);
         }
@@ -335,8 +347,9 @@ public class WorkflowService {
     /*
      * Run a workflow
      * */
-    public void runWorkflow(String projectId, String workflowId) throws WorkflowNotFoundException, ProjectNotFoundException, IOException, WorkflowAlreadyRunningException, InterruptedException, ExecutionException, JERunnerErrorException {
-        JEProject project = ProjectService.getProjectById(projectId);
+    public void runWorkflow(String projectId, String workflowId) throws WorkflowNotFoundException, ProjectNotFoundException, IOException, WorkflowAlreadyRunningException, InterruptedException, ExecutionException, JERunnerErrorException, ConfigException {
+    	ConfigurationService.checkConfig();
+    	JEProject project = ProjectService.getProjectById(projectId);
         if (project == null) {
             throw new ProjectNotFoundException(Errors.PROJECT_NOT_FOUND);
         } else if (!project.workflowExists(workflowId)) {
@@ -364,8 +377,9 @@ public class WorkflowService {
      *
      * Update workflow block
      * */
-    public void updateWorkflowBlock(WorkflowBlockModel block) throws WorkflowBlockNotFound, WorkflowNotFoundException, ProjectNotFoundException, IOException, InterruptedException, ExecutionException, EventException {
-        JEProject project = ProjectService.getProjectById(block.getProjectId());
+    public void updateWorkflowBlock(WorkflowBlockModel block) throws WorkflowBlockNotFound, WorkflowNotFoundException, ProjectNotFoundException, IOException, InterruptedException, ExecutionException, EventException, ConfigException {
+    	ConfigurationService.checkConfig();
+    	JEProject project = ProjectService.getProjectById(block.getProjectId());
         if (project == null) {
             throw new ProjectNotFoundException(Errors.PROJECT_NOT_FOUND);
         }
@@ -495,7 +509,8 @@ public class WorkflowService {
 
     }
 
-    public void addBpmn(String projectId, String workflowId, String bpmn) throws ProjectNotFoundException {
+    public void addBpmn(String projectId, String workflowId, String bpmn) throws ProjectNotFoundException, ConfigException {
+    	ConfigurationService.checkConfig();
         JEProject project = ProjectService.getProjectById(projectId);
         if (project == null) {
             throw new ProjectNotFoundException(Errors.PROJECT_NOT_FOUND);
@@ -513,7 +528,8 @@ public class WorkflowService {
 
     }
 
-    public void updateWorkflow(String projectId, String workflowId, WorkflowModel m) throws WorkflowNotFoundException, ProjectNotFoundException {
+    public void updateWorkflow(String projectId, String workflowId, WorkflowModel m) throws WorkflowNotFoundException, ProjectNotFoundException, ConfigException {
+    	ConfigurationService.checkConfig();
         JEProject project = ProjectService.getProjectById(projectId);
         if (project == null) {
             throw new ProjectNotFoundException(Errors.PROJECT_NOT_FOUND);
@@ -543,7 +559,8 @@ public class WorkflowService {
     }
 
 
-    public void removeWorkflows(String projectId, List<String> ids) throws ProjectNotFoundException {
+    public void removeWorkflows(String projectId, List<String> ids) throws ProjectNotFoundException, WorkflowNotFoundException, InterruptedException, JERunnerErrorException, ExecutionException, ConfigException {
+    	ConfigurationService.checkConfig();
         JEProject project = ProjectService.getProjectById(projectId);
         if (project == null) {
             throw new ProjectNotFoundException(Errors.PROJECT_NOT_FOUND);
