@@ -107,7 +107,7 @@ public class WorkflowEngineHandler {
     	if(processManagerHashMap.containsKey(projectId))
     	{
     		JELogger.trace("Stopping workflow executions for project id = " + projectId);
-            processManagerHashMap.get(projectId).stopProjectWorkflows(projectId);
+            processManagerHashMap.get(projectId).stopProjectWorkflows();
 
     	}
     }
@@ -131,5 +131,11 @@ public class WorkflowEngineHandler {
         }
 
 
+    }
+
+    public static void deleteProcess(String projectId, String workflowId) {
+        if(processManagerHashMap.containsKey(projectId)) {
+            processManagerHashMap.get(projectId).removeProcess(workflowId);
+        }
     }
 }

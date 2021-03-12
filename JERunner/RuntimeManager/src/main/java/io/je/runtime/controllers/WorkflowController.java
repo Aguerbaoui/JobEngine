@@ -3,9 +3,7 @@ package io.je.runtime.controllers;
 import io.je.project.exception.JEExceptionHandler;
 import io.je.runtime.services.RuntimeDispatcher;
 import io.je.utilities.constants.ResponseCodes;
-import io.je.utilities.exceptions.WorkflowAlreadyRunningException;
-import io.je.utilities.exceptions.WorkflowNotFoundException;
-import io.je.utilities.exceptions.WorkflwTriggeredByEventException;
+import io.je.utilities.constants.ResponseMessages;
 import io.je.utilities.models.WorkflowModel;
 import io.je.utilities.network.JEResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,6 +70,14 @@ public class WorkflowController {
 		}
         return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, EXECUTING_WORKFLOW));
     }
-
+    /*
+     * Delete a workflow
+     */
+    @DeleteMapping(value = "/deleteWorkflow/{projectId}/{workflowId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> deleteWorkflow(@PathVariable("projectId") String projectId,
+                                            @PathVariable("workflowId") String workflowId) {
+        dispatcher.removeWorkflow(projectId, workflowId);
+        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.WORKFLOW_DELETED_SUCCESSFULLY));
+    }
 
 }

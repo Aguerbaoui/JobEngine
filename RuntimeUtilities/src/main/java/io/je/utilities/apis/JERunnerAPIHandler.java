@@ -284,4 +284,10 @@ public class JERunnerAPIHandler {
 
 		
 	}
+
+    public static void deleteWorkflow(String projectId, String workflowId) throws InterruptedException, JERunnerErrorException, ExecutionException {
+        String requestUrl = runtimeManagerBaseApi + DELETE_WORKFLOW + "/" + projectId + "/" + workflowId;
+        JELogger.trace(" Sending delete workflow request to runner, project id = " + projectId + "workflow id = " + workflowId);
+         sendDeleteRequest(requestUrl);
+    }
 }

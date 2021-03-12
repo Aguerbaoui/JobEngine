@@ -9,6 +9,7 @@ import blocks.events.*;
 import builder.WorkflowBuilder;
 import io.je.project.beans.JEProject;
 import io.je.project.models.WorkflowBlockModel;
+import io.je.utilities.apis.JERunnerAPIHandler;
 import io.je.utilities.constants.Errors;
 import io.je.utilities.constants.WorkflowConstants;
 import io.je.utilities.exceptions.*;
@@ -72,8 +73,12 @@ public class WorkflowService {
     /*
      * Remove a workflow from a project
      * */
+<<<<<<< JEBuilder/ProjectBuilder/src/main/java/io/je/project/services/WorkflowService.java
+    public void removeWorkflow(String projectId, String workflowId) throws ProjectNotFoundException, WorkflowNotFoundException, InterruptedException, JERunnerErrorException, ExecutionException {
+=======
     public void removeWorkflow(String projectId, String workflowId) throws ProjectNotFoundException, WorkflowNotFoundException, ConfigException {
     	ConfigurationService.checkConfig();
+>>>>>>> JEBuilder/ProjectBuilder/src/main/java/io/je/project/services/WorkflowService.java
         JEProject project = ProjectService.getProjectById(projectId);
         if (project == null) {
             throw new ProjectNotFoundException(Errors.PROJECT_NOT_FOUND);
@@ -83,7 +88,9 @@ public class WorkflowService {
             throw new WorkflowNotFoundException(Errors.WORKFLOW_NOT_FOUND);
         }
         JELogger.trace(WorkflowService.class, " Removing workflow with id = " + workflowId);
+        String wfName = project.getWorkflowById(workflowId).getWorkflowName().trim();
         project.removeWorkflow(workflowId);
+        JERunnerAPIHandler.deleteWorkflow(projectId, wfName);
     }
 
     /*
@@ -552,7 +559,7 @@ public class WorkflowService {
     }
 
 
-    public void removeWorkflows(String projectId, List<String> ids) throws ProjectNotFoundException, ConfigException {
+    public void removeWorkflows(String projectId, List<String> ids) throws ProjectNotFoundException, WorkflowNotFoundException, InterruptedException, JERunnerErrorException, ExecutionException, ConfigException {
     	ConfigurationService.checkConfig();
         JEProject project = ProjectService.getProjectById(projectId);
         if (project == null) {
@@ -564,7 +571,7 @@ public class WorkflowService {
             try {
                 removeWorkflow(projectId, id);
             }
-            catch (WorkflowNotFoundException e) {
+            catch (WorkflowNotFoundException | InterruptedException | JERunnerErrorException | ExecutionException e) {
                 JELogger.error(WorkflowService.class, " Error deleting a workflow: " + Arrays.toString(e.getStackTrace()));
             }
         }
