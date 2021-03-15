@@ -340,7 +340,10 @@ public class WorkflowService {
             throw new WorkflowNotFoundException(Errors.WORKFLOW_NOT_FOUND);
         }
 
-        //set statuses wesh
+        if(!project.getWorkflowById(workflowId).getStatus().equals(JEWorkflow.BUILT)) {
+            throw new WorkflowAlreadyRunningException(Errors.WORKFLOW_NEEDS_BUILD);
+        }
+        //set statuse
         if (!project.getWorkflowById(workflowId).getStatus().equals(JEWorkflow.RUNNING)) {
             JELogger.trace(WorkflowService.class, " Running workflow with id = " + workflowId);
             project.getWorkflowById(workflowId).setStatus(JEWorkflow.RUNNING);
