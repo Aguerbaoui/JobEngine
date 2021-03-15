@@ -304,10 +304,10 @@ public class ProcessManager {
         }
     }
 
-    public void stopProjectWorkflows(String projectId) {
-        JELogger.info(" Stopping workflows in project id = " + projectId);
+    public void stopProjectWorkflows() {
+
         for(JEProcess process: processes.values()) {
-            if(process.getProjectId().equals(projectId) && process.isRunning()) {
+            if(process.isRunning()) {
                 try {
                     runtimeService.deleteProcessInstance(process.getActivitiKey(), "User Stopped the execution");
                     process.setRunning(false);
@@ -325,4 +325,19 @@ public class ProcessManager {
         processes.get(id.replace(key, "")).setActivitiKey(id);
     }
 
+    public void removeProcess(String workflowId) {
+        try {
+
+            processes.remove(workflowId);
+            runtimeService.deleteProcessInstance(workflowId, "User Deleted the process");
+
+        }
+        catch(ActivitiObjectNotFoundException e) {
+            JELogger.trace( " Error deleting a non existing process");
+        }
+        catch(Exception e) {
+            JELogger.trace( " Error deleting a non existing process\n" + Arrays.toString(e.getStackTrace()));
+        }
+
+    }
 }

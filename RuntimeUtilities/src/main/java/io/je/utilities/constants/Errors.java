@@ -40,6 +40,8 @@ public class Errors {
 
     public final static String WORKFLOW_ALREADY_RUNNING = "Workflow ALREADY RUNNING";
 
+    public final static String WORKFLOW_NEEDS_BUILD = "Workflow NEEDS BUILD";
+
 	public static final String EVENT_NOT_FOUND = " No event with this id was found ";
 
     public static final String NOT_ALPHABETICAL = " Should only contain alphabetical characters ";
@@ -51,6 +53,7 @@ public class Errors {
 	public static final String MISSING_CONFIG =  "Application configuration is missing. Make sure to properly configure the application before proceeding.";
 
 	public static final String JEBUILDER_UNREACHABLE = " JEBuilder unreachable";
+	
 
 
 

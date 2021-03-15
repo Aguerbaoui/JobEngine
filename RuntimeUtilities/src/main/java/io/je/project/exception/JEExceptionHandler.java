@@ -15,7 +15,7 @@ public class JEExceptionHandler {
 
 	private JEExceptionHandler() {}
 	public static ResponseEntity<?> handleException(Exception e) {
-		e.printStackTrace();
+		//e.printStackTrace();
 		if (e instanceof JEException) {
 			JEException ex = (JEException) e;
 			JELogger.error(JEExceptionHandler.class, e.getMessage());
