@@ -53,6 +53,7 @@ public class Errors {
 	public static final String MISSING_CONFIG =  "Application configuration is missing. Make sure to properly configure the application before proceeding.";
 
 	public static final String JEBUILDER_UNREACHABLE = " JEBuilder unreachable";
+	
 
 
 

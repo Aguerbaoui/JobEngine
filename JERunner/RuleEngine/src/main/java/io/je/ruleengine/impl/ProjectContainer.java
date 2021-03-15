@@ -5,7 +5,6 @@ import io.je.ruleengine.listener.RuleListener;
 import io.je.ruleengine.loader.RuleLoader;
 import io.je.ruleengine.models.Rule;
 import io.je.utilities.constants.RuleEngineErrors;
-import io.je.utilities.beans.JEData;
 import io.je.utilities.exceptions.*;
 import io.je.utilities.logger.JELogger;
 import io.je.utilities.runtimeobject.JEObject;
@@ -25,13 +24,11 @@ import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.runtime.rule.FactHandle;
 
 import java.io.FileNotFoundException;
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
-import java.util.HashMap;
+import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.*;
 
 enum Status {
 	RUNNING, STOPPED,
@@ -226,10 +223,10 @@ public class ProjectContainer {
 
 		// build all rules
 		try {
-			classLoader = Thread.currentThread().getContextClassLoader().getClass().getClassLoader();
-			kieServices.newKieBuilder(kieFileSystem, classLoader).buildAll(null);
+			kieServices.newKieBuilder(kieFileSystem, null).buildAll(null);
 		} catch (Exception e) {
 			e.printStackTrace();
+			JELogger.error(ProjectContainer.class, Arrays.toString(e.getStackTrace()));
 			return false;
 		}
 		if (!isInitialised) {
@@ -249,12 +246,13 @@ public class ProjectContainer {
 			if (releaseId != null) {
 				// create container
 				try {
-					kieContainer = kieServices.newKieContainer(releaseId, classLoader);
+					kieContainer = kieServices.newKieContainer(releaseId, null);
 					kScanner = kieServices.newKieScanner(kieContainer);
 					kieBase = kieContainer.getKieBase("kie-base");
 
 				} catch (Exception e) {
 					e.printStackTrace();
+					JELogger.error(ProjectContainer.class, Arrays.toString(e.getStackTrace()));
 					JELogger.warning(getClass(), "Rule Engine - [projectId ="+projectID+"] failed to initialise kie base");
 					return false;
 				}
@@ -373,7 +371,7 @@ public class ProjectContainer {
 			kieContainer.updateToVersion(releaseId);
 			kScanner.scanNow();
 		} catch (Exception e) {
-			JELogger.error(ProjectContainer.class, RuleEngineErrors.FailedToUpdateContainer + e.getMessage());
+			//JELogger.error(ProjectContainer.class, RuleEngineErrors.FailedToUpdateContainer + e.getMessage());
 		}
 
 		return true;
@@ -612,6 +610,7 @@ public class ProjectContainer {
 					// JELogger.info(ProjectContainer.class, " inserting fact ");
 				} catch (Exception e) {
 					e.printStackTrace();
+					JELogger.error(ProjectContainer.class, Arrays.toString(e.getStackTrace()));
 					JELogger.error(ProjectContainer.class, " failed to insert fact into working memory [factId ="
 							+ fact.getJobEngineElementID() + "]: " + e.getMessage());
 

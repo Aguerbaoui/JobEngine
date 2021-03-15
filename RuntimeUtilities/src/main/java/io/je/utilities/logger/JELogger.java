@@ -76,7 +76,7 @@ public class JELogger {
         synchronized (queue) {
             queue.add(new Timestamp(System.currentTimeMillis()) + " " + msg);
         }
-        logger.info(logger.getName() + ": " + logger);
+       // logger.info(logger.getName() + ": " + logger);
 
         logger.info( msg);
     }

@@ -37,6 +37,8 @@ public class APIConstants {
 
 	public static final String DELETE_EVENT = "/event/deleteEvent";
 
+	public static final String DELETE_WORKFLOW = "/workflow/deleteWorkflow";
+
 	public static final String RUN_PROJECT = "/project/runProject/";
 
 	public static final String CLEAN_HOUSE = "/project/removeProjectData/";
