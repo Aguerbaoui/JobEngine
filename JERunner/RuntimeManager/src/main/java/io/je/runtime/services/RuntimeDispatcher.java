@@ -84,8 +84,8 @@ public class RuntimeDispatcher {
         ArrayList<String> topics = new ArrayList<>();
         // get topics :
         for (Entry<String, Set<String>> entry : projectsByTopic.entrySet()) {
-            //if more than 1 project is listening on that topic we dont stop the thread
-            if (entry.getValue().size() == 1 && entry.getValue().contains(projectId)) {
+            //if more than 1 active project is listening on that topic we dont stop the thread
+            if (entry.getValue().contains(projectId) && numberOfActiveProjectsByTopic(entry.getKey())==1) {
                 topics.add(entry.getKey());
             }
 
@@ -93,6 +93,22 @@ public class RuntimeDispatcher {
         DataListener.stopListening(topics);
         projectStatus.put(projectId, false);
 
+    }
+    
+    private int numberOfActiveProjectsByTopic(String topic)
+    {
+    	int counter = 0;
+    	Set<String> projects = projectsByTopic.get(topic);
+    	for(String projectId: projects)
+    	{
+    		if(Boolean.TRUE.equals(projectStatus.get(projectId)))
+    		{
+    			counter++;
+    		}
+    	}
+    	
+    	
+    	return counter;
     }
 
     // ***********************************RULES********************************************************

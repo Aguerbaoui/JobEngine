@@ -22,7 +22,7 @@ public class DataListener {
 
     private static void createNewZmqAgent(String topic) {
         if(!agents.containsKey(topic)) {
-            ZMQAgent agent = new ZMQAgent(JEConfiguration.getDataManagerURL(), JEConfiguration.getSubscriberPort(), JEConfiguration.getRequestPort(), topic);
+            ZMQAgent agent = new ZMQAgent(JEConfiguration.getDataManagerURL(), JEConfiguration.getSubscriberPort(), topic);
             agents.put(topic, agent);
         }
         else {
@@ -36,7 +36,7 @@ public class DataListener {
     	{
     		ZMQAgent agent = agents.get(id);
     		{
-    			if (agent!=null)
+    			if (agent!=null && !agent.isListening())
     			{
     				agent.setListening(true);
     	    		Thread thread = new Thread(agent);
@@ -86,20 +86,5 @@ public class DataListener {
 		
 	}
 
-/*
-    public static void startListeningOnTopic(String topic) throws DataListenerNotFoundException {
-        if(!activeTopics.containsKey(topic)) {
-            throw new DataListenerNotFoundException(ResponseCodes.DATA_LISTENER_NOT_FOUND, Errors.DATA_LISTENER_NOT_FOUND);
-        }
-        activeTopics.get(topic).setListening(true);
-    }
 
-    public static void stopListeningOnTopic(String topic) throws DataListenerNotFoundException {
-        if(!activeTopics.containsKey(topic)) {
-            throw new DataListenerNotFoundException(ResponseCodes.DATA_LISTENER_NOT_FOUND, Errors.DATA_LISTENER_NOT_FOUND);
-        }
-        activeTopics.get(topic).setListening(false);
-    }
-    
-    */
 }
