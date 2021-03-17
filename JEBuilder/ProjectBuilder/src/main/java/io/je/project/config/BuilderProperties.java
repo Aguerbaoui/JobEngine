@@ -3,11 +3,13 @@ package io.je.project.config;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 
 
 
 @ConfigurationProperties
 @Configuration("BuilderProperties")
+@PropertySource("file:${SIOTHJobEngine}/jobengine.properties")
 public class BuilderProperties {
 	
 	@Value("${jobenginebuilder.log.path}")
