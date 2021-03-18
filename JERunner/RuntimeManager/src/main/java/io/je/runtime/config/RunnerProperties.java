@@ -5,11 +5,13 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
+import io.je.utilities.config.ConfigurationConstants;
+
 
 
 @ConfigurationProperties
 @Configuration("RunnerProperties")
-@PropertySource("file:${SIOTHJobEngine}/jobengine.properties")
+@PropertySource(ConfigurationConstants.APPLICATION_PROPERTIES_PATH)
 public class RunnerProperties {
 	
 
