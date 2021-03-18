@@ -7,6 +7,7 @@ import io.je.utilities.logger.JELogger;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
 
 public class Executioner {
@@ -35,7 +36,9 @@ public class Executioner {
             Method method
                     = clazz.getDeclaredMethods()[0];
             method.invoke(null);
-        } catch (ClassNotFoundException | IllegalAccessException | InvocationTargetException e) {
+        } catch (Exception e) {
+            JELogger.info("Failed to execute script in script task\n");
+            JELogger.info(Arrays.toString(e.getStackTrace()));
             e.printStackTrace();
         }
     }

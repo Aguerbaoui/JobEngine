@@ -2,15 +2,8 @@ package io.je.utilities.classloader;
 
 
 import java.io.File;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.net.URL;
-import java.net.URLClassLoader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
+import java.util.*;
 import javax.tools.JavaCompiler;
 import javax.tools.StandardJavaFileManager;
 import javax.tools.StandardLocation;
@@ -92,6 +85,11 @@ public class JEClassLoader {
 								.addBodyCodeLine(javaCode)
 				).addConcretizedType(Virtual.class));
 		unitSG.addImport("io.je.utilities.logger.JELogger");
+		unitSG.addImport("import java.lang.*");
+		unitSG.addImport("import java.util.*");
+		unitSG.addImport("import java.sql.*");
+		unitSG.addImport("import javax.sql.*");
+
 		System.out.println(unitSG.make());
 		String filePath= generationPath + "\\" + ClassBuilderConfig.genrationPackageName  + "\\" + name +".java" ;
 		File file = new File(generationPath);
