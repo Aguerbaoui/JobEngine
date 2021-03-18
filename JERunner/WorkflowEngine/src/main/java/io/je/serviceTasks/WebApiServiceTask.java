@@ -16,7 +16,7 @@ public class WebApiServiceTask extends ServiceTask{
         if(task.hasBody()) {
             network = new Network.Builder(task.getUrl()).hasBody(task.hasBody())
                     .toClass(task.getResponseClass()).withMethod(task.getHttpMethod()).withBodyType(task.getBodyType())
-                    .withBody(task.getBody()).build();
+                    .withBody(task.getBody().toString()).build();
         }
         else {
             network = new Network.Builder(task.getUrl()).hasBody(task.hasBody())
@@ -24,6 +24,7 @@ public class WebApiServiceTask extends ServiceTask{
         }
         try {
             Response response = network.call();
+            JELogger.info("Network call response in web service task = " + response.body().string());
         } catch (IOException e) {
             e.printStackTrace();
         }

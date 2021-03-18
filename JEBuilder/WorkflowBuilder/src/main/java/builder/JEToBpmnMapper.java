@@ -76,40 +76,60 @@ public class JEToBpmnMapper {
             WorkflowBlock block = wf.getBlockById(id);
             if (block instanceof EndBlock && !block.isProcessed()) {
                 process.addFlowElement(ModelBuilder.createEndEvent(block.getJobEngineElementID()));
-            } else if (block instanceof ParallelGatewayBlock && !block.isProcessed()) {
+            }
+
+            else if (block instanceof ParallelGatewayBlock && !block.isProcessed()) {
                 process.addFlowElement(ModelBuilder.createParallelGateway(block.getJobEngineElementID(), block.getName(),
                         block.generateBpmnInflows(wf), block.generateBpmnOutflows(wf)));
-            } else if (block instanceof MessageEvent && !block.isProcessed() && !((MessageEvent) block).isThrowMessage()) {
+            }
+
+            else if (block instanceof MessageEvent && !block.isProcessed() && !((MessageEvent) block).isThrowMessage()) {
 				process.addFlowElement(ModelBuilder.createMessageIntermediateCatchEvent(block.getJobEngineElementID(), block.getName(),
 						((MessageEvent) block).getEventId()));
-			} else if (block instanceof SignalEvent && !block.isProcessed() && !((SignalEvent) block).isThrowSignal()) {
+			}
+
+            else if (block instanceof SignalEvent && !block.isProcessed() && !((SignalEvent) block).isThrowSignal()) {
                 process.addFlowElement(ModelBuilder.createSignalIntermediateCatchEvent(block.getJobEngineElementID(), block.getName(),
                         ((SignalEvent) block).getEventId()));
-            }else if (block instanceof MessageEvent && !block.isProcessed() && ((MessageEvent) block).isThrowMessage()) {
+            }
+
+            else if (block instanceof MessageEvent && !block.isProcessed() && ((MessageEvent) block).isThrowMessage()) {
                 process.addFlowElement(ModelBuilder.createThrowMessageEvent(block.getJobEngineElementID(), block.getName(),
                         ((MessageEvent) block).getEventId()));
-            }else if (block instanceof SignalEvent && !block.isProcessed() && ((SignalEvent) block).isThrowSignal()) {
+            }
+
+            else if (block instanceof SignalEvent && !block.isProcessed() && ((SignalEvent) block).isThrowSignal()) {
                 process.addFlowElement(ModelBuilder.createThrowSignalEvent(block.getJobEngineElementID(), block.getName(),
                         ((SignalEvent) block).getEventId()));
-            }else if (block instanceof ScriptBlock && !block.isProcessed()) {
-                process.addFlowElement(ModelBuilder.createScriptTask(block.getJobEngineElementID(), block.getName(),
-                        ((ScriptBlock) block).getScript()));
-            } else if (block instanceof ExclusiveGatewayBlock && !block.isProcessed()) {
+            }
+
+            else if (block instanceof ScriptBlock && !block.isProcessed()) {
+                process.addFlowElement(ModelBuilder.createServiceTask(block.getJobEngineElementID(), block.getName(),
+                        WorkflowConstants.SCRIPT_TASK_IMPLEMENTATION));
+            }
+
+            else if (block instanceof ExclusiveGatewayBlock && !block.isProcessed()) {
                 process.addFlowElement(ModelBuilder.createExclusiveGateway(block.getJobEngineElementID(), block.getName(),
                         ((ExclusiveGatewayBlock) block).isExclusive(), block.generateBpmnInflows(wf),
                         block.generateBpmnOutflows(wf)));
-            } else if (block instanceof DBWriteBlock && !block.isProcessed()) {
+            }
+
+            else if (block instanceof DBWriteBlock && !block.isProcessed()) {
                 process.addFlowElement(ModelBuilder.createServiceTask(block.getJobEngineElementID(), block.getName(),
                         WorkflowConstants.DB_WRITE_TASK_IMPLEMENTATION));
-            } else if (block instanceof MailBlock && !block.isProcessed()) {
+            }
+
+            else if (block instanceof MailBlock && !block.isProcessed()) {
                 process.addFlowElement(ModelBuilder.createServiceTask(block.getJobEngineElementID(), block.getName(),
                         WorkflowConstants.MAIL_TASK_IMPLEMENTATION));
             }
+
             else if (block instanceof EventGatewayBlock && !block.isProcessed()) {
                 process.addFlowElement(ModelBuilder.createEventGateway(block.getJobEngineElementID(), block.getName(),
                         ((EventGatewayBlock) block).isExclusive(), block.generateBpmnInflows(wf),
                         block.generateBpmnOutflows(wf)));
             }
+
             else if (block instanceof InclusiveGatewayBlock && !block.isProcessed()) {
                 process.addFlowElement(ModelBuilder.createInclusiveGateway(block.getJobEngineElementID(), block.getName(),
                         ((InclusiveGatewayBlock) block).isExclusive(), block.generateBpmnInflows(wf),
@@ -126,6 +146,11 @@ public class JEToBpmnMapper {
 
             else if (block instanceof DurationDelayTimerEvent && !block.isProcessed()) {
                 process.addFlowElement(ModelBuilder.createDateTimerEvent(block.getJobEngineElementID(), block.getName(), ((DurationDelayTimerEvent) block).getTimeDuration()));
+            }
+
+            else if (block instanceof WebApiBlock && !block.isProcessed()) {
+                process.addFlowElement(ModelBuilder.createServiceTask(block.getJobEngineElementID(), block.getName(),
+                        WorkflowConstants.WEB_TASK_IMPLEMENTATION));
             }
 
             parseWorkflowBlock(wf, block, process, startBlock);

@@ -1,18 +1,27 @@
 package io.je.runtime.services;
 
+import io.je.JEProcess;
 import io.je.runtime.data.DataListener;
 import io.je.runtime.events.EventManager;
 import io.je.runtime.models.ClassModel;
 import io.je.runtime.models.RuleModel;
 import io.je.runtime.ruleenginehandler.RuleEngineHandler;
 import io.je.runtime.workflow.WorkflowEngineHandler;
+import io.je.serviceTasks.ActivitiTaskManager;
+import io.je.serviceTasks.ScriptTask;
+import io.je.serviceTasks.WebApiTask;
+import io.je.utilities.apis.BodyType;
+import io.je.utilities.apis.HttpMethod;
 import io.je.utilities.beans.JEData;
 import io.je.utilities.beans.JEEvent;
 import io.je.utilities.classloader.ClassManager;
+import io.je.utilities.classloader.JEClassLoader;
+import io.je.utilities.constants.WorkflowConstants;
 import io.je.utilities.exceptions.*;
 import io.je.utilities.logger.JELogger;
 import io.je.utilities.models.EventModel;
 import io.je.utilities.models.EventType;
+import io.je.utilities.models.TaskModel;
 import io.je.utilities.models.WorkflowModel;
 import org.springframework.stereotype.Service;
 
@@ -149,7 +158,40 @@ public class RuntimeDispatcher {
      */
     public void addWorkflow(WorkflowModel wf) {
         JELogger.trace(" Adding workflow to engine with key = " + wf.getKey() + " in project id = " + wf.getProjectId());
-        WorkflowEngineHandler.addProcess(wf.getKey(), wf.getName(), wf.getPath(), wf.getProjectId(), wf.isTriggeredByEvent());
+        JEProcess process = new JEProcess(wf.getKey(), wf.getName(), wf.getPath(), wf.getProjectId(), wf.isTriggeredByEvent());
+        for(TaskModel task: wf.getTasks()) {
+            if(task.getType().equals(WorkflowConstants.WEBSERVICETASK_TYPE)) {
+                WebApiTask webApiTask = new WebApiTask();
+                webApiTask.setBodyType(BodyType.JSON);
+                webApiTask.setTaskId(task.getTaskId());
+                webApiTask.setTaskName(task.getTaskName());
+                webApiTask.setProcessId(wf.getKey());
+                HashMap<String, Object> attributes = task.getAttributes();
+                if(attributes.get("inputs") != null) {
+                    webApiTask.setHasBody(true);
+                    webApiTask.setBody((HashMap<String, String>) attributes.get("inputs"));
+                }
+                webApiTask.setHttpMethod(HttpMethod.valueOf((String) attributes.get("method")));
+                webApiTask.setUrl((String) attributes.get("url"));
+                process.addActivitiTask(webApiTask);
+                ActivitiTaskManager.addTask(webApiTask);
+            }
+
+            if(task.getType().equals(WorkflowConstants.SCRIPTTASK_TYPE)) {
+                ScriptTask scriptTask = new ScriptTask();
+                scriptTask.setTaskName(task.getTaskName());
+                scriptTask.setTaskId(task.getTaskId());
+                HashMap<String, Object> attributes = task.getAttributes();
+                if(attributes.get("script") != null) {
+                    scriptTask.setScript((String) attributes.get("script"));
+                }
+                JEClassLoader.generateScriptTaskClass(scriptTask.getTaskName(), scriptTask.getScript());
+                process.addActivitiTask(scriptTask);
+                ActivitiTaskManager.addTask(scriptTask);
+            }
+        }
+        WorkflowEngineHandler.addProcess(process);
+
     }
 
     /*

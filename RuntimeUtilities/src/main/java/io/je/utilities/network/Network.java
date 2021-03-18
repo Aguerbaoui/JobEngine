@@ -155,6 +155,7 @@ public class Network {
             network.body = this.body;
             network.bodyType = this.bodyType;
             network.classType = this.classType;
+            network.hasBody = this.hasBody;
             network.url = this.url;
             network.method = this.method;
             return network;
@@ -167,10 +168,16 @@ public class Network {
         Request request = null;
         if (hasBody) {
             if (bodyType == BodyType.JSON) {
+                body = body.replace("=", ":");
                 requestBody = RequestBody.create(MediaType.parse("application/json"), body);
             }
+
             request = new Request.Builder().url(url).post(requestBody).build();
         }
+        else {
+            request = new Request.Builder().url(url).get().build();
+        }
+
         OkHttpClient client = new OkHttpClient();
         return client.newCall(request).execute();
     }

@@ -1,5 +1,9 @@
 package io.je;
 
+import io.je.serviceTasks.ActivitiTask;
+
+import java.util.HashMap;
+
 public class JEProcess {
 
     private String key;
@@ -18,6 +22,12 @@ public class JEProcess {
 
     private String activitiKey;
 
+    HashMap<String, ActivitiTask> activitiTasks;
+
+    public JEProcess() {
+        activitiTasks = new HashMap<>();
+    }
+
     public JEProcess(String key, String name, String bpmnPath, String projectId, boolean triggeredByEvent) {
         super();
         this.key = key;
@@ -25,14 +35,25 @@ public class JEProcess {
         this.bpmnPath = bpmnPath;
         this.projectId = projectId;
         this.triggeredByEvent = triggeredByEvent;
+        activitiTasks = new HashMap<>();
+
     }
     public boolean isTriggeredByEvent() {
         return triggeredByEvent;
     }
 
+    public HashMap<String, ActivitiTask> getActivitiTasks() {
+        return activitiTasks;
+    }
+
+    public void setActivitiTasks(HashMap<String, ActivitiTask> activitiTasks) {
+        this.activitiTasks = activitiTasks;
+    }
+
     public void setTriggeredByEvent(boolean triggeredByEvent) {
         this.triggeredByEvent = triggeredByEvent;
     }
+
     public String getKey() {
         return key;
     }
@@ -88,4 +109,9 @@ public class JEProcess {
     public void setDeployed(boolean deployed) {
         this.deployed = deployed;
     }
+
+    public void addActivitiTask(ActivitiTask activitiTask) {
+        this.activitiTasks.put(activitiTask.getTaskId(), activitiTask);
+    }
+
 }

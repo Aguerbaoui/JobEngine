@@ -45,14 +45,14 @@ public class WorkflowEngineHandler {
     /*
      * Add new process
      * */
-    public static void addProcess(String processId, String name, String processPath, String projectId, boolean isTriggeredByEvent) {
+    public static void addProcess(JEProcess process) {
 
-        if ( !processManagerHashMap.containsKey(projectId))
+        if ( !processManagerHashMap.containsKey(process.getProjectId()))
         {
-            processManagerHashMap.put(projectId, new ProcessManager());
+            processManagerHashMap.put(process.getProjectId(), new ProcessManager());
         }
-        processManagerHashMap.get(projectId).addProcess(new JEProcess(processId, name, processPath, projectId, isTriggeredByEvent));
-        registerWorkflow(projectId, processId);
+        processManagerHashMap.get(process.getProjectId()).addProcess(process);
+        //registerWorkflow(process.getProjectId(), process.getKey());
         ResourceBundle.clearCache(Thread.currentThread().getContextClassLoader());
     }
 
