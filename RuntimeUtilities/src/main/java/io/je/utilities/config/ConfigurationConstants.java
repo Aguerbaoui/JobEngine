@@ -15,7 +15,7 @@ public class ConfigurationConstants {
     // path where runner loads classes
     public static String runnerClassLoadPath = System.getProperty("java.class.path").split(";")[0]; 
     
-    */
+
     
 	
     

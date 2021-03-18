@@ -1,6 +1,5 @@
 package io.je;
 
-import io.je.project.config.ConfigurationConstants;
 import io.je.utilities.logger.JELogger;
 import org.springframework.boot.Banner;
 import org.springframework.boot.SpringApplication;
