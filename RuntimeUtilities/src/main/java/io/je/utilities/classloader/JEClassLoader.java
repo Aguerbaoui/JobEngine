@@ -24,7 +24,7 @@ import org.burningwave.core.classes.UnitSourceGenerator;
  */
 public class JEClassLoader {
 
-	static String loadPath =  ConfigurationConstants.builderClassLoadPath;
+	static String loadPath =  ConfigurationConstants.runnerClassLoadPath;
 	static String generationPath = ConfigurationConstants.classGenerationPath;
 
 	
