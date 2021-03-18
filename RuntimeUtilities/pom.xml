@@ -91,7 +91,12 @@
 </dependency>
 		
 
-		
+		<dependency>
+			<groupId>org.burningwave</groupId>
+			<artifactId>core</artifactId>
+			<version>8.12.2</version>
+		</dependency>
+
 	</dependencies>
 
 </project>

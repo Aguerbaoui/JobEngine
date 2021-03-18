@@ -2,24 +2,30 @@ package io.je.utilities.classloader;
 
 
 import java.io.File;
-import java.net.URL;
-import java.net.URLClassLoader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
+import java.lang.reflect.Modifier;
+import java.util.*;
 import javax.tools.JavaCompiler;
 import javax.tools.StandardJavaFileManager;
 import javax.tools.StandardLocation;
 import javax.tools.ToolProvider;
 
+import io.je.utilities.config.ConfigurationConstants;
+import io.je.utilities.constants.ClassBuilderConfig;
 import io.je.utilities.exceptions.ClassLoadException;
 import io.je.utilities.logger.JELogger;
+import org.burningwave.core.Virtual;
+import org.burningwave.core.classes.ClassSourceGenerator;
+import org.burningwave.core.classes.FunctionSourceGenerator;
+import org.burningwave.core.classes.TypeDeclarationSourceGenerator;
+import org.burningwave.core.classes.UnitSourceGenerator;
 
 /*
  * class responsible for loading user defined classes
  */
 public class JEClassLoader {
+
+	static String loadPath =  ConfigurationConstants.runnerClassLoadPath;
+	static String generationPath = ConfigurationConstants.classGenerationPath;
 
 	
 	/*
@@ -36,7 +42,7 @@ public class JEClassLoader {
 			List<String> options = new ArrayList<String>();
 			options.add("-classpath");
 			StringBuilder sb = new StringBuilder();
-			URLClassLoader urlClassLoader = (URLClassLoader) Thread.currentThread().getContextClassLoader();
+			/*URLClassLoader urlClassLoader = (URLClassLoader) Thread.currentThread().getContextClassLoader();
 			for (URL url : urlClassLoader.getURLs()){
 				//JELogger.info(JEClassLoader.class, url.getFile().substring(1));
 				sb.append(url.getFile().substring(1).replace("%20", " ")).append(File.pathSeparator);
@@ -44,7 +50,7 @@ public class JEClassLoader {
 			//options.add("D:\\Job engine\\RuntimeUtilities\\target\\RuntimeUtilities-0.0.1.jar"); fixed the issue for runtime
 
 			// slash issue Widnows Vs JAVA/Linux to be reviewed with the deployment environment
-			options.add(sb.toString().replace("/", "\\"));
+			options.add(sb.toString().replace("/", "\\"));*/
 
 			/*options.add("D:\\apache-tomcat-9.0.41\\webapps\\ProjectBuilder\\WEB-INF\\lib\\RuntimeUtilities-0.0.1.jar;D:\\apache-tomcat-9.0.41\\webapps\\ProjectBuilder\\WEB-INF\\lib\\jackson-databind-2.11.3.jar" +
 					";D:\\apache-tomcat-9.0.41\\webapps\\ProjectBuilder\\WEB-INF\\lib\\jackson-core-2.11.3.jar;D:\\apache-tomcat-9.0.41\\webapps\\ProjectBuilder\\WEB-INF\\lib\\jackson-annotations-2.11.3.jar;");*/
@@ -52,7 +58,7 @@ public class JEClassLoader {
 			// Specify where to put the generated .class files
 			fileManager.setLocation(StandardLocation.CLASS_OUTPUT, Arrays.asList(new File(loadPath)));
 			// Compile the file
-			compiler.getTask(null, fileManager, null, options, null,
+			compiler.getTask(null, fileManager, null, null, null,
 					fileManager.getJavaFileObjectsFromFiles(Arrays.asList(sourceFile))).call();
 			fileManager.close();
 		}catch (Exception e) {
@@ -61,6 +67,53 @@ public class JEClassLoader {
 			JELogger.info(JEClassLoader.class, e.getMessage());
 			throw new ClassLoadException("failed to load class");
 		}
-		
+
+	}
+	public static void generateScriptTaskClass(String name, String javaCode) {
+		UnitSourceGenerator unitSG = UnitSourceGenerator.create(ClassBuilderConfig.genrationPackageName).addClass(
+				ClassSourceGenerator.create(
+						TypeDeclarationSourceGenerator.create(name)
+				).addModifier(
+						Modifier.PUBLIC
+				).addMethod(
+						FunctionSourceGenerator.create("executeScript")
+								.setReturnType(
+										TypeDeclarationSourceGenerator.create(void.class)
+								)
+								.addModifier(Modifier.PUBLIC)
+								.addModifier(Modifier.STATIC)
+								.addBodyCodeLine(javaCode)
+				).addConcretizedType(Virtual.class));
+		unitSG.addImport("io.je.utilities.logger.JELogger");
+		unitSG.addImport("import java.lang.*");
+		unitSG.addImport("import java.util.*");
+		unitSG.addImport("import java.sql.*");
+		unitSG.addImport("import javax.sql.*");
+
+		System.out.println(unitSG.make());
+		String filePath= generationPath + "\\" + ClassBuilderConfig.genrationPackageName  + "\\" + name +".java" ;
+		File file = new File(generationPath);
+		file.delete();
+		unitSG.storeToClassPath(generationPath);
+		try {
+			JEClassLoader.loadClass(filePath, loadPath);
+		} catch (ClassLoadException e) {
+			e.printStackTrace();
+		}
+		/*try {
+			Class<?> clazz = Class.forName("classes." + name);
+			Method method
+					= clazz.getDeclaredMethods()[0];
+			method.invoke(null);
+		} catch (ClassNotFoundException | IllegalAccessException | InvocationTargetException e) {
+			e.printStackTrace();
+		}*/
+	}
+
+	public static void main(String args[]) {
+		String a = "C:\\Program Files\\Integration Objects\\Integration Objects' SmartIoT Highway\\Components\\Tomcat";
+		a = a.substring(0, a.indexOf("Components") -1);
+		a = a + "\\JobEngine\\Builder\\properties";
+		System.out.println(a);
 	}
 }

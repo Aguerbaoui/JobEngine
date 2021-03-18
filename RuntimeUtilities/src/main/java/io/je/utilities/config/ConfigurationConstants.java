@@ -5,7 +5,7 @@ public class ConfigurationConstants {
     /*
      * Config for testing on the IDE
      */
-  /*  
+    
 	 //path where .java files are generated : 
     public 	static String  classGenerationPath	= "D:\\myproject2" ;
 	
@@ -23,7 +23,7 @@ public class ConfigurationConstants {
      * Config for tomcat
      */
     
-    //path where .java files are generated :
+ /*   //path where .java files are generated :
     public static String classGenerationPath = System.getProperty("catalina.base") + "\\webapps\\ProjectBuilder\\WEB-INF\\classes\\io\\je\\";
 
     // path where builder loads classes

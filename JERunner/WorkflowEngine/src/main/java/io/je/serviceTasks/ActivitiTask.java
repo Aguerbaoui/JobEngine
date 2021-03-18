@@ -7,6 +7,16 @@ public class ActivitiTask {
 
     private String taskName;
 
+    private String processId;
+
+    public String getProcessId() {
+        return processId;
+    }
+
+    public void setProcessId(String processId) {
+        this.processId = processId;
+    }
+
     public String getTaskId() {
         return taskId;
     }

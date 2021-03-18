@@ -3,6 +3,8 @@ package io.je.serviceTasks;
 import io.je.utilities.apis.BodyType;
 import io.je.utilities.apis.HttpMethod;
 
+import java.util.HashMap;
+
 public class WebApiTask extends  ActivitiTask{
 
     public WebApiTask() {}
@@ -10,7 +12,7 @@ public class WebApiTask extends  ActivitiTask{
 
     private BodyType bodyType;
 
-    private String body;
+    private HashMap<String, String> body;
 
     private String responseClass;
 
@@ -42,11 +44,11 @@ public class WebApiTask extends  ActivitiTask{
         this.bodyType = bodyType;
     }
 
-    public String getBody() {
+    public HashMap<String, String> getBody() {
         return body;
     }
 
-    public void setBody(String body) {
+    public void setBody(HashMap<String, String> body) {
         this.body = body;
     }
 

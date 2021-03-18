@@ -8,13 +8,13 @@ public class WorkflowBlockModel {
 
     private String type;
 
-    private Map<String, String> attributes;
+    private Map<String, Object> attributes;
 
     private String projectId;
 
     private String workflowId;
 
-    public WorkflowBlockModel(String id, String type, Map<String, String> attributes) {
+    public WorkflowBlockModel(String id, String type, Map<String, Object> attributes) {
         super();
         this.id = id;
         this.type = type;
@@ -41,11 +41,11 @@ public class WorkflowBlockModel {
         this.type = type;
     }
 
-    public Map<String, String> getAttributes() {
+    public Map<String, Object> getAttributes() {
         return attributes;
     }
 
-    public void setAttributes(Map<String, String> attributes) {
+    public void setAttributes(Map<String, Object> attributes) {
         this.attributes = attributes;
     }
 
