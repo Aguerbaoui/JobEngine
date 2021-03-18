@@ -201,17 +201,12 @@ public class WorkflowService {
             b.setJobEngineElementID(block.getId());
             project.addBlockToWorkflow(b);
         } else if (block.getType().equalsIgnoreCase(WorkflowConstants.SCRIPTTASK_TYPE)) {
-            if(JEStringUtils.isEmpty((String) block.getAttributes().get(SCRIPT))) {
-                throw new WorkflowBlockException(ResponseCodes.EMPTY_SCRIPT, ResponseMessages.EMPTY_SCRIPT);
-            }
-
             ScriptBlock b = new ScriptBlock();
             b.setName((String) block.getAttributes().get(NAME));
             b.setScript((String) block.getAttributes().get(SCRIPT));
             b.setJobEngineProjectID(block.getProjectId());
             b.setWorkflowId(block.getWorkflowId());
             b.setJobEngineElementID(block.getId());
-            JEClassLoader.generateScriptTaskClass(b.getName(), b.getScript());
             project.addBlockToWorkflow(b);
         } else if (block.getType().equalsIgnoreCase(WorkflowConstants.PARALLELGATEWAY_TYPE)) {
             ParallelGatewayBlock b = new ParallelGatewayBlock();
@@ -409,7 +404,7 @@ public class WorkflowService {
      *
      * Update workflow block
      * */
-    public void updateWorkflowBlock(WorkflowBlockModel block) throws WorkflowBlockNotFound, WorkflowNotFoundException, ProjectNotFoundException, IOException, InterruptedException, ExecutionException, EventException, ConfigException {
+    public void updateWorkflowBlock(WorkflowBlockModel block) throws WorkflowBlockNotFound, WorkflowNotFoundException, ProjectNotFoundException, IOException, InterruptedException, ExecutionException, EventException, ConfigException, WorkflowBlockException {
     	ConfigurationService.checkConfig();
     	JEProject project = ProjectService.getProjectById(block.getProjectId());
         if (project == null) {
@@ -501,9 +496,13 @@ public class WorkflowService {
             b.setName((String) block.getAttributes().get(NAME));
             project.addBlockToWorkflow(b);
         } else if (block.getType().equalsIgnoreCase(WorkflowConstants.SCRIPTTASK_TYPE)) {
+            if(JEStringUtils.isEmpty((String) block.getAttributes().get(SCRIPT))) {
+                throw new WorkflowBlockException(ResponseCodes.EMPTY_SCRIPT, ResponseMessages.EMPTY_SCRIPT);
+            }
             ScriptBlock b = (ScriptBlock) project.getWorkflowById(block.getWorkflowId()).getAllBlocks().get(block.getId());
             b.setName((String) block.getAttributes().get(NAME));
             b.setScript((String) block.getAttributes().get(SCRIPT));
+            //JEClassLoader.generateScriptTaskClass(b.getName(), b.getScript());
             project.addBlockToWorkflow(b);
         } else if (block.getType().equalsIgnoreCase(WorkflowConstants.PARALLELGATEWAY_TYPE)) {
             ParallelGatewayBlock b = (ParallelGatewayBlock) project.getWorkflowById(block.getWorkflowId()).getAllBlocks().get(block.getId());

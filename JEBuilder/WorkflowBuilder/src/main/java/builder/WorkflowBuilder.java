@@ -28,15 +28,13 @@ public class WorkflowBuilder {
 
 
     private WorkflowBuilder(){}
+
     /*
-    * Build workflow bpmn
+    * Build pbpmn and Deploy it in engine
     * */
-    public static boolean buildWorkflow(JEWorkflow workflow) throws IOException, JERunnerErrorException, InterruptedException, ExecutionException {
-        //TODO fix this will u? still just testing atm
-        /*
-         * testing purposes only
-         * */
+    public static boolean buildWorkflow(JEWorkflow workflow) throws IOException, InterruptedException, ExecutionException {
         if(workflow.getWorkflowStartBlock() == null || workflow.getAllBlocks() == null || workflow.getAllBlocks().size() == 0) return false;
+        if(workflow.getStatus().equals(JEWorkflow.BUILT)) return true;
         if(!workflow.isScript()) {
             JEToBpmnMapper.createBpmnFromJEWorkflow(workflow);
         }
@@ -67,9 +65,8 @@ public class WorkflowBuilder {
                 TaskModel t = new TaskModel();
                 t.setTaskName(block.getName());
                 t.setTaskId(block.getJobEngineElementID());
-                t.setType(WorkflowConstants.SCRIPT_TASK_IMPLEMENTATION);
+                t.setType(WorkflowConstants.SCRIPTTASK_TYPE);
                 HashMap<String, Object> attributes = new HashMap<>();
-                attributes.put("name", block.getName());
                 attributes.put("script", ((ScriptBlock) block).getScript());
                 t.setAttributes(attributes);
                 tasks.add(t);

@@ -102,14 +102,14 @@ public class JEClassLoader {
 		} catch (ClassLoadException e) {
 			e.printStackTrace();
 		}
-		try {
+		/*try {
 			Class<?> clazz = Class.forName("classes." + name);
 			Method method
 					= clazz.getDeclaredMethods()[0];
 			method.invoke(null);
 		} catch (ClassNotFoundException | IllegalAccessException | InvocationTargetException e) {
 			e.printStackTrace();
-		}
+		}*/
 	}
 
 	public static void main(String args[]) {

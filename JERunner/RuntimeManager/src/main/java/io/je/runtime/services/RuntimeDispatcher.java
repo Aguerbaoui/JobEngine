@@ -8,12 +8,14 @@ import io.je.runtime.models.RuleModel;
 import io.je.runtime.ruleenginehandler.RuleEngineHandler;
 import io.je.runtime.workflow.WorkflowEngineHandler;
 import io.je.serviceTasks.ActivitiTaskManager;
+import io.je.serviceTasks.ScriptTask;
 import io.je.serviceTasks.WebApiTask;
 import io.je.utilities.apis.BodyType;
 import io.je.utilities.apis.HttpMethod;
 import io.je.utilities.beans.JEData;
 import io.je.utilities.beans.JEEvent;
 import io.je.utilities.classloader.ClassManager;
+import io.je.utilities.classloader.JEClassLoader;
 import io.je.utilities.constants.WorkflowConstants;
 import io.je.utilities.exceptions.*;
 import io.je.utilities.logger.JELogger;
@@ -146,6 +148,7 @@ public class RuntimeDispatcher {
                 WebApiTask webApiTask = new WebApiTask();
                 webApiTask.setBodyType(BodyType.JSON);
                 webApiTask.setTaskId(task.getTaskId());
+                webApiTask.setTaskName(task.getTaskName());
                 webApiTask.setProcessId(wf.getKey());
                 HashMap<String, Object> attributes = task.getAttributes();
                 if(attributes.get("inputs") != null) {
@@ -156,6 +159,19 @@ public class RuntimeDispatcher {
                 webApiTask.setUrl((String) attributes.get("url"));
                 process.addActivitiTask(webApiTask);
                 ActivitiTaskManager.addTask(webApiTask);
+            }
+
+            if(task.getType().equals(WorkflowConstants.SCRIPTTASK_TYPE)) {
+                ScriptTask scriptTask = new ScriptTask();
+                scriptTask.setTaskName(task.getTaskName());
+                scriptTask.setTaskId(task.getTaskId());
+                HashMap<String, Object> attributes = task.getAttributes();
+                if(attributes.get("script") != null) {
+                    scriptTask.setScript((String) attributes.get("script"));
+                }
+                JEClassLoader.generateScriptTaskClass(scriptTask.getTaskName(), scriptTask.getScript());
+                process.addActivitiTask(scriptTask);
+                ActivitiTaskManager.addTask(scriptTask);
             }
         }
         WorkflowEngineHandler.addProcess(process);
