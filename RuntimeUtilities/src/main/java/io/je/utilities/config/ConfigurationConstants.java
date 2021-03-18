@@ -2,7 +2,6 @@ package io.je.utilities.config;
 
 public class ConfigurationConstants {
  
-    
     /*
      * Config for testing on the IDE
      */
@@ -16,9 +15,9 @@ public class ConfigurationConstants {
     // path where runner loads classes
     public static String runnerClassLoadPath = System.getProperty("java.class.path").split(";")[0]; 
     
-  
+    */
+    
 	
-	public final static String ruleTemplatePath = "D:\\ProgramData\\Integration Objects\\JobEngine\\JEBuilder\\RuleTemplate.drl";
     
     /*
      * Config for tomcat
@@ -33,6 +32,23 @@ public class ConfigurationConstants {
     // path where runner loads classes
     public static String runnerClassLoadPath = System.getProperty("catalina.base") + "\\webapps\\RuntimeManager\\WEB-INF\\classes\\";
  
-*/
+    /*
+     * SIOTH Config
+     */
+    public static String mongoConfiguration = "MongoConfiguration";
+    public static String mongoServerHostName = "MongoServerHostName";
+    public static String mongoServerPort = "MongoServerPort";
+    public static String mongoUserName = "MongoUserName";
+    public static String mongoPassword = "MongoPassword";
+    public static final String SIOTH_ENVIRONMENT_VARIABLE = "SIOTHJobEngine";
+    public static final String APPLICATION_PROPERTIES_PATH = "file:${"+SIOTH_ENVIRONMENT_VARIABLE+"}/JobEngine/jobengine.properties";
+	public final static String RULE_TEMPLATE_PATH = System.getenv(SIOTH_ENVIRONMENT_VARIABLE)+"\\JobEngine\\RuleTemplate.drl";
+	public static final String SIOTH_JSON_CONFIG = System.getenv(ConfigurationConstants.SIOTH_ENVIRONMENT_VARIABLE) + "\\SIOTHConfig.json";
+
    
+    
+    
+    
+
+    
 }
