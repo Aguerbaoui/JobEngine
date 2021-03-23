@@ -69,46 +69,6 @@ public class JEClassLoader {
 		}
 
 	}
-	public static void generateScriptTaskClass(String name, String javaCode) {
-		UnitSourceGenerator unitSG = UnitSourceGenerator.create(ClassBuilderConfig.genrationPackageName).addClass(
-				ClassSourceGenerator.create(
-						TypeDeclarationSourceGenerator.create(name)
-				).addModifier(
-						Modifier.PUBLIC
-				).addMethod(
-						FunctionSourceGenerator.create("executeScript")
-								.setReturnType(
-										TypeDeclarationSourceGenerator.create(void.class)
-								)
-								.addModifier(Modifier.PUBLIC)
-								.addModifier(Modifier.STATIC)
-								.addBodyCodeLine(javaCode)
-				).addConcretizedType(Virtual.class));
-		unitSG.addImport("io.je.utilities.logger.JELogger");
-		unitSG.addImport("import java.lang.*");
-		unitSG.addImport("import java.util.*");
-		unitSG.addImport("import java.sql.*");
-		unitSG.addImport("import javax.sql.*");
-
-		System.out.println(unitSG.make());
-		String filePath= generationPath + "\\" + ClassBuilderConfig.genrationPackageName  + "\\" + name +".java" ;
-		File file = new File(generationPath);
-		file.delete();
-		unitSG.storeToClassPath(generationPath);
-		try {
-			JEClassLoader.loadClass(filePath, loadPath);
-		} catch (ClassLoadException e) {
-			e.printStackTrace();
-		}
-		/*try {
-			Class<?> clazz = Class.forName("classes." + name);
-			Method method
-					= clazz.getDeclaredMethods()[0];
-			method.invoke(null);
-		} catch (ClassNotFoundException | IllegalAccessException | InvocationTargetException e) {
-			e.printStackTrace();
-		}*/
-	}
 
 	public static void main(String args[]) {
 		String a = "C:\\Program Files\\Integration Objects\\Integration Objects' SmartIoT Highway\\Components\\Tomcat";
