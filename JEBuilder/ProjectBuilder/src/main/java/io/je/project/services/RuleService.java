@@ -14,6 +14,7 @@ import io.je.utilities.constants.RuleBuilderErrors;
 import io.je.utilities.exceptions.*;
 import io.je.utilities.files.JEFileUtils;
 import io.je.utilities.logger.JELogger;
+import io.je.utilities.ruleutils.RuleIdManager;
 import io.je.utilities.runtimeobject.ClassDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
@@ -303,8 +304,8 @@ public class RuleService {
 
     private void cleanUpRule(JEProject project, String ruleId) throws JERunnerErrorException, IOException, InterruptedException, ExecutionException {
 
-        String rulePrefix = "-" + ruleId + "-";
-        JEFileUtils.deleteFilesForPathByPrefix(project.getConfigurationPath(), rulePrefix);
+        String rulePrefix = RuleIdManager.generateSubRulePrefix(ruleId);
+        JEFileUtils.deleteFilesInPathByPrefix(project.getConfigurationPath(), rulePrefix);
         JELogger.trace(" Deleting rule from runner");
        if( project.getRule(ruleId) instanceof UserDefinedRule)
        {

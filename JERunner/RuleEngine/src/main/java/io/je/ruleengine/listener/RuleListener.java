@@ -1,8 +1,22 @@
 package io.je.ruleengine.listener;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.kie.api.event.rule.*;
 
+import io.je.ruleengine.models.RuleMatch;
+import io.je.utilities.execution.Executioner;
+import io.je.utilities.ruleutils.RuleIdManager;
+import io.je.utilities.runtimeobject.JEObject;
+
 public class RuleListener extends DefaultAgendaEventListener {
+	
+	private String projectId;
+	private  HashMap<String,RuleMatch> ruleMatches = new HashMap<String, RuleMatch>();
+	
 
     @Override
     public void matchCreated(MatchCreatedEvent event) {
@@ -24,8 +38,34 @@ public class RuleListener extends DefaultAgendaEventListener {
 
     @Override
     public void afterMatchFired(AfterMatchFiredEvent event) {
-        super.afterMatchFired(event);
-
+    	
+    	String ruleId=RuleIdManager.retrieveIdFromSubRuleName(event.getMatch().getRule().getName());
+    	RuleMatch match = ruleMatches.get(ruleId);
+    	if(match==null)
+    	{
+    		match = new RuleMatch(ruleId,projectId);
+    	}
+    	
+    	//instances involved in match
+    	List<JEObject> instances = new ArrayList<JEObject>();
+    	for(Object instance : event.getMatch().getObjects())
+    	{
+    		JEObject jeInstance = (JEObject) instance;
+    		instances.add(jeInstance);
+    	}
+    	//get declared variables 
+    	Map<String,Object> declaredVariables = new HashMap<String,Object>();
+    	for(String declaredVariableName : event.getMatch().getDeclarationIds())
+    	{
+    		declaredVariables.put(declaredVariableName,event.getMatch().getDeclarationValue(declaredVariableName));
+    	}
+    	match.setDeclaredVariables(declaredVariables);
+    	match.setInstancesMatched(instances);
+    	ruleMatches.put(ruleId, match);
+    	//send match to monitoring
+    	//Executioner.notifyOfMatch(match);
+    	
+    	
     }
 
     @Override
@@ -62,6 +102,11 @@ public class RuleListener extends DefaultAgendaEventListener {
     public void afterRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event) {
         // TODO Auto-generated method stub
 
+    }
+    
+    
+    public void executionReached(String executionId) {
+    	
     }
 
 }

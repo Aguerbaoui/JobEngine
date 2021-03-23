@@ -19,6 +19,7 @@ import io.je.utilities.constants.RuleBuilderErrors;
 import io.je.utilities.exceptions.AddRuleBlockException;
 import io.je.utilities.exceptions.RuleBuildFailedException;
 import io.je.utilities.logger.JELogger;
+import io.je.utilities.ruleutils.RuleIdManager;
 
 /*
  * Rules defined graphically by the user.
@@ -59,8 +60,9 @@ public class UserDefinedRule extends JERule {
 		String scriptedRuleid = "";
 		List<ScriptedRule> scriptedRules = new ArrayList<>();
 		Set<Block> rootBlocks = blocks.getRootBlocks();
+		String subRulePrefix = RuleIdManager.generateSubRulePrefix(jobEngineElementID);
 		for (Block root : rootBlocks) {
-			scriptedRuleid = "-" + jobEngineElementID + "-" + ruleName + ++scriptedRulesCounter;
+			scriptedRuleid = subRulePrefix + ruleName + ++scriptedRulesCounter;
 			String condition = "";
 			if (root instanceof ConditionBlock) {
 				condition = root.getExpression();
