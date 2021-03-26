@@ -67,6 +67,11 @@ public class ClassBuilder {
 	private static void addImports(List<String> imports, UnitSourceGenerator unitSG ) {
 		//TODO : remove harcoded imports
 		unitSG.addImport("com.fasterxml.jackson.annotation.JsonProperty");
+		unitSG.addImport("io.je.utilities.logger.JELogger");
+		unitSG.addImport("import java.lang.*");
+		unitSG.addImport("import java.util.*");
+		unitSG.addImport("import java.sql.*");
+		unitSG.addImport("import javax.sql.*");
 		if (imports != null && !imports.isEmpty()) {
 			{
 				for (String import_ : imports) {
@@ -168,13 +173,13 @@ public class ClassBuilder {
 		if (classModel.getAttributes() != null) {
 			for (FieldModel field : classModel.getAttributes()) {
 				//TODO: all attributes are public because the data def rest api doesn't provide the attribute's modifier
-				newClass.addField(generateField(field).addModifier(Modifier.PUBLIC));
+				newClass.addField(generateField(field).addModifier(getModifier(field.getFieldVisibility())));
 				String attributeName = field.getName();
 				String capitalizedAttributeName = JEStringUtils.capitalize(attributeName);
 				Class<?> attributeType = getType(field.getType());
 				
 				//TODO: all attributes should have a getter ( 
-				if (field.getHasSetter()) {
+				//adding setters
 					FunctionSourceGenerator setter = FunctionSourceGenerator.create("set" + capitalizedAttributeName)
 							.addParameter(VariableSourceGenerator.create(attributeType, attributeName))
 							.setReturnType(TypeDeclarationSourceGenerator.create(void.class))
@@ -182,8 +187,8 @@ public class ClassBuilder {
 							.addAnnotation(new AnnotationSourceGenerator("JsonProperty(\""+attributeName+"\")"))
 							.addBodyCodeLine("this." + attributeName + "=" + attributeName + ";");
 					newClass.addMethod(setter);
-				}
-				if (field.getHasGetter()) {
+				
+				//adding getters
 					FunctionSourceGenerator getter = FunctionSourceGenerator.create("get" + capitalizedAttributeName)
 							.setReturnType(TypeDeclarationSourceGenerator.create(attributeType))
 							.addAnnotation(new AnnotationSourceGenerator("JsonProperty(\""+attributeName+"\")"))
@@ -191,7 +196,7 @@ public class ClassBuilder {
 					newClass.addMethod(getter);
 				}
 
-			}
+			
 		}
 		// methods
 		if (classModel.getMethods() != null) {
@@ -276,7 +281,7 @@ public class ClassBuilder {
 	 * returns the class type based on a string defining the type
 	 */
 	private static Class<?> getType(String type) throws ClassLoadException {
-		Class<?> classType = null;;
+		Class<?> classType = null;
 		switch (type) {
 		case "BYTE" :
 			classType =  byte.class;

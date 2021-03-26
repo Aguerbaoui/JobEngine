@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import io.je.utilities.runtimeobject.ClassDefinition;
+//import io.je.utilities.runtimeobject.ClassDefinition;
 
 import io.je.rulebuilder.config.AttributesMapping;
 
@@ -22,8 +22,8 @@ public class ScriptRuleModel {
     @JsonProperty(AttributesMapping.DESC)
    	String description;
     
-    @JsonProperty(AttributesMapping.CLASSES)
-	List<ClassDefinition> classes;
+   // @JsonProperty(AttributesMapping.CLASSES)
+	//List<ClassDefinition> classes;
 
 	public String getRuleId() {
 		return ruleId;
@@ -57,14 +57,14 @@ public class ScriptRuleModel {
 		this.description = description;
 	}
 
-	public List<ClassDefinition> getClasses() {
+	/*public List<ClassDefinition> getClasses() {
 		return classes;
 	}
 
 	public void setClasses(List<ClassDefinition> classes) {
 		this.classes = classes;
 	}
-    
+    */
     
     
 

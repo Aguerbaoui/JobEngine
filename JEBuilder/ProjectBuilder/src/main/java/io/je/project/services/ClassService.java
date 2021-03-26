@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import io.je.classbuilder.builder.ClassManager;
 import io.je.classbuilder.entity.JEClass;
+import io.je.classbuilder.models.ClassModel;
 import io.je.project.repository.ClassRepository;
 import io.je.utilities.apis.JERunnerAPIHandler;
 import io.je.utilities.constants.ClassBuilderErrors;
@@ -21,7 +22,6 @@ import io.je.utilities.exceptions.ClassLoadException;
 import io.je.utilities.exceptions.DataDefinitionUnreachableException;
 import io.je.utilities.exceptions.JERunnerErrorException;
 import io.je.utilities.network.JEResponse;
-import io.je.utilities.runtimeobject.ClassDefinition;
 
 /*
  * Service class to handle classes
@@ -37,39 +37,26 @@ public class ClassService {
 	ClassRepository classRepository;
 
 	Map<String, JEClass> loadedClasses = new HashMap<String, JEClass>();
+	
 
-
-	/*
-	 * add/update class
-	 */
-	public void addClass(ClassDefinition classDefinition) throws IOException, DataDefinitionUnreachableException,
-			JERunnerErrorException, AddClassException, ClassLoadException, InterruptedException, ExecutionException {
-		String classId= classDefinition.getClassId();
-		String workspaceId = classDefinition.getWorkspaceId();
-		addClass(workspaceId,classId);
-
+	
+	public List<JEClass> addClass(String workspaceId, String classId) throws DataDefinitionUnreachableException, ClassLoadException, IOException, AddClassException, JERunnerErrorException, InterruptedException, ExecutionException {
+		ClassModel classModel = ClassManager.loadClassDefinition(workspaceId,classId);
+		return addClass(classModel);
 	}
 	
-	
-	/*
-	 * add/update class
-	 */
-	public void addClass(String workspaceId, String classId) throws IOException, DataDefinitionUnreachableException,
-			JERunnerErrorException, AddClassException, ClassLoadException, InterruptedException, ExecutionException {
-	
-		if (!loadedClasses.containsKey(classId)) {
-			JELogger.trace(ClassService.class, " Adding class to builder from data definition api with id = " + classId);
-			List<JEClass> builtClasses = ClassManager.buildClass(workspaceId, classId);
-			for (JEClass _class : builtClasses) {
-				// TODO: manage what happens when class addition fails
-				addClassToJeRunner(_class);
-				classRepository.save(_class);
-				loadedClasses.put(_class.getClassId(), _class);
-			}
+	public List<JEClass> addClass(ClassModel classModel) throws AddClassException, DataDefinitionUnreachableException, ClassLoadException, IOException, JERunnerErrorException, InterruptedException, ExecutionException
+	{
+		List<JEClass> builtClasses = ClassManager.buildClass(classModel);
+		for (JEClass _class : builtClasses) {
+			addClassToJeRunner(_class);
+			classRepository.save(_class);
+			loadedClasses.put(_class.getClassId(), _class);
 		}
+		return builtClasses;
+		
 
 	}
-
 
 
 	/*
@@ -98,7 +85,7 @@ public class ClassService {
 				String classId= clazz.getClassId();
 				String workspaceId = clazz.getWorkspaceId();
 				if (!loadedClasses.containsKey(classId)) {
-					List<JEClass> builtClasses = ClassManager.buildClass(workspaceId, classId);
+					List<JEClass> builtClasses = addClass(workspaceId, classId);
 					for (JEClass _class : builtClasses) {
 						loadedClasses.put(_class.getClassId(), _class);
 					}

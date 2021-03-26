@@ -1,3 +1,0 @@
-ruleTemplatePath = "D:\\ProgramData\\Integration Objects\\JobEngine\\JEBuilder\\RuleTemplate.drl"
-JERunner folder = "file:D:\\ProgramData\\Integration Objects\\JobEngine\\JERunner";
-JEBuilder folder ="file:D:\\ProgramData\\Integration Objects\\JobEngine\\JEBuilder";

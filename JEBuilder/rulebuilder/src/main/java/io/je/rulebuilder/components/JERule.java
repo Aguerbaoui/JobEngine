@@ -1,14 +1,10 @@
 package io.je.rulebuilder.components;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import io.je.utilities.logger.JELogger;
-import io.je.utilities.runtimeobject.ClassDefinition;
 import io.je.utilities.runtimeobject.JEObject;
 
 @Document(collection="JERule")
