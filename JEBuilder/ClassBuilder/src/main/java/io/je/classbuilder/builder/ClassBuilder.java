@@ -68,10 +68,10 @@ public class ClassBuilder {
 		//TODO : remove harcoded imports
 		unitSG.addImport("com.fasterxml.jackson.annotation.JsonProperty");
 		unitSG.addImport("io.je.utilities.logger.JELogger");
-		unitSG.addImport("import java.lang.*");
-		unitSG.addImport("import java.util.*");
-		unitSG.addImport("import java.sql.*");
-		unitSG.addImport("import javax.sql.*");
+		unitSG.addImport("java.lang.*");
+		unitSG.addImport("java.util.*");
+		unitSG.addImport("java.sql.*");
+		unitSG.addImport("javax.sql.*");
 		if (imports != null && !imports.isEmpty()) {
 			{
 				for (String import_ : imports) {

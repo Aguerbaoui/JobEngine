@@ -1,12 +1,12 @@
 package io.je.runtime.objects;
 
-import io.je.utilities.classloader.ClassManager;
 import org.json.JSONObject;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.je.runtime.models.InstanceModel;
+import io.je.runtime.repos.ClassRepository;
 import io.je.utilities.exceptions.InstanceCreationFailed;
 
 public class InstanceManager {
@@ -16,7 +16,7 @@ public class InstanceManager {
 	public static Object createInstance(InstanceModel instanceModel ) throws InstanceCreationFailed
 	{
 		//get instance class
-		Class<?> instanceClass = ClassManager.getClassById(instanceModel.getModelId());
+		Class<?> instanceClass = ClassRepository.getClassById(instanceModel.getModelId());
 		if(instanceClass == null)
 		{
 			throw new InstanceCreationFailed("Loaded classes list does not recognize this id :" + instanceModel.getInstanceId());

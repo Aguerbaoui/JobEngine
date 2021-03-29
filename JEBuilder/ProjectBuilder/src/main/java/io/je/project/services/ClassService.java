@@ -57,6 +57,19 @@ public class ClassService {
 		
 
 	}
+	
+	public List<JEClass> addDBClassesToBuilder(String workspaceId, String classId) throws AddClassException, DataDefinitionUnreachableException, ClassLoadException, IOException, JERunnerErrorException, InterruptedException, ExecutionException
+	{
+		ClassModel classModel = ClassManager.loadClassDefinition(workspaceId,classId);
+		List<JEClass> builtClasses = ClassManager.buildClass(classModel);
+		for (JEClass _class : builtClasses) {
+			classRepository.save(_class);
+			loadedClasses.put(_class.getClassId(), _class);
+		}
+		return builtClasses;
+		
+
+	}
 
 
 	/*
@@ -85,7 +98,7 @@ public class ClassService {
 				String classId= clazz.getClassId();
 				String workspaceId = clazz.getWorkspaceId();
 				if (!loadedClasses.containsKey(classId)) {
-					List<JEClass> builtClasses = addClass(workspaceId, classId);
+					List<JEClass> builtClasses =addDBClassesToBuilder(workspaceId, classId);
 					for (JEClass _class : builtClasses) {
 						loadedClasses.put(_class.getClassId(), _class);
 					}
