@@ -207,10 +207,16 @@ public class ClassBuilder {
 				FunctionSourceGenerator method = FunctionSourceGenerator.create(methodName);
 				method.addModifier(getModifier(methodModifier));
 				method.setReturnType(getType(methodReturnType));
-				method.addBodyCode(methodModel.getCode());
-				for (FieldModel parameter : methodModel.getInputs()) {
-					method.addParameter(generateField(parameter));
+				if(methodModel.getMethodScope() != null) {
+					method.addModifier(getModifier(methodModel.getMethodScope()));
 				}
+				method.addBodyCode(methodModel.getCode());
+				if(methodModel.getInputs() != null) {
+					for (FieldModel parameter : methodModel.getInputs()) {
+						method.addParameter(generateField(parameter));
+					}
+				}
+				newClass.addMethod(method);
 			}
 		}
 
@@ -319,6 +325,9 @@ public class ClassBuilder {
 		case "DATETIME":
 			classType =  LocalDateTime.class;
 			break;
+		case "VOID":
+			classType =  void.class;
+			break;
 		default:
 			break; //add default value
 		}
@@ -363,6 +372,9 @@ public class ClassBuilder {
 			break;
 		case "ABSTRACT":
 			value = Modifier.ABSTRACT;
+			break;
+		case "STATIC":
+			value = Modifier.STATIC;
 			break;
 		default:
 			// TODO: throw except

@@ -9,6 +9,8 @@ import blocks.events.*;
 import builder.WorkflowBuilder;
 import io.je.classbuilder.builder.ClassBuilder;
 import io.je.classbuilder.entity.JEClass;
+import io.je.classbuilder.models.ClassModel;
+import io.je.classbuilder.models.MethodModel;
 import io.je.project.beans.JEProject;
 import io.je.project.models.WorkflowBlockModel;
 import io.je.utilities.apis.JERunnerAPIHandler;
@@ -30,6 +32,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -61,6 +64,9 @@ public class WorkflowService {
 
     @Autowired
     EventService eventService;
+
+    @Autowired
+    ClassService classService;
     /*
      * Add a workflow to a project
      * */
@@ -404,7 +410,7 @@ public class WorkflowService {
      *
      * Update workflow block
      * */
-    public void updateWorkflowBlock(WorkflowBlockModel block) throws WorkflowBlockNotFound, WorkflowNotFoundException, ProjectNotFoundException, IOException, InterruptedException, ExecutionException, EventException, ConfigException, WorkflowBlockException {
+    public void updateWorkflowBlock(WorkflowBlockModel block) throws WorkflowBlockNotFound, WorkflowNotFoundException, ProjectNotFoundException, IOException, InterruptedException, ExecutionException, EventException, ConfigException, WorkflowBlockException, ClassLoadException, JERunnerErrorException, AddClassException, DataDefinitionUnreachableException {
     	ConfigurationService.checkConfig();
     	JEProject project = ProjectService.getProjectById(block.getProjectId());
         if (project == null) {
@@ -502,6 +508,8 @@ public class WorkflowService {
             ScriptBlock b = (ScriptBlock) project.getWorkflowById(block.getWorkflowId()).getAllBlocks().get(block.getId());
             b.setName((String) block.getAttributes().get(NAME));
             b.setScript((String) block.getAttributes().get(SCRIPT));
+            ClassModel c = getClassModel(b.getJobEngineElementID(), b.getName(), b.getScript());
+            classService.addClass(c);
             //JEClassLoader.generateScriptTaskClass(b.getName(), b.getScript());
             project.addBlockToWorkflow(b);
         } else if (block.getType().equalsIgnoreCase(WorkflowConstants.PARALLELGATEWAY_TYPE)) {
@@ -559,6 +567,31 @@ public class WorkflowService {
         }
 
 
+    }
+
+    private ClassModel getClassModel(String id, String name, String script) {
+        ClassModel c = new ClassModel();
+        c.setClass(true);
+        c.setIdClass(id);
+        c.setName(name);
+        c.setClassVisibility("public");
+        List<String> imports = new ArrayList<>();
+        imports.add("io.je.utilities.logger.JELogger");
+        imports.add("java.lang.*");
+        imports.add("java.util.*");
+        imports.add("java.sql.*");
+        imports.add("javax.sql.*");
+        c.setImports(imports);
+        MethodModel m = new MethodModel();
+        m.setMethodName("executeScript");
+        m.setReturnType("VOID");
+        m.setMethodScope("STATIC");
+        m.setCode(script);
+        m.setMethodVisibility("PUBLIC");
+        List<MethodModel> methodModels = new ArrayList<>();
+        methodModels.add(m);
+        c.setMethods(methodModels);
+        return c;
     }
 
     public void addBpmn(String projectId, String workflowId, String bpmn) throws ProjectNotFoundException, ConfigException {
