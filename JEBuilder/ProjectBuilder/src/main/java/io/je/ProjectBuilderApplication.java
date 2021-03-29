@@ -15,6 +15,8 @@ public class ProjectBuilderApplication {
     	SIOTHConfiguration.init();
         SpringApplication app = new SpringApplication(ProjectBuilderApplication.class);
         app.setBannerMode(Banner.Mode.OFF);
+        app.setDefaultProperties(Collections
+                .singletonMap("server.port", "8080"));
         app.run(args);
         JELogger.info(" Builder started successfully");
 //C:\Program Files\Integration Objects\Integration Objects' SmartIoT Highway\JobEngine\Builder\properties

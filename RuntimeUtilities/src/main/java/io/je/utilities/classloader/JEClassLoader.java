@@ -85,10 +85,10 @@ public class JEClassLoader {
 								.addBodyCodeLine(javaCode)
 				).addConcretizedType(Virtual.class));
 		unitSG.addImport("io.je.utilities.logger.JELogger");
-		unitSG.addImport("import java.lang.*");
-		unitSG.addImport("import java.util.*");
-		unitSG.addImport("import java.sql.*");
-		unitSG.addImport("import javax.sql.*");
+		unitSG.addImport("java.lang.*");
+		unitSG.addImport("java.util.*");
+		unitSG.addImport("java.sql.*");
+		unitSG.addImport("javax.sql.*");
 
 		System.out.println(unitSG.make());
 		String filePath= generationPath + "\\" + ClassBuilderConfig.genrationPackageName  + "\\" + name +".java" ;
@@ -109,7 +109,6 @@ public class JEClassLoader {
 			e.printStackTrace();
 		}*/
 	}
-
 	public static void main(String args[]) {
 		String a = "C:\\Program Files\\Integration Objects\\Integration Objects' SmartIoT Highway\\Components\\Tomcat";
 		a = a.substring(0, a.indexOf("Components") -1);

@@ -1,5 +1,6 @@
 package builder;
 
+import io.je.utilities.constants.WorkflowConstants;
 import io.je.utilities.files.JEFileUtils;
 import io.je.utilities.logger.JELogger;
 import io.je.utilities.string.JEStringUtils;
@@ -7,6 +8,7 @@ import org.activiti.bpmn.converter.BpmnXMLConverter;
 import org.activiti.bpmn.model.Process;
 import org.activiti.bpmn.model.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ModelBuilder {
@@ -54,6 +56,9 @@ public class ModelBuilder {
         serviceTask.setId(id);
         serviceTask.setImplementation(implementation);
         serviceTask.setImplementationType(ImplementationType.IMPLEMENTATION_TYPE_CLASS);
+        ArrayList<ActivitiListener> listeners = new ArrayList<ActivitiListener>();
+        listeners.add(getListener(WorkflowConstants.TASKS_LISTENER_IMPLEMENTATION, WorkflowConstants.START_PROCESS, ImplementationType.IMPLEMENTATION_TYPE_CLASS));
+        serviceTask.setExecutionListeners(listeners);
         return serviceTask;
     }
 
@@ -114,6 +119,9 @@ public class ModelBuilder {
         gateway.setExclusive(exclusive);
         gateway.setIncomingFlows(inFlows);
         gateway.setOutgoingFlows(outFlows);
+        ArrayList<ActivitiListener> listeners = new ArrayList<ActivitiListener>();
+        listeners.add(getListener(WorkflowConstants.GATEWAYS_LISTENER_IMPLEMENTATION, WorkflowConstants.START_PROCESS, ImplementationType.IMPLEMENTATION_TYPE_CLASS));
+        gateway.setExecutionListeners(listeners);
         return gateway;
     }
 
@@ -127,6 +135,9 @@ public class ModelBuilder {
         gateway.setExclusive(exclusive);
         gateway.setIncomingFlows(inFlows);
         gateway.setOutgoingFlows(outFlows);
+        ArrayList<ActivitiListener> listeners = new ArrayList<ActivitiListener>();
+        listeners.add(getListener(WorkflowConstants.GATEWAYS_LISTENER_IMPLEMENTATION, WorkflowConstants.START_PROCESS, ImplementationType.IMPLEMENTATION_TYPE_CLASS));
+        gateway.setExecutionListeners(listeners);
         return gateway;
     }
 
@@ -140,6 +151,9 @@ public class ModelBuilder {
         gateway.setExclusive(exclusive);
         gateway.setIncomingFlows(inFlows);
         gateway.setOutgoingFlows(outFlows);
+        ArrayList<ActivitiListener> listeners = new ArrayList<ActivitiListener>();
+        listeners.add(getListener(WorkflowConstants.GATEWAYS_LISTENER_IMPLEMENTATION, WorkflowConstants.START_PROCESS, ImplementationType.IMPLEMENTATION_TYPE_CLASS));
+        gateway.setExecutionListeners(listeners);
         return gateway;
     }
 
@@ -183,6 +197,13 @@ public class ModelBuilder {
         return event;
     }
 
+    public static ActivitiListener getListener(String implementation, String eventType, String implementationType) {
+        ActivitiListener listener = new ActivitiListener();
+        listener.setImplementation(implementation);
+        listener.setEvent(eventType);
+        listener.setImplementationType(implementationType);
+        return listener;
+    }
     /*
      * Create a parallel gateway and return it
      * */
@@ -192,20 +213,12 @@ public class ModelBuilder {
         gateway.setId(id);
         gateway.setIncomingFlows(inFlows);
         gateway.setOutgoingFlows(outFlows);
+        ArrayList<ActivitiListener> listeners = new ArrayList<ActivitiListener>();
+        listeners.add(getListener(WorkflowConstants.GATEWAYS_LISTENER_IMPLEMENTATION, WorkflowConstants.START_PROCESS, ImplementationType.IMPLEMENTATION_TYPE_CLASS));
+        gateway.setExecutionListeners(listeners);
         return gateway;
     }
 
-    /*
-    * Create an event base gateway
-    * */
-    public static EventGateway createEventGateway(String id, String name, List<SequenceFlow> inFlows, List<SequenceFlow> outFlows) {
-        EventGateway gateway = new EventGateway();
-        gateway.setName(name);
-        gateway.setId(id);
-        gateway.setIncomingFlows(inFlows);
-        gateway.setOutgoingFlows(outFlows);
-        return gateway;
-    }
 
     /*
      * Create a message catch event and return it

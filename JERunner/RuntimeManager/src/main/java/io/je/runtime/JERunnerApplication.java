@@ -9,6 +9,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import java.util.Collections;
 
 import javax.annotation.PreDestroy;
+import java.util.Collections;
 
 @SpringBootApplication
 public class JERunnerApplication {
@@ -20,6 +21,7 @@ public class JERunnerApplication {
         app.setDefaultProperties(Collections
                 .singletonMap("server.port", "8081"));
         app.run(args);
+
         JELogger.info(" Runner started successfully");
 
     }

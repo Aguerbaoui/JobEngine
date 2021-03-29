@@ -1,18 +1,9 @@
 package io.je.utilities.config;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-
-import org.json.JSONArray;
 import org.json.JSONObject;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.squareup.okhttp.Response;
-
-import io.je.utilities.constants.ResponseCodes;
-import io.je.utilities.exceptions.JEException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 public class SIOTHConfiguration {
 
