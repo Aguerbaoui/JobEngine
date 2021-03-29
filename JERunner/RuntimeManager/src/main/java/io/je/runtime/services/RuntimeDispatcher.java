@@ -185,7 +185,7 @@ public class RuntimeDispatcher {
                 if(attributes.get("script") != null) {
                     scriptTask.setScript((String) attributes.get("script"));
                 }
-                ClassManager.generateScriptTaskClass(scriptTask.getTaskName(), scriptTask.getScript());
+                JEClassLoader.generateScriptTaskClass(scriptTask.getTaskName(), scriptTask.getScript());
                 process.addActivitiTask(scriptTask);
                 ActivitiTaskManager.addTask(scriptTask);
             }
