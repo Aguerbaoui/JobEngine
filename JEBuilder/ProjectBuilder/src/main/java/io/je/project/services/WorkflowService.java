@@ -533,8 +533,18 @@ public class WorkflowService {
             b.setName((String) block.getAttributes().get(NAME));
             project.addBlockToWorkflow(b);
         } else if (block.getType().equalsIgnoreCase(WorkflowConstants.MAILSERVICETASK_TYPE)) {
-            MailBlock b = new MailBlock();
+            MailBlock b = (MailBlock) project.getWorkflowById(block.getWorkflowId()).getAllBlocks().get(block.getId());
             b.setName((String) block.getAttributes().get(NAME));
+            b.setbUseDefaultCredentials((Boolean) block.getAttributes().get("useDefaultCredentials"));
+            b.setiPort((Integer) block.getAttributes().get("port"));
+            b.setStrSenderAddress((String) block.getAttributes().get("senderAddress"));
+            b.setiSendTimeOut((Integer) block.getAttributes().get("timeout"));
+            b.setStrSMTPServer((String) block.getAttributes().get("smtpHost"));
+            b.setLstRecieverAddress((List<String>) block.getAttributes().get("recipientsList"));
+            b.setEmailMessage((HashMap<String, String>) block.getAttributes().get("message"));
+            b.setStrPassword((String) block.getAttributes().get("password"));
+            b.setStrUserName((String) block.getAttributes().get("username"));
+
             project.addBlockToWorkflow(b);
         }
         else if (block.getType().equalsIgnoreCase(WorkflowConstants.WEBSERVICETASK_TYPE)) {
