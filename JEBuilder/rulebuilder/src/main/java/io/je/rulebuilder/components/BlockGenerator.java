@@ -7,6 +7,7 @@ import io.je.rulebuilder.components.blocks.arithmetic.multipleInput.*;
 import io.je.rulebuilder.components.blocks.arithmetic.singleinput.*;
 import io.je.rulebuilder.components.blocks.event.AcceptEventBlock;
 import io.je.rulebuilder.components.blocks.execution.LogBlock;
+import io.je.rulebuilder.components.blocks.execution.SetterBlock;
 import io.je.rulebuilder.components.blocks.execution.TriggerEventBlock;
 import io.je.rulebuilder.components.blocks.getter.AttributeGetterBlock;
 import io.je.rulebuilder.components.blocks.logic.JoinBlock;
@@ -95,6 +96,16 @@ public class BlockGenerator {
 			return new LengthBlock(blockModel);
 		case 1027:
 			return new UnitConversionBlock(blockModel);
+		case 1028:
+			return new MinimumBlock(blockModel);
+		case 1029:
+			return new HighLimitingBlock(blockModel);
+		case 1030:
+			return new LowLimitingBlock(blockModel);
+	//	case 1031:
+		//	return new TypeConverterBlock(blockModel);
+		case 1032:
+			return new MaximumBlock(blockModel);
 
 	
 
@@ -137,6 +148,8 @@ public class BlockGenerator {
 			return new LogBlock(blockModel);
 		case 5002:
 			return new TriggerEventBlock(blockModel);
+		case 5003:
+			return new SetterBlock(blockModel);	
 		case 6001:
 			return new AcceptEventBlock(blockModel);
 		// no operation with such id

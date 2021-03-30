@@ -6,10 +6,7 @@ import java.util.List;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import io.je.rulebuilder.components.blocks.getter.AttributeGetterBlock;
-import io.je.rulebuilder.config.AttributesMapping;
 import io.je.utilities.exceptions.RuleBuildFailedException;
 import io.je.utilities.runtimeobject.JEObject;
 

@@ -2,21 +2,21 @@ package io.je.rulebuilder.components.blocks.arithmetic.multipleInput;
 
 import io.je.rulebuilder.models.BlockModel;
 
-public class DivideBlock extends MultipleInputArithmeticBlock {
+public class LowLimitingBlock extends MultipleInputArithmeticBlock {
 
-	public DivideBlock(BlockModel blockModel) {
+	public LowLimitingBlock(BlockModel blockModel) {
 		super(blockModel);
 		// TODO Auto-generated constructor stub
 	}
 	
-	private DivideBlock()
+	private LowLimitingBlock()
 	{
 		
 	}
 
 	@Override
 	protected String getArithmeticFormula(int level) {
-		return "JECalculator.divide( "  ;
+		return "JECalculator.lowLimiting( "  ;
 
 	}
 

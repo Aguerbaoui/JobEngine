@@ -1,8 +1,5 @@
 package io.je.rulebuilder.components.blocks.arithmetic.singleinput;
 
-import io.je.rulebuilder.components.blocks.ArithmeticBlock;
-import io.je.rulebuilder.components.blocks.getter.AttributeGetterBlock;
-import io.je.rulebuilder.config.Keywords;
 import io.je.rulebuilder.models.BlockModel;
 
 public class GainBlock extends SingleInputArithmeticBlock {
