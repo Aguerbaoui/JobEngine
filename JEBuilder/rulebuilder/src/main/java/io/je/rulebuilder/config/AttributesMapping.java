@@ -51,6 +51,8 @@ public class AttributesMapping {
 	public static final String WORKSPACEID = "workspace_id";
 	public static final String CLASSES = "classes";
 	public static final String FRONTCONFIG = "ruleFrontConfig";
+	public static final String TYPE = "type";
+	public static final String INSTANCEID = "instanceId";
 
   
     
