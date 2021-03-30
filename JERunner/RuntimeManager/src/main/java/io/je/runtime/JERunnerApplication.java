@@ -1,27 +1,28 @@
 package io.je.runtime;
 
-import io.je.runtime.config.ConfigurationConstants;
 import io.je.utilities.apis.JEBuilderApiHandler;
-import io.je.utilities.config.JEConfiguration;
 import io.je.utilities.logger.JELogger;
+import org.springframework.boot.Banner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
+
+import java.util.Collections;
 
 import javax.annotation.PreDestroy;
+import java.util.Collections;
 
 @SpringBootApplication
-@PropertySource(ConfigurationConstants.APPLICATION_PROPERTIES_PATH)
 public class JERunnerApplication {
 
 	
     public static void main(String[] args) {
-        SpringApplication.run(JERunnerApplication.class, args);
-        JELogger.info(" Runner started successfully");
-       // System.setProperty("drools.compiler", "JANINO");
-      //  JELogger.info(" drools compiler is : " + System.getProperty("drools.compiler"));
+        SpringApplication app = new SpringApplication(JERunnerApplication.class);
+        app.setBannerMode(Banner.Mode.OFF);
+        app.setDefaultProperties(Collections
+                .singletonMap("server.port", "8081"));
+        app.run(args);
 
+        JELogger.info(" Runner started successfully");
 
     }
 

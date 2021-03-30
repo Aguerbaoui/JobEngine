@@ -115,7 +115,7 @@ public class UserDefinedRule extends JERule {
 		String ruleContent = "";
 		try {
 			ruleContent = objectDataCompiler.compile(Arrays.asList(ruleTemplateAttributes),
-					new FileInputStream(ConfigurationConstants.ruleTemplatePath));
+					new FileInputStream(ConfigurationConstants.RULE_TEMPLATE_PATH));
 		} catch (Exception e) {
 			throw new RuleBuildFailedException(RuleBuilderErrors.RuleBuildFailed + e.getMessage());
 		}

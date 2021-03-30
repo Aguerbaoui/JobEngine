@@ -44,5 +44,7 @@ public class ResponseCodes {
 	public static final int RULE_DELETION_ERROR = 1031;
 	public static final int PROJECT_ALREADY_STOPPED = 1032;
 	public static final int CONFIG_EXCEPTION = 1033;
+	public static final int EMPTY_SCRIPT = 1034;
+
 
 }

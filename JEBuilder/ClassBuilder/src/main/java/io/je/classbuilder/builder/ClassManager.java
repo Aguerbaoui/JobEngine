@@ -38,61 +38,61 @@ public class ClassManager {
 	/*
 	 * build class (generate .java then load Class )
 	 */
-	public static List<JEClass> buildClass(String workspaceId, String classId)
+	public static List<JEClass> buildClass(ClassModel classModel)
 			throws AddClassException, DataDefinitionUnreachableException, IOException, ClassLoadException {
-		JELogger.debug(ClassManager.class, "building Class [classID = "+classId+"]");
-		ArrayList<JEClass> classes = new ArrayList<>();
-
-		// load class definition from data model rest api
-		ClassModel classModel = loadClassDefinition(workspaceId, classId);
-
-		// load class type
-		ClassType classType = getClassType(classModel);
-
-		// load inherited classes
-		if (classModel.getBaseTypes() != null && !classModel.getBaseTypes().isEmpty()) {
-			for (String baseTypeId : classModel.getBaseTypes()) {
-			
-				//load inherited class
-				//if (!jeClasses.containsKey(baseTypeId)) {
-					for (JEClass _class : ClassManager.buildClass(workspaceId, baseTypeId)) {
-						classes.add(_class);
-
-					//}
-				}
-			}
-			
 		
-		}
+		JELogger.debug(ClassManager.class, "building Class [className = "+classModel.getName()+"]");
+		ArrayList<JEClass> classes = new ArrayList<>();
+		
+		if(!builtClasses.containsKey(classModel.getIdClass()))
+		{
+			// load class type ( interface/enum or class)
+			ClassType classType = getClassType(classModel);
 
-		// load dependent classes
-		if (classModel.getDependentEntities() != null && !classModel.getDependentEntities().isEmpty()) {
-			for (String baseTypeId : classModel.getDependentEntities()) {
-			//	if (!jeClasses.containsKey(baseTypeId)) {
-					for (JEClass _class : ClassManager.buildClass(workspaceId, baseTypeId)) {
-						classes.add(_class);
-				//	}
+			// build inherited classes
+			if (classModel.getBaseTypes() != null && !classModel.getBaseTypes().isEmpty()) {
+				for (String baseTypeId : classModel.getBaseTypes()) {
+					ClassModel inheritedClassModel = loadClassDefinition(classModel.getWorkspaceId(), baseTypeId);
+					//load inherited class
+						for (JEClass _class : ClassManager.buildClass(inheritedClassModel)) {
+							classes.add(_class);
+					}
+				}
+				
+			
+			}
+
+			// build dependent classes
+			if (classModel.getDependentEntities() != null && !classModel.getDependentEntities().isEmpty()) {
+				for (String baseTypeId : classModel.getDependentEntities()) {
+					ClassModel dependentClass = loadClassDefinition(classModel.getWorkspaceId(), baseTypeId);
+						for (JEClass _class : ClassManager.buildClass(dependentClass)) {
+							classes.add(_class);
+					}
 				}
 			}
-		}
 
-		// create .java
-		String filePath = ClassBuilder.buildClass(classModel, generationPath);
-		JEClassLoader.loadClass(filePath, loadPath);
-		// load class
-		// Load the target class using its binary name
-		Class<?> loadedClass;
-		try {
-			loadedClass = classLoader.loadClass(ClassBuilderConfig.genrationPackageName + "." + classModel.getName());
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-			throw new ClassLoadException("Failed to load class ["+classModel.getName()+"]" + e.getMessage()); // TODO add error msg
+			// create .java
+			String filePath = ClassBuilder.buildClass(classModel, generationPath);
+			
+			// load .java -> .class
+			JEClassLoader.loadClass(filePath, loadPath);
+			
+			// Load the target class using its binary name
+			Class<?> loadedClass;
+			try {
+				loadedClass = classLoader.loadClass(ClassBuilderConfig.genrationPackageName + "." + classModel.getName());
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+				throw new ClassLoadException("Failed to load class ["+classModel.getName()+"]" + e.getMessage()); // TODO add error msg
+			}
+			builtClasses.put(classModel.getIdClass(), loadedClass);
+			classNames.put(classModel.getName(), classModel.getIdClass());
+			JEClass jeClass = new JEClass(classModel.getWorkspaceId(),classModel.getIdClass(), classModel.getName(), filePath, classType);
+			jeClasses.put(classModel.getIdClass(), jeClass);
+			classes.add(jeClass);
 		}
-		builtClasses.put(classId, loadedClass);
-		classNames.put(classModel.getName(), classModel.get_id());
-		JEClass jeClass = new JEClass(workspaceId,classId, classModel.getName(), filePath, classType);
-		jeClasses.put(classModel.get_id(), jeClass);
-		classes.add(jeClass);
+	
 		return classes;
 
 	}

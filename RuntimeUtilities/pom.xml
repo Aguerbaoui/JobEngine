@@ -83,9 +83,20 @@
 			<artifactId>spring-web</artifactId>
 			<version>5.3.1</version>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.json/json -->
+<dependency>
+    <groupId>org.json</groupId>
+    <artifactId>json</artifactId>
+    <version>20210307</version>
+</dependency>
 		
 
-		
+		<dependency>
+			<groupId>org.burningwave</groupId>
+			<artifactId>core</artifactId>
+			<version>8.12.2</version>
+		</dependency>
+
 	</dependencies>
 
 </project>

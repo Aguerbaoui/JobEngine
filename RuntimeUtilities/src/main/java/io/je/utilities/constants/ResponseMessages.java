@@ -25,9 +25,10 @@ public class ResponseMessages {
 	public static final String STOPPING_PROJECT = "Stopped project";
 
 	public static final String TOPIC_ADDED = "Added topics successfully";
-	
-	
-	
+
+	public static final String EMPTY_SCRIPT = "Script block must have a valid script";
+
+
 	//****************************************EVENTS**************************************************
 
 	

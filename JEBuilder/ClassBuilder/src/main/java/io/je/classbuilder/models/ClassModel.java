@@ -2,21 +2,51 @@ package io.je.classbuilder.models;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+
 public class ClassModel {
 	
-	String _id;
+    @JsonProperty(ClassModelAttributeMapping.CLASSID)
+	String idClass;
+    
+    @JsonProperty(ClassModelAttributeMapping.WORKSPACEID)
 	String workspaceId;
+    
+    @JsonProperty(ClassModelAttributeMapping.CLASSNAME)
 	String name;
+    
+    @JsonProperty(ClassModelAttributeMapping.ATTRIBUTES)
 	List<FieldModel> attributes;
+    
+    @JsonProperty(ClassModelAttributeMapping.BASETYPES)
 	List<String> baseTypes;
+    
+    @JsonProperty(ClassModelAttributeMapping.METHODS)
 	List<MethodModel> methods;
+    
+    @JsonProperty(ClassModelAttributeMapping.ISCLASS)
 	boolean isClass;
+    
+    @JsonProperty(ClassModelAttributeMapping.ISINTERFACE)
 	boolean isInterface;
+    
+    @JsonProperty(ClassModelAttributeMapping.ISTRUCT)
 	boolean isStruct;
+    
+    @JsonProperty(ClassModelAttributeMapping.ISENUM)
 	boolean isEnum;
+    
+    @JsonProperty(ClassModelAttributeMapping.VISIBILITY)
 	String classVisibility;
+    
+    @JsonProperty(ClassModelAttributeMapping.DEPENDENTENTITIES)
 	List<String> dependentEntities;
+    
+    @JsonProperty(ClassModelAttributeMapping.INHERITANCESEMANTICS)
 	String inheritanceSemantics;
+    
+    @JsonProperty(ClassModelAttributeMapping.IMPORTS)
 	List<String> imports;
 	
 	
@@ -27,15 +57,16 @@ public class ClassModel {
 	public void setInheritanceSemantics(String inheritanceSemantics) {
 		this.inheritanceSemantics = inheritanceSemantics;
 	}
-	public String get_id() {
-		return _id;
+	
+	
+	
+	
+	public String getIdClass() {
+		return idClass;
 	}
-	public void set_id(String _id) {
-		this._id = _id;
+	public void setIdClass(String idClass) {
+		this.idClass = idClass;
 	}
-	
-	
-	
 	public String getWorkspaceId() {
 		return workspaceId;
 	}
@@ -112,11 +143,13 @@ public class ClassModel {
 	}
 	@Override
 	public String toString() {
-		return "ClassModel [_id=" + _id + ", name=" + name + ", attributes=" + attributes + ", baseTypes=" + baseTypes
-				+ ", isClass=" + isClass + ", isInterface=" + isInterface + ", isStruct=" + isStruct + ", isEnum="
-				+ isEnum + ", classVisibility=" + classVisibility + ", dependentEntities=" + dependentEntities
-				+ ", imports=" + imports + "]";
+		return "ClassModel [idClass=" + idClass + ", workspaceId=" + workspaceId + ", name=" + name + ", attributes="
+				+ attributes + ", baseTypes=" + baseTypes + ", methods=" + methods + ", isClass=" + isClass
+				+ ", isInterface=" + isInterface + ", isStruct=" + isStruct + ", isEnum=" + isEnum
+				+ ", classVisibility=" + classVisibility + ", dependentEntities=" + dependentEntities
+				+ ", inheritanceSemantics=" + inheritanceSemantics + ", imports=" + imports + "]";
 	}
+	
 
 	
 }

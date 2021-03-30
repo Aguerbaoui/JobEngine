@@ -2,24 +2,30 @@ package io.je.utilities.classloader;
 
 
 import java.io.File;
-import java.net.URL;
-import java.net.URLClassLoader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
+import java.lang.reflect.Modifier;
+import java.util.*;
 import javax.tools.JavaCompiler;
 import javax.tools.StandardJavaFileManager;
 import javax.tools.StandardLocation;
 import javax.tools.ToolProvider;
 
+import io.je.utilities.config.ConfigurationConstants;
+import io.je.utilities.constants.ClassBuilderConfig;
 import io.je.utilities.exceptions.ClassLoadException;
 import io.je.utilities.logger.JELogger;
+import org.burningwave.core.Virtual;
+import org.burningwave.core.classes.ClassSourceGenerator;
+import org.burningwave.core.classes.FunctionSourceGenerator;
+import org.burningwave.core.classes.TypeDeclarationSourceGenerator;
+import org.burningwave.core.classes.UnitSourceGenerator;
 
 /*
  * class responsible for loading user defined classes
  */
 public class JEClassLoader {
+
+	static String loadPath =  ConfigurationConstants.runnerClassLoadPath;
+	static String generationPath = ConfigurationConstants.classGenerationPath;
 
 	
 	/*
@@ -61,6 +67,52 @@ public class JEClassLoader {
 			JELogger.info(JEClassLoader.class, e.getMessage());
 			throw new ClassLoadException("failed to load class");
 		}
-		
+
+	}
+	public static void generateScriptTaskClass(String name, String javaCode) {
+		UnitSourceGenerator unitSG = UnitSourceGenerator.create(ClassBuilderConfig.genrationPackageName).addClass(
+				ClassSourceGenerator.create(
+						TypeDeclarationSourceGenerator.create(name)
+				).addModifier(
+						Modifier.PUBLIC
+				).addMethod(
+						FunctionSourceGenerator.create("executeScript")
+								.setReturnType(
+										TypeDeclarationSourceGenerator.create(void.class)
+								)
+								.addModifier(Modifier.PUBLIC)
+								.addModifier(Modifier.STATIC)
+								.addBodyCodeLine(javaCode)
+				).addConcretizedType(Virtual.class));
+		unitSG.addImport("io.je.utilities.logger.JELogger");
+		unitSG.addImport("java.lang.*");
+		unitSG.addImport("java.util.*");
+		unitSG.addImport("java.sql.*");
+		unitSG.addImport("javax.sql.*");
+
+		System.out.println(unitSG.make());
+		String filePath= generationPath + "\\" + ClassBuilderConfig.genrationPackageName  + "\\" + name +".java" ;
+		File file = new File(generationPath);
+		file.delete();
+		unitSG.storeToClassPath(generationPath);
+		try {
+			JEClassLoader.loadClass(filePath, loadPath);
+		} catch (ClassLoadException e) {
+			e.printStackTrace();
+		}
+		/*try {
+			Class<?> clazz = Class.forName("classes." + name);
+			Method method
+					= clazz.getDeclaredMethods()[0];
+			method.invoke(null);
+		} catch (ClassNotFoundException | IllegalAccessException | InvocationTargetException e) {
+			e.printStackTrace();
+		}*/
+	}
+	public static void main(String args[]) {
+		String a = "C:\\Program Files\\Integration Objects\\Integration Objects' SmartIoT Highway\\Components\\Tomcat";
+		a = a.substring(0, a.indexOf("Components") -1);
+		a = a + "\\JobEngine\\Builder\\properties";
+		System.out.println(a);
 	}
 }
