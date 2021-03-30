@@ -19,7 +19,7 @@ public class FactorialBlock extends SingleInputArithmeticBlock {
 	
 	@Override
 	protected String getFormula() {
-		return "JECalculator.factorial( " + asDouble(getInputRefName(0))+ ")" ;
+		return "JECalculator.factorial( " + getInputRefName(0)+ ")" ;
 	}
 
 

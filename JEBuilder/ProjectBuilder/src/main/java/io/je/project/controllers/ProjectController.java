@@ -35,7 +35,7 @@ public class ProjectController {
 	 * Get the list of all projects
 	 */
 	@GetMapping("/getAllProjects")
-	public ResponseEntity<?> getAllProjects(@PathVariable String projectId) {
+	public ResponseEntity<?> getAllProjects() {
 		Collection<?> projects = null;
 		try {
 			projects = projectService.getAllProjects().get();
