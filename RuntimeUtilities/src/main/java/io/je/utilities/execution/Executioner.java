@@ -11,8 +11,8 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
 
-import org.influxdb.InfluxDB;
-import org.influxdb.InfluxDBFactory;
+//import org.influxdb.InfluxDB;
+//import org.influxdb.InfluxDBFactory;
 
 public class Executioner {
 
@@ -35,7 +35,7 @@ public class Executioner {
     }
     
     public static void writeMonitoringMessageToInfluxDb(MessageModel messageModel) {
-    	InfluxDB influxDB = InfluxDBFactory.connect("http://localhost:8086", "", "");
+    	//InfluxDB influxDB = InfluxDBFactory.connect("http://localhost:8086", "io", "io.123");
 
     }
     
