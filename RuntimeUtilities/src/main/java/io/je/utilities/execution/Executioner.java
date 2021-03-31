@@ -34,8 +34,9 @@ public class Executioner {
 
 
 
-    public static void writeToDataModel(String request)
+    public static void writeToInstance(String instanceId, String attributeName, String value)
     {
+    	String request = generateRequest(instanceId,attributeName,value);
     	
     	try
     	{
@@ -66,6 +67,21 @@ public class Executioner {
 
 
 
+/*
+ * generate data model write request 
+ */
+    private static String generateRequest(String instanceId, String attributeName, String attributeNewValue) {
+    	 String req = "{\r\n"
+			 		+ "   \"InstanceId\":\"" +instanceId+"\",\r\n"
+			 		+ "   \"Attributes\":[\r\n"
+			 		+ "      {\r\n"
+			 		+ "         \"Name\":\""+attributeName+"\",\r\n"
+			 		+ "         \"Value\":\""+attributeNewValue+"\"\r\n"
+			 		+ "      }\r\n"
+			 		+ "   ]\r\n"
+			 		+ "}";
+		return req;
+	}
 
     public static void executeScript(String name) {
     	new Thread(() -> {

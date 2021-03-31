@@ -575,13 +575,6 @@ public class WorkflowService {
         c.setIdClass(id);
         c.setName(name);
         c.setClassVisibility("public");
-        List<String> imports = new ArrayList<>();
-        imports.add("io.je.utilities.logger.JELogger");
-        imports.add("java.lang.*");
-        imports.add("java.util.*");
-        imports.add("java.sql.*");
-        imports.add("javax.sql.*");
-        c.setImports(imports);
         MethodModel m = new MethodModel();
         m.setMethodName("executeScript");
         m.setReturnType("VOID");

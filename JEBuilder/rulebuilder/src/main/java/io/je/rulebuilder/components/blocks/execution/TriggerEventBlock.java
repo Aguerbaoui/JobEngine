@@ -2,7 +2,6 @@ package io.je.rulebuilder.components.blocks.execution;
 
 import io.je.rulebuilder.components.blocks.ExecutionBlock;
 import io.je.rulebuilder.models.BlockModel;
-import io.je.utilities.exceptions.EventException;
 
 public class TriggerEventBlock extends ExecutionBlock {
 	
