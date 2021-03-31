@@ -4,13 +4,19 @@ import io.je.utilities.apis.JERunnerAPIHandler;
 import io.je.utilities.config.JEConfiguration;
 import io.je.utilities.exceptions.JERunnerErrorException;
 import io.je.utilities.logger.JELogger;
+import io.je.utilities.monitoring.MessageModel;
+
 import io.je.utilities.zmq.ZMQRequester;
+
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
+
+//import org.influxdb.InfluxDB;
+//import org.influxdb.InfluxDBFactory;
 
 public class Executioner {
 
@@ -31,6 +37,12 @@ public class Executioner {
 		
 		
     }
+    
+    public static void writeMonitoringMessageToInfluxDb(MessageModel messageModel) {
+    	//InfluxDB influxDB = InfluxDBFactory.connect("http://localhost:8086", "io", "io.123");
+
+    }
+    
 
 
 
@@ -97,5 +109,7 @@ public class Executioner {
             e.printStackTrace();
         }
     }
+
+
 
 }

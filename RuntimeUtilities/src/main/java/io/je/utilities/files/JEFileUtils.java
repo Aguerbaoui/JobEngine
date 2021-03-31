@@ -38,7 +38,7 @@ public class JEFileUtils {
 		return content;
 	}
 
-	public static void deleteFilesForPathByPrefix(final String path, final String prefix) {
+	public static void deleteFilesInPathByPrefix(final String path, final String prefix) {
 		try {
 		File directory = new File(path);
 		if(directory.listFiles()!=null)
