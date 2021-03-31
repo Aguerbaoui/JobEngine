@@ -54,6 +54,10 @@ public class ResponseMessages {
 
 	public static final String RULE_ADDED_SUCCESSFULLY = " Rule added successfully.";
 
+	public static final String VAR_ADDED_SUCCESSFULLY = " Variable added successfully.";
+
+	public static final String VAR_DELETED = "Variable was sucessfully deleted ";
+
 	public static final String FAILED_TO_ADD_RULE = "Failed to add rule.";
 	
 	// rule update 

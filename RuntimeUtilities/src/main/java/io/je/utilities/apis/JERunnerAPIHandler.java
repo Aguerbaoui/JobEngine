@@ -290,4 +290,16 @@ public class JERunnerAPIHandler {
         JELogger.trace(" Sending delete workflow request to runner, project id = " + projectId + "workflow id = " + workflowId);
          sendDeleteRequest(requestUrl);
     }
+
+    public static void addVariable(String projectId, String varId, HashMap<String, Object> body) throws InterruptedException, JERunnerErrorException, ExecutionException {
+        String url = JEConfiguration.getRuntimeManagerURL()+ APIConstants.ADD_VARIABLE;
+        JELogger.trace(" Sending add variable request to runner, project id = " + projectId + "variable id = " + varId);
+        sendRequestWithBody(url, body);
+    }
+
+    public static void deleteVariable(String projectId, String varId) throws InterruptedException, JERunnerErrorException, ExecutionException {
+        String url = JEConfiguration.getRuntimeManagerURL()+ DELETE_VARIABLE + "/" + projectId + "/" + varId;
+        JELogger.trace(" Sending delete variable request to runner, project id = " + projectId + " var id = " + varId);
+        sendDeleteRequest(url);
+    }
 }

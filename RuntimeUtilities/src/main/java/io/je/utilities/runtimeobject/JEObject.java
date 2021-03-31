@@ -34,7 +34,8 @@ public abstract class JEObject {
 
     //TODO: to be deleted. Only constructor with fields needs to be kept.
     protected JEObject() {
-
+        this.jeObjectLastUpdate = LocalDateTime.now();
+        this.jeObjectCreationDate = LocalDateTime.now();
     }
 
     public String getJobEngineElementID() {
