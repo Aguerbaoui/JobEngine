@@ -508,7 +508,7 @@ public class WorkflowService {
             ScriptBlock b = (ScriptBlock) project.getWorkflowById(block.getWorkflowId()).getAllBlocks().get(block.getId());
             b.setName((String) block.getAttributes().get(NAME));
             b.setScript((String) block.getAttributes().get(SCRIPT));
-            ClassModel c = getClassModel(b.getJobEngineElementID(), b.getName(), b.getScript());
+            ClassModel c = getClassModel(b.getJobEngineElementID(), project.getWorkflowById(block.getWorkflowId()).getWorkflowName()+b.getName(), b.getScript());
             classService.addClass(c);
             //JEClassLoader.generateScriptTaskClass(b.getName(), b.getScript());
             project.addBlockToWorkflow(b);

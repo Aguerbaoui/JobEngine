@@ -4,6 +4,8 @@ import io.je.utilities.apis.JERunnerAPIHandler;
 import io.je.utilities.config.JEConfiguration;
 import io.je.utilities.constants.APIConstants;
 import io.je.utilities.logger.JELogger;
+import io.je.utilities.string.JEStringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.HashMap;
 
@@ -117,5 +119,13 @@ public class JobEngine {
         }
     }
 
-
+    /*
+    * Send user message
+    * */
+    public static void informUser(String message) {
+        if(!JEStringUtils.isEmpty(message)) {
+            JELogger.info(message);
+            //send to monitoring when its ready
+        }
+    }
 }

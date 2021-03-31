@@ -68,16 +68,18 @@ public class Executioner {
 
 
     public static void executeScript(String name) {
-        try {
-            Class<?> clazz = Class.forName("classes." + name);
-            Method method
-                    = clazz.getDeclaredMethods()[0];
-            method.invoke(null);
-        } catch (Exception e) {
-            JELogger.info("Failed to execute script in script task\n");
-            JELogger.info(Arrays.toString(e.getStackTrace()));
-            e.printStackTrace();
-        }
+    	new Thread(() -> {
+			try {
+				Class<?> clazz = Class.forName("classes." + name);
+				Method method
+						= clazz.getDeclaredMethods()[0];
+				method.invoke(null);
+			} catch (Exception e) {
+				JELogger.info("Failed to execute script in script task\n");
+				JELogger.info(Arrays.toString(e.getStackTrace()));
+				e.printStackTrace();
+			}
+		}).start();
     }
 
 }
