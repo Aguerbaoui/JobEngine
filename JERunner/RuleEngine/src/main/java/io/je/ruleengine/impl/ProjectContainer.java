@@ -176,7 +176,7 @@ public class ProjectContainer {
 			if (t1 != null) {
 				kieSession.halt();
 			}
-			JELogger.error(ProjectContainer.class, RuleEngineErrors.FailedToFireRules);
+			JELogger.error(ProjectContainer.class, RuleEngineErrors.failedToFireRules);
 			throw new RulesNotFiredException("");
 		}
 
@@ -454,7 +454,7 @@ public class ProjectContainer {
 			addRuleToKieFileSystem(rule);
 			updateContainer();
 		} catch (Exception e) {
-			JELogger.error(ProjectContainer.class, RuleEngineErrors.FailedToUpdateRule + e.getMessage());
+			JELogger.error(ProjectContainer.class, RuleEngineErrors.failedToUpdateRule + e.getMessage());
 			return false;
 		}
 
@@ -482,8 +482,8 @@ public class ProjectContainer {
 				deleteRuleFromKieFileSystem(rule);
 				updateContainer();
 			} catch (Exception e) {
-				JELogger.error(ProjectContainer.class, RuleEngineErrors.FailedToDeleteRule + e.getMessage());
-				throw new DeleteRuleException(RuleEngineErrors.FailedToDeleteRule);
+				JELogger.error(ProjectContainer.class, RuleEngineErrors.failedToDeleteRule + e.getMessage());
+				throw new DeleteRuleException(RuleEngineErrors.failedToDeleteRule);
 			}
 
 			if (status != Status.RUNNING) {
