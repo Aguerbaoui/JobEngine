@@ -97,7 +97,7 @@ public class ClassService {
 			{
 				String classId= clazz.getClassId();
 				String workspaceId = clazz.getWorkspaceId();
-				if (!loadedClasses.containsKey(classId)) {
+				if (!loadedClasses.containsKey(classId) && workspaceId != null) {
 					List<JEClass> builtClasses =addDBClassesToBuilder(workspaceId, classId);
 					for (JEClass _class : builtClasses) {
 						loadedClasses.put(_class.getClassId(), _class);

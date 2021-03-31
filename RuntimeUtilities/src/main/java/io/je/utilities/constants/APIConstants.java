@@ -12,6 +12,10 @@ public class APIConstants {
 
     public final static String RUN_WORKFLOW = "/workflow/runWorkflow/";
 
+    public final static String ADD_VARIABLE = "/variable/addVariable/";
+
+    public final static String DELETE_VARIABLE = "/variable/deleteVariable/";
+
 
     
     public final static String COMPILERULE= "/rule/compileRule";

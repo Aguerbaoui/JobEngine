@@ -6,6 +6,7 @@ import io.je.runtime.events.EventManager;
 import io.je.runtime.models.ClassModel;
 import io.je.runtime.models.RuleModel;
 import io.je.runtime.repos.ClassRepository;
+import io.je.runtime.repos.VariableManager;
 import io.je.runtime.ruleenginehandler.RuleEngineHandler;
 import io.je.runtime.workflow.WorkflowEngineHandler;
 import io.je.serviceTasks.ActivitiTaskManager;
@@ -15,18 +16,17 @@ import io.je.utilities.apis.BodyType;
 import io.je.utilities.apis.HttpMethod;
 import io.je.utilities.beans.JEData;
 import io.je.utilities.beans.JEEvent;
+import io.je.utilities.beans.JEVariable;
 import io.je.utilities.classloader.JEClassLoader;
 import io.je.utilities.config.ConfigurationConstants;
 import io.je.utilities.constants.ClassBuilderConfig;
 import io.je.utilities.constants.WorkflowConstants;
 import io.je.utilities.exceptions.*;
 import io.je.utilities.logger.JELogger;
-import io.je.utilities.models.EventModel;
-import io.je.utilities.models.EventType;
-import io.je.utilities.models.TaskModel;
-import io.je.utilities.models.WorkflowModel;
+import io.je.utilities.models.*;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.Map.Entry;
 
@@ -338,5 +338,22 @@ public class RuntimeDispatcher {
     public void removeWorkflow(String projectId, String workflowId) {
         JELogger.info("Removing workflow from runner with id = " + workflowId + " in project id = " + projectId);
         WorkflowEngineHandler.deleteProcess(projectId,workflowId);
+    }
+
+    public void addVariable(VariableModel variableModel) {
+        JEVariable var = new JEVariable();
+        var.setVariableName(variableModel.getName());
+        var.setJobEngineElementID(variableModel.getId());
+        var.setJobEngineProjectID(variableModel.getProjectId());
+        var.setVariableTypeString(variableModel.getType());
+        var.setVariableTypeClass(VariableManager.getType(variableModel.getType()));
+        var.setVariableValue(variableModel.getValue());
+        var.setJeObjectCreationDate(LocalDateTime.now());
+        var.setJeObjectLastUpdate(LocalDateTime.now());
+        VariableManager.addVariable(var);
+    }
+
+    public void deleteVariable(String projectId, String varId) {
+        VariableManager.removeVariable(projectId, varId);
     }
 }

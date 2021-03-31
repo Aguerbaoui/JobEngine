@@ -98,7 +98,7 @@ public class JEToBpmnMapper {
             }
 
             else if (block instanceof ScriptBlock && !block.isProcessed()) {
-                process.addFlowElement(ModelBuilder.createServiceTask(block.getJobEngineElementID(), block.getName(),
+                process.addFlowElement(ModelBuilder.createServiceTask(block.getJobEngineElementID(), wf.getWorkflowName()+block.getName(),
                         WorkflowConstants.SCRIPT_TASK_IMPLEMENTATION));
             }
 

@@ -34,6 +34,7 @@ public class WorkflowConstants {
     public static final String BPMN_PATH = "D:\\processes\\";
     public static final String BPMN_EXTENSION = ".bpmn";
     public static final String WEBSERVICETASK_TYPE = "webtask";
+    public static final String INFORMSERVICETASK_TYPE = "inform";
 
     public static final  String WEB_TASK_IMPLEMENTATION = "io.je.serviceTasks.WebApiServiceTask";
     public static final String SCRIPT_TASK_IMPLEMENTATION = "io.je.serviceTasks.ScriptServiceTask";

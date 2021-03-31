@@ -44,7 +44,7 @@ public class ClassManager {
 		JELogger.debug(ClassManager.class, "building Class [className = "+classModel.getName()+"]");
 		ArrayList<JEClass> classes = new ArrayList<>();
 		
-		if(!builtClasses.containsKey(classModel.getIdClass()))
+		if(!builtClasses.containsKey(classModel.getIdClass()) || classModel.getWorkspaceId() == null)
 		{
 			// load class type ( interface/enum or class)
 			ClassType classType = getClassType(classModel);
