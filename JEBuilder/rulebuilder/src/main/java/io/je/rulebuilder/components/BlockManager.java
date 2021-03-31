@@ -1,20 +1,15 @@
 package io.je.rulebuilder.components;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import io.je.rulebuilder.components.blocks.Block;
 import io.je.rulebuilder.components.blocks.ExecutionBlock;
-import io.je.rulebuilder.components.blocks.getter.AttributeGetterBlock;
 import io.je.utilities.constants.RuleBuilderErrors;
-import io.je.utilities.exceptions.AddRuleBlockException;
 import io.je.utilities.exceptions.RuleBuildFailedException;
 import io.je.utilities.logger.JELogger;
-import io.je.utilities.runtimeobject.ClassDefinition;
 
 public class BlockManager {
 

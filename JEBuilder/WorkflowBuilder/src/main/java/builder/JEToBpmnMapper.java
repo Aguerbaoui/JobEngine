@@ -15,6 +15,8 @@ import org.activiti.bpmn.model.Process;
 
 import java.util.ArrayList;
 
+import static builder.ModelBuilder.getListener;
+
 public class JEToBpmnMapper {
 
     /*
@@ -47,17 +49,9 @@ public class JEToBpmnMapper {
      * */
     private static void addListeners(Process process) {
         JELogger.trace(" Adding listeners to process id = " + process.getName());
-        ActivitiListener startProcessListener = new ActivitiListener();
-        startProcessListener.setImplementation(WorkflowConstants.PROCESS_LISTENER_IMPLEMENTATION);
-        startProcessListener.setEvent(WorkflowConstants.START_PROCESS);
-        startProcessListener.setImplementationType(ImplementationType.IMPLEMENTATION_TYPE_CLASS);
-        ActivitiListener endProcessListener = new ActivitiListener();
-        endProcessListener.setImplementation(WorkflowConstants.PROCESS_LISTENER_IMPLEMENTATION);
-        endProcessListener.setImplementationType(ImplementationType.IMPLEMENTATION_TYPE_CLASS);
-        endProcessListener.setEvent(WorkflowConstants.END_PROCESS);
         ArrayList<ActivitiListener> listeners = new ArrayList<ActivitiListener>();
-        listeners.add(startProcessListener);
-        listeners.add(endProcessListener);
+        listeners.add(getListener(WorkflowConstants.PROCESS_LISTENER_IMPLEMENTATION, WorkflowConstants.START_PROCESS, ImplementationType.IMPLEMENTATION_TYPE_CLASS));
+        listeners.add(getListener(WorkflowConstants.PROCESS_LISTENER_IMPLEMENTATION, WorkflowConstants.END_PROCESS, ImplementationType.IMPLEMENTATION_TYPE_CLASS));
         ModelBuilder.setListenersForProcess(process, listeners);
 
     }

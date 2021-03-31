@@ -35,7 +35,6 @@ public class ConfigurationController {
 
 		//  System.setProperty("drools.compiler", "JANINO");
 		//  System.setProperty("drools.dialect.java.compiler", "JANINO");
-	        JELogger.info(" drools compiler is : " + System.getProperty("drools.compiler"));
 		JEConfiguration.updateConfig(configModel);
 		if(JEConfiguration.getDroolsDateFormat()!=null)
 		{

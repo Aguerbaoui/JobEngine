@@ -5,6 +5,7 @@ import io.je.runtime.data.DataListener;
 import io.je.runtime.events.EventManager;
 import io.je.runtime.models.ClassModel;
 import io.je.runtime.models.RuleModel;
+import io.je.runtime.repos.ClassRepository;
 import io.je.runtime.ruleenginehandler.RuleEngineHandler;
 import io.je.runtime.workflow.WorkflowEngineHandler;
 import io.je.serviceTasks.ActivitiTaskManager;
@@ -14,8 +15,9 @@ import io.je.utilities.apis.BodyType;
 import io.je.utilities.apis.HttpMethod;
 import io.je.utilities.beans.JEData;
 import io.je.utilities.beans.JEEvent;
-import io.je.utilities.classloader.ClassManager;
 import io.je.utilities.classloader.JEClassLoader;
+import io.je.utilities.config.ConfigurationConstants;
+import io.je.utilities.constants.ClassBuilderConfig;
 import io.je.utilities.constants.WorkflowConstants;
 import io.je.utilities.exceptions.*;
 import io.je.utilities.logger.JELogger;
@@ -185,7 +187,7 @@ public class RuntimeDispatcher {
                 if(attributes.get("script") != null) {
                     scriptTask.setScript((String) attributes.get("script"));
                 }
-                JEClassLoader.generateScriptTaskClass(scriptTask.getTaskName(), scriptTask.getScript());
+                //JEClassLoader.generateScriptTaskClass(scriptTask.getTaskName(), scriptTask.getScript());
                 process.addActivitiTask(scriptTask);
                 ActivitiTaskManager.addTask(scriptTask);
             }
@@ -226,7 +228,13 @@ public class RuntimeDispatcher {
     // add class
     public void addClass(ClassModel classModel) throws ClassLoadException {
         JELogger.trace(" Adding class to runner, class name =  " + classModel.getClassName());
-        ClassManager.loadClass(classModel.getClassId(), classModel.getClassName(), classModel.getClassPath());
+       JEClassLoader.loadClass(classModel.getClassPath(), ConfigurationConstants.runnerClassLoadPath);
+       try {
+    	   ClassRepository.addClass(classModel.getClassId(), RuntimeDispatcher.class.getClassLoader().loadClass(ClassBuilderConfig.genrationPackageName + "." + classModel.getClassName())); ;
+	} catch (ClassNotFoundException e) {
+		throw new ClassLoadException("Failed to load class to runner. [class :"+ classModel.getClassName() +" ]"); 
+	}
+        
 
     }
 

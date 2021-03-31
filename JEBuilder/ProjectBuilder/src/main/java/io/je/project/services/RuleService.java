@@ -15,7 +15,6 @@ import io.je.utilities.exceptions.*;
 import io.je.utilities.files.JEFileUtils;
 import io.je.utilities.logger.JELogger;
 import io.je.utilities.ruleutils.RuleIdManager;
-import io.je.utilities.runtimeobject.ClassDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -236,17 +235,19 @@ public class RuleService {
         // retrieve topic names from getter blocks
         if (blockModel.getOperationId() == 4002 && blockModel.getBlockConfiguration() != null
                 && blockModel.getBlockConfiguration().getClassId() != null) {
-            ClassDefinition classDef = new ClassDefinition(blockModel.getBlockConfiguration().getWorkspaceId(),
-                    blockModel.getBlockConfiguration().getClassId());
+          
+            String classId =  blockModel.getBlockConfiguration().getClassId();
+            String workspaceId=blockModel.getBlockConfiguration().getWorkspaceId();
+            
            if (blockExists)
            {
-        	   rule.updateTopic(((AttributeGetterBlock)oldblock).getClassId(), classDef.getClassId());
+        	   rule.updateTopic(((AttributeGetterBlock)oldblock).getClassId(), classId);
            }
            else
            {
-        	   rule.addTopic(classDef.getClassId());
+        	   rule.addTopic(classId);
            }
-            classService.addClass(classDef);
+            classService.addClass(workspaceId,classId);
         }
         
         project.setBuilt(false);

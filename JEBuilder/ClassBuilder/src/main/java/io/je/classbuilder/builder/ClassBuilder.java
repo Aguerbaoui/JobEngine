@@ -67,6 +67,11 @@ public class ClassBuilder {
 	private static void addImports(List<String> imports, UnitSourceGenerator unitSG ) {
 		//TODO : remove harcoded imports
 		unitSG.addImport("com.fasterxml.jackson.annotation.JsonProperty");
+		unitSG.addImport("io.je.utilities.logger.JELogger");
+		unitSG.addImport("java.lang.*");
+		unitSG.addImport("java.util.*");
+		unitSG.addImport("java.sql.*");
+		unitSG.addImport("javax.sql.*");
 		if (imports != null && !imports.isEmpty()) {
 			{
 				for (String import_ : imports) {
@@ -168,13 +173,13 @@ public class ClassBuilder {
 		if (classModel.getAttributes() != null) {
 			for (FieldModel field : classModel.getAttributes()) {
 				//TODO: all attributes are public because the data def rest api doesn't provide the attribute's modifier
-				newClass.addField(generateField(field).addModifier(Modifier.PUBLIC));
+				newClass.addField(generateField(field).addModifier(getModifier(field.getFieldVisibility())));
 				String attributeName = field.getName();
 				String capitalizedAttributeName = JEStringUtils.capitalize(attributeName);
 				Class<?> attributeType = getType(field.getType());
 				
 				//TODO: all attributes should have a getter ( 
-				if (field.getHasSetter()) {
+				//adding setters
 					FunctionSourceGenerator setter = FunctionSourceGenerator.create("set" + capitalizedAttributeName)
 							.addParameter(VariableSourceGenerator.create(attributeType, attributeName))
 							.setReturnType(TypeDeclarationSourceGenerator.create(void.class))
@@ -182,8 +187,8 @@ public class ClassBuilder {
 							.addAnnotation(new AnnotationSourceGenerator("JsonProperty(\""+attributeName+"\")"))
 							.addBodyCodeLine("this." + attributeName + "=" + attributeName + ";");
 					newClass.addMethod(setter);
-				}
-				if (field.getHasGetter()) {
+				
+				//adding getters
 					FunctionSourceGenerator getter = FunctionSourceGenerator.create("get" + capitalizedAttributeName)
 							.setReturnType(TypeDeclarationSourceGenerator.create(attributeType))
 							.addAnnotation(new AnnotationSourceGenerator("JsonProperty(\""+attributeName+"\")"))
@@ -191,7 +196,7 @@ public class ClassBuilder {
 					newClass.addMethod(getter);
 				}
 
-			}
+			
 		}
 		// methods
 		if (classModel.getMethods() != null) {
@@ -202,10 +207,16 @@ public class ClassBuilder {
 				FunctionSourceGenerator method = FunctionSourceGenerator.create(methodName);
 				method.addModifier(getModifier(methodModifier));
 				method.setReturnType(getType(methodReturnType));
-				method.addBodyCode(methodModel.getCode());
-				for (FieldModel parameter : methodModel.getInputs()) {
-					method.addParameter(generateField(parameter));
+				if(methodModel.getMethodScope() != null) {
+					method.addModifier(getModifier(methodModel.getMethodScope()));
 				}
+				method.addBodyCode(methodModel.getCode());
+				if(methodModel.getInputs() != null) {
+					for (FieldModel parameter : methodModel.getInputs()) {
+						method.addParameter(generateField(parameter));
+					}
+				}
+				newClass.addMethod(method);
 			}
 		}
 
@@ -276,7 +287,7 @@ public class ClassBuilder {
 	 * returns the class type based on a string defining the type
 	 */
 	private static Class<?> getType(String type) throws ClassLoadException {
-		Class<?> classType = null;;
+		Class<?> classType = null;
 		switch (type) {
 		case "BYTE" :
 			classType =  byte.class;
@@ -313,6 +324,9 @@ public class ClassBuilder {
 			break;
 		case "DATETIME":
 			classType =  LocalDateTime.class;
+			break;
+		case "VOID":
+			classType =  void.class;
 			break;
 		default:
 			break; //add default value
@@ -358,6 +372,9 @@ public class ClassBuilder {
 			break;
 		case "ABSTRACT":
 			value = Modifier.ABSTRACT;
+			break;
+		case "STATIC":
+			value = Modifier.STATIC;
 			break;
 		default:
 			// TODO: throw except
