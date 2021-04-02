@@ -282,6 +282,14 @@ public class WorkflowService {
             project.addBlockToWorkflow(b);
         }
 
+        else if(block.getType().equalsIgnoreCase(WorkflowConstants.INFORMSERVICETASK_TYPE)) {
+            InformBlock b = new InformBlock();
+            b.setName((String) block.getAttributes().get(NAME));
+            b.setJobEngineProjectID(block.getProjectId());
+            b.setWorkflowId(block.getWorkflowId());
+            b.setJobEngineElementID(block.getId());
+            project.addBlockToWorkflow(b);
+        }
         else if (block.getType().equalsIgnoreCase(WorkflowConstants.SEQ_FLOW_TYPE)) {
             addSequenceFlow(block.getProjectId(), block.getWorkflowId(),
                     (String) block.getAttributes().get(SOURCE_REF), (String) block.getAttributes().get(TARGET_REF),
@@ -566,6 +574,15 @@ public class WorkflowService {
             project.addBlockToWorkflow(b);
         }
 
+        else if(block.getType().equalsIgnoreCase(WorkflowConstants.INFORMSERVICETASK_TYPE)) {
+            InformBlock b = (InformBlock) project.getWorkflowById(block.getWorkflowId()).getAllBlocks().get(block.getId());
+            b.setName((String) block.getAttributes().get(NAME));
+            b.setJobEngineProjectID(block.getProjectId());
+            b.setWorkflowId(block.getWorkflowId());
+            b.setJobEngineElementID(block.getId());
+            b.setMessage((String) block.getAttributes().get("message"));
+            project.addBlockToWorkflow(b);
+        }
 
     }
 

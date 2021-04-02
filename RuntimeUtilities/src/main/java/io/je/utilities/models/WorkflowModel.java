@@ -16,6 +16,8 @@ public class WorkflowModel {
 
     private boolean triggeredByEvent;
 
+    private String triggerMessage;
+
     private ArrayList<EventModel> events;
 
     private ArrayList<TaskModel> tasks;
@@ -29,6 +31,14 @@ public class WorkflowModel {
         this.events = events;
         this.tasks = tasks;
         this.name = name;
+    }
+
+    public String getTriggerMessage() {
+        return triggerMessage;
+    }
+
+    public void setTriggerMessage(String triggerMessage) {
+        this.triggerMessage = triggerMessage;
     }
 
     public String getDescription() {

@@ -147,6 +147,10 @@ public class JEToBpmnMapper {
                         WorkflowConstants.WEB_TASK_IMPLEMENTATION));
             }
 
+            else if (block instanceof InformBlock && !block.isProcessed()) {
+                process.addFlowElement(ModelBuilder.createServiceTask(block.getJobEngineElementID(), block.getName(),
+                        WorkflowConstants.INFORM_TASK_IMPLEMENTATION));
+            }
             parseWorkflowBlock(wf, block, process, startBlock);
         }
     }

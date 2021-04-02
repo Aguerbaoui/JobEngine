@@ -3,11 +3,14 @@ package io.je.utilities.execution;
 import io.je.utilities.apis.JERunnerAPIHandler;
 import io.je.utilities.config.JEConfiguration;
 import io.je.utilities.constants.APIConstants;
+import io.je.utilities.exceptions.JERunnerErrorException;
 import io.je.utilities.logger.JELogger;
 import io.je.utilities.string.JEStringUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import java.io.IOException;
 import java.util.HashMap;
+import java.util.concurrent.ExecutionException;
 
 public class JobEngine {
 
@@ -27,14 +30,8 @@ public class JobEngine {
     * Add a variable to runner from script task
     * */
     public static void addIntegerVariable(String varId, String varProjectId, String varName, int varValue) {
-        HashMap<String, Object> body = new HashMap<>();
-        body.put("id", varId);
-        body.put("projectId", varProjectId);
-        body.put("name", varName);
-        body.put("type", "int");
-        body.put("value", varValue);
         try {
-            JERunnerAPIHandler.addVariable(varProjectId, varId, body);
+            JERunnerAPIHandler.addVariable(varProjectId, varId, getVariableBody(varId, varProjectId, varName, varValue, "int"));
         } catch (Exception e) {
             JELogger.info("Error adding the variable");
         }
@@ -44,14 +41,8 @@ public class JobEngine {
      * Add a variable to runner from script task
      * */
     public static void addLongVariable(String varId, String varProjectId, String varName, long varValue) {
-        HashMap<String, Object> body = new HashMap<>();
-        body.put("id", varId);
-        body.put("projectId", varProjectId);
-        body.put("name", varName);
-        body.put("type", "long");
-        body.put("value", varValue);
         try {
-            JERunnerAPIHandler.addVariable(varProjectId, varId, body);
+            JERunnerAPIHandler.addVariable(varProjectId, varId, getVariableBody(varId, varProjectId, varName, varValue, "long"));
         } catch (Exception e) {
             JELogger.info("Error adding the variable");
         }
@@ -61,14 +52,8 @@ public class JobEngine {
      * Add a variable to runner from script task
      * */
     public static void addDoubleVariable(String varId, String varProjectId, String varName, double varValue) {
-        HashMap<String, Object> body = new HashMap<>();
-        body.put("id", varId);
-        body.put("projectId", varProjectId);
-        body.put("name", varName);
-        body.put("type", "double");
-        body.put("value", varValue);
         try {
-            JERunnerAPIHandler.addVariable(varProjectId, varId, body);
+            JERunnerAPIHandler.addVariable(varProjectId, varId, getVariableBody(varId, varProjectId, varName, varValue, "double"));
         } catch (Exception e) {
             JELogger.info("Error adding the variable");
         }
@@ -78,14 +63,8 @@ public class JobEngine {
      * Add a variable to runner from script task
      * */
     public static void addStringVariable(String varId, String varProjectId, String varName, String varValue) {
-        HashMap<String, Object> body = new HashMap<>();
-        body.put("id", varId);
-        body.put("projectId", varProjectId);
-        body.put("name", varName);
-        body.put("type", "string");
-        body.put("value", varValue);
         try {
-            JERunnerAPIHandler.addVariable(varProjectId, varId, body);
+            JERunnerAPIHandler.addVariable(varProjectId, varId, getVariableBody(varId, varProjectId, varName, varValue, "string"));
         } catch (Exception e) {
             JELogger.info("Error adding the variable");
         }
@@ -95,19 +74,22 @@ public class JobEngine {
      * Add a variable to runner from script task
      * */
     public static void addBooleanVariable(String varId, String varProjectId, String varName, String varValue) {
-        HashMap<String, Object> body = new HashMap<>();
-        body.put("id", varId);
-        body.put("projectId", varProjectId);
-        body.put("name", varName);
-        body.put("type", "boolean");
-        body.put("value", varValue.toLowerCase());
         try {
-            JERunnerAPIHandler.addVariable(varProjectId, varId, body);
+            JERunnerAPIHandler.addVariable(varProjectId, varId, getVariableBody(varId, varProjectId, varName, varValue, "boolean"));
         } catch (Exception e) {
             JELogger.info("Error adding the variable");
         }
     }
 
+    public static HashMap<String, Object> getVariableBody(String varId, String varProjectId, String varName, Object varValue, String type) {
+        HashMap<String, Object> body = new HashMap<>();
+        body.put("id", varId);
+        body.put("projectId", varProjectId);
+        body.put("name", varName);
+        body.put("type", type);
+        body.put("value", varValue);
+        return body;
+    }
     /*
      * Add a variable to runner from script task
      * */
@@ -126,6 +108,17 @@ public class JobEngine {
         if(!JEStringUtils.isEmpty(message)) {
             JELogger.info(message);
             //send to monitoring when its ready
+        }
+    }
+
+    /*
+    * Trigger event from script
+    * */
+    public static void triggerEvent(String projectId, String eventId) {
+        try {
+            JERunnerAPIHandler.triggerEvent(eventId, projectId);
+        } catch (Exception e) {
+            JELogger.info("Error triggering event");
         }
     }
 }
