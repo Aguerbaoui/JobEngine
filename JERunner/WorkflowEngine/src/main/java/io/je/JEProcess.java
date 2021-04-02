@@ -14,6 +14,8 @@ public class JEProcess {
 
     private boolean triggeredByEvent;
 
+    private String triggerMessage;
+
     private boolean running = false;
 
     private boolean deployed = false;
@@ -38,6 +40,15 @@ public class JEProcess {
         activitiTasks = new HashMap<>();
 
     }
+
+    public String getTriggerMessage() {
+        return triggerMessage;
+    }
+
+    public void setTriggerMessage(String triggerMessage) {
+        this.triggerMessage = triggerMessage;
+    }
+
     public boolean isTriggeredByEvent() {
         return triggeredByEvent;
     }

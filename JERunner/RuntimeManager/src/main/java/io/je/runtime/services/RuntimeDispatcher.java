@@ -10,6 +10,7 @@ import io.je.runtime.repos.VariableManager;
 import io.je.runtime.ruleenginehandler.RuleEngineHandler;
 import io.je.runtime.workflow.WorkflowEngineHandler;
 import io.je.serviceTasks.ActivitiTaskManager;
+import io.je.serviceTasks.InformTask;
 import io.je.serviceTasks.ScriptTask;
 import io.je.serviceTasks.WebApiTask;
 import io.je.utilities.apis.BodyType;
@@ -161,6 +162,9 @@ public class RuntimeDispatcher {
     public void addWorkflow(WorkflowModel wf) {
         JELogger.trace(" Adding workflow to engine with key = " + wf.getKey() + " in project id = " + wf.getProjectId());
         JEProcess process = new JEProcess(wf.getKey(), wf.getName(), wf.getPath(), wf.getProjectId(), wf.isTriggeredByEvent());
+        if(wf.isTriggeredByEvent()) {
+           process.setTriggerMessage(wf.getTriggerMessage());
+        }
         for(TaskModel task: wf.getTasks()) {
             if(task.getType().equals(WorkflowConstants.WEBSERVICETASK_TYPE)) {
                 WebApiTask webApiTask = new WebApiTask();
@@ -190,6 +194,18 @@ public class RuntimeDispatcher {
                 //JEClassLoader.generateScriptTaskClass(scriptTask.getTaskName(), scriptTask.getScript());
                 process.addActivitiTask(scriptTask);
                 ActivitiTaskManager.addTask(scriptTask);
+            }
+
+            if(task.getType().equals(WorkflowConstants.INFORMSERVICETASK_TYPE)) {
+                InformTask informTask = new InformTask();
+                informTask.setTaskName(task.getTaskName());
+                informTask.setTaskId(task.getTaskId());
+                HashMap<String, Object> attributes = task.getAttributes();
+                if(attributes.get("message") != null) {
+                    informTask.setMessage((String) attributes.get("message"));
+                }
+                process.addActivitiTask(informTask);
+                ActivitiTaskManager.addTask(informTask);
             }
         }
         WorkflowEngineHandler.addProcess(process);

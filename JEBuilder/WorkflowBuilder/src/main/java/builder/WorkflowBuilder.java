@@ -1,6 +1,7 @@
 package builder;
 
 import blocks.WorkflowBlock;
+import blocks.basic.InformBlock;
 import blocks.basic.ScriptBlock;
 import blocks.basic.WebApiBlock;
 import io.je.utilities.apis.JERunnerAPIHandler;
@@ -43,6 +44,7 @@ public class WorkflowBuilder {
         wf.setPath(BPMN_PATH + workflow.getWorkflowName().trim() + BPMN_EXTENSION);
         wf.setProjectId(workflow.getJobEngineProjectID());
         wf.setTriggeredByEvent(workflow.isTriggeredByEvent());
+        wf.setTriggerMessage(workflow.getWorkflowStartBlock().getEventId());
         ArrayList<TaskModel> tasks = new ArrayList<>();
         for(WorkflowBlock block: workflow.getAllBlocks().values()) {
             if(block instanceof WebApiBlock) {
@@ -68,6 +70,16 @@ public class WorkflowBuilder {
                 t.setType(WorkflowConstants.SCRIPTTASK_TYPE);
                 HashMap<String, Object> attributes = new HashMap<>();
                 attributes.put("script", ((ScriptBlock) block).getScript());
+                t.setAttributes(attributes);
+                tasks.add(t);
+            }
+            if(block instanceof InformBlock) {
+                TaskModel t = new TaskModel();
+                t.setTaskName(block.getName());
+                t.setTaskId(block.getJobEngineElementID());
+                t.setType(WorkflowConstants.INFORMSERVICETASK_TYPE);
+                HashMap<String, Object> attributes = new HashMap<>();
+                attributes.put("message", ((InformBlock) block).getMessage());
                 t.setAttributes(attributes);
                 tasks.add(t);
             }
