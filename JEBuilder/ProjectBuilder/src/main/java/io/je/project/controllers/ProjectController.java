@@ -182,7 +182,7 @@ public class ProjectController {
 
 		}
 
-		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, PROJECT_STOPPEd));
+		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, PROJECT_STOPPED));
 	}
 
 	/*

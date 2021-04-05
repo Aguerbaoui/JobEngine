@@ -172,8 +172,8 @@ public class ProjectService {
             saveProject(projectId).get();
 
         } else {
-            JELogger.error(getClass(), JEMessages.PROJECT_STOPPED +" " + projectId);
-            throw new ProjectStatusException(JEMessages.PROJECT_STOPPED);
+            JELogger.error(getClass(), JEMessages.PROJECT_ALREADY_STOPPED +" " + projectId);
+            throw new ProjectStatusException(JEMessages.PROJECT_ALREADY_STOPPED);
         }
 
     }

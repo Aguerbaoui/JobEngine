@@ -49,7 +49,7 @@ public class RuleEngineHandler {
     	}
     	if(ruleModel.getProjectId() == null || ruleModel.getProjectId().isEmpty())
     	{
-    		errorMsg = JEMessages.RULE_PROJECT_ID_NOT_FOUND;
+    		errorMsg = JEMessages.RULE_PROJECT_ID_NULL;
     		throw new RuleFormatNotValidException(errorMsg);
     	}
     	

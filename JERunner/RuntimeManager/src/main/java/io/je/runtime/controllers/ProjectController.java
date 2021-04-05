@@ -66,7 +66,7 @@ public class ProjectController {
     	//TODO: add failed to stop project exception
             dispatcher.stopProject(projectId);
 
-        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.PROJECT_STOPPEd));
+        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.PROJECT_STOPPED));
 
     }
 

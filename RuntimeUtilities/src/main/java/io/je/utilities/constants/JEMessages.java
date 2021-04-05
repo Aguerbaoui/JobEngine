@@ -74,6 +74,10 @@ public class JEMessages {
 	public static final String ADDING_SCRIPTED_RULE = "Adding new scripted rule";
 	public static final String UPDATING_SCRIPTED_RULE = "Updating new scripted rule";
 	public static final String LOADING_RULES = " Getting all rules";
+	public static final String ADDING_RULE = "Adding rule";
+	public static final String UPDATING_RULE = "Updating rule";
+	public static final String COMPILING_RULE = "Compiling rule";
+	public static final String COMPILING_RULES = "Compiling all rules";
 	public static final String LOADING_RULE = "Getting workflow";
 	public static final String ADDING_BLOCK = "Adding block ";
 	public static final String UPDATING_BLOCK = "Updating block ";
@@ -82,6 +86,10 @@ public class JEMessages {
 	public static final String DELETING_RULE_RUNNER = "Deleting rule from runner";
 	public static final String DELETING_BLOCK = "Deleting block ";
 	public static final String BUILDING_RULES = "Building all rules";
+	public static final String BUILDING_RULE = "Building rule";
+	public static final String SENDNG_RULE_TO_RUNNER = "Sending rule build request to runner";
+	public static final String UPDATING_FACT = "Updating fact";
+
 
 	// ****************************************ResponseMessages**************************************************
 
@@ -121,7 +129,7 @@ public class JEMessages {
 
 	public static final String PROJECT_NOT_BUILT = "PROJECT NEEDS BUILD";
 
-	public static final String PROJECT_STOPPED = "PROJECT ALREADY STOPPED";
+	public static final String PROJECT_ALREADY_STOPPED = "PROJECT ALREADY STOPPED";
 
 	public static final String WORKFLOW_ALREADY_RUNNING = "Workflow ALREADY RUNNING";
 
@@ -151,7 +159,7 @@ public class JEMessages {
 
 	public static final String PROJECT_CLOSED = "Project was closed successfully";
 
-	public static final String PROJECT_STOPPEd = "Stopped project";
+	public static final String PROJECT_STOPPED = "Stopped project";
 
 	public static final String TOPIC_ADDED = "Added topics successfully";
 
@@ -216,7 +224,6 @@ public class JEMessages {
 
 	// rule build
 
-	public static final String BUILDING_RULE = "BUILDING_RULE";
 
 	
 	public static final String RULE_WAS_BUILT_SUCCESSFULLY = "Rule was built successfully";
@@ -229,7 +236,6 @@ public class JEMessages {
 
 	public static final String BUILT_EVERYTHING_SUCCESSFULLY = " Built everything successfully";
 
-	public static final String BUILT_EVERYTHING_SUCCESSFULLY1 = "Built everything successfully";
 
 	public static final String ADDED_WORKFLOW_SUCCESSFULLY = "Added workflow successfully";
 
@@ -260,6 +266,7 @@ public class JEMessages {
 	public static final String RULE_ID_NULL = "Rule identifier can't be empty";
 	public static final String RULE_NAME_NULL = "Rule name can't be empty";
 	public static final String PROJECT_ID_NULL = "Project identifier can't be empty";
+	public static final String RULE_PROJECT_ID_NULL = "Rule's project id was not found";
 	public static final String NO_EXECUTION_BLOCK = "Rule must have at least one execution block";
 	public static final String RULE_NOT_FOUND = "No rule with this ID was found";
 	public static final String RULE_EXISTS = "a rule with this Id already exists. ";
@@ -279,7 +286,9 @@ public class JEMessages {
 	public static final String ID_NOT_FOUND = "Failed to read rule id";
 	public static final String RULE_CONTAINS_ERRORS = "Rule contains errors";
 	public static final String RULE_FILE_NOT_FOUND = "Rule file was not found";
-	public static final String RULE_PROJECT_ID_NOT_FOUND = "Rule project id was not found";
+	public static final String INPUT_CONNECTION1 = "Comparison block cannot have ";
+	public static final String INPUT_CONNECTION2 = " input connexions.";
+
 
 	// ****************************************RuleEngine**************************************************
 
@@ -295,14 +304,24 @@ public class JEMessages {
 	public static final String STOPPING_PROJECT_CONTAINER = "Stopping project container execution";
 	public static final String STOPPING_PROJECT_CONTAINER_SUCCESSFULLY = "Project container stopped.";
 	public static final String STOPPING_PROJECT_CONTAINER_FAILED = "Failed to stop project container";
-	public static final String UNEXPECTED_ERROR = "an unexpected error occured";
+	public static final String UNEXPECTED_ERROR = "An unexpected error occured";
 	public static final String RULE_ADDED = "Rule successfully added";
 	public static final String RULE_UPDATED = "Successfully updated rule";
 	public static final String RULE_UPDATE_FAIL = "Failed to update rule";
-	public static final String RULE_DELETED = "rule deleted from engine";
+	public static final String RULE_DELETED = "Rule deleted from engine";
 	public static final String RULE_DELETE_FAIL = "Failed to delete rule";
-	public static final String RULE_COMPILED = "rule compiled successfully";
+	public static final String RULE_COMPILED = "Rule compiled successfully";
 	public static final String RULE_COMPILATION_FAILED = "Failed to compile Rule";
+	public static final String FIRING_ALL_RULES = "Firing all rule..";
+	public static final String NO_RULES = "NO_RULES_WERE_FOUND";
+	public static final String BUILDING_KIE = "Building kie..";
+	public static final String KIE_BUILT = "Kie built sucessfully.";
+	public static final String KIE_INIT = "Initialising kieBase..";
+	public static final String KIE_INIT_FAILED = "failed to initialise kie base";
+
+	public static final String FAILED_TO_UPDATE_FACT = "Failed to update fact";
+
 	public static final String FAILED_TO_FIRE_RULES = "Failed to fire rules";
+	
 
 }

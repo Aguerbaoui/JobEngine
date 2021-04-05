@@ -63,7 +63,6 @@ public class RuleListener extends DefaultAgendaEventListener {
     	match.setInstancesMatched(instances);
     	ruleMatches.put(ruleId, match);
     	//send match to monitoring
-    	//Executioner.notifyOfMatch(match);
     	
     	
     }
