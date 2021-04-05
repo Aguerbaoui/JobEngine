@@ -28,7 +28,7 @@ public abstract class ArithmeticBlock extends ConditionBlock {
 		return " Double.valueOf( "+val+" )";
 	}
 	
-	protected abstract String getArithmeticFormula(int level);
+	protected abstract String getArithmeticFormula(int level,String type);
 	
 
 	

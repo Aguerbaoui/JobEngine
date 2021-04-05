@@ -104,11 +104,11 @@ public abstract class Block extends JEObject {
 	{
 		String var = ""; 
 		if(inputBlocks.get(index) instanceof AttributeGetterBlock)
-		{
+		{//get attribute var name
 			var = (( AttributeGetterBlock )inputBlocks.get(index)).getAttributeVariableName();
 		}
 		else 
-		{
+		{//get block name as variable
 			var =  inputBlocks.get(index).getBlockNameAsVariable();
 		}
 		return var;

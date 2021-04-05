@@ -166,8 +166,27 @@ public class ProjectContainer {
 			if (kieSession == null) {
 				kieSession = kieBase.newKieSession();
 			}
-			// TODO: create runnable class and add variable to stop thread exec
-			Runnable runnable = () -> kieSession.fireUntilHalt();
+			Runnable runnable = () -> { 
+				try {
+				kieSession.fireUntilHalt();
+				}catch(Exception e)
+				{
+					//fatal : Runtime Executions
+					JELogger.error(ProjectContainer.class, "RULE EXECUTION ERROR : " + e.getMessage());
+					stopRuleExecution();
+					kieSession.dispose();
+					//TODO: empty event/fact handle list
+					kieSession = kieBase.newKieSession();
+					try {
+						fireRules();
+					} catch (RulesNotFiredException | RuleBuildFailedException | ProjectAlreadyRunningException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+						JELogger.error(ProjectContainer.class, RuleEngineErrors.failedToFireRules);
+					}
+					
+				}
+				};
 			t1 = new Thread(runnable);
 			t1.start();
 			status = Status.RUNNING;
@@ -177,9 +196,18 @@ public class ProjectContainer {
 				kieSession.halt();
 			}
 			JELogger.error(ProjectContainer.class, RuleEngineErrors.failedToFireRules);
-			throw new RulesNotFiredException("");
+			throw new RulesNotFiredException(RuleEngineErrors.failedToFireRules);
 		}
 
+	}
+	
+	
+
+
+
+	private void resetKieSession() {
+		// TODO Auto-generated method stub
+		
 	}
 
 	/*
