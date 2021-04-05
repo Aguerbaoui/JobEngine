@@ -60,7 +60,7 @@ public class JEMessages {
 	public static final String REMOVING_WFS = "Removing workflows";
 	public static final String ADDING_WF_BLOCK = "Adding a workflow block";
 	public static final String DELETING_WF_BLOCK = "Deleting  workflow block";
-	public static final String ADDING_SEQUENCE_FLOW = "Deleting a sequence flow with from";
+	public static final String ADDING_SEQUENCE_FLOW = "Adding a sequence flow with from";
 	public static final String DELETING_SEQUENCE_FLOW = "Deleting a sequence flow with from";
 	public static final String BUILDING_WF = "Building workflow";
 	public static final String BUILDING_WFS = "Building workflows";
