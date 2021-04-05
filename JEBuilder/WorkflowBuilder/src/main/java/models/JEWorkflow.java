@@ -2,7 +2,7 @@ package models;
 
 import blocks.WorkflowBlock;
 import blocks.basic.StartBlock;
-import io.je.utilities.constants.Errors;
+import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.InvalidSequenceFlowException;
 import io.je.utilities.exceptions.WorkflowBlockNotFound;
 import io.je.utilities.runtimeobject.JEObject;
@@ -217,7 +217,7 @@ public class JEWorkflow extends JEObject {
      * */
     public void deleteSequenceFlow(String sourceRef, String targetRef) throws InvalidSequenceFlowException {
         if (!allBlocks.get(sourceRef).getOutFlows().containsKey(targetRef) || !allBlocks.get(targetRef).getInflows().containsKey(sourceRef)) {
-            throw new InvalidSequenceFlowException(Errors.INVALID_SEQUENCE_FLOW);
+            throw new InvalidSequenceFlowException(JEMessages.INVALID_SEQUENCE_FLOW);
         }
         allBlocks.get(sourceRef).getOutFlows().remove(targetRef);
         allBlocks.get(targetRef).getInflows().remove(sourceRef);
@@ -239,7 +239,7 @@ public class JEWorkflow extends JEObject {
 
         WorkflowBlock b = allBlocks.get(id);
         if (b == null) {
-            throw new WorkflowBlockNotFound(Errors.WORKFLOW_BLOCK_NOT_FOUND);
+            throw new WorkflowBlockNotFound(JEMessages.WORKFLOW_BLOCK_NOT_FOUND);
         }
         allBlocks.remove(id);
         if (allBlocks.size() == 0) workflowStartBlock = null;

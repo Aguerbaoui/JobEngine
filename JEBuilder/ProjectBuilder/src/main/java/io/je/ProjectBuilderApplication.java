@@ -1,6 +1,7 @@
 package io.je;
 
 import io.je.utilities.config.SIOTHConfiguration;
+import io.je.utilities.constants.JEMessages;
 import io.je.utilities.logger.JELogger;
 import org.springframework.boot.Banner;
 import org.springframework.boot.SpringApplication;
@@ -20,7 +21,7 @@ public class ProjectBuilderApplication {
         app.setDefaultProperties(Collections
                 .singletonMap("server.port", "8080"));
         app.run(args);
-        JELogger.info(" Builder started successfully");
+        JELogger.info(JEMessages.BUILDER_STARTED);
 //C:\Program Files\Integration Objects\Integration Objects' SmartIoT Highway\JobEngine\Builder\properties
     }
 

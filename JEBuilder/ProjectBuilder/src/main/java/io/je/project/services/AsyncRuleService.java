@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 import io.je.project.beans.JEProject;
 import io.je.rulebuilder.builder.RuleBuilder;
-import io.je.utilities.constants.RuleBuilderErrors;
+import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.JERunnerErrorException;
 import io.je.utilities.exceptions.RuleBuildFailedException;
 import io.je.utilities.exceptions.RuleNotFoundException;
@@ -27,9 +27,9 @@ public class AsyncRuleService {
 			IOException, InterruptedException, ExecutionException {
 		JEProject project = ProjectService.getProjectById(projectId);
 		 if (!project.ruleExists(ruleId)) {
-			throw new RuleNotFoundException(RuleBuilderErrors.RuleNotFound);
+			throw new RuleNotFoundException(JEMessages.RULE_NOT_FOUND);
 		}
-		JELogger.trace(" [projectId="+ projectId +" ]building rule : " + project.getRule(ruleId).getRuleName());
+		JELogger.trace(" [projectId="+ projectId +" ]" + JEMessages.BUILDING_RULE +" : " + project.getRule(ruleId).getRuleName());
 		RuleBuilder.buildRule(project.getRule(ruleId), project.getConfigurationPath());
 		project.getRules().get(ruleId).setBuilt(true);
 		project.getRules().get(ruleId).setAdded(true);

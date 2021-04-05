@@ -14,7 +14,7 @@ import io.je.utilities.apis.DataDefinitionApiHandler;
 import io.je.utilities.classloader.JEClassLoader;
 import io.je.utilities.config.ConfigurationConstants;
 import io.je.utilities.constants.ClassBuilderConfig;
-import io.je.utilities.constants.ClassBuilderErrors;
+import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.AddClassException;
 import io.je.utilities.exceptions.ClassLoadException;
 import io.je.utilities.exceptions.DataDefinitionUnreachableException;
@@ -41,7 +41,7 @@ public class ClassManager {
 	public static List<JEClass> buildClass(ClassModel classModel)
 			throws AddClassException, DataDefinitionUnreachableException, IOException, ClassLoadException {
 		
-		JELogger.debug(ClassManager.class, "building Class [className = "+classModel.getName()+"]");
+		JELogger.debug(ClassManager.class, JEMessages.BUILDING_CLASS + "[className = "+classModel.getName()+"]");
 		ArrayList<JEClass> classes = new ArrayList<>();
 		
 		if(!builtClasses.containsKey(classModel.getIdClass()) || classModel.getWorkspaceId() == null)
@@ -84,7 +84,7 @@ public class ClassManager {
 				loadedClass = classLoader.loadClass(ClassBuilderConfig.genrationPackageName + "." + classModel.getName());
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
-				throw new ClassLoadException("Failed to load class ["+classModel.getName()+"]" + e.getMessage()); // TODO add error msg
+				throw new ClassLoadException( JEMessages.CLASS_LOAD_FAILED + "["+classModel.getName()+"]" + e.getMessage()); 
 			}
 			builtClasses.put(classModel.getIdClass(), loadedClass);
 			classNames.put(classModel.getName(), classModel.getIdClass());
@@ -128,28 +128,28 @@ public class ClassManager {
 	private static ClassType getClassType(ClassModel classModel) throws ClassLoadException {
 		if (classModel.getIsClass()) {
 			if (classModel.getIsInterface() || classModel.getIsEnum()) {
-				throw new ClassLoadException("[" + classModel.getName() + "]:" + ClassBuilderErrors.invalidClassFormat
-						+ "\n" + ClassBuilderErrors.classTypeUnclear);
+				throw new ClassLoadException("[" + classModel.getName() + "]:" + JEMessages.INVALID_CLASS_FORMAT
+						+ "\n" + JEMessages.UNKNOW_CLASS_TYPE);
 			} else {
 				return ClassType.CLASS;
 			}
 		} else if (classModel.getIsInterface()) {
 			if (classModel.getIsClass() || classModel.getIsEnum()) {
-				throw new ClassLoadException("[" + classModel.getName() + "]:" + ClassBuilderErrors.invalidClassFormat
-						+ "\n" + ClassBuilderErrors.classTypeUnclear);
+				throw new ClassLoadException("[" + classModel.getName() + "]:" + JEMessages.INVALID_CLASS_FORMAT
+						+ "\n" + JEMessages.UNKNOW_CLASS_TYPE);
 			} else {
 				return ClassType.INTERFACE;
 			}
 		} else if (classModel.getIsEnum()) {
 			if (classModel.getIsInterface() || classModel.getIsClass()) {
-				throw new ClassLoadException("[" + classModel.getName() + "]:" + ClassBuilderErrors.invalidClassFormat
-						+ "\n" + ClassBuilderErrors.classTypeUnclear);
+				throw new ClassLoadException("[" + classModel.getName() + "]:" + JEMessages.INVALID_CLASS_FORMAT
+						+ "\n" + JEMessages.UNKNOW_CLASS_TYPE);
 			} else {
 				return ClassType.ENUM;
 			}
 		} else {
-			throw new ClassLoadException("[" + classModel.getName() + "]:" + ClassBuilderErrors.invalidClassFormat
-					+ "\n" + ClassBuilderErrors.classTypeUnclear);
+			throw new ClassLoadException("[" + classModel.getName() + "]:" + JEMessages.INVALID_CLASS_FORMAT
+					+ "\n" + JEMessages.UNKNOW_CLASS_TYPE);
 
 		}
 

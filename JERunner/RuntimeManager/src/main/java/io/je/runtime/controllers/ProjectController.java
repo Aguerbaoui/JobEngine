@@ -3,7 +3,7 @@ package io.je.runtime.controllers;
 import io.je.project.exception.JEExceptionHandler;
 import io.je.runtime.services.RuntimeDispatcher;
 import io.je.utilities.constants.ResponseCodes;
-import io.je.utilities.constants.ResponseMessages;
+import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.ProjectAlreadyRunningException;
 import io.je.utilities.exceptions.RuleBuildFailedException;
 import io.je.utilities.exceptions.RulesNotFiredException;
@@ -40,7 +40,7 @@ public class ProjectController {
 			return JEExceptionHandler.handleException(e);
 		}
 
-        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.BUILT_EVERYTHING_SUCCESSFULLY));
+        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.BUILT_EVERYTHING_SUCCESSFULLY));
 
     }
 
@@ -54,7 +54,7 @@ public class ProjectController {
         } catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
 		}
-        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.EXECUTING_PROJECT));
+        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.EXECUTING_PROJECT));
 
     }
 
@@ -66,7 +66,7 @@ public class ProjectController {
     	//TODO: add failed to stop project exception
             dispatcher.stopProject(projectId);
 
-        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.STOPPING_PROJECT));
+        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.PROJECT_STOPPEd));
 
     }
 
@@ -80,7 +80,7 @@ public class ProjectController {
         } catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
 		}
-        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.PROJECT_DELETED));
+        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.PROJECT_DELETED));
 
     }
     /*

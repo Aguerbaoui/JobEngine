@@ -9,7 +9,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.squareup.okhttp.Response;
 
 import io.je.utilities.config.JEConfiguration;
-import io.je.utilities.constants.Errors;
+import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.exceptions.JERunnerErrorException;
 import io.je.utilities.logger.JELogger;
@@ -26,11 +26,11 @@ public class JEBuilderApiHandler {
 				JELogger.info(" Runner is shutting down");
 	            response = Network.makeGetNetworkCallWithResponse(requestUrl);
 
-	            if (response == null) throw new JERunnerErrorException(Errors.JEBUILDER_UNREACHABLE);
+	            if (response == null) throw new JERunnerErrorException(JEMessages.JEBUILDER_UNREACHABLE);
 	            if (response.code() != ResponseCodes.CODE_OK) {
 	                JELogger.error(JERunnerAPIHandler.class,
 	                        "Error making network call for url = " + requestUrl);
-	                throw new JERunnerErrorException(Errors.JERUNNER_ERROR + " : " + response.body().string());
+	                throw new JERunnerErrorException(JEMessages.JERUNNER_ERROR + " : " + response.body().string());
 	            }
 
 	            String respBody = response.body().string();
@@ -39,7 +39,7 @@ public class JEBuilderApiHandler {
 	        } catch (IOException e) {
 	            JELogger.error(JERunnerAPIHandler.class,
 	                    "Error making network call for url = " + requestUrl);
-	            throw new JERunnerErrorException(Errors.JEBUILDER_UNREACHABLE);
+	            throw new JERunnerErrorException(JEMessages.JEBUILDER_UNREACHABLE);
 	        }
 	    }
 	

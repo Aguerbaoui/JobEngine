@@ -11,7 +11,7 @@ import io.je.project.exception.JEExceptionHandler;
 import io.je.project.repository.ConfigRepository;
 import io.je.utilities.apis.JERunnerAPIHandler;
 import io.je.utilities.config.JEConfiguration;
-import io.je.utilities.constants.Errors;
+import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.AddClassException;
 import io.je.utilities.exceptions.ClassLoadException;
 import io.je.utilities.exceptions.ConfigException;
@@ -47,7 +47,7 @@ public class ConfigurationService {
 			throws JERunnerErrorException, InterruptedException, ExecutionException, DataDefinitionUnreachableException,
 			AddClassException, ClassLoadException, IOException, ProjectNotFoundException, ConfigException {
 
-		JELogger.trace(" Initializing builder");
+		JELogger.trace(JEMessages.INITILIZING_BUILDER);
 		ConfigModel configModel = loadConfigFromDb();
 		if (configModel != null) {
 			updateBuilderSettings(configModel);
@@ -56,7 +56,7 @@ public class ConfigurationService {
 				projectService.loadAllProjects();
 				updateRunner(configModel);
 			} else {
-				JELogger.warning(ConfigurationService.class, Errors.MISSING_CONFIG);
+				JELogger.warning(ConfigurationService.class, JEMessages.MISSING_CONFIG);
 
 			}
 		}
@@ -88,7 +88,7 @@ public class ConfigurationService {
 		// load config from db
 		Optional<ConfigModel> config = configRepository.findById("ConfigJE");
 		if (config.isEmpty()) {
-			JELogger.warning(getClass(), Errors.MISSING_CONFIG);
+			JELogger.warning(getClass(), JEMessages.MISSING_CONFIG);
 		}
 		if (config.isPresent()) {
 			return config.get();
@@ -98,8 +98,8 @@ public class ConfigurationService {
 
 	public static void checkConfig() throws ConfigException {
 		if (!isConfiguredProperly) {
-			JELogger.error(ConfigurationService.class, Errors.MISSING_CONFIG);
-			throw new ConfigException(Errors.MISSING_CONFIG);
+			JELogger.error(ConfigurationService.class, JEMessages.MISSING_CONFIG);
+			throw new ConfigException(JEMessages.MISSING_CONFIG);
 		}
 	}
 
@@ -110,27 +110,27 @@ public class ConfigurationService {
 		boolean configurationIsValid = true;
 		if (JEConfiguration.getDataDefinitionURL() == null) {
 			configurationIsValid = false;
-			JELogger.warning(getClass(), "Data definition URL is missing");
+			JELogger.warning(getClass(), JEMessages.DATA_DEFINITION_URL_MISSING);
 		}
 		if (JEConfiguration.getDataManagerURL() == null) {
 			configurationIsValid = false;
-			JELogger.warning(getClass(), "Data Manager URL is missing");
+			JELogger.warning(getClass(), JEMessages.DATA_MODEL_URL_MISSING);
 		}
 		if (JEConfiguration.getRuntimeManagerURL() == null) {
 			configurationIsValid = false;
-			JELogger.warning(getClass(), "JERunner URL is missing");
+			JELogger.warning(getClass(), JEMessages.JERUNNER_URL_MISSING);
 		}
 		if (JEConfiguration.getSubscriberPort() == 0) {
 			configurationIsValid = false;
-			JELogger.warning(getClass(), "Subscriber port is missing");
+			JELogger.warning(getClass(), JEMessages.DATA_MODEL_SUB_PORT_MISSING);
 		}
 		if (JEConfiguration.getRequestPort() == 0) {
 			configurationIsValid = false;
-			JELogger.warning(getClass(), "Request port is missing");
+			JELogger.warning(getClass(), JEMessages.DATA_MODEL_REQ_PORT_MISSING);
 		}
 		if (JEConfiguration.getDroolsDateFormat() == null) {
 			configurationIsValid = false;
-			JELogger.warning(getClass(), "Drools date format is not specified");
+			JELogger.warning(getClass(), JEMessages.DROOLS_DATE_FORMAT_MISSING);
 		}
 
 		return configurationIsValid;

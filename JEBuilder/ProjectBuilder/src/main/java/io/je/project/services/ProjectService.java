@@ -5,7 +5,7 @@ import io.je.project.controllers.ProjectController;
 import io.je.project.repository.ProjectRepository;
 import io.je.utilities.apis.JERunnerAPIHandler;
 import io.je.utilities.beans.JEEvent;
-import io.je.utilities.constants.Errors;
+import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.*;
 import io.je.utilities.logger.JELogger;
 import models.JEWorkflow;
@@ -52,10 +52,10 @@ public class ProjectService {
      */
     @Async
     public CompletableFuture<Void> saveProject(JEProject project) {
-        JELogger.trace( "Creating project with id = " + project.getProjectId());
+        JELogger.trace( "[projectId= "+project.getProjectId()+"]"+  JEMessages.CREATING_PROJECT);
         synchronized (projectRepository) {
             projectRepository.save(project);
-            JELogger.debug(getClass(), "saving project with id = " + project.getProjectId());
+            JELogger.debug(getClass(), "[projectId= "+project.getProjectId()+"]"+  JEMessages.SAVING_PROJECT);
         }
         loadedProjects.put(project.getProjectId(), project);
         return CompletableFuture.completedFuture(null);
@@ -70,14 +70,14 @@ public class ProjectService {
             JERunnerErrorException, ExecutionException, ConfigException {
 		ConfigurationService.checkConfig();
         if (!loadedProjects.containsKey(id)) {
-            throw new ProjectNotFoundException(Errors.PROJECT_NOT_FOUND);
+            throw new ProjectNotFoundException("[projectId= "+id+"]"+ JEMessages.PROJECT_NOT_FOUND);
         }
 
         try {
             stopProject(id);
         }
         catch (Exception e) {}
-        JELogger.trace("deleting project with id = " + id);
+        JELogger.trace("[projectId= "+id+"]"+  JEMessages.DELETING_PROJECT);
         JERunnerAPIHandler.cleanProjectDataFromRunner(id);
         synchronized (projectRepository) {
             projectRepository.deleteById(id);
@@ -120,7 +120,7 @@ public class ProjectService {
     public void buildAll(String projectId) throws ProjectNotFoundException, IOException, RuleBuildFailedException,
             JERunnerErrorException, InterruptedException, ExecutionException, RuleNotFoundException, ConfigException {
 		ConfigurationService.checkConfig();
-        JELogger.trace(ProjectService.class, "Building the project with id = " + projectId);
+        JELogger.trace(ProjectService.class, "[projectId= "+projectId+"]"+  JEMessages.BUILDING_PROJECT);
         CompletableFuture<?> buildRules = ruleService.buildRules(projectId);
         CompletableFuture<?> buildWorkflows = workflowService.buildWorkflows(projectId);
         CompletableFuture.allOf(buildRules, buildWorkflows).join();
@@ -139,18 +139,18 @@ public class ProjectService {
             JEProject project = loadedProjects.get(projectId);
             if (project.isBuilt()) {
                 if (!project.isRunning()) {
-                    JELogger.trace(" Running project id = " + projectId);
+                    JELogger.trace("[projectId= "+project.getProjectId()+"]"+  JEMessages.RUNNING_PROJECT);
                     JERunnerAPIHandler.runProject(projectId);
                     project.setRunning(true);
                     saveProject(projectId).get();
                 } else {
-                    throw new ProjectRunException(Errors.PROJECT_RUNNING);
+                    throw new ProjectRunException(JEMessages.PROJECT_RUNNING);
                 }
             } else {
-                throw new ProjectRunException(Errors.PROJECT_NOT_BUILT);
+                throw new ProjectRunException(JEMessages.PROJECT_NOT_BUILT);
             }
         } else {
-            throw new ProjectNotFoundException(Errors.PROJECT_NOT_FOUND);
+            throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
         }
 
     }
@@ -162,18 +162,18 @@ public class ProjectService {
             ProjectStatusException, IOException, InterruptedException, ExecutionException, ConfigException {
 		ConfigurationService.checkConfig();
         if (!loadedProjects.containsKey(projectId)) {
-            throw new ProjectNotFoundException(Errors.PROJECT_NOT_FOUND);
+            throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
         }
         JEProject project = loadedProjects.get(projectId);
         if (project.isRunning()) {
-            JELogger.trace(" Stopping project id = " + projectId);
+            JELogger.trace("[projectId= "+project.getProjectId()+"]"+  JEMessages.STOPPING_PROJECT);
             JERunnerAPIHandler.stopProject(projectId);
             project.setRunning(false);
             saveProject(projectId).get();
 
         } else {
-            JELogger.error(getClass(), Errors.PROJECT_STOPPED +" " + projectId);
-            throw new ProjectStatusException(Errors.PROJECT_STOPPED);
+            JELogger.error(getClass(), JEMessages.PROJECT_STOPPED +" " + projectId);
+            throw new ProjectStatusException(JEMessages.PROJECT_STOPPED);
         }
 
     }
@@ -185,7 +185,7 @@ public class ProjectService {
     public CompletableFuture<JEProject> getProject(String projectId) throws ProjectNotFoundException,
             JERunnerErrorException, IOException, InterruptedException, ExecutionException, ConfigException {
     	ConfigurationService.checkConfig();
-        JELogger.trace(" Loading project from database with id = " + projectId);
+        JELogger.trace("[projectId= "+projectId+"]"+  JEMessages.LOADING_PROJECT);
         if (!loadedProjects.containsKey(projectId)) {
             Optional<JEProject> p = projectRepository.findById(projectId);
             JEProject project = p.isEmpty() ? null : p.get();
@@ -198,13 +198,13 @@ public class ProjectService {
             }
 
         }
-        JELogger.trace(" Found project with id = " + projectId);
+        JELogger.trace("[projectId= "+projectId+"]"+  JEMessages.PROJECT_FOUND);
         return CompletableFuture.completedFuture(loadedProjects.get(projectId));
     }
 
     public CompletableFuture<Collection<?>> getAllProjects() throws ConfigException {
 		ConfigurationService.checkConfig();
-        JELogger.trace(getClass(), "loading all projects from database ..");
+        JELogger.trace(getClass(), JEMessages.LOADING_PROJECTS);
         List<JEProject> projects = projectRepository.findAll();
         for (JEProject project : projects) {
             // TODO: to be deleted.
@@ -230,20 +230,20 @@ public class ProjectService {
 
     /* Return all currently available workflows in project */
     public ConcurrentMap<String, JEWorkflow> getAllWorkflows(String projectId) throws ProjectNotFoundException {
-        JELogger.trace(" Getting all workflows from project id = " + projectId);
+        JELogger.trace("[projectId= "+projectId+"]"+  JEMessages.LOADING_WFS);
         if (loadedProjects.containsKey(projectId)) {
             return loadedProjects.get(projectId).getWorkflows();
         } else
-            throw new ProjectNotFoundException(Errors.PROJECT_NOT_FOUND + "[id = " + projectId + "]");
+            throw new ProjectNotFoundException("[projectId= "+projectId+"]"+  JEMessages.PROJECT_NOT_FOUND);
     }
 
     /* Return a workflow by id */
     public JEWorkflow getWorkflowById(String projectId, String key) throws ProjectNotFoundException {
-        JELogger.trace(" Getting workflow id = " + key + " in project id = " + projectId);
+        JELogger.trace(JEMessages.LOADING_WF + " id = " + key + " in project id = " + projectId);
         if (loadedProjects.containsKey(projectId)) {
             return loadedProjects.get(projectId).getWorkflows().get(key);
         } else
-            throw new ProjectNotFoundException(Errors.PROJECT_NOT_FOUND + "[id = " + projectId + "]");
+            throw new ProjectNotFoundException("[projectId= "+projectId+"]"+  JEMessages.PROJECT_NOT_FOUND);
     }
 
     // TODO : move to config service
@@ -266,9 +266,9 @@ public class ProjectService {
     public CompletableFuture<Void> closeProject(String id) throws ProjectNotFoundException, InterruptedException,
             JERunnerErrorException, ExecutionException {
         if (!loadedProjects.containsKey(id)) {
-            throw new ProjectNotFoundException(Errors.PROJECT_NOT_FOUND);
+            throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
         }
-        JELogger.trace(ProjectService.class, "closing project with id = " + id);
+        JELogger.trace(ProjectService.class, "[projectId= "+id+"]"+  JEMessages.CLOSING_PROJECT);
         JERunnerAPIHandler.cleanProjectDataFromRunner(id);
         loadedProjects.remove(id);
         return CompletableFuture.completedFuture(null);
@@ -295,7 +295,7 @@ public class ProjectService {
                 runAll(project.getProjectId());
             }
         }
-        JELogger.trace(" Resetting projects after updating runner");
+        JELogger.trace(JEMessages.RESETTING_PROJECTS);
 
     }
 

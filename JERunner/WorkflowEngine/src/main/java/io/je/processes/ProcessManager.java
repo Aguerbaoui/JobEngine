@@ -4,7 +4,7 @@ import io.je.JEProcess;
 import io.je.callbacks.OnExecuteOperation;
 import io.je.serviceTasks.ActivitiTask;
 import io.je.serviceTasks.InformTask;
-import io.je.utilities.constants.Errors;
+import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.WorkflowAlreadyRunningException;
 import io.je.utilities.exceptions.WorkflowNotFoundException;
 import io.je.utilities.files.JEFileUtils;
@@ -128,13 +128,13 @@ public class ProcessManager {
      * */
     public void launchProcessByKeyWithoutVariables(String id) throws WorkflowNotFoundException, WorkflowAlreadyRunningException {
         if (processes.get(id) == null) {
-            throw new WorkflowNotFoundException(Errors.WORKFLOW_NOT_FOUND);
+            throw new WorkflowNotFoundException(JEMessages.WORKFLOW_NOT_FOUND);
         }
         if (processes.get(id).getActivitiTasks().size() > 0) {
             launchProcessByKeyWithVariables(id);
         } else {
             if (processes.get(id).isRunning()) {
-                throw new WorkflowAlreadyRunningException(Errors.WORKFLOW_ALREADY_RUNNING);
+                throw new WorkflowAlreadyRunningException(JEMessages.WORKFLOW_ALREADY_RUNNING);
             }
             if (!processes.get(id).isTriggeredByEvent()) {
                 processes.get(id).setRunning(true);
@@ -152,7 +152,7 @@ public class ProcessManager {
      * */
     public void launchProcessByKeyWithVariables(String id) throws WorkflowAlreadyRunningException {
         if(processes.get(id).isRunning()) {
-            throw new WorkflowAlreadyRunningException(Errors.WORKFLOW_ALREADY_RUNNING);
+            throw new WorkflowAlreadyRunningException(JEMessages.WORKFLOW_ALREADY_RUNNING);
         }
         if (!processes.get(id).isTriggeredByEvent()) {
             Map<String, Object> variables = new HashMap<>();

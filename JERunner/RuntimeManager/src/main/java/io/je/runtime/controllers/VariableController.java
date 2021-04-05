@@ -3,7 +3,7 @@ package io.je.runtime.controllers;
 import io.je.project.exception.JEExceptionHandler;
 import io.je.runtime.services.RuntimeDispatcher;
 import io.je.utilities.constants.ResponseCodes;
-import io.je.utilities.constants.ResponseMessages;
+import io.je.utilities.constants.JEMessages;
 import io.je.utilities.logger.JELogger;
 import io.je.utilities.models.EventModel;
 import io.je.utilities.models.VariableModel;
@@ -28,7 +28,7 @@ public class VariableController {
     public ResponseEntity<?> addVariable(@RequestBody VariableModel variableModel) {
 
         runtimeDispatcher.addVariable(variableModel);
-        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.VAR_ADDED_SUCCESSFULLY));
+        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.VAR_ADDED_SUCCESSFULLY));
     }
 
 
@@ -46,6 +46,6 @@ public class VariableController {
             return JEExceptionHandler.handleException(e);
         }
 
-        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.VAR_DELETED));
+        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.VAR_DELETED));
     }
 }

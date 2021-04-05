@@ -7,7 +7,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import io.je.rulebuilder.components.blocks.Block;
 import io.je.rulebuilder.components.blocks.ExecutionBlock;
-import io.je.utilities.constants.RuleBuilderErrors;
+import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.RuleBuildFailedException;
 import io.je.utilities.logger.JELogger;
 
@@ -100,8 +100,8 @@ public class BlockManager {
 		}
 		// if this rule has no execution block, then it is not valid.
 		if (executionBlockCounter == 0) {
-			JELogger.error(getClass(), RuleBuilderErrors.NoExecutionBlock);
-			throw new RuleBuildFailedException(RuleBuilderErrors.NoExecutionBlock);
+			JELogger.error(getClass(), JEMessages.NO_EXECUTION_BLOCK);
+			throw new RuleBuildFailedException(JEMessages.NO_EXECUTION_BLOCK);
 		}
 
 		return roots;

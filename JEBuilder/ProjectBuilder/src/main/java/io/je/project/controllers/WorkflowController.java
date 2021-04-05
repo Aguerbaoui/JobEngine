@@ -4,9 +4,9 @@ import io.je.project.exception.JEExceptionHandler;
 import io.je.project.models.WorkflowBlockModel;
 import io.je.project.services.ProjectService;
 import io.je.project.services.WorkflowService;
-import io.je.utilities.constants.Errors;
+import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.ResponseCodes;
-import io.je.utilities.constants.ResponseMessages;
+import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.ProjectNotFoundException;
 import io.je.utilities.models.WorkflowModel;
 import io.je.utilities.network.JEResponse;
@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static io.je.utilities.constants.ResponseMessages.*;
+import static io.je.utilities.constants.JEMessages.*;
 
 /*
  * Workflow builder Rest Controller
@@ -95,7 +95,7 @@ public class WorkflowController {
 
 		}
 
-        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.WORKFLOW_DELETED_SUCCESSFULLY));
+        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.WORKFLOW_DELETED_SUCCESSFULLY));
     }
 
     /*
@@ -140,7 +140,7 @@ public class WorkflowController {
         if (w != null) {
             return ResponseEntity.ok(w);
         }
-        return ResponseEntity.ok(new JEResponse(ResponseCodes.WORKFLOW_NOT_FOUND, Errors.WORKFLOW_NOT_FOUND));
+        return ResponseEntity.ok(new JEResponse(ResponseCodes.WORKFLOW_NOT_FOUND, JEMessages.WORKFLOW_NOT_FOUND));
     }
 
     /*
@@ -222,7 +222,7 @@ public class WorkflowController {
 
 		}
 
-        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.ADDED_WORKFLOW_SUCCESSFULLY));
+        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.ADDED_WORKFLOW_SUCCESSFULLY));
     }
 
     /*

@@ -5,9 +5,9 @@ import io.je.project.exception.JEExceptionHandler;
 import io.je.project.models.ProjectModel;
 import io.je.project.services.ConfigurationService;
 import io.je.project.services.ProjectService;
-import io.je.utilities.constants.Errors;
+import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.ResponseCodes;
-import io.je.utilities.constants.ResponseMessages;
+import io.je.utilities.constants.JEMessages;
 import io.je.utilities.logger.JELogger;
 import io.je.utilities.network.JEResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
 
-import static io.je.utilities.constants.ResponseMessages.*;
+import static io.je.utilities.constants.JEMessages.*;
 
 /*
  * Project Rest Controller
@@ -92,7 +92,7 @@ public class ProjectController {
 	@PostMapping(value = "/addProject", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> addProject(@RequestBody ProjectModel m) {
 		if (projectService.projectExists(m.getProjectId())) {
-			return ResponseEntity.ok(new JEResponse(ResponseCodes.PROJECT_EXISTS, ResponseMessages.PROJECT_EXISTS));
+			return ResponseEntity.ok(new JEResponse(ResponseCodes.PROJECT_EXISTS, JEMessages.PROJECT_EXISTS));
 		}
 		try {
 			JEProject p = new JEProject(m.getProjectId(), m.getConfigurationPath());
@@ -110,7 +110,7 @@ public class ProjectController {
 	public ResponseEntity<?> deleteProject(@PathVariable String projectId) {
 		if (!projectService.projectExists(projectId)) {
 			return ResponseEntity.badRequest()
-					.body(new JEResponse(ResponseCodes.PROJECT_NOT_FOUND, Errors.PROJECT_NOT_FOUND));
+					.body(new JEResponse(ResponseCodes.PROJECT_NOT_FOUND, JEMessages.PROJECT_NOT_FOUND));
 		}
 
 		try {
@@ -133,7 +133,7 @@ public class ProjectController {
 
 		}
 		if (project == null) {
-			return ResponseEntity.ok(new JEResponse(ResponseCodes.PROJECT_NOT_FOUND, Errors.PROJECT_NOT_FOUND));
+			return ResponseEntity.ok(new JEResponse(ResponseCodes.PROJECT_NOT_FOUND, JEMessages.PROJECT_NOT_FOUND));
 
 		}
 
@@ -182,7 +182,7 @@ public class ProjectController {
 
 		}
 
-		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, STOPPING_PROJECT));
+		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, PROJECT_STOPPEd));
 	}
 
 	/*

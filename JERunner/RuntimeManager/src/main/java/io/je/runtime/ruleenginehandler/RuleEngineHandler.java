@@ -13,7 +13,7 @@ import io.je.runtime.config.InstanceModelMapping;
 import io.je.runtime.models.InstanceModel;
 import io.je.runtime.models.RuleModel;
 import io.je.runtime.objects.InstanceManager;
-import io.je.utilities.constants.RuleEngineErrors;
+import io.je.utilities.constants.JEMessages;
 
 import io.je.utilities.beans.JEData;
 import io.je.utilities.beans.JEEvent;
@@ -39,17 +39,17 @@ public class RuleEngineHandler {
     	if(ruleModel.getRuleId() == null || ruleModel.getRuleId().isEmpty())
     	{
     		
-    		errorMsg = RuleEngineErrors.ID_NOT_FOUND;
+    		errorMsg = JEMessages.ID_NOT_FOUND;
     		throw new RuleFormatNotValidException(errorMsg);
     	}
     	if(ruleModel.getRulePath() == null || ruleModel.getRulePath().isEmpty())
     	{
-    		errorMsg = RuleEngineErrors.RULE_FILE_NOT_FOUND;
+    		errorMsg = JEMessages.RULE_FILE_NOT_FOUND;
     		throw new RuleFormatNotValidException(errorMsg);
     	}
     	if(ruleModel.getProjectId() == null || ruleModel.getProjectId().isEmpty())
     	{
-    		errorMsg = RuleEngineErrors.RULE_PROJECT_ID_NOT_FOUND;
+    		errorMsg = JEMessages.RULE_PROJECT_ID_NOT_FOUND;
     		throw new RuleFormatNotValidException(errorMsg);
     	}
     	

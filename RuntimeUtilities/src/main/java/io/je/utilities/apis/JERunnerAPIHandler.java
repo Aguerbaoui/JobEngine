@@ -6,7 +6,7 @@ import com.squareup.okhttp.Response;
 
 import io.je.utilities.config.JEConfiguration;
 import io.je.utilities.constants.APIConstants;
-import io.je.utilities.constants.Errors;
+import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.exceptions.JERunnerErrorException;
 import io.je.utilities.logger.JELogger;
@@ -49,11 +49,11 @@ public class JERunnerAPIHandler {
         try {
             response = Network.makeNetworkCallWithJsonBodyWithResponse(requestBody, requestUrl);
 
-            if (response == null) throw new JERunnerErrorException(Errors.JERUNNER_UNREACHABLE);
+            if (response == null) throw new JERunnerErrorException(JEMessages.JERUNNER_UNREACHABLE);
             if (response.code() != ResponseCodes.CODE_OK) {
                 JELogger.error(JERunnerAPIHandler.class,
                         "Error making network call for url = " + requestUrl);
-                throw new JERunnerErrorException(Errors.JERUNNER_ERROR + " : " + response.body().string());
+                throw new JERunnerErrorException(JEMessages.JERUNNER_ERROR + " : " + response.body().string());
             }
 
             String respBody = response.body().string();
@@ -62,7 +62,7 @@ public class JERunnerAPIHandler {
         } catch (IOException e) {
             JELogger.error(JERunnerAPIHandler.class,
                     "Error making network call for url = " + requestUrl);
-            throw new JERunnerErrorException(Errors.JERUNNER_UNREACHABLE);
+            throw new JERunnerErrorException(JEMessages.JERUNNER_UNREACHABLE);
         }
     }
 
@@ -75,11 +75,11 @@ public class JERunnerAPIHandler {
         try {
             response = Network.makeDeleteNetworkCallWithResponse(requestUrl);
 
-            if (response == null) throw new JERunnerErrorException(Errors.JERUNNER_UNREACHABLE);
+            if (response == null) throw new JERunnerErrorException(JEMessages.JERUNNER_UNREACHABLE);
             if (response.code() != ResponseCodes.CODE_OK) {
                 JELogger.error(JERunnerAPIHandler.class,
                         "Error making network call for url = " + requestUrl);
-                throw new JERunnerErrorException(Errors.JERUNNER_ERROR + " : " + response.body().string());
+                throw new JERunnerErrorException(JEMessages.JERUNNER_ERROR + " : " + response.body().string());
             }
 
             String respBody = response.body().string();
@@ -88,7 +88,7 @@ public class JERunnerAPIHandler {
         } catch (IOException e) {
             JELogger.error(JERunnerAPIHandler.class,
                     "Error making network call for url = " + requestUrl);
-            throw new JERunnerErrorException(Errors.JERUNNER_UNREACHABLE);
+            throw new JERunnerErrorException(JEMessages.JERUNNER_UNREACHABLE);
         }
     }
 
@@ -101,11 +101,11 @@ public class JERunnerAPIHandler {
         try {
             response = Network.makeGetNetworkCallWithResponse(requestUrl);
 
-            if (response == null) throw new JERunnerErrorException(Errors.JERUNNER_UNREACHABLE);
+            if (response == null) throw new JERunnerErrorException(JEMessages.JERUNNER_UNREACHABLE);
             if (response.code() != ResponseCodes.CODE_OK) {
                 JELogger.error(JERunnerAPIHandler.class,
                         "Error making network call for url = " + requestUrl);
-                throw new JERunnerErrorException(Errors.JERUNNER_ERROR + " : " + response.message());
+                throw new JERunnerErrorException(JEMessages.JERUNNER_ERROR + " : " + response.message());
             }
 
             String respBody = response.body().string();
@@ -114,7 +114,7 @@ public class JERunnerAPIHandler {
         } catch (IOException e) {
             JELogger.error(JERunnerAPIHandler.class,
                     "Error making network call for url = " + requestUrl);
-            throw new JERunnerErrorException(Errors.JERUNNER_UNREACHABLE);
+            throw new JERunnerErrorException(JEMessages.JERUNNER_UNREACHABLE);
         }
     }
 
@@ -127,10 +127,10 @@ public class JERunnerAPIHandler {
         try {
             //JELogger.trace(JERunnerAPIHandler.class, " url = " + requestUrl);
             response = Network.makeNetworkCallWithStringObjectBodyWithResponse(requestBody, requestUrl);
-            if (response == null) throw new JERunnerErrorException(Errors.JERUNNER_UNREACHABLE);
+            if (response == null) throw new JERunnerErrorException(JEMessages.JERUNNER_UNREACHABLE);
             if (response.code() != ResponseCodes.CODE_OK) {
                 JELogger.error(JERunnerAPIHandler.class, "Error making network call for url = " + requestUrl + " response = " + response.body());
-                throw new JERunnerErrorException(Errors.JERUNNER_ERROR + " : " + response.body().string());
+                throw new JERunnerErrorException(JEMessages.JERUNNER_ERROR + " : " + response.body().string());
             }
 
             String respBody = response.body().string();
@@ -138,7 +138,7 @@ public class JERunnerAPIHandler {
             return objectMapper.readValue(respBody, JEResponse.class);
         } catch (IOException e) {
             JELogger.error(JERunnerAPIHandler.class, "Error making network call for url = " + requestUrl + " response = " + response.body());
-            throw new JERunnerErrorException(Errors.JERUNNER_UNREACHABLE);
+            throw new JERunnerErrorException(JEMessages.JERUNNER_UNREACHABLE);
         }
     }
 
@@ -243,7 +243,7 @@ public class JERunnerAPIHandler {
                 if (response.code() != ResponseCodes.CODE_OK) {
                     JELogger.error(JERunnerAPIHandler.class,
                             "Error making network call for url = " + requestUrl);
-                    throw new JERunnerErrorException(Errors.JERUNNER_ERROR + " : " + response.body().string());
+                    throw new JERunnerErrorException(JEMessages.JERUNNER_ERROR + " : " + response.body().string());
                 }
 
                 String respBody = response.body().string();
@@ -257,7 +257,7 @@ public class JERunnerAPIHandler {
         } catch (IOException e) {
             JELogger.error(JERunnerAPIHandler.class,
                     "Error making network call for url = " + requestUrl);
-            throw new JERunnerErrorException(Errors.JERUNNER_UNREACHABLE);
+            throw new JERunnerErrorException(JEMessages.JERUNNER_UNREACHABLE);
         }
         return false;
     }
