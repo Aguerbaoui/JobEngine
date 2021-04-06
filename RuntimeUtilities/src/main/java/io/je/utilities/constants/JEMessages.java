@@ -119,27 +119,27 @@ public class JEMessages {
 
 	public static final String JERUNNER_UNREACHABLE = "JERunner Unreachable";
 
-	public static final String JERUNNER_ERROR = "JERunner ERROR";
+	public static final String JERUNNER_ERROR = "JERunner Error";
 
 	public static final String DATA_DEFINITION_CLASS_NOT_FOUND = "No class with this Id was found";
 
-	public static final String PROJECT_RUNNING = "PROJECT ALREADY RUNNING";
+	public static final String PROJECT_RUNNING = "Project already running";
 
-	public static final String PROJECT_BUILT = "PROJECT ALREADY BUILT";
+	public static final String PROJECT_BUILT = "Project already built";
 
-	public static final String PROJECT_NOT_BUILT = "PROJECT NEEDS BUILD";
+	public static final String PROJECT_NOT_BUILT = "Project needs build";
 
-	public static final String PROJECT_ALREADY_STOPPED = "PROJECT ALREADY STOPPED";
+	public static final String PROJECT_ALREADY_STOPPED = "Project already stopped";
 
-	public static final String WORKFLOW_ALREADY_RUNNING = "Workflow ALREADY RUNNING";
+	public static final String WORKFLOW_ALREADY_RUNNING = "Workflow already running";
 
-	public static final String WORKFLOW_NEEDS_BUILD = "Workflow NEEDS BUILD";
+	public static final String WORKFLOW_NEEDS_BUILD = "Workflow needs build";
 
 	public static final String EVENT_NOT_FOUND = " No event with this id was found ";
 
 	public static final String NOT_ALPHABETICAL = " Should only contain alphabetical characters ";
 
-	public static final String WORKFLOW_TRIGGERED_BY_EVENT = " Workflow cant start manually";
+	public static final String WORKFLOW_TRIGGERED_BY_EVENT = " Workflow can't start manually";
 
 	public static final String EVENT_ALREADY_EXISTS = "An event with this id already exists";
 
@@ -148,12 +148,12 @@ public class JEMessages {
 	public static final String JEBUILDER_UNREACHABLE = " JEBuilder unreachable";
 
 	// response messages
-	public static final String PROJECT_EXISTS = "project exists";
+	public static final String PROJECT_EXISTS = "Project exists";
 	
-	public static final String PROJECT_DELETED = "project deleted";
+	public static final String PROJECT_DELETED = "Project deleted";
 
 	//
-	public static final String CONFIGURATION_UPDATED = "Configuration Updated successfully.";
+	public static final String CONFIGURATION_UPDATED = "Configuration updated successfully.";
 
 	public static final String EXECUTING_PROJECT = "Executing project";
 
@@ -235,6 +235,8 @@ public class JEMessages {
 	public static final String CREATED_PROJECT_SUCCESSFULLY = "Created project successfully";
 
 	public static final String BUILT_EVERYTHING_SUCCESSFULLY = " Built everything successfully";
+
+	public static final String BUILDING_BPMN_FROM_JEWORKFLOW = "Building bpmn from jeworkflow id =";
 
 
 	public static final String ADDED_WORKFLOW_SUCCESSFULLY = "Added workflow successfully";
@@ -322,6 +324,21 @@ public class JEMessages {
 	public static final String FAILED_TO_UPDATE_FACT = "Failed to update fact";
 
 	public static final String FAILED_TO_FIRE_RULES = "Failed to fire rules";
-	
 
+
+	public static final String ADDING_LISTENERS_TO_PROCESS = "Adding listeners to process";
+	public static final String PROCESSING_BLOCK_NAME = "Processing block name";
+	public static final String SAVING_PMN_FILE_TO_PATH = "Saving pmn file to path";
+	public static final String DEPLOYING_IN_RUNNER_WORKFLOW_WITH_ID = "Deploying in runner workflow with id ";
+	public static final String FAILED_TO_DEPLOY_IN_RUNNER_WORKFLOW_WITH_ID = "Failed to deploy in runner workflow with id";
+	public static final String TRANSITIONING_FROM = "Transitioning from";
+	public static final String GATEWAY_ID = "Gateway id";
+	public static final String JUST_EXECUTED = "just executed";
+	public static final String TASK_ID = "Task id";
+	public static final String PROCESS_HAS_TO_BE_TRIGGERED_BY_EVENT = "Process has to be triggered by event";
+	public static final String RUNNING_ALL_WORKFLOWS_IN_PROJECT_ID = "Running all workflows in project id";
+	public static final String BUILDING_WORKFLOWS_IN_PROJECT = " Building workflows in project";
+	public static final String ERROR_DELETING_A_NON_EXISTING_PROCESS = "Error deleting a non existing process";
+	public static final String EXECUTING_WEB_API_TASK = "Executing web api task";
+	public static final String NETWORK_CALL_RESPONSE_IN_WEB_SERVICE_TASK = "Network call response in web service task";
 }

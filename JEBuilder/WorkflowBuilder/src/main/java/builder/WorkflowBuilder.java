@@ -7,6 +7,7 @@ import blocks.basic.WebApiBlock;
 import io.je.utilities.apis.JERunnerAPIHandler;
 import io.je.utilities.config.JEConfiguration;
 import io.je.utilities.constants.APIConstants;
+import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.WorkflowConstants;
 import io.je.utilities.exceptions.JERunnerErrorException;
 import io.je.utilities.logger.JELogger;
@@ -88,12 +89,12 @@ public class WorkflowBuilder {
         wf.setTasks(tasks);
 
         workflow.setStatus(JEWorkflow.BUILDING);
-        JELogger.trace(WorkflowBuilder.class, " Deploying in runner workflow with id = " + workflow.getJobEngineElementID());
+        JELogger.trace(WorkflowBuilder.class, " " + JEMessages.DEPLOYING_IN_RUNNER_WORKFLOW_WITH_ID + " = " + workflow.getJobEngineElementID());
         try {
             JERunnerAPIHandler.addWorkflow(wf);
         }
         catch (JERunnerErrorException e) {
-            JELogger.trace(WorkflowBuilder.class, " Failed to deploy in runner workflow with id = " + workflow.getJobEngineElementID());
+            JELogger.trace(WorkflowBuilder.class, " " + JEMessages.FAILED_TO_DEPLOY_IN_RUNNER_WORKFLOW_WITH_ID + " = " + workflow.getJobEngineElementID());
             workflow.setStatus(JEWorkflow.IDLE);
             return false;
         }
