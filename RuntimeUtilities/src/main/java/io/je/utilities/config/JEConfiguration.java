@@ -37,6 +37,7 @@ public class JEConfiguration {
 		configModel.setSubscriberPort(subscriberPort);
 		configModel.setProjectBuilderURL(projectBuilderURL);
 		configModel.setDroolsDateFormat(droolsDateFormat);
+		configModel.setEmailApiUrl(emailApiUrl);
 		return configModel;
 	}
 	
@@ -150,7 +151,7 @@ public class JEConfiguration {
 	}
 
 	public static void setEmailApiURL(String url) {
-		if(emailApiUrl!=null)
+		if(url!=null)
 		{
 			JEConfiguration.emailApiUrl = url;
 

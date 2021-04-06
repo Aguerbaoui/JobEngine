@@ -213,14 +213,16 @@ public class RuntimeDispatcher {
                 mailTask.setTaskId(task.getTaskId());
                 mailTask.setTaskName(task.getTaskName());
                 HashMap<String, Object> attributes = task.getAttributes();
-                mailTask.setbUseDefaultCredentials((Boolean) task.getAttributes().get(USE_DEFAULT_CREDENTIALS));
+                if(attributes.containsKey(USE_DEFAULT_CREDENTIALS)) {
+                    mailTask.setbUseDefaultCredentials((boolean) task.getAttributes().get(USE_DEFAULT_CREDENTIALS));
+                    mailTask.setbEnableSSL((boolean) task.getAttributes().get(ENABLE_SSL));
+                }
                 mailTask.setiPort((Integer) task.getAttributes().get(PORT));
                 mailTask.setStrSenderAddress((String) task.getAttributes().get(SENDER_ADDRESS));
                 mailTask.setiSendTimeOut((Integer) task.getAttributes().get(SEND_TIME_OUT));
                 mailTask.setLstRecieverAddress((List<String>) task.getAttributes().get(RECEIVER_ADDRESS));
                 mailTask.setEmailMessage((HashMap<String, String>) task.getAttributes().get(EMAIL_MESSAGE));
                 mailTask.setStrSMTPServer((String) task.getAttributes().get(SMTP_SERVER));
-                mailTask.setbEnableSSL((boolean) task.getAttributes().get(ENABLE_SSL));
                 mailTask.setStrPassword((String) task.getAttributes().get(PASSWORD));
                 mailTask.setStrUserName((String) task.getAttributes().get(USERNAME));
                 process.addActivitiTask(mailTask);

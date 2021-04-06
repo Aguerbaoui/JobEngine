@@ -4,9 +4,9 @@ import java.util.HashMap;
 import java.util.List;
 
 public class MailTask extends ActivitiTask{
-    private boolean bEnableSSL = true;
+    private boolean bEnableSSL = false;
 
-    private boolean bUseDefaultCredentials = true;
+    private boolean bUseDefaultCredentials = false;
 
     private String strSenderAddress;
 

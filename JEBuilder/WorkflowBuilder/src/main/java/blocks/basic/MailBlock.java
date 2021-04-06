@@ -7,9 +7,9 @@ import java.util.List;
 
 public class MailBlock extends WorkflowBlock {
 
-    private boolean bEnableSSL = true;
+    private boolean bEnableSSL = false;
 
-    private boolean bUseDefaultCredentials = true;
+    private boolean bUseDefaultCredentials = false;
 
     private String strSenderAddress;
 

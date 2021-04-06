@@ -44,7 +44,7 @@ public class WorkflowConstants {
     public static final String PORT = "iPort";
     public static final String SENDER_ADDRESS = "strSenderAddress";
     public static final String SEND_TIME_OUT = "iSendTimeOut";
-    public static final String RECEIVER_ADDRESS = "lstReceiverAddress";
+    public static final String RECEIVER_ADDRESS = "lstRecieverAddress";
     public static final String EMAIL_MESSAGE = "emailMessage";
     public static final String SMTP_SERVER = "strSMTPServer";
     public static final String PASSWORD = "strPassword";

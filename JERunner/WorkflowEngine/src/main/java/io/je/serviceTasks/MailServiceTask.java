@@ -22,21 +22,31 @@ import static io.je.utilities.constants.WorkflowConstants.SMTP_SERVER;
 public class MailServiceTask extends ServiceTask {
 
 
+    public static final String SEND_EMAIL_AUTH = "SendEmailAuth";
+    public static final String SEND_EMAIL = "SendEmail";
+
     public void execute(DelegateExecution execution) {
 
         MailTask task = (MailTask) ActivitiTaskManager.getTask(execution.getCurrentActivityId());
         HashMap<String, Object> attributes = new HashMap<>();
-        attributes.put(WorkflowConstants.ENABLE_SSL, task.isbEnableSSL());
-        attributes.put(WorkflowConstants.USE_DEFAULT_CREDENTIALS, task.isbUseDefaultCredentials());
+        if(task.isbUseDefaultCredentials()) {
+            attributes.put(WorkflowConstants.ENABLE_SSL, task.isbEnableSSL());
+            attributes.put(WorkflowConstants.USE_DEFAULT_CREDENTIALS, task.isbUseDefaultCredentials());
+        }
+        else {
+            attributes.put(USERNAME, task.getStrUserName());
+            attributes.put(PASSWORD, task.getStrPassword());
+        }
         attributes.put(WorkflowConstants.PORT, task.getiPort());
         attributes.put(WorkflowConstants.SENDER_ADDRESS, task.getStrSenderAddress());
         attributes.put(SEND_TIME_OUT, task.getiSendTimeOut());
         attributes.put(RECEIVER_ADDRESS, task.getLstRecieverAddress());
         attributes.put(EMAIL_MESSAGE, task.getEmailMessage());
         attributes.put(SMTP_SERVER, task.getStrSMTPServer());
+        String url = task.isbUseDefaultCredentials() ? JEConfiguration.getEmailApiUrl() + SEND_EMAIL : JEConfiguration.getEmailApiUrl() + SEND_EMAIL_AUTH;
         try {
             String json = new ObjectMapper().writeValueAsString(attributes);
-            Network network = new Network.Builder(JEConfiguration.getEmailApiUrl()).hasBody(true)
+            Network network = new Network.Builder(url).hasBody(true)
                     .withMethod(HttpMethod.POST).withBodyType(BodyType.JSON)
                     .withBody(json).build();
             Response response = network.call();

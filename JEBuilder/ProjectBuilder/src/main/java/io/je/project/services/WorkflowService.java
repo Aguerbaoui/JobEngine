@@ -545,17 +545,23 @@ public class WorkflowService {
         } else if (block.getType().equalsIgnoreCase(WorkflowConstants.MAILSERVICETASK_TYPE)) {
             MailBlock b = (MailBlock) project.getWorkflowById(block.getWorkflowId()).getAllBlocks().get(block.getId());
             b.setName((String) block.getAttributes().get(NAME));
-            b.setbUseDefaultCredentials((Boolean) block.getAttributes().get(USE_DEFAULT_CREDENTIALS));
+
             b.setiPort((Integer) block.getAttributes().get(PORT));
             b.setStrSenderAddress((String) block.getAttributes().get(SENDER_ADDRESS));
             b.setiSendTimeOut((Integer) block.getAttributes().get(SEND_TIME_OUT));
             b.setLstRecieverAddress((List<String>) block.getAttributes().get(RECEIVER_ADDRESS));
             b.setEmailMessage((HashMap<String, String>) block.getAttributes().get(EMAIL_MESSAGE));
             b.setStrSMTPServer((String) block.getAttributes().get(SMTP_SERVER));
-            b.setbEnableSSL((boolean) block.getAttributes().get(ENABLE_SSL));
-            b.setStrPassword((String) block.getAttributes().get(PASSWORD));
-            b.setStrUserName((String) block.getAttributes().get(USERNAME));
-
+            if((boolean) block.getAttributes().get(USE_DEFAULT_CREDENTIALS)) {
+                b.setbUseDefaultCredentials((boolean) block.getAttributes().get(USE_DEFAULT_CREDENTIALS));
+                b.setbEnableSSL((boolean) block.getAttributes().get(ENABLE_SSL));
+            }
+            else {
+                b.setStrPassword((String) block.getAttributes().get(PASSWORD));
+                b.setStrUserName((String) block.getAttributes().get(USERNAME));
+                b.setbEnableSSL(false);
+                b.setbUseDefaultCredentials(false);
+            }
             project.addBlockToWorkflow(b);
         }
         else if (block.getType().equalsIgnoreCase(WorkflowConstants.WEBSERVICETASK_TYPE)) {

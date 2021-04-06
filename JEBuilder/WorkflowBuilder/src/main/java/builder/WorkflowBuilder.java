@@ -99,16 +99,20 @@ public class WorkflowBuilder {
                 t.setTaskId(block.getJobEngineElementID());
                 t.setType(MAILSERVICETASK_TYPE);
                 HashMap<String, Object> attributes = new HashMap<>();
-                attributes.put(WorkflowConstants.ENABLE_SSL, ((MailBlock) block).isbEnableSSL());
-                attributes.put(WorkflowConstants.USE_DEFAULT_CREDENTIALS, ((MailBlock) block).isbUseDefaultCredentials());
+                if(((MailBlock) block).isbUseDefaultCredentials()) {
+                    attributes.put(WorkflowConstants.ENABLE_SSL, ((MailBlock) block).isbEnableSSL());
+                    attributes.put(WorkflowConstants.USE_DEFAULT_CREDENTIALS, ((MailBlock) block).isbUseDefaultCredentials());
+                }
+                else {
+                    attributes.put(USERNAME, ((MailBlock) block).getStrUserName());
+                    attributes.put(PASSWORD, ((MailBlock) block).getStrPassword());
+                }
                 attributes.put(WorkflowConstants.PORT, ((MailBlock) block).getiPort());
                 attributes.put(WorkflowConstants.SENDER_ADDRESS, ((MailBlock) block).getStrSenderAddress());
                 attributes.put(SEND_TIME_OUT, ((MailBlock) block).getiSendTimeOut());
                 attributes.put(RECEIVER_ADDRESS, ((MailBlock) block).getLstRecieverAddress());
                 attributes.put(EMAIL_MESSAGE, ((MailBlock) block).getEmailMessage());
                 attributes.put(SMTP_SERVER, ((MailBlock) block).getStrSMTPServer());
-                attributes.put(USERNAME, ((MailBlock) block).getStrUserName());
-                attributes.put(PASSWORD, ((MailBlock) block).getStrPassword());
                 t.setAttributes(attributes);
                 tasks.add(t);
             }
