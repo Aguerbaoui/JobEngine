@@ -272,7 +272,7 @@ public class ModelBuilder {
     public static void saveModel(BpmnModel model, String fileName) {
         BpmnXMLConverter bpmnXMLConverter = new BpmnXMLConverter();
         try {
-            JELogger.trace(JEMessages.SAVING_PMN_FILE_TO_PATH + " = " + fileName);
+            JELogger.trace(JEMessages.SAVING_BPMN_FILE_TO_PATH + " = " + fileName);
             String bpmn20Xml = new String(bpmnXMLConverter.convertToXML(model), "UTF-8");
             JELogger.info(BPMN + " = \n" +  bpmn20Xml);
             JEFileUtils.copyStringToFile(bpmn20Xml, fileName, "utf-8");

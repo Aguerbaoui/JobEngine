@@ -68,7 +68,21 @@ public class JEMessages {
 	public static final String RUNNING_WFS = "Running workflows";
 	public static final String UPDATING_WF = "Updating workflow";
 	public static final String ADDING_BPMN_SCRIPT = " Adding a bpmn script";
-
+	public static final String ADDING_LISTENERS_TO_PROCESS = "Adding listeners to process";
+	public static final String PROCESSING_BLOCK_NAME = "Processing block name";
+	public static final String SAVING_BPMN_FILE_TO_PATH = "Saving bpmn file to path";
+	public static final String DEPLOYING_IN_RUNNER_WORKFLOW_WITH_ID = "Deploying in runner workflow with id ";
+	public static final String FAILED_TO_DEPLOY_IN_RUNNER_WORKFLOW_WITH_ID = "Failed to deploy in runner workflow with id";
+	public static final String TRANSITIONING_FROM = "Transitioning from";
+	public static final String GATEWAY_ID = "Gateway id";
+	public static final String JUST_EXECUTED = "just executed";
+	public static final String TASK_ID = "Task id";
+	public static final String PROCESS_HAS_TO_BE_TRIGGERED_BY_EVENT = "Process has to be triggered by event";
+	public static final String RUNNING_ALL_WORKFLOWS_IN_PROJECT_ID = "Running all workflows in project id";
+	public static final String BUILDING_WORKFLOWS_IN_PROJECT = " Building workflows in project";
+	public static final String ERROR_DELETING_A_NON_EXISTING_PROCESS = "Error deleting a non existing process";
+	public static final String EXECUTING_WEB_API_TASK = "Executing web api task";
+	public static final String NETWORK_CALL_RESPONSE_IN_WEB_SERVICE_TASK = "Network call response in web service task";
 
 	//Rules
 	public static final String ADDING_SCRIPTED_RULE = "Adding new scripted rule";
@@ -325,20 +339,4 @@ public class JEMessages {
 
 	public static final String FAILED_TO_FIRE_RULES = "Failed to fire rules";
 
-
-	public static final String ADDING_LISTENERS_TO_PROCESS = "Adding listeners to process";
-	public static final String PROCESSING_BLOCK_NAME = "Processing block name";
-	public static final String SAVING_PMN_FILE_TO_PATH = "Saving pmn file to path";
-	public static final String DEPLOYING_IN_RUNNER_WORKFLOW_WITH_ID = "Deploying in runner workflow with id ";
-	public static final String FAILED_TO_DEPLOY_IN_RUNNER_WORKFLOW_WITH_ID = "Failed to deploy in runner workflow with id";
-	public static final String TRANSITIONING_FROM = "Transitioning from";
-	public static final String GATEWAY_ID = "Gateway id";
-	public static final String JUST_EXECUTED = "just executed";
-	public static final String TASK_ID = "Task id";
-	public static final String PROCESS_HAS_TO_BE_TRIGGERED_BY_EVENT = "Process has to be triggered by event";
-	public static final String RUNNING_ALL_WORKFLOWS_IN_PROJECT_ID = "Running all workflows in project id";
-	public static final String BUILDING_WORKFLOWS_IN_PROJECT = " Building workflows in project";
-	public static final String ERROR_DELETING_A_NON_EXISTING_PROCESS = "Error deleting a non existing process";
-	public static final String EXECUTING_WEB_API_TASK = "Executing web api task";
-	public static final String NETWORK_CALL_RESPONSE_IN_WEB_SERVICE_TASK = "Network call response in web service task";
 }
