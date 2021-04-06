@@ -2,6 +2,7 @@ package builder;
 
 import blocks.WorkflowBlock;
 import blocks.basic.InformBlock;
+import blocks.basic.MailBlock;
 import blocks.basic.ScriptBlock;
 import blocks.basic.WebApiBlock;
 import io.je.utilities.apis.JERunnerAPIHandler;
@@ -19,8 +20,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
 
-import static io.je.utilities.constants.WorkflowConstants.BPMN_EXTENSION;
-import static io.je.utilities.constants.WorkflowConstants.BPMN_PATH;
+import static io.je.utilities.constants.WorkflowConstants.*;
 
 /*
  * Workflow Builder class
@@ -57,7 +57,17 @@ public class WorkflowBuilder {
                 attributes.put("url", ((WebApiBlock) block).getUrl());
                 attributes.put("method", ((WebApiBlock) block).getMethod());
                 if(((WebApiBlock) block).getInputs() != null && ((WebApiBlock) block).getInputs().size() > 0) {
-                    attributes.put("inputs", ((WebApiBlock) block).getInputs());
+                    HashMap<String, Object> inputs = new HashMap<>();
+                    for(String key: ((WebApiBlock) block).getInputs().keySet()) {
+                        ArrayList<Object> input = ((WebApiBlock) block).getInputs().get(key);
+                        if(input.size() == 1) {
+                            inputs.put(key, input.get(0));
+                        }
+                        else {
+                            inputs.put(key, input);
+                        }
+                    }
+                    attributes.put("inputs", inputs);
                     attributes.put("outputs", ((WebApiBlock) block).getOutputs());
                 }
                 t.setAttributes(attributes);
@@ -80,6 +90,25 @@ public class WorkflowBuilder {
                 t.setType(WorkflowConstants.INFORMSERVICETASK_TYPE);
                 HashMap<String, Object> attributes = new HashMap<>();
                 attributes.put("message", ((InformBlock) block).getMessage());
+                t.setAttributes(attributes);
+                tasks.add(t);
+            }
+            if(block instanceof MailBlock) {
+                TaskModel t = new TaskModel();
+                t.setTaskName(block.getName());
+                t.setTaskId(block.getJobEngineElementID());
+                t.setType(MAILSERVICETASK_TYPE);
+                HashMap<String, Object> attributes = new HashMap<>();
+                attributes.put(WorkflowConstants.ENABLE_SSL, ((MailBlock) block).isbEnableSSL());
+                attributes.put(WorkflowConstants.USE_DEFAULT_CREDENTIALS, ((MailBlock) block).isbUseDefaultCredentials());
+                attributes.put(WorkflowConstants.PORT, ((MailBlock) block).getiPort());
+                attributes.put(WorkflowConstants.SENDER_ADDRESS, ((MailBlock) block).getStrSenderAddress());
+                attributes.put(SEND_TIME_OUT, ((MailBlock) block).getiSendTimeOut());
+                attributes.put(RECEIVER_ADDRESS, ((MailBlock) block).getLstRecieverAddress());
+                attributes.put(EMAIL_MESSAGE, ((MailBlock) block).getEmailMessage());
+                attributes.put(SMTP_SERVER, ((MailBlock) block).getStrSMTPServer());
+                attributes.put(USERNAME, ((MailBlock) block).getStrUserName());
+                attributes.put(PASSWORD, ((MailBlock) block).getStrPassword());
                 t.setAttributes(attributes);
                 tasks.add(t);
             }

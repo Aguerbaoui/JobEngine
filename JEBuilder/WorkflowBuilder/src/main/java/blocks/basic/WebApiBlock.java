@@ -2,6 +2,7 @@ package blocks.basic;
 
 import blocks.WorkflowBlock;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class WebApiBlock extends WorkflowBlock {
@@ -11,7 +12,7 @@ public class WebApiBlock extends WorkflowBlock {
 
     String method;
 
-    HashMap<String, String> inputs;
+    HashMap<String, ArrayList<Object>> inputs;
 
     HashMap<String, String> outputs;
 
@@ -47,11 +48,11 @@ public class WebApiBlock extends WorkflowBlock {
         this.method = method;
     }
 
-    public HashMap<String, String> getInputs() {
+    public HashMap<String, ArrayList<Object>> getInputs() {
         return inputs;
     }
 
-    public void setInputs(HashMap<String, String> inputs) {
+    public void setInputs(HashMap<String, ArrayList<Object>> inputs) {
         this.inputs = inputs;
     }
 

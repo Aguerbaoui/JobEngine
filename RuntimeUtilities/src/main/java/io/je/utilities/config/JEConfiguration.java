@@ -13,7 +13,8 @@ public class JEConfiguration {
 	static String dataDefinitionURL;
 	static String dataManagerURL;
 	static String runtimeManagerURL;
-	static String projectBuilderURL ;
+	static String projectBuilderURL;
+	static String emailApiUrl;
 	static int subscriberPort;
 	static int requestPort;
 	static String droolsDateFormat;
@@ -48,7 +49,7 @@ public class JEConfiguration {
 		setRuntimeManagerURL(configModel.getRuntimeManagerURL());
 		setProjectBuilderURL(configModel.getProjectBuilderURL());
 		setDroolsDateFormat(configModel.getDroolsDateFormat());
-
+		setEmailApiURL(configModel.getEmailApiUrl());
 	}
 	
 	
@@ -61,9 +62,9 @@ public class JEConfiguration {
 		return droolsDateFormat;
 	}
 
-
-
-
+	public static String getEmailApiUrl() {
+		return emailApiUrl;
+	}
 
 	public static void setDroolsDateFormat(String droolsDateFormat) {
 		if(droolsDateFormat!=null)
@@ -144,6 +145,14 @@ public class JEConfiguration {
 		if(projectBuilderURL!=null)
 		{
 			JEConfiguration.projectBuilderURL = projectBuilderURL;
+
+		}
+	}
+
+	public static void setEmailApiURL(String url) {
+		if(emailApiUrl!=null)
+		{
+			JEConfiguration.emailApiUrl = url;
 
 		}
 	}
