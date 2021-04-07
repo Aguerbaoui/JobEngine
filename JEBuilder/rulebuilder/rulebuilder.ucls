@@ -82,17 +82,7 @@
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <class id="9" language="java" name="io.je.rulebuilder.components.blocks.arithmetic.BiasBlock" project="RuleBuilder" 
-    file="/RuleBuilder/src/main/java/io/je/rulebuilder/components/blocks/arithmetic/BiasBlock.java" binary="false" 
-    corner="BOTTOM_RIGHT">    
-    <position height="189" width="227" x="1155" y="2490"/>    
-    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
-      sort-features="false" accessors="true" visibility="true">      
-      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
-      <operations public="true" package="true" protected="true" private="true" static="true"/>    
-    </display>  
-  </class>  
-  <class id="10" language="java" name="io.je.rulebuilder.components.UserDefinedRule" project="RuleBuilder" 
+  <class id="9" language="java" name="io.je.rulebuilder.components.UserDefinedRule" project="RuleBuilder" 
     file="/RuleBuilder/src/main/java/io/je/rulebuilder/components/UserDefinedRule.java" binary="false" 
     corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="836" y="457"/>    
@@ -102,7 +92,7 @@
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <class id="11" language="java" name="io.je.rulebuilder.components.blocks.Block" project="RuleBuilder" 
+  <class id="10" language="java" name="io.je.rulebuilder.components.blocks.Block" project="RuleBuilder" 
     file="/RuleBuilder/src/main/java/io/je/rulebuilder/components/blocks/Block.java" binary="false" 
     corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="605" y="1361"/>    
@@ -112,7 +102,7 @@
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <class id="12" language="java" name="io.je.rulebuilder.components.blocks.execution.LogBlock" project="RuleBuilder" 
+  <class id="11" language="java" name="io.je.rulebuilder.components.blocks.execution.LogBlock" project="RuleBuilder" 
     file="/RuleBuilder/src/main/java/io/je/rulebuilder/components/blocks/execution/LogBlock.java" binary="false" 
     corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="184" y="2046"/>    
@@ -122,7 +112,7 @@
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <class id="13" language="java" name="io.je.rulebuilder.components.JERule" project="RuleBuilder" 
+  <class id="12" language="java" name="io.je.rulebuilder.components.JERule" project="RuleBuilder" 
     file="/RuleBuilder/src/main/java/io/je/rulebuilder/components/JERule.java" binary="false" corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="1144" y="170"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
@@ -131,7 +121,7 @@
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <class id="14" language="java" name="io.je.rulebuilder.components.blocks.PersistableBlock" project="RuleBuilder" 
+  <class id="13" language="java" name="io.je.rulebuilder.components.blocks.PersistableBlock" project="RuleBuilder" 
     file="/RuleBuilder/src/main/java/io/je/rulebuilder/components/blocks/PersistableBlock.java" binary="false" 
     corner="BOTTOM_RIGHT">    
     <position height="225" width="379" x="534" y="2225"/>    
@@ -141,7 +131,7 @@
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <class id="15" language="java" name="io.je.rulebuilder.components.blocks.ArithmeticBlock" project="RuleBuilder" 
+  <class id="14" language="java" name="io.je.rulebuilder.components.blocks.ArithmeticBlock" project="RuleBuilder" 
     file="/RuleBuilder/src/main/java/io/je/rulebuilder/components/blocks/ArithmeticBlock.java" binary="false" 
     corner="BOTTOM_RIGHT">    
     <position height="117" width="162" x="1220" y="2225"/>    
@@ -151,7 +141,7 @@
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <class id="16" language="java" name="io.je.rulebuilder.components.ScriptedRule" project="RuleBuilder" 
+  <class id="15" language="java" name="io.je.rulebuilder.components.ScriptedRule" project="RuleBuilder" 
     file="/RuleBuilder/src/main/java/io/je/rulebuilder/components/ScriptedRule.java" binary="false" 
     corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="1085" y="539"/>    
@@ -161,7 +151,7 @@
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <class id="17" language="java" name="io.je.rulebuilder.components.blocks.GetterBlock" project="RuleBuilder" 
+  <class id="16" language="java" name="io.je.rulebuilder.components.blocks.GetterBlock" project="RuleBuilder" 
     file="/RuleBuilder/src/main/java/io/je/rulebuilder/components/blocks/GetterBlock.java" binary="false" 
     corner="BOTTOM_RIGHT">    
     <position height="117" width="156" x="1422" y="2225"/>    
@@ -171,110 +161,112 @@
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <class id="18" language="java" name="io.je.rulebuilder.components.blocks.comparison.EqualsBlock" project="RuleBuilder" 
-    file="/RuleBuilder/src/main/java/io/je/rulebuilder/components/blocks/comparison/EqualsBlock.java" binary="false" 
-    corner="BOTTOM_RIGHT">    
-    <position height="117" width="207" x="667" y="2845"/>    
-    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
-      sort-features="false" accessors="true" visibility="true">      
-      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
-      <operations public="true" package="true" protected="true" private="true" static="true"/>    
-    </display>  
-  </class>  
-  <generalization id="19">    
-    <end type="SOURCE" refId="15"/>    
-    <end type="TARGET" refId="7"/>  
-  </generalization>  
+  <association id="17">    
+    <end type="SOURCE" refId="9" navigable="false">      
+      <attribute id="18" name="ruleParameters">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="19" minimum="0" maximum="1">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="3" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
   <generalization id="20">    
-    <end type="SOURCE" refId="5"/>    
-    <end type="TARGET" refId="11"/>  
+    <end type="SOURCE" refId="7"/>    
+    <end type="TARGET" refId="10"/>  
   </generalization>  
   <generalization id="21">    
-    <end type="SOURCE" refId="6"/>    
-    <end type="TARGET" refId="17"/>  
-  </generalization>  
-  <association id="22">    
-    <end type="SOURCE" refId="11" navigable="false">      
-      <attribute id="23" name="inputBlocks"/>      
-      <multiplicity id="24" minimum="0" maximum="2147483647"/>    
-    </end>    
-    <end type="TARGET" refId="11" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <generalization id="25">    
     <end type="SOURCE" refId="4"/>    
-    <end type="TARGET" refId="14"/>  
+    <end type="TARGET" refId="13"/>  
   </generalization>  
-  <association id="26">    
-    <end type="SOURCE" refId="11" navigable="false">      
-      <attribute id="27" name="outputBlocks"/>      
-      <multiplicity id="28" minimum="0" maximum="2147483647"/>    
-    </end>    
-    <end type="TARGET" refId="11" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <generalization id="29">    
-    <end type="SOURCE" refId="17"/>    
+  <generalization id="22">    
+    <end type="SOURCE" refId="9"/>    
+    <end type="TARGET" refId="12"/>  
+  </generalization>  
+  <generalization id="23">    
+    <end type="SOURCE" refId="11"/>    
+    <end type="TARGET" refId="5"/>  
+  </generalization>  
+  <generalization id="24">    
+    <end type="SOURCE" refId="15"/>    
+    <end type="TARGET" refId="12"/>  
+  </generalization>  
+  <generalization id="25">    
+    <end type="SOURCE" refId="13"/>    
     <end type="TARGET" refId="7"/>  
   </generalization>  
+  <generalization id="26">    
+    <end type="SOURCE" refId="14"/>    
+    <end type="TARGET" refId="7"/>  
+  </generalization>  
+  <association id="27">    
+    <end type="SOURCE" refId="10" navigable="false">      
+      <attribute id="28" name="outputBlocks">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="29" minimum="0" maximum="2147483647">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="10" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
   <generalization id="30">    
     <end type="SOURCE" refId="8"/>    
     <end type="TARGET" refId="7"/>  
   </generalization>  
   <generalization id="31">    
-    <end type="SOURCE" refId="12"/>    
-    <end type="TARGET" refId="5"/>  
+    <end type="SOURCE" refId="16"/>    
+    <end type="TARGET" refId="7"/>  
   </generalization>  
   <generalization id="32">    
-    <end type="SOURCE" refId="10"/>    
-    <end type="TARGET" refId="13"/>  
+    <end type="SOURCE" refId="5"/>    
+    <end type="TARGET" refId="10"/>  
   </generalization>  
   <generalization id="33">    
-    <end type="SOURCE" refId="18"/>    
-    <end type="TARGET" refId="4"/>  
+    <end type="SOURCE" refId="6"/>    
+    <end type="TARGET" refId="16"/>  
   </generalization>  
-  <generalization id="34">    
-    <end type="SOURCE" refId="1"/>    
-    <end type="TARGET" refId="14"/>  
-  </generalization>  
-  <association id="35">    
+  <association id="34">    
     <end type="SOURCE" refId="10" navigable="false">      
-      <attribute id="36" name="ruleParameters"/>      
-      <multiplicity id="37" minimum="0" maximum="1"/>    
+      <attribute id="35" name="inputBlocks">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="36" minimum="0" maximum="2147483647">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
     </end>    
-    <end type="TARGET" refId="3" navigable="true"/>    
+    <end type="TARGET" refId="10" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
-  <generalization id="38">    
-    <end type="SOURCE" refId="7"/>    
-    <end type="TARGET" refId="11"/>  
-  </generalization>  
-  <association id="39">    
+  <association id="37">    
     <end type="SOURCE" refId="2" navigable="false">      
-      <attribute id="40" name="blocks"/>      
-      <multiplicity id="41" minimum="0" maximum="2147483647"/>    
+      <attribute id="38" name="blocks">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="39" minimum="0" maximum="2147483647">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
     </end>    
-    <end type="TARGET" refId="11" navigable="true"/>    
+    <end type="TARGET" refId="10" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
-  <association id="42">    
-    <end type="SOURCE" refId="10" navigable="false">      
-      <attribute id="43" name="blocks"/>      
-      <multiplicity id="44" minimum="0" maximum="1"/>    
+  <association id="40">    
+    <end type="SOURCE" refId="9" navigable="false">      
+      <attribute id="41" name="blocks">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="42" minimum="0" maximum="1">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
     </end>    
     <end type="TARGET" refId="2" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
-  <generalization id="45">    
-    <end type="SOURCE" refId="14"/>    
-    <end type="TARGET" refId="7"/>  
-  </generalization>  
-  <generalization id="46">    
-    <end type="SOURCE" refId="9"/>    
-    <end type="TARGET" refId="15"/>  
-  </generalization>  
-  <generalization id="47">    
-    <end type="SOURCE" refId="16"/>    
+  <generalization id="43">    
+    <end type="SOURCE" refId="1"/>    
     <end type="TARGET" refId="13"/>  
   </generalization>  
   <classifier-display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 

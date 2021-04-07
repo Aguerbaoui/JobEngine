@@ -5,16 +5,17 @@ import io.je.rulebuilder.models.BlockModel;
 public class TypeConverterBlock extends SingleInputArithmeticBlock {
 
 	
-	String valueToConvertTo;
+	String typeToConvertTo;
+	
 	public TypeConverterBlock(BlockModel blockModel) {
 		super(blockModel);
-		valueToConvertTo = blockModel.getBlockConfiguration().getValue();
+		typeToConvertTo = blockModel.getBlockConfiguration().getValue();
 		updateDefaultValue();
 
 	}
 
 	private void updateDefaultValue() {
-		if(valueToConvertTo.equalsIgnoreCase("string"))
+		if(typeToConvertTo.equalsIgnoreCase("string"))
 		{
 			defaultType = "string";
 		}
@@ -30,9 +31,12 @@ public class TypeConverterBlock extends SingleInputArithmeticBlock {
 	
 	@Override
 	protected String getFormula() {
-		if(valueToConvertTo.equalsIgnoreCase("string"))
+		if(typeToConvertTo.equalsIgnoreCase("string"))
 		{
 			return "String.valueOf("+getInputRefName(0)+")";
+		}else if(typeToConvertTo.equalsIgnoreCase("date"))
+		{
+			return "";
 		}
 		else
 		{

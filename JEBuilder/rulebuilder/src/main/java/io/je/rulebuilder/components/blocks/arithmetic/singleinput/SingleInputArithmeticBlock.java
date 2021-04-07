@@ -31,7 +31,7 @@ public abstract class SingleInputArithmeticBlock extends ArithmeticBlock {
 			case 0:
 				return " Number() from " +  getFormula() ;
 			case 1:
-				return " Number(doubleValue " + Keywords.toBeReplaced +") from " + getFormula() ;
+				return " Number(" + Keywords.toBeReplaced +") from " + getFormula() ;
 			default: 
 				return " Number() from " + getFormula() ;
 			
@@ -55,7 +55,7 @@ public abstract class SingleInputArithmeticBlock extends ArithmeticBlock {
 	}
 
 	@Override
-	public String getAsFirstOperandExpression() throws RuleBuildFailedException {
+	public String getAsOperandExpression() throws RuleBuildFailedException {
 		StringBuilder expression = new StringBuilder();
 		expression.append("\n");
 		expression.append(inputBlocks.get(0).getExpression());

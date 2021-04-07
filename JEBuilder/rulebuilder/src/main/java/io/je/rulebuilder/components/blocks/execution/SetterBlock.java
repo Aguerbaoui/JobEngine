@@ -8,7 +8,7 @@ public class SetterBlock extends ExecutionBlock {
 	String type = null;
 	String attributeNewValue;
 	String attributeName;
-	String instanceId ; 
+	String joinId ; 
 	
 	public SetterBlock(BlockModel blockModel) {
 		super(blockModel);
@@ -17,7 +17,7 @@ public class SetterBlock extends ExecutionBlock {
 			attributeNewValue = blockModel.getBlockConfiguration().getValue();
 			type = blockModel.getBlockConfiguration().getType();
 			attributeName = blockModel.getBlockConfiguration().getAttributeName();
-			instanceId = blockModel.getBlockConfiguration().getInstanceId();
+			joinId = blockModel.getBlockConfiguration().getInstanceId();
 
 		}
 
@@ -34,10 +34,10 @@ public class SetterBlock extends ExecutionBlock {
 		String instanceIdentifier = null;
 		if(type.equalsIgnoreCase("instance"))
 		{
-			instanceIdentifier=instanceId;
+			instanceIdentifier=joinId;
 		}else if(type.equalsIgnoreCase("block"))
 		{
-			instanceIdentifier= "$" + instanceId.replaceAll("\\s+", "") + ".getJobEngineElementID()" ; 
+			instanceIdentifier=   joinId.replaceAll("\\s+", "") + ".getJobEngineElementID()" ; 
 		}
 		
 	   return "Executioner.writeToInstance("+instanceIdentifier+", "+attributeName +", "+attributeNewValue+");";

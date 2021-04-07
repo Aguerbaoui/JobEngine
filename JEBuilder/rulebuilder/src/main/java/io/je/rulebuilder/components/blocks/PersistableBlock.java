@@ -11,8 +11,8 @@ public abstract class PersistableBlock extends ConditionBlock {
 
 	// persistence in time
 
-	int timePersistenceValue;
-	TimePersistenceUnit timePersistenceUnit;
+	protected int timePersistenceValue;
+	protected TimePersistenceUnit timePersistenceUnit;
 
 
 	public PersistableBlock(String jobEngineElementID, String jobEngineProjectID, String ruleId, String blockName,
@@ -83,7 +83,7 @@ public abstract class PersistableBlock extends ConditionBlock {
 	}
 	
 	@Override
-	public String getAsFirstOperandExpression() {
+	public String getAsOperandExpression() {
 		return null;
 	}
 	

@@ -1,7 +1,7 @@
 package io.je.rulebuilder.components;
 
 import io.je.rulebuilder.components.blocks.Block;
-import io.je.rulebuilder.components.blocks.ComparisonBlock;
+import io.je.rulebuilder.components.blocks.comparison.ComparisonBlock;
 import io.je.rulebuilder.components.blocks.LogicBlock;
 import io.je.rulebuilder.components.blocks.arithmetic.multipleInput.*;
 import io.je.rulebuilder.components.blocks.arithmetic.singleinput.*;
@@ -102,8 +102,8 @@ public class BlockGenerator {
 			return new HighLimitingBlock(blockModel);
 		case 1030:
 			return new LowLimitingBlock(blockModel);
-	//	case 1031:
-		//	return new TypeConverterBlock(blockModel);
+		case 1031:
+			return new TypeConverterBlock(blockModel);
 		case 1032:
 			return new MaximumBlock(blockModel);
 
