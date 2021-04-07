@@ -34,7 +34,7 @@ public class RuleEngineHandler {
     
     private static String verifyRuleIsValid(RuleModel ruleModel) throws RuleFormatNotValidException
     {
-    	JELogger.trace("Checking rule validity");
+    	JELogger.trace(JEMessages.VALIDATING_RULE);
     	String errorMsg = null;
     	if(ruleModel.getRuleId() == null || ruleModel.getRuleId().isEmpty())
     	{
@@ -105,7 +105,7 @@ public class RuleEngineHandler {
         RuleEngine.assertFact(projectId,instanceData);
     }catch(InstanceCreationFailed e)
     {
-    	JELogger.warning(RuleEngineHandler.class, " failed to create instance ["+data.getData()+"]" + e.getMessage());
+    	JELogger.warning(RuleEngineHandler.class, JEMessages.ADD_INSTANCE_FAILED+" ["+data.getData()+"]" + e.getMessage());
     	}
     	
         
@@ -148,7 +148,7 @@ public class RuleEngineHandler {
 	}
 
 	public static void deleteProjectRules(String projectId) {
-		JELogger.trace(" Deleting rules in project id = " + projectId);
+		JELogger.trace("[project id = " + projectId+"]"+JEMessages.DELETING_RULES);
 		RuleEngine.deleteProjectRules(projectId);
 	}
 

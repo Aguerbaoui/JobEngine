@@ -1,6 +1,7 @@
 package io.je.runtime.data;
 
 import io.je.utilities.config.JEConfiguration;
+import io.je.utilities.constants.JEMessages;
 import io.je.utilities.logger.JELogger;
 
 import java.util.HashMap;
@@ -31,7 +32,7 @@ public class DataListener {
     }
 
     public static void startListening(List<String> topics) {
-        JELogger.info(" Listening on topics = " + topics);
+        JELogger.info( JEMessages.LISTENING_ON_TOPICS + topics);
     	for (String id : topics)
     	{
     		ZMQAgent agent = agents.get(id);
@@ -49,7 +50,7 @@ public class DataListener {
     }
 
     public static void stopListening(List<String> topics) {
-        JELogger.info(" Stopping Listening on topics = " + topics);
+        JELogger.info(JEMessages.STOPPED_LISTENING_ON_TOPICS + topics);
         for (String id : topics)
         {
             agents.get(id).setListening(false);
@@ -57,7 +58,7 @@ public class DataListener {
                 activeThreads.remove(id);
             }
             catch (Exception e) {
-                JELogger.error(DataListener.class, "Error interrupting thread for topic = " + id);
+                JELogger.error(DataListener.class, JEMessages.INTERRUPT_TOPIC_ERROR + id);
             }
         }
     }

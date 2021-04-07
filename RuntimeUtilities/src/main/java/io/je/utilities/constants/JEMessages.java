@@ -1,11 +1,12 @@
 package io.je.utilities.constants;
 
+
 public class JEMessages {
 	
 	
 	//*****************************************GLobalMessages******************************//
-	public static final String BUILDER_STARTED = "";
-	public static final String RUNNER_STARTED = "Builder started successfully";
+	public static final String BUILDER_STARTED = "Builder started successfully";
+	public static final String RUNNER_STARTED = "Runner started successfully";
 	public static final String SETTING_ASYNC_EXECUTOR = "Setting async executor parameters";
 	public static final String LOGGER_INITIALIZED = "Logger Initialized";
 	public static final String INITILIZING_BUILDER = "Initializing builder";
@@ -35,6 +36,21 @@ public class JEMessages {
 	public static final String MULTIPLE_INHERITANCE = "Multiple inhertiance is not supported";
 	public static final String CLASS_NOT_FOUND = "No Class with this id was found in DataModelRestApi";
 	public static final String LOADING_ALL_CLASSES_FROM_DB = "Loading all classes from db to memory";
+	
+	
+	// ****************************************Data Listener**************************************************
+
+	public static final String LISTENING_ON_TOPICS = " Listening on topics : ";
+	public static final String ADDING_TOPICS = "adding topics : ";
+	public static final String STOPPED_LISTENING_ON_TOPICS = " Stopping Listening on topics : ";
+	public static final String INTERRUPT_TOPIC_ERROR = "Error interrupting thread for topic : ";
+	public static final String DATA_RECEIVED = "data received : ";
+	public static final String THREAD_INTERRUPTED = " Thread interrupted while listening to data";
+	public static final String INJECTING_DATA = " Injecting data in runner from listener";
+	public static final String REMOVING_TOPIC_SUBSCRIPTION = "Removing topic subscription";
+
+
+	
 	
 	// ****************************************TraceMessages**************************************************
 
@@ -66,6 +82,7 @@ public class JEMessages {
 	public static final String BUILDING_WFS = "Building workflows";
 	public static final String RUNNING_WF = "Running workflow";
 	public static final String RUNNING_WFS = "Running workflows";
+	public static final String STOPPING_WORKFLOW = "Stopping workflow executions";
 	public static final String UPDATING_WF = "Updating workflow";
 	public static final String ADDING_BPMN_SCRIPT = " Adding a bpmn script";
 	public static final String ADDING_LISTENERS_TO_PROCESS = "Adding listeners to process";
@@ -83,7 +100,9 @@ public class JEMessages {
 	public static final String ERROR_DELETING_A_NON_EXISTING_PROCESS = "Error deleting a non existing process";
 	public static final String EXECUTING_WEB_API_TASK = "Executing web api task";
 	public static final String NETWORK_CALL_RESPONSE_IN_WEB_SERVICE_TASK = "Network call response in web service task";
-
+	public static final String DEPLOYING_WF = "Deploying workflow";
+	public static final String DB_TASK = "outsourcing database operation in task = ";
+	
 	//Rules
 	public static final String ADDING_SCRIPTED_RULE = "Adding new scripted rule";
 	public static final String UPDATING_SCRIPTED_RULE = "Updating new scripted rule";
@@ -103,7 +122,18 @@ public class JEMessages {
 	public static final String BUILDING_RULE = "Building rule";
 	public static final String SENDNG_RULE_TO_RUNNER = "Sending rule build request to runner";
 	public static final String UPDATING_FACT = "Updating fact";
+	public static final String VALIDATING_RULE = "Checking rule validity";
 
+	public static final String ADD_INSTANCE_FAILED = "failed to create instance";
+	//events
+	
+	public static final String FOUND_EVENT = " Found event with id = ";
+	public static final String UPDATING_EVENT = " Found event with id = ";
+	public static final String REMOVING_EVENTS = "Updating fact";
+	public static final String TRIGGERING_NOW = " triggering now";
+	public static final String REMOVING_EVENT = " removing now";
+
+	
 
 	// ****************************************ResponseMessages**************************************************
 
@@ -111,7 +141,7 @@ public class JEMessages {
 	public static final String DELETE_WORKFLOW_FAILED = "Error deleting  workflow";
 	
 	public static final String RUN_WORKFLOW_FAILED = "Error running workflow in runner : ";
-
+	public static final String PROJECT_RUN_FAILED = "Failed to run project";
 	
 	public static final String WORKFLOW_NOT_FOUND = "Workflow not found";
 
@@ -193,7 +223,7 @@ public class JEMessages {
 	
 	public static final String LOADING_EVENT = "Loading event ";
 	
-	public static final String ADDING_EVENT = "Loading event ";
+	public static final String ADDING_EVENT = "Adding event ";
 	
 	public static final String REGISTERING_EVENT ="Registering event in runner";
 	

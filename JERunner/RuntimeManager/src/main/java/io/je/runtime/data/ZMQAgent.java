@@ -3,6 +3,7 @@ package io.je.runtime.data;
 import io.je.runtime.services.RuntimeDispatcher;
 import io.je.utilities.beans.JEData;
 import io.je.utilities.constants.APIConstants;
+import io.je.utilities.constants.JEMessages;
 import io.je.utilities.logger.JELogger;
 import io.je.utilities.zmq.ZMQSubscriber;
 
@@ -34,7 +35,7 @@ public class ZMQAgent extends ZMQSubscriber {
              try {
             	 if( data !=null && !data.equals(topic) && !data.startsWith(topic))
 				{
-                     JELogger.info(ZMQAgent.class, "data received : " + data);
+                     JELogger.info(ZMQAgent.class, JEMessages.DATA_RECEIVED + data);
             		 RuntimeDispatcher.injectData(new JEData(this.topic, data));
 				}
 			} catch (Exception e) {
@@ -44,7 +45,7 @@ public class ZMQAgent extends ZMQSubscriber {
              try {
 				Thread.sleep(100);
 			} catch (InterruptedException e) {
-                 JELogger.error(ZMQAgent.class, " Thread interrupted while listening to data");
+                 JELogger.error(ZMQAgent.class,JEMessages.THREAD_INTERRUPTED );
 			}
     	}
 		

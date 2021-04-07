@@ -77,7 +77,7 @@ public class EventManager {
             }
         }
         if(event != null) {
-            JELogger.trace(" Found event with id = " + id + " triggering now");
+            JELogger.trace(JEMessages.FOUND_EVENT + id + JEMessages.TRIGGERING_NOW);
             RuleEngineHandler.addEvent(event);
             if(event.getType().equals(EventType.MESSAGE_EVENT)) {
                 throwMessageEventInWorkflow(projectId, event.getName());
@@ -124,7 +124,7 @@ public class EventManager {
             }
         }
         if(event == null) throw new EventException(JEMessages.EVENT_NOT_FOUND);
-        JELogger.trace(" Found event with id = " + eventId + " updating type now");
+        JELogger.trace(JEMessages.FOUND_EVENT + eventId + JEMessages.UPDATING_EVENT_TYPE);
         EventType t = EventType.valueOf(eventType);
         event.setType(t);
     }
@@ -145,13 +145,13 @@ public class EventManager {
             if(event == null) throw new EventException(JEMessages.EVENT_NOT_FOUND);
         }
         else {
-            JELogger.trace(" Found event with id = " + eventId + " removing now");
+            JELogger.trace(JEMessages.FOUND_EVENT + eventId + JEMessages.REMOVING_EVENT);
             events.get(projectId).remove(eventId);
         }
     }
 
     public static void deleteProjectEvents(String projectId){
-        JELogger.trace(" removing all events in project id = " + projectId );
+        JELogger.trace(JEMessages.REMOVING_EVENTS + projectId );
         events.remove(projectId);
 
 
