@@ -23,13 +23,13 @@ public class JEBuilderApiHandler {
 	            throws JERunnerErrorException, InterruptedException, ExecutionException {
 	        Response response = null;
 	        try {
-				JELogger.info(" Runner is shutting down");
+				JELogger.info(JEMessages.RUNNER_SHUTTING_DOWN);
 	            response = Network.makeGetNetworkCallWithResponse(requestUrl);
 
 	            if (response == null) throw new JERunnerErrorException(JEMessages.JEBUILDER_UNREACHABLE);
 	            if (response.code() != ResponseCodes.CODE_OK) {
 	                JELogger.error(JERunnerAPIHandler.class,
-	                        "Error making network call for url = " + requestUrl);
+	                        JEMessages.NETWORK_CALL_ERROR + requestUrl);
 	                throw new JERunnerErrorException(JEMessages.JERUNNER_ERROR + " : " + response.body().string());
 	            }
 
@@ -38,7 +38,7 @@ public class JEBuilderApiHandler {
 	            return objectMapper.readValue(respBody, JEResponse.class);
 	        } catch (IOException e) {
 	            JELogger.error(JERunnerAPIHandler.class,
-	                    "Error making network call for url = " + requestUrl);
+	            		 JEMessages.NETWORK_CALL_ERROR + requestUrl);
 	            throw new JERunnerErrorException(JEMessages.JEBUILDER_UNREACHABLE);
 	        }
 	    }

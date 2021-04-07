@@ -1,5 +1,6 @@
 package io.je.utilities.files;
 
+import io.je.utilities.constants.JEMessages;
 import io.je.utilities.logger.JELogger;
 import org.apache.commons.io.FileUtils;
 
@@ -30,7 +31,7 @@ public class JEFileUtils {
 	public static String getStringFromFile(String path) {
 		String content = null;
 		try {
-			JELogger.trace(JEFileUtils.class, " Reading string from file = " + path);
+			JELogger.trace(JEFileUtils.class, JEMessages.READING_FILE + path);
 			content = new String(Files.readAllBytes(Paths.get(path)));
 		} catch (IOException e) {
 			JELogger.error(JEFileUtils.class, Arrays.toString(e.getStackTrace()));
@@ -50,7 +51,7 @@ public class JEFileUtils {
 		}
 		}
 		}catch (Exception e) {
-			JELogger.error(JEFileUtils.class, "Failed to delete file " );
+			JELogger.error(JEFileUtils.class, JEMessages.DELETE_FILE_FAILED );
 		}
 
 		

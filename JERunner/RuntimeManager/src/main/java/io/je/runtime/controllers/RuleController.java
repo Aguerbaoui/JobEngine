@@ -72,7 +72,7 @@ public class RuleController {
 		}
 
 
-        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.RULE_UPDATED_SUCCESSFULLY));
+        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.RULE_UPDATED));
     }
 
 
@@ -89,7 +89,7 @@ public class RuleController {
 		}
 
 
-        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.RULE_UPDATED_SUCCESSFULLY));
+        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.RULE_UPDATED));
     }
     
     
@@ -109,7 +109,7 @@ public class RuleController {
 				return JEExceptionHandler.handleException(e);
 			}
 	
-		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.RULE_DELETED_SUCCESSFULLY));
+		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.RULE_DELETED));
 	}
 
 

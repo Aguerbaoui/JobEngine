@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.squareup.okhttp.*;
 import io.je.utilities.apis.BodyType;
 import io.je.utilities.apis.HttpMethod;
+import io.je.utilities.constants.JEMessages;
 import io.je.utilities.logger.JELogger;
 
 import java.io.IOException;
@@ -47,7 +48,7 @@ public class Network {
 	}
 
     public static Response makeGetNetworkCallWithResponse(String url) throws IOException, InterruptedException, ExecutionException {
-        JELogger.info(" Making Get network call to url = " + url);
+        JELogger.debug(JEMessages.NETWORK_GET + url);
         Request request = new Request.Builder().url(url).get().build();
         CompletableFuture<Response> f = CompletableFuture.supplyAsync(() -> {
             try {
@@ -61,7 +62,7 @@ public class Network {
 
     public static Response makeDeleteNetworkCallWithResponse(String url) throws IOException, InterruptedException, ExecutionException {
         Request request = new Request.Builder().url(url).delete().build();
-        JELogger.trace(" Making Delete network call to url = " + url);
+        JELogger.debug(JEMessages.NETWORK_DELETE + url);
         CompletableFuture<Response> f = CompletableFuture.supplyAsync(() -> {
             try {
                 return client.newCall(request).execute();
@@ -80,7 +81,7 @@ public class Network {
         } catch (JsonProcessingException e) {
             JELogger.info(Network.class, e.getMessage());
         }
-        JELogger.trace(" Making POST network call to url = " + url);
+        JELogger.trace(JEMessages.NETWORK_POST + url);
         RequestBody body = RequestBody.create(MediaType.parse("application/json"), jsonStr);
         Request request = new Request.Builder().url(url).post(body).build();
         CompletableFuture<Response> f = CompletableFuture.supplyAsync(() -> {
@@ -98,7 +99,7 @@ public class Network {
     public static Response makeNetworkCallWithStringObjectBodyWithResponse(String json, String url) throws IOException, ExecutionException, InterruptedException {
         RequestBody body = RequestBody.create(MediaType.parse("application/json"), json);
         Request request = new Request.Builder().url(url).post(body).build();
-        JELogger.trace(" Making network String POST call to url = " + url);
+        JELogger.trace(JEMessages.NETWORK_POST + url);
         CompletableFuture<Response> f = CompletableFuture.supplyAsync(() -> {
             try {
                 return client.newCall(request).execute();

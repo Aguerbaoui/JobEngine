@@ -11,6 +11,7 @@ import javax.tools.ToolProvider;
 
 import io.je.utilities.config.ConfigurationConstants;
 import io.je.utilities.constants.ClassBuilderConfig;
+import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.ClassLoadException;
 import io.je.utilities.logger.JELogger;
 import org.burningwave.core.Virtual;
@@ -65,7 +66,7 @@ public class JEClassLoader {
 			//TODO: move msg to error clas
 			e.printStackTrace();
 			JELogger.info(JEClassLoader.class, e.getMessage());
-			throw new ClassLoadException("failed to load class");
+			throw new ClassLoadException(JEMessages.CLASS_LOAD_FAILED);
 		}
 
 	}

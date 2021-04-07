@@ -244,12 +244,12 @@ public class RuntimeDispatcher {
     ///////////////////////////// Classes
     // add class
     public void addClass(ClassModel classModel) throws ClassLoadException {
-        JELogger.trace(" Adding class to runner, class name =  " + classModel.getClassName());
+        JELogger.trace(JEMessages.ADDING_CLASS + classModel.getClassName());
        JEClassLoader.loadClass(classModel.getClassPath(), ConfigurationConstants.runnerClassLoadPath);
        try {
     	   ClassRepository.addClass(classModel.getClassId(), RuntimeDispatcher.class.getClassLoader().loadClass(ClassBuilderConfig.genrationPackageName + "." + classModel.getClassName())); ;
 	} catch (ClassNotFoundException e) {
-		throw new ClassLoadException("Failed to load class to runner. [class :"+ classModel.getClassName() +" ]"); 
+		throw new ClassLoadException("[class :"+ classModel.getClassName() +" ]"+JEMessages.CLASS_LOAD_FAILED); 
 	}
         
 

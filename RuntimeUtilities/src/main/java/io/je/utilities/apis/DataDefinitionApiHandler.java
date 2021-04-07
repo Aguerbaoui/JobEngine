@@ -26,7 +26,7 @@ public  class DataDefinitionApiHandler {
 	public static String loadClassDefinition(String workspaceId, String classId) throws DataDefinitionUnreachableException, ClassLoadException, IOException
 	{
 		String requestURL = JEConfiguration.getDataDefinitionURL() + "/Class/" + classId + "/workspace/" + workspaceId;
-		JELogger.debug(DataDefinitionApiHandler.class, "loading class definiton [classID = "+classId+"]");
+		JELogger.debug(DataDefinitionApiHandler.class, " [classID = "+classId+"]"+JEMessages.GETTING_CLASS_DEFINITION);
 
 		Response resp = null;
 		try {

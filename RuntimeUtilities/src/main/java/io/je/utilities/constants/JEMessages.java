@@ -7,6 +7,9 @@ public class JEMessages {
 	//*****************************************GLobalMessages******************************//
 	public static final String BUILDER_STARTED = "Builder started successfully";
 	public static final String RUNNER_STARTED = "Runner started successfully";
+	public static final String RUNNER_SHUTTING_DOWN = " Runner is shutting down";
+	public static final String RUNNER_CONFFIG_UPDATE = "updating JERunner configuration";
+
 	public static final String SETTING_ASYNC_EXECUTOR = "Setting async executor parameters";
 	public static final String LOGGER_INITIALIZED = "Logger Initialized";
 	public static final String INITILIZING_BUILDER = "Initializing builder";
@@ -35,7 +38,9 @@ public class JEMessages {
 	public static final String INHERITED_CLASS_ENUM = "Class cannot inherit from an enumeration";
 	public static final String MULTIPLE_INHERITANCE = "Multiple inhertiance is not supported";
 	public static final String CLASS_NOT_FOUND = "No Class with this id was found in DataModelRestApi";
+	public static final String GETTING_CLASS_DEFINITION = "loading class definiton";
 	public static final String LOADING_ALL_CLASSES_FROM_DB = "Loading all classes from db to memory";
+	public static final String ADDING_CLASS = "Adding class : ";
 	
 	
 	// ****************************************Data Listener**************************************************
@@ -249,13 +254,9 @@ public class JEMessages {
 
 	public static final String FAILED_TO_ADD_RULE = "Failed to add rule.";
 
-	// rule update
-
-	public static final String RULE_UPDATED_SUCCESSFULLY = "Rule updated successfully";
 
 	// rule deletion
 
-	public static final String RULE_DELETED_SUCCESSFULLY = "Rule deleted successfully";
 
 	public static final String FAILED_TO_DELETE_ALL_RULES = "Failed to delete all rules ";
 	
@@ -340,7 +341,6 @@ public class JEMessages {
 
 	// building project
 	public static final String BUILDING_PROJECT_CONTAINER = "Building Project Container...";
-
 	// rules
 	public static final String BUILDING_PROJECT_CONTAINER_SUCCESS = "Project Container built Succesfully";
 	public static final String BUILDING_PROJECT_CONTAINER_FAILED = "Project Container build Failed";
@@ -364,9 +364,27 @@ public class JEMessages {
 	public static final String KIE_BUILT = "Kie built sucessfully.";
 	public static final String KIE_INIT = "Initialising kieBase..";
 	public static final String KIE_INIT_FAILED = "failed to initialise kie base";
-
 	public static final String FAILED_TO_UPDATE_FACT = "Failed to update fact";
-
 	public static final String FAILED_TO_FIRE_RULES = "Failed to fire rules";
+	
+	
+	// ****************************************NETWORKMSGS**************************************************
+	
+	public static final String NETWORK_GET = " Making Get network call to url = ";
+	public static final String NETWORK_DELETE = " Making Delete network call to url = ";
+	public static final String NETWORK_POST = " Making POST network call to url = ";	
+	public static final String NETWORK_CALL_ERROR = "Error making network call for url = ";
+	public static final String NETWORK_DELETE_EVENT = "Sending delete event request to runner,";
+	public static final String NETWORK_CLEAN_PROJECT = "Sending clean project request";
+	public static final String NETWORK_DELETE_WF = "Sending delete workflow request to runner,";
+	public static final String NETWORK_ADD_VAR = "Sending add variable request to runner,";
+	public static final String NETWORK_DELETE_VAR = "Sending delete variable request to runner,";
+	public static final String NETWORK_UPDATE_EVENT = "Sending update event request to runner";
 
+	
+	// ****************************************UTILS**************************************************
+	public static final String READING_FILE = " Reading file = ";
+	public static final String DELETE_FILE_FAILED = " Reading file = ";
+
+	
 }
