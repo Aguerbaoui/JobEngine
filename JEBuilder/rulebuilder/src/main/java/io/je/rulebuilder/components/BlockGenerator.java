@@ -12,7 +12,7 @@ import io.je.rulebuilder.components.blocks.execution.TriggerEventBlock;
 import io.je.rulebuilder.components.blocks.getter.AttributeGetterBlock;
 import io.je.rulebuilder.components.blocks.logic.JoinBlock;
 import io.je.rulebuilder.models.BlockModel;
-import io.je.utilities.constants.RuleBuilderErrors;
+import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.AddRuleBlockException;
 
 public class BlockGenerator {
@@ -154,9 +154,9 @@ public class BlockGenerator {
 			return new AcceptEventBlock(blockModel);
 		// no operation with such id
 		default:
-			throw new AddRuleBlockException( RuleBuilderErrors.BlockOperationIdUnknown);
+			throw new AddRuleBlockException( JEMessages.BLOCK_OPERATION_ID_UNKNOWN);
 		}
-		throw new AddRuleBlockException( RuleBuilderErrors.BlockOperationIdUnknown);
+		throw new AddRuleBlockException( JEMessages.BLOCK_OPERATION_ID_UNKNOWN);
 
 	}
 }

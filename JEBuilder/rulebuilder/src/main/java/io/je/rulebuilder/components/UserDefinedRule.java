@@ -15,7 +15,7 @@ import io.je.rulebuilder.components.blocks.Block;
 import io.je.rulebuilder.components.blocks.ConditionBlock;
 import io.je.rulebuilder.components.blocks.PersistableBlock;
 import io.je.rulebuilder.components.blocks.getter.AttributeGetterBlock;
-import io.je.utilities.constants.RuleBuilderErrors;
+import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.AddRuleBlockException;
 import io.je.utilities.exceptions.RuleBuildFailedException;
 import io.je.utilities.logger.JELogger;
@@ -119,7 +119,7 @@ public class UserDefinedRule extends JERule {
 			ruleContent = objectDataCompiler.compile(Arrays.asList(ruleTemplateAttributes),
 					new FileInputStream(ConfigurationConstants.RULE_TEMPLATE_PATH));
 		} catch (Exception e) {
-			throw new RuleBuildFailedException(RuleBuilderErrors.RuleBuildFailed + e.getMessage());
+			throw new RuleBuildFailedException(JEMessages.RULE_BUILD_FAILED + e.getMessage());
 		}
 		return ruleContent;
 

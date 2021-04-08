@@ -18,7 +18,7 @@ import io.je.classbuilder.models.ClassModel;
 import io.je.classbuilder.models.FieldModel;
 import io.je.classbuilder.models.MethodModel;
 import io.je.utilities.constants.ClassBuilderConfig;
-import io.je.utilities.constants.ClassBuilderErrors;
+import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.AddClassException;
 import io.je.utilities.exceptions.ClassLoadException;
 import io.je.utilities.logger.JELogger;
@@ -40,8 +40,8 @@ public class ClassBuilder {
 		//check if class format is valid
 		if(classModel.getName()==null)
 		{
-			JELogger.error(ClassBuilder.class, ClassBuilderErrors.classNameNull);
-			throw new AddClassException(ClassBuilderErrors.classNameNull);
+			JELogger.error(ClassBuilder.class, JEMessages.CLASS_NAME_NULL);
+			throw new AddClassException(JEMessages.CLASS_NAME_NULL);
 		}
 		
 		
@@ -118,8 +118,8 @@ public class ClassBuilder {
 			// extend class
 			if(inheritedClass != null)
 			{
-				JELogger.error(ClassBuilder.class, ClassBuilderErrors.invalidClassFormat + "INTERFACE CAN'T INHERIT FROM CLASS");
-				throw new ClassLoadException(ClassBuilderErrors.invalidClassFormat + "INTERFACE CAN'T INHERIT FROM CLASS");
+				JELogger.error(ClassBuilder.class, JEMessages.INVALID_CLASS_FORMAT + "INTERFACE CAN'T INHERIT FROM CLASS");
+				throw new ClassLoadException(JEMessages.INVALID_CLASS_FORMAT + "INTERFACE CAN'T INHERIT FROM CLASS");
 				
 			}
 			 // implement interfaces
@@ -239,8 +239,8 @@ public class ClassBuilder {
 				}	//count number of inherited class
 				
 			    if(ClassManager.getClassType(classId) == ClassType.ENUM) {
-					JELogger.error(ClassBuilder.class, ClassBuilderErrors.invalidClassFormat + " : " + ClassBuilderErrors.enumAsInheritedClass);
-			    	throw new ClassLoadException(ClassBuilderErrors.invalidClassFormat + " : " + ClassBuilderErrors.enumAsInheritedClass); }
+					JELogger.error(ClassBuilder.class, JEMessages.INVALID_CLASS_FORMAT + " : " + JEMessages.INHERITED_CLASS_ENUM);
+			    	throw new ClassLoadException(JEMessages.INVALID_CLASS_FORMAT + " : " + JEMessages.INHERITED_CLASS_ENUM); }
 				
 				
 			}
@@ -253,8 +253,8 @@ public class ClassBuilder {
 			//multiple inheritance not supported
 			else if (inheritedClass.size()>1)
 			{	
-				JELogger.error(ClassBuilder.class, ClassBuilderErrors.invalidClassFormat + " : " + ClassBuilderErrors.multipleInheritance);
-				throw new ClassLoadException(ClassBuilderErrors.invalidClassFormat + " : " + ClassBuilderErrors.multipleInheritance);
+				JELogger.error(ClassBuilder.class, JEMessages.INVALID_CLASS_FORMAT + " : " + JEMessages.MULTIPLE_INHERITANCE);
+				throw new ClassLoadException(JEMessages.INVALID_CLASS_FORMAT + " : " + JEMessages.MULTIPLE_INHERITANCE);
 			}
 			//if base types contains class 
 			else if (inheritedClass.size()==1)
@@ -341,8 +341,8 @@ public class ClassBuilder {
 			else
 			{
 				// TODO: throw exception : type not found
-				JELogger.error(ClassBuilder.class, "COULD NOT BUILD CLASS : UNKNOWN TYPE");
-				throw new ClassLoadException("COULD NOT BUILD CLASS : UNKNOWN TYPE : " + type);
+				JELogger.error(ClassBuilder.class, JEMessages.TYPE_UNKNOWN);
+				throw new ClassLoadException(JEMessages.CLASS_BUILD_FAILED + ":" + JEMessages.UNKNOW_CLASS_TYPE  + type);
 			}
 		}
 		

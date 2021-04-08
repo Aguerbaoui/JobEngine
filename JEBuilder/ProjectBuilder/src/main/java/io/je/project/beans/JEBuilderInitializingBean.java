@@ -1,6 +1,7 @@
 package io.je.project.beans;
 
 import io.je.project.services.ProjectService;
+import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.*;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +30,7 @@ public class JEBuilderInitializingBean implements InitializingBean {
     public void afterPropertiesSet() {
         try {
             JELogger.initBuilderLogger(builderProperties.getJeBuilderLogPath(),builderProperties.getJeBuilderLogLevel());
-            JELogger.trace(" Logger Initialized");
+            JELogger.trace(JEMessages.LOGGER_INITIALIZED);
         	configService.init();
         } catch (DataDefinitionUnreachableException | JERunnerErrorException | AddClassException | ClassLoadException | IOException | InterruptedException | ExecutionException | ProjectNotFoundException | ConfigException   e) {
            JELogger.error(getClass(), e.getMessage());

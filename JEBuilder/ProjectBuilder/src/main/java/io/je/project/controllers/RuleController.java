@@ -16,7 +16,7 @@ import io.je.rulebuilder.models.BlockModel;
 import io.je.rulebuilder.models.RuleModel;
 import io.je.rulebuilder.models.ScriptRuleModel;
 import io.je.utilities.constants.ResponseCodes;
-import io.je.utilities.constants.ResponseMessages;
+import io.je.utilities.constants.JEMessages;
 import io.je.utilities.logger.JELogger;
 import io.je.utilities.network.JEResponse;
 
@@ -100,8 +100,8 @@ public class RuleController {
 		} catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
 		}
-		JELogger.info(getClass(), ResponseMessages.RULE_ADDED_SUCCESSFULLY);
-		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.RULE_ADDED_SUCCESSFULLY));
+		JELogger.info(getClass(), JEMessages.RULE_ADDED_SUCCESSFULLY);
+		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.RULE_ADDED_SUCCESSFULLY));
 	}
 
 	
@@ -117,8 +117,8 @@ public class RuleController {
 		} catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
 		}
-		JELogger.info(getClass(), ResponseMessages.RULE_ADDED_SUCCESSFULLY);
-		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.RULE_DELETED_SUCCESSFULLY));
+		JELogger.info(getClass(), JEMessages.RULE_ADDED_SUCCESSFULLY);
+		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.RULE_DELETED));
 	}
 
 	
@@ -139,7 +139,7 @@ public class RuleController {
 			return JEExceptionHandler.handleException(e);
 
 		}
-		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.RULE_DELETED_SUCCESSFULLY));
+		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.RULE_DELETED));
 	}
 
 	/*
@@ -156,7 +156,7 @@ public class RuleController {
 
 		}
 
-		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.RULE_UPDATED_SUCCESSFULLY));
+		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.RULE_UPDATED));
 	}
 
 	/*
@@ -175,7 +175,7 @@ public class RuleController {
 			return JEExceptionHandler.handleException(e);
 		}
 
-		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.RULE_UPDATED_SUCCESSFULLY));
+		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.RULE_UPDATED));
 	}
 
 	/*
@@ -192,7 +192,7 @@ public class RuleController {
 
 		}
 
-		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.RULE_UPDATED_SUCCESSFULLY));
+		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.RULE_UPDATED));
 
 	}
 
@@ -210,7 +210,7 @@ public class RuleController {
 			return JEExceptionHandler.handleException(e);
 		}
 
-		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.RULE_WAS_BUILT_SUCCESSFULLY));
+		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.RULE_WAS_BUILT_SUCCESSFULLY));
 	}
 
 	/*
@@ -223,13 +223,13 @@ public class RuleController {
 		try {
 			ruleService.saveRuleFrontConfig(projectId, ruleId, config);
 			projectService.saveProject(projectId).get();
-			JELogger.info(getClass(), ResponseMessages.RULE_ADDED_SUCCESSFULLY);
+			JELogger.info(getClass(), JEMessages.RULE_ADDED_SUCCESSFULLY);
 
 		} catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
 		}
 
-		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.RULE_ADDED_SUCCESSFULLY));
+		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.RULE_ADDED_SUCCESSFULLY));
 	}
 
 	
@@ -252,7 +252,7 @@ public class RuleController {
 
 		}
 
-		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.RULE_ADDED_SUCCESSFULLY));
+		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.RULE_ADDED_SUCCESSFULLY));
 	}
 
 	/*
@@ -271,7 +271,7 @@ public class RuleController {
 
 		}
 
-		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.RULE_ADDED_SUCCESSFULLY));
+		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.RULE_ADDED_SUCCESSFULLY));
 	}
 
 	

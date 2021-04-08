@@ -6,7 +6,7 @@ import com.squareup.okhttp.Response;
 
 
 import io.je.utilities.config.JEConfiguration;
-import io.je.utilities.constants.Errors;
+import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.ClassLoadException;
 import io.je.utilities.exceptions.DataDefinitionUnreachableException;
 import io.je.utilities.logger.JELogger;
@@ -26,25 +26,25 @@ public  class DataDefinitionApiHandler {
 	public static String loadClassDefinition(String workspaceId, String classId) throws DataDefinitionUnreachableException, ClassLoadException, IOException
 	{
 		String requestURL = JEConfiguration.getDataDefinitionURL() + "/Class/" + classId + "/workspace/" + workspaceId;
-		JELogger.debug(DataDefinitionApiHandler.class, "loading class definiton [classID = "+classId+"]");
+		JELogger.debug(DataDefinitionApiHandler.class, " [classID = "+classId+"]"+JEMessages.GETTING_CLASS_DEFINITION);
 
 		Response resp = null;
 		try {
 			resp = Network.makeGetNetworkCallWithResponse(requestURL);
 
 		} catch (Exception e) {
-			throw new DataDefinitionUnreachableException(Errors.DATA_DEFINITION_API_UNREACHABLE +" : " + e.getMessage());
+			throw new DataDefinitionUnreachableException(JEMessages.DATA_DEFINITION_API_UNREACHABLE +" : " + e.getMessage());
 		}
 		if (resp == null ) {
-			throw new DataDefinitionUnreachableException(Errors.DATA_DEFINITION_API_UNREACHABLE );
+			throw new DataDefinitionUnreachableException(JEMessages.DATA_DEFINITION_API_UNREACHABLE );
 
 
 		}else if (resp.code() == 204) {
 			
-			throw new ClassLoadException(Errors.DATA_DEFINITION_CLASS_NOT_FOUND + " : [ id = " + classId + " ]");
+			throw new ClassLoadException(JEMessages.DATA_DEFINITION_CLASS_NOT_FOUND + " : [ id = " + classId + " ]");
 		}else if ( resp.code() != 200 && resp.code() != 204)
 		{
-			throw new DataDefinitionUnreachableException(Errors.DATA_DEFINITION_API_ERROR +" : " + resp.body().string());
+			throw new DataDefinitionUnreachableException(JEMessages.DATA_DEFINITION_API_ERROR +" : " + resp.body().string());
 
 		}
 		

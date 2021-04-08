@@ -21,7 +21,7 @@ import io.je.project.services.EventService;
 import io.je.project.services.ProjectService;
 import io.je.utilities.beans.JEEvent;
 import io.je.utilities.constants.ResponseCodes;
-import io.je.utilities.constants.ResponseMessages;
+import io.je.utilities.constants.JEMessages;
 import io.je.utilities.logger.JELogger;
 import io.je.utilities.models.EventModel;
 import io.je.utilities.network.JEResponse;
@@ -103,7 +103,7 @@ public class EventController {
 
 		}
 		JELogger.info(getClass(), " Event [ id="+eventModel.getEventId()+"] added successfully");
-		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.EVENT_ADDED));
+		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.EVENT_ADDED));
 	}
 	
 	
@@ -124,7 +124,7 @@ public class EventController {
 
 		}
 		JELogger.info(getClass(), " Event [ id="+eventModel.getEventId()+"] updated successfully");
-		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.EVENT_UPDATED));
+		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.EVENT_UPDATED));
 	}
 
 
@@ -146,6 +146,6 @@ public class EventController {
 			
 		}
 		JELogger.info(getClass(), " Event [ id="+eventId+"] deleted successfully");
-		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.EVENT_DELETED));
+		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.EVENT_DELETED));
 	}
 }

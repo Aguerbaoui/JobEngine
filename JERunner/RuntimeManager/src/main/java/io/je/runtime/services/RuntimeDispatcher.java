@@ -18,6 +18,7 @@ import io.je.utilities.beans.JEVariable;
 import io.je.utilities.classloader.JEClassLoader;
 import io.je.utilities.config.ConfigurationConstants;
 import io.je.utilities.constants.ClassBuilderConfig;
+import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.WorkflowConstants;
 import io.je.utilities.exceptions.*;
 import io.je.utilities.logger.JELogger;
@@ -39,14 +40,14 @@ public class RuntimeDispatcher {
 
     //
     static Map<String, Set<String>> projectsByTopic = new HashMap<>(); // key : topic, value: list of projects																							// of projects
-    static Map<String, Boolean> projectStatus = new HashMap<>(); //key: project id, value : true if project is running, false if not
+    static Map<String, Boolean> projectStatus = new HashMap<>(); //key: projectId , value : true if project is running, false if not
 
 
     ///////////////////////////////// PROJECT
     // build project
     public void buildProject(String projectId) throws RuleBuildFailedException {
 
-        JELogger.trace(" Building rules and workflows for project id = " + projectId);
+        JELogger.trace("[projectId  = " + projectId+"]" +JEMessages.BUILDING_PROJECT);
         RuleEngineHandler.buildProject(projectId);
         WorkflowEngineHandler.buildProject(projectId);
 
@@ -67,14 +68,14 @@ public class RuntimeDispatcher {
             }
 
         }
-        JELogger.trace(" Running rules,workflows and data listener for project id = " + projectId);
+        JELogger.trace("[projectId  = " + projectId+"]"+JEMessages.RUNNING_PROJECT);
         try
         {
         	DataListener.startListening(topics);
             RuleEngineHandler.runRuleEngineProject(projectId);
             WorkflowEngineHandler.runAllWorkflows(projectId);
         }catch (JEException e) {
-            JELogger.warning(getClass()," Failed to run project id = " + projectId);
+            JELogger.warning(getClass()," [projectId  = " + projectId+"]"+JEMessages.PROJECT_RUN_FAILED);
 			DataListener.stopListening(topics);
 			RuleEngineHandler.stopRuleEngineProjectExecution(projectId);
 			WorkflowEngineHandler.stopProjectWorfklows(projectId);
@@ -89,7 +90,7 @@ public class RuntimeDispatcher {
     public void stopProject(String projectId) {
 
         // stop workflows
-        JELogger.trace(" Stopping rules,workflows and data listener for project id = " + projectId);
+        JELogger.trace("[projectId  = " + projectId+"]"+JEMessages.STOPPING_PROJECT);
         WorkflowEngineHandler.stopProjectWorfklows(projectId);
         RuleEngineHandler.stopRuleEngineProjectExecution(projectId);
 
@@ -130,14 +131,14 @@ public class RuntimeDispatcher {
     public void addRule(RuleModel ruleModel) throws RuleAlreadyExistsException, RuleCompilationException,
             RuleNotAddedException, JEFileNotFoundException, RuleFormatNotValidException {
 
-        JELogger.trace("adding rule : " + ruleModel.getRuleName());
+        JELogger.trace( JEMessages.ADDING_RULE + " : " + ruleModel.getRuleName());
         RuleEngineHandler.addRule(ruleModel);
     }
 
     // update rule
     public void updateRule(RuleModel ruleModel)
             throws RuleCompilationException, JEFileNotFoundException, RuleFormatNotValidException {
-        JELogger.trace("updating rule : " + ruleModel.getRuleId());
+        JELogger.trace(JEMessages.UPDATING_RULE + " : " + ruleModel.getRuleId());
         RuleEngineHandler.updateRule(ruleModel);
 
     }
@@ -145,13 +146,13 @@ public class RuntimeDispatcher {
     // compile rule
     public void compileRule(RuleModel ruleModel)
             throws RuleFormatNotValidException, RuleCompilationException, JEFileNotFoundException {
-        JELogger.trace("Compiling rule : " + ruleModel.getRuleId());
+        JELogger.trace(JEMessages.COMPILING_RULE + " : " + ruleModel.getRuleId());
         RuleEngineHandler.compileRule(ruleModel);
     }
 
     // delete rule
     public void deleteRule(String projectId, String ruleId) throws DeleteRuleException {
-        JELogger.trace("Deleting rule id = " + ruleId + " in project id = " + projectId);
+        JELogger.trace(getClass(), "[projectId = " + projectId + "] [ruleId = " + ruleId + "]" + JEMessages.DELETING_RULE);
         RuleEngineHandler.deleteRule(projectId, ruleId);
     }
 
@@ -160,7 +161,7 @@ public class RuntimeDispatcher {
      * Add a workflow to the engine
      */
     public void addWorkflow(WorkflowModel wf) {
-        JELogger.trace(" Adding workflow to engine with key = " + wf.getKey() + " in project id = " + wf.getProjectId());
+        JELogger.trace(getClass(), "[projectId = " + wf.getProjectId() + "] [workflow = " + wf.getKey() + "]" + JEMessages.ADDING_WF);
         JEProcess process = new JEProcess(wf.getKey(), wf.getName(), wf.getPath(), wf.getProjectId(), wf.isTriggeredByEvent());
         if(wf.isTriggeredByEvent()) {
            process.setTriggerMessage(wf.getTriggerMessage());
@@ -238,7 +239,7 @@ public class RuntimeDispatcher {
      */
     public void launchProcessWithoutVariables(String projectId, String key) throws WorkflowNotFoundException, WorkflwTriggeredByEventException, WorkflowAlreadyRunningException {
         try {
-            JELogger.trace(" Running workflow with key = " + key + " in project id = " + projectId);
+            JELogger.trace(getClass(), "[projectId = " + projectId + "] [workflow = " + key + "]" + JEMessages.RUNNING_WF);
             WorkflowEngineHandler.launchProcessWithoutVariables(projectId, key);
         } catch (WorkflowAlreadyRunningException e) {
             e.printStackTrace();
@@ -249,7 +250,7 @@ public class RuntimeDispatcher {
      * Run all workflows deployed in the engine without project specification
      */
     public void runAllWorkflows(String projectId) throws WorkflowNotFoundException {
-        JELogger.trace(" Running all workflows in project id = " + projectId);
+        JELogger.trace(getClass(), "[projectId = " + projectId + "]"+ JEMessages.RUNNING_WFS);
         WorkflowEngineHandler.runAllWorkflows(projectId);
     }
 
@@ -257,19 +258,19 @@ public class RuntimeDispatcher {
      * Deploy a workflow to the engine
      */
     public void buildWorkflow(String projectId, String key) {
-        JELogger.trace(" Deploying workflow with key = " + key + " in project id = " + projectId);
+        JELogger.trace(getClass(), "[projectId = " + projectId + "] [workflow = " + key + "]" + JEMessages.DEPLOYING_WF);
         WorkflowEngineHandler.deployBPMN(projectId, key);
     }
 
     ///////////////////////////// Classes
     // add class
     public void addClass(ClassModel classModel) throws ClassLoadException {
-        JELogger.trace(" Adding class to runner, class name =  " + classModel.getClassName());
+        JELogger.trace(JEMessages.ADDING_CLASS + classModel.getClassName());
        JEClassLoader.loadClass(classModel.getClassPath(), ConfigurationConstants.runnerClassLoadPath);
        try {
     	   ClassRepository.addClass(classModel.getClassId(), RuntimeDispatcher.class.getClassLoader().loadClass(ClassBuilderConfig.genrationPackageName + "." + classModel.getClassName())); ;
 	} catch (ClassNotFoundException e) {
-		throw new ClassLoadException("Failed to load class to runner. [class :"+ classModel.getClassName() +" ]"); 
+		throw new ClassLoadException("[class :"+ classModel.getClassName() +" ]"+JEMessages.CLASS_LOAD_FAILED); 
 	}
         
 
@@ -280,7 +281,7 @@ public class RuntimeDispatcher {
 
 
     public static void injectData(JEData jeData) throws InstanceCreationFailed {
-        JELogger.debug(" Injecting data in runner from listener");
+        JELogger.debug(JEMessages.INJECTING_DATA);
         for (String projectId : projectsByTopic.get(jeData.getTopic())) {
             if (Boolean.TRUE.equals(projectStatus.get(projectId))) {
                 RuleEngineHandler.injectData(projectId, jeData);
@@ -293,7 +294,7 @@ public class RuntimeDispatcher {
      * add a topic
      */
     public void addTopics(String projectId, List<String> topics) {
-        JELogger.trace("adding topics : " + topics);
+        JELogger.trace(JEMessages.ADDING_TOPICS + topics);
         if (topics != null) {
             for (String topic : topics) {
                 if (!projectsByTopic.containsKey(topic)) {
@@ -311,7 +312,7 @@ public class RuntimeDispatcher {
     }
 
     public void triggerEvent(String projectId, String id) throws EventException, ProjectNotFoundException {
-        JELogger.trace(" Triggering event id = " + id + " in project id = " + projectId);
+        JELogger.trace(getClass(), "[projectId = " + projectId + "] [event = " + id + "]" + JEMessages.EVENT_TRIGGERED);
         EventManager.triggerEvent(projectId, id);
     }
 
@@ -323,25 +324,26 @@ public class RuntimeDispatcher {
         e.setJobEngineElementID(eventModel.getEventId());
         e.setJobEngineProjectID(eventModel.getProjectId());
         e.setType(EventType.valueOf(eventModel.getEventType()));
-        JELogger.trace(" Adding event with id = " + e.getJobEngineElementID());
+        JELogger.trace(getClass(), "[projectId = " +e.getJobEngineProjectID() + "] [event = " + e.getJobEngineElementID() + "]" + JEMessages.ADDING_EVENT);
+
         EventManager.addEvent(eventModel.getProjectId(), e);
     }
 
 
     public void updateEventType(String projectId, String eventId, String eventType) throws ProjectNotFoundException, EventException {
-        JELogger.trace(" updating event id = " + eventId + " in project id = " + projectId + " to type = " + eventType);
+        JELogger.trace("[projectId = " +projectId + "] [event = " + eventId + "]" + JEMessages.UPDATING_EVENT+" to type = " + eventType);
         EventManager.updateEventType(projectId, eventId, eventType);
     }
 
     public void deleteEvent(String projectId, String eventId) throws ProjectNotFoundException, EventException {
-        JELogger.trace(" deleting event id = " + eventId + " in project id = " + projectId);
+        JELogger.trace("[projectId = " +projectId + "] [event = " + eventId + "]" + JEMessages.DELETING_EVENT);
         EventManager.deleteEvent(projectId, eventId);
     }
 
     //clean project data from runner
     //Remove events, topics to listen to, rules and workflows
     public void removeProjectData(String projectId) {
-        JELogger.trace(" deleting project data id = " + projectId );
+        JELogger.trace("[projectId = " +projectId + "]"+ JEMessages.DELETING_PROJECT );
         EventManager.deleteProjectEvents(projectId);
         WorkflowEngineHandler.deleteProjectProcesses(projectId);
         RuleEngineHandler.deleteProjectRules(projectId);
@@ -350,7 +352,7 @@ public class RuntimeDispatcher {
 
     //decrement topic subscription count for a project
     public void decrementTopicSubscriptionCount(String projectId) {
-        JELogger.trace(" Removing topic subscription in project id = " + projectId);
+        JELogger.trace("[projectId = " +projectId + "]"+ JEMessages.REMOVING_TOPIC_SUBSCRIPTION );
         for (String topic : projectsByTopic.keySet()) {
             HashSet<String> set = (HashSet<String>) projectsByTopic.get(topic);
             for (String id : set) {
@@ -363,7 +365,6 @@ public class RuntimeDispatcher {
 
 	public void removeRuleTopics(String projectId, String ruleId) {
 		ArrayList<String> oldTopics =  (ArrayList<String>) RuleEngineHandler.getRuleTopics(projectId,ruleId);
-        JELogger.debug(getClass(),"old rule topics : " + oldTopics);
 
 		for(String topic : oldTopics)
 		{
@@ -373,7 +374,7 @@ public class RuntimeDispatcher {
 	}
 
     public void removeWorkflow(String projectId, String workflowId) {
-        JELogger.info("Removing workflow from runner with id = " + workflowId + " in project id = " + projectId);
+        JELogger.trace(getClass(), "[projectId = " + projectId + "] [workflow = " + workflowId + "]" + JEMessages.REMOVING_WF);
         WorkflowEngineHandler.deleteProcess(projectId,workflowId);
     }
 

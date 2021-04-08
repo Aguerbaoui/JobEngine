@@ -10,7 +10,7 @@ import io.je.project.exception.JEExceptionHandler;
 import io.je.runtime.models.RuleModel;
 import io.je.runtime.services.RuntimeDispatcher;
 import io.je.utilities.constants.ResponseCodes;
-import io.je.utilities.constants.ResponseMessages;
+import io.je.utilities.constants.JEMessages;
 import io.je.utilities.logger.JELogger;
 import io.je.utilities.network.JEResponse;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -51,7 +51,7 @@ public class RuleController {
 		}
 
 
-        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.RULE_ADDED_SUCCESSFULLY));
+        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.RULE_ADDED_SUCCESSFULLY));
     }
 
     /*
@@ -72,7 +72,7 @@ public class RuleController {
 		}
 
 
-        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.RULE_UPDATED_SUCCESSFULLY));
+        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.RULE_UPDATED));
     }
 
 
@@ -89,7 +89,7 @@ public class RuleController {
 		}
 
 
-        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.RULE_UPDATED_SUCCESSFULLY));
+        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.RULE_UPDATED));
     }
     
     
@@ -109,7 +109,7 @@ public class RuleController {
 				return JEExceptionHandler.handleException(e);
 			}
 	
-		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.RULE_DELETED_SUCCESSFULLY));
+		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.RULE_DELETED));
 	}
 
 

@@ -4,9 +4,9 @@ import io.je.runtime.ruleenginehandler.RuleEngineHandler;
 import io.je.runtime.services.RuntimeDispatcher;
 import io.je.runtime.workflow.WorkflowEngineHandler;
 import io.je.utilities.beans.JEEvent;
-import io.je.utilities.constants.Errors;
+import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.ResponseCodes;
-import io.je.utilities.constants.ResponseMessages;
+import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.EventException;
 import io.je.utilities.exceptions.ProjectNotFoundException;
 import io.je.utilities.logger.JELogger;
@@ -65,7 +65,7 @@ public class EventManager {
     //TODO update with rule events
     public static void triggerEvent(String projectId, String id) throws ProjectNotFoundException, EventException {
         if(!events.containsKey(projectId)) {
-            throw new ProjectNotFoundException(Errors.PROJECT_NOT_FOUND);
+            throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
         }
         JEEvent event = events.get(projectId).get(id);
         if(event == null) {
@@ -77,7 +77,7 @@ public class EventManager {
             }
         }
         if(event != null) {
-            JELogger.trace(" Found event with id = " + id + " triggering now");
+            JELogger.trace(JEMessages.FOUND_EVENT + id + JEMessages.TRIGGERING_NOW);
             RuleEngineHandler.addEvent(event);
             if(event.getType().equals(EventType.MESSAGE_EVENT)) {
                 throwMessageEventInWorkflow(projectId, event.getName());
@@ -91,7 +91,7 @@ public class EventManager {
             event.setTriggered(true);
         }
         else {
-            throw new EventException(Errors.EVENT_NOT_FOUND);
+            throw new EventException(JEMessages.EVENT_NOT_FOUND);
         }
     }
 
@@ -110,7 +110,7 @@ public class EventManager {
     public static void updateEventType(String projectId, String eventId, String eventType) throws EventException, ProjectNotFoundException {
 
         if(!events.containsKey(projectId)) {
-            throw new ProjectNotFoundException(Errors.PROJECT_NOT_FOUND);
+            throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
         }
 
         JEEvent event = events.get(projectId).get(eventId);
@@ -123,15 +123,15 @@ public class EventManager {
                 }
             }
         }
-        if(event == null) throw new EventException(Errors.EVENT_NOT_FOUND);
-        JELogger.trace(" Found event with id = " + eventId + " updating type now");
+        if(event == null) throw new EventException(JEMessages.EVENT_NOT_FOUND);
+        JELogger.trace(JEMessages.FOUND_EVENT + eventId + JEMessages.UPDATING_EVENT_TYPE);
         EventType t = EventType.valueOf(eventType);
         event.setType(t);
     }
 
     public static void deleteEvent(String projectId, String eventId) throws ProjectNotFoundException, EventException {
         if(!events.containsKey(projectId)) {
-            throw new ProjectNotFoundException(Errors.PROJECT_NOT_FOUND);
+            throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
         }
         JEEvent event = events.get(projectId).get(eventId);
 
@@ -142,16 +142,16 @@ public class EventManager {
                     break;
                 }
             }
-            if(event == null) throw new EventException(Errors.EVENT_NOT_FOUND);
+            if(event == null) throw new EventException(JEMessages.EVENT_NOT_FOUND);
         }
         else {
-            JELogger.trace(" Found event with id = " + eventId + " removing now");
+            JELogger.trace(JEMessages.FOUND_EVENT + eventId + JEMessages.REMOVING_EVENT);
             events.get(projectId).remove(eventId);
         }
     }
 
     public static void deleteProjectEvents(String projectId){
-        JELogger.trace(" removing all events in project id = " + projectId );
+        JELogger.trace(JEMessages.REMOVING_EVENTS + projectId );
         events.remove(projectId);
 
 

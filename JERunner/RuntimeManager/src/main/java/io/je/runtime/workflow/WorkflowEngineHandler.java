@@ -2,6 +2,7 @@ package io.je.runtime.workflow;
 
 import io.je.JEProcess;
 import io.je.processes.ProcessManager;
+import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.WorkflowAlreadyRunningException;
 import io.je.utilities.exceptions.WorkflowNotFoundException;
 import io.je.utilities.exceptions.WorkflwTriggeredByEventException;
@@ -38,7 +39,7 @@ public class WorkflowEngineHandler {
      * Launch process without variables
      * */
     public static void launchProcessWithoutVariables(String projectId, String processId) throws WorkflowNotFoundException, WorkflowAlreadyRunningException, WorkflwTriggeredByEventException {
-        JELogger.trace( " running workflow " + processId);
+		JELogger.trace("[projectId = " + projectId +"][workflow = "+processId+"]"+JEMessages.REMOVING_WF);
         processManagerHashMap.get(projectId).launchProcessByKeyWithoutVariables(processId);
     }
 
@@ -106,7 +107,7 @@ public class WorkflowEngineHandler {
     public static void stopProjectWorfklows(String projectId) {
     	if(processManagerHashMap.containsKey(projectId))
     	{
-    		JELogger.trace("Stopping workflow executions for project id = " + projectId);
+    		JELogger.trace("[projectId = " + projectId +"]"+JEMessages.STOPPING_WORKFLOW);
             processManagerHashMap.get(projectId).stopProjectWorkflows();
 
     	}
@@ -124,7 +125,7 @@ public class WorkflowEngineHandler {
     }
 
     public static void deleteProjectProcesses(String projectId) {
-        JELogger.info( " deleting workflows in project id = " + projectId);
+		JELogger.trace("[projectId = " + projectId +"]"+JEMessages.REMOVING_WFS);
         if(processManagerHashMap.containsKey(projectId)) {
             stopProjectWorfklows(projectId);
             processManagerHashMap.remove(projectId);

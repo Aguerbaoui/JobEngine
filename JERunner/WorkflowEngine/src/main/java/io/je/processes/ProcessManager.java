@@ -4,7 +4,7 @@ import io.je.JEProcess;
 import io.je.callbacks.OnExecuteOperation;
 import io.je.serviceTasks.ActivitiTask;
 import io.je.serviceTasks.InformTask;
-import io.je.utilities.constants.Errors;
+import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.WorkflowAlreadyRunningException;
 import io.je.utilities.exceptions.WorkflowNotFoundException;
 import io.je.utilities.files.JEFileUtils;
@@ -113,7 +113,7 @@ public class ProcessManager {
     public void deployProcess(String key) {
         ResourceBundle.clearCache(Thread.currentThread().getContextClassLoader());
         //repoService.
-        JELogger.trace(ProcessManager.class, " Deploying process with key = " + key);
+        JELogger.trace(ProcessManager.class, JEMessages.DEPLOYING_IN_RUNNER_WORKFLOW_WITH_ID + " = " + key);
         String processXml = JEFileUtils.getStringFromFile(processes.get(key).getBpmnPath());
         DeploymentBuilder deploymentBuilder = processEngine.getRepositoryService().createDeployment().name(key);
         deploymentBuilder.addString(key + ".bpmn", processXml);
@@ -128,19 +128,19 @@ public class ProcessManager {
      * */
     public void launchProcessByKeyWithoutVariables(String id) throws WorkflowNotFoundException, WorkflowAlreadyRunningException {
         if (processes.get(id) == null) {
-            throw new WorkflowNotFoundException(Errors.WORKFLOW_NOT_FOUND);
+            throw new WorkflowNotFoundException(JEMessages.WORKFLOW_NOT_FOUND);
         }
         if (processes.get(id).getActivitiTasks().size() > 0) {
             launchProcessByKeyWithVariables(id);
         } else {
             if (processes.get(id).isRunning()) {
-                throw new WorkflowAlreadyRunningException(Errors.WORKFLOW_ALREADY_RUNNING);
+                throw new WorkflowAlreadyRunningException(JEMessages.WORKFLOW_ALREADY_RUNNING);
             }
             if (!processes.get(id).isTriggeredByEvent()) {
                 processes.get(id).setRunning(true);
                 runtimeService.startProcessInstanceByKey(id);
             } else {
-                JELogger.error(ProcessManager.class, " Process has to be triggered by event");
+                JELogger.error(ProcessManager.class, " " + JEMessages.PROCESS_HAS_TO_BE_TRIGGERED_BY_EVENT);
 
             }
         }
@@ -152,7 +152,7 @@ public class ProcessManager {
      * */
     public void launchProcessByKeyWithVariables(String id) throws WorkflowAlreadyRunningException {
         if(processes.get(id).isRunning()) {
-            throw new WorkflowAlreadyRunningException(Errors.WORKFLOW_ALREADY_RUNNING);
+            throw new WorkflowAlreadyRunningException(JEMessages.WORKFLOW_ALREADY_RUNNING);
         }
         if (!processes.get(id).isTriggeredByEvent()) {
             Map<String, Object> variables = new HashMap<>();
@@ -165,7 +165,7 @@ public class ProcessManager {
             runtimeService.startProcessInstanceByKey(id, variables);
         }
         else {
-            JELogger.error(ProcessManager.class, " Process has to be triggered by event");
+            JELogger.error(ProcessManager.class, " " + JEMessages.PROCESS_HAS_TO_BE_TRIGGERED_BY_EVENT);
         }
 
 
@@ -307,20 +307,20 @@ public class ProcessManager {
 
 
     public void runAll(String projectId) throws WorkflowNotFoundException {
-        JELogger.trace(" Running all workflows in project id = " + projectId);
+        JELogger.trace(" " + JEMessages.RUNNING_ALL_WORKFLOWS_IN_PROJECT_ID + " = " + projectId);
         for (JEProcess process : processes.values()) {
             if (process.getProjectId().equals(projectId) && process.isDeployed() && !process.isRunning()) {
                 try {
                     launchProcessByKeyWithoutVariables(process.getKey());
                 } catch (WorkflowAlreadyRunningException e) {
-                    JELogger.error(ProcessManager.class, "Workflow running exception id = " + process.getKey());
+                    JELogger.error(ProcessManager.class, JEMessages.WORKFLOW_ALREADY_RUNNING + process.getKey());
                 }
             }
         }
     }
 
     public void buildProjectWorkflows(String projectId) {
-        JELogger.info(" Building workflows in project id = " + projectId);
+        JELogger.info(JEMessages.BUILDING_WORKFLOWS_IN_PROJECT + " id = " + projectId);
         for (JEProcess process : processes.values()) {
             if (process.getProjectId().equals(projectId) && !process.isDeployed()) {
                 deployProcess(process.getKey());
@@ -334,7 +334,7 @@ public class ProcessManager {
                 runtimeService.deleteProcessInstance(processes.get(key).getActivitiKey(), "User Stopped the execution");
                 processes.get(key).setRunning(false);
             } catch (ActivitiObjectNotFoundException e) {
-                JELogger.trace(ProcessManager.class, " Error deleting a non existing process");
+                JELogger.trace(ProcessManager.class, " " + JEMessages.ERROR_DELETING_A_NON_EXISTING_PROCESS);
             }
         }
     }
@@ -347,7 +347,7 @@ public class ProcessManager {
                     runtimeService.deleteProcessInstance(process.getActivitiKey(), "User Stopped the execution");
                     process.setRunning(false);
                 } catch (ActivitiObjectNotFoundException e) {
-                    JELogger.trace(ProcessManager.class, " Error deleting a non existing process");
+                    JELogger.trace(ProcessManager.class, " " + JEMessages.ERROR_DELETING_A_NON_EXISTING_PROCESS);
                 }
             }
         }
@@ -366,9 +366,9 @@ public class ProcessManager {
             runtimeService.deleteProcessInstance(workflowId, "User Deleted the process");
 
         } catch (ActivitiObjectNotFoundException e) {
-            JELogger.trace(" Error deleting a non existing process");
+            JELogger.trace(" " + JEMessages.ERROR_DELETING_A_NON_EXISTING_PROCESS);
         } catch (Exception e) {
-            JELogger.trace(" Error deleting a non existing process\n" + Arrays.toString(e.getStackTrace()));
+            JELogger.trace(" " + JEMessages.ERROR_DELETING_A_NON_EXISTING_PROCESS + "\n" + Arrays.toString(e.getStackTrace()));
         }
 
     }

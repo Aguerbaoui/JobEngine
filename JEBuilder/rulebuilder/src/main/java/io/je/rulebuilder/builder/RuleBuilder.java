@@ -9,6 +9,7 @@ import io.je.rulebuilder.components.UserDefinedRule;
 import io.je.rulebuilder.components.JERule;
 import io.je.rulebuilder.components.ScriptedRule;
 import io.je.utilities.apis.JERunnerAPIHandler;
+import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.exceptions.JERunnerErrorException;
 import io.je.utilities.exceptions.RuleBuildFailedException;
@@ -32,7 +33,7 @@ public class RuleBuilder {
 	public static void buildRule(JERule jeRule, String buildPath)
 			throws RuleBuildFailedException, JERunnerErrorException, IOException, InterruptedException, ExecutionException {
 		String rulePath = "";
-		JELogger.trace(RuleBuilder.class, " Building rule with id = " + jeRule.getJobEngineElementID());
+		JELogger.trace(RuleBuilder.class, JEMessages.BUILDING_RULE+  " : id = " + jeRule.getJobEngineElementID());
 		if( jeRule instanceof UserDefinedRule) {
 			List<ScriptedRule> unitRules = ((UserDefinedRule) jeRule).scriptRule();
 			for (ScriptedRule rule : unitRules) {
@@ -68,13 +69,13 @@ public class RuleBuilder {
 			ruleMap.put(JERunnerRuleMapping.FORMAT, "DRL");
 			ruleMap.put(JERunnerRuleMapping.TOPICS, rule.getTopics().keySet());
 
-			JELogger.trace(RuleBuilder.class, " Sending rule build request to runner, project id = " + rule.getJobEngineProjectID() + "rule id = " + rule.getJobEngineElementID());
+			JELogger.trace(RuleBuilder.class, " [ project id = " + rule.getJobEngineProjectID() + " ] [rule id = " + rule.getJobEngineElementID() + "]" + JEMessages.SENDNG_RULE_TO_RUNNER);
 			JELogger.debug(RuleBuilder.class, " Rule : " + ruleMap);
 			JEResponse jeRunnerResp = null;
 			 jeRunnerResp = JERunnerAPIHandler.updateRule(ruleMap);
 
 			if (jeRunnerResp == null || jeRunnerResp.getCode() != ResponseCodes.CODE_OK) {
-				JELogger.error(RuleBuilder.class, "[rule Id ="+rule.getRuleName()+" ]Rule Build Failed : " + jeRunnerResp.getMessage());
+				JELogger.error(RuleBuilder.class, "[rule Id ="+rule.getRuleName()+" ]"  + JEMessages.RULE_BUILD_FAILED + jeRunnerResp.getMessage());
 				throw new RuleBuildFailedException(jeRunnerResp.getMessage());
 			}
 

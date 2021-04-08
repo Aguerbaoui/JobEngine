@@ -3,7 +3,7 @@ package io.je.runtime.controllers;
 import io.je.project.exception.JEExceptionHandler;
 import io.je.runtime.services.RuntimeDispatcher;
 import io.je.utilities.constants.ResponseCodes;
-import io.je.utilities.constants.ResponseMessages;
+import io.je.utilities.constants.JEMessages;
 import io.je.utilities.models.WorkflowModel;
 import io.je.utilities.network.JEResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import static io.je.utilities.constants.ResponseMessages.*;
+import static io.je.utilities.constants.JEMessages.*;
 
 /*
  * Workflow Rest Controller
@@ -77,7 +77,7 @@ public class WorkflowController {
     public ResponseEntity<?> deleteWorkflow(@PathVariable("projectId") String projectId,
                                             @PathVariable("workflowId") String workflowId) {
         dispatcher.removeWorkflow(projectId, workflowId);
-        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ResponseMessages.WORKFLOW_DELETED_SUCCESSFULLY));
+        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.WORKFLOW_DELETED_SUCCESSFULLY));
     }
 
 }

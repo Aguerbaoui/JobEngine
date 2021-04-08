@@ -3,6 +3,7 @@ package io.je.rulebuilder.components.blocks;
 
 import io.je.rulebuilder.config.Keywords;
 import io.je.rulebuilder.models.BlockModel;
+import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.RuleBuildFailedException;
 
 /*
@@ -47,7 +48,7 @@ public  class ComparisonBlock extends PersistableBlock {
 		else
 		{
 			//TODO: remove hardcoded message
-			throw new RuleBuildFailedException("Comparison block cannot have " + inputBlocks.size() + "input connexions" );
+			throw new RuleBuildFailedException(JEMessages.INPUT_CONNECTION1 + inputBlocks.size() + JEMessages.INPUT_CONNECTION2 );
 		}
 	}
 

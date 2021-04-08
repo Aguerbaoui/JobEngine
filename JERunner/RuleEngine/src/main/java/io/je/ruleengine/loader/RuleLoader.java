@@ -7,7 +7,7 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-import io.je.utilities.constants.RuleEngineErrors;
+import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.JEFileNotFoundException;
 
 /*
@@ -21,7 +21,7 @@ public class RuleLoader {
             JELogger.info(RuleLoader.class, rule.getPath());
             rule.setContent(new String(Files.readAllBytes(Paths.get(rule.getPath()))));
         } catch (IOException e) {
-            throw new JEFileNotFoundException(RuleEngineErrors.RULE_FILE_NOT_FOUND);
+            throw new JEFileNotFoundException(JEMessages.RULE_FILE_NOT_FOUND);
         }
     }
 

@@ -1,5 +1,6 @@
 package builder;
 
+import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.WorkflowConstants;
 import io.je.utilities.files.JEFileUtils;
 import io.je.utilities.logger.JELogger;
@@ -12,6 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ModelBuilder {
+
+    public static final String BPMN = "bpmn";
 
     /*
      * Private Constructor
@@ -269,9 +272,9 @@ public class ModelBuilder {
     public static void saveModel(BpmnModel model, String fileName) {
         BpmnXMLConverter bpmnXMLConverter = new BpmnXMLConverter();
         try {
-            JELogger.trace("Saving pmn file to path = " + fileName);
+            JELogger.trace(JEMessages.SAVING_BPMN_FILE_TO_PATH + " = " + fileName);
             String bpmn20Xml = new String(bpmnXMLConverter.convertToXML(model), "UTF-8");
-            JELogger.info("bpmn = \n" +  bpmn20Xml);
+            JELogger.info(BPMN + " = \n" +  bpmn20Xml);
             JEFileUtils.copyStringToFile(bpmn20Xml, fileName, "utf-8");
         } catch (Exception e) {
             e.printStackTrace();

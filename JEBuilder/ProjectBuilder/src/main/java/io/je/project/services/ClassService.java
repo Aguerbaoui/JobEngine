@@ -15,7 +15,7 @@ import io.je.classbuilder.entity.JEClass;
 import io.je.classbuilder.models.ClassModel;
 import io.je.project.repository.ClassRepository;
 import io.je.utilities.apis.JERunnerAPIHandler;
-import io.je.utilities.constants.ClassBuilderErrors;
+import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.exceptions.AddClassException;
 import io.je.utilities.exceptions.ClassLoadException;
@@ -83,7 +83,7 @@ public class ClassService {
 		JELogger.trace(ClassService.class, " Adding class to runner from builder with id = " + clazz.getClassId());
 		JEResponse jeRunnerResp = JERunnerAPIHandler.addClass(classMap);
 		if (jeRunnerResp.getCode() != ResponseCodes.CODE_OK) {
-			throw new AddClassException(ClassBuilderErrors.classLoadFailed);
+			throw new AddClassException(JEMessages.CLASS_LOAD_FAILED);
 		}
 
 	}
@@ -91,7 +91,7 @@ public class ClassService {
 
 	public void loadAllClassesToBuilder() {
 		List<JEClass> classes = classRepository.findAll();
-		JELogger.trace(" Loading all classes from db to memory");
+		JELogger.trace(JEMessages.LOADING_ALL_CLASSES_FROM_DB);
 		for (JEClass clazz : classes) {
 			try
 			{
