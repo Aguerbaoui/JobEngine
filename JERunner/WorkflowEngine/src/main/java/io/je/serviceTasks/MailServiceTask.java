@@ -5,6 +5,7 @@ import com.squareup.okhttp.Response;
 import io.je.utilities.apis.BodyType;
 import io.je.utilities.apis.HttpMethod;
 import io.je.utilities.config.JEConfiguration;
+import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.WorkflowConstants;
 import io.je.utilities.logger.JELogger;
 import io.je.utilities.network.Network;
@@ -50,7 +51,7 @@ public class MailServiceTask extends ServiceTask {
                     .withMethod(HttpMethod.POST).withBodyType(BodyType.JSON)
                     .withBody(json).build();
             Response response = network.call();
-            JELogger.info("Network call response in Mail service task = " + response.body().string());
+            JELogger.info(JEMessages.MAIL_SERVICE_TASK_RESPONSE + " = " + response.body().string());
         }
         catch(Exception e) {
             JELogger.error(Arrays.toString(e.getStackTrace()));

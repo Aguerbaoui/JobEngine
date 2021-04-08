@@ -22,6 +22,8 @@ import io.je.utilities.exceptions.ProjectNotFoundException;
 import io.je.utilities.mapping.EventModelMapping;
 import io.je.utilities.models.EventModel;
 
+import static io.je.utilities.constants.JEMessages.UPDATING_EVENT;
+
 @Service
 public class EventService {
 
@@ -87,7 +89,7 @@ public class EventService {
 	 */
 	public void updateEvent(String projectId, EventModel eventModel) throws ProjectNotFoundException, JERunnerErrorException, IOException, InterruptedException, ExecutionException, EventException, ConfigException {
     	ConfigurationService.checkConfig();
-		JELogger.info(getClass(), " updating event [ id="+eventModel.getEventId()+"] in project id = " + projectId);
+		JELogger.info(getClass(), UPDATING_EVENT + " [ id="+eventModel.getEventId()+"] in project id = " + projectId);
 		JEProject project = ProjectService.getProjectById(projectId);
 		if (project == null) {
 			throw new ProjectNotFoundException( JEMessages.PROJECT_NOT_FOUND);
@@ -155,7 +157,7 @@ public class EventService {
 
 		EventType t = EventType.valueOf(eventType);
 		try {
-			JELogger.trace(" Updating event type in runner");
+			JELogger.trace(" " + JEMessages.UPDATING_EVENT_TYPE_IN_RUNNER);
 			JERunnerAPIHandler.updateEventType(projectId, eventId, eventType);
 			event.setType(t);
 		} catch (JERunnerErrorException | InterruptedException | ExecutionException | IOException e) {

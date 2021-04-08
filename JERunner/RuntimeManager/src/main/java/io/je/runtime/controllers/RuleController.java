@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import static io.je.utilities.constants.JEMessages.*;
+
 
 /*
  * Rule Controller Class
@@ -26,10 +28,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(value= "/rule")
 @CrossOrigin(maxAge = 3600)
 public class RuleController {
-
-	
-
-
 
 
     @Autowired
@@ -44,14 +42,14 @@ public class RuleController {
         try {
             runtimeDispatcher.addRule(ruleModel);
             runtimeDispatcher.addTopics(ruleModel.getProjectId(), ruleModel.getTopics());
-        	JELogger.trace(getClass(),"rule added successfully");
+        	JELogger.trace(RULE_ADDED_SUCCESSFULLY);
 
         } catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
 		}
 
 
-        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.RULE_ADDED_SUCCESSFULLY));
+        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, RULE_ADDED_SUCCESSFULLY));
     }
 
     /*
@@ -61,9 +59,9 @@ public class RuleController {
     public ResponseEntity<?> updateRule(@RequestBody RuleModel ruleModel) {
 
         try {
-            JELogger.debug(getClass(),"updating rule : " + ruleModel.getRuleName());
+            JELogger.debug(getClass(),UPDATING_RULE + " " + ruleModel.getRuleName());
             runtimeDispatcher.updateRule(ruleModel);
-            JELogger.debug(getClass(),"adding topics : " +  ruleModel.getTopics());
+            JELogger.debug(getClass(), ADDING_TOPICS +  ruleModel.getTopics());
 
             runtimeDispatcher.addTopics(ruleModel.getProjectId(), ruleModel.getTopics());
 

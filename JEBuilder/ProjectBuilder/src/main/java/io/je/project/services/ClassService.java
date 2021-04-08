@@ -80,7 +80,7 @@ public class ClassService {
 		classMap.put(CLASS_NAME, clazz.getClassName());
 		classMap.put(CLASS_PATH, clazz.getClassPath());
 		classMap.put(CLASS_ID, clazz.getClassId());
-		JELogger.trace(ClassService.class, " Adding class to runner from builder with id = " + clazz.getClassId());
+		JELogger.trace(ClassService.class, " " + JEMessages.ADDING_CLASS_TO_RUNNER_FROM_BUILDER_WITH_ID + " = " + clazz.getClassId());
 		JEResponse jeRunnerResp = JERunnerAPIHandler.addClass(classMap);
 		if (jeRunnerResp.getCode() != ResponseCodes.CODE_OK) {
 			throw new AddClassException(JEMessages.CLASS_LOAD_FAILED);
@@ -105,7 +105,7 @@ public class ClassService {
 				}
 
 			}catch (Exception e) {
-				JELogger.warning(getClass(), "Failed to load class : " + clazz.getClassName());
+				JELogger.warning(getClass(), JEMessages.FAILED_TO_LOAD_CLASS + " " + clazz.getClassName());
 			}
 		}
 

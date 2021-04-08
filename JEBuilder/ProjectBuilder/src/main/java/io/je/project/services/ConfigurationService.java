@@ -138,7 +138,7 @@ public class ConfigurationService {
 	}
 
 	public void updateAll(ConfigModel config) throws JERunnerErrorException, InterruptedException, ExecutionException {
-		JELogger.trace(" Updating builder and runner configuration");
+		JELogger.trace(" " + JEMessages.UPDATING_BUILDER_AND_RUNNER_CONFIGURATION);
 		updateBuilderSettings(config);
 		updateRunnerSettings(config);
 		configRepository.save(JEConfiguration.getInstance());
@@ -147,12 +147,12 @@ public class ConfigurationService {
 
 	public void updateRunner(ConfigModel config) {
 
-		JELogger.trace(" Updating runner configuration, config = " + config.toString());
+		JELogger.trace(" " + JEMessages.UPDATING_RUNNER_CONFIGURATION_CONFIG + " = " + config.toString());
 		new Thread(() -> {
 			try {
 				boolean serverUp = false;
 				while (!serverUp) {
-					JELogger.debug(getClass(), " Runner is down, checking again in 5 seconds");
+					JELogger.debug(getClass(), " " + JEMessages.RUNNER_IS_DOWN_CHECKING_AGAIN_IN_5_SECONDS);
 					Thread.sleep(5000);
 					serverUp = checkRunnerHealth();
 				}
@@ -163,7 +163,7 @@ public class ConfigurationService {
 					classService.addClassToJeRunner(clazz);
 				}
 
-				JELogger.info(ProjectService.class, "Runner is up, updating now");
+				JELogger.info(ProjectService.class, JEMessages.RUNNER_IS_UP_UPDATING_NOW);
 				projectService.resetProjects();
 			} catch (Exception e) {
 				JEExceptionHandler.handleException(e);
@@ -191,7 +191,7 @@ public class ConfigurationService {
 	}
 
 	public void setDataDefinitionURL(String dataDefinitionURL) {
-		JELogger.trace(" Setting data definition url from controller url = " + dataDefinitionURL);
+		JELogger.trace(" " + JEMessages.SETTING_DATA_DEFINITION_URL_FROM_CONTROLLER + " url = " + dataDefinitionURL);
 		JEConfiguration.setDataDefinitionURL(dataDefinitionURL);
 		configRepository.save(JEConfiguration.getInstance());
 

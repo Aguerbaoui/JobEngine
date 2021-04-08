@@ -26,6 +26,8 @@ import io.je.utilities.logger.JELogger;
 import io.je.utilities.models.EventModel;
 import io.je.utilities.network.JEResponse;
 
+import static io.je.utilities.constants.JEMessages.ERROR_DELETING_EVENT;
+
 /*
  * Project Rest Controller
  * */
@@ -33,6 +35,7 @@ import io.je.utilities.network.JEResponse;
 @RequestMapping(value = "/event")
 @CrossOrigin(maxAge = 3600)
 public class EventController {
+
 
 	@Autowired
 	ProjectService projectService;
@@ -141,7 +144,7 @@ public class EventController {
 			projectService.saveProject(projectId);
 
 		} catch (Exception e) {
-			JELogger.info(getClass(), "error deleting event");
+			JELogger.info(ERROR_DELETING_EVENT);
 			return JEExceptionHandler.handleException(e);
 			
 		}

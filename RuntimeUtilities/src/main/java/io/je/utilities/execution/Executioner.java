@@ -2,6 +2,7 @@ package io.je.utilities.execution;
 
 import io.je.utilities.apis.JERunnerAPIHandler;
 import io.je.utilities.config.JEConfiguration;
+import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.JERunnerErrorException;
 import io.je.utilities.logger.JELogger;
 import io.je.utilities.monitoring.MessageModel;
@@ -56,12 +57,12 @@ public class Executioner {
     	
 			@Override
 			public void run() {
-	    		JELogger.debug("Sending request to Data Model : " + request );
+	    		JELogger.debug(JEMessages.SENDING_REQUEST_TO_DATA_MODEL + " : " + request );
 				ZMQRequester requester = new ZMQRequester(JEConfiguration.getDataManagerURL(),JEConfiguration.getRequestPort() );
 				String response = requester.sendRequest(request);
 				if(response==null)
 				{
-					JELogger.error(getClass(), "No Response from Data Model ");
+					JELogger.error(getClass(), JEMessages.NO_RESPONSE_FROM_DATA_MODEL);
 				}else {
 					JELogger.info("Data Model Returned" + response);
 				}

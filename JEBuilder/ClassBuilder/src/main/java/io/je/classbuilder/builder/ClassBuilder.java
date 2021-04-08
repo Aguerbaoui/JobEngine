@@ -118,8 +118,8 @@ public class ClassBuilder {
 			// extend class
 			if(inheritedClass != null)
 			{
-				JELogger.error(ClassBuilder.class, JEMessages.INVALID_CLASS_FORMAT + "INTERFACE CAN'T INHERIT FROM CLASS");
-				throw new ClassLoadException(JEMessages.INVALID_CLASS_FORMAT + "INTERFACE CAN'T INHERIT FROM CLASS");
+				JELogger.error(ClassBuilder.class, JEMessages.INVALID_CLASS_FORMAT );
+				throw new ClassLoadException(JEMessages.INVALID_CLASS_FORMAT );
 				
 			}
 			 // implement interfaces

@@ -1,6 +1,7 @@
 package io.je.utilities.config;
 
 import io.je.utilities.apis.JERunnerAPIHandler;
+import io.je.utilities.constants.JEMessages;
 import io.je.utilities.logger.JELogger;
 import io.je.utilities.models.ConfigModel;
 
@@ -42,7 +43,7 @@ public class JEConfiguration {
 	}
 	
 	public static void updateConfig(ConfigModel configModel) {
-		JELogger.trace(" Updating configuration = " + configModel.toString());
+		JELogger.trace(JEMessages.UPDATING_CONFIGURATION + " = " + configModel.toString());
 		setDataDefinitionURL(configModel.getDataDefinitionURL());
 		setDataManagerURL(configModel.getDataManagerURL());
 		setRequestPort(configModel.getRequestPort());

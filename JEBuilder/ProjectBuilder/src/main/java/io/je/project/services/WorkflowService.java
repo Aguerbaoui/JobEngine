@@ -421,7 +421,7 @@ public class WorkflowService {
         if (!project.getWorkflowById(block.getWorkflowId()).blockExists(block.getId())) {
             throw new WorkflowBlockNotFound(JEMessages.WORKFLOW_BLOCK_NOT_FOUND);
         }
-        JELogger.trace(WorkflowService.class, " Updating a workflow block with id = " + block.getId() + " in workflow with id = " + block.getWorkflowId());
+        JELogger.trace(WorkflowService.class, " " + JEMessages.UPDATING_A_WORKFLOW_BLOCK_WITH_ID + " = " + block.getId() + " in workflow with id = " + block.getWorkflowId());
         if (block.getType().equalsIgnoreCase(WorkflowConstants.START_TYPE)) {
             StartBlock b = (StartBlock) project.getWorkflowById(block.getWorkflowId()).getAllBlocks().get(block.getId());
             b.setName((String) block.getAttributes().get(NAME));
