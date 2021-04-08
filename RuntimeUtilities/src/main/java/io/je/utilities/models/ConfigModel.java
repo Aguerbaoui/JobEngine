@@ -16,9 +16,18 @@ public class ConfigModel {
 	 String dataManagerURL;
 	 String runtimeManagerURL;
 	 String projectBuilderURL;
+	 String emailApiUrl;
 	 int subscriberPort;
 	 int requestPort;
 	 String droolsDateFormat;
+
+	public String getEmailApiUrl() {
+		return emailApiUrl;
+	}
+
+	public void setEmailApiUrl(String emailApiUrl) {
+		this.emailApiUrl = emailApiUrl;
+	}
 
 	public String getDataDefinitionURL() {
 		return dataDefinitionURL;

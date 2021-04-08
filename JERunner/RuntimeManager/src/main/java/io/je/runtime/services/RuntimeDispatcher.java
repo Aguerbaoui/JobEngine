@@ -9,10 +9,7 @@ import io.je.runtime.repos.ClassRepository;
 import io.je.runtime.repos.VariableManager;
 import io.je.runtime.ruleenginehandler.RuleEngineHandler;
 import io.je.runtime.workflow.WorkflowEngineHandler;
-import io.je.serviceTasks.ActivitiTaskManager;
-import io.je.serviceTasks.InformTask;
-import io.je.serviceTasks.ScriptTask;
-import io.je.serviceTasks.WebApiTask;
+import io.je.serviceTasks.*;
 import io.je.utilities.apis.BodyType;
 import io.je.utilities.apis.HttpMethod;
 import io.je.utilities.beans.JEData;
@@ -30,6 +27,9 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.Map.Entry;
+
+import static io.je.utilities.constants.WorkflowConstants.*;
+import static io.je.utilities.constants.WorkflowConstants.USERNAME;
 
 /*
  * Service class to handle JERunner inputs
@@ -206,6 +206,27 @@ public class RuntimeDispatcher {
                 }
                 process.addActivitiTask(informTask);
                 ActivitiTaskManager.addTask(informTask);
+            }
+
+            if(task.getType().equals(WorkflowConstants.MAILSERVICETASK_TYPE)) {
+                MailTask mailTask = new MailTask();
+                mailTask.setTaskId(task.getTaskId());
+                mailTask.setTaskName(task.getTaskName());
+                HashMap<String, Object> attributes = task.getAttributes();
+                if(attributes.containsKey(USE_DEFAULT_CREDENTIALS)) {
+                    mailTask.setbUseDefaultCredentials((boolean) task.getAttributes().get(USE_DEFAULT_CREDENTIALS));
+                    mailTask.setbEnableSSL((boolean) task.getAttributes().get(ENABLE_SSL));
+                }
+                mailTask.setiPort((Integer) task.getAttributes().get(PORT));
+                mailTask.setStrSenderAddress((String) task.getAttributes().get(SENDER_ADDRESS));
+                mailTask.setiSendTimeOut((Integer) task.getAttributes().get(SEND_TIME_OUT));
+                mailTask.setLstRecieverAddress((List<String>) task.getAttributes().get(RECEIVER_ADDRESS));
+                mailTask.setEmailMessage((HashMap<String, String>) task.getAttributes().get(EMAIL_MESSAGE));
+                mailTask.setStrSMTPServer((String) task.getAttributes().get(SMTP_SERVER));
+                mailTask.setStrPassword((String) task.getAttributes().get(PASSWORD));
+                mailTask.setStrUserName((String) task.getAttributes().get(USERNAME));
+                process.addActivitiTask(mailTask);
+                ActivitiTaskManager.addTask(mailTask);
             }
         }
         WorkflowEngineHandler.addProcess(process);

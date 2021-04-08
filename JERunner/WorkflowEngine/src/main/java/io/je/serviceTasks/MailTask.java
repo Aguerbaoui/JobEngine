@@ -1,12 +1,9 @@
-package blocks.basic;
-
-import blocks.WorkflowBlock;
+package io.je.serviceTasks;
 
 import java.util.HashMap;
 import java.util.List;
 
-public class MailBlock extends WorkflowBlock {
-
+public class MailTask extends ActivitiTask{
     private boolean bEnableSSL = false;
 
     private boolean bUseDefaultCredentials = false;
@@ -27,6 +24,8 @@ public class MailBlock extends WorkflowBlock {
 
     private String strPassword;
 
+    private String url;
+
     public boolean isbEnableSSL() {
         return bEnableSSL;
     }
@@ -37,6 +36,14 @@ public class MailBlock extends WorkflowBlock {
 
     public boolean isbUseDefaultCredentials() {
         return bUseDefaultCredentials;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     public void setbUseDefaultCredentials(boolean bUseDefaultCredentials) {
@@ -107,40 +114,3 @@ public class MailBlock extends WorkflowBlock {
         this.strPassword = strPassword;
     }
 }
-
-
-/* with auth
-* {
-  "strSenderAddress": "string",
-  "lstRecieverAddress": [
-    "string"
-  ],
-  "strSMTPServer": "string",
-  "iPort": 0,
-  "iSendTimeOut": 0,
-  "emailMessage": {
-    "strSubject": "string",
-    "strBody": "string"
-  },
-  "strUserName": "string",
-  "strPassword": "string"
-}
-* */
-
-/* no auth
-* {
-  "strSenderAddress": "string",
-  "lstRecieverAddress": [
-    "string"
-  ],
-  "strSMTPServer": "string",
-  "iPort": 0,
-  "iSendTimeOut": 0,
-  "emailMessage": {
-    "strSubject": "string",
-    "strBody": "string"
-  },
-  "bEnableSSL": true,
-  "bUseDefaultCredentials": true
-}
-* */

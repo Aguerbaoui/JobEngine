@@ -42,6 +42,8 @@ import java.util.concurrent.CompletableFuture;
  * */
 import java.util.concurrent.ExecutionException;
 
+import static io.je.utilities.constants.WorkflowConstants.*;
+
 @Service
 public class WorkflowService {
 
@@ -56,11 +58,7 @@ public class WorkflowService {
     public static final String TARGET_REF = "targetRef";
     public static final String CONDITION = "condition";
 
-    public static final String DESCRIPTION = "description";
-    public static final String METHOD = "method";
-    public static final String URL = "url";
-    public static final String INPUTS = "inputs";
-    public static final String OUTPUTS = "outputs";
+
 
     @Autowired
     EventService eventService;
@@ -272,10 +270,6 @@ public class WorkflowService {
             WebApiBlock b = new WebApiBlock();
             b.setName((String) block.getAttributes().get(NAME));
             b.setDescription((String) block.getAttributes().get(DESCRIPTION));
-            b.setMethod((String) block.getAttributes().get(METHOD));
-            b.setUrl((String) block.getAttributes().get(URL));
-            b.setInputs((HashMap<String, String>) block.getAttributes().get(INPUTS));
-            b.setOutputs((HashMap<String, String>) block.getAttributes().get(OUTPUTS));
             b.setJobEngineProjectID(block.getProjectId());
             b.setWorkflowId(block.getWorkflowId());
             b.setJobEngineElementID(block.getId());
@@ -551,16 +545,23 @@ public class WorkflowService {
         } else if (block.getType().equalsIgnoreCase(WorkflowConstants.MAILSERVICETASK_TYPE)) {
             MailBlock b = (MailBlock) project.getWorkflowById(block.getWorkflowId()).getAllBlocks().get(block.getId());
             b.setName((String) block.getAttributes().get(NAME));
-            b.setbUseDefaultCredentials((Boolean) block.getAttributes().get("useDefaultCredentials"));
-            b.setiPort((Integer) block.getAttributes().get("port"));
-            b.setStrSenderAddress((String) block.getAttributes().get("senderAddress"));
-            b.setiSendTimeOut((Integer) block.getAttributes().get("timeout"));
-            b.setStrSMTPServer((String) block.getAttributes().get("smtpHost"));
-            b.setLstRecieverAddress((List<String>) block.getAttributes().get("recipientsList"));
-            b.setEmailMessage((HashMap<String, String>) block.getAttributes().get("message"));
-            b.setStrPassword((String) block.getAttributes().get("password"));
-            b.setStrUserName((String) block.getAttributes().get("username"));
 
+            b.setiPort((Integer) block.getAttributes().get(PORT));
+            b.setStrSenderAddress((String) block.getAttributes().get(SENDER_ADDRESS));
+            b.setiSendTimeOut((Integer) block.getAttributes().get(SEND_TIME_OUT));
+            b.setLstRecieverAddress((List<String>) block.getAttributes().get(RECEIVER_ADDRESS));
+            b.setEmailMessage((HashMap<String, String>) block.getAttributes().get(EMAIL_MESSAGE));
+            b.setStrSMTPServer((String) block.getAttributes().get(SMTP_SERVER));
+            if((boolean) block.getAttributes().get(USE_DEFAULT_CREDENTIALS)) {
+                b.setbUseDefaultCredentials((boolean) block.getAttributes().get(USE_DEFAULT_CREDENTIALS));
+                b.setbEnableSSL((boolean) block.getAttributes().get(ENABLE_SSL));
+            }
+            else {
+                b.setStrPassword((String) block.getAttributes().get(PASSWORD));
+                b.setStrUserName((String) block.getAttributes().get(USERNAME));
+                b.setbEnableSSL(false);
+                b.setbUseDefaultCredentials(false);
+            }
             project.addBlockToWorkflow(b);
         }
         else if (block.getType().equalsIgnoreCase(WorkflowConstants.WEBSERVICETASK_TYPE)) {
@@ -569,7 +570,7 @@ public class WorkflowService {
             b.setDescription((String) block.getAttributes().get(DESCRIPTION));
             b.setMethod((String) block.getAttributes().get(METHOD));
             b.setUrl((String) block.getAttributes().get(URL));
-            b.setInputs((HashMap<String, String>) block.getAttributes().get(INPUTS));
+            b.setInputs((HashMap<String, ArrayList<Object>>) block.getAttributes().get(INPUTS));
             b.setOutputs((HashMap<String, String>) block.getAttributes().get(OUTPUTS));
             project.addBlockToWorkflow(b);
         }

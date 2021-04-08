@@ -108,7 +108,21 @@ public class JELogger {
 
 
     }
-    
+
+    /*
+     * log level 4 : error
+     */
+    public static void error(String msg) {
+
+        synchronized (queue) {
+            queue.add(new Timestamp(System.currentTimeMillis()) + " " + msg);
+        }
+        logger.error(  msg);
+
+
+    }
+
+
     private static Level getLogLevel(String level)
     {
     	Level lvl = Level.DEBUG;
