@@ -55,12 +55,12 @@ public class AttributeGetterBlock extends GetterBlock {
 	//default value is now set to Id
 	public String getJoinId() {
 		
-		return " $" + blockName.replaceAll("\\s+", "") +"jobEngineElementID";
+		return getBlockNameAsVariable() +"jobEngineElementID";
 	}
 	
 	public String getAttributeVariableName()
 	{
- 		return "$" + blockName.replaceAll("\\s+", "") + attributeName.replace(".", "");
+ 		return getBlockNameAsVariable() + attributeName.replace(".", "");
 	}
 	
 	/*
@@ -76,7 +76,7 @@ public class AttributeGetterBlock extends GetterBlock {
 			expression.append("\n");
 
 		}
-		expression.append("$" + blockName.replaceAll("\\s+", "") + " : " +classPath  );
+		expression.append(getBlockNameAsVariable() + " : " +classPath  );
 		expression.append(  " ( " );
 		if(specificInstances != null && !specificInstances.isEmpty())
 		{
@@ -93,7 +93,7 @@ public class AttributeGetterBlock extends GetterBlock {
 	 * return example $blockName: Person( $age Keywords.toBeReplaced )
 	 */
 	@Override
-	public String getAsFirstOperandExpression() throws RuleBuildFailedException {
+	public String getAsOperandExpression() throws RuleBuildFailedException {
 		StringBuilder expression = new StringBuilder();
 		
 		//input blocks can be an event block
@@ -103,7 +103,7 @@ public class AttributeGetterBlock extends GetterBlock {
 			expression.append("\n");
 
 		}
-		expression.append("$" + blockName.replaceAll("\\s+", "") + " : " +classPath  );
+		expression.append(getBlockNameAsVariable() + " : " +classPath  );
 		expression.append(  " ( " );
 		if(specificInstances != null && !specificInstances.isEmpty())
 		{
@@ -114,7 +114,7 @@ public class AttributeGetterBlock extends GetterBlock {
 		expression.append(getAttributeVariableName() + " : "+ getattributeGetterExpression() );
 		expression.append(  " , " );
 
-		expression.append( getAttributeVariableName() + " " + Keywords.toBeReplaced ); 
+		expression.append(  Keywords.toBeReplaced ); //tbrp
 		expression.append(  " ) " );
 
 		return expression.toString();
@@ -130,7 +130,7 @@ public class AttributeGetterBlock extends GetterBlock {
 			expression.append("\n");
 
 		}
-		expression.append("$" + blockName.replaceAll("\\s+", "") + " : " +classPath  );
+		expression.append(getBlockNameAsVariable() + " : " +classPath  );
 		expression.append(  " ( " );
 		
 		
@@ -158,7 +158,7 @@ public class AttributeGetterBlock extends GetterBlock {
 			expression.append("\n");
 
 		}
-		expression.append("$" + blockName.replaceAll("\\s+", "") + " : " +classPath  );
+		expression.append(getBlockNameAsVariable() + " : " +classPath  );
 		expression.append(  " ( " );
 		
 		
@@ -171,7 +171,7 @@ public class AttributeGetterBlock extends GetterBlock {
 		}
 		expression.append(getAttributeVariableName() + " : "+ getattributeGetterExpression() );
 		expression.append(  " , " );
-		expression.append(getAttributeVariableName() + " "+ Keywords.toBeReplaced );		
+		expression.append(  Keywords.toBeReplaced ); //tbrp
 		expression.append(  " ) " );
 
 		return expression.toString();
@@ -187,7 +187,7 @@ public class AttributeGetterBlock extends GetterBlock {
 			expression.append("\n");
 
 		}
-		expression.append("$" + blockName.replaceAll("\\s+", "") + " : " +classPath  );
+		expression.append(getBlockNameAsVariable() + " : " +classPath  );
 		expression.append(  " ( " );
 		if(specificInstances != null && !specificInstances.isEmpty())
 		{
@@ -216,7 +216,7 @@ public class AttributeGetterBlock extends GetterBlock {
 			expression.append("\n");
 
 		}
-		expression.append("$" + blockName.replaceAll("\\s+", "") + " : " +classPath  );
+		expression.append(getBlockNameAsVariable() + " : " +classPath  );
 		expression.append(  " ( " );
 		if(specificInstances != null && !specificInstances.isEmpty())
 		{
@@ -233,7 +233,7 @@ public class AttributeGetterBlock extends GetterBlock {
 		}
 		expression.append(getAttributeVariableName() + " : "+ getattributeGetterExpression() );
 		expression.append(  " , " );
-		expression.append( getAttributeVariableName() + " " + Keywords.toBeReplaced ); 
+		expression.append(  Keywords.toBeReplaced ); //tbrp
 		expression.append(  " ) " );
 		return expression.toString();
 	}

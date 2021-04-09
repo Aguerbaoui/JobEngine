@@ -166,8 +166,23 @@ public class ProjectContainer {
 			if (kieSession == null) {
 				kieSession = kieBase.newKieSession();
 			}
-			// TODO: create runnable class and add variable to stop thread exec
-			Runnable runnable = () -> kieSession.fireUntilHalt();
+			Runnable runnable = () -> { 
+				try {
+				kieSession.fireUntilHalt();
+				}catch(Exception e)
+				{
+					//fatal : Runtime Executions
+					JELogger.error(ProjectContainer.class, JEMessages.RULE_EXECUTION_ERROR + e.getMessage());
+
+					try {
+						fireRules();
+					} catch (RulesNotFiredException | RuleBuildFailedException | ProjectAlreadyRunningException e1) {
+						e1.printStackTrace();
+						JELogger.error(ProjectContainer.class, JEMessages.FAILED_TO_FIRE_RULES);
+					}
+					
+				}
+				};
 			t1 = new Thread(runnable);
 			t1.start();
 			status = Status.RUNNING;
@@ -178,8 +193,18 @@ public class ProjectContainer {
 			}
 			JELogger.error(ProjectContainer.class, JEMessages.FAILED_TO_FIRE_RULES);
 			throw new RulesNotFiredException("");
+
 		}
 
+	}
+	
+	
+
+
+
+	private void resetKieSession() {
+		// TODO Auto-generated method stub
+		
 	}
 
 	/*
@@ -455,6 +480,7 @@ public class ProjectContainer {
 			updateContainer();
 		} catch (Exception e) {
 			JELogger.error(ProjectContainer.class, JEMessages.RULE_UPDATE_FAIL + e.getMessage());
+
 			return false;
 		}
 
@@ -484,6 +510,8 @@ public class ProjectContainer {
 			} catch (Exception e) {
 				JELogger.error(ProjectContainer.class, JEMessages.RULE_DELETE_FAIL + e.getMessage());
 				throw new DeleteRuleException(JEMessages.RULE_DELETE_FAIL);
+
+
 			}
 
 			if (status != Status.RUNNING) {

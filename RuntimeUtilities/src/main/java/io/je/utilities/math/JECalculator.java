@@ -4,6 +4,25 @@ import org.apache.commons.math3.util.CombinatoricsUtils;
 
 public class JECalculator {
 
+	
+	
+	
+	/*
+	 * exp
+	 */
+	public static long exp(double x) {
+		return (long) Math.exp(x);
+
+	}
+	
+	/*
+	 * exp
+	 */
+	public static long exp(int x) {
+		return (long) Math.exp(x);
+
+	}
+	
 	/*
 	 * factorial
 	 */

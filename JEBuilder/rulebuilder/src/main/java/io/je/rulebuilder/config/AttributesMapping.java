@@ -34,6 +34,8 @@ public class AttributesMapping {
     
     //block configuration
 	public static final String VALUE = "value";
+	public static final String VALUE2 = "value2";
+
 	public static final String INPUTUNIT = "input_unit";
 	public static final String OUTPUTUNIT = "output_unit";
 	public static final String CLASSID = "class_id";
@@ -53,6 +55,7 @@ public class AttributesMapping {
 	public static final String FRONTCONFIG = "ruleFrontConfig";
 	public static final String TYPE = "type";
 	public static final String INSTANCEID = "instanceId";
+	public static final String BOOLEANVALUE = "includeBounds";
 
   
     

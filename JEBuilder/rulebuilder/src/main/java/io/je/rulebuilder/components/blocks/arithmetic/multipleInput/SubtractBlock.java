@@ -13,7 +13,7 @@ public class SubtractBlock extends MultipleInputArithmeticBlock {
 	}
 
 	@Override
-	protected String getArithmeticFormula(int level) {
+	protected String getArithmeticFormula(int level,String type) {
 		return "JECalculator.subtract( "  ;
 
 	}

@@ -7,6 +7,8 @@ import io.je.utilities.exceptions.RuleBuildFailedException;
 
 public abstract class SingleInputArithmeticBlock extends ArithmeticBlock {
 	
+	protected String defaultType = "number";
+	
 	public SingleInputArithmeticBlock(BlockModel blockModel) {
 		super(blockModel);
 
@@ -21,17 +23,24 @@ public abstract class SingleInputArithmeticBlock extends ArithmeticBlock {
 
 	
 	@Override
-	protected String getArithmeticFormula(int level) {
-		switch(level)
+	protected String getArithmeticFormula(int level,String type) {
+		if(type.equalsIgnoreCase("number"))
 		{
-		case 0:
-			return " Number() from " +  getFormula() ;
-		case 1:
-			return " Number(doubleValue " + Keywords.toBeReplaced +") from " + getFormula() ;
-		default: 
-			return " Number() from " + getFormula() ;
-		
+			switch(level)
+			{
+			case 0:
+				return " Number() from " +  getFormula() ;
+			case 1:
+				return " Number(" + Keywords.toBeReplaced +") from " + getFormula() ;
+			default: 
+				return " Number() from " + getFormula() ;
+			
+			}
+		}else if(type.equalsIgnoreCase("string") )
+		{
+			return "String() from " + getFormula();
 		}
+		 return " Number() from " + getFormula() ;
 	}
 
 
@@ -41,18 +50,18 @@ public abstract class SingleInputArithmeticBlock extends ArithmeticBlock {
 		expression.append("\n");
 		expression.append(inputBlocks.get(0).getExpression());
 		expression.append("\n");
-		expression.append( getBlockNameAsVariable()+" : " +getArithmeticFormula (0));
+		expression.append( getBlockNameAsVariable()+" : " +getArithmeticFormula (0,defaultType));
 		return expression.toString();
 	}
 
 	@Override
-	public String getAsFirstOperandExpression() throws RuleBuildFailedException {
+	public String getAsOperandExpression() throws RuleBuildFailedException {
 		StringBuilder expression = new StringBuilder();
 		expression.append("\n");
 		expression.append(inputBlocks.get(0).getExpression());
 		expression.append("\n");
 	
-		expression.append( getBlockNameAsVariable()+" : " +getArithmeticFormula (1));
+		expression.append( getBlockNameAsVariable()+" : " +getArithmeticFormula (1,defaultType));
 		return expression.toString();
 	}
 
@@ -62,7 +71,7 @@ public abstract class SingleInputArithmeticBlock extends ArithmeticBlock {
 		expression.append("\n");
 		expression.append(inputBlocks.get(0).getJoinExpression());
 		expression.append("\n");
-		expression.append( getBlockNameAsVariable()+" : " +getArithmeticFormula (0));
+		expression.append( getBlockNameAsVariable()+" : " +getArithmeticFormula (0,defaultType));
 		return expression.toString();
 	}
 
@@ -74,7 +83,7 @@ public abstract class SingleInputArithmeticBlock extends ArithmeticBlock {
 		expression.append("\n");
 		expression.append(inputBlocks.get(0).getJoinedExpression(joinId));
 		expression.append("\n");
-		expression.append( getBlockNameAsVariable()+" : " +getArithmeticFormula (0));
+		expression.append( getBlockNameAsVariable()+" : " +getArithmeticFormula (0,defaultType));
 		return expression.toString();
 	}
 
@@ -85,7 +94,7 @@ public abstract class SingleInputArithmeticBlock extends ArithmeticBlock {
 		expression.append(inputBlocks.get(0).getJoinedExpression(joinId));
 		expression.append("\n");
 	
-		expression.append( getBlockNameAsVariable()+" : " +getArithmeticFormula (1));
+		expression.append( getBlockNameAsVariable()+" : " +getArithmeticFormula (1,defaultType));
 		return expression.toString();
 	}
 
@@ -96,7 +105,7 @@ public abstract class SingleInputArithmeticBlock extends ArithmeticBlock {
 		expression.append(inputBlocks.get(0).getJoinExpression());
 		expression.append("\n");
 	
-		expression.append( getBlockNameAsVariable()+" : " +getArithmeticFormula (1));
+		expression.append( getBlockNameAsVariable()+" : " +getArithmeticFormula (1,defaultType));
 		return expression.toString();
 	}
 }
