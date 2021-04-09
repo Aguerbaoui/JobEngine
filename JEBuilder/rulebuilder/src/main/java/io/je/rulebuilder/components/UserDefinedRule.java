@@ -128,7 +128,7 @@ public class UserDefinedRule extends JERule {
 	/*
 	 * add a block to this user defined rule
 	 */
-	public void addBlock(Block block) throws AddRuleBlockException {
+	public void addBlock(Block block) {
 		blocks.addBlock(block);
 		isBuilt = false;
 	}
@@ -136,7 +136,7 @@ public class UserDefinedRule extends JERule {
 	/*
 	 * update a block in this user defined rule
 	 */
-	public void updateBlock(Block block) throws AddRuleBlockException {
+	public void updateBlock(Block block) {
 		blocks.updateBlock(block);
 		isBuilt = false;
 

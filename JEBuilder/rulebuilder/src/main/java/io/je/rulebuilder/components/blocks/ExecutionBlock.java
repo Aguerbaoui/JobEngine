@@ -20,7 +20,7 @@ public abstract class ExecutionBlock extends Block {
 	}
 	
 	@Override
-	public String getAsFirstOperandExpression() {
+	public String getAsOperandExpression() {
 		// TODO Auto-generated method stub
 		return null;
 	}

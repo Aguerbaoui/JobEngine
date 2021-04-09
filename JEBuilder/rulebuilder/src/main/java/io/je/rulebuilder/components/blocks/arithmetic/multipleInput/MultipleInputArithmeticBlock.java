@@ -25,7 +25,7 @@ public abstract class MultipleInputArithmeticBlock extends ArithmeticBlock {
 	}
 
 	@Override
-	public String getAsFirstOperandExpression() throws RuleBuildFailedException {
+	public String getAsOperandExpression() throws RuleBuildFailedException {
 		StringBuilder expression = generateAllPreviousBlocksExpressions();
 		expression.append(generateBlockExpression(true));
 
@@ -115,7 +115,7 @@ public abstract class MultipleInputArithmeticBlock extends ArithmeticBlock {
 		}
 		StringBuilder expression = new StringBuilder();
 		expression.append(getBlockNameAsVariable() + comparableExpression);
-		expression.append(getArithmeticFormula(0) + asDouble(getInputRefName(0)));
+		expression.append(getArithmeticFormula(0,"number") + asDouble(getInputRefName(0)));
 		for (int i = 1; i < inputBlocks.size(); i++) {
 			expression.append(" , " + asDouble(getInputRefName(i)));
 		}

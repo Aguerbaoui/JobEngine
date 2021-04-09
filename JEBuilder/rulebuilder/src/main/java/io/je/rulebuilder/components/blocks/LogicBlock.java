@@ -50,7 +50,7 @@ public  class LogicBlock extends PersistableBlock {
 
 
 	@Override
-	public String getAsFirstOperandExpression() {
+	public String getAsOperandExpression() {
 		// not applicable for these blocks
 		return null;
 	}

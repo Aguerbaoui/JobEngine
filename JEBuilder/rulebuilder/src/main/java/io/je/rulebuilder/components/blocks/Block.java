@@ -68,16 +68,12 @@ public abstract class Block extends JEObject {
 	}
 	
 	
-	public String getBlockNameAsVariable()
-	{
-		return "$"+blockName ;
-	}
 	
 	//return drl expression of block 
 	public  abstract String getExpression() throws RuleBuildFailedException;
 
 	//return drl expression of block as a first operand (used to optimise comparison blocks in order to avoid using eval)
-	public  abstract String getAsFirstOperandExpression() throws RuleBuildFailedException;
+	public  abstract String getAsOperandExpression() throws RuleBuildFailedException;
 	
 	//get drl expression mapped to id (getter blocks) ex: Person($id == "123")
 	public  abstract String getJoinExpression() throws RuleBuildFailedException;
@@ -100,15 +96,41 @@ public abstract class Block extends JEObject {
 	public  abstract String getJoinExpressionAsFirstOperand() throws RuleBuildFailedException;
 
 
+
+	/*
+	 * returns "blockName" (remove spaces : TODO: check with Haroun about removing spaces)
+	 */
+	public String getBlockNameAsVariable()
+	{
+		return blockName.replaceAll("\\s+", "") ;
+	}
+	
+	
+	/*
+	 * get name of variable holding he value expressed by input number index: ex: $age, $block1 ...
+	 */
+	public String getRefName()
+	{
+		String var = ""; 
+		if(this instanceof AttributeGetterBlock)
+		{//get attribute var name
+			var = (( AttributeGetterBlock )this).getAttributeVariableName();
+		}
+		else 
+		{//get block name as variable
+			var =  this.getBlockNameAsVariable();
+		}
+		return var;
+	}
 	public String getInputRefName(int index)
 	{
 		String var = ""; 
 		if(inputBlocks.get(index) instanceof AttributeGetterBlock)
-		{
+		{//get attribute var name
 			var = (( AttributeGetterBlock )inputBlocks.get(index)).getAttributeVariableName();
 		}
 		else 
-		{
+		{//get block name as variable
 			var =  inputBlocks.get(index).getBlockNameAsVariable();
 		}
 		return var;
@@ -217,7 +239,17 @@ public abstract class Block extends JEObject {
 	}
 
 
-
+public Block getInputById(String id)
+{
+	for(Block inputBlock : inputBlocks)
+	{
+		if (inputBlock.jobEngineElementID.equals(id))
+		{
+			return inputBlock;
+		}
+	}
+	return null;
+}
 
 
 }

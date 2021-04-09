@@ -361,6 +361,9 @@ public class JEMessages {
     public static final String RULE_ADDED_SUCCESSFULLY = " Rule added successfully.";
 
     public static final String FAILED_TO_ADD_RULE = "Failed to add rule.";
+    
+    public static final String RULE_EXECUTION_ERROR = "RULE EXECUTION ERROR : ";
+
 
 
     // rule deletion

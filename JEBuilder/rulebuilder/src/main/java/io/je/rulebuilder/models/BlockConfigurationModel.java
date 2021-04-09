@@ -13,6 +13,12 @@ public class BlockConfigurationModel {
 	// or comparison Threshold for comparison blocks 
     @JsonProperty(AttributesMapping.VALUE)
 	String value;
+    
+    @JsonProperty(AttributesMapping.VALUE2)
+	String value2;
+
+    @JsonProperty(AttributesMapping.BOOLEANVALUE)
+    String booleanValue;
 	
 	//unitConversion
     @JsonProperty(AttributesMapping.INPUTUNIT)
@@ -111,6 +117,25 @@ public class BlockConfigurationModel {
 	}
 	public void setInstanceId(String instanceId) {
 		this.instanceId = instanceId;
+	}
+	
+	
+	
+	public String getValue2() {
+		return value2;
+	}
+	public void setValue2(String value2) {
+		this.value2 = value2;
+	}
+	
+	
+	
+	
+	public String getBooleanValue() {
+		return booleanValue;
+	}
+	public void setBooleanValue(String booleanValue) {
+		this.booleanValue = booleanValue;
 	}
 	@Override
 	public String toString() {
