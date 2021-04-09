@@ -173,14 +173,10 @@ public class ProjectContainer {
 				{
 					//fatal : Runtime Executions
 					JELogger.error(ProjectContainer.class, "RULE EXECUTION ERROR : " + e.getMessage());
-					stopRuleExecution();
-					kieSession.dispose();
-					//TODO: empty event/fact handle list
-					kieSession = kieBase.newKieSession();
+
 					try {
 						fireRules();
 					} catch (RulesNotFiredException | RuleBuildFailedException | ProjectAlreadyRunningException e1) {
-						// TODO Auto-generated catch block
 						e1.printStackTrace();
 						JELogger.error(ProjectContainer.class, RuleEngineErrors.failedToFireRules);
 					}

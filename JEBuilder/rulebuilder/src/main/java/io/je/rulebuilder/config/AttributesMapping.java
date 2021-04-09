@@ -55,7 +55,7 @@ public class AttributesMapping {
 	public static final String FRONTCONFIG = "ruleFrontConfig";
 	public static final String TYPE = "type";
 	public static final String INSTANCEID = "instanceId";
-	public static final String BOOLEANVALUE = "boolean_value";
+	public static final String BOOLEANVALUE = "includeBounds";
 
   
     

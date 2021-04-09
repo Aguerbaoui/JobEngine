@@ -14,30 +14,35 @@ public  class ComparisonBlock extends PersistableBlock {
 	
 	protected String operator;
 	String threshold=null;
+	String maxRange=null;
+	boolean includeBounds=false;
 
 	public ComparisonBlock(BlockModel blockModel) {
 		super(blockModel.getBlockId(), blockModel.getProjectId(), blockModel.getRuleId(),blockModel.getBlockName(),
 				blockModel.getDescription() ,
 				blockModel.getTimePersistenceValue(),blockModel.getTimePersistenceUnit());
+
 		
 
-		if(blockModel.getBlockConfiguration()!=null && blockModel.getBlockConfiguration().getValue()!=null)
+		if(blockModel.getBlockConfiguration()!=null )
 		{
 			threshold = blockModel.getBlockConfiguration().getValue();
+			maxRange = blockModel.getBlockConfiguration().getValue2();
+			includeBounds = Boolean.valueOf(blockModel.getBlockConfiguration().getBooleanValue());
 		}
 		
 		operator = getOperatorByOperationId(blockModel.getOperationId());
 		
 	}
-	protected String getOperationExpression(String secondOperand)
+	protected String getOperationExpression()
 	{
 		if(inputBlocks.get(0) instanceof AttributeGetterBlock)
 		{
-		return inputBlocks.get(0).getRefName()+ getOperator() + secondOperand;
+		return inputBlocks.get(0).getRefName()+ getOperator() + threshold;
 		}
 		else
 		{
-			return "doubleValue " + getOperator() + secondOperand;
+			return "doubleValue " + getOperator() + threshold;
 
 		}
 	}
@@ -47,111 +52,158 @@ public  class ComparisonBlock extends PersistableBlock {
 	}
 
 	
-	
-	private boolean singleInput() throws RuleBuildFailedException
-	{
-		if(inputBlocks.size()==1)
+	protected void setParameters() {
+		if(threshold==null)
 		{
-			return true;
+			threshold=getInputRefName(1);
 		}
-		else if(inputBlocks.size()==2)
-		{
-			return false;
-		}
-		else
-		{
-			//TODO: remove hardcoded message
-			throw new RuleBuildFailedException("Comparison block cannot have " + inputBlocks.size() + "input connexions" );
-		}
+		
 	}
+	
+	
 
 	@Override
 	public String getExpression() throws RuleBuildFailedException {
 		StringBuilder expression = new StringBuilder();
-		//single input
-		if(singleInput())
-		{
-			String inputExpression = inputBlocks.get(0).getAsOperandExpression().replaceAll(Keywords.toBeReplaced, getOperationExpression(threshold));
+
+		checkBlockConfiguration();
+		setParameters();
+
+		// single input
+		if (inputBlocks.size() == 1) {
+			String inputExpression = inputBlocks.get(0).getAsOperandExpression().replaceAll(Keywords.toBeReplaced,
+					getOperationExpression());
 			expression.append(inputExpression);
 
-		}
-		else
-		{
+		} else if (inputBlocks.size() == 3) {
 			String firstOperand = inputBlocks.get(1).getExpression();
 			expression.append(firstOperand);
 			expression.append("\n");
-			String secondOperand = inputBlocks.get(0).getAsOperandExpression().replaceAll(Keywords.toBeReplaced, getOperationExpression(getInputRefName(1)) );
+			String thirdOperand = inputBlocks.get(2).getExpression();
+			expression.append(thirdOperand);
+			expression.append("\n");
+			String secondOperand = inputBlocks.get(0).getAsOperandExpression().replaceAll(Keywords.toBeReplaced,
+					getOperationExpression());
 			expression.append(secondOperand);
 
-
+		} else if (inputBlocks.size() == 2) {
+			String firstOperand = inputBlocks.get(1).getExpression();
+			expression.append(firstOperand);
+			String secondOperand = "";
+			expression.append("\n");
+			secondOperand = inputBlocks.get(0).getAsOperandExpression().replaceAll(Keywords.toBeReplaced,
+					getOperationExpression());
+			expression.append(secondOperand);
 		}
 		return expression.toString();
 	}
-	
-	public String getOperator()
-	{
+
+	protected void checkBlockConfiguration() throws RuleBuildFailedException {
+		if (threshold == null && inputBlocks.size() != 2) {
+			throw new RuleBuildFailedException(blockName + " is not configured properly");
+		}
+		
+	}
+	public String getOperator() {
 		return operator;
 	}
 
 	@Override
 	public String getJoinExpression() throws RuleBuildFailedException {
 		StringBuilder expression = new StringBuilder();
-		//single input
-		String joinId= inputBlocks.get(0).getJoinId();
+		String joinId = inputBlocks.get(0).getJoinId();
+		checkBlockConfiguration();
+		setParameters();
 
-		if(singleInput())
-		{
-			String inputExpression = inputBlocks.get(0).getJoinExpressionAsFirstOperand().replaceAll(Keywords.toBeReplaced,getOperationExpression(threshold));
+		// single input
+		if (inputBlocks.size() == 1) {
+			String inputExpression = inputBlocks.get(0).getJoinExpressionAsFirstOperand().replaceAll(Keywords.toBeReplaced,
+					getOperationExpression());
 			expression.append(inputExpression);
 
-		}
-		else
-		{
+		} else if (inputBlocks.size() == 3) {
 			String firstOperand = inputBlocks.get(1).getJoinedExpression(joinId);
 			expression.append(firstOperand);
 			expression.append("\n");
-			String secondOperand = inputBlocks.get(0).getJoinExpression().replaceAll(Keywords.toBeReplaced,  getOperationExpression(getInputRefName(1)) );
+			String thirdOperand = inputBlocks.get(2).getJoinedExpression(joinId);
+			expression.append(thirdOperand);
+			expression.append("\n");
+			String secondOperand = inputBlocks.get(0).getJoinExpression().replaceAll(Keywords.toBeReplaced,
+					getOperationExpression());
 			expression.append(secondOperand);
 
-
+		} else if (inputBlocks.size() == 2) {
+			String firstOperand = inputBlocks.get(1).getJoinedExpression(joinId);
+			expression.append(firstOperand);
+			String secondOperand = "";
+			expression.append("\n");
+			secondOperand = inputBlocks.get(0).getJoinExpression().replaceAll(Keywords.toBeReplaced,
+					getOperationExpression());
+			expression.append(secondOperand);
 		}
 		return expression.toString();
 	}
-	
 
 	@Override
 	public String getJoinedExpression(String joinId) throws RuleBuildFailedException {
 		StringBuilder expression = new StringBuilder();
+		checkBlockConfiguration();
+		setParameters();
 
-		//single input
-		if(singleInput())
-		{
-			String inputExpression = inputBlocks.get(0).getJoinedExpressionAsFirstOperand(joinId).replaceAll(Keywords.toBeReplaced, getOperationExpression(threshold));
+		// single input
+		if (inputBlocks.size() == 1) {
+			String inputExpression = inputBlocks.get(0).getJoinedExpressionAsFirstOperand(joinId).replaceAll(Keywords.toBeReplaced,
+					getOperationExpression());
 			expression.append(inputExpression);
 
-		}
-		else
-		{
+		} else if (inputBlocks.size() == 3) {
 			String firstOperand = inputBlocks.get(1).getJoinedExpression(joinId);
 			expression.append(firstOperand);
-			expression.append("\n");			String secondOperand = inputBlocks.get(0).getJoinedExpressionAsFirstOperand(joinId).replaceAll(Keywords.toBeReplaced, getOperationExpression(getInputRefName(1)) );
+			expression.append("\n");
+			String thirdOperand = inputBlocks.get(2).getJoinedExpression(joinId);
+			expression.append(thirdOperand);
+			expression.append("\n");
+			String secondOperand = inputBlocks.get(0).getJoinedExpressionAsFirstOperand(joinId).replaceAll(Keywords.toBeReplaced,
+					getOperationExpression());
 			expression.append(secondOperand);
 
-
+		} else if (inputBlocks.size() == 2) {
+			String firstOperand = inputBlocks.get(1).getJoinedExpression(joinId);
+			expression.append(firstOperand);
+			String secondOperand = "";
+			expression.append("\n");
+			secondOperand = inputBlocks.get(0).getJoinedExpressionAsFirstOperand(joinId).replaceAll(Keywords.toBeReplaced,
+					getOperationExpression());
+			expression.append(secondOperand);
 		}
 		return expression.toString();
 	}
 
 	@Override
 	public String getJoinedExpressionAsFirstOperand(String joindId) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public String getJoinExpressionAsFirstOperand() {
-		// TODO Auto-generated method stub
 		return null;
+	}
+
+
+	protected String getMaxRange() {
+		return maxRange;
+	}
+
+	protected void setMaxRange(String maxRange) {
+		this.maxRange = maxRange;
+	}
+
+	protected boolean isIncludeBounds() {
+		return includeBounds;
+	}
+
+	protected void setIncludeBounds(boolean includeBounds) {
+		this.includeBounds = includeBounds;
 	}
 
 
@@ -198,10 +250,12 @@ public  class ComparisonBlock extends PersistableBlock {
 			return "<";
 		case 2015:
 			return ">";
+		default:
+			return null;
 		}
 		
-		return null;
 	}
+
 
 
 	

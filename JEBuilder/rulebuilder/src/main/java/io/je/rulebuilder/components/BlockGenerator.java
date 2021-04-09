@@ -2,6 +2,8 @@ package io.je.rulebuilder.components;
 
 import io.je.rulebuilder.components.blocks.Block;
 import io.je.rulebuilder.components.blocks.comparison.ComparisonBlock;
+import io.je.rulebuilder.components.blocks.comparison.InRangeBlock;
+import io.je.rulebuilder.components.blocks.comparison.OutOfRangeBlock;
 import io.je.rulebuilder.components.blocks.LogicBlock;
 import io.je.rulebuilder.components.blocks.arithmetic.multipleInput.*;
 import io.je.rulebuilder.components.blocks.arithmetic.singleinput.*;
@@ -30,9 +32,16 @@ public class BlockGenerator {
 		
 		switch (blockModel.getOperationId()) {
 		/*
+		 * Comparison
+		 */
+		case 2016:
+			return new InRangeBlock(blockModel);
+		case 2017:
+			return new OutOfRangeBlock(blockModel);
+
+		/*
 		 * Arithmetic blocks
 		 */
-
 		// sum
 		case 1001:
 			return new SumBlock(blockModel);

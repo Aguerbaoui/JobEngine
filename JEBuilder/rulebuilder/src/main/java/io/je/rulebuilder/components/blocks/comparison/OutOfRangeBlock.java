@@ -7,12 +7,12 @@ import io.je.utilities.exceptions.RuleBuildFailedException;
 /*
  * block inputs are : source , minRange , maxRange
  */
-public class InRangeBlock extends ComparisonBlock {
+public class OutOfRangeBlock extends ComparisonBlock {
 
 	String minRange;
 
 
-	public InRangeBlock(BlockModel blockModel) {
+	public OutOfRangeBlock(BlockModel blockModel) {
 		super(blockModel);
 		minRange=threshold;
 
@@ -41,7 +41,7 @@ public class InRangeBlock extends ComparisonBlock {
 
 	}
 
-	public InRangeBlock() {
+	public OutOfRangeBlock() {
 		super();
 	}
 
@@ -57,9 +57,9 @@ public class InRangeBlock extends ComparisonBlock {
 				: "doubleValue ";
 
 		if (includeBounds) {
-			return firstOperand + ">=" + minRange + "," + firstOperand + "<=" + maxRange;
+			return "("+firstOperand + "<=" + minRange + "||" + firstOperand + ">=" + maxRange+")";
 		} else {
-			return firstOperand + ">" + minRange + "," + firstOperand + "<" + maxRange;
+			return "("+firstOperand + "<" + minRange + "||" + firstOperand + ">" + maxRange+")";
 		}
 
 	}
