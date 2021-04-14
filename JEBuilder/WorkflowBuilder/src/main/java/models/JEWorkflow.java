@@ -2,6 +2,7 @@ package models;
 
 import blocks.WorkflowBlock;
 import blocks.basic.StartBlock;
+import blocks.events.ErrorBoundaryEvent;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.InvalidSequenceFlowException;
 import io.je.utilities.exceptions.WorkflowBlockNotFound;
@@ -207,6 +208,9 @@ public class JEWorkflow extends JEObject {
         allBlocks.get(from).setCondition(condition);
         if (allBlocks.get(to) != null && allBlocks.get(to).getInflows() != null) {
             allBlocks.get(to).getInflows().put(from, from);
+        }
+        if(allBlocks.get(to) instanceof ErrorBoundaryEvent) {
+            ((ErrorBoundaryEvent) allBlocks.get(to)).setAttachedToRef(from);
         }
         workflowStartBlock = (StartBlock) allBlocks.get(workflowStartBlock.getJobEngineElementID());
         status = IDLE;

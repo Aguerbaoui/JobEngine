@@ -6,15 +6,24 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class WebApiBlock extends WorkflowBlock {
-    String description;
 
     String url;
 
     String method;
 
+    String body;
+
     HashMap<String, ArrayList<Object>> inputs;
 
     HashMap<String, String> outputs;
+
+    public String getBody() {
+        return body;
+    }
+
+    public void setBody(String body) {
+        this.body = body;
+    }
 
     public HashMap<String, String> getOutputs() {
         return outputs;
@@ -24,13 +33,6 @@ public class WebApiBlock extends WorkflowBlock {
         this.outputs = outputs;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
 
     public String getUrl() {
         return url;

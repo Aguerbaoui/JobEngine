@@ -55,22 +55,26 @@ public class WorkflowBuilder {
                 t.setTaskId(block.getJobEngineElementID());
                 t.setType(WorkflowConstants.WEBSERVICETASK_TYPE);
                 HashMap<String, Object> attributes = new HashMap<>();
-                attributes.put("url", ((WebApiBlock) block).getUrl());
-                attributes.put("method", ((WebApiBlock) block).getMethod());
-                if(((WebApiBlock) block).getInputs() != null && ((WebApiBlock) block).getInputs().size() > 0) {
-                    HashMap<String, Object> inputs = new HashMap<>();
-                    for(String key: ((WebApiBlock) block).getInputs().keySet()) {
-                        ArrayList<Object> input = ((WebApiBlock) block).getInputs().get(key);
-                        if(input.size() == 1) {
-                            inputs.put(key, input.get(0));
-                        }
-                        else {
-                            inputs.put(key, input);
-                        }
-                    }
-                    attributes.put("inputs", inputs);
-                    attributes.put("outputs", ((WebApiBlock) block).getOutputs());
+                attributes.put(URL, ((WebApiBlock) block).getUrl());
+                attributes.put(METHOD, ((WebApiBlock) block).getMethod());
+                if(((WebApiBlock) block).getBody() != null) {
+                    attributes.put(BODY, ((WebApiBlock) block).getBody());
                 }
+                else {
+                    if (((WebApiBlock) block).getInputs() != null && ((WebApiBlock) block).getInputs().size() > 0) {
+                        HashMap<String, Object> inputs = new HashMap<>();
+                        for (String key : ((WebApiBlock) block).getInputs().keySet()) {
+                            ArrayList<Object> input = ((WebApiBlock) block).getInputs().get(key);
+                            if (input.size() == 1) {
+                                inputs.put(key, input.get(0));
+                            } else {
+                                inputs.put(key, input);
+                            }
+                        }
+                        attributes.put(INPUTS, inputs);
+                    }
+                }
+                attributes.put(OUTPUTS, ((WebApiBlock) block).getOutputs());
                 t.setAttributes(attributes);
                 tasks.add(t);
             }
@@ -80,7 +84,7 @@ public class WorkflowBuilder {
                 t.setTaskId(block.getJobEngineElementID());
                 t.setType(WorkflowConstants.SCRIPTTASK_TYPE);
                 HashMap<String, Object> attributes = new HashMap<>();
-                attributes.put("script", ((ScriptBlock) block).getScript());
+                attributes.put(SCRIPT, ((ScriptBlock) block).getScript());
                 t.setAttributes(attributes);
                 tasks.add(t);
             }
@@ -90,7 +94,7 @@ public class WorkflowBuilder {
                 t.setTaskId(block.getJobEngineElementID());
                 t.setType(WorkflowConstants.INFORMSERVICETASK_TYPE);
                 HashMap<String, Object> attributes = new HashMap<>();
-                attributes.put("message", ((InformBlock) block).getMessage());
+                attributes.put(MESSAGE, ((InformBlock) block).getMessage());
                 t.setAttributes(attributes);
                 tasks.add(t);
             }

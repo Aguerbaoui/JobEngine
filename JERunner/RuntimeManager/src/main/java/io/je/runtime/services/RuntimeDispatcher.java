@@ -174,12 +174,16 @@ public class RuntimeDispatcher {
                 webApiTask.setTaskName(task.getTaskName());
                 webApiTask.setProcessId(wf.getKey());
                 HashMap<String, Object> attributes = task.getAttributes();
-                if(attributes.get("inputs") != null) {
+                if(attributes.get(INPUTS) != null) {
                     webApiTask.setHasBody(true);
-                    webApiTask.setBody((HashMap<String, String>) attributes.get("inputs"));
+                    webApiTask.setBody((HashMap<String, String>) attributes.get(INPUTS));
                 }
-                webApiTask.setHttpMethod(HttpMethod.valueOf((String) attributes.get("method")));
-                webApiTask.setUrl((String) attributes.get("url"));
+                else {
+                    webApiTask.setHasBody(true);
+                    webApiTask.setStringBody((String) attributes.get(BODY));
+                }
+                webApiTask.setHttpMethod(HttpMethod.valueOf((String) attributes.get(METHOD)));
+                webApiTask.setUrl((String) attributes.get(URL));
                 process.addActivitiTask(webApiTask);
                 ActivitiTaskManager.addTask(webApiTask);
             }
@@ -189,8 +193,8 @@ public class RuntimeDispatcher {
                 scriptTask.setTaskName(task.getTaskName());
                 scriptTask.setTaskId(task.getTaskId());
                 HashMap<String, Object> attributes = task.getAttributes();
-                if(attributes.get("script") != null) {
-                    scriptTask.setScript((String) attributes.get("script"));
+                if(attributes.containsKey(SCRIPT)) {
+                    scriptTask.setScript((String) attributes.get(SCRIPT));
                 }
                 //JEClassLoader.generateScriptTaskClass(scriptTask.getTaskName(), scriptTask.getScript());
                 process.addActivitiTask(scriptTask);
@@ -202,8 +206,8 @@ public class RuntimeDispatcher {
                 informTask.setTaskName(task.getTaskName());
                 informTask.setTaskId(task.getTaskId());
                 HashMap<String, Object> attributes = task.getAttributes();
-                if(attributes.get("message") != null) {
-                    informTask.setMessage((String) attributes.get("message"));
+                if(attributes.get(MESSAGE) != null) {
+                    informTask.setMessage((String) attributes.get(MESSAGE));
                 }
                 process.addActivitiTask(informTask);
                 ActivitiTaskManager.addTask(informTask);

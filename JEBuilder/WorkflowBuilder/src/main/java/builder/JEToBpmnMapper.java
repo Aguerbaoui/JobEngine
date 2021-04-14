@@ -101,9 +101,21 @@ public class JEToBpmnMapper {
                         ((SignalEvent) block).getEventId()));
             }
 
+            else if(block instanceof ErrorBoundaryEvent && !block.isProcessed()) {
+                ServiceTask attachedTo = null;
+                for(FlowElement f: process.getFlowElements()) {
+                    if(f.getId().equals(((ErrorBoundaryEvent) block).getAttachedToRef())){
+                        attachedTo = (ServiceTask) f; break;
+                    }
+                }
+                process.addFlowElement(ModelBuilder.createBoundaryEvent(block.getJobEngineElementID(),
+                        ((ErrorBoundaryEvent) block).getAttachedToRef(), attachedTo,
+                        ((ErrorBoundaryEvent) block).getErrorRef()));
+            }
             else if (block instanceof ScriptBlock && !block.isProcessed()) {
-                process.addFlowElement(ModelBuilder.createServiceTask(block.getJobEngineElementID(), wf.getWorkflowName()+block.getName(),
-                        WorkflowConstants.SCRIPT_TASK_IMPLEMENTATION));
+                ServiceTask serviceTask = ModelBuilder.createServiceTask(block.getJobEngineElementID(), wf.getWorkflowName()+block.getName(),
+                        WorkflowConstants.SCRIPT_TASK_IMPLEMENTATION);
+                process.addFlowElement(serviceTask);
             }
 
             else if (block instanceof ExclusiveGatewayBlock && !block.isProcessed()) {

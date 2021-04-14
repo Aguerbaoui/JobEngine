@@ -4,10 +4,7 @@ package io.je.utilities.classloader;
 import java.io.File;
 import java.lang.reflect.Modifier;
 import java.util.*;
-import javax.tools.JavaCompiler;
-import javax.tools.StandardJavaFileManager;
-import javax.tools.StandardLocation;
-import javax.tools.ToolProvider;
+import javax.tools.*;
 
 import io.je.utilities.config.ConfigurationConstants;
 import io.je.utilities.constants.ClassBuilderConfig;
@@ -59,13 +56,18 @@ public class JEClassLoader {
 			// Specify where to put the generated .class files
 			fileManager.setLocation(StandardLocation.CLASS_OUTPUT, Arrays.asList(new File(loadPath)));
 			// Compile the file
-			compiler.getTask(null, fileManager, null, null, null,
-					fileManager.getJavaFileObjectsFromFiles(Arrays.asList(sourceFile))).call();
+			Iterable<? extends JavaFileObject> compilationUnit
+					= fileManager.getJavaFileObjectsFromFiles(Arrays.asList(sourceFile));
+			JavaCompiler.CompilationTask task = compiler.getTask(null, fileManager, null, null, null,
+					compilationUnit);
+			if(task.call()) {
+				JELogger.debug("Compilation in JEClassLoader succeded");
+			}
 			fileManager.close();
 		}catch (Exception e) {
 			//TODO: move msg to error clas
-			e.printStackTrace();
-			JELogger.info(JEClassLoader.class, e.getMessage());
+			//e.printStackTrace();
+			JELogger.error(Arrays.toString(e.getStackTrace()));
 			throw new ClassLoadException(JEMessages.CLASS_LOAD_FAILED);
 		}
 
