@@ -20,10 +20,8 @@ public class JEFileUtils {
 		File file = new File(fileName);
 		try {
 			FileUtils.writeStringToFile(file, bpmn20Xml, encoding);
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (Exception e) {
-			e.printStackTrace();
+		}  catch (Exception e) {
+			JELogger.error(Arrays.toString(e.getStackTrace()));
 		}
 
 	}
@@ -39,6 +37,17 @@ public class JEFileUtils {
 		return content;
 	}
 
+	public static void deleteFileFromPath(String path) {
+		try {
+			File file = new File(path);
+			if(file.delete()){
+				JELogger.info("deleted");
+			}
+		}
+		catch (Exception e) {
+			JELogger.error(JEMessages.DELETE_FILE_FAILED );
+		}
+	}
 	public static void deleteFilesInPathByPrefix(final String path, final String prefix) {
 		try {
 		File directory = new File(path);

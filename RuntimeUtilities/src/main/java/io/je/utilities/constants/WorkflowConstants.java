@@ -3,6 +3,11 @@ package io.je.utilities.constants;
 public class WorkflowConstants {
 
 
+    public static final String BODY = "body";
+    public static final String MESSAGE = "message";
+    public static final String SCRIPT = "script";
+    public static final String ERROR_REF = "errorRef";
+
     private WorkflowConstants() {}
     public static final  String PROCESS_LISTENER_IMPLEMENTATION = "io.je.executionListeners.ProcessListener";
     public static final  String GATEWAYS_LISTENER_IMPLEMENTATION = "io.je.executionListeners.GatewaysListener";
@@ -34,6 +39,7 @@ public class WorkflowConstants {
     public static final String BPMN_PATH = "D:\\processes\\";
     public static final String BPMN_EXTENSION = ".bpmn";
     public static final String WEBSERVICETASK_TYPE = "webtask";
+    public static final String BOUNDARYEVENT_TYPE = "boundaryevent";
     public static final String INFORMSERVICETASK_TYPE = "inform";
     public static final String DESCRIPTION = "description";
     public static final String METHOD = "method";

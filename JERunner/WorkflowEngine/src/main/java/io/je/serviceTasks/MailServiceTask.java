@@ -9,16 +9,13 @@ import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.WorkflowConstants;
 import io.je.utilities.logger.JELogger;
 import io.je.utilities.network.Network;
+import org.activiti.engine.delegate.BpmnError;
 import org.activiti.engine.delegate.DelegateExecution;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 
 import static io.je.utilities.constants.WorkflowConstants.*;
-import static io.je.utilities.constants.WorkflowConstants.SMTP_SERVER;
 
 public class MailServiceTask extends ServiceTask {
 
@@ -52,9 +49,13 @@ public class MailServiceTask extends ServiceTask {
                     .withBody(json).build();
             Response response = network.call();
             JELogger.info(JEMessages.MAIL_SERVICE_TASK_RESPONSE + " = " + response.body().string());
+            if(response.code() != 200 || response.code() != 200 ) {
+                throw new BpmnError("Error");
+            }
         }
         catch(Exception e) {
             JELogger.error(Arrays.toString(e.getStackTrace()));
+            throw new BpmnError("Error");
         }
 
     }

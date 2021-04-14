@@ -141,7 +141,7 @@ public class JEMessages {
     public static final String DELETING_SEQUENCE_FLOW = "Deleting a sequence flow with from";
 
     public static final String BUILDING_WF = "Building workflow";
-    
+
     public static final String BUILDING_WFS = "Building workflows";
 
     public static final String RUNNING_WF = "Running workflow";

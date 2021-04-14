@@ -36,6 +36,9 @@ public class WorkflowBlock extends JEObject {
      * */
     private String name;
 
+    /*Block description*/
+    private String description;
+
     /*
      * Block processing state ( true if parsed in the tree )
      * */
@@ -53,6 +56,14 @@ public class WorkflowBlock extends JEObject {
         inflows = new ConcurrentHashMap<String, String>();
         outFlows = new ConcurrentHashMap<String, String>();
         processed = false;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     /*

@@ -256,6 +256,31 @@ public class ModelBuilder {
         return event;
     }
 
+    /*
+    * Create activit error event
+    * */
+    public static ErrorEventDefinition createErrorEventDefinition(String errorRef) {
+        ErrorEventDefinition errorEventDefinition = new ErrorEventDefinition();
+        errorEventDefinition.setErrorCode("Error");
+        return errorEventDefinition;
+    }
+
+    /*
+     * Create activit boundary event
+     * */
+    public static BoundaryEvent createBoundaryEvent(String id, String attachedToId, Activity attachedToElement, String errorRef) {
+        BoundaryEvent b = new BoundaryEvent();
+        b.setId(id);
+        b.setAttachedToRefId(attachedToId);
+        b.setAttachedToRef(attachedToElement);
+        b.setCancelActivity(true);
+        b.addEventDefinition(createErrorEventDefinition(errorRef));
+        return b;
+    }
+
+    /*
+     * Create activit throw signal event
+     * */
     public static ThrowEvent createThrowSignalEvent(String id, String name, String reference) {
         ThrowEvent event = new ThrowEvent();
         event.setName(name);

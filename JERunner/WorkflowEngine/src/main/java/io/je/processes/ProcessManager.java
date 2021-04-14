@@ -10,6 +10,7 @@ import io.je.utilities.exceptions.WorkflowNotFoundException;
 import io.je.utilities.files.JEFileUtils;
 import io.je.utilities.logger.JELogger;
 import org.activiti.engine.*;
+import org.activiti.engine.delegate.BpmnError;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.DeploymentBuilder;
 import org.activiti.engine.runtime.Execution;
@@ -162,7 +163,12 @@ public class ProcessManager {
                 }
             }
             processes.get(id).setRunning(true);
-            runtimeService.startProcessInstanceByKey(id, variables);
+            try {
+                runtimeService.startProcessInstanceByKey(id, variables);
+            }
+            catch(BpmnError e) {
+                JELogger.error("Error = " + Arrays.toString(e.getStackTrace()));
+            }
         }
         else {
             JELogger.error(ProcessManager.class, " " + JEMessages.PROCESS_HAS_TO_BE_TRIGGERED_BY_EVENT);

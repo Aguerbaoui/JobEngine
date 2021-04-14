@@ -53,7 +53,7 @@ public class WorkflowService {
     public static final String SOURCE_REF = "sourceRef";
     public static final String TARGET_REF = "targetRef";
     public static final String CONDITION = "condition";
-
+    public static final String BODY = "body";
 
 
     @Autowired
@@ -280,6 +280,16 @@ public class WorkflowService {
             b.setJobEngineElementID(block.getId());
             project.addBlockToWorkflow(b);
         }
+
+        else if(block.getType().equalsIgnoreCase(BOUNDARYEVENT_TYPE)) {
+            ErrorBoundaryEvent b = new ErrorBoundaryEvent();
+            b.setName((String) block.getAttributes().get(NAME));
+            b.setDescription((String) block.getAttributes().get(DESCRIPTION));
+            b.setJobEngineProjectID(block.getProjectId());
+            b.setWorkflowId(block.getWorkflowId());
+            b.setJobEngineElementID(block.getId());
+            project.addBlockToWorkflow(b);
+        }
         else if (block.getType().equalsIgnoreCase(WorkflowConstants.SEQ_FLOW_TYPE)) {
             addSequenceFlow(block.getProjectId(), block.getWorkflowId(),
                     (String) block.getAttributes().get(SOURCE_REF), (String) block.getAttributes().get(TARGET_REF),
@@ -351,7 +361,9 @@ public class WorkflowService {
         }
         JELogger.trace(WorkflowService.class, "[projectId ="+projectId+" ][workflowId = " +workflowId+"]"+ JEMessages.BUILDING_WF);
         JEWorkflow workflow = project.getWorkflowById(workflowId);
-        WorkflowBuilder.buildWorkflow(workflow);
+        if(!WorkflowBuilder.buildWorkflow(workflow)) {
+            throw new JERunnerErrorException(JEMessages.JERUNNER_UNREACHABLE);
+        };
     }
 
     /*
@@ -366,7 +378,9 @@ public class WorkflowService {
         }
         JELogger.trace("[projectId ="+projectId+" ]"+ JEMessages.BUILDING_WFS);
         for (JEWorkflow wf : project.getWorkflows().values()) {
-            WorkflowBuilder.buildWorkflow(wf);
+            if(!WorkflowBuilder.buildWorkflow(wf)) {
+                throw new JERunnerErrorException(JEMessages.JERUNNER_UNREACHABLE);
+            };
         }
         return CompletableFuture.completedFuture(null);
 
@@ -566,7 +580,15 @@ public class WorkflowService {
             b.setDescription((String) block.getAttributes().get(DESCRIPTION));
             b.setMethod((String) block.getAttributes().get(METHOD));
             b.setUrl((String) block.getAttributes().get(URL));
-            b.setInputs((HashMap<String, ArrayList<Object>>) block.getAttributes().get(INPUTS));
+            if(block.getAttributes().containsKey(BODY)) {
+                b.setBody((String) block.getAttributes().get(BODY));
+                b.setInputs(null);
+            }
+            else {
+                b.setBody(null);
+                b.setInputs((HashMap<String, ArrayList<Object>>) block.getAttributes().get(INPUTS));
+            }
+
             b.setOutputs((HashMap<String, String>) block.getAttributes().get(OUTPUTS));
             project.addBlockToWorkflow(b);
         }
@@ -577,7 +599,17 @@ public class WorkflowService {
             b.setJobEngineProjectID(block.getProjectId());
             b.setWorkflowId(block.getWorkflowId());
             b.setJobEngineElementID(block.getId());
-            b.setMessage((String) block.getAttributes().get("message"));
+            b.setMessage((String) block.getAttributes().get(MESSAGE));
+            project.addBlockToWorkflow(b);
+        }
+        else if(block.getType().equalsIgnoreCase(BOUNDARYEVENT_TYPE)) {
+            ErrorBoundaryEvent b = (ErrorBoundaryEvent) project.getWorkflowById(block.getWorkflowId()).getAllBlocks().get(block.getId());
+            b.setName((String) block.getAttributes().get(NAME));
+            b.setDescription((String) block.getAttributes().get(DESCRIPTION));
+            b.setJobEngineProjectID(block.getProjectId());
+            b.setWorkflowId(block.getWorkflowId());
+            b.setJobEngineElementID(block.getId());
+            //b.setErrorRef((String) block.getAttributes().get(ERROR_REF));
             project.addBlockToWorkflow(b);
         }
 

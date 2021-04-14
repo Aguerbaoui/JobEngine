@@ -1,5 +1,7 @@
 package io.je.serviceTasks;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.je.utilities.apis.BodyType;
 import io.je.utilities.apis.HttpMethod;
 
@@ -11,6 +13,8 @@ public class WebApiTask extends  ActivitiTask{
     private HttpMethod httpMethod;
 
     private BodyType bodyType;
+
+    private String stringBody;
 
     private HashMap<String, String> body;
 
@@ -44,8 +48,9 @@ public class WebApiTask extends  ActivitiTask{
         this.bodyType = bodyType;
     }
 
-    public HashMap<String, String> getBody() {
-        return body;
+    public String getBody() throws JsonProcessingException {
+        if(stringBody != null) return stringBody;
+        else return new ObjectMapper().writeValueAsString(body);
     }
 
     public void setBody(HashMap<String, String> body) {
@@ -66,5 +71,9 @@ public class WebApiTask extends  ActivitiTask{
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public void setStringBody(String stringBody) {
+        this.stringBody = stringBody;
     }
 }
