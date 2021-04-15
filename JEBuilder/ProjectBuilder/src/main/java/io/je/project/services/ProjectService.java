@@ -306,10 +306,20 @@ public class ProjectService {
         loadedProjects = new ConcurrentHashMap<String, JEProject>();
         List<JEProject> projects = projectRepository.findAll();
         for (JEProject project : projects) {
-            loadedProjects.put(project.getProjectId(), project);
-            for (JEEvent event : project.getEvents().values()) {
-                eventService.registerEvent(event);
-            }
+        	 if(project.isAutoReload())
+             {
+          	   loadedProjects.put(project.getProjectId(), project);
+                 for (JEEvent event : project.getEvents().values()) {
+                     eventService.registerEvent(event);
+                 }
+             }
+             else
+             {
+          	   project.setBuilt(false);
+          	   project.setRunning(false);
+          	   saveProject(project);
+             }
+
         }
         return CompletableFuture.completedFuture(null);
 

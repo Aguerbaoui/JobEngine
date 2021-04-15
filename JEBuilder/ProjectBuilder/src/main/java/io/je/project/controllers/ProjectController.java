@@ -213,5 +213,25 @@ public class ProjectController {
 		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, PROJECT_CLOSED));
 
 	}
+	
+	/*
+	 * Add new project
+	 */
+	@PostMapping(value = "/{projectId}/setProjectAutoReload", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> setProjectAutoReload(@RequestBody boolean autoReload,@PathVariable String projectId) {
+		if (!projectService.projectExists(projectId)) {
+			return ResponseEntity.ok(new JEResponse(ResponseCodes.PROJECT_NOT_FOUND, JEMessages.PROJECT_NOT_FOUND));
+		}
+		try {
+			JEProject project = projectService.getProject(projectId).get();
+			JELogger.debug("[projectId ="+projectId+" ]  " + JEMessages.PROJECT_AUTO_RELOAD + autoReload);
+			project.setAutoReload(autoReload);
+			projectService.saveProject(project).get();
+		} catch (Exception e) {
+			return JEExceptionHandler.handleException(e);
+		}
+		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.PROJECT_UPDATED));
+	}
+
 
 }
