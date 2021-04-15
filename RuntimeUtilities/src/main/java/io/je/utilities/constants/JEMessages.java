@@ -322,6 +322,11 @@ public class JEMessages {
     public static final String TOPIC_ADDED = "Added topics successfully";
 
     public static final String EMPTY_SCRIPT = "Script block must have a valid script";
+    
+    public static final String PROJECT_UPDATED = "Project updated successfully";
+
+    public static final String PROJECT_AUTO_RELOAD = "setting project auto reload to";
+
 
     // ****************************************EVENTS**************************************************
 

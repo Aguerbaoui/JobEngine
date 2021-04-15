@@ -47,6 +47,8 @@ public class JEProject {
      * */
      private ConcurrentHashMap<String, JEEvent> events;
      
+     private boolean autoReload = false;
+
      
      private boolean isRunning=false;
      
@@ -70,8 +72,21 @@ public class JEProject {
         this.projectId = projectId;
         this.configurationPath = configurationPath;
         isBuilt = false;
+        autoReload = false;
+
 
     }
+
+	
+	public boolean isAutoReload() {
+		return autoReload;
+	}
+
+
+	public void setAutoReload(boolean autoReload) {
+		this.autoReload = autoReload;
+	}
+
 
     
 	/******************************************************** PROJECT **********************************************************************/

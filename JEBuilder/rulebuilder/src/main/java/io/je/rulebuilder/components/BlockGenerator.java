@@ -165,7 +165,7 @@ public class BlockGenerator {
 		default:
 			throw new AddRuleBlockException( JEMessages.BLOCK_OPERATION_ID_UNKNOWN);
 		}
-		throw new AddRuleBlockException( JEMessages.BLOCK_OPERATION_ID_UNKNOWN);
+		throw new AddRuleBlockException("["+blockModel.getBlockName()+"] "+JEMessages.BLOCK_OPERATION_ID_UNKNOWN );
 
 	}
 }
