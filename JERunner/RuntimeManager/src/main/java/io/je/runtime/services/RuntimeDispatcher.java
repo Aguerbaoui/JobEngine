@@ -15,7 +15,7 @@ import io.je.utilities.apis.HttpMethod;
 import io.je.utilities.beans.JEData;
 import io.je.utilities.beans.JEEvent;
 import io.je.utilities.beans.JEVariable;
-import io.je.utilities.classloader.JEClassLoader;
+import io.je.utilities.classloader.JEClassCompiler;
 import io.je.utilities.config.ConfigurationConstants;
 import io.je.utilities.constants.ClassBuilderConfig;
 import io.je.utilities.constants.JEMessages;
@@ -24,7 +24,6 @@ import io.je.utilities.exceptions.*;
 import io.je.utilities.logger.JELogger;
 import io.je.utilities.models.*;
 import io.je.utilities.string.JEStringSubstitutor;
-import io.je.utilities.string.JEStringUtils;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -276,7 +275,7 @@ public class RuntimeDispatcher {
     // add class
     public void addClass(ClassModel classModel) throws ClassLoadException {
         JELogger.trace(JEMessages.ADDING_CLASS + classModel.getClassName());
-       JEClassLoader.loadClass(classModel.getClassPath(), ConfigurationConstants.runnerClassLoadPath);
+       JEClassCompiler.compileClass(classModel.getClassPath(), ConfigurationConstants.runnerClassLoadPath);
        try {
     	   ClassRepository.addClass(classModel.getClassId(), RuntimeDispatcher.class.getClassLoader().loadClass(ClassBuilderConfig.genrationPackageName + "." + classModel.getClassName())); ;
 	} catch (ClassNotFoundException e) {

@@ -1,121 +1,92 @@
 package io.je.utilities.classloader;
 
-
-import java.io.File;
-import java.lang.reflect.Modifier;
-import java.util.*;
-import javax.tools.*;
-
-import io.je.utilities.config.ConfigurationConstants;
-import io.je.utilities.constants.ClassBuilderConfig;
-import io.je.utilities.constants.JEMessages;
-import io.je.utilities.exceptions.ClassLoadException;
 import io.je.utilities.logger.JELogger;
-import org.burningwave.core.Virtual;
-import org.burningwave.core.classes.ClassSourceGenerator;
-import org.burningwave.core.classes.FunctionSourceGenerator;
-import org.burningwave.core.classes.TypeDeclarationSourceGenerator;
-import org.burningwave.core.classes.UnitSourceGenerator;
 
-/*
- * class responsible for loading user defined classes
- */
-public class JEClassLoader {
+import java.io.DataInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
 
-	static String loadPath =  ConfigurationConstants.runnerClassLoadPath;
-	static String generationPath = ConfigurationConstants.classGenerationPath;
+public class JEClassLoader extends ClassLoader {
 
-	
-	/*
-	 * generate .class file from an input file located at filePath in the loadPath
-	 */
-	public static void loadClass(String filePath, String loadPath) throws ClassLoadException {
-		
-		try {
-			JELogger.info(JEClassLoader.class, " loadPath = " + loadPath);
-			JELogger.info(JEClassLoader.class, " Filepath = "+ filePath);
-			File sourceFile = new File(filePath);
-			JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
-			StandardJavaFileManager fileManager = compiler.getStandardFileManager(null, null, null);
-			List<String> options = new ArrayList<String>();
-			options.add("-classpath");
-			StringBuilder sb = new StringBuilder();
-			/*URLClassLoader urlClassLoader = (URLClassLoader) Thread.currentThread().getContextClassLoader();
-			for (URL url : urlClassLoader.getURLs()){
-				//JELogger.info(JEClassLoader.class, url.getFile().substring(1));
-				sb.append(url.getFile().substring(1).replace("%20", " ")).append(File.pathSeparator);
-			}
-			//options.add("D:\\Job engine\\RuntimeUtilities\\target\\RuntimeUtilities-0.0.1.jar"); fixed the issue for runtime
+    public JEClassLoader(ClassLoader parent) {
+        super(parent);
+    }
 
-			// slash issue Widnows Vs JAVA/Linux to be reviewed with the deployment environment
-			options.add(sb.toString().replace("/", "\\"));*/
+    @Override
+    public Class<?> loadClass(String name) throws ClassNotFoundException {
+        JELogger.debug("Class Loading Started for " + name);
+        if (name.startsWith("classes")) {
+            return getClass(name);
+        }
+        return super.loadClass(name);
+    }
 
-			/*options.add("D:\\apache-tomcat-9.0.41\\webapps\\ProjectBuilder\\WEB-INF\\lib\\RuntimeUtilities-0.0.1.jar;D:\\apache-tomcat-9.0.41\\webapps\\ProjectBuilder\\WEB-INF\\lib\\jackson-databind-2.11.3.jar" +
-					";D:\\apache-tomcat-9.0.41\\webapps\\ProjectBuilder\\WEB-INF\\lib\\jackson-core-2.11.3.jar;D:\\apache-tomcat-9.0.41\\webapps\\ProjectBuilder\\WEB-INF\\lib\\jackson-annotations-2.11.3.jar;");*/
-			//JELogger.info(JEClassLoader.class, " options = " + sb.toString().replace("/", "\\"));
-			// Specify where to put the generated .class files
-			fileManager.setLocation(StandardLocation.CLASS_OUTPUT, Arrays.asList(new File(loadPath)));
-			// Compile the file
-			Iterable<? extends JavaFileObject> compilationUnit
-					= fileManager.getJavaFileObjectsFromFiles(Arrays.asList(sourceFile));
-			JavaCompiler.CompilationTask task = compiler.getTask(null, fileManager, null, null, null,
-					compilationUnit);
-			if(task.call()) {
-				JELogger.debug("Compilation in JEClassLoader succeded");
-			}
-			fileManager.close();
-		}catch (Exception e) {
-			//TODO: move msg to error clas
-			//e.printStackTrace();
-			JELogger.error(Arrays.toString(e.getStackTrace()));
-			throw new ClassLoadException(JEMessages.CLASS_LOAD_FAILED);
-		}
+    /**
+     * Loading of class from .class file
+     * happens here You Can modify logic of
+     * this method to load Class
+     * from Network or any other source
+     * @param name
+     * @return
+     * @throws ClassNotFoundException
+     */
+    private Class<?> getClass(String name) throws ClassNotFoundException {
+        String file = name.replace('.', File.separatorChar) + ".class";
+        JELogger.debug("Name of File to be loaded in by class loader" + file);
+        byte[] byteArr = null;
+        try {
+            // This loads the byte code data from the file
+            byteArr = loadClassData(file);
+            JELogger.debug("Size of byte array for the class "+byteArr.length);
+            Class<?> c = defineClass(name, byteArr, 0, byteArr.length);
+            resolveClass(c);
+            return c;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
-	}
-	public static void generateScriptTaskClass(String name, String javaCode) {
-		UnitSourceGenerator unitSG = UnitSourceGenerator.create(ClassBuilderConfig.genrationPackageName).addClass(
-				ClassSourceGenerator.create(
-						TypeDeclarationSourceGenerator.create(name)
-				).addModifier(
-						Modifier.PUBLIC
-				).addMethod(
-						FunctionSourceGenerator.create("executeScript")
-								.setReturnType(
-										TypeDeclarationSourceGenerator.create(void.class)
-								)
-								.addModifier(Modifier.PUBLIC)
-								.addModifier(Modifier.STATIC)
-								.addBodyCodeLine(javaCode)
-				).addConcretizedType(Virtual.class));
-		unitSG.addImport("io.je.utilities.logger.JELogger");
-		unitSG.addImport("java.lang.*");
-		unitSG.addImport("java.util.*");
-		unitSG.addImport("java.sql.*");
-		unitSG.addImport("javax.sql.*");
+    /**
+     * Loads a given file and converts
+     * it into a Byte Array
+     * @param name
+     * @return
+     * @throws IOException
+     */
+    private byte[] loadClassData(String name) throws IOException {
 
-		System.out.println(unitSG.make());
-		String filePath= generationPath + "\\" + ClassBuilderConfig.genrationPackageName  + "\\" + name +".java" ;
-		File file = new File(generationPath);
-		file.delete();
-		unitSG.storeToClassPath(generationPath);
-		try {
-			JEClassLoader.loadClass(filePath, loadPath);
-		} catch (ClassLoadException e) {
-			e.printStackTrace();
-		}
-		/*try {
-			Class<?> clazz = Class.forName("classes." + name);
-			Method method
-					= clazz.getDeclaredMethods()[0];
-			method.invoke(null);
-		} catch (ClassNotFoundException | IllegalAccessException | InvocationTargetException e) {
-			e.printStackTrace();
-		}*/
-	}
-	public static void main(String args[]) {
-		String a = "C:\\Program Files\\Integration Objects\\Integration Objects' SmartIoT Highway\\Components\\Tomcat";
-		a = a.substring(0, a.indexOf("Components") -1);
-		a = a + "\\JobEngine\\Builder\\properties";
-		System.out.println(a);
-	}
+        InputStream stream = getClass().getClassLoader().getResourceAsStream(
+                name);
+        int size = stream.available();
+        byte buff[] = new byte[size];
+        DataInputStream in = new DataInputStream(stream);
+        // Reading the binary data
+        in.readFully(buff);
+        in.close();
+        return buff;
+    }
+
+    public static void main(String[] args) throws ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, Exception {
+
+        JEClassLoader loader = new JEClassLoader(
+                JEClassLoader.class.getClassLoader());
+
+        System.out.println("loader name---- " +loader.getParent().getClass().getName());
+
+        //This Loads the Class we must always
+        //provide binary name of the class
+        Class<?> clazz =
+                loader.loadClass("classes.testScripttScriptt");
+
+        System.out.println("Loaded class name: " + clazz.getName());
+
+        //Create instance Of the Class and invoke the particular method
+        //Object instance = clazz.newInstance();
+
+        //clazz.getMethod("printMyName").invoke(instance);
+    }
+
 }

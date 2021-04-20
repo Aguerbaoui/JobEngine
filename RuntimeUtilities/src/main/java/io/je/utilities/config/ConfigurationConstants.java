@@ -7,7 +7,7 @@ public class ConfigurationConstants {
      */
     
 	 //path where .java files are generated : 
-    public 	static String  classGenerationPath	= "D:\\myproject2" ;
+ /*   public 	static String  classGenerationPath	= "D:\\myproject2" ;
 	
     // path where builder loads classes 
     public static String builderClassLoadPath = System.getProperty("java.class.path").split(";")[0]; 
@@ -16,14 +16,14 @@ public class ConfigurationConstants {
     public static String runnerClassLoadPath = System.getProperty("java.class.path").split(";")[0]; 
     
 
-    
+    */
 	
     
     /*
      * Config for tomcat
      */
     
- /*   //path where .java files are generated :
+    //path where .java files are generated :
     public static String classGenerationPath = System.getProperty("catalina.base") + "\\webapps\\ProjectBuilder\\WEB-INF\\classes\\io\\je\\";
 
     // path where builder loads classes
