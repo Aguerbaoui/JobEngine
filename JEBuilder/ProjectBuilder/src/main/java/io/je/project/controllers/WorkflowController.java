@@ -81,6 +81,22 @@ public class WorkflowController {
     }
 
     /*
+     * Stop Workflow
+     */
+    @PostMapping(value = "/stopWorkflow/{projectId}/{key}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> stopWorkflow(@PathVariable String projectId, @PathVariable String key) {
+        try {
+            //workflowService.stopWorkflow(projectId, key);
+            projectService.saveProject(projectId);
+        }catch (Exception e) {
+            return JEExceptionHandler.handleException(e);
+
+        }
+
+        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, EXECUTING_WORKFLOW));
+    }
+
+    /*
      * Delete a workflow
      */
     @DeleteMapping(value = "/deleteWorkflow/{projectId}/{workflowId}", produces = MediaType.APPLICATION_JSON_VALUE)
