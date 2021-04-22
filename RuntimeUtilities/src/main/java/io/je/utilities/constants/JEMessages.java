@@ -563,4 +563,6 @@ public class JEMessages {
 
     public static final String UPDATING_CONFIGURATION = " Updating configuration";
 
+    public static final String VARIABLE_NOT_FOUND = "Variable cannot be found";
+    public static final String VARIABLE_EXISTS = "Variable already exists";
 }

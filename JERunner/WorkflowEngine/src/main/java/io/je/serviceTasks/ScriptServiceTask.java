@@ -15,7 +15,8 @@ public class ScriptServiceTask extends ServiceTask {
         try {
             Executioner.executeScript(execution.getCurrentFlowElement().getName());
         } catch (Exception e) {
-            JELogger.error(Arrays.toString(e.getStackTrace()));
+            e.printStackTrace();
+            //JELogger.error(Arrays.toString(e.getStackTrace()));
             throw new BpmnError("Error");
         }
 

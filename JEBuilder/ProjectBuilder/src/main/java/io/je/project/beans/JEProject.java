@@ -5,6 +5,7 @@ import io.je.rulebuilder.components.JERule;
 import io.je.rulebuilder.components.UserDefinedRule;
 import io.je.rulebuilder.components.blocks.Block;
 import io.je.utilities.beans.JEEvent;
+import io.je.utilities.beans.JEVariable;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.*;
@@ -46,6 +47,11 @@ public class JEProject {
      * Events in a project
      * */
      private ConcurrentHashMap<String, JEEvent> events;
+
+	/*
+	 * Variables in a project
+	 * */
+	private ConcurrentHashMap<String, JEVariable> variables;
      
      private boolean autoReload = false;
 
@@ -374,6 +380,7 @@ public class JEProject {
 	{
 		return events.containsKey(eventId);
 	}
+
 	public void addEvent(JEEvent event)
 	{
 		events.put(event.getJobEngineElementID(), event);
@@ -399,7 +406,15 @@ public class JEProject {
 	}
 
 
+    public void addVariable(JEVariable var) {
+		variables.put(var.getJobEngineElementID(), var);
+    }
 
+	public boolean variableExists(String varId) {
+		return variables.containsKey(varId);
+	}
 
-
+	public void removeVariable(String varId) {
+		variables.remove(varId);
+	}
 }

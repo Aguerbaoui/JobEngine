@@ -410,7 +410,7 @@ public class WorkflowService {
             }
             catch(JERunnerErrorException e ) {
                 project.getWorkflowById(workflowId).setStatus(JEWorkflow.IDLE);
-                JELogger.error(WorkflowService.class, JEMessages.RUN_WORKFLOW_FAILED + e.getMessage());
+                JELogger.error(JEMessages.RUN_WORKFLOW_FAILED + e.getMessage());
             }
         } else {
             throw new WorkflowAlreadyRunningException(JEMessages.WORKFLOW_ALREADY_RUNNING);

@@ -119,9 +119,9 @@ public class ProcessManager {
         DeploymentBuilder deploymentBuilder = processEngine.getRepositoryService().createDeployment().name(key);
         deploymentBuilder.addString(key + ".bpmn", processXml);
         Deployment dep = deploymentBuilder.deploy();
-        JELogger.info(ProcessManager.class, " id = " + dep.getId());
         processes.get(key).setDeployed(true);
-
+        JELogger.debug("Deleting bpmn file after loading ...");
+        JEFileUtils.deleteFileFromPath(processes.get(key).getBpmnPath());
     }
 
     /*
@@ -214,11 +214,11 @@ public class ProcessManager {
     /*
      * Throw signal in workflow
      * */
-    public void throwSignalInProcess(String signalId, String executionId) {
+    /*public void throwSignalInProcess(String signalId, String executionId) {
 
         runtimeService.signalEventReceived(signalId, executionId);
     }
-
+*/
     /*
      * Returns a list of all signal event subscriptions
      * */

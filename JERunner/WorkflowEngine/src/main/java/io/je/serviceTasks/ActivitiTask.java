@@ -3,6 +3,9 @@ package io.je.serviceTasks;
 public class ActivitiTask {
 
     public ActivitiTask() {}
+
+    private String projectId;
+
     private String taskId;
 
     private String taskName;
@@ -27,6 +30,14 @@ public class ActivitiTask {
 
     public String getTaskName() {
         return taskName;
+    }
+
+    public String getProjectId() {
+        return projectId;
+    }
+
+    public void setProjectId(String projectId) {
+        this.projectId = projectId;
     }
 
     public void setTaskName(String taskName) {

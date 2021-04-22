@@ -1,6 +1,10 @@
 package io.je.utilities.string;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.text.StringSubstitutor;
+
+import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class JEStringUtils {
 
@@ -21,4 +25,7 @@ public class JEStringUtils {
         return (str != null) &&((!str.equals(""))
                 && (str.matches("^[a-zA-Z]*$")));
     }
+
+
+
 }

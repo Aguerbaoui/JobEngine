@@ -11,7 +11,7 @@ import io.je.classbuilder.entity.ClassType;
 import io.je.classbuilder.entity.JEClass;
 import io.je.classbuilder.models.ClassModel;
 import io.je.utilities.apis.DataDefinitionApiHandler;
-import io.je.utilities.classloader.JEClassLoader;
+import io.je.utilities.classloader.JEClassCompiler;
 import io.je.utilities.config.ConfigurationConstants;
 import io.je.utilities.constants.ClassBuilderConfig;
 import io.je.utilities.constants.JEMessages;
@@ -76,7 +76,7 @@ public class ClassManager {
 			String filePath = ClassBuilder.buildClass(classModel, generationPath);
 			
 			// load .java -> .class
-			JEClassLoader.loadClass(filePath, loadPath);
+			JEClassCompiler.compileClass(filePath, loadPath);
 			
 			// Load the target class using its binary name
 			Class<?> loadedClass;

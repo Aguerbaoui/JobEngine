@@ -3,14 +3,10 @@ package io.je.utilities.execution;
 import io.je.utilities.apis.JERunnerAPIHandler;
 import io.je.utilities.config.JEConfiguration;
 import io.je.utilities.constants.APIConstants;
-import io.je.utilities.exceptions.JERunnerErrorException;
 import io.je.utilities.logger.JELogger;
 import io.je.utilities.string.JEStringUtils;
-import org.apache.commons.lang3.StringUtils;
 
-import java.io.IOException;
 import java.util.HashMap;
-import java.util.concurrent.ExecutionException;
 
 public class JobEngine {
 
@@ -95,7 +91,7 @@ public class JobEngine {
      * */
     public static void removeVariable(String projectId, String varId) {
         try {
-            JERunnerAPIHandler.deleteVariable(projectId, varId);
+            JERunnerAPIHandler.removeVariable(projectId, varId);
         }  catch (Exception e) {
             JELogger.info("Error adding the variable");
         }

@@ -1,6 +1,7 @@
 package io.je.utilities.execution;
 
 import io.je.utilities.apis.JERunnerAPIHandler;
+import io.je.utilities.classloader.JEClassLoader;
 import io.je.utilities.config.JEConfiguration;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.JERunnerErrorException;
@@ -8,11 +9,8 @@ import io.je.utilities.logger.JELogger;
 import io.je.utilities.monitoring.MessageModel;
 import io.je.utilities.zmq.ZMQRequester;
 
-import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
-import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -99,11 +97,15 @@ public class Executioner {
         executor.submit(new Callable<Void>() {
             @Override
             public Void call() throws Exception {
-                Class<?> clazz = null;
+               /* Class<?> clazz = null;
                 clazz = Class.forName("classes." + name);
                 ClassLoader classLoader = this.getClass().getClassLoader();
                 URLClassLoader urlClassLoader = new URLClassLoader(new URL[]{new File("D:\\Job engine\\JERunner\\RuntimeManager\\target\\classes").toURI().toURL()});
-                Class loadClass = urlClassLoader.loadClass("classes." + name);
+                Class loadClass = urlClassLoader.loadClass("classes." + name);*/
+                JEClassLoader loader = new JEClassLoader(
+                        Executioner.class.getClassLoader());
+                Class<?> loadClass =
+                        loader.loadClass("classes." + name);
                 Method method
                         = loadClass.getDeclaredMethods()[0];
                 method.invoke(null);

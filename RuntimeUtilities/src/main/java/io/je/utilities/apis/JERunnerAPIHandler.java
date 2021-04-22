@@ -290,13 +290,13 @@ public class JERunnerAPIHandler {
          sendDeleteRequest(requestUrl);
     }
 
-    public static void addVariable(String projectId, String varId, HashMap<String, Object> body) throws InterruptedException, JERunnerErrorException, ExecutionException {
+    public static void addVariable(String projectId, String varId, Object body) throws InterruptedException, JERunnerErrorException, ExecutionException {
         String url = JEConfiguration.getRuntimeManagerURL()+ APIConstants.ADD_VARIABLE;
         JELogger.debug(JEMessages.NETWORK_ADD_VAR+" project id = " + projectId + "variable id = " + varId);
         sendRequestWithBody(url, body);
     }
 
-    public static void deleteVariable(String projectId, String varId) throws InterruptedException, JERunnerErrorException, ExecutionException {
+    public static void removeVariable(String projectId, String varId) throws InterruptedException, JERunnerErrorException, ExecutionException {
         String url = JEConfiguration.getRuntimeManagerURL()+ DELETE_VARIABLE + "/" + projectId + "/" + varId;
         JELogger.debug(JEMessages.NETWORK_DELETE_VAR+" project id = " + projectId + " var id = " + varId);
         sendDeleteRequest(url);

@@ -15,7 +15,7 @@ import io.je.utilities.apis.HttpMethod;
 import io.je.utilities.beans.JEData;
 import io.je.utilities.beans.JEEvent;
 import io.je.utilities.beans.JEVariable;
-import io.je.utilities.classloader.JEClassLoader;
+import io.je.utilities.classloader.JEClassCompiler;
 import io.je.utilities.config.ConfigurationConstants;
 import io.je.utilities.constants.ClassBuilderConfig;
 import io.je.utilities.constants.JEMessages;
@@ -23,6 +23,7 @@ import io.je.utilities.constants.WorkflowConstants;
 import io.je.utilities.exceptions.*;
 import io.je.utilities.logger.JELogger;
 import io.je.utilities.models.*;
+import io.je.utilities.string.JEStringSubstitutor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -173,6 +174,7 @@ public class RuntimeDispatcher {
                 webApiTask.setTaskId(task.getTaskId());
                 webApiTask.setTaskName(task.getTaskName());
                 webApiTask.setProcessId(wf.getKey());
+                webApiTask.setProjectId(wf.getProjectId());
                 HashMap<String, Object> attributes = task.getAttributes();
                 if(attributes.get(INPUTS) != null) {
                     webApiTask.setHasBody(true);
@@ -192,6 +194,7 @@ public class RuntimeDispatcher {
                 ScriptTask scriptTask = new ScriptTask();
                 scriptTask.setTaskName(task.getTaskName());
                 scriptTask.setTaskId(task.getTaskId());
+                scriptTask.setProjectId(wf.getProjectId());
                 HashMap<String, Object> attributes = task.getAttributes();
                 if(attributes.containsKey(SCRIPT)) {
                     scriptTask.setScript((String) attributes.get(SCRIPT));
@@ -205,6 +208,7 @@ public class RuntimeDispatcher {
                 InformTask informTask = new InformTask();
                 informTask.setTaskName(task.getTaskName());
                 informTask.setTaskId(task.getTaskId());
+                informTask.setProjectId(wf.getProjectId());
                 HashMap<String, Object> attributes = task.getAttributes();
                 if(attributes.get(MESSAGE) != null) {
                     informTask.setMessage((String) attributes.get(MESSAGE));
@@ -217,6 +221,7 @@ public class RuntimeDispatcher {
                 MailTask mailTask = new MailTask();
                 mailTask.setTaskId(task.getTaskId());
                 mailTask.setTaskName(task.getTaskName());
+                mailTask.setProjectId(wf.getProjectId());
                 HashMap<String, Object> attributes = task.getAttributes();
                 if(attributes.containsKey(USE_DEFAULT_CREDENTIALS)) {
                     mailTask.setbUseDefaultCredentials((boolean) task.getAttributes().get(USE_DEFAULT_CREDENTIALS));
@@ -270,7 +275,7 @@ public class RuntimeDispatcher {
     // add class
     public void addClass(ClassModel classModel) throws ClassLoadException {
         JELogger.trace(JEMessages.ADDING_CLASS + classModel.getClassName());
-       JEClassLoader.loadClass(classModel.getClassPath(), ConfigurationConstants.runnerClassLoadPath);
+       JEClassCompiler.compileClass(classModel.getClassPath(), ConfigurationConstants.runnerClassLoadPath);
        try {
     	   ClassRepository.addClass(classModel.getClassId(), RuntimeDispatcher.class.getClassLoader().loadClass(ClassBuilderConfig.genrationPackageName + "." + classModel.getClassName())); ;
 	} catch (ClassNotFoundException e) {
@@ -315,12 +320,13 @@ public class RuntimeDispatcher {
         }
     }
 
+    //Trigger an event
     public void triggerEvent(String projectId, String id) throws EventException, ProjectNotFoundException {
         JELogger.trace(getClass(), "[projectId = " + projectId + "] [event = " + id + "]" + JEMessages.EVENT_TRIGGERED);
         EventManager.triggerEvent(projectId, id);
     }
 
-
+    //Add an event to the runner
     public void addEvent(EventModel eventModel) {
         JEEvent e = new JEEvent();
         e.setName(eventModel.getName());
@@ -367,6 +373,7 @@ public class RuntimeDispatcher {
         }
     }
 
+    //remove rule topics
 	public void removeRuleTopics(String projectId, String ruleId) {
 		ArrayList<String> oldTopics =  (ArrayList<String>) RuleEngineHandler.getRuleTopics(projectId,ruleId);
 
@@ -377,24 +384,28 @@ public class RuntimeDispatcher {
 		
 	}
 
+	//remove workflow from runner
     public void removeWorkflow(String projectId, String workflowId) {
         JELogger.trace(getClass(), "[projectId = " + projectId + "] [workflow = " + workflowId + "]" + JEMessages.REMOVING_WF);
         WorkflowEngineHandler.deleteProcess(projectId,workflowId);
     }
 
+    //add variable to runner
     public void addVariable(VariableModel variableModel) {
         JEVariable var = new JEVariable();
         var.setVariableName(variableModel.getName());
         var.setJobEngineElementID(variableModel.getId());
         var.setJobEngineProjectID(variableModel.getProjectId());
         var.setVariableTypeString(variableModel.getType());
-        var.setVariableTypeClass(VariableManager.getType(variableModel.getType()));
+        var.setVariableTypeClass(JEVariable.getType(variableModel.getType()));
         var.setVariableValue(variableModel.getValue());
         var.setJeObjectCreationDate(LocalDateTime.now());
         var.setJeObjectLastUpdate(LocalDateTime.now());
+        JEStringSubstitutor.addVariable(var.getJobEngineProjectID(), var.getVariableName(), (String) var.getVariableValue());
         VariableManager.addVariable(var);
     }
 
+    //remove variable from runner
     public void deleteVariable(String projectId, String varId) {
         VariableManager.removeVariable(projectId, varId);
     }
