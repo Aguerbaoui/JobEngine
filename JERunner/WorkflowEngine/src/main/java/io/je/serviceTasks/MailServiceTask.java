@@ -49,7 +49,7 @@ public class MailServiceTask extends ServiceTask {
                     .withBody(json).build();
             Response response = network.call();
             JELogger.info(JEMessages.MAIL_SERVICE_TASK_RESPONSE + " = " + response.body().string());
-            if(response.code() != 200 || response.code() != 200 ) {
+            if(response.code() != 200 || response.code() != 204 ) {
                 throw new BpmnError("Error");
             }
         }

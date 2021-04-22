@@ -32,19 +32,19 @@ public class JELogger {
     * */
      public static void trace(Class<?> clazz, String msg) {
          synchronized (queue) {
-             queue.add(new Timestamp(System.currentTimeMillis()) + " " + msg);
+             queue.add(new Timestamp(System.currentTimeMillis()) + " " + msg.trim());
          }
 
-        logger.info( msg);
+        logger.info( msg.trim());
 
     }
 
     public static void trace(String msg) {
         synchronized (queue) {
-            queue.add(new Timestamp(System.currentTimeMillis()) + " " + msg);
+            queue.add(new Timestamp(System.currentTimeMillis()) + " " + msg.trim());
         }
 
-        logger.info( msg);
+        logger.info( msg.trim());
 
     }
     /*
@@ -52,7 +52,7 @@ public class JELogger {
      */
     public static void debug(Class<?> clazz, String msg) {
 
-        logger.debug(clazz.getName() +" : "+ msg);
+        logger.debug(clazz.getName() +" : "+ msg.trim());
         
     }
 
@@ -61,7 +61,7 @@ public class JELogger {
      */
     public static void debug(String msg) {
 
-        logger.debug(msg);
+        logger.debug(msg.trim());
 
     }
 
@@ -74,25 +74,25 @@ public class JELogger {
      */
     public static void info(Class<?> clazz, String msg) {
         synchronized (queue) {
-            queue.add(new Timestamp(System.currentTimeMillis()) + " " + msg);
+            queue.add(new Timestamp(System.currentTimeMillis()) + " " + msg.trim());
         }
        // logger.info(logger.getName() + ": " + logger);
 
-        logger.info( msg);
+        logger.info( msg.trim());
     }
 
     public static void info( String msg) {
         synchronized (queue) {
-            queue.add(new Timestamp(System.currentTimeMillis()) + " " + msg);
+            queue.add(new Timestamp(System.currentTimeMillis()) + " " + msg.trim());
         }
 
-        logger.info( msg);
+        logger.info( msg.trim());
     }
     /*
      * log level 3 : warn
      */
     public static void warning(Class<?> clazz, String msg) {
-        logger.warn( msg);
+        logger.warn( msg.trim());
     }
     
     
@@ -102,9 +102,9 @@ public class JELogger {
     public static void error(Class<?> clazz, String msg) {
 
         synchronized (queue) {
-            queue.add(new Timestamp(System.currentTimeMillis()) + " " + msg);
+            queue.add(new Timestamp(System.currentTimeMillis()) + " " + msg.trim());
         }
-        logger.error(clazz.getName() +" : "+  msg);
+        logger.error(clazz.getName() +" : "+  msg.trim());
 
 
     }
@@ -115,9 +115,9 @@ public class JELogger {
     public static void error(String msg) {
 
         synchronized (queue) {
-            queue.add(new Timestamp(System.currentTimeMillis()) + " " + msg);
+            queue.add(new Timestamp(System.currentTimeMillis()) + " " + msg.trim());
         }
-        logger.error(  msg);
+        logger.error(  msg.trim());
 
 
     }
