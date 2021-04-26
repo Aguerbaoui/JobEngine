@@ -47,6 +47,16 @@ public class ProjectService {
 
     private static ConcurrentHashMap<String, JEProject> loadedProjects = new ConcurrentHashMap<>();
 
+
+    
+    
+   
+    
+    
+     
+    
+    
+    
     /*
      * Add a new project
      */

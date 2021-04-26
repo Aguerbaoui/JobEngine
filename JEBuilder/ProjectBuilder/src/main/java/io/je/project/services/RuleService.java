@@ -249,6 +249,7 @@ public class RuleService {
             classService.addClass(workspaceId,classId);
         }
         
+        project.addBlockName(blockModel.getBlockId(), blockModel.getBlockName());
         project.setBuilt(false);
 
 
@@ -269,7 +270,7 @@ public class RuleService {
         }
         JELogger.trace(getClass(), JEMessages.DELETING_BLOCK + blockId + " in rule [id : " + ruleId + ") in project id = " + projectId);
         project.deleteRuleBlock(ruleId, blockId);
-
+        project.removeBlockName(blockId);
     }
 
     @Async
@@ -481,7 +482,7 @@ public class RuleService {
         JELogger.trace(getClass(), "[projectId = " + projectId + "] [ruleId = " + ruleId + "]"+JEMessages.BUILDING_RULE);
         cleanUpRule(project, ruleId);
         RuleBuilder.buildRule(project.getRule(ruleId), project.getConfigurationPath());
-
+        
     }
 
 }
