@@ -72,19 +72,18 @@ public class ProjectController {
 	/*
 	 * check if block name is unique
 	 */
-	@GetMapping("/getIsBlockNameUnique/{projectId}")
-	public ResponseEntity<?> getIsBlockNameUnique(@PathVariable String projectId,@RequestBody String blockName) {
+	@GetMapping("/getIsBlockNameUnique/{projectId}/{blockName}")
+	public ResponseEntity<?> getIsBlockNameUnique(@PathVariable String projectId,@PathVariable String blockName) {
 		JEProject project = null;
 		try {
 			project = projectService.getProject(projectId).get();
-			JELogger.info("hello");
 
 		} catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
 
 		}
 
-		return ResponseEntity.ok(!project.blockNameExists(blockName));
+		return ResponseEntity.ok(project==null?false:!project.blockNameExists(blockName));
 
 	}
 	
