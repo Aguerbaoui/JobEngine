@@ -38,7 +38,7 @@ public class AttributesMapping {
 
 	public static final String INPUTUNIT = "input_unit";
 	public static final String OUTPUTUNIT = "output_unit";
-	public static final String CLASSID = "class_id";
+	public static final String CLASSID = "idClass";
 	public static final String ATTRIBUTENAME = "attribute_name";
 	public static final String SPECIFICINSTANCES = "specific_instances";
 	

@@ -22,7 +22,9 @@ import java.util.concurrent.Executors;
 public class Executioner {
     private static ExecutorService executor = Executors.newFixedThreadPool(10);
 
-    private Executioner() {}
+    private Executioner() {
+    }
+
     public static void triggerEvent(String projectId, String eventId) throws JERunnerErrorException, IOException, InterruptedException, ExecutionException {
 
         JERunnerAPIHandler.triggerEvent(eventId, projectId);
@@ -92,8 +94,14 @@ public class Executioner {
     }
 
     public static void executeScript(String name) throws Exception {
-
-
+      /*  JEClassLoader loader = new JEClassLoader(
+                Executioner.class.getClassLoader());
+        Class<?> loadClass =
+                loader.loadClass("classes." + name);
+        Method method
+                = loadClass.getDeclaredMethods()[0];
+        method.invoke(null);
+*/
         executor.submit(new Callable<Void>() {
             @Override
             public Void call() throws Exception {

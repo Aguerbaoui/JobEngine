@@ -115,6 +115,8 @@ public class JEMessages {
 
     public static final String CLOSING_PROJECT = "Found project";
 
+    public static final String ADDING_JAR_TO_PROJECT = "Adding jar to project";
+
     public static final String LOADING_PROJECT = "Loading project from database";
 
     public static final String LOADING_PROJECTS = "loading all projects from database ";
@@ -141,6 +143,8 @@ public class JEMessages {
     public static final String DELETING_SEQUENCE_FLOW = "Deleting a sequence flow with from";
 
     public static final String BUILDING_WF = "Building workflow";
+
+    public static final String STOPPING_WF = "Stopping workflow";
 
     public static final String BUILDING_WFS = "Building workflows";
 
@@ -178,6 +182,8 @@ public class JEMessages {
     public static final String BUILDING_WORKFLOWS_IN_PROJECT = " Building workflows in project";
 
     public static final String ERROR_DELETING_A_NON_EXISTING_PROCESS = "Error deleting a non existing process";
+
+    public static final String ERROR_DELETING_A_PROCESS = "Error removing a process from engine";
 
     public static final String EXECUTING_WEB_API_TASK = "Executing web api task";
 
@@ -237,7 +243,7 @@ public class JEMessages {
 
     public static final String FOUND_EVENT = " Found event with id = ";
 
-    public static final String UPDATING_EVENT = " Found event with id = ";
+    public static final String UPDATING_EVENT = " Updating event with id = ";
 
     public static final String REMOVING_EVENTS = "Updating fact";
 
@@ -565,4 +571,5 @@ public class JEMessages {
 
     public static final String VARIABLE_NOT_FOUND = "Variable cannot be found";
     public static final String VARIABLE_EXISTS = "Variable already exists";
+    public static final String ADDING_JAR_FILE_TO_RUNNER = "Adding jar file to runner ";
 }

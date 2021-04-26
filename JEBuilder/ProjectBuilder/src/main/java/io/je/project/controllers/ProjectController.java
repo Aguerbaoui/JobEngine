@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Collection;
 
@@ -233,5 +234,17 @@ public class ProjectController {
 		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.PROJECT_UPDATED));
 	}
 
+	@PostMapping("/uploadJar")
+	public ResponseEntity<?> uploadJar(@RequestParam("jarFile") MultipartFile jarFile) {
+
+		try {
+			projectService.addJarToProject(jarFile);
+
+		} catch (Exception e) {
+			return JEExceptionHandler.handleException(e);
+		}
+
+		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.PROJECT_UPDATED));
+	}
 
 }

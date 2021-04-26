@@ -14,6 +14,8 @@ public class APIConstants {
 
     public final static String ADD_VARIABLE = "/variable/addVariable/";
 
+    public final static String ADD_JAR = "/uploadJar";
+
     public final static String DELETE_VARIABLE = "/variable/deleteVariable/";
 
 
