@@ -32,7 +32,7 @@ public class WorkflowConstants {
     public static final String CYCLETIMEREVENT = "cycletimerevent";
     public static final String DURATIONTIMEREVENT = "durationtimerevent";
     public static final String DBSERVICETASK_TYPE = "dbservicetask";
-    public static final String MAILSERVICETASK_TYPE = "email";
+    public static final String MAILSERVICETASK_TYPE = "mailservicetask";
     public static final String BUILDING = "building";
     public static final String RUNNING = "running";
     public static final String STANDBY = "standby";

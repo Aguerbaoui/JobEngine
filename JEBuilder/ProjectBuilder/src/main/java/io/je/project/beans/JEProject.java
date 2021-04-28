@@ -481,17 +481,18 @@ public class JEProject {
 
 
 	public String generateUniqueBlockName(String blockNameBase) {
-		String blockName = blockNameBase.replaceAll("\\s+", "");
-		if (!blockNameCounters.containsKey(blockName))
-		{
-			blockNameCounters.put(blockName, 0);
+		if (blockNameBase != null) {
+			String blockName = blockNameBase.replaceAll("\\s+", "");
+			if (!blockNameCounters.containsKey(blockName)) {
+				blockNameCounters.put(blockName, 0);
+			}
+			int counter = blockNameCounters.get(blockName);
+			while (blockNameExists(blockName + counter)) {
+				counter++;
+			}
+			blockNameCounters.put(blockName, counter + 1);
+			return blockName + counter;
 		}
-		int counter= blockNameCounters.get(blockName);
-		while (blockNameExists(blockName+counter))
-		{
-			counter++;
-		}
-		blockNameCounters.put(blockName,counter+1);
-		return blockName+counter;
+	return "";
 	}
 }
