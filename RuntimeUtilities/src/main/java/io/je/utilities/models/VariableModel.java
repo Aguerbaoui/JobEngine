@@ -51,4 +51,13 @@ public class VariableModel {
     public void setValue(Object value) {
         this.value = value;
     }
+
+    public VariableModel() {}
+    public VariableModel(String projectId, String id, String name, String type, String value) {
+        this.projectId = projectId;
+        this.id = id;
+        this.name = name;
+        this.type = type;
+        this.value = value;
+    }
 }

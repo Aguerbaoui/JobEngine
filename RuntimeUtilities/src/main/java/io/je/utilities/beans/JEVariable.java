@@ -14,6 +14,8 @@ public class JEVariable extends JEObject {
 
     private Object variableValue;
 
+    private JEType variableType;
+
     public String getVariableTypeString() {
         return variableTypeString;
     }
@@ -46,8 +48,22 @@ public class JEVariable extends JEObject {
         this.variableName = variableName;
     }
 
+    public JEType getVariableType() {
+        return variableType;
+    }
 
+    public void setVariableType(JEType variableType) {
+        this.variableType = variableType;
+    }
 
+    public JEVariable() {}
+    JEVariable(String projectId, String variableId, String variableName, JEType variableType, Object variableValue) {
+        this.jobEngineProjectID = projectId;
+        this.jobEngineElementID = variableId;
+        this.variableName = variableName;
+        this.variableType = variableType;
+        this.variableValue = variableValue;
+    }
     /*
      * returns the class type based on a string defining the type
      */

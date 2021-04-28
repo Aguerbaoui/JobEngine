@@ -146,13 +146,13 @@ public class JERunnerAPIHandler {
      * run project
      */
     public static JEResponse runProject(String projectId)
-            throws JERunnerErrorException, IOException, InterruptedException, ExecutionException {
+            throws JERunnerErrorException, InterruptedException, ExecutionException {
         String requestUrl = runtimeManagerBaseApi + APIConstants.RUN_PROJECT + projectId;
         return sendRequest(requestUrl);
     }
 
     public static JEResponse stopProject(String projectId)
-            throws JERunnerErrorException, IOException, InterruptedException, ExecutionException {
+            throws JERunnerErrorException, InterruptedException, ExecutionException {
         String requestUrl = runtimeManagerBaseApi + APIConstants.STOP_PROJECT + projectId;
         return sendRequest(requestUrl);
     }
@@ -186,7 +186,7 @@ public class JERunnerAPIHandler {
 
     ///// CLASSES ///////
 
-    public static JEResponse addClass(HashMap<String, String> requestModel) throws JERunnerErrorException, IOException, InterruptedException, ExecutionException {
+    public static JEResponse addClass(HashMap<String, String> requestModel) throws JERunnerErrorException, InterruptedException, ExecutionException {
         String requestUrl = runtimeManagerBaseApi + ADD_CLASS;
         return sendRequestWithBody(requestUrl, requestModel);
 
@@ -194,7 +194,7 @@ public class JERunnerAPIHandler {
 
     ///////////////////////////////// EVENTS//////////////////////////////
 
-    public static JEResponse triggerEvent(String eventId, String projectId) throws JERunnerErrorException, IOException, InterruptedException, ExecutionException {
+    public static JEResponse triggerEvent(String eventId, String projectId) throws JERunnerErrorException, InterruptedException, ExecutionException {
         String requestUrl = runtimeManagerBaseApi + EVENT_TRIGGER_EVENT + projectId + "/" + eventId;
         return sendRequest(requestUrl);
 
@@ -210,7 +210,7 @@ public class JERunnerAPIHandler {
     ////////////// Workflows
 
     // add workflow
-    public static JEResponse addWorkflow(WorkflowModel wf) throws JERunnerErrorException, IOException, InterruptedException, ExecutionException {
+    public static JEResponse addWorkflow(WorkflowModel wf) throws JERunnerErrorException, InterruptedException, ExecutionException {
         Response response = null;
         String requestUrl = runtimeManagerBaseApi + APIConstants.ADD_WORKFLOW;
         return sendRequestWithBody(requestUrl, wf);
@@ -218,7 +218,7 @@ public class JERunnerAPIHandler {
     }
 
     //run workflow
-    public static JEResponse runWorkflow(String requestUrl) throws JERunnerErrorException, IOException, InterruptedException, ExecutionException {
+    public static JEResponse runWorkflow(String requestUrl) throws JERunnerErrorException, InterruptedException, ExecutionException {
         return sendRequest(requestUrl);
 
     }
