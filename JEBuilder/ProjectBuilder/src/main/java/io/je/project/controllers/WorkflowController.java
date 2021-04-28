@@ -16,6 +16,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 
 import static io.je.utilities.constants.JEMessages.*;
@@ -164,21 +165,25 @@ public class WorkflowController {
      */
     @PostMapping(value = "/addWorkflowBlock", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> addWorkflowBlock(@RequestBody WorkflowBlockModel block) {
-        try {
+    	String generatedBlockName = "";
 
-            workflowService.addWorkflowBlock(block);
+    	try {
+
+        	generatedBlockName=  workflowService.addWorkflowBlock(block);
             projectService.saveProject(block.getProjectId());
 
         } catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
 
 		}
-        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ADDED_WORKFLOW_COMPONENT_SUCCESSFULLY));
+    	HashMap<String, String> object = new HashMap<>();
+
+		object.put("blockName", generatedBlockName);
+		return ResponseEntity.ok(object);
     }
 
     @PatchMapping(value = "/updateWorkflowBlock")
     public ResponseEntity<?> updateWorkflowBlock(@RequestBody WorkflowBlockModel block) {
-
 
         try {
             workflowService.updateWorkflowBlock(block);

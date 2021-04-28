@@ -180,9 +180,9 @@ public class RuleService {
     }
 
     /*
-     * update rule : add/update block to rule
+     * update rule : add block to rule
      */
-    public void addBlockToRule(BlockModel blockModel) throws AddRuleBlockException, ProjectNotFoundException,
+    public String addBlockToRule(BlockModel blockModel) throws AddRuleBlockException, ProjectNotFoundException,
             RuleNotFoundException, DataDefinitionUnreachableException, JERunnerErrorException, AddClassException,
             ClassLoadException, IOException, InterruptedException, ExecutionException, ConfigException {
     	ConfigurationService.checkConfig();
@@ -209,17 +209,15 @@ public class RuleService {
         
         //check if block already exists
         boolean blockExists = rule.containsBlock(blockModel.getBlockId());
-        Block oldblock = rule.getBlocks().getBlock(blockModel.getBlockId());
         if(blockExists)
         {
-            JELogger.trace(getClass(), JEMessages.UPDATING_BLOCK + blockModel.getBlockName() + " in rule [id : " + blockModel.getRuleId() + "]");
-
+        	throw new AddRuleBlockException("A block with this id already exists");
         }
-        else
-        {
-            JELogger.trace(getClass(), JEMessages.ADDING_BLOCK + blockModel.getBlockName() + " to rule [id : " + blockModel.getRuleId() + "]");
+       
+         JELogger.trace(getClass(), JEMessages.ADDING_BLOCK + blockModel.getBlockName() + " to rule [id : " + blockModel.getRuleId() + "]");
 
-        }
+         String generatedBlockName = project.generateUniqueBlockName(blockModel.getBlockName());
+         blockModel.setBlockName(generatedBlockName);
 
         //create block
         Block block = BlockGenerator.createBlock(blockModel);
@@ -238,17 +236,103 @@ public class RuleService {
             String classId =  blockModel.getBlockConfiguration().getClassId();
             String workspaceId=blockModel.getBlockConfiguration().getWorkspaceId();
             
-           if (blockExists)
-           {
-        	   rule.updateTopic(((AttributeGetterBlock)oldblock).getClassId(), classId);
-           }
-           else
-           {
+         
+          
         	   rule.addTopic(classId);
-           }
+           
             classService.addClass(workspaceId,classId);
         }
         
+        project.addBlockName(blockModel.getBlockId(), generatedBlockName);
+        project.setBuilt(false);
+        return generatedBlockName;
+
+
+    }
+    
+    /*
+     * update rule : update block in rule
+     */
+    public void updateBlockInRule(BlockModel blockModel) throws AddRuleBlockException, ProjectNotFoundException,
+            RuleNotFoundException, DataDefinitionUnreachableException, JERunnerErrorException, AddClassException,
+            ClassLoadException, IOException, InterruptedException, ExecutionException, ConfigException, RuleBlockNotFoundException {
+    	ConfigurationService.checkConfig();
+        
+    	//check project id is not null
+    	if (blockModel.getProjectId() == null) {
+            throw new AddRuleBlockException(JEMessages.BLOCK_PROJECT_ID_NULL);
+        }
+
+    	
+    	//check rule is is not null
+        if (blockModel.getRuleId() == null) {
+            throw new AddRuleBlockException(JEMessages.BLOCK_RULE_ID_NULL);
+        }
+
+        JEProject project = ProjectService.getProjectById(blockModel.getProjectId());
+       
+        //check project exists
+        if (project == null) {
+            throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
+        //check rule exists    
+        } else if (!project.ruleExists(blockModel.getRuleId())) {
+            JELogger.error(getClass(), JEMessages.RULE_NOT_FOUND + " [ " + blockModel.getRuleId() + "]");
+            throw new RuleNotFoundException(JEMessages.RULE_NOT_FOUND + " [ " + blockModel.getRuleId() + "]");
+        }
+        
+        //check block exists
+        UserDefinedRule rule = (UserDefinedRule) project.getRule(blockModel.getRuleId());
+        boolean blockExists = rule.containsBlock(blockModel.getBlockId());
+
+         if(!blockExists)
+        {
+            throw new RuleBlockNotFoundException(JEMessages.RULE_NOT_FOUND + " [ " + blockModel.getRuleId() + "]");
+
+        }
+        verifyBlockFormatIsValid(blockModel);
+
+        
+        
+        //check if block already exists
+        Block oldblock = rule.getBlocks().getBlock(blockModel.getBlockId());
+
+        JELogger.trace(getClass(), JEMessages.UPDATING_BLOCK + blockModel.getBlockName() + " in rule [id : " + blockModel.getRuleId() + "]");
+
+
+        //create block
+        Block block = BlockGenerator.createBlock(blockModel);
+        block.setInputBlockIds(blockModel.getInputBlocksIds());
+        block.setOutputBlockIds(blockModel.getOutputBlocksIds()); 
+        
+        //check block name is valid
+        if(!oldblock.getBlockName().equals(block.getBlockName()) )
+        {
+        	if(project.blockNameExists(block.getBlockName()))
+        	{
+        		throw new AddRuleBlockException("Block name can't be updated because it already exists");
+        	}
+        	else {
+        		project.removeBlockName(block.getJobEngineElementID());
+        		project.addBlockName(blockModel.getBlockId(), block.getBlockName());
+        	}
+        }
+        
+        //add block to rule
+        rule.addBlock(block);
+        rule.setJeObjectLastUpdate(LocalDateTime.now());
+        
+        
+        // retrieve topic names from getter blocks
+        if (blockModel.getOperationId() == 4002 && blockModel.getBlockConfiguration() != null
+                && blockModel.getBlockConfiguration().getClassId() != null) {
+          
+            String classId =  blockModel.getBlockConfiguration().getClassId();
+            String workspaceId=blockModel.getBlockConfiguration().getWorkspaceId();
+
+        	 rule.updateTopic(((AttributeGetterBlock)oldblock).getClassId(), classId);
+
+            classService.addClass(workspaceId,classId);
+        }
         project.setBuilt(false);
 
 
@@ -269,7 +353,7 @@ public class RuleService {
         }
         JELogger.trace(getClass(), JEMessages.DELETING_BLOCK + blockId + " in rule [id : " + ruleId + ") in project id = " + projectId);
         project.deleteRuleBlock(ruleId, blockId);
-
+        project.removeBlockName(blockId);
     }
 
     @Async
@@ -481,7 +565,7 @@ public class RuleService {
         JELogger.trace(getClass(), "[projectId = " + projectId + "] [ruleId = " + ruleId + "]"+JEMessages.BUILDING_RULE);
         cleanUpRule(project, ruleId);
         RuleBuilder.buildRule(project.getRule(ruleId), project.getConfigurationPath());
-
+        
     }
 
 }

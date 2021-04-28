@@ -67,6 +67,26 @@ public class ProjectController {
 		return ResponseEntity.ok(project.isRunning());
 
 	}
+	
+	
+	/*
+	 * check if block name is unique
+	 */
+	@GetMapping("/getIsBlockNameUnique/{projectId}/{blockName}")
+	public ResponseEntity<?> getIsBlockNameUnique(@PathVariable String projectId,@PathVariable String blockName) {
+		JEProject project = null;
+		try {
+			project = projectService.getProject(projectId).get();
+
+		} catch (Exception e) {
+			return JEExceptionHandler.handleException(e);
+
+		}
+
+		return ResponseEntity.ok(project==null?false:!project.blockNameExists(blockName));
+
+	}
+	
 
 	/*
 	 * Get project built status

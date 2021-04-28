@@ -47,6 +47,16 @@ public class ProjectService {
 
     private static ConcurrentHashMap<String, JEProject> loadedProjects = new ConcurrentHashMap<>();
 
+
+    
+    
+   
+    
+    
+     
+    
+    
+    
     /*
      * Add a new project
      */
@@ -185,7 +195,7 @@ public class ProjectService {
     public CompletableFuture<JEProject> getProject(String projectId) throws ProjectNotFoundException,
             JERunnerErrorException, IOException, InterruptedException, ExecutionException, ConfigException {
     	ConfigurationService.checkConfig();
-        JELogger.trace("[projectId= "+projectId+"]"+  JEMessages.LOADING_PROJECT);
+        JELogger.debug("[projectId= "+projectId+"]"+  JEMessages.LOADING_PROJECT);
         if (!loadedProjects.containsKey(projectId)) {
             Optional<JEProject> p = projectRepository.findById(projectId);
             JEProject project = p.isEmpty() ? null : p.get();
@@ -198,7 +208,7 @@ public class ProjectService {
             }
 
         }
-        JELogger.trace("[projectId= "+projectId+"]"+  JEMessages.PROJECT_FOUND);
+        JELogger.debug("[projectId= "+projectId+"]"+  JEMessages.PROJECT_FOUND);
         return CompletableFuture.completedFuture(loadedProjects.get(projectId));
     }
 
@@ -324,4 +334,8 @@ public class ProjectService {
         return CompletableFuture.completedFuture(null);
 
     }
+    
+    
+
+    
 }

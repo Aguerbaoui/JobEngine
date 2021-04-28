@@ -14,6 +14,9 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Document(collection="JEProject")
@@ -53,6 +56,18 @@ public class JEProject {
 	 * */
 	private ConcurrentHashMap<String, JEVariable> variables;
      
+	/*
+	 * block names
+	 */
+	Map<String,String> blockNames = new ConcurrentHashMap<>();
+	
+	/*
+	 * block name counters
+	 */
+	Map<String,Integer> blockNameCounters = new ConcurrentHashMap<>();
+
+	
+	
      private boolean autoReload = false;
 
      
@@ -83,7 +98,47 @@ public class JEProject {
 
     }
 
+    
+    
 	
+
+
+	 public Map<String, String> getBlockNames() {
+		return blockNames;
+	}
+
+
+
+
+
+
+	public void setBlockNames(Map<String, String> blockNames) {
+		this.blockNames = blockNames;
+	}
+
+
+
+
+
+
+	public void addBlockName(String blockId, String blockName)
+	    {
+	    	
+	    		blockNames.put(blockId,blockName);
+	    	
+	    }
+	    
+	    
+	    public void removeBlockName( String blockId) {
+	    	blockNames.remove(blockId);
+	    	
+	    }
+
+	    public boolean blockNameExists( String blockName) {
+	    	return blockNames.containsValue(blockName);
+	    	
+	    }
+
 	public boolean isAutoReload() {
 		return autoReload;
 	}
@@ -227,6 +282,7 @@ public class JEProject {
 
 	    }
 	    
+	
 
 	    /*
 	     * update Block
@@ -329,6 +385,7 @@ public class JEProject {
     * */
     public void deleteWorkflowBlock(String workflowId, String blockId) throws InvalidSequenceFlowException, WorkflowBlockNotFound {
         workflows.get(workflowId).deleteWorkflowBlock(blockId);
+        removeBlockName(blockId);
 		isBuilt=false;
 
     }
@@ -416,5 +473,25 @@ public class JEProject {
 
 	public void removeVariable(String varId) {
 		variables.remove(varId);
+	}
+
+
+
+
+
+
+	public String generateUniqueBlockName(String blockNameBase) {
+		String blockName = blockNameBase.replaceAll("\\s+", "");
+		if (!blockNameCounters.containsKey(blockName))
+		{
+			blockNameCounters.put(blockName, 0);
+		}
+		int counter= blockNameCounters.get(blockName);
+		while (blockNameExists(blockName+counter))
+		{
+			counter++;
+		}
+		blockNameCounters.put(blockName,counter+1);
+		return blockName+counter;
 	}
 }

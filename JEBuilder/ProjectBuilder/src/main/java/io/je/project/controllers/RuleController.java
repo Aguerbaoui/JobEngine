@@ -1,15 +1,20 @@
 package io.je.project.controllers;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 
 import io.je.project.exception.JEExceptionHandler;
 import io.je.project.services.ProjectService;
+
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 import io.je.project.services.RuleService;
 import io.je.rulebuilder.models.BlockModel;
@@ -165,11 +170,29 @@ public class RuleController {
 	@PostMapping(value = "/{projectId}/{ruleId}/addBlock", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> addBlock(@PathVariable("projectId") String projectId,
 			@PathVariable("ruleId") String ruleId, @RequestBody BlockModel blockModel) {
-
+		String generatedBlockName = "";
 		try {
 			blockModel.setRuleId(ruleId);
 			blockModel.setProjectId(projectId);
-			ruleService.addBlockToRule(blockModel);
+			 generatedBlockName = ruleService.addBlockToRule(blockModel);
+			projectService.saveProject(projectId).get();
+		} catch (Exception e) {
+			return JEExceptionHandler.handleException(e);
+		}
+		
+		HashMap<String, String> object = new HashMap<>();
+
+		object.put("blockName", generatedBlockName);
+		return ResponseEntity.ok(object);
+	}
+	
+	@PatchMapping(value = "/{projectId}/{ruleId}/updateBlock", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> updateBlock(@PathVariable("projectId") String projectId,
+			@PathVariable("ruleId") String ruleId, @RequestBody BlockModel blockModel) {
+		try {
+			blockModel.setRuleId(ruleId);
+			blockModel.setProjectId(projectId);
+			ruleService.updateBlockInRule(blockModel);
 			projectService.saveProject(projectId).get();
 		} catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
@@ -177,6 +200,7 @@ public class RuleController {
 
 		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.RULE_UPDATED));
 	}
+	
 
 	/*
 	 * update rule : delete block
