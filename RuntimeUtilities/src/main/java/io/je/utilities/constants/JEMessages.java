@@ -567,4 +567,5 @@ public class JEMessages {
 
     public static final String VARIABLE_NOT_FOUND = "Variable cannot be found";
     public static final String VARIABLE_EXISTS = "Variable already exists";
+    public static final String STOPPING_WF = "Stopping workflow";
 }
