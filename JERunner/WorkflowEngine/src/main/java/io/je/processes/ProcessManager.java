@@ -14,6 +14,7 @@ import org.activiti.engine.delegate.BpmnError;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.DeploymentBuilder;
 import org.activiti.engine.runtime.Execution;
+import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 
 import java.util.*;
@@ -139,7 +140,16 @@ public class ProcessManager {
             }
             if (!processes.get(id).isTriggeredByEvent()) {
                 processes.get(id).setRunning(true);
-                runtimeService.startProcessInstanceByKey(id);
+                if(processes.get(id).getProcessInstance() != null) {
+                    removeProcess(id);
+                }
+                ProcessInstance p = runtimeService.startProcessInstanceByKey(id);
+                processes.get(id).setProcessInstance(p);
+                new Thread(() -> {
+                    while(p != null && !p.isEnded()) {
+                    }
+                    processes.get(id).setRunning(false);
+                }).start();
             } else {
                 JELogger.error(ProcessManager.class, " " + JEMessages.PROCESS_HAS_TO_BE_TRIGGERED_BY_EVENT);
 
@@ -164,7 +174,16 @@ public class ProcessManager {
             }
             processes.get(id).setRunning(true);
             try {
-                runtimeService.startProcessInstanceByKey(id, variables);
+                if(processes.get(id).getProcessInstance() != null) {
+                    removeProcess(id);
+                }
+                ProcessInstance p = runtimeService.startProcessInstanceByKey(id, variables);
+                processes.get(id).setProcessInstance(p);
+                new Thread(() -> {
+                    while(p != null && !p.isEnded()) {
+                    }
+                    processes.get(id).setRunning(false);
+                }).start();
             }
             catch(BpmnError e) {
                 JELogger.error("Error = " + Arrays.toString(e.getStackTrace()));
@@ -191,7 +210,12 @@ public class ProcessManager {
                             variables.put(task.getTaskId(), ((InformTask) task).getMessage());
                         }
                     }
-                    runtimeService.startProcessInstanceByMessage(messageId, variables);
+                    ProcessInstance p = runtimeService.startProcessInstanceByMessage(messageId, variables);
+                    new Thread(() -> {
+                        while(p != null && !p.isEnded()) {
+                        }
+                        process.setRunning(false);
+                    }).start();
                     process.setRunning(true);
                     break;
                 }
@@ -199,6 +223,9 @@ public class ProcessManager {
             //runtimeService.startProcessInstanceByMessage(messageId);
         } catch (ActivitiObjectNotFoundException e) {
             JELogger.error(ProcessManager.class, Arrays.toString(e.getStackTrace()));
+        }
+        catch(Exception e) {
+            JELogger.error("Error in launching a process by message " + Arrays.toString(e.getStackTrace()));
         }
     }
 
@@ -337,7 +364,7 @@ public class ProcessManager {
     public void stopProcess(String key) {
         if (processes.get(key).isRunning()) {
             try {
-                runtimeService.deleteProcessInstance(processes.get(key).getActivitiKey(), "User Stopped the execution");
+                runtimeService.deleteProcessInstance(processes.get(key).getProcessInstance().getProcessInstanceId(), "User Stopped the execution");
                 processes.get(key).setRunning(false);
             } catch (ActivitiObjectNotFoundException e) {
                 JELogger.trace(ProcessManager.class, " " + JEMessages.ERROR_DELETING_A_NON_EXISTING_PROCESS);
@@ -350,7 +377,7 @@ public class ProcessManager {
         for (JEProcess process : processes.values()) {
             if (process.isRunning()) {
                 try {
-                    runtimeService.deleteProcessInstance(process.getActivitiKey(), "User Stopped the execution");
+                    runtimeService.deleteProcessInstance(process.getProcessInstance().getProcessInstanceId(), "User Stopped the execution");
                     process.setRunning(false);
                 } catch (ActivitiObjectNotFoundException e) {
                     JELogger.trace(ProcessManager.class, " " + JEMessages.ERROR_DELETING_A_NON_EXISTING_PROCESS);
@@ -359,22 +386,27 @@ public class ProcessManager {
         }
     }
 
-    public static void setRunning(String id, boolean b) {
-        String key = id.substring(id.indexOf(':'), id.length());
+    public static void setRunning(String id, boolean b, String processInstanceId) {
+       /* String key = id.substring(id.indexOf(':'), id.length());
         processes.get(id.replace(key, "")).setRunning(b);
-        processes.get(id.replace(key, "")).setActivitiKey(id);
+        if(processes.get(id.replace(key, "")).isRunning()) {
+
+        }
+        processes.get(id.replace(key, "")).setActivitiKey(processInstanceId);*/
     }
 
+
+    //Stopr/remove workflow
     public void removeProcess(String workflowId) {
         try {
 
-            processes.remove(workflowId);
-            runtimeService.deleteProcessInstance(workflowId, "User Deleted the process");
+            JEProcess p = processes.get(workflowId);
+            runtimeService.deleteProcessInstance(p.getProcessInstance().getProcessInstanceId(), "User Deleted the process");
 
         } catch (ActivitiObjectNotFoundException e) {
             JELogger.trace(" " + JEMessages.ERROR_DELETING_A_NON_EXISTING_PROCESS);
         } catch (Exception e) {
-            JELogger.trace(" " + JEMessages.ERROR_DELETING_A_NON_EXISTING_PROCESS + "\n" + Arrays.toString(e.getStackTrace()));
+            JELogger.trace(" " + JEMessages.ERROR_DELETING_A_PROCESS + "\n" + Arrays.toString(e.getStackTrace()));
         }
 
     }

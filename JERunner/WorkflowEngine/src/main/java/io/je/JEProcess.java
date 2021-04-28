@@ -1,6 +1,7 @@
 package io.je;
 
 import io.je.serviceTasks.ActivitiTask;
+import org.activiti.engine.runtime.ProcessInstance;
 
 import java.util.HashMap;
 
@@ -22,7 +23,9 @@ public class JEProcess {
 
     private String projectId;
 
-    private String activitiKey;
+    private ProcessInstance processInstance;
+
+
 
     HashMap<String, ActivitiTask> activitiTasks;
 
@@ -73,14 +76,6 @@ public class JEProcess {
         this.key = key;
     }
 
-    public String getActivitiKey() {
-        return activitiKey;
-    }
-
-    public void setActivitiKey(String activitiKey) {
-        this.activitiKey = activitiKey;
-    }
-
     public String getName() {
         return name;
     }
@@ -125,4 +120,11 @@ public class JEProcess {
         this.activitiTasks.put(activitiTask.getTaskId(), activitiTask);
     }
 
+    public ProcessInstance getProcessInstance() {
+        return processInstance;
+    }
+
+    public void setProcessInstance(ProcessInstance processInstance) {
+        this.processInstance = processInstance;
+    }
 }

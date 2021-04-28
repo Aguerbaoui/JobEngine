@@ -12,9 +12,13 @@ import models.JEWorkflow;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
+import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -43,20 +47,13 @@ public class ProjectService {
     @Autowired
     ClassService classService;
 
+    @Autowired
+    private HttpServletRequest request;
+
     /* project management */
 
     private static ConcurrentHashMap<String, JEProject> loadedProjects = new ConcurrentHashMap<>();
 
-
-    
-    
-   
-    
-    
-     
-    
-    
-    
     /*
      * Add a new project
      */
@@ -292,8 +289,7 @@ public class ProjectService {
         loadAllProjects();
         for (JEProject project : loadedProjects.values()) {
             for (JEEvent event : project.getEvents().values()) {
-                eventService.updateEventType(project.getProjectId(), event.getJobEngineElementID(),
-                        event.getType().toString());
+                eventService.registerEvent(event);
             }
 
             if (project.isBuilt()) {
@@ -334,8 +330,28 @@ public class ProjectService {
         return CompletableFuture.completedFuture(null);
 
     }
-    
-    
 
-    
+    public void addJarToProject(MultipartFile file) throws IOException, InterruptedException, JERunnerErrorException, ExecutionException {
+        JELogger.trace( JEMessages.ADDING_JAR_TO_PROJECT);
+        if(!file.isEmpty()) {
+            String uploadsDir = "/uploads/";
+            //TODO change to the path set by the user for classes in sioth
+            String realPathtoUploads =  request.getServletContext().getRealPath(uploadsDir);
+            if(! new File(realPathtoUploads).exists())
+            {
+                new File(realPathtoUploads).mkdir();
+            }
+
+            String orgName = file.getOriginalFilename();
+            String filePath = realPathtoUploads + orgName;
+            File dest = new File(filePath);
+            file.transferTo(dest);
+            JELogger.debug("Uploaded jar to path " + dest);
+            HashMap<String, String> payload = new HashMap<>();
+            payload.put("name", file.getOriginalFilename());
+            payload.put("path", dest.getAbsolutePath());
+            JERunnerAPIHandler.addJarToRunner(payload);
+        }
+
+    }
 }

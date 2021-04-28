@@ -27,7 +27,12 @@ public class VariableController {
     @PostMapping(value = "/addVariable", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> addVariable(@RequestBody VariableModel variableModel) {
 
-        runtimeDispatcher.addVariable(variableModel);
+        try {
+            runtimeDispatcher.addVariable(variableModel);
+        }
+        catch (Exception e) {
+            return JEExceptionHandler.handleException(e);
+        }
         return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.VAR_ADDED_SUCCESSFULLY));
     }
 

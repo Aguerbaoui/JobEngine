@@ -87,7 +87,7 @@ public class WorkflowController {
     @PostMapping(value = "/stopWorkflow/{projectId}/{key}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> stopWorkflow(@PathVariable String projectId, @PathVariable String key) {
         try {
-            //workflowService.stopWorkflow(projectId, key);
+            workflowService.stopWorkflow(projectId, key);
             projectService.saveProject(projectId);
         }catch (Exception e) {
             return JEExceptionHandler.handleException(e);

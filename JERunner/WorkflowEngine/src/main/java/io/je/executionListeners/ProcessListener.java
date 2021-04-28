@@ -8,13 +8,16 @@ import org.activiti.engine.delegate.ExecutionListener;
 public class ProcessListener implements ExecutionListener {
 
     public void notify(DelegateExecution execution) {
-        String id =  execution.getProcessDefinitionId();
+        String id =  execution.getProcessDefinitionId(); //"testWorkflow"
+        String processInstanceId = execution.getProcessInstanceId();// "4"
         id = id.replace(id.substring(id.indexOf(':'), id.length()), "");
         if(execution.getEventName().equalsIgnoreCase("start")) {
-            ProcessManager.setRunning(execution.getProcessDefinitionId(), true);
+            JELogger.debug("Started process in activity engine " + id);
+            //ProcessManager.setRunning(execution.getProcessDefinitionId(), true, processInstanceId);
         }
        if(execution.getEventName().equalsIgnoreCase("end")) {
-            ProcessManager.setRunning(execution.getProcessDefinitionId(), false);
+           JELogger.debug("Done with process in activity engine " + id);
+            //ProcessManager.setRunning(execution.getProcessDefinitionId(), false, processInstanceId);
         }
     }
 

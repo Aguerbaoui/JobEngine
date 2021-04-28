@@ -26,10 +26,13 @@ import io.je.utilities.models.*;
 import io.je.utilities.string.JEStringSubstitutor;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.jar.JarFile;
 
+import static io.je.utilities.constants.JEMessages.ADDING_JAR_FILE_TO_RUNNER;
 import static io.je.utilities.constants.WorkflowConstants.*;
 import static io.je.utilities.constants.WorkflowConstants.USERNAME;
 
@@ -384,7 +387,7 @@ public class RuntimeDispatcher {
 		
 	}
 
-	//remove workflow from runner
+	//remove/stop workflow from runner
     public void removeWorkflow(String projectId, String workflowId) {
         JELogger.trace(getClass(), "[projectId = " + projectId + "] [workflow = " + workflowId + "]" + JEMessages.REMOVING_WF);
         WorkflowEngineHandler.deleteProcess(projectId,workflowId);
@@ -408,5 +411,15 @@ public class RuntimeDispatcher {
     //remove variable from runner
     public void deleteVariable(String projectId, String varId) {
         VariableManager.removeVariable(projectId, varId);
+    }
+
+    public void addJarToProject(HashMap<String, String> payload) {
+        JELogger.debug(ADDING_JAR_FILE_TO_RUNNER+ payload);
+        //TODO finish this once the ui specs are decided
+        try {
+            JarFile j = new JarFile(payload.get("path"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -115,7 +115,9 @@ public class JEMessages {
 
     public static final String CLOSING_PROJECT = "Found project";
 
-    public static final String LOADING_PROJECT = "Loading project";
+    public static final String ADDING_JAR_TO_PROJECT = "Adding jar to project";
+
+    public static final String LOADING_PROJECT = "Loading project from database";
 
     public static final String LOADING_PROJECTS = "loading all projects from database ";
 

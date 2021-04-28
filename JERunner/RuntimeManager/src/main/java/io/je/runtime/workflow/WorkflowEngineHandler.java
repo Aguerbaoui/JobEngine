@@ -95,13 +95,6 @@ public class WorkflowEngineHandler {
     }
 
     /*
-    * Stop workflow by id
-    * */
-    public static void stopWorkflow(String projectId, String key) {
-        processManagerHashMap.get(projectId).stopProcess(key);
-    }
-
-    /*
     * Stop project workflows
     * */
     public static void stopProjectWorfklows(String projectId) {
@@ -134,6 +127,7 @@ public class WorkflowEngineHandler {
 
     }
 
+    //remove/stop workflow from runner
     public static void deleteProcess(String projectId, String workflowId) {
         if(processManagerHashMap.containsKey(projectId)) {
             processManagerHashMap.get(projectId).removeProcess(workflowId);

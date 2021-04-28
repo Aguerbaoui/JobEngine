@@ -73,6 +73,7 @@ public class ClassBuilder {
 		unitSG.addImport("java.sql.*");
 		unitSG.addImport("javax.sql.*");
 		unitSG.addImport("io.je.utilities.execution.*");
+		unitSG.addImport("io.je.utilities.models.*");
 		if (imports != null && !imports.isEmpty()) {
 			{
 				for (String import_ : imports) {
