@@ -61,6 +61,12 @@ public class JEProject {
 	 */
 	Map<String,String> blockNames = new ConcurrentHashMap<>();
 	
+	/*
+	 * block name counters
+	 */
+	Map<String,Integer> blockNameCounters = new ConcurrentHashMap<>();
+
+	
 	
      private boolean autoReload = false;
 
@@ -276,6 +282,7 @@ public class JEProject {
 
 	    }
 	    
+	
 
 	    /*
 	     * update Block
@@ -369,7 +376,6 @@ public class JEProject {
     * */
     public void addBlockToWorkflow(WorkflowBlock block) {
         workflows.get(block.getWorkflowId()).addBlock(block);
-        addBlockName(block.getJobEngineElementID(), block.getName());
 		isBuilt=false;
 
     }
@@ -467,5 +473,25 @@ public class JEProject {
 
 	public void removeVariable(String varId) {
 		variables.remove(varId);
+	}
+
+
+
+
+
+
+	public String generateUniqueBlockName(String blockNameBase) {
+		String blockName = blockNameBase.replaceAll("\\s+", "");
+		if (!blockNameCounters.containsKey(blockName))
+		{
+			blockNameCounters.put(blockName, 0);
+		}
+		int counter= blockNameCounters.get(blockName);
+		while (blockNameExists(blockName+counter))
+		{
+			counter++;
+		}
+		blockNameCounters.put(blockName,counter+1);
+		return blockName+counter;
 	}
 }

@@ -105,7 +105,7 @@ public class WorkflowService {
     /*
      * Add a workflow block to a workflow
      * */
-    public void addWorkflowBlock(WorkflowBlockModel block) throws ProjectNotFoundException, WorkflowNotFoundException, InvalidSequenceFlowException, WorkflowBlockNotFound, EventException, ConfigException, WorkflowBlockException {
+    public String addWorkflowBlock(WorkflowBlockModel block) throws ProjectNotFoundException, WorkflowNotFoundException, InvalidSequenceFlowException, WorkflowBlockNotFound, EventException, ConfigException, WorkflowBlockException {
     	ConfigurationService.checkConfig();
     	JEProject project = ProjectService.getProjectById(block.getProjectId());
         if (project == null) {
@@ -114,6 +114,11 @@ public class WorkflowService {
             throw new WorkflowNotFoundException(JEMessages.WORKFLOW_NOT_FOUND);
         }
         JELogger.trace(WorkflowService.class,"[projectId ="+block.getProjectId()+" ][workflowId = " + block.getWorkflowId()+"]"+JEMessages.ADDING_WF_BLOCK + " id = " + block.getId());
+        String generatedBlockName = project.generateUniqueBlockName((String) block.getAttributes().get(NAME));
+    	block.getAttributes().put(NAME, generatedBlockName);
+    	project.addBlockName(block.getId(), generatedBlockName);
+
+        
         if (block.getType().equalsIgnoreCase(WorkflowConstants.START_TYPE)) {
             StartBlock b = new StartBlock();
             b.setName((String) block.getAttributes().get(NAME));
@@ -125,21 +130,21 @@ public class WorkflowService {
             b.setJobEngineProjectID(block.getProjectId());
             b.setWorkflowId(block.getWorkflowId());
             b.setJobEngineElementID(block.getId());
-            project.addBlockToWorkflow(b);
+         project.addBlockToWorkflow(b);
         } else if (block.getType().equalsIgnoreCase(WorkflowConstants.END_TYPE)) {
             EndBlock b = new EndBlock();
             b.setName((String) block.getAttributes().get(NAME));
             b.setJobEngineProjectID(block.getProjectId());
             b.setWorkflowId(block.getWorkflowId());
             b.setJobEngineElementID(block.getId());
-            project.addBlockToWorkflow(b);
+         project.addBlockToWorkflow(b);
         } else if (block.getType().equalsIgnoreCase(WorkflowConstants.EVENTGATEWAY_TYPE)) {
             EventGatewayBlock b = new EventGatewayBlock();
             b.setName((String) block.getAttributes().get(NAME));
             b.setJobEngineProjectID(block.getProjectId());
             b.setWorkflowId(block.getWorkflowId());
             b.setJobEngineElementID(block.getId());
-            project.addBlockToWorkflow(b);
+         project.addBlockToWorkflow(b);
         } else if (block.getType().equalsIgnoreCase(WorkflowConstants.MESSAGEINTERMEDIATECATCHEVENT_TYPE)) {
             MessageEvent b = new MessageEvent();
             b.setName((String) block.getAttributes().get(NAME));
@@ -152,7 +157,7 @@ public class WorkflowService {
             b.setWorkflowId(block.getWorkflowId());
             b.setJobEngineElementID(block.getId());
             b.setThrowMessage(false);
-            project.addBlockToWorkflow(b);
+         project.addBlockToWorkflow(b);
 
         } /*else if (block.getType().equalsIgnoreCase(WorkflowConstants.MESSAGE_THROW_EVENT_TYPE)) {
             MessageEvent b = new MessageEvent();
@@ -166,7 +171,7 @@ public class WorkflowService {
             b.setWorkflowId(block.getWorkflowId());
             b.setJobEngineElementID(block.getId());
             b.setThrowMessage(true);
-            project.addBlockToWorkflow(b);
+         project.addBlockToWorkflow(b);
         }*/ else if (block.getType().equalsIgnoreCase(WorkflowConstants.SIGNALINTERMEDIATECATCHEVENT_TYPE)) {
             SignalEvent b = new SignalEvent();
             b.setName((String) block.getAttributes().get(NAME));
@@ -179,7 +184,7 @@ public class WorkflowService {
             b.setWorkflowId(block.getWorkflowId());
             b.setJobEngineElementID(block.getId());
             b.setThrowSignal(false);
-            project.addBlockToWorkflow(b);
+         project.addBlockToWorkflow(b);
         } else if (block.getType().equalsIgnoreCase(WorkflowConstants.SIGNAL_THROW_EVENT_TYPE)) {
             SignalEvent b = new SignalEvent();
             b.setName((String) block.getAttributes().get(NAME));
@@ -192,14 +197,14 @@ public class WorkflowService {
             b.setWorkflowId(block.getWorkflowId());
             b.setJobEngineElementID(block.getId());
             b.setThrowSignal(true);
-            project.addBlockToWorkflow(b);
+         project.addBlockToWorkflow(b);
         } else if (block.getType().equalsIgnoreCase(WorkflowConstants.EXCLUSIVEGATEWAY_TYPE)) {
             ExclusiveGatewayBlock b = new ExclusiveGatewayBlock();
             b.setName((String) block.getAttributes().get(NAME));
             b.setJobEngineProjectID(block.getProjectId());
             b.setWorkflowId(block.getWorkflowId());
             b.setJobEngineElementID(block.getId());
-            project.addBlockToWorkflow(b);
+         project.addBlockToWorkflow(b);
         } else if (block.getType().equalsIgnoreCase(WorkflowConstants.SCRIPTTASK_TYPE)) {
             ScriptBlock b = new ScriptBlock();
             b.setName((String) block.getAttributes().get(NAME));
@@ -207,21 +212,21 @@ public class WorkflowService {
             b.setJobEngineProjectID(block.getProjectId());
             b.setWorkflowId(block.getWorkflowId());
             b.setJobEngineElementID(block.getId());
-            project.addBlockToWorkflow(b);
+         project.addBlockToWorkflow(b);
         } else if (block.getType().equalsIgnoreCase(WorkflowConstants.PARALLELGATEWAY_TYPE)) {
             ParallelGatewayBlock b = new ParallelGatewayBlock();
             b.setName((String) block.getAttributes().get(NAME));
             b.setJobEngineProjectID(block.getProjectId());
             b.setWorkflowId(block.getWorkflowId());
             b.setJobEngineElementID(block.getId());
-            project.addBlockToWorkflow(b);
+         project.addBlockToWorkflow(b);
         } else if (block.getType().equalsIgnoreCase(WorkflowConstants.INCLUSIVEGATEWAY_TYPE)) {
             InclusiveGatewayBlock b = new InclusiveGatewayBlock();
             b.setName((String) block.getAttributes().get(NAME));
             b.setJobEngineProjectID(block.getProjectId());
             b.setWorkflowId(block.getWorkflowId());
             b.setJobEngineElementID(block.getId());
-            project.addBlockToWorkflow(b);
+         project.addBlockToWorkflow(b);
         } else if (block.getType().equalsIgnoreCase(WorkflowConstants.DATETIMEREVENT)) {
             DateTimerEvent b = new DateTimerEvent();
             b.setName((String) block.getAttributes().get(NAME));
@@ -229,7 +234,7 @@ public class WorkflowService {
             b.setJobEngineProjectID(block.getProjectId());
             b.setWorkflowId(block.getWorkflowId());
             b.setJobEngineElementID(block.getId());
-            project.addBlockToWorkflow(b);
+         project.addBlockToWorkflow(b);
         } else if (block.getType().equalsIgnoreCase(WorkflowConstants.CYCLETIMEREVENT)) {
             CycleTimerEvent b = new CycleTimerEvent();
             b.setName((String) block.getAttributes().get(NAME));
@@ -238,7 +243,7 @@ public class WorkflowService {
             b.setJobEngineProjectID(block.getProjectId());
             b.setWorkflowId(block.getWorkflowId());
             b.setJobEngineElementID(block.getId());
-            project.addBlockToWorkflow(b);
+         project.addBlockToWorkflow(b);
         } else if (block.getType().equalsIgnoreCase(WorkflowConstants.DURATIONTIMEREVENT)) {
             DurationDelayTimerEvent b = new DurationDelayTimerEvent();
             b.setName((String) block.getAttributes().get(NAME));
@@ -246,21 +251,21 @@ public class WorkflowService {
             b.setJobEngineProjectID(block.getProjectId());
             b.setWorkflowId(block.getWorkflowId());
             b.setJobEngineElementID(block.getId());
-            project.addBlockToWorkflow(b);
+         project.addBlockToWorkflow(b);
         } else if (block.getType().equalsIgnoreCase(WorkflowConstants.DBSERVICETASK_TYPE)) {
             DBWriteBlock b = new DBWriteBlock();
             b.setName((String) block.getAttributes().get(NAME));
             b.setJobEngineProjectID(block.getProjectId());
             b.setWorkflowId(block.getWorkflowId());
             b.setJobEngineElementID(block.getId());
-            project.addBlockToWorkflow(b);
+         project.addBlockToWorkflow(b);
         } else if (block.getType().equalsIgnoreCase(WorkflowConstants.MAILSERVICETASK_TYPE)) {
             MailBlock b = new MailBlock();
             b.setName((String) block.getAttributes().get(NAME));
             b.setJobEngineProjectID(block.getProjectId());
             b.setWorkflowId(block.getWorkflowId());
             b.setJobEngineElementID(block.getId());
-            project.addBlockToWorkflow(b);
+         project.addBlockToWorkflow(b);
         }
         else if (block.getType().equalsIgnoreCase(WorkflowConstants.WEBSERVICETASK_TYPE)) {
             WebApiBlock b = new WebApiBlock();
@@ -269,7 +274,7 @@ public class WorkflowService {
             b.setJobEngineProjectID(block.getProjectId());
             b.setWorkflowId(block.getWorkflowId());
             b.setJobEngineElementID(block.getId());
-            project.addBlockToWorkflow(b);
+         project.addBlockToWorkflow(b);
         }
 
         else if(block.getType().equalsIgnoreCase(WorkflowConstants.INFORMSERVICETASK_TYPE)) {
@@ -278,7 +283,7 @@ public class WorkflowService {
             b.setJobEngineProjectID(block.getProjectId());
             b.setWorkflowId(block.getWorkflowId());
             b.setJobEngineElementID(block.getId());
-            project.addBlockToWorkflow(b);
+         project.addBlockToWorkflow(b);
         }
 
         else if(block.getType().equalsIgnoreCase(BOUNDARYEVENT_TYPE)) {
@@ -288,7 +293,7 @@ public class WorkflowService {
             b.setJobEngineProjectID(block.getProjectId());
             b.setWorkflowId(block.getWorkflowId());
             b.setJobEngineElementID(block.getId());
-            project.addBlockToWorkflow(b);
+         project.addBlockToWorkflow(b);
         }
         else if (block.getType().equalsIgnoreCase(WorkflowConstants.SEQ_FLOW_TYPE)) {
             addSequenceFlow(block.getProjectId(), block.getWorkflowId(),
@@ -298,6 +303,7 @@ public class WorkflowService {
         else {
             throw new WorkflowBlockNotFound(JEMessages.WORKFLOW_BLOCK_NOT_FOUND);
         }
+        return generatedBlockName;
     }
 
 
@@ -422,7 +428,7 @@ public class WorkflowService {
      *
      * Update workflow block
      * */
-    public void updateWorkflowBlock(WorkflowBlockModel block) throws WorkflowBlockNotFound, WorkflowNotFoundException, ProjectNotFoundException, IOException, InterruptedException, ExecutionException, EventException, ConfigException, WorkflowBlockException, ClassLoadException, JERunnerErrorException, AddClassException, DataDefinitionUnreachableException {
+    public void updateWorkflowBlock(WorkflowBlockModel block) throws WorkflowBlockNotFound, WorkflowNotFoundException, ProjectNotFoundException, IOException, InterruptedException, ExecutionException, EventException, ConfigException, WorkflowBlockException, ClassLoadException, JERunnerErrorException, AddClassException, DataDefinitionUnreachableException, AddRuleBlockException {
     	ConfigurationService.checkConfig();
     	JEProject project = ProjectService.getProjectById(block.getProjectId());
         if (project == null) {
@@ -435,6 +441,21 @@ public class WorkflowService {
         if (!project.getWorkflowById(block.getWorkflowId()).blockExists(block.getId())) {
             throw new WorkflowBlockNotFound(JEMessages.WORKFLOW_BLOCK_NOT_FOUND);
         }
+        
+        String oldWorkflowBlockName = project.getWorkflowById(block.getWorkflowId()).getBlockById(block.getId()).getName();
+        if(!oldWorkflowBlockName.equals((String) block.getAttributes().get(NAME) ))
+        {
+        	if(project.blockNameExists((String) block.getAttributes().get(NAME)))
+        	{
+        		throw new AddRuleBlockException("Block name can't be updated because it already exists");
+        	}
+        	else {
+        		project.removeBlockName(block.getId());
+        		project.addBlockName(block.getId(), (String) block.getAttributes().get(NAME));
+        	}
+        }
+        
+        
         JELogger.trace(WorkflowService.class, " " + JEMessages.UPDATING_A_WORKFLOW_BLOCK_WITH_ID + " = " + block.getId() + " in workflow with id = " + block.getWorkflowId());
         if (block.getType().equalsIgnoreCase(WorkflowConstants.START_TYPE)) {
             StartBlock b = (StartBlock) project.getWorkflowById(block.getWorkflowId()).getAllBlocks().get(block.getId());
