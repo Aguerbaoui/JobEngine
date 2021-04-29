@@ -3,10 +3,12 @@ package io.je.rulebuilder.components;
 import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap.KeySetView;
 
 import io.je.utilities.config.ConfigurationConstants;
 import org.drools.template.ObjectDataCompiler;
@@ -169,6 +171,11 @@ public class UserDefinedRule extends JERule {
 		return blocks;
 	}
 
+	public Enumeration<String> getAllBlockIds()
+	{
+		return blocks.getAllBlockIds();
+	}
+	
 	public void setBlocks(BlockManager blocks) {
 		this.blocks = blocks;
 	}
