@@ -39,7 +39,11 @@ public abstract class SingleInputArithmeticBlock extends ArithmeticBlock {
 		}else if(type.equalsIgnoreCase("string") )
 		{
 			return "String() from " + getFormula();
+		}else if(type.equalsIgnoreCase("date") )
+		{
+			return "Date() from " + getFormula();
 		}
+		
 		 return " Number() from " + getFormula() ;
 	}
 

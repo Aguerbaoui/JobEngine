@@ -6,10 +6,13 @@ public class TypeConverterBlock extends SingleInputArithmeticBlock {
 
 	
 	String typeToConvertTo;
+	String dateFormat;
 	
 	public TypeConverterBlock(BlockModel blockModel) {
 		super(blockModel);
 		typeToConvertTo = blockModel.getBlockConfiguration().getValue();
+		dateFormat = blockModel.getBlockConfiguration().getValue2();
+
 		updateDefaultValue();
 
 	}
@@ -18,7 +21,11 @@ public class TypeConverterBlock extends SingleInputArithmeticBlock {
 		if(typeToConvertTo.equalsIgnoreCase("string"))
 		{
 			defaultType = "string";
-		}
+		}else if(typeToConvertTo.equalsIgnoreCase("date"))
+{
+			defaultType = "date";
+
+}
 		
 	}
 
@@ -36,7 +43,7 @@ public class TypeConverterBlock extends SingleInputArithmeticBlock {
 			return "String.valueOf("+getInputRefName(0)+")";
 		}else if(typeToConvertTo.equalsIgnoreCase("date"))
 		{
-			return "";
+			return "JEConverter.convertTypeDate(\""+dateFormat+"\","+getInputRefName(0)+")";
 		}
 		else
 		{
