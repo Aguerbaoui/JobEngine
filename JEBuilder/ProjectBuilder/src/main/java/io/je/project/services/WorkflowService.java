@@ -115,9 +115,13 @@ public class WorkflowService {
         }
         JELogger.trace(WorkflowService.class,"[projectId ="+block.getProjectId()+" ][workflowId = " + block.getWorkflowId()+"]"+JEMessages.ADDING_WF_BLOCK + " id = " + block.getId());
         project.getWorkflowById(block.getWorkflowId()).setStatus(JEWorkflow.IDLE);
-        String generatedBlockName = project.generateUniqueBlockName((String) block.getAttributes().get(NAME));
-    	block.getAttributes().put(NAME, generatedBlockName);
-    	project.addBlockName(block.getId(), generatedBlockName);
+        String generatedBlockName = "";
+        if(!block.getType().equalsIgnoreCase(SEQ_FLOW_TYPE)) {
+            generatedBlockName = project.generateUniqueBlockName((String) block.getAttributes().get(NAME));
+            block.getAttributes().put(NAME, generatedBlockName);
+            project.addBlockName(block.getId(), generatedBlockName);
+        }
+
 
 
         if (block.getType().equalsIgnoreCase(WorkflowConstants.START_TYPE)) {

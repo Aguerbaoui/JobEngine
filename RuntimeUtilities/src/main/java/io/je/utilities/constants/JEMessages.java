@@ -181,6 +181,11 @@ public class JEMessages {
 
     public static final String ERROR_DELETING_A_NON_EXISTING_PROCESS = "Error deleting a non existing process";
 
+    public static final String ERROR_DELETING_A_PROCESS = "Error deleting a process";
+
+    public static final String ADDING_JAR_FILE_TO_RUNNER = "Adding jar file to runner";
+
+
     public static final String EXECUTING_WEB_API_TASK = "Executing web api task";
 
     public static final String NETWORK_CALL_RESPONSE_IN_WEB_SERVICE_TASK = "Network call response in web service task";
