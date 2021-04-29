@@ -19,6 +19,7 @@ public class JEConfiguration {
 	static int subscriberPort;
 	static int requestPort;
 	static String droolsDateFormat;
+	static String dataModelDateFormat;
 	
 	private JEConfiguration() {
 
@@ -39,6 +40,7 @@ public class JEConfiguration {
 		configModel.setProjectBuilderURL(projectBuilderURL);
 		configModel.setDroolsDateFormat(droolsDateFormat);
 		configModel.setEmailApiUrl(emailApiUrl);
+		configModel.setDataModelDateFormat(dataModelDateFormat);
 		return configModel;
 	}
 	
@@ -52,6 +54,7 @@ public class JEConfiguration {
 		setProjectBuilderURL(configModel.getProjectBuilderURL());
 		setDroolsDateFormat(configModel.getDroolsDateFormat());
 		setEmailApiURL(configModel.getEmailApiUrl());
+		setDataModelDateFormat(configModel.getDataModelDateFormat());
 	}
 	
 	
@@ -160,5 +163,20 @@ public class JEConfiguration {
 	}
 
 
+
+	public static String getDataModelDateFormat() {
+		return dataModelDateFormat;
+	}
+
+
+
+	public static void setDataModelDateFormat(String dataModelDateFormat) {
+		if(dataModelDateFormat !=null)
+			{
+			JEConfiguration.dataModelDateFormat = dataModelDateFormat;
+			}
+	}
+
+	
 
 }

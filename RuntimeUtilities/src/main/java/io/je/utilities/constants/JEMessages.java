@@ -34,6 +34,9 @@ public class JEMessages {
 
     public static final String DROOLS_DATE_FORMAT_MISSING = "Drools date format is not specified";
 
+    public static final String DATA_MODEL_DATE_FORMAT_MISSING = "DataModel date format is not specified";
+
+
     public static final String UPDATING_BUILDER_AND_RUNNER_CONFIGURATION = "Updating builder and runner configuration";
 
     public static final String UPDATING_RUNNER_CONFIGURATION_CONFIG = "Updating runner configuration, config";

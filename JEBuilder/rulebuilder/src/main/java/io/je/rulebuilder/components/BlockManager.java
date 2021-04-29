@@ -1,9 +1,12 @@
 package io.je.rulebuilder.components;
 
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentHashMap.KeySetView;
 
 import io.je.rulebuilder.components.blocks.Block;
 import io.je.rulebuilder.components.blocks.ExecutionBlock;
@@ -115,6 +118,10 @@ public class BlockManager {
 
 	public boolean containsBlock(String blockId) {
 		return blocks.containsKey(blockId);
+	}
+
+	public Enumeration<String> getAllBlockIds() {
+		return  blocks.keys();
 	}
 
 	

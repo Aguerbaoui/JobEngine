@@ -20,6 +20,7 @@ public class ConfigModel {
 	 int subscriberPort;
 	 int requestPort;
 	 String droolsDateFormat;
+	  String dataModelDateFormat;
 
 	public String getEmailApiUrl() {
 		return emailApiUrl;
@@ -78,6 +79,15 @@ public class ConfigModel {
 		this.droolsDateFormat = droolsDateFormat;
 	}
 
+	
+
+	public String getDataModelDateFormat() {
+		return dataModelDateFormat;
+	}
+
+	public void setDataModelDateFormat(String dataModelDateFormat) {
+		this.dataModelDateFormat = dataModelDateFormat;
+	}
 
 	@Override
 	public String toString() {

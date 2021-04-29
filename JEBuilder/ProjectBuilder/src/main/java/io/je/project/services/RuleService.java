@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
@@ -97,6 +98,7 @@ public class RuleService {
 
                 }
             }
+            removeAllRuleBlockNames(projectId,ruleId);
         } else {
             JERunnerAPIHandler.deleteRule(projectId, ruleId);
 
@@ -110,7 +112,7 @@ public class RuleService {
      */
 
     public void updateRule(String projectId, RuleModel ruleModel)
-            throws ProjectNotFoundException, RuleNotFoundException, ConfigException {
+            throws ProjectNotFoundException, ConfigException {
     	ConfigurationService.checkConfig();
     	JEProject project = ProjectService.getProjectById(projectId);
         if (project == null) {
@@ -527,11 +529,13 @@ public class RuleService {
                             for (String subRuleId : rule.getSubRules()) {
                                 JERunnerAPIHandler.deleteRule(projectId, subRuleId);
                             }
+                            removeAllRuleBlockNames(projectId,ruleId);
                         }
                     } else {
                         JERunnerAPIHandler.deleteRule(projectId, ruleId);
 
                     }
+                    
                     project.deleteRule(ruleId);
                 } catch (Exception e) {
                     undeletedRules.put(ruleId, e.getMessage());
@@ -566,6 +570,16 @@ public class RuleService {
         cleanUpRule(project, ruleId);
         RuleBuilder.buildRule(project.getRule(ruleId), project.getConfigurationPath());
         
+    }
+    
+    private void removeAllRuleBlockNames(String projectId,String ruleId)
+    {
+    	JEProject project = ProjectService.getProjectById(projectId);
+    	Enumeration<String> blockIds =((UserDefinedRule) project.getRule(ruleId)).getBlocks().getAllBlockIds();
+    	while(blockIds.hasMoreElements())
+    	{
+    		project.removeBlockName(blockIds.nextElement());
+    	}
     }
 
 }

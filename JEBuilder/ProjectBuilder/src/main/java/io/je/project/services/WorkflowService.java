@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -98,6 +99,12 @@ public class WorkflowService {
         }
         JELogger.trace(WorkflowService.class, "[projectId ="+projectId+" ][workflowId = " + workflowId+"]"+JEMessages.REMOVING_WF);
         String wfName = project.getWorkflowById(workflowId).getWorkflowName().trim();
+        //delete workflow block names
+       Enumeration<String> blockIds = project.getWorkflowById(workflowId).getAllBlocks().keys();
+       while(blockIds.hasMoreElements())
+   	{
+   		project.removeBlockName(blockIds.nextElement());
+   	}
         project.removeWorkflow(workflowId);
         JERunnerAPIHandler.deleteWorkflow(projectId, wfName);
     }
