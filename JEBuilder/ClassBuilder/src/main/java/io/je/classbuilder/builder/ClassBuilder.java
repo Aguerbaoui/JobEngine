@@ -17,6 +17,7 @@ import io.je.classbuilder.entity.ClassType;
 import io.je.classbuilder.models.ClassModel;
 import io.je.classbuilder.models.FieldModel;
 import io.je.classbuilder.models.MethodModel;
+import io.je.utilities.config.JEConfiguration;
 import io.je.utilities.constants.ClassBuilderConfig;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.AddClassException;
@@ -174,10 +175,17 @@ public class ClassBuilder {
 		if (classModel.getAttributes() != null) {
 			for (FieldModel field : classModel.getAttributes()) {
 				//TODO: all attributes are public because the data def rest api doesn't provide the attribute's modifier
-				newClass.addField(generateField(field).addModifier(getModifier(field.getFieldVisibility())));
+				VariableSourceGenerator newField= generateField(field).addModifier(getModifier(field.getFieldVisibility()));
+				if(field.getType().equalsIgnoreCase("DATETIME"))
+				{
+					newField.addAnnotation(new AnnotationSourceGenerator("@JsonFormat (shape = JsonFormat.Shape.STRING, pattern = \""+JEConfiguration.getDataModelDateFormat()+"\")"));
+					
+				}
+				newClass.addField(newField);
 				String attributeName = field.getName();
 				String capitalizedAttributeName = JEStringUtils.capitalize(attributeName);
 				Class<?> attributeType = getType(field.getType());
+			
 				
 				//TODO: all attributes should have a getter ( 
 				//adding setters
