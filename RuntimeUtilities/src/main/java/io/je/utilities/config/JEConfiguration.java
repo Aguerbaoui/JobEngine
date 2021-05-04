@@ -11,15 +11,21 @@ import io.je.utilities.models.ConfigModel;
 public class JEConfiguration {
 
 	static JEConfiguration instance;
+	
+	//datamodel
 	static String dataDefinitionURL;
 	static String dataManagerURL;
-	static String runtimeManagerURL;
-	static String projectBuilderURL;
-	static String emailApiUrl;
 	static int subscriberPort;
 	static int requestPort;
-	static String droolsDateFormat;
 	static String dataModelDateFormat;
+
+	//je
+	static String runtimeManagerURL;
+	static String projectBuilderURL;
+	static String droolsDateFormat;
+
+	static String emailApiUrl;
+
 	
 	private JEConfiguration() {
 
