@@ -55,6 +55,7 @@ public class WorkflowService {
     public static final String TARGET_REF = "targetRef";
     public static final String CONDITION = "condition";
     public static final String BODY = "body";
+    public static final String IMPORTS = "imports";
 
 
     @Autowired
@@ -553,8 +554,10 @@ public class WorkflowService {
             }
             ScriptBlock b = (ScriptBlock) project.getWorkflowById(block.getWorkflowId()).getAllBlocks().get(block.getId());
             b.setName((String) block.getAttributes().get(NAME));
+            ArrayList<String> imports = (ArrayList) block.getAttributes().get(IMPORTS);
             b.setScript((String) block.getAttributes().get(SCRIPT));
             ClassModel c = getClassModel(b.getJobEngineElementID(), project.getWorkflowById(block.getWorkflowId()).getWorkflowName()+b.getName(), b.getScript());
+            c.setImports(imports);
             classService.addClass(c);
             //JEClassLoader.generateScriptTaskClass(b.getName(), b.getScript());
             project.addBlockToWorkflow(b);
