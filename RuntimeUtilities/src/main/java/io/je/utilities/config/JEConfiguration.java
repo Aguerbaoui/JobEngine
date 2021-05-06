@@ -24,8 +24,12 @@ public class JEConfiguration {
 	static String projectBuilderURL;
 	static String droolsDateFormat;
 
+	//email
 	static String emailApiUrl;
 
+	//logging system
+	static String loggingSystemURL;
+	static int loggingSystemZmqPublishPort;
 	
 	private JEConfiguration() {
 
@@ -47,6 +51,8 @@ public class JEConfiguration {
 		configModel.setDroolsDateFormat(droolsDateFormat);
 		configModel.setEmailApiUrl(emailApiUrl);
 		configModel.setDataModelDateFormat(dataModelDateFormat);
+		configModel.setLoggingSystemURL(loggingSystemURL);
+		configModel.setLoggingSystemZmqPublishPort(loggingSystemZmqPublishPort);
 		return configModel;
 	}
 	
@@ -61,6 +67,8 @@ public class JEConfiguration {
 		setDroolsDateFormat(configModel.getDroolsDateFormat());
 		setEmailApiURL(configModel.getEmailApiUrl());
 		setDataModelDateFormat(configModel.getDataModelDateFormat());
+		setLoggingSystemURL(configModel.getLoggingSystemURL());
+		setLoggingSystemZmqPublishPort(configModel.getLoggingSystemZmqPublishPort());
 	}
 	
 	
@@ -76,6 +84,16 @@ public class JEConfiguration {
 	public static String getEmailApiUrl() {
 		return emailApiUrl;
 	}
+
+	
+	public static void setEmailApiUrl(String emailApiUrl) {
+		if(emailApiUrl!=null)
+		{
+			JEConfiguration.emailApiUrl = emailApiUrl;
+		}
+	}
+
+
 
 	public static void setDroolsDateFormat(String droolsDateFormat) {
 		if(droolsDateFormat!=null)
@@ -183,6 +201,37 @@ public class JEConfiguration {
 			}
 	}
 
+
+
+	public static String getLoggingSystemURL() {
+		return loggingSystemURL;
+	}
+
+
+
+	public static void setLoggingSystemURL(String loggingSystemURL) {
+		if(loggingSystemURL!=null)
+		{
+			JEConfiguration.loggingSystemURL = loggingSystemURL;
+		}
+	}
+
+
+
+	public static int getLoggingSystemZmqPublishPort() {
+		return loggingSystemZmqPublishPort;
+	}
+
+
+
+	public static void setLoggingSystemZmqPublishPort(int loggingSystemZmqPublishPort) {
+		if(loggingSystemZmqPublishPort!=0)
+		{
+			JEConfiguration.loggingSystemZmqPublishPort = loggingSystemZmqPublishPort;
+		}
+	}
+
+	
 	
 
 }

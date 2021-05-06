@@ -3,22 +3,25 @@ package io.je.utilities.logger;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.je.utilities.config.JEConfiguration;
 import io.je.utilities.zmq.ZMQPublisher;
 
 public class ZMQLogPublisher {
 	
 	//TODO: read from config instead of hardcoded msg
-	static ZMQPublisher publisher = new ZMQPublisher("tcp:\\localhost", 15001);
+	static ZMQPublisher publisher = new ZMQPublisher(JEConfiguration.getLoggingSystemURL(), JEConfiguration.getLoggingSystemZmqPublishPort());
 	static ObjectMapper objectMapper = new ObjectMapper();
 
 	public static void publish(LogMessageFormat msg) {
 		try {
 			String jsonMsg = objectMapper.writeValueAsString(msg);
-		} catch (JsonProcessingException e) {
-			// TODO Auto-generated catch block
+			publisher.publish(jsonMsg, "SIOTH##LogTopic");
+
+		} catch (Exception e) {
+			// TODO : replace with custom exception
 			e.printStackTrace();
+			JELogger.error("Failed to send log message to the logging system : " +e.getMessage());
 		}
-		publisher.publish(msg.toString(), "SIOTH##LogTopic");
 		
 	}
 	

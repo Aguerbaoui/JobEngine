@@ -20,7 +20,9 @@ public class ConfigModel {
 	 int subscriberPort;
 	 int requestPort;
 	 String droolsDateFormat;
-	  String dataModelDateFormat;
+	 String dataModelDateFormat;
+	 String loggingSystemURL;
+	 int loggingSystemZmqPublishPort;
 
 	public String getEmailApiUrl() {
 		return emailApiUrl;
@@ -80,6 +82,23 @@ public class ConfigModel {
 	}
 
 	
+
+	
+	public String getLoggingSystemURL() {
+		return loggingSystemURL;
+	}
+
+	public void setLoggingSystemURL(String loggingSystemURL) {
+		this.loggingSystemURL = loggingSystemURL;
+	}
+
+	public int getLoggingSystemZmqPublishPort() {
+		return loggingSystemZmqPublishPort;
+	}
+
+	public void setLoggingSystemZmqPublishPort(int loggingSystemZmqPublishPort) {
+		this.loggingSystemZmqPublishPort = loggingSystemZmqPublishPort;
+	}
 
 	public String getDataModelDateFormat() {
 		return dataModelDateFormat;
