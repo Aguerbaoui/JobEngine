@@ -132,11 +132,10 @@ public class ConfigurationService {
 			configurationIsValid = false;
 			JELogger.warning(getClass(), JEMessages.DROOLS_DATE_FORMAT_MISSING);
 		}
-	/*	if (JEConfiguration.getDataModelDateFormat() == null) {
+		if (JEConfiguration.getDataModelDateFormat() == null) {
 			configurationIsValid = false;
 			JELogger.warning(getClass(), JEMessages.DATA_MODEL_DATE_FORMAT_MISSING);
 		}
-*/
 		return configurationIsValid;
 
 	}
