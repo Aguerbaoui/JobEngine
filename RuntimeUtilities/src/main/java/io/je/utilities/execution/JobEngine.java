@@ -1,131 +1,132 @@
 package io.je.utilities.execution;
 
+import io.je.utilities.apis.JEBuilderApiHandler;
 import io.je.utilities.apis.JERunnerAPIHandler;
-import io.je.utilities.beans.JEVariable;
-import io.je.utilities.config.JEConfiguration;
-import io.je.utilities.constants.APIConstants;
-import io.je.utilities.exceptions.JERunnerErrorException;
+import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.logger.JELogger;
 import io.je.utilities.models.VariableModel;
+import io.je.utilities.network.JEResponse;
 import io.je.utilities.string.JEStringUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 public class JobEngine {
 
     /*
     * Run a workflow from script task
     * */
-    public static JobEngineApiErrors runWorkflow(String projectId, String key) {
+    public static int runWorkflow(String projectId, String workflowName) {
         try {
-            JERunnerAPIHandler.runWorkflow(JEConfiguration.getRuntimeManagerURL()+ APIConstants.RUN_WORKFLOW + projectId + "/" + key);
+            JEResponse response = JEBuilderApiHandler.runWorkflow(projectId, workflowName);
+            return response.getCode();
         } catch (Exception e) {
            JELogger.info("Error running the workflow");
-            return JobEngineApiErrors.JERunnerException;
+           return ResponseCodes.UNKNOWN_ERROR;
+        }
+    }
+
+    /*
+     * Stop a workflow from script task
+     * */
+    public static int stopWorkflow(String projectId, String workflowName) {
+        try {
+            JEResponse response = JEBuilderApiHandler.stopWorkflow(projectId, workflowName);
+            return response.getCode();
+        } catch (Exception e) {
+            JELogger.info("Error running the workflow");
+            return ResponseCodes.UNKNOWN_ERROR;
         }
 
-        return JobEngineApiErrors.NoError;
     }
 
     /*
     * Add a variable to runner from script task
     * */
-    public static JobEngineApiErrors addIntegerVariable(String varId, String varProjectId, String varName, int varValue) {
+    public static int addIntegerVariable(String varProjectId, String varName, int varValue) {
         try {
-            JERunnerAPIHandler.addVariable(varProjectId, varId, getVariableBody(varId, varProjectId, varName, varValue, "int"));
+            JEResponse response = JEBuilderApiHandler.addVariable(varProjectId, varName, getVariableBody(varName, varProjectId, varName, varValue, "int"));
+            return response.getCode();
         } catch (Exception e) {
             JELogger.info("Error adding the variable");
-            return JobEngineApiErrors.JERunnerException;
+            return ResponseCodes.UNKNOWN_ERROR;
         }
-
-        return JobEngineApiErrors.NoError;
     }
 
     /*
      * Add a variable to runner from script task
      * */
-    public static JobEngineApiErrors addLongVariable(String varId, String varProjectId, String varName, long varValue) {
+    public static int addLongVariable(String varProjectId, String varName, long varValue) {
         try {
-            JERunnerAPIHandler.addVariable(varProjectId, varId, getVariableBody(varId, varProjectId, varName, varValue, "long"));
+            JEResponse response = JEBuilderApiHandler.addVariable(varProjectId, varName, getVariableBody(varName, varProjectId, varName, varValue, "long"));
+            return response.getCode();
         } catch (Exception e) {
             JELogger.info("Error adding the variable");
-            return JobEngineApiErrors.JERunnerException;
+            return ResponseCodes.UNKNOWN_ERROR;
         }
-
-        return JobEngineApiErrors.NoError;
     }
 
     /*
      * Add a variable to runner from script task
      * */
-    public static JobEngineApiErrors addDoubleVariable(String varId, String varProjectId, String varName, double varValue) {
+    public static int addDoubleVariable(String varProjectId, String varName, double varValue) {
         try {
-            JERunnerAPIHandler.addVariable(varProjectId, varId, getVariableBody(varId, varProjectId, varName, varValue, "double"));
+            JEResponse response = JEBuilderApiHandler.addVariable(varProjectId, varName, getVariableBody(varName, varProjectId, varName, varValue, "double"));
+            return response.getCode();
         } catch (Exception e) {
-            JELogger.info("Error adding the variable");
-            return JobEngineApiErrors.JERunnerException;
+            JELogger.error("Error adding the variable");
+            return ResponseCodes.UNKNOWN_ERROR;
         }
 
-        return JobEngineApiErrors.NoError;
     }
 
     /*
      * Add a variable to runner from script task
      * */
-    public static JobEngineApiErrors addStringVariable(String varId, String varProjectId, String varName, String varValue) {
+    public static int addStringVariable(String varProjectId, String varName, String varValue) {
 
             try {
-                JERunnerAPIHandler.addVariable(varProjectId, varId, getVariableBody(varId, varProjectId, varName, varValue, "string"));
-            } catch (InterruptedException | ExecutionException | JERunnerErrorException e) {
-                JELogger.info("Error adding the variable");
-                return JobEngineApiErrors.JERunnerException;
+                JEResponse response = JEBuilderApiHandler.addVariable(varProjectId, varName, getVariableBody(varName, varProjectId, varName, varValue, "string"));
+                return response.getCode();
+            } catch (Exception e) {
+                JELogger.error("Error adding the variable");
+                return ResponseCodes.UNKNOWN_ERROR;
             }
-
-            return JobEngineApiErrors.NoError;
 
     }
 
     /*
      * Add a variable to runner from script task
      * */
-    public static JobEngineApiErrors addBooleanVariable(String varId, String varProjectId, String varName, String varValue) {
+    public static int addBooleanVariable(String varProjectId, String varName, String varValue) {
         try {
-            JERunnerAPIHandler.addVariable(varProjectId, varId, getVariableBody(varId, varProjectId, varName, varValue, "boolean"));
+            JEResponse response = JEBuilderApiHandler.addVariable(varProjectId, varName, getVariableBody(varName, varProjectId, varName, varValue, "boolean"));
+            return response.getCode();
         } catch (Exception e) {
             JELogger.info("Error adding the variable");
-            return JobEngineApiErrors.JERunnerException;
+            return ResponseCodes.UNKNOWN_ERROR;
         }
 
-        return JobEngineApiErrors.NoError;
     }
 
-    public static JobEngineApiErrors addVariables(ArrayList<VariableModel> vars) {
+    public static int addVariables(ArrayList<VariableModel> vars) {
         if(vars != null) {
             for(VariableModel variableModel: vars) {
                 try {
-                    JERunnerAPIHandler.addVariable(variableModel.getProjectId(),
+                    JEResponse response = JEBuilderApiHandler.addVariable(variableModel.getProjectId(),
                             variableModel.getId(), getVariableBody(variableModel.getId(), variableModel.getProjectId(),
                                     variableModel.getName(), variableModel.getValue(), variableModel.getType()));
                 } catch (Exception e) {
                     JELogger.info("Error adding the variables ");
-                    return JobEngineApiErrors.JERunnerException;
+                    return ResponseCodes.UNKNOWN_ERROR;
                 }
             }
         }
 
-        return JobEngineApiErrors.NoError;
+        return ResponseCodes.CODE_OK;
     }
 
-    public static void main(String args[] ) {
-        ArrayList<VariableModel> v = new ArrayList<>();
-        v.add(new VariableModel("tess", "1110", "a", "String", "value of a"));
-        v.add(new VariableModel("tess", "1111", "b", "String", "value of b"));
-        JobEngine.addVariables(v);
-    }
-
+    //Get variable body from parameters
     public static HashMap<String, Object> getVariableBody(String varId, String varProjectId, String varName, Object varValue, String type) {
         HashMap<String, Object> body = new HashMap<>();
         body.put("id", varId);
@@ -135,43 +136,75 @@ public class JobEngine {
         body.put("value", varValue);
         return body;
     }
+
     /*
      * Add a variable to runner from script task
      * */
-    public static JobEngineApiErrors removeVariable(String projectId, String varId) {
+    public static int removeVariable(String projectId, String variableName) {
         try {
-            JERunnerAPIHandler.removeVariable(projectId, varId);
+            JEResponse response = JEBuilderApiHandler.removeVariable(projectId, variableName);
+            return response.getCode();
         }  catch (Exception e) {
-            JELogger.info("Error adding the variable");
-            return JobEngineApiErrors.JERunnerException;
+            JELogger.error("Error adding the variable");
+            return ResponseCodes.UNKNOWN_ERROR;
         }
 
-        return JobEngineApiErrors.NoError;
     }
 
     /*
     * Send user message
     * */
-    public static JobEngineApiErrors informUser(String message) {
+    public static int informUser(String message) {
         if(!JEStringUtils.isEmpty(message)) {
             JELogger.info(message);
             //send to monitoring when its ready
         }
 
-        return JobEngineApiErrors.NoError;
+        return ResponseCodes.CODE_OK;
     }
 
     /*
     * Trigger event from script
     * */
-    public static JobEngineApiErrors triggerEvent(String projectId, String eventId) {
+    public static int triggerEvent(String projectId, String eventName) {
         try {
-            JERunnerAPIHandler.triggerEvent(eventId, projectId);
+            JEResponse response = JERunnerAPIHandler.triggerEvent(eventName, projectId);
+            return response.getCode();
         } catch (Exception e) {
-            JELogger.info("Error triggering event");
-            return JobEngineApiErrors.JERunnerException;
+            JELogger.error("Error triggering event");
+            return ResponseCodes.UNKNOWN_ERROR;
         }
+    }
 
-        return JobEngineApiErrors.NoError;
+    //Remove workflow from project
+    public static int removeWorkflow(String projectId, String workflowId) {
+        try {
+            JEResponse response = JEBuilderApiHandler.removeWorkflow(projectId, workflowId);
+            return response.getCode();
+        } catch (Exception e) {
+            JELogger.error("Error removing workflow");
+            return ResponseCodes.UNKNOWN_ERROR;
+        }
+    }
+
+    public static int removeEvent(String projectId, String eventId) {
+        try {
+            JEResponse response = JEBuilderApiHandler.removeEvent(projectId, eventId);
+            return response.getCode();
+        } catch (Exception e) {
+            JELogger.error("Error removing event");
+            return ResponseCodes.UNKNOWN_ERROR;
+        }
+    }
+
+    //Remove rule from JobEngine
+    public static int removeRule(String projectId, String ruleId) {
+        try {
+            JEResponse response = JEBuilderApiHandler.removeRule(projectId, ruleId);
+            return response.getCode();
+        } catch (Exception e) {
+            JELogger.error("Error removing rule");
+            return ResponseCodes.UNKNOWN_ERROR;
+        }
     }
 }

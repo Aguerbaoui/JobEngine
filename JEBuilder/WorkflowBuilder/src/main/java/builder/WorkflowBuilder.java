@@ -145,7 +145,7 @@ public class WorkflowBuilder {
      * Run workflow in runtime engine
      * */
     public static void runWorkflow(String projectId, String key) throws IOException, InterruptedException, ExecutionException, JERunnerErrorException {
-        JERunnerAPIHandler.runWorkflow(JEConfiguration.getRuntimeManagerURL()+ APIConstants.RUN_WORKFLOW + projectId + "/" + key);
+        JERunnerAPIHandler.runWorkflow(projectId, key);
 
     }
 

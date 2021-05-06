@@ -59,6 +59,8 @@ public class JEMessages {
 
     public static final String CLASS_LOAD_FAILED = "Class load failed ";
 
+    public static final String CLASS_COMPILATION_FAILED = "Class compilation failed ";
+
     public static final String INVALID_CLASS_FORMAT = "Class format is not valid, interface can't inherit from class ";
 
     public static final String UNKNOW_CLASS_TYPE = "Class type cannot be determined. [Class types : Class/Interface/Enum ] ";

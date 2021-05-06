@@ -56,6 +56,7 @@ public class JEClassCompiler {
 			if(task.call()) {
 				JELogger.debug("Compilation in JEClassLoader succeded");
 			}
+			else throw new ClassLoadException(JEMessages.CLASS_COMPILATION_FAILED);
 			fileManager.close();
 		}catch (Exception e) {
 			//TODO: move msg to error clas

@@ -353,7 +353,7 @@ public class JEProject {
      * Remove a workflow
      */
     public void removeWorkflow(String id) {
-        JEWorkflow wf = workflows.get(id);
+        JEWorkflow wf = getWorkflowByIdOrName(id);
         workflows.remove(id);
         wf = null;
         isBuilt=false;
@@ -364,8 +364,7 @@ public class JEProject {
     * Checks if a workflow exists
     * */
     public boolean workflowExists(String workflowId) {
-        if(workflows.containsKey(workflowId)) {
-            workflows.get(workflowId).setJeObjectLastUpdate(LocalDateTime.now());
+        if(getWorkflowByIdOrName(workflowId) != null) {
             return true;
         }
         return false;
@@ -375,7 +374,7 @@ public class JEProject {
     * Add a block to a workflow
     * */
     public void addBlockToWorkflow(WorkflowBlock block) {
-        workflows.get(block.getWorkflowId()).addBlock(block);
+        getWorkflowByIdOrName(block.getWorkflowId()).addBlock(block);
 		isBuilt=false;
 
     }
@@ -384,7 +383,7 @@ public class JEProject {
     * Delete a workflow block
     * */
     public void deleteWorkflowBlock(String workflowId, String blockId) throws InvalidSequenceFlowException, WorkflowBlockNotFound {
-        workflows.get(workflowId).deleteWorkflowBlock(blockId);
+		getWorkflowByIdOrName(workflowId).deleteWorkflowBlock(blockId);
         removeBlockName(blockId);
 		isBuilt=false;
 
@@ -394,7 +393,7 @@ public class JEProject {
     * Delete a workflow sequence flow
     * */
     public void deleteWorkflowSequenceFlow(String workflowId, String sourceRef, String targetRef) throws InvalidSequenceFlowException {
-        workflows.get(workflowId).deleteSequenceFlow(sourceRef, targetRef);
+		getWorkflowByIdOrName(workflowId).deleteSequenceFlow(sourceRef, targetRef);
 		isBuilt=false;
 
     }
@@ -403,10 +402,11 @@ public class JEProject {
     * Add a workflow sequence flow
     * */
     public void addWorkflowSequenceFlow(String workflowId, String sourceRef, String targetRef, String condition) throws WorkflowBlockNotFound {
-        if(! workflows.get(workflowId).blockExists(sourceRef) || !workflows.get(workflowId).blockExists(targetRef)) {
+    	JEWorkflow wf = getWorkflowByIdOrName(workflowId);
+        if(! wf.blockExists(sourceRef) || !wf.blockExists(targetRef)) {
             throw new WorkflowBlockNotFound( JEMessages.WORKFLOW_BLOCK_NOT_FOUND);
         }
-        workflows.get(workflowId).addBlockFlow(sourceRef, targetRef, condition);
+		wf.addBlockFlow(sourceRef, targetRef, condition);
 		isBuilt=false;
 
     }
@@ -414,7 +414,13 @@ public class JEProject {
     /*
     * Get a workflow id
     * */
-    public JEWorkflow getWorkflowById(String workflowId) {
+    public JEWorkflow getWorkflowByIdOrName(String workflowId) {
+    	if(!workflows.containsKey(workflowId)) {
+    		//checking if workflow exists by name
+			for(JEWorkflow wf: workflows.values()) {
+				if(wf.getWorkflowName().equalsIgnoreCase(workflowId)) return wf;
+			}
+		}
         return workflows.get(workflowId);
     }
     
