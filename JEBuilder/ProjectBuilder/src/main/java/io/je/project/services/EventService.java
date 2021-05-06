@@ -192,6 +192,6 @@ public class EventService {
 		}
 		JELogger.info(getClass(), JEMessages.DELETING_EVENT_FROM_RUNNER);
 		JERunnerAPIHandler.deleteEvent(projectId, eventId);
-		project.getEvents().remove(eventId);
+		project.getEvents().remove(event.getJobEngineElementID());
 	}
 }

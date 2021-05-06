@@ -136,7 +136,6 @@ public class ConfigurationService {
 			configurationIsValid = false;
 			JELogger.warning(getClass(), JEMessages.DATA_MODEL_DATE_FORMAT_MISSING);
 		}
-
 		return configurationIsValid;
 
 	}
