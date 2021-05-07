@@ -1,6 +1,5 @@
 package io.je.utilities.logger;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.je.utilities.config.JEConfiguration;
@@ -12,10 +11,11 @@ public class ZMQLogPublisher {
 	static ZMQPublisher publisher = new ZMQPublisher(JEConfiguration.getLoggingSystemURL(), JEConfiguration.getLoggingSystemZmqPublishPort());
 	static ObjectMapper objectMapper = new ObjectMapper();
 
-	public static void publish(LogMessageFormat msg) {
+	public static void publish(LogMessage msg) {
 		try {
 			String jsonMsg = objectMapper.writeValueAsString(msg);
 			publisher.publish(jsonMsg, "SIOTH##LogTopic");
+
 
 		} catch (Exception e) {
 			// TODO : replace with custom exception

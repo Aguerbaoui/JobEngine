@@ -28,6 +28,18 @@ public class JELogger {
 
     
     
+    /*
+     * TEMPORARY METHOD FOR TESTING WHERE SUBMODULE IS STRING : TO BE DELETED ONCE OBJECT ID IS ADDED TO THE LOGGING SYSTEM
+     */
+    public static void info(LogCategory category,String subModule, String projectId, Object msg ) {
+        synchronized (queue) {
+            queue.add(new Timestamp(System.currentTimeMillis()) + " " + msg);
+        }
+
+        logger.info( msg);
+        LogMessage logMsg = new LogMessage(LogLevel.Inform, msg, LocalDateTime.now().toString(),category, projectId,subModule);
+		 ZMQLogPublisher.publish(logMsg);
+    }
     
     
     /*******************************TO BE DELETED ****************************************************/
@@ -143,7 +155,7 @@ public class JELogger {
           }
 
          logger.info( msg);
-         LogMessageFormat logMsg = new LogMessageFormat(LogLevel.Control, msg, LocalDateTime.now().toString(),category, projectId,subModule);
+         LogMessage logMsg = new LogMessage(LogLevel.Control, msg, LocalDateTime.now().toString(),category, projectId,subModule);
 		 ZMQLogPublisher.publish(logMsg);
 
          
@@ -157,7 +169,7 @@ public class JELogger {
      public static void debug(LogCategory category,LogSubModules subModule, String projectId, Object msg ) {
 
          logger.debug(msg);
-         LogMessageFormat logMsg = new LogMessageFormat(LogLevel.Debug, msg, LocalDateTime.now().toString(),category, projectId,subModule);
+         LogMessage logMsg = new LogMessage(LogLevel.Debug, msg, LocalDateTime.now().toString(),category, projectId,subModule);
 		 ZMQLogPublisher.publish(logMsg);
 
      }
@@ -170,15 +182,18 @@ public class JELogger {
          }
 
          logger.info( msg);
-         LogMessageFormat logMsg = new LogMessageFormat(LogLevel.Inform, msg, LocalDateTime.now().toString(),category, projectId,subModule);
+         LogMessage logMsg = new LogMessage(LogLevel.Inform, msg, LocalDateTime.now().toString(),category, projectId,subModule);
 		 ZMQLogPublisher.publish(logMsg);
      }
+     
+     
+   
      /*
       * log level 3 : warn
       */
      public static void warning(LogCategory category,LogSubModules subModule, String projectId, Object msg ) {
          logger.warn( msg);
-         LogMessageFormat logMsg = new LogMessageFormat(LogLevel.Warning, msg, LocalDateTime.now().toString(),category, projectId,subModule);
+         LogMessage logMsg = new LogMessage(LogLevel.Warning, msg, LocalDateTime.now().toString(),category, projectId,subModule);
 		 ZMQLogPublisher.publish(logMsg);
      }
      
@@ -193,7 +208,7 @@ public class JELogger {
              queue.add(new Timestamp(System.currentTimeMillis()) + " " + msg);
          }
          logger.error( msg);
-         LogMessageFormat logMsg = new LogMessageFormat(LogLevel.Error, msg, LocalDateTime.now().toString(),category, projectId,subModule);
+         LogMessage logMsg = new LogMessage(LogLevel.Error, msg, LocalDateTime.now().toString(),category, projectId,subModule);
 		 ZMQLogPublisher.publish(logMsg);
 
 

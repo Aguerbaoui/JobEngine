@@ -3,7 +3,7 @@ package io.je.utilities.logger;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 
-public class LogMessageFormat {
+public class LogMessage {
 	
     @JsonProperty("LogLevel")
 	public LogLevel logLevel ;
@@ -23,12 +23,29 @@ public class LogMessageFormat {
     @JsonProperty("ProjecId")
     public String projectId ;
     
+    
+    //TODO change type to LogSubModules
     @JsonProperty("SubModule")
-    public LogSubModules subModule ;
+    public String subModule ;
 	
     
-    public LogMessageFormat(LogLevel logLevel, Object message, String logDate, LogCategory category,
+    public LogMessage(LogLevel logLevel, Object message, String logDate, LogCategory category,
 			String projectId, LogSubModules subModule) {
+		super();
+		this.logLevel = logLevel;
+		this.message = message;
+		this.logDate = logDate;
+		this.category = category;
+		this.projectId = projectId;
+		this.subModule = subModule.toString();
+	}
+
+    
+    /*
+     * temporary until we add object id
+     */
+    public LogMessage(LogLevel logLevel, Object message, String logDate, LogCategory category,
+			String projectId, String subModule) {
 		super();
 		this.logLevel = logLevel;
 		this.message = message;
@@ -37,8 +54,6 @@ public class LogMessageFormat {
 		this.projectId = projectId;
 		this.subModule = subModule;
 	}
-
-    
     
     
 }

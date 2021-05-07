@@ -3,6 +3,7 @@ package io.je.utilities.logger;
 import java.time.LocalDateTime;
 import java.util.Date;
 
+import io.je.utilities.config.JEConfiguration;
 import io.je.utilities.zmq.ZMQSubscriber;
 
 
@@ -11,7 +12,9 @@ public class LoggingServiceTest {
 
 	public static void publish(String projectId, LogLevel logLevel, String logDate, LogCategory category,
 			LogSubModules subModule, Object message) {
-			LogMessageFormat msg = new LogMessageFormat(logLevel, message, logDate, category, projectId,subModule);
+			JEConfiguration.setLoggingSystemURL("tcp://localhost");
+			JEConfiguration.setLoggingSystemZmqPublishPort(15001);
+			LogMessage msg = new LogMessage(logLevel, message, logDate, category, projectId,subModule);
 			ZMQLogPublisher.publish(msg);
 		
 	}
@@ -22,10 +25,12 @@ public class LoggingServiceTest {
 
 			@Override
 			public void run() {
+				Integer i=0;
 				while (true) {
+					
 		   			System.out.println("***");
 
-					LoggingServiceTest.publish("123", LogLevel.Inform, LocalDateTime.now().toString(), LogCategory.Runtime, LogSubModules.Rule,
+					LoggingServiceTest.publish((i++).toString(), LogLevel.Inform, LocalDateTime.now().toString(), LogCategory.Runtime, LogSubModules.Rule,
 							"Rule was added");
 					try {
 						Thread.sleep(1000);
