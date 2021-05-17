@@ -194,4 +194,24 @@ public class EventService {
 		JERunnerAPIHandler.deleteEvent(projectId, eventId);
 		project.getEvents().remove(event.getJobEngineElementID());
 	}
+
+	public void triggerEvent(String projectId, String eventId) {
+		try {
+			JERunnerAPIHandler.triggerEvent(eventId, projectId);
+
+		}catch (Exception e) {
+			// TODO: handle exception
+		}
+		
+	}
+
+	public void stopEvent(String projectId, String eventId) {
+		try {
+			JERunnerAPIHandler.stopEvent(eventId, projectId);
+
+		}catch (Exception e) {
+			// TODO: handle exception
+		}
+		
+	}
 }

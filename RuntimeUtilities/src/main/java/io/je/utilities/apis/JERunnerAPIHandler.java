@@ -207,4 +207,9 @@ public class JERunnerAPIHandler {
         //JELogger.debug(JEMessages.ADDING_JAR_FILE_TO_RUNNER + payload);
         sendRequestWithBody(url, payload);
     }
+
+    public static JEResponse stopEvent(String eventId, String projectId) throws JERunnerErrorException, InterruptedException, ExecutionException {
+        String requestUrl = runtimeManagerBaseApi + EVENT_STOP_EVENT + projectId + "/" + eventId;
+        return sendRequest(requestUrl);
+    }
 }

@@ -110,6 +110,10 @@ public class EventController {
 	}
 	
 	
+	
+
+	
+	
 
 	/*
 	 * update event
@@ -151,4 +155,41 @@ public class EventController {
 		JELogger.info(getClass(), " Event [ id="+eventId+"] deleted successfully");
 		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.EVENT_DELETED));
 	}
+	
+	/*
+	 * trigger event
+	 */
+	@PostMapping(value = "/{projectId}/triggerEvent/{eventId}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> triggerEvent(@PathVariable("projectId") String projectId, @PathVariable("eventId") String eventId) {
+
+		try {
+
+			eventService.triggerEvent(projectId, eventId);
+
+		} catch (Exception e) {
+			return JEExceptionHandler.handleException(e);
+
+		}
+		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.EVENT_ADDED));
+	}
+	
+	
+	/*
+	 * trigger event
+	 */
+	@PostMapping(value = "/{projectId}/stopEvent/{eventId}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> stopEvent(@PathVariable("projectId") String projectId, @PathVariable("eventId") String eventId) {
+
+		try {
+
+			eventService.stopEvent(projectId, eventId);
+
+		} catch (Exception e) {
+			return JEExceptionHandler.handleException(e);
+
+		}
+		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.EVENT_ADDED));
+	}
+	
+	
 }
