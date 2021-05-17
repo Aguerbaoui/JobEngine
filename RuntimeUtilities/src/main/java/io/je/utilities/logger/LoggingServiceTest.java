@@ -11,10 +11,10 @@ import io.je.utilities.zmq.ZMQSubscriber;
 public class LoggingServiceTest {
 
 	public static void publish(String projectId, LogLevel logLevel, String logDate, LogCategory category,
-			LogSubModules subModule, Object message) {
+			LogSubModule subModule, Object message) {
 			JEConfiguration.setLoggingSystemURL("tcp://localhost");
 			JEConfiguration.setLoggingSystemZmqPublishPort(15001);
-			LogMessage msg = new LogMessage(logLevel, message, logDate, category, projectId,subModule);
+			LogMessage msg = new LogMessage(logLevel, message, logDate, category, projectId,subModule,"ruleId123");
 			ZMQLogPublisher.publish(msg);
 		
 	}
@@ -30,7 +30,7 @@ public class LoggingServiceTest {
 					
 		   			System.out.println("***");
 
-					LoggingServiceTest.publish((i++).toString(), LogLevel.Inform, LocalDateTime.now().toString(), LogCategory.Runtime, LogSubModules.Rule,
+					LoggingServiceTest.publish((i++).toString(), LogLevel.Inform, LocalDateTime.now().toString(), LogCategory.Runtime, LogSubModule.Rule,
 							"Rule was added");
 					try {
 						Thread.sleep(1000);

@@ -1,13 +1,13 @@
 package io.je.utilities.beans;
 
-public class JERuleBlockMessage {
+public class JEBlockMessage {
 	
 	String blockName;
 	String blockValue;
 	
 	
 	
-	public JERuleBlockMessage(String blockName, String blockValue) {
+	public JEBlockMessage(String blockName, String blockValue) {
 		super();
 		this.blockName = blockName;
 		this.blockValue = blockValue;

@@ -15,7 +15,7 @@ public class ZMQLogPublisher {
 		try {
 			String jsonMsg = objectMapper.writeValueAsString(msg);
 			publisher.publish(jsonMsg, "SIOTH##LogTopic");
-
+			System.out.println(jsonMsg);
 
 		} catch (Exception e) {
 			// TODO : replace with custom exception

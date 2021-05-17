@@ -23,29 +23,16 @@ public class LogMessage {
     @JsonProperty("ProjecId")
     public String projectId ;
     
+    @JsonProperty("ObjectId")
+    public String objectId;
     
-    //TODO change type to LogSubModules
+    
     @JsonProperty("SubModule")
-    public String subModule ;
+    public LogSubModule subModule ;
 	
     
     public LogMessage(LogLevel logLevel, Object message, String logDate, LogCategory category,
-			String projectId, LogSubModules subModule) {
-		super();
-		this.logLevel = logLevel;
-		this.message = message;
-		this.logDate = logDate;
-		this.category = category;
-		this.projectId = projectId;
-		this.subModule = subModule.toString();
-	}
-
-    
-    /*
-     * temporary until we add object id
-     */
-    public LogMessage(LogLevel logLevel, Object message, String logDate, LogCategory category,
-			String projectId, String subModule) {
+			String projectId, LogSubModule subModule, String objectId) {
 		super();
 		this.logLevel = logLevel;
 		this.message = message;
@@ -53,7 +40,11 @@ public class LogMessage {
 		this.category = category;
 		this.projectId = projectId;
 		this.subModule = subModule;
+		this.objectId = objectId;
 	}
+
+    
+   
     
     
 }

@@ -1,13 +1,14 @@
 package io.je.utilities.execution;
 
 import io.je.utilities.apis.JERunnerAPIHandler;
-import io.je.utilities.beans.JERuleMessage;
+import io.je.utilities.beans.JEMessage;
 import io.je.utilities.classloader.JEClassLoader;
 import io.je.utilities.config.JEConfiguration;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.JERunnerErrorException;
 import io.je.utilities.logger.JELogger;
 import io.je.utilities.logger.LogCategory;
+import io.je.utilities.logger.LogSubModule;
 import io.je.utilities.monitoring.MessageModel;
 import io.je.utilities.zmq.ZMQRequester;
 
@@ -32,7 +33,7 @@ public class Executioner {
     private Executioner() {
     }
     
-    public static void informRuleBlock(String projectId, String ruleId, JERuleMessage msg)
+    public static void informRuleBlock(String projectId, String ruleId, JEMessage msg)
     {
     	try {
             new Thread(new Runnable() {
@@ -42,7 +43,7 @@ public class Executioner {
                 public void run() {
                 	
                    try {
-					JELogger.info(LogCategory.Runtime, ruleId, projectId,objectMapper.writeValueAsString(msg));
+					JELogger.info(LogCategory.Runtime, LogSubModule.Rule, projectId,ruleId,objectMapper.writeValueAsString(msg));
 				} catch (JsonProcessingException e) {
 					e.printStackTrace();
 				}

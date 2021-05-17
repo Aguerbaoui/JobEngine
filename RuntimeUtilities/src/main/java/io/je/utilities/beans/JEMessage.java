@@ -3,18 +3,18 @@ package io.je.utilities.beans;
 import java.util.ArrayList;
 import java.util.List;
 
-public class JERuleMessage {
+public class JEMessage {
 	
 	 String type; //BlockMessage, RuleExecutionMessage, ErrorMessage
 	 String executionTime;
-	 List<JERuleBlockMessage> blocks;
+	 List<JEBlockMessage> blocks;
 	 List<String> instanceNames;
 	 String message;
 	 
 	 
 	 
-	public JERuleMessage() {
-		blocks = new ArrayList<JERuleBlockMessage>();
+	public JEMessage() {
+		blocks = new ArrayList<JEBlockMessage>();
 	}
 	public String getType() {
 		return type;
@@ -28,10 +28,10 @@ public class JERuleMessage {
 	public void setExecutionTime(String executionTime) {
 		this.executionTime = executionTime;
 	}
-	public List<JERuleBlockMessage> getBlocks() {
+	public List<JEBlockMessage> getBlocks() {
 		return blocks;
 	}
-	public void setBlocks(List<JERuleBlockMessage> blocks) {
+	public void setBlocks(List<JEBlockMessage> blocks) {
 		this.blocks = blocks;
 	}
 	public List<String> getInstanceNames() {
@@ -48,7 +48,7 @@ public class JERuleMessage {
 	}
 	 
 	 
-	 public void addBlockMessage(JERuleBlockMessage msg)
+	 public void addBlockMessage(JEBlockMessage msg)
 	 {
 		 blocks.add(msg);
 	 }

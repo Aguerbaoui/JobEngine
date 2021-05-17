@@ -1,6 +1,6 @@
 package io.je.utilities.logger;
 
-public enum LogSubModules {
+public enum LogSubModule {
 	Rule,
 	Workflow,
 	Event,
