@@ -88,7 +88,7 @@ public class EventManager {
             else if(event.getType().equals(EventType.START_WORKFLOW)) {
                 startProcessInstanceByMessage(projectId, event.getName());
             }
-            event.setTriggered(true);
+            event.trigger();
         }
         else {
             throw new EventException(JEMessages.EVENT_NOT_FOUND);
@@ -171,7 +171,7 @@ public class EventManager {
 	            }
 	        }
 	        if(event != null) {
-	        	event.setTriggered(false);
+	        	event.untrigger();
 	            RuleEngineHandler.addEvent(event);
 	            //TODO: add stop event in workflow
 
