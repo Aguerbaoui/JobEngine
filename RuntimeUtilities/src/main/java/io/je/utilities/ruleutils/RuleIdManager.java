@@ -23,11 +23,6 @@ public class RuleIdManager {
 
 	}
 	
-	public static void main(String[] args)
-	{
-		String test = "Error evaluating constraint 'location > 10' in [Rule \"[f607ac1f-923d-e24b-199f-e0d8f4da9a5e]azerty1\" in D:\\IOJobEngine\\SumTest\\target\\classes\\com\\sample\\rules\\Sample.drl]";
-		System.out.println(StringUtils.substringBefore(test, " in "));
-	}
 
 
 }
