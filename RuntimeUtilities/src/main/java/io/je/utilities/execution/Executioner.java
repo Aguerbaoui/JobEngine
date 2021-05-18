@@ -43,7 +43,7 @@ public class Executioner {
                 public void run() {
                 	
                    try {
-                       JELogger.info(msg.getMessage(), LogCategory.RUNTIME, projectId, LogSubModule.RULE, ruleId);
+                       JELogger.info(objectMapper.writeValueAsString(msg), LogCategory.RUNTIME, projectId, LogSubModule.RULE, ruleId);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
