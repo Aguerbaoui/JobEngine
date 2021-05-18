@@ -1,11 +1,11 @@
 package io.je.utilities.logger;
 
 public enum LogSubModule {
-	Rule,
-	Workflow,
-	Event,
-	Variable,
-	JEBuilder,
-	JERunner
+	RULE,
+	WORKFLOW,
+	EVENT,
+	VARIABLE,
+	JEBUILDER,
+	JERUNNER
 
 }

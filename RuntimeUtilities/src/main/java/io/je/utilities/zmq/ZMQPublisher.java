@@ -12,7 +12,6 @@ public class ZMQPublisher {
 	protected int publishPort;
 	private String connectionUrl;
 
-
 	public ZMQPublisher(String url,int publishPort) {
 		
 		this.url = url;

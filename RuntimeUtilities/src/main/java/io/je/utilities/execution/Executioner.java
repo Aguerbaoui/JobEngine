@@ -43,8 +43,8 @@ public class Executioner {
                 public void run() {
                 	
                    try {
-					JELogger.info(LogCategory.Runtime, LogSubModule.Rule, projectId,ruleId,objectMapper.writeValueAsString(msg));
-				} catch (JsonProcessingException e) {
+                       JELogger.info(msg.getMessage(), LogCategory.RUNTIME, projectId, LogSubModule.RULE, ruleId);
+				} catch (Exception e) {
 					e.printStackTrace();
 				}
 

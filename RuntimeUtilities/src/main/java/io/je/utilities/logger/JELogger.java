@@ -1,5 +1,6 @@
 package io.je.utilities.logger;
 
+import org.apache.commons.logging.Log;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -22,7 +23,7 @@ import java.util.Queue;
  */
 public class JELogger {
 
-    private static Queue<String> queue = new LinkedList<>();
+    private static Queue<LogMessage> queue = new LinkedList<>();
     private static  Logger logger = null;
     private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
 
@@ -36,19 +37,12 @@ public class JELogger {
     * Trace log level
     * */
      public static void trace(Class<?> clazz, String msg) {
-         synchronized (queue) {
-             queue.add(new Timestamp(System.currentTimeMillis()) + " " + msg.trim());
-         }
 
         logger.info( msg.trim());
 
     }
 
     public static void trace(String msg) {
-        synchronized (queue) {
-            queue.add(new Timestamp(System.currentTimeMillis()) + " " + msg.trim());
-        }
-
         logger.info( msg.trim());
 
     }
@@ -71,7 +65,7 @@ public class JELogger {
 
     }
 
-    public static Queue<String> getQueue() {
+    public static Queue<LogMessage> getQueue() {
         return queue;
     }
 
@@ -79,19 +73,12 @@ public class JELogger {
      * log level 2 : info
      */
     public static void info(Class<?> clazz, String msg) {
-        synchronized (queue) {
-            queue.add(new Timestamp(System.currentTimeMillis()) + " " + msg.trim());
-            
-        }
        // logger.info(logger.getName() + ": " + logger);
 
         logger.info( msg.trim());
     }
 
     public static void info( String msg) {
-        synchronized (queue) {
-            queue.add(new Timestamp(System.currentTimeMillis()) + " " + msg.trim());
-        }
 
         logger.info( msg.trim());
     }
@@ -108,11 +95,7 @@ public class JELogger {
      */
     public static void error(Class<?> clazz, String msg) {
 
-        synchronized (queue) {
-            queue.add(new Timestamp(System.currentTimeMillis()) + " " + msg.trim());
-        }
         logger.error(clazz.getName() +" : "+  msg.trim());
-
 
     }
 
@@ -121,9 +104,6 @@ public class JELogger {
      */
     public static void error(String msg) {
 
-        synchronized (queue) {
-            queue.add(new Timestamp(System.currentTimeMillis()) + " " + msg.trim());
-        }
         logger.error(  msg.trim());
 
 
@@ -133,76 +113,94 @@ public class JELogger {
     
     /*******************************************************************************************************/
 
+
     /*
      * Trace log level
      * */
-      public static void trace(LogCategory category,LogSubModule subModule, String projectId, String objectId,Object msg) {
-         
-    	  synchronized (queue) {
-              queue.add(new Timestamp(System.currentTimeMillis()) + " " + msg);
-          }
+    public static void trace(String message,  LogCategory category,
+                             String projectId, LogSubModule subModule, String objectId) {
 
-         logger.info( msg);
-                 LogMessage logMsg = new LogMessage(LogLevel.Inform, msg, LocalDateTime.now().toString(),category, projectId,subModule,objectId);
-		 ZMQLogPublisher.publish(logMsg);
+        //Log in file
+        logger.trace( message);
 
-         
+        //Log in logging service
+        synchronized (queue) {
+            queue.add(getLogMessage(LogLevel.CONTROL, message, category, projectId, subModule, objectId));
+        }
 
+    }
+
+    /*
+     * Debug log level
+     * */
+    public static void debug(String message,  LogCategory category,
+                             String projectId, LogSubModule subModule, String objectId) {
+
+        //Log in file
+        logger.debug( message);
+
+        //Log in logging service
+        synchronized (queue) {
+            queue.add(getLogMessage(LogLevel.DEBUG, message, category, projectId, subModule, objectId));
+        }
+
+    }
+
+    /*
+     * Inform log level
+     * */
+    public static void info(String message,  LogCategory category,
+                            String projectId, LogSubModule subModule, String objectId) {
+
+        //Log in file
+        logger.info( message);
+
+        //Log in logging service
+        LogMessage logMessage = getLogMessage(LogLevel.INFORM, message, category, projectId, subModule, objectId);
+        synchronized (queue) {
+            queue.add(logMessage);
+        }
+
+        ZMQLogPublisher.publish(logMessage);
+    }
+
+    /*
+     * Error log level
+     * */
+    public static void error(String message,  LogCategory category,
+                             String projectId, LogSubModule subModule, String objectId) {
+
+        //Log in file
+        logger.error( message);
+
+        //Log in logging service
+        synchronized (queue) {
+            queue.add(getLogMessage(LogLevel.ERROR, message, category, projectId, subModule, objectId));
+        }
+
+    }
+
+    /*
+     * Warning log level
+     * */
+    public static void warn(String message,  LogCategory category,
+                            String projectId, LogSubModule subModule, String objectId) {
+
+        //Log in file
+        logger.warn( message);
+
+        //Log in logging service
+        synchronized (queue) {
+            queue.add(getLogMessage(LogLevel.WARNING, message, category, projectId, subModule, objectId));
+        }
+
+    }
+
+     public static LogMessage getLogMessage(LogLevel logLevel, String message,  LogCategory category,
+                                            String projectId, LogSubModule subModule, String objectId) {
+         String logDate = LocalDateTime.now().toString();
+         return new LogMessage(logLevel, message, logDate, category, projectId, subModule, objectId);
      }
-
-
-     /*
-      * log level 1 : debug
-      */
-     public static void debug(LogCategory category,LogSubModule subModule, String projectId, String objectId,Object msg ) {
-
-         logger.debug(msg);
-         LogMessage logMsg = new LogMessage(LogLevel.Debug, msg, LocalDateTime.now().toString(),category, projectId,subModule,objectId);
-		 ZMQLogPublisher.publish(logMsg);
-
-     }
-
-
-
-     public static void info(LogCategory category,LogSubModule subModule, String projectId, String objectId,Object msg ) {
-         synchronized (queue) {
-             queue.add(new Timestamp(System.currentTimeMillis()) + " " + msg);
-         }
-
-         logger.info( msg);
-         LogMessage logMsg = new LogMessage(LogLevel.Inform, msg, LocalDateTime.now().toString(),category, projectId,subModule,objectId);
-		 ZMQLogPublisher.publish(logMsg);
-     }
-     
-     
-   
-     /*
-      * log level 3 : warn
-      */
-     public static void warning(LogCategory category,LogSubModule subModule, String projectId, String objectId,Object msg ) {
-         logger.warn( msg);
-         LogMessage logMsg = new LogMessage(LogLevel.Warning, msg, LocalDateTime.now().toString(),category, projectId,subModule,objectId);
-		 ZMQLogPublisher.publish(logMsg);
-     }
-     
-
-
-     /*
-      * log level 4 : error
-      */
-     public static void error(LogCategory category,LogSubModule subModule, String projectId, String objectId,Object msg) {
-
-         synchronized (queue) {
-             queue.add(new Timestamp(System.currentTimeMillis()) + " " + msg);
-         }
-         logger.error( msg);
-         LogMessage logMsg = new LogMessage(LogLevel.Error, msg, LocalDateTime.now().toString(),category, projectId,subModule,objectId);
-		 ZMQLogPublisher.publish(logMsg);
-
-
-     }
-
-     
 
     
     

@@ -1,10 +1,8 @@
 package io.je.utilities.logger;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
 import io.je.utilities.config.JEConfiguration;
-import io.je.utilities.zmq.ZMQSubscriber;
 
 
 //TODO: to be deleted, just used for testing
@@ -30,10 +28,11 @@ public class LoggingServiceTest {
 					
 		   			System.out.println("***");
 
-					LoggingServiceTest.publish((i++).toString(), LogLevel.Inform, LocalDateTime.now().toString(), LogCategory.Runtime, LogSubModule.Rule,
+					LoggingServiceTest.publish((i++).toString(), LogLevel.INFORM, LocalDateTime.now().toString(), LogCategory.RUNTIME, LogSubModule.RULE,
 							"Rule was added");
+					System.out.println("Sent message");
 					try {
-						Thread.sleep(1000);
+						Thread.sleep(5000);
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
