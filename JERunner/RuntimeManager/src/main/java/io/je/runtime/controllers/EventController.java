@@ -51,6 +51,23 @@ public class EventController {
 		}
 		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.TOPIC_ADDED));
     }
+    
+    
+
+    /*
+     * trigger event
+     * */
+    @GetMapping(value = "/stopEvent/{projectId}/{eventId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> stopEvent(@PathVariable String projectId, @PathVariable String eventId) {
+		try {
+			runtimeDispatcher.stopEvent(projectId, eventId);
+		} catch (Exception e) {
+			return JEExceptionHandler.handleException(e);
+		}
+		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.TOPIC_ADDED));
+    }
+    
+    
 
 	@PostMapping(value = "/updateEventType/{projectId}/{eventId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> updateEventType(@PathVariable("projectId") String projectId,@PathVariable("eventId") String eventId, @RequestBody String eventType) {

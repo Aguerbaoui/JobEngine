@@ -260,7 +260,7 @@ public class WorkflowController {
         return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, FRONT_CONFIG));
     }
 
-    @PostMapping(value = "/deleteWorkflows/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(value = "/deleteWorkflows/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> deleteRules(@PathVariable("projectId") String projectId, @RequestBody List<String> ids) {
         try {
             workflowService.removeWorkflows(projectId, ids);

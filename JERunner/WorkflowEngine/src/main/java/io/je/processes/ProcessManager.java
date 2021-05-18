@@ -7,6 +7,7 @@ import io.je.serviceTasks.InformTask;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.WorkflowAlreadyRunningException;
 import io.je.utilities.exceptions.WorkflowNotFoundException;
+import io.je.utilities.exceptions.WorkflwTriggeredByEventException;
 import io.je.utilities.files.JEFileUtils;
 import io.je.utilities.logger.JELogger;
 import org.activiti.engine.*;
@@ -18,6 +19,8 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 
 import java.util.*;
+
+import static io.je.utilities.constants.ResponseCodes.WORKFLOW_EVENT_TRIGGER;
 
 
 public class ProcessManager {
@@ -128,7 +131,7 @@ public class ProcessManager {
     /*
      * Launch process by key without variables
      * */
-    public void launchProcessByKeyWithoutVariables(String id) throws WorkflowNotFoundException, WorkflowAlreadyRunningException {
+    public void launchProcessByKeyWithoutVariables(String id) throws WorkflowNotFoundException, WorkflowAlreadyRunningException, WorkflwTriggeredByEventException {
         if (processes.get(id) == null) {
             throw new WorkflowNotFoundException(JEMessages.WORKFLOW_NOT_FOUND);
         }
@@ -152,7 +155,7 @@ public class ProcessManager {
                 }).start();
             } else {
                 JELogger.error(ProcessManager.class, " " + JEMessages.PROCESS_HAS_TO_BE_TRIGGERED_BY_EVENT);
-
+                throw new WorkflwTriggeredByEventException(WORKFLOW_EVENT_TRIGGER,JEMessages.PROCESS_HAS_TO_BE_TRIGGERED_BY_EVENT);
             }
         }
 
@@ -347,6 +350,8 @@ public class ProcessManager {
                     launchProcessByKeyWithoutVariables(process.getKey());
                 } catch (WorkflowAlreadyRunningException e) {
                     JELogger.error(ProcessManager.class, JEMessages.WORKFLOW_ALREADY_RUNNING + process.getKey());
+                } catch (WorkflwTriggeredByEventException e) {
+                    JELogger.error(ProcessManager.class, JEMessages.PROCESS_HAS_TO_BE_TRIGGERED_BY_EVENT + process.getKey());
                 }
             }
         }

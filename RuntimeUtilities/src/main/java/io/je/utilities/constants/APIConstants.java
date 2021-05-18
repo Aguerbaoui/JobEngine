@@ -62,6 +62,9 @@ public class APIConstants {
 	public static final String EVENT_ADD_EVENT = "/event/addEvent";
 
 	public static final String EVENT_TRIGGER_EVENT = "/event/triggerEvent/";
+	
+	public static final String EVENT_STOP_EVENT = "/event/stopEvent/";
+
 
 	public static final String UPDATE_CONFIG = "/updateConfig";
 

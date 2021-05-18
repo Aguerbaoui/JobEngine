@@ -60,4 +60,12 @@ public class VariableModel {
         this.type = type;
         this.value = value;
     }
+
+    public VariableModel(String projectId,  String name, String type, String value) {
+        this.projectId = projectId;
+        this.id = name;
+        this.name = name;
+        this.type = type;
+        this.value = value;
+    }
 }

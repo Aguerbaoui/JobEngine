@@ -20,6 +20,12 @@ public class JEEvent extends JEObject {
     private String description;
 
     private boolean isTriggered = false;
+    
+    private int activeTriggersCount=0;
+    
+    private int timeout ;
+    
+    private String timeoutUnit;
 
     public String getName() {
         return name;
@@ -57,10 +63,24 @@ public class JEEvent extends JEObject {
 		return isTriggered;
 	}
 
-	public void setTriggered(boolean isTriggered) {
-		this.isTriggered = isTriggered;
+
+	public void trigger()
+	{
+		isTriggered=true;
+		activeTriggersCount++;
 	}
 
+	
+	public void untrigger()
+	{
+		activeTriggersCount--;
+		if(activeTriggersCount==0)
+		{
+			isTriggered=false;
+
+		}
+	}
+	
     public String getDescription() {
         return description;
     }

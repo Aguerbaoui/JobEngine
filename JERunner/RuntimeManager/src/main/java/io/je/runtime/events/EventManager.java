@@ -88,7 +88,7 @@ public class EventManager {
             else if(event.getType().equals(EventType.START_WORKFLOW)) {
                 startProcessInstanceByMessage(projectId, event.getName());
             }
-            event.setTriggered(true);
+            event.trigger();
         }
         else {
             throw new EventException(JEMessages.EVENT_NOT_FOUND);
@@ -156,4 +156,27 @@ public class EventManager {
 
 
     }
+
+	public static void stopEvent(String projectId, String eventId) throws ProjectNotFoundException {
+		 if(!events.containsKey(projectId)) {
+	            throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
+	        }
+	        JEEvent event = events.get(projectId).get(eventId);
+	        if(event == null) {
+	            for(JEEvent ev: events.get(projectId).values()) {
+	                if(ev.getName().equalsIgnoreCase(eventId)) {
+	                    event = ev;
+	                    break;
+	                }
+	            }
+	        }
+	        if(event != null) {
+	        	event.untrigger();
+	            RuleEngineHandler.addEvent(event);
+	            //TODO: add stop event in workflow
+
+	        }
+	        }
+		
 }
+

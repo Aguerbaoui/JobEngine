@@ -423,4 +423,10 @@ public class RuntimeDispatcher {
             e.printStackTrace();
         }
     }
+
+	public void stopEvent(String projectId, String eventId) throws ProjectNotFoundException {
+        EventManager.stopEvent(projectId, eventId);
+
+		
+	}
 }
