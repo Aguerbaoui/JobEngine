@@ -19,7 +19,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 //import org.influxdb.InfluxDB;
@@ -43,9 +42,11 @@ public class Executioner {
                 public void run() {
                 	
                    try {
-                       JELogger.info(msg.getMessage(), LogCategory.RUNTIME, projectId, LogSubModule.RULE, ruleId);
+                       JELogger.info(objectMapper.writeValueAsString(msg), LogCategory.RUNTIME, projectId, LogSubModule.RULE, ruleId);
 				} catch (Exception e) {
 					e.printStackTrace();
+                    JELogger.error("Failed to execute Inform Block", LogCategory.RUNTIME, projectId, LogSubModule.RULE, ruleId);
+
 				}
 
 

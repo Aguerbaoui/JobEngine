@@ -21,8 +21,8 @@ public class LogBlock extends ExecutionBlock {
 
 	@Override
 	public String getExpression() {
-		return "JERuleMessage message = new JERuleMessage();\r\n"
-				+ "JERuleBlockMessage blockMsg = new JERuleBlockMessage(\""+blockName+"\",\""+logMessage+"\");\r\n"
+		return "JEMessage message = new JEMessage();\r\n"
+				+ "JEBlockMessage blockMsg = new JEBlockMessage(\""+blockName+"\",\""+logMessage+"\");\r\n"
 				+ "message.addBlockMessage(blockMsg);\r\n"
 				+ "message.setType(\"BlockMessage\");\r\n"
 				+ "message.setExecutionTime(LocalDateTime.now().toString());\r\n"
