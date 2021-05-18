@@ -1,11 +1,14 @@
 package io.je.utilities.execution;
 
 import io.je.utilities.apis.JERunnerAPIHandler;
+import io.je.utilities.beans.JEMessage;
 import io.je.utilities.classloader.JEClassLoader;
 import io.je.utilities.config.JEConfiguration;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.JERunnerErrorException;
 import io.je.utilities.logger.JELogger;
+import io.je.utilities.logger.LogCategory;
+import io.je.utilities.logger.LogSubModule;
 import io.je.utilities.monitoring.MessageModel;
 import io.je.utilities.zmq.ZMQRequester;
 
@@ -16,13 +19,43 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 //import org.influxdb.InfluxDB;
 //import org.influxdb.InfluxDBFactory;
 
 public class Executioner {
     private static ExecutorService executor = Executors.newFixedThreadPool(10);
+    private static 	ObjectMapper objectMapper = new ObjectMapper();
+
 
     private Executioner() {
+    }
+    
+    public static void informRuleBlock(String projectId, String ruleId, JEMessage msg)
+    {
+    	try {
+            new Thread(new Runnable() {
+
+            	
+                @Override
+                public void run() {
+                	
+                   try {
+                       JELogger.info(objectMapper.writeValueAsString(msg), LogCategory.RUNTIME, projectId, LogSubModule.RULE, ruleId);
+				} catch (Exception e) {
+					e.printStackTrace();
+                    JELogger.error("Failed to execute Inform Block", LogCategory.RUNTIME, projectId, LogSubModule.RULE, ruleId);
+
+				}
+
+
+                }
+            }).start();
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
+
     }
 
     public static void triggerEvent(String projectId, String eventId) throws JERunnerErrorException, IOException, InterruptedException, ExecutionException {

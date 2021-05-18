@@ -69,8 +69,11 @@ public class ConfigurationService {
 	private void updateBuilderSettings(ConfigModel configModel) {
 		JEConfiguration.updateConfig(configModel);
 		if (applicationIsConfiguredProperly()) {
+			
 			ConfigurationService.setConfiguredProperly(true);
 		}
+		configRepository.save(JEConfiguration.getInstance());
+
 
 	}
 
@@ -108,16 +111,19 @@ public class ConfigurationService {
 	 */
 	public boolean applicationIsConfiguredProperly() {
 		boolean configurationIsValid = true;
-		if (JEConfiguration.getDataDefinitionURL() == null) {
+		if (JEConfiguration.getDataDefinitionURL() == null || JEConfiguration.getDataDefinitionURL().isEmpty()) {
 			configurationIsValid = false;
+			JEConfiguration.setDataDefinitionURL("");
 			JELogger.warning(getClass(), JEMessages.DATA_DEFINITION_URL_MISSING);
 		}
-		if (JEConfiguration.getDataManagerURL() == null) {
+		if (JEConfiguration.getDataManagerURL() == null || JEConfiguration.getDataManagerURL().isEmpty()) {
 			configurationIsValid = false;
+			JEConfiguration.setDataManagerURL("");
 			JELogger.warning(getClass(), JEMessages.DATA_MODEL_URL_MISSING);
 		}
-		if (JEConfiguration.getRuntimeManagerURL() == null) {
+		if (JEConfiguration.getRuntimeManagerURL() == null || JEConfiguration.getRuntimeManagerURL().isEmpty()) {
 			configurationIsValid = false;
+			JEConfiguration.setRuntimeManagerURL("");
 			JELogger.warning(getClass(), JEMessages.JERUNNER_URL_MISSING);
 		}
 		if (JEConfiguration.getSubscriberPort() == 0) {
@@ -128,13 +134,33 @@ public class ConfigurationService {
 			configurationIsValid = false;
 			JELogger.warning(getClass(), JEMessages.DATA_MODEL_REQ_PORT_MISSING);
 		}
-		if (JEConfiguration.getDroolsDateFormat() == null) {
+		if (JEConfiguration.getDroolsDateFormat() == null || JEConfiguration.getDroolsDateFormat().isEmpty()) {
 			configurationIsValid = false;
+			JEConfiguration.setDroolsDateFormat("");
 			JELogger.warning(getClass(), JEMessages.DROOLS_DATE_FORMAT_MISSING);
 		}
-		if (JEConfiguration.getDataModelDateFormat() == null) {
+		if (JEConfiguration.getDataModelDateFormat() == null || JEConfiguration.getDataModelDateFormat().isEmpty()) {
 			configurationIsValid = false;
+			JEConfiguration.setDataModelDateFormat("");
 			JELogger.warning(getClass(), JEMessages.DATA_MODEL_DATE_FORMAT_MISSING);
+		}
+		if(JEConfiguration.getLoggingSystemURL()==null || JEConfiguration.getLoggingSystemURL().isEmpty())
+		{
+			configurationIsValid = false;
+			JEConfiguration.setLoggingSystemURL("");
+			JELogger.warning(getClass(), JEMessages.LOGGING_SYSTEM_URL_MISSING);
+		}
+		if(JEConfiguration.getLoggingSystemZmqPublishPort()==0)
+		{
+			configurationIsValid = false;
+			JELogger.warning(getClass(), JEMessages.LOGGING_SYSTEM_PORT_MISSING);
+		}
+		if(JEConfiguration.getEmailApiUrl()==null || JEConfiguration.getEmailApiUrl().isEmpty())
+		{
+			configurationIsValid=false;
+			JEConfiguration.setEmailApiUrl("");
+			JELogger.warning(getClass(), JEMessages.EMAIL_API_URL_MISSING);
+
 		}
 		return configurationIsValid;
 

@@ -12,7 +12,6 @@ public class ZMQPublisher {
 	protected int publishPort;
 	private String connectionUrl;
 
-
 	public ZMQPublisher(String url,int publishPort) {
 		
 		this.url = url;
@@ -24,8 +23,13 @@ public class ZMQPublisher {
 	}
 
 	public void publish(String msgToBePublished,String topic) {
-		socket.sendMore(topic);
-		socket.send( msgToBePublished,0);
+		
+		//TODO sockets aren't thread safe, only the context is
+		synchronized(socket)
+		{
+			socket.sendMore(topic);
+			socket.send( msgToBePublished,0);
+		}
 	}
 
 	public void open() {

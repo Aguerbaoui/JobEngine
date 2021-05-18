@@ -1,9 +1,5 @@
 package io.je.rulebuilder.components.blocks.execution;
 
-import java.util.ArrayList;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import io.je.rulebuilder.components.blocks.ExecutionBlock;
 import io.je.rulebuilder.models.BlockModel;
 
@@ -25,11 +21,18 @@ public class LogBlock extends ExecutionBlock {
 
 	@Override
 	public String getExpression() {
-		return "JELogger.info(" +"\" "+formatMessage()+"\");";
+		return "JEMessage message = new JEMessage();\r\n"
+				+ "JEBlockMessage blockMsg = new JEBlockMessage(\""+blockName+"\",\""+logMessage+"\");\r\n"
+				+ "message.addBlockMessage(blockMsg);\r\n"
+				+ "message.setType(\"BlockMessage\");\r\n"
+				+ "message.setExecutionTime(LocalDateTime.now().toString());\r\n"
+				+ "Executioner.informRuleBlock(\"" +jobEngineProjectID +"\",\"" + ruleId +"\", message );";
 	}
 
+
+
 	//TODO: to be deleted ! temporary function for testing 
-	public String formatMessage()
+	/*public String formatMessage()
 	{
 		String msg = logMessage;
 		Pattern pattern = Pattern.compile("\\$\\w+");
@@ -47,6 +50,6 @@ public class LogBlock extends ExecutionBlock {
 		return msg;
 	}
 
-
+*/
 
 }

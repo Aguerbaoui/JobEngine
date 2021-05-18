@@ -578,4 +578,9 @@ public class JEMessages {
     public static final String VARIABLE_NOT_FOUND = "Variable cannot be found";
     public static final String VARIABLE_EXISTS = "Variable already exists";
     public static final String STOPPING_WF = "Stopping workflow";
+
+	public static final String LOGGING_SYSTEM_URL_MISSING = "Logging System URL is not configured";
+	public static final String LOGGING_SYSTEM_PORT_MISSING = "Logging System port is not configured";
+
+	public static final String EMAIL_API_URL_MISSING = "Email API URL is not configured";
 }

@@ -7,8 +7,12 @@ import io.je.ruleengine.models.Rule;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.*;
 import io.je.utilities.logger.JELogger;
+import io.je.utilities.logger.LogCategory;
+import io.je.utilities.logger.LogSubModule;
+import io.je.utilities.ruleutils.RuleIdManager;
 import io.je.utilities.runtimeobject.JEObject;
 
+import org.apache.commons.lang3.StringUtils;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.builder.*;
@@ -24,7 +28,6 @@ import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.runtime.rule.FactHandle;
 
 import java.io.FileNotFoundException;
-import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -49,7 +52,7 @@ public class ProjectContainer {
 
 	Map<String, Rule> allRules = new ConcurrentHashMap<>();
 
-	private String projectID;
+	private String projectId;
 	// A project can be either running, or stopped.
 	private Status status = Status.STOPPED;
 
@@ -97,13 +100,14 @@ public class ProjectContainer {
 	/*
 	 * Constructor
 	 */
-	public ProjectContainer(String id) {
+	public ProjectContainer(String projectId) {
 
-		projectID = id;
+		this.projectId = projectId;
 		// Initialise kie configuration .
 		kieServices = KieServices.Factory.get();
 		kieFileSystem = kieServices.newKieFileSystem();
 		kfsToCompile = kieServices.newKieFileSystem();
+		ruleListener= new RuleListener(projectId);
 
 		// createKModule
 		createKModule();
@@ -141,11 +145,11 @@ public class ProjectContainer {
 	 */
 	public void fireRules() throws RulesNotFiredException, RuleBuildFailedException, ProjectAlreadyRunningException {
 
-		JELogger.debug(getClass(), "Rule Engine - [projectId ="+projectID+"]" + JEMessages.FIRING_ALL_RULES);
+		JELogger.debug(getClass(), "Rule Engine - [projectId ="+projectId+"]" + JEMessages.FIRING_ALL_RULES);
 		facts = new ConcurrentHashMap<String, FactHandle>();
 		if(allRules == null || allRules.isEmpty())
 		{
-			JELogger.warning(getClass(), "Rule Engine - [projectId ="+projectID+"] " + JEMessages.NO_RULES);
+			JELogger.warning(getClass(), "Rule Engine - [projectId ="+projectId+"] " + JEMessages.NO_RULES);
 
 		}
 		
@@ -173,6 +177,10 @@ public class ProjectContainer {
 				{
 					//fatal : Runtime Executions
 					JELogger.error(ProjectContainer.class, JEMessages.RULE_EXECUTION_ERROR + e.getMessage());
+					String ruleId= RuleIdManager.getRuleIdFromErrorMsg(e.getMessage());
+					JELogger.debug(e.getMessage());
+					JELogger.error(JEMessages.RULE_EXECUTION_ERROR +StringUtils.substringBefore(e.getMessage(), " in ") ,  LogCategory.RUNTIME,
+                              projectId, LogSubModule.RULE, ruleId);
 
 					try {
 						fireRules();
@@ -234,7 +242,7 @@ public class ProjectContainer {
 	 * creating the project's kie container.
 	 */
 	private boolean buildKie() {
-		JELogger.debug(getClass(), "Rule Engine - [projectId ="+projectID+"]" + JEMessages.BUILDING_PROJECT);
+		JELogger.debug(getClass(), "Rule Engine - [projectId ="+projectId+"]" + JEMessages.BUILDING_PROJECT);
 		/*if (allRules.isEmpty()) {
 			return false;
 		}*/
@@ -259,7 +267,7 @@ public class ProjectContainer {
 			return initKieBase();
 
 		} else {
-			JELogger.debug(getClass(), "Rule Engine - [projectId ="+projectID+"]"+JEMessages.KIE_BUILT);
+			JELogger.debug(getClass(), "Rule Engine - [projectId ="+projectId+"]"+JEMessages.KIE_BUILT);
 			return true;
 		}
 
@@ -267,7 +275,7 @@ public class ProjectContainer {
 
 	private boolean initKieBase() {
 		if (!isInitialised) {
-			JELogger.debug(getClass(), "Rule Engine - [projectId ="+projectID+"]" + JEMessages.KIE_INIT);
+			JELogger.debug(getClass(), "Rule Engine - [projectId ="+projectId+"]" + JEMessages.KIE_INIT);
 			if (releaseId != null) {
 				// create container
 				try {
@@ -278,7 +286,7 @@ public class ProjectContainer {
 				} catch (Exception e) {
 					e.printStackTrace();
 					JELogger.error(ProjectContainer.class, Arrays.toString(e.getStackTrace()));
-					JELogger.warning(getClass(), "Rule Engine - [projectId ="+projectID+"] " + JEMessages.KIE_INIT_FAILED);
+					JELogger.warning(getClass(), "Rule Engine - [projectId ="+projectId+"] " + JEMessages.KIE_INIT_FAILED);
 					return false;
 				}
 
@@ -314,7 +322,7 @@ public class ProjectContainer {
 			kieFileSystem.writeKModuleXML(kproj.toXML());
 
 			// set releaseId
-			releaseId = kieServices.newReleaseId("io.je", "ruleengine" + projectID, getReleaseVer());
+			releaseId = kieServices.newReleaseId("io.je", "ruleengine" + projectId, getReleaseVer());
 
 			// generate pom file
 			kieFileSystem.generateAndWritePomXML(releaseId);
@@ -428,7 +436,7 @@ public class ProjectContainer {
 	public void addRule(Rule rule)
 			throws RuleCompilationException, RuleAlreadyExistsException, JEFileNotFoundException {
 		
-		JELogger.debug(getClass(), "Rule Engine - [projectId ="+projectID+"] " + JEMessages.ADDING_RULE+ " ["+rule.getName()+"]");
+		JELogger.debug(getClass(), "Rule Engine - [projectId ="+projectId+"] " + JEMessages.ADDING_RULE+ " ["+rule.getName()+"]");
 
 		// check if rule already exists
 		if (ruleExists(rule)) {
@@ -452,7 +460,7 @@ public class ProjectContainer {
 	 * rule exists => rule will be updates
 	 */
 	public boolean updateRule(Rule rule) throws RuleCompilationException, JEFileNotFoundException {
-		JELogger.debug(getClass(), "Rule Engine - [projectId ="+projectID+"] "+JEMessages.UPDATING_RULE+" ["+rule.getName()+"]..");
+		JELogger.debug(getClass(), "Rule Engine - [projectId ="+projectId+"] "+JEMessages.UPDATING_RULE+" ["+rule.getName()+"]..");
 
 		// compile rule
 		compileRule(rule);
@@ -493,7 +501,7 @@ public class ProjectContainer {
 	 * delete rule from engine
 	 */
 	public void deleteRule(String ruleID) throws DeleteRuleException {
-		JELogger.debug(getClass(), "Rule Engine - [projectId ="+projectID+"] "+JEMessages.DELETING_RULE+" [id : "+ruleID+"]..");
+		JELogger.debug(getClass(), "Rule Engine - [projectId ="+projectId+"] "+JEMessages.DELETING_RULE+" [id : "+ruleID+"]..");
 
 		// check that rule exists
 		if (!ruleExists(ruleID)) {
@@ -527,7 +535,7 @@ public class ProjectContainer {
 	public void compileRule(Rule rule) throws RuleCompilationException, JEFileNotFoundException {
 
 		// load rule content from rule path
-		JELogger.trace( "Rule Engine - [projectId ="+projectID+"]"+JEMessages.COMPILING_RULE+" ["+rule.getName()+"]..");
+		JELogger.trace( "Rule Engine - [projectId ="+projectId+"]"+JEMessages.COMPILING_RULE+" ["+rule.getName()+"]..");
 		RuleLoader.loadRuleContent(rule);
 		String filename = generateResourceName(ResourceType.DRL, rule.getName());
 		kfsToCompile.write(filename, rule.getContent());
@@ -546,7 +554,7 @@ public class ProjectContainer {
 	 * this method compiles all the rules in this project container
 	 */
 	public boolean compileAllRules() {
-		JELogger.debug(getClass(), "Rule Engine - [projectId ="+projectID+"]"+JEMessages.COMPILING_RULES);
+		JELogger.debug(getClass(), "Rule Engine - [projectId ="+projectId+"]"+JEMessages.COMPILING_RULES);
 
 		KieBuilder kieBuilder = kieServices.newKieBuilder(kieFileSystem, null).buildAll(null);
 		Results results = kieBuilder.getResults();
@@ -622,7 +630,7 @@ public class ProjectContainer {
 				try {
 					synchronized(facts)
 					{
-						JELogger.debug(getClass(), "Rule Engine - [projectId ="+projectID+"] [factId :"+fact.getJobEngineElementID()+"]" + JEMessages.UPDATING_FACT);
+						JELogger.debug(getClass(), "Rule Engine - [projectId ="+projectId+"] [factId :"+fact.getJobEngineElementID()+"]" + JEMessages.UPDATING_FACT);
 
 						if (facts.containsKey(fact.getJobEngineElementID())) {
 							kieSession.update(facts.get(fact.getJobEngineElementID()), fact);

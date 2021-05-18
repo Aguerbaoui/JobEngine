@@ -75,7 +75,7 @@ public class RuleBuilder {
 			 jeRunnerResp = JERunnerAPIHandler.updateRule(ruleMap);
 
 			if (jeRunnerResp == null || jeRunnerResp.getCode() != ResponseCodes.CODE_OK) {
-				JELogger.error(RuleBuilder.class, "[rule Id ="+rule.getRuleName()+" ]"  + JEMessages.RULE_BUILD_FAILED + jeRunnerResp.getMessage());
+				JELogger.error(RuleBuilder.class, "[rule id ="+rule.getRuleName()+" ]"  + JEMessages.RULE_BUILD_FAILED + jeRunnerResp.getMessage());
 				throw new RuleBuildFailedException(jeRunnerResp.getMessage());
 			}
 
