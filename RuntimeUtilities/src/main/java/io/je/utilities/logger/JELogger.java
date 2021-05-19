@@ -194,15 +194,26 @@ public class JELogger {
 
     }
 
+    // get Log message object for the logging service
      public static LogMessage getLogMessage(LogLevel logLevel, String message,  LogCategory category,
                                             String projectId, LogSubModule subModule, String objectId) {
          String logDate = LocalDateTime.now().toString();
          return new LogMessage(logLevel, message, logDate, category, projectId, subModule, objectId);
      }
 
-    
-    
-    
+    // get log string message
+    public static String getLogStringText(String projectId, String subModule,  String extraInfo, String... objectIds) {
+        // In every log message, we have the porject id, module ( rule/ workflow / event / variable ),
+        // related objects to it and the extra info explaining the action
+        String msg = "[Project Id = " + projectId + "] [Submodule = " + subModule + "] ";
+        if(objectIds != null) {
+            for(int i = 0; i< objectIds.length; i++) {
+                msg = msg + "[Object Id = " + objectIds[i] + " ] ";
+            }
+        }
+        msg += extraInfo;
+        return msg;
+    }
     /***************************************************************************************************************/
     private static Level getLogLevel(String level)
     {
