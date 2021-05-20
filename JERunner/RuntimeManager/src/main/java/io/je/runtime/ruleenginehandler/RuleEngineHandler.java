@@ -9,8 +9,8 @@ import org.json.JSONObject;
 
 import io.je.ruleengine.impl.RuleEngine;
 import io.je.ruleengine.models.Rule;
-import io.je.runtime.config.InstanceModelMapping;
 import io.je.runtime.models.InstanceModel;
+import io.je.runtime.models.InstanceModelMapping;
 import io.je.runtime.models.RuleModel;
 import io.je.runtime.objects.InstanceManager;
 import io.je.utilities.constants.JEMessages;

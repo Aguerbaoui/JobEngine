@@ -29,44 +29,6 @@ public class EventTimeoutRunnable implements Runnable {
 			}
 
 
-
-/*		@Override
-		public void run() {
-			try {
-				Thread.sleep(event.getTimeout());
-		        double elapsedTimeInSecond = (double) ((System.nanoTime() - event.getLastTriggerTime()) / 1_000_000_000);
-				synchronized(event)
-				{
-					if (elapsedTimeInSecond >= event.getTimeout() ) {
-						event.setTriggered(false);
-						//TODO: I think we should remove the call to the builder, and runtime should read those values elsewhere.
-		        		try {
-							JEBuilderApiHandler.untriggerEvent(event.getJobEngineElementID(), event.getJobEngineProjectID());
-						} catch (JERunnerErrorException | ExecutionException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-	                    JEMessage message = new JEMessage();
-	                    message.setExecutionTime(LocalDateTime.now().toString());
-	                    message.setType("BlockMessage");
-	                    JEBlockMessage blockMessage = new JEBlockMessage("Application",  event.getName() +" was untriggered");
-	                    message.addBlockMessage(blockMessage);
-	                    try {
-							JELogger.trace(objectMapper.writeValueAsString(message), LogCategory.RUNTIME, event.getJobEngineElementID(), LogSubModule.EVENT, event.getJobEngineElementID());
-						} catch (JsonProcessingException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-					}
-				}
-
-			} catch (InterruptedException e) {
-				// TODO : failed to untrigger
-				e.printStackTrace();
-			}
-
-		}
-*/
 		
 		
 		@Override

@@ -4,8 +4,6 @@ import io.je.project.exception.JEExceptionHandler;
 import io.je.runtime.services.RuntimeDispatcher;
 import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.constants.JEMessages;
-import io.je.utilities.logger.JELogger;
-import io.je.utilities.models.EventModel;
 import io.je.utilities.models.VariableModel;
 import io.je.utilities.network.JEResponse;
 import org.springframework.beans.factory.annotation.Autowired;

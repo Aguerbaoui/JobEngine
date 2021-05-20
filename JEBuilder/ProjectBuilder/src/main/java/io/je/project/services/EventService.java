@@ -209,26 +209,6 @@ public class EventService {
 	}
 
 	public void triggerEvent(String projectId, String eventId) throws ConfigException, ProjectNotFoundException, EventException {
-		/*ConfigurationService.checkConfig();
-		JEProject project = ProjectService.getProjectById(projectId);
-		if (project == null) {
-			throw new ProjectNotFoundException( JEMessages.PROJECT_NOT_FOUND); //cdc47cf6-28e9-ff1d-996f-b6b1732771a2 -> {JEEvent@10436}
-		}
-		if(!project.getEvents().containsKey(eventId))
-		{
-			throw new EventException(JEMessages.EVENT_NOT_FOUND);
-		}
-		
-		try {
-			JERunnerAPIHandler.triggerEvent(eventId, projectId);
-			JEEvent event = project.getEvents().get(eventId);
-			event.setTriggered(true);
-			event.setJeObjectLastUpdate(LocalDateTime.now());
-
-		}catch (Exception e) {
-			// TODO: handle exception
-		}
-		*/
 		ConfigurationService.checkConfig();
 		JEProject project = ProjectService.getProjectById(projectId);
 		if (project == null) {
