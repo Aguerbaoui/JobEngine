@@ -26,6 +26,7 @@ public abstract class JERule extends JEObject  {
 	 */
 	boolean isAdded =  false;
 	
+
 	private Map<String,Integer> topics = new HashMap<>();
 	
 	String description ;
@@ -126,6 +127,7 @@ public abstract class JERule extends JEObject  {
 	public void setTopics(Map<String, Integer> topics) {
 		this.topics = topics;
 	}
+
 
 	
 		

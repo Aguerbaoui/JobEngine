@@ -1,6 +1,8 @@
 package io.je.utilities.execution;
 
+import io.je.utilities.apis.JEBuilderApiHandler;
 import io.je.utilities.apis.JERunnerAPIHandler;
+import io.je.utilities.beans.JEBlockMessage;
 import io.je.utilities.beans.JEMessage;
 import io.je.utilities.classloader.JEClassLoader;
 import io.je.utilities.config.JEConfiguration;
@@ -14,6 +16,7 @@ import io.je.utilities.zmq.ZMQRequester;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.time.LocalDateTime;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -32,6 +35,10 @@ public class Executioner {
     private Executioner() {
     }
     
+    
+    /*
+     * Execute inform block [ send log to logging system]
+     */
     public static void informRuleBlock(String projectId, String ruleId, JEMessage msg)
     {
     	try {
@@ -58,24 +65,82 @@ public class Executioner {
 
     }
 
+    /*
+     * trigger an event
+     */
     public static void triggerEvent(String projectId, String eventId) throws JERunnerErrorException, IOException, InterruptedException, ExecutionException {
 
-        JERunnerAPIHandler.triggerEvent(eventId, projectId);
-    	
-    /*	Runnable runnable =  () -> {
-			try {
-				JERunnerAPIHandler.triggerEvent(eventId, projectId);
-				
-			} catch (JERunnerErrorException | IOException | InterruptedException | ExecutionException e) {
-				e.printStackTrace();
-				JELogger.error(Executioner.class, "failed to trigger event");
-			}
-		};
-	*/
+          try {
+            new Thread(new Runnable() {
+
+            	
+                @Override
+                public void run() {
+                	
+                   try {
+                	   JERunnerAPIHandler.triggerEvent(eventId, projectId);
+                       JEBuilderApiHandler.triggerEvent(eventId, projectId);
+                       JELogger.info("Event was triggered", LogCategory.RUNTIME, projectId, LogSubModule.RULE, eventId);
+
+                    
+				} catch (Exception e) {
+					e.printStackTrace();
+
+				}
+
+
+                }
+            }).start();
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
+
 
 
     }
+    
+    /*
+     * trigger an event + send event data to logging system
+     */
+    public static void triggerEvent(String projectId, String eventId,String eventName,String ruleId,String triggerSource)  {
 
+        try {
+          new Thread(new Runnable() {
+
+          	
+              @Override
+              public void run() {
+              	
+                 try {
+              	   JERunnerAPIHandler.triggerEvent(eventId, projectId);
+                     JEBuilderApiHandler.triggerEvent(eventId, projectId);
+                     JEMessage message = new JEMessage();
+                     message.setExecutionTime(LocalDateTime.now().toString());
+                     message.setType("BlockMessage");
+                     JEBlockMessage blockMessage = new JEBlockMessage(triggerSource,  eventName +" was triggered");
+                     message.addBlockMessage(blockMessage);
+                     JELogger.trace(objectMapper.writeValueAsString(message), LogCategory.RUNTIME, projectId, LogSubModule.RULE, ruleId);
+
+                  
+				} catch (Exception e) {
+					e.printStackTrace();
+
+				}
+
+
+              }
+          }).start();
+      } catch (Exception e) {
+          // TODO: handle exception
+      }
+    }
+
+
+        
+        
+
+    
+   
     public static void writeMonitoringMessageToInfluxDb(MessageModel messageModel) {
         //InfluxDB influxDB = InfluxDBFactory.connect("http://localhost:8086", "io", "io.123");
 
@@ -97,7 +162,7 @@ public class Executioner {
                     if (response == null) {
                         JELogger.error(getClass(), JEMessages.NO_RESPONSE_FROM_DATA_MODEL);
                     } else {
-                        JELogger.info("Data Model Returned" + response);
+                        JELogger.info("Data Model Returned : " + response);
                     }
 
 
@@ -114,7 +179,8 @@ public class Executioner {
      * generate data model write request
      */
     private static String generateRequest(String instanceId, String attributeName, String attributeNewValue) {
-        String req = "{\r\n"
+        
+    	String req = "{\r\n"
                 + "   \"InstanceId\":\"" + instanceId + "\",\r\n"
                 + "   \"Attributes\":[\r\n"
                 + "      {\r\n"
@@ -157,5 +223,35 @@ public class Executioner {
 
     }
 
+    /* to be deleted
+     *  public static void untriggerEvent(String projectId, String eventId)
+    {
+    	try {
+            new Thread(new Runnable() {
+
+            	
+                @Override
+                public void run() {
+                	
+                   try {
+                	   JERunnerAPIHandler.untriggerEvent(eventId, projectId);
+                       
+
+				} catch (Exception e) {
+					e.printStackTrace();
+
+				}
+
+
+                }
+            }).start();
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
+
+    }
+
+     * 
+     */
 
 }

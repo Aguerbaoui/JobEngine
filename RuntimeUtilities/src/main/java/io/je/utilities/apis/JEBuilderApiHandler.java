@@ -75,4 +75,12 @@ public class JEBuilderApiHandler {
 		JELogger.debug(JEMessages.NETWORK_ADD_VAR+" project id = " + projectId + " variable id = " + varId);
 		return sendRequestWithBody(url, body);
 	}
+	  public static JEResponse untriggerEvent(String eventId, String projectId) throws JERunnerErrorException, InterruptedException, ExecutionException {
+        String requestUrl = JEConfiguration.getProjectBuilderURL() + EVENT_UNTRIGGER_EVENT + projectId + "/" + eventId;
+        return sendRequest(requestUrl);
+    }
+	   public static JEResponse triggerEvent(String eventId, String projectId) throws JERunnerErrorException, InterruptedException, ExecutionException {
+        String requestUrl = JEConfiguration.getProjectBuilderURL() + EVENT_TRIGGER_EVENT + projectId + "/" + eventId;
+        return sendRequest(requestUrl);
+    }
 }

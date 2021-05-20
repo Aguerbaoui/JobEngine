@@ -27,6 +27,7 @@ public class RuleParameters {
 	 */
 	private String timer;
 
+	private String duration;
 	
 	
 	
@@ -72,6 +73,15 @@ public class RuleParameters {
 	public void setTimer(String timer) {
 		this.timer = timer;
 	}
+
+	public String getDuration() {
+		return duration;
+	}
+
+	public void setDuration(String duration) {
+		this.duration = duration;
+	}
+	
 	
 	
 }

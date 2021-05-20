@@ -13,8 +13,6 @@ import io.je.utilities.logger.JELogger;
 import io.je.utilities.models.WorkflowModel;
 import io.je.utilities.network.JEResponse;
 import io.je.utilities.network.Network;
-import org.springframework.web.multipart.MultipartFile;
-
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
@@ -100,7 +98,7 @@ public class JERunnerAPIHandler {
     }
 
     // add event
-    public static JEResponse addEvent(HashMap<String, String> requestModel) throws JERunnerErrorException, IOException, InterruptedException, ExecutionException {
+    public static JEResponse addEvent(HashMap<String, Object> requestModel) throws JERunnerErrorException, IOException, InterruptedException, ExecutionException {
         String requestUrl = runtimeManagerBaseApi + EVENT_ADD_EVENT;
         return sendRequestWithBody(requestUrl, requestModel);
     }
@@ -208,8 +206,8 @@ public class JERunnerAPIHandler {
         sendRequestWithBody(url, payload);
     }
 
-    public static JEResponse stopEvent(String eventId, String projectId) throws JERunnerErrorException, InterruptedException, ExecutionException {
-        String requestUrl = runtimeManagerBaseApi + EVENT_STOP_EVENT + projectId + "/" + eventId;
+    public static JEResponse untriggerEvent(String eventId, String projectId) throws JERunnerErrorException, InterruptedException, ExecutionException {
+        String requestUrl = runtimeManagerBaseApi + EVENT_UNTRIGGER_EVENT + projectId + "/" + eventId;
         return sendRequest(requestUrl);
     }
 }

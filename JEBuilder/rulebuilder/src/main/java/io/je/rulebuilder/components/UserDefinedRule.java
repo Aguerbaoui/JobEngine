@@ -48,7 +48,7 @@ public class UserDefinedRule extends JERule {
 	List<String> subRules = new ArrayList<String>();
 
 	public UserDefinedRule() {
-
+		ruleParameters = new RuleParameters();
 	}
 
 	/*

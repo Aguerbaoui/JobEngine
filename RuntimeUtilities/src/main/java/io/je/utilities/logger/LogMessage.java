@@ -20,7 +20,7 @@ public class LogMessage {
     @JsonProperty("Category")
     public LogCategory category ;
     
-    @JsonProperty("ProjecId")
+    @JsonProperty("ProjectId")
     public String projectId ;
     
     @JsonProperty("ObjectId")

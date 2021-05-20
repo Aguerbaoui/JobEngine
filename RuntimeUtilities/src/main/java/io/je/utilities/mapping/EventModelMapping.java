@@ -10,6 +10,8 @@ public class EventModelMapping {
 	public static final String CREATEDAT = "created_at";
 	public static final String LASTUPDATE = "last_update_at";
 	public static final String TRIGGERED = "triggered";
+	public static final String TIMOUTVALUE = "timeoutValue";
+	public static final String TIMEOUTUNIT = "timeoutUnit";
 
 
 

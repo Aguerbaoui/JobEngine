@@ -7,14 +7,11 @@ import java.util.List;
 import io.je.project.exception.JEExceptionHandler;
 import io.je.project.services.ProjectService;
 
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import com.fasterxml.jackson.databind.JsonNode;
 
 import io.je.project.services.RuleService;
 import io.je.rulebuilder.models.BlockModel;
@@ -51,7 +48,7 @@ public class RuleController {
 	@GetMapping(value = "{projectId}/getAllRules")
 	@ResponseBody
 	public ResponseEntity<?> getAllRule(@PathVariable("projectId") String projectId) {
-		Collection<?> rules = null;
+		Collection<RuleModel> rules = null;
 		try {
 			rules = ruleService.getAllRules(projectId);
 			if (rules.isEmpty()) {

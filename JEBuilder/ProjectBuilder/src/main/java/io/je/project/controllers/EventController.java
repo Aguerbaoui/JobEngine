@@ -156,15 +156,25 @@ public class EventController {
 		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.EVENT_DELETED));
 	}
 	
+	
+	
+	
+	/*
+	 * to be deleted 
+	 */
+	
+	
+	
 	/*
 	 * trigger event
 	 */
-	@PostMapping(value = "/{projectId}/triggerEvent/{eventId}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(value = "/triggerEvent/{projectId}/{eventId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> triggerEvent(@PathVariable("projectId") String projectId, @PathVariable("eventId") String eventId) {
 
 		try {
 
 			eventService.triggerEvent(projectId, eventId);
+			projectService.saveProject(projectId);
 
 		} catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
@@ -175,14 +185,15 @@ public class EventController {
 	
 	
 	/*
-	 * trigger event
+	 * untrigger event
 	 */
-	@PostMapping(value = "/{projectId}/stopEvent/{eventId}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> stopEvent(@PathVariable("projectId") String projectId, @PathVariable("eventId") String eventId) {
+	@GetMapping(value = "/untriggerEvent/{projectId}/{eventId}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> untriggerEvent(@PathVariable("projectId") String projectId, @PathVariable("eventId") String eventId) {
 
 		try {
 
-			eventService.stopEvent(projectId, eventId);
+			eventService.untriggerEvent(projectId, eventId);
+			projectService.saveProject(projectId);
 
 		} catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
