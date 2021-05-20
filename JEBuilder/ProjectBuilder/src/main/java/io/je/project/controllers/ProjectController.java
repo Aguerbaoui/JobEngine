@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Collection;
+import java.util.HashMap;
 
 import static io.je.utilities.constants.JEMessages.*;
 
@@ -66,6 +67,31 @@ public class ProjectController {
 
 		}
 		return ResponseEntity.ok(project.isRunning());
+
+	}
+	
+	/*
+	 * Get project running status
+	 */
+	@GetMapping("/getProjectGlobalInfo/{projectId}")
+	public ResponseEntity<?> getProjectGlobalInfo(@PathVariable String projectId) {
+		JEProject project = null;
+		HashMap<String,Integer> data = new HashMap<>();
+
+		try {
+			project = projectService.getProject(projectId).get();
+			data.put("ruleCount",  project.getRules().size());
+			data.put("workflowCount",  project.getWorkflows().size());
+			data.put("eventCount",  project.getEvents().size());
+
+		
+			
+
+		} catch (Exception e) {
+			return JEExceptionHandler.handleException(e);
+
+		}
+		return ResponseEntity.ok(data);
 
 	}
 	
