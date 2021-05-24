@@ -121,11 +121,14 @@ public class JELogger {
         //Log in file
         logger.trace( message);
 
-        //Log in logging service
+
+      //Log in logging service
+        LogMessage logMessage = getLogMessage(LogLevel.CONTROL, message, category, projectId, subModule, objectId);
         synchronized (queue) {
-            queue.add(getLogMessage(LogLevel.CONTROL, message, category, projectId, subModule, objectId));
+            queue.add(logMessage);
         }
 
+        ZMQLogPublisher.publish(logMessage);
     }
 
     /*

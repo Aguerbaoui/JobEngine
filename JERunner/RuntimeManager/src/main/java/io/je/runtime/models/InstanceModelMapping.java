@@ -1,4 +1,4 @@
-package io.je.runtime.config;
+package io.je.runtime.models;
 
 
 

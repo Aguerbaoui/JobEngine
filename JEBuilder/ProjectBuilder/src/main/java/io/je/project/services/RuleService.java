@@ -420,7 +420,9 @@ public class RuleService {
         List<RuleModel> rules = new ArrayList<>();
         JELogger.trace("[projectId = " + projectId + "]" + JEMessages.LOADING_RULES);
         for (JERule rule : project.getRules().values()) {
-            rules.add(new RuleModel(rule));
+
+        	   rules.add(new RuleModel(rule));
+
         }
         return rules;
     }

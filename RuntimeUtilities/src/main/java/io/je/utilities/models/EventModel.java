@@ -33,8 +33,14 @@ public class EventModel {
     String lastModifiedAt;
     
     @JsonProperty(EventModelMapping.TRIGGERED)
-    String triggered;
+    boolean triggered;
+      
+    @JsonProperty(EventModelMapping.TIMOUTVALUE)
+    private int timeout ;
     
+    @JsonProperty(EventModelMapping.TIMEOUTUNIT)
+    private String timeoutUnit;
+
     
     
     public String getProjectId() {
@@ -71,7 +77,9 @@ public class EventModel {
         this.description = event.getDescription();
         this.createdAt = event.getJeObjectCreationDate().toString();
         this.lastModifiedAt = event.getJeObjectLastUpdate().toString();
-        this.triggered = String.valueOf(event.isTriggered());
+        this.triggered = event.isTriggered();
+        this.timeout = event.getTimeoutValue();
+        this.timeoutUnit = event.getTimeoutUnit();
 	}
 
 	public String getEventId() {
@@ -97,5 +105,47 @@ public class EventModel {
     public void setEventType(String eventType) {
         this.eventType = eventType;
     }
+
+	public String getCreatedAt() {
+		return createdAt;
+	}
+
+	public void setCreatedAt(String createdAt) {
+		this.createdAt = createdAt;
+	}
+
+	public String getLastModifiedAt() {
+		return lastModifiedAt;
+	}
+
+	public void setLastModifiedAt(String lastModifiedAt) {
+		this.lastModifiedAt = lastModifiedAt;
+	}
+
+	public boolean getTriggered() {
+		return triggered;
+	}
+
+	public void setTriggered(boolean triggered) {
+		this.triggered = triggered;
+	}
+
+	public int getTimeout() {
+		return timeout;
+	}
+
+	public void setTimeout(int timeout) {
+		this.timeout = timeout;
+	}
+
+	public String getTimeoutUnit() {
+		return timeoutUnit;
+	}
+
+	public void setTimeoutUnit(String timeoutUnit) {
+		this.timeoutUnit = timeoutUnit;
+	}
+    
+    
     
 }

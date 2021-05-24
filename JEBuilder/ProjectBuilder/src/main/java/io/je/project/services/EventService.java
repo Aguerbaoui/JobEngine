@@ -1,6 +1,7 @@
 package io.je.project.services;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -9,6 +10,7 @@ import java.util.concurrent.ExecutionException;
 import io.je.utilities.logger.JELogger;
 import io.je.utilities.models.EventType;
 import io.je.utilities.string.JEStringUtils;
+
 import org.springframework.stereotype.Service;
 
 import io.je.project.beans.JEProject;
@@ -26,7 +28,7 @@ import static io.je.utilities.constants.JEMessages.UPDATING_EVENT;
 
 @Service
 public class EventService {
-
+	
 	/*
 	 * Retrieve list of all events that exist in a project.
 	 */
@@ -79,11 +81,18 @@ public class EventService {
 		if(!JEStringUtils.isStringOnlyAlphabet(eventModel.getName())) {
 			throw new EventException(JEMessages.NOT_ALPHABETICAL);
 		}
-		JEEvent event = new JEEvent(eventModel.getEventId(), projectId, eventModel.getName(), EventType.GENERIC_EVENT);
-		event.setDescription(eventModel.getDescription());
+		JEEvent event = new JEEvent(eventModel.getEventId(), projectId, eventModel.getName(), EventType.GENERIC_EVENT,eventModel.getDescription(),eventModel.getTimeout(),eventModel.getTimeoutUnit());
 		registerEvent(event);
+		
 	}
 	
+	
+		
+		
+	
+	
+	
+
 	/*
 	 * update new event
 	 */
@@ -103,9 +112,10 @@ public class EventService {
 		if(!JEStringUtils.isStringOnlyAlphabet(eventModel.getName())) {
 			throw new EventException(JEMessages.NOT_ALPHABETICAL);
 		}
-		JEEvent event = new JEEvent(eventModel.getEventId(), projectId, eventModel.getName(), EventType.GENERIC_EVENT);
-		event.setDescription(eventModel.getDescription());
+		JEEvent event = new JEEvent(eventModel.getEventId(), projectId, eventModel.getName(), EventType.GENERIC_EVENT,eventModel.getDescription(),eventModel.getTimeout(),eventModel.getTimeoutUnit());
 		registerEvent(event);
+		
+		
 	}
 	
 	/*
@@ -120,11 +130,13 @@ public class EventService {
 		}
 
 		//TODO: add test on response
-		HashMap<String,String> eventMap = new HashMap<String, String>();
+		HashMap<String,Object> eventMap = new HashMap<String, Object>();
 		eventMap.put(EventModelMapping.PROJECTID, event.getJobEngineProjectID());
 		eventMap.put(EventModelMapping.EVENTNAME, event.getName());
 		eventMap.put(EventModelMapping.EVENTID, event.getJobEngineElementID());
 		eventMap.put(EventModelMapping.EVENTTYPE, event.getType().toString());
+		eventMap.put(EventModelMapping.TIMEOUTUNIT, event.getTimeoutUnit());
+		eventMap.put(EventModelMapping.TIMOUTVALUE, event.getTimeoutValue());
 		JELogger.trace(JEMessages.REGISTERING_EVENT);
 		JERunnerAPIHandler.addEvent(eventMap);
 		project.addEvent(event);
@@ -193,25 +205,40 @@ public class EventService {
 		JELogger.info(getClass(), JEMessages.DELETING_EVENT_FROM_RUNNER);
 		JERunnerAPIHandler.deleteEvent(projectId, eventId);
 		project.getEvents().remove(event.getJobEngineElementID());
-	}
-
-	public void triggerEvent(String projectId, String eventId) {
-		try {
-			JERunnerAPIHandler.triggerEvent(eventId, projectId);
-
-		}catch (Exception e) {
-			// TODO: handle exception
-		}
 		
 	}
 
-	public void stopEvent(String projectId, String eventId) {
-		try {
-			JERunnerAPIHandler.stopEvent(eventId, projectId);
-
-		}catch (Exception e) {
-			// TODO: handle exception
+	public void triggerEvent(String projectId, String eventId) throws ConfigException, ProjectNotFoundException, EventException {
+		ConfigurationService.checkConfig();
+		JEProject project = ProjectService.getProjectById(projectId);
+		if (project == null) {
+			throw new ProjectNotFoundException( JEMessages.PROJECT_NOT_FOUND); //cdc47cf6-28e9-ff1d-996f-b6b1732771a2 -> {JEEvent@10436}
 		}
-		
+		if(!project.getEvents().containsKey(eventId))
+		{
+			throw new EventException(JEMessages.EVENT_NOT_FOUND);
+		}
+
+		JEEvent event = project.getEvents().get(eventId);
+		event.setTriggered(true);
+		event.setJeObjectLastUpdate(LocalDateTime.now());
+
+	}
+
+	public void untriggerEvent(String projectId, String eventId) throws ConfigException, ProjectNotFoundException, EventException {
+		ConfigurationService.checkConfig();
+		JEProject project = ProjectService.getProjectById(projectId);
+		if (project == null) {
+			throw new ProjectNotFoundException( JEMessages.PROJECT_NOT_FOUND); //cdc47cf6-28e9-ff1d-996f-b6b1732771a2 -> {JEEvent@10436}
+		}
+		if(!project.getEvents().containsKey(eventId))
+		{
+			throw new EventException(JEMessages.EVENT_NOT_FOUND);
+		}
+
+		JEEvent event = project.getEvents().get(eventId);
+		event.setTriggered(false);
+		event.setJeObjectLastUpdate(LocalDateTime.now());
+
 	}
 }

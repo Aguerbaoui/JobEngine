@@ -1,25 +1,24 @@
 package io.je.runtime.events;
 
 import io.je.runtime.ruleenginehandler.RuleEngineHandler;
-import io.je.runtime.services.RuntimeDispatcher;
 import io.je.runtime.workflow.WorkflowEngineHandler;
 import io.je.utilities.beans.JEEvent;
-import io.je.utilities.constants.JEMessages;
-import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.EventException;
 import io.je.utilities.exceptions.ProjectNotFoundException;
 import io.je.utilities.logger.JELogger;
 import io.je.utilities.models.EventType;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 
 public class EventManager {
 
     private static HashMap<String, HashMap<String, JEEvent>> events = new HashMap<>();
+    
+    private static HashMap<String, HashMap<String, Thread>> activeThreads = new HashMap<>();
+
+    
+
 
     public static void startRule(String ruleId) {
         //TODO
@@ -63,21 +62,21 @@ public class EventManager {
     * Check what type of event we have to trigger
     * */
     //TODO update with rule events
-    public static void triggerEvent(String projectId, String id) throws ProjectNotFoundException, EventException {
+    public static void triggerEvent(String projectId, String eventId) throws ProjectNotFoundException, EventException {
         if(!events.containsKey(projectId)) {
             throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
         }
-        JEEvent event = events.get(projectId).get(id);
+        JEEvent event = events.get(projectId).get(eventId);
         if(event == null) {
             for(JEEvent ev: events.get(projectId).values()) {
-                if(ev.getName().equalsIgnoreCase(id)) {
+                if(ev.getName().equalsIgnoreCase(eventId)) {
                     event = ev;
                     break;
                 }
             }
         }
         if(event != null) {
-            JELogger.trace(JEMessages.FOUND_EVENT + id + JEMessages.TRIGGERING_NOW);
+            JELogger.trace(JEMessages.FOUND_EVENT + eventId + JEMessages.TRIGGERING_NOW);
             RuleEngineHandler.addEvent(event);
             if(event.getType().equals(EventType.MESSAGE_EVENT)) {
                 throwMessageEventInWorkflow(projectId, event.getName());
@@ -89,10 +88,43 @@ public class EventManager {
                 startProcessInstanceByMessage(projectId, event.getName());
             }
             event.trigger();
+            if(event.getTimeout()!=0)
+            {
+            	setEventTimeOut(event);
+            }
+            
+           
         }
         else {
             throw new EventException(JEMessages.EVENT_NOT_FOUND);
         }
+    }
+    
+    
+   private static void setEventTimeOut(JEEvent event) {
+	   synchronized (activeThreads) {
+       	Thread t = new Thread(new EventTimeoutRunnable (event));
+       	String projectId = event.getJobEngineProjectID();
+       	String eventId = event.getJobEngineElementID();
+       	if(activeThreads.get(projectId).get(eventId)!=null)
+       	{
+       		activeThreads.get(projectId).get(eventId).interrupt();
+       	}
+        	activeThreads.get(projectId).put(eventId, t);
+        	t.start();
+
+		}		
+	}
+
+private static void updateActiveThreads(String projectId, String eventId)
+    {
+    	 if(!activeThreads.containsKey(projectId)) {
+         	activeThreads.put(projectId, new HashMap<>());
+         }
+         if(activeThreads.get(projectId).get(eventId) == null)
+         {
+         	activeThreads.get(projectId).put(eventId, null);
+         }
     }
 
     /*
@@ -103,6 +135,7 @@ public class EventManager {
             events.put(projectId, new HashMap<>());
         }
         events.get(projectId).put(event.getJobEngineElementID(), event);
+        updateActiveThreads(projectId,event.getJobEngineElementID());
         RuleEngineHandler.addEvent(event);
     }
 
@@ -157,26 +190,7 @@ public class EventManager {
 
     }
 
-	public static void stopEvent(String projectId, String eventId) throws ProjectNotFoundException {
-		 if(!events.containsKey(projectId)) {
-	            throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
-	        }
-	        JEEvent event = events.get(projectId).get(eventId);
-	        if(event == null) {
-	            for(JEEvent ev: events.get(projectId).values()) {
-	                if(ev.getName().equalsIgnoreCase(eventId)) {
-	                    event = ev;
-	                    break;
-	                }
-	            }
-	        }
-	        if(event != null) {
-	        	event.untrigger();
-	            RuleEngineHandler.addEvent(event);
-	            //TODO: add stop event in workflow
 
-	        }
-	        }
-		
+
 }
 

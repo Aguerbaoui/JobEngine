@@ -60,8 +60,7 @@ public class RuntimeDispatcher {
     }
 
     // run project
-    public void runProject(String projectId) throws RulesNotFiredException, RuleBuildFailedException,
-            ProjectAlreadyRunningException, WorkflowNotFoundException {
+    public void runProject(String projectId) throws JEException {
 
 
         projectStatus.put(projectId, true);
@@ -332,12 +331,9 @@ public class RuntimeDispatcher {
 
     //Add an event to the runner
     public void addEvent(EventModel eventModel) {
-        JEEvent e = new JEEvent();
-        e.setName(eventModel.getName());
-        e.setTriggeredById(eventModel.getEventId());
-        e.setJobEngineElementID(eventModel.getEventId());
-        e.setJobEngineProjectID(eventModel.getProjectId());
-        e.setType(EventType.valueOf(eventModel.getEventType()));
+        JEEvent e = new JEEvent(eventModel.getEventId(), eventModel.getProjectId(), eventModel.getName(), EventType.valueOf(eventModel.getEventType()), eventModel.getDescription(), eventModel.getTimeout(), eventModel.getTimeoutUnit());
+
+
         JELogger.trace(getClass(), "[projectId = " +e.getJobEngineProjectID() + "] [event = " + e.getJobEngineElementID() + "]" + JEMessages.ADDING_EVENT);
 
         EventManager.addEvent(eventModel.getProjectId(), e);
@@ -424,9 +420,4 @@ public class RuntimeDispatcher {
         }
     }
 
-	public void stopEvent(String projectId, String eventId) throws ProjectNotFoundException {
-        EventManager.stopEvent(projectId, eventId);
-
-		
-	}
 }

@@ -3,7 +3,6 @@ package io.je.runtime.models;
 import org.json.JSONObject;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.je.runtime.config.InstanceModelMapping;
 
 
 public class InstanceModel {

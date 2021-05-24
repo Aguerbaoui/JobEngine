@@ -1,24 +1,27 @@
-package io.je.rulebuilder.components.blocks;
+package io.je.rulebuilder.components.blocks.event;
 
-import io.je.rulebuilder.models.BlockModel;
 
-public abstract class ExecutionBlock extends Block {
+import io.je.rulebuilder.components.blocks.PersistableBlock;
 
-	public ExecutionBlock(BlockModel blockModel) {
-		super(blockModel.getBlockId(), blockModel.getProjectId(), blockModel.getRuleId(), blockModel.getBlockName(),
-				blockModel.getDescription());
-	}
+public  class TimeOutEventBlock extends PersistableBlock {
+	
+	String eventId = null;
+
 
 	
 	
-	public ExecutionBlock(String jobEngineElementID, String jobEngineProjectID, String ruleId, String blockName,
-			String blockDescription) {
-		super(jobEngineElementID, jobEngineProjectID, ruleId, blockName, blockDescription);
+	
+
+
+
+	public TimeOutEventBlock(String jobEngineElementID, String jobEngineProjectID, String ruleId, String blockName,
+			String blockDescription, int timePersistenceValue, String timePersistenceUnit, String eventId) {
+		super(jobEngineElementID, jobEngineProjectID, ruleId, blockName, blockDescription, timePersistenceValue,
+				timePersistenceUnit);
+		this.eventId = eventId;
 	}
 
-
-
-	public ExecutionBlock() {
+	public TimeOutEventBlock() {
 		super();
 	}
 
@@ -51,12 +54,16 @@ public abstract class ExecutionBlock extends Block {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public String getExpression() {
+		return " $e : JEEvent(jobEngineElementID ==\""+eventId+"\",isTriggered()==true)";
+	}
+
 	@Override
 	public String getJoinExpressionAsFirstOperand() {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-
 
 }

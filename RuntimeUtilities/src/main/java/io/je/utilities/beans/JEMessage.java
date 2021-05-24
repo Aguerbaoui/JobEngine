@@ -5,7 +5,7 @@ import java.util.List;
 
 public class JEMessage {
 	
-	 String type; //BlockMessage, RuleExecutionMessage, ErrorMessage
+	 String type; //BlockMessage, RuleExecutionMessage, ErrorMessage, Event
 	 String executionTime;
 	 List<JEBlockMessage> blocks;
 	 List<String> instanceNames;
