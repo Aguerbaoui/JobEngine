@@ -36,7 +36,6 @@ public class WorkflowBuilder {
     * */
     public static boolean buildWorkflow(JEWorkflow workflow) throws IOException, InterruptedException, ExecutionException {
         if(workflow.getWorkflowStartBlock() == null || workflow.getAllBlocks() == null || workflow.getAllBlocks().size() == 0) return false;
-        if(workflow.getStatus().equals(JEWorkflow.BUILT)) return true;
         if(!workflow.isScript()) {
             JEToBpmnMapper.createBpmnFromJEWorkflow(workflow);
         }

@@ -29,7 +29,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class Executioner {
     private static ExecutorService executor = Executors.newFixedThreadPool(10);
-    private static 	ObjectMapper objectMapper = new ObjectMapper();
+    public static 	ObjectMapper objectMapper = new ObjectMapper();
 
 
     private Executioner() {
