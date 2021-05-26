@@ -4,7 +4,7 @@ import io.je.project.beans.JEProject;
 import io.je.project.exception.JEExceptionHandler;
 import io.je.project.models.ProjectModel;
 import io.je.project.services.ProjectService;
-import io.je.utilities.constants.JEMessages;
+import io.je.utilities.beans.JEMessages;
 import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.logger.JELogger;
 import io.je.utilities.network.JEResponse;
@@ -14,10 +14,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import static io.je.utilities.beans.JEMessages.*;
+
 import java.util.Collection;
 import java.util.HashMap;
-
-import static io.je.utilities.constants.JEMessages.*;
 
 /*
  * Project Rest Controller

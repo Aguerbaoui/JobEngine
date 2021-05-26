@@ -3,7 +3,7 @@ package io.je.runtime.events;
 import io.je.runtime.ruleenginehandler.RuleEngineHandler;
 import io.je.runtime.workflow.WorkflowEngineHandler;
 import io.je.utilities.beans.JEEvent;
-import io.je.utilities.constants.JEMessages;
+import io.je.utilities.beans.JEMessages;
 import io.je.utilities.exceptions.EventException;
 import io.je.utilities.exceptions.ProjectNotFoundException;
 import io.je.utilities.logger.JELogger;
@@ -181,6 +181,8 @@ private static void updateActiveThreads(String projectId, String eventId)
             JELogger.trace(JEMessages.FOUND_EVENT + eventId + JEMessages.REMOVING_EVENT);
             events.get(projectId).remove(eventId);
         }
+        RuleEngineHandler.deleteEvent(projectId, eventId);
+
     }
 
     public static void deleteProjectEvents(String projectId){

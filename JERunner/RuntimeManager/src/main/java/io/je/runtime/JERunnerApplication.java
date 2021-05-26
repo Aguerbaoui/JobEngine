@@ -1,7 +1,7 @@
 package io.je.runtime;
 
 import io.je.utilities.apis.JEBuilderApiHandler;
-import io.je.utilities.constants.JEMessages;
+import io.je.utilities.beans.JEMessages;
 import io.je.utilities.logger.JELogger;
 import org.springframework.boot.Banner;
 import org.springframework.boot.SpringApplication;

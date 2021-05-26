@@ -14,11 +14,11 @@ import io.je.utilities.apis.BodyType;
 import io.je.utilities.apis.HttpMethod;
 import io.je.utilities.beans.JEData;
 import io.je.utilities.beans.JEEvent;
+import io.je.utilities.beans.JEMessages;
 import io.je.utilities.beans.JEVariable;
 import io.je.utilities.classloader.JEClassCompiler;
 import io.je.utilities.config.ConfigurationConstants;
 import io.je.utilities.constants.ClassBuilderConfig;
-import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.WorkflowConstants;
 import io.je.utilities.exceptions.*;
 import io.je.utilities.logger.JELogger;
@@ -32,8 +32,7 @@ import java.util.*;
 import java.util.Map.Entry;
 import java.util.jar.JarFile;
 
-
-import static io.je.utilities.constants.JEMessages.ADDING_JAR_FILE_TO_RUNNER;
+import static io.je.utilities.beans.JEMessages.ADDING_JAR_FILE_TO_RUNNER;
 import static io.je.utilities.constants.WorkflowConstants.*;
 import static io.je.utilities.constants.WorkflowConstants.USERNAME;
 
@@ -392,16 +391,10 @@ public class RuntimeDispatcher {
 
     //add variable to runner
     public void addVariable(VariableModel variableModel) {
-        JEVariable var = new JEVariable();
-        var.setVariableName(variableModel.getName());
-        var.setJobEngineElementID(variableModel.getId());
-        var.setJobEngineProjectID(variableModel.getProjectId());
-        var.setVariableTypeString(variableModel.getType());
-        var.setVariableTypeClass(JEVariable.getType(variableModel.getType()));
-        var.setVariableValue(variableModel.getValue());
+        JEVariable var = new JEVariable(variableModel.getId(),variableModel.getProjectId(),variableModel.getName(),variableModel.getType(), variableModel.getInitialValue());
         var.setJeObjectCreationDate(LocalDateTime.now());
         var.setJeObjectLastUpdate(LocalDateTime.now());
-        JEStringSubstitutor.addVariable(var.getJobEngineProjectID(), var.getVariableName(), (String) var.getVariableValue());
+        //JEStringSubstitutor.addVariable(var.getJobEngineProjectID(), var.getName(), (String) var.getValue());
         VariableManager.addVariable(var);
     }
 
@@ -409,6 +402,13 @@ public class RuntimeDispatcher {
     public void deleteVariable(String projectId, String varId) {
         VariableManager.removeVariable(projectId, varId);
     }
+    
+	public void writeVariableValue(String projectId, String variableId, String value) {
+		VariableManager.updateVariableValue(projectId,variableId, value);
+		
+	}
+
+    
 
     public void addJarToProject(HashMap<String, String> payload) {
         JELogger.debug(ADDING_JAR_FILE_TO_RUNNER+ payload);
@@ -419,5 +419,6 @@ public class RuntimeDispatcher {
             e.printStackTrace();
         }
     }
+
 
 }

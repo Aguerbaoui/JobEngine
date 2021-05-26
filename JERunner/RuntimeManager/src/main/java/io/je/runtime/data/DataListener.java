@@ -1,7 +1,7 @@
 package io.je.runtime.data;
 
+import io.je.utilities.beans.JEMessages;
 import io.je.utilities.config.JEConfiguration;
-import io.je.utilities.constants.JEMessages;
 import io.je.utilities.logger.JELogger;
 
 import java.util.HashMap;

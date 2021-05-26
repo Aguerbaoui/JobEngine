@@ -4,7 +4,7 @@ import io.je.ruleengine.kie.KieSessionManagerInterface;
 import io.je.ruleengine.listener.RuleListener;
 import io.je.ruleengine.loader.RuleLoader;
 import io.je.ruleengine.models.Rule;
-import io.je.utilities.constants.JEMessages;
+import io.je.utilities.beans.JEMessages;
 import io.je.utilities.exceptions.*;
 import io.je.utilities.logger.JELogger;
 import io.je.utilities.logger.LogCategory;
@@ -19,6 +19,7 @@ import org.kie.api.builder.*;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.builder.model.KieSessionModel;
+import org.kie.api.cdi.KSession;
 import org.kie.api.conf.EqualityBehaviorOption;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.io.ResourceType;
@@ -658,9 +659,14 @@ public class ProjectContainer {
 
 	}
 
-	public boolean retractFact(JEObject fact) {
-		// TODO Auto-generated method stub
-		return false;
+	public void retractFact(String factId) {
+		try {
+			//kieSession.delete(facts.get(factId));
+
+		}catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
 	}
 
 	public boolean updateFact(JEObject fact) {

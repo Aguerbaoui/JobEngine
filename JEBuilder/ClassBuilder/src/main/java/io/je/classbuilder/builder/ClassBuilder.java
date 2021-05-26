@@ -17,9 +17,9 @@ import io.je.classbuilder.entity.ClassType;
 import io.je.classbuilder.models.ClassModel;
 import io.je.classbuilder.models.FieldModel;
 import io.je.classbuilder.models.MethodModel;
+import io.je.utilities.beans.JEMessages;
 import io.je.utilities.config.JEConfiguration;
 import io.je.utilities.constants.ClassBuilderConfig;
-import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.AddClassException;
 import io.je.utilities.exceptions.ClassLoadException;
 import io.je.utilities.logger.JELogger;
@@ -75,13 +75,14 @@ public class ClassBuilder {
 		unitSG.addImport("javax.sql.*");
 		unitSG.addImport("io.je.utilities.execution.*");
 		unitSG.addImport("io.je.utilities.models.*");
+		//TODO: add job engine api 
 		if (imports != null && !imports.isEmpty()) {
-			{
+			
 				for (String import_ : imports) {
-					unitSG.addImport(import_);
+					//unitSG.addImport(import_);
 				}
 			}
-			}
+			
 	}
 		
 

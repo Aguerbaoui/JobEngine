@@ -9,7 +9,7 @@ import io.je.rulebuilder.models.BlockModel;
 import io.je.rulebuilder.models.RuleModel;
 import io.je.rulebuilder.models.ScriptRuleModel;
 import io.je.utilities.apis.JERunnerAPIHandler;
-import io.je.utilities.constants.JEMessages;
+import io.je.utilities.beans.JEMessages;
 import io.je.utilities.exceptions.*;
 import io.je.utilities.files.JEFileUtils;
 import io.je.utilities.logger.JELogger;
@@ -430,7 +430,7 @@ public class RuleService {
     public RuleModel getRule(String projectId, String ruleId) throws ProjectNotFoundException, RuleNotFoundException {
         JEProject project = ProjectService.getProjectById(projectId);
         if (project == null) {
-            throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
+            throw new ProjectNotFoundException("["+ projectId + "] "+JEMessages.PROJECT_NOT_FOUND );
 
         } else if (!project.ruleExists(ruleId)) {
             throw new RuleNotFoundException(JEMessages.RULE_NOT_FOUND);

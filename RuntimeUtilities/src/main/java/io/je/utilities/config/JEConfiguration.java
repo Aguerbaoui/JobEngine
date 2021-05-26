@@ -1,7 +1,7 @@
 package io.je.utilities.config;
 
 import io.je.utilities.apis.JERunnerAPIHandler;
-import io.je.utilities.constants.JEMessages;
+import io.je.utilities.beans.JEMessages;
 import io.je.utilities.logger.JELogger;
 import io.je.utilities.models.ConfigModel;
 

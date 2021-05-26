@@ -2,8 +2,8 @@ package io.je.runtime.controllers;
 
 import io.je.project.exception.JEExceptionHandler;
 import io.je.runtime.services.RuntimeDispatcher;
+import io.je.utilities.beans.JEMessages;
 import io.je.utilities.constants.ResponseCodes;
-import io.je.utilities.constants.JEMessages;
 import io.je.utilities.models.VariableModel;
 import io.je.utilities.network.JEResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,5 +50,19 @@ public class VariableController {
         }
 
         return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.VAR_DELETED));
+    }
+    
+    /*
+     * write to variable
+     */
+    @PostMapping(value = "writeVariableValue/{projectId}/{variableId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> writeVariableValue(@PathVariable("projectId") String projectId,@PathVariable("variableId") String variableId, @RequestBody String value ) {
+
+        try {
+        	runtimeDispatcher.writeVariableValue(projectId,variableId, value);
+        } catch (Exception e) {
+            return JEExceptionHandler.handleException(e);
+        }
+        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.VAR_ADDED_SUCCESSFULLY));
     }
 }
