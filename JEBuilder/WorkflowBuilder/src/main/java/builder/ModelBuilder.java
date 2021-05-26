@@ -1,6 +1,6 @@
 package builder;
 
-import io.je.utilities.beans.JEMessages;
+import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.WorkflowConstants;
 import io.je.utilities.files.JEFileUtils;
 import io.je.utilities.logger.JELogger;

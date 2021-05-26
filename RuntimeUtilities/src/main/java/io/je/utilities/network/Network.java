@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.squareup.okhttp.*;
 import io.je.utilities.apis.BodyType;
 import io.je.utilities.apis.HttpMethod;
-import io.je.utilities.beans.JEMessages;
+import io.je.utilities.constants.JEMessages;
 import io.je.utilities.logger.JELogger;
 
 import java.io.IOException;

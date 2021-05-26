@@ -10,7 +10,7 @@ import java.util.concurrent.ConcurrentHashMap.KeySetView;
 
 import io.je.rulebuilder.components.blocks.Block;
 import io.je.rulebuilder.components.blocks.ExecutionBlock;
-import io.je.utilities.beans.JEMessages;
+import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.RuleBuildFailedException;
 import io.je.utilities.logger.JELogger;
 

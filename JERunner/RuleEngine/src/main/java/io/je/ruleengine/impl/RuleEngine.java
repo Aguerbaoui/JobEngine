@@ -2,7 +2,7 @@ package io.je.ruleengine.impl;
 
 import io.je.ruleengine.models.Rule;
 import io.je.utilities.beans.JEData;
-import io.je.utilities.beans.JEMessages;
+import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.*;
 import io.je.utilities.runtimeobject.JEObject;
 

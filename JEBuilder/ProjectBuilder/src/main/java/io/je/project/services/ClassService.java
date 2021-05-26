@@ -15,7 +15,7 @@ import io.je.classbuilder.entity.JEClass;
 import io.je.classbuilder.models.ClassModel;
 import io.je.project.repository.ClassRepository;
 import io.je.utilities.apis.JERunnerAPIHandler;
-import io.je.utilities.beans.JEMessages;
+import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.exceptions.AddClassException;
 import io.je.utilities.exceptions.ClassLoadException;

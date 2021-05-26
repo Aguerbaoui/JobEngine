@@ -1,6 +1,6 @@
 package io.je.project.services;
 
-import static io.je.utilities.beans.JEMessages.UPDATING_EVENT;
+import static io.je.utilities.constants.JEMessages.UPDATING_EVENT;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
 import io.je.project.beans.JEProject;
 import io.je.utilities.apis.JERunnerAPIHandler;
 import io.je.utilities.beans.JEEvent;
-import io.je.utilities.beans.JEMessages;
+import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.ConfigException;
 import io.je.utilities.exceptions.EventException;
 import io.je.utilities.exceptions.JERunnerErrorException;

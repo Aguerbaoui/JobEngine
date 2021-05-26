@@ -2,7 +2,7 @@ package io.je.runtime.workflow;
 
 import io.je.JEProcess;
 import io.je.processes.ProcessManager;
-import io.je.utilities.beans.JEMessages;
+import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.WorkflowAlreadyRunningException;
 import io.je.utilities.exceptions.WorkflowNotFoundException;
 import io.je.utilities.exceptions.WorkflwTriggeredByEventException;

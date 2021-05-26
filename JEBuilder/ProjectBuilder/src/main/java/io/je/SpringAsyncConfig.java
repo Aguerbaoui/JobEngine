@@ -2,7 +2,7 @@ package io.je;
 
 import java.util.concurrent.Executor;
 
-import io.je.utilities.beans.JEMessages;
+import io.je.utilities.constants.JEMessages;
 import io.je.utilities.logger.JELogger;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.AsyncConfigurer;

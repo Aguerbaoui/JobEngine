@@ -10,8 +10,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap.KeySetView;
 
-import io.je.utilities.beans.JEMessages;
 import io.je.utilities.config.ConfigurationConstants;
+import io.je.utilities.constants.JEMessages;
+
 import org.drools.template.ObjectDataCompiler;
 
 import io.je.rulebuilder.components.blocks.Block;

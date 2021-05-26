@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.je.project.exception.JEExceptionHandler;
 import io.je.project.services.ConfigurationService;
-import io.je.utilities.beans.JEMessages;
 import io.je.utilities.config.JEConfiguration;
+import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.models.ConfigModel;
 import io.je.utilities.network.JEResponse;

@@ -12,7 +12,7 @@ import io.je.classbuilder.models.MethodModel;
 import io.je.project.beans.JEProject;
 import io.je.project.models.WorkflowBlockModel;
 import io.je.utilities.apis.JERunnerAPIHandler;
-import io.je.utilities.beans.JEMessages;
+import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.constants.WorkflowConstants;
 import io.je.utilities.exceptions.*;

@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 import io.je.project.beans.JEProject;
 import io.je.rulebuilder.builder.RuleBuilder;
-import io.je.utilities.beans.JEMessages;
+import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.JERunnerErrorException;
 import io.je.utilities.exceptions.RuleBuildFailedException;
 import io.je.utilities.exceptions.RuleNotFoundException;

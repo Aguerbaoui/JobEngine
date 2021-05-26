@@ -14,11 +14,11 @@ import io.je.utilities.apis.BodyType;
 import io.je.utilities.apis.HttpMethod;
 import io.je.utilities.beans.JEData;
 import io.je.utilities.beans.JEEvent;
-import io.je.utilities.beans.JEMessages;
 import io.je.utilities.beans.JEVariable;
 import io.je.utilities.classloader.JEClassCompiler;
 import io.je.utilities.config.ConfigurationConstants;
 import io.je.utilities.constants.ClassBuilderConfig;
+import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.WorkflowConstants;
 import io.je.utilities.exceptions.*;
 import io.je.utilities.logger.JELogger;
@@ -32,7 +32,7 @@ import java.util.*;
 import java.util.Map.Entry;
 import java.util.jar.JarFile;
 
-import static io.je.utilities.beans.JEMessages.ADDING_JAR_FILE_TO_RUNNER;
+import static io.je.utilities.constants.JEMessages.ADDING_JAR_FILE_TO_RUNNER;
 import static io.je.utilities.constants.WorkflowConstants.*;
 import static io.je.utilities.constants.WorkflowConstants.USERNAME;
 

@@ -14,7 +14,7 @@ import io.je.rulebuilder.components.blocks.execution.TriggerEventBlock;
 import io.je.rulebuilder.components.blocks.getter.AttributeGetterBlock;
 import io.je.rulebuilder.components.blocks.logic.JoinBlock;
 import io.je.rulebuilder.models.BlockModel;
-import io.je.utilities.beans.JEMessages;
+import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.AddRuleBlockException;
 
 public class BlockGenerator {

@@ -1,4 +1,4 @@
-package io.je.utilities.beans;
+package io.je.utilities.constants;
 
 
 public class JEMessages {

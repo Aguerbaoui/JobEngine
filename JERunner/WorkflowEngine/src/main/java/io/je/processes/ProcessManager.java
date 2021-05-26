@@ -4,7 +4,7 @@ import io.je.JEProcess;
 import io.je.callbacks.OnExecuteOperation;
 import io.je.serviceTasks.ActivitiTask;
 import io.je.serviceTasks.InformTask;
-import io.je.utilities.beans.JEMessages;
+import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.WorkflowAlreadyRunningException;
 import io.je.utilities.exceptions.WorkflowNotFoundException;
 import io.je.utilities.exceptions.WorkflwTriggeredByEventException;

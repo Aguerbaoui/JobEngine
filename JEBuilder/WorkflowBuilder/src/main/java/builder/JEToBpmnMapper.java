@@ -7,7 +7,7 @@ import blocks.control.ExclusiveGatewayBlock;
 import blocks.control.InclusiveGatewayBlock;
 import blocks.control.ParallelGatewayBlock;
 import blocks.events.*;
-import io.je.utilities.beans.JEMessages;
+import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.WorkflowConstants;
 import io.je.utilities.logger.JELogger;
 import models.JEWorkflow;
@@ -17,7 +17,7 @@ import org.activiti.bpmn.model.Process;
 import java.util.ArrayList;
 
 import static builder.ModelBuilder.getListener;
-import static io.je.utilities.beans.JEMessages.BUILDING_BPMN_FROM_JEWORKFLOW;
+import static io.je.utilities.constants.JEMessages.BUILDING_BPMN_FROM_JEWORKFLOW;
 
 public class JEToBpmnMapper {
 
