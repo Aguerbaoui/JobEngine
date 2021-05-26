@@ -1,7 +1,8 @@
 package io.je.serviceTasks;
 
 import com.squareup.okhttp.Response;
-import io.je.utilities.constants.JEMessages;
+
+import io.je.utilities.beans.JEMessages;
 import io.je.utilities.logger.JELogger;
 import io.je.utilities.network.Network;
 import io.je.utilities.string.JEStringSubstitutor;

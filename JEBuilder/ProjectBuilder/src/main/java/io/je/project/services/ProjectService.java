@@ -5,7 +5,8 @@ import io.je.project.controllers.ProjectController;
 import io.je.project.repository.ProjectRepository;
 import io.je.utilities.apis.JERunnerAPIHandler;
 import io.je.utilities.beans.JEEvent;
-import io.je.utilities.constants.JEMessages;
+import io.je.utilities.beans.JEMessages;
+import io.je.utilities.beans.JEVariable;
 import io.je.utilities.exceptions.*;
 import io.je.utilities.logger.JELogger;
 import models.JEWorkflow;
@@ -43,6 +44,9 @@ public class ProjectService {
 
     @Autowired
     EventService eventService;
+    
+    @Autowired
+    VariableService variableService;
 
     @Autowired
     ClassService classService;
@@ -291,6 +295,10 @@ public class ProjectService {
             for (JEEvent event : project.getEvents().values()) {
                 eventService.registerEvent(event);
             }
+            for(JEVariable variable : project.getVariables().values())
+            {
+           	 variableService.addVariableToRunner(variable);
+            }
 
             if (project.isBuilt()) {
                 project.setBuilt(false);
@@ -317,6 +325,10 @@ public class ProjectService {
           	   loadedProjects.put(project.getProjectId(), project);
                  for (JEEvent event : project.getEvents().values()) {
                      eventService.registerEvent(event);
+                 }
+                 for(JEVariable variable : project.getVariables().values())
+                 {
+                	 variableService.addVariableToRunner(variable);
                  }
              }
              else

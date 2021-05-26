@@ -1,7 +1,7 @@
 package io.je.project.beans;
 
 import io.je.project.services.ProjectService;
-import io.je.utilities.constants.JEMessages;
+import io.je.utilities.beans.JEMessages;
 import io.je.utilities.exceptions.*;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;

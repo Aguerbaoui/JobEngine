@@ -1,4 +1,4 @@
-package io.je.utilities.constants;
+package io.je.utilities.beans;
 
 
 public class JEMessages {
@@ -583,4 +583,6 @@ public class JEMessages {
 	public static final String LOGGING_SYSTEM_PORT_MISSING = "Logging System port is not configured";
 
 	public static final String EMAIL_API_URL_MISSING = "Email API URL is not configured";
+
+	public static final String LOADING_VARIABLES = "loading variables..";
 }

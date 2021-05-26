@@ -1,16 +1,20 @@
 package io.je.utilities.models;
 
+import io.je.utilities.beans.JEVariable;
+
 public class VariableModel {
 
     private String id;
 
-    private String type;
+    private String type; 
 
     private String projectId;
 
     private String name;
 
-    private Object value;
+    private String value;
+    
+    private String initialValue;
 
     public String getId() {
         return id;
@@ -44,21 +48,33 @@ public class VariableModel {
         this.name = name;
     }
 
-    public Object getValue() {
+    public String getValue() {
         return value;
     }
 
-    public void setValue(Object value) {
+    public void setValue(String value) {
         this.value = value;
     }
 
-    public VariableModel() {}
-    public VariableModel(String projectId, String id, String name, String type, String value) {
+    
+    
+    
+    public String getInitialValue() {
+		return initialValue;
+	}
+
+	public void setInitialValue(String initialValue) {
+		this.initialValue = initialValue;
+	}
+
+	public VariableModel() {}
+    public VariableModel(String projectId, String id, String name, String type, String value, String initialValue) {
         this.projectId = projectId;
         this.id = id;
         this.name = name;
         this.type = type;
         this.value = value;
+        this.initialValue = initialValue;
     }
 
     public VariableModel(String projectId,  String name, String type, String value) {
@@ -68,4 +84,13 @@ public class VariableModel {
         this.type = type;
         this.value = value;
     }
+
+	public VariableModel(JEVariable variable) {
+		 this.projectId = variable.getJobEngineProjectID();
+	        this.id = variable.getJobEngineElementID();
+	        this.name = variable.getName();
+	        this.type = variable.getType().toString();
+	        this.initialValue = String.valueOf(variable.getInitialValue());
+	        this.value = null;
+	}
 }

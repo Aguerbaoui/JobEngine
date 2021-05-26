@@ -8,8 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import io.je.runtime.services.RuntimeDispatcher;
+import io.je.utilities.beans.JEMessages;
 import io.je.utilities.constants.ResponseCodes;
-import io.je.utilities.constants.JEMessages;
 import io.je.utilities.models.EventModel;
 import io.je.utilities.network.JEResponse;
 import org.springframework.web.bind.annotation.PostMapping;

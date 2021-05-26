@@ -64,6 +64,9 @@ public class APIConstants {
 	public static final String EVENT_TRIGGER_EVENT = "/event/triggerEvent/";
 	
 	public static final String EVENT_UNTRIGGER_EVENT = "/event/untriggerEvent/";
+	
+	public static final String WRITE_TO_VARIABLE = "/variable/writeVariableValue/";
+	
 
 
 	public static final String UPDATE_CONFIG = "/updateConfig";

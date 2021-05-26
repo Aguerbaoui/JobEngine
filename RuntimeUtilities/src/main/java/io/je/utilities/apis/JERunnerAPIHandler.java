@@ -4,9 +4,9 @@ package io.je.utilities.apis;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.squareup.okhttp.Response;
 
+import io.je.utilities.beans.JEMessages;
 import io.je.utilities.config.JEConfiguration;
 import io.je.utilities.constants.APIConstants;
-import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.exceptions.JERunnerErrorException;
 import io.je.utilities.logger.JELogger;
@@ -210,4 +210,10 @@ public class JERunnerAPIHandler {
         String requestUrl = runtimeManagerBaseApi + EVENT_UNTRIGGER_EVENT + projectId + "/" + eventId;
         return sendRequest(requestUrl);
     }
+
+	public static JEResponse writeVariableValue(String projectId,String variableId, Object value) throws JERunnerErrorException, IOException, InterruptedException, ExecutionException {
+		 String requestUrl = runtimeManagerBaseApi + WRITE_TO_VARIABLE + projectId + "/" + variableId;
+	       return  sendRequestWithStringBody(requestUrl,String.valueOf(value));
+		
+	}
 }

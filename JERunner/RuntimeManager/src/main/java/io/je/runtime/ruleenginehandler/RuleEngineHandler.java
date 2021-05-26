@@ -13,10 +13,10 @@ import io.je.runtime.models.InstanceModel;
 import io.je.runtime.models.InstanceModelMapping;
 import io.je.runtime.models.RuleModel;
 import io.je.runtime.objects.InstanceManager;
-import io.je.utilities.constants.JEMessages;
-
 import io.je.utilities.beans.JEData;
 import io.je.utilities.beans.JEEvent;
+import io.je.utilities.beans.JEMessages;
+import io.je.utilities.beans.JEVariable;
 import io.je.utilities.exceptions.*;
 import io.je.utilities.logger.JELogger;
 import io.je.utilities.runtimeobject.JEObject;
@@ -161,4 +161,21 @@ public class RuleEngineHandler {
 		}
 		return new ArrayList<>();
 	}
+
+
+	public static void addVariable(JEVariable variable) {
+		RuleEngine.assertFact(variable.getJobEngineProjectID(), variable);
+		
+	}
+
+	public static void deleteVariable(String projectId, String id) {
+		RuleEngine.deleteFact(projectId,id);
+		
+	}
+	
+	public static void deleteEvent(String projectId, String id) {
+		RuleEngine.deleteFact(projectId,id);
+		
+	}
+	
 }

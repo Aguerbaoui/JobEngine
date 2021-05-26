@@ -1,6 +1,6 @@
 package io.je.executionListeners;
 
-import io.je.utilities.constants.JEMessages;
+import io.je.utilities.beans.JEMessages;
 import io.je.utilities.logger.JELogger;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.ExecutionListener;

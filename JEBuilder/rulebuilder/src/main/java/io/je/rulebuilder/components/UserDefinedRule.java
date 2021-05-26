@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap.KeySetView;
 
+import io.je.utilities.beans.JEMessages;
 import io.je.utilities.config.ConfigurationConstants;
 import org.drools.template.ObjectDataCompiler;
 
@@ -17,7 +18,6 @@ import io.je.rulebuilder.components.blocks.Block;
 import io.je.rulebuilder.components.blocks.ConditionBlock;
 import io.je.rulebuilder.components.blocks.PersistableBlock;
 import io.je.rulebuilder.components.blocks.getter.AttributeGetterBlock;
-import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.AddRuleBlockException;
 import io.je.utilities.exceptions.RuleBuildFailedException;
 import io.je.utilities.logger.JELogger;

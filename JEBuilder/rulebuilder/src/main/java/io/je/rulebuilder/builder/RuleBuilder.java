@@ -9,7 +9,7 @@ import io.je.rulebuilder.components.UserDefinedRule;
 import io.je.rulebuilder.components.JERule;
 import io.je.rulebuilder.components.ScriptedRule;
 import io.je.utilities.apis.JERunnerAPIHandler;
-import io.je.utilities.constants.JEMessages;
+import io.je.utilities.beans.JEMessages;
 import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.exceptions.JERunnerErrorException;
 import io.je.utilities.exceptions.RuleBuildFailedException;

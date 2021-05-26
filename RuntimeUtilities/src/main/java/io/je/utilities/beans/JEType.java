@@ -9,5 +9,6 @@ public enum JEType {
     LONG,
     OBJECT,
     SHORT,
-    FLOAT
+    FLOAT,
+    BOOLEAN
 }

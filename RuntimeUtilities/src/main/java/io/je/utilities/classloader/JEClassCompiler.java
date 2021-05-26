@@ -5,8 +5,8 @@ import java.io.File;
 import java.util.*;
 import javax.tools.*;
 
+import io.je.utilities.beans.JEMessages;
 import io.je.utilities.config.ConfigurationConstants;
-import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.ClassLoadException;
 import io.je.utilities.logger.JELogger;
 

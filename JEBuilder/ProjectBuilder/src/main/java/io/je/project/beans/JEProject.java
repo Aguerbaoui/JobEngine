@@ -5,17 +5,14 @@ import io.je.rulebuilder.components.JERule;
 import io.je.rulebuilder.components.UserDefinedRule;
 import io.je.rulebuilder.components.blocks.Block;
 import io.je.utilities.beans.JEEvent;
+import io.je.utilities.beans.JEMessages;
 import io.je.utilities.beans.JEVariable;
-import io.je.utilities.constants.JEMessages;
-import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.*;
 import models.JEWorkflow;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -41,7 +38,7 @@ public class JEProject {
     private ConcurrentHashMap<String, JERule> rules;
 
     /*
-    * workflows in a project
+    * Workflows in a project
     * */
     private ConcurrentHashMap<String, JEWorkflow> workflows;
     
@@ -90,6 +87,7 @@ public class JEProject {
         rules = new ConcurrentHashMap<>();
         workflows = new ConcurrentHashMap<>();
         events = new ConcurrentHashMap<>();
+        variables= new ConcurrentHashMap<>();
         this.projectId = projectId;
         this.configurationPath = configurationPath;
         isBuilt = false;
@@ -148,6 +146,25 @@ public class JEProject {
 		this.autoReload = autoReload;
 	}
 
+
+/*
+ * generate a unique block name from a block name base ( example : script => script44 )
+ */
+	public String generateUniqueBlockName(String blockNameBase) {
+		if (blockNameBase != null) {
+			String blockName = blockNameBase.replaceAll("\\s+", "");
+			if (!blockNameCounters.containsKey(blockName)) {
+				blockNameCounters.put(blockName, 0);
+			}
+			int counter = blockNameCounters.get(blockName);
+			while (blockNameExists(blockName + counter)) {
+				counter++;
+			}
+			blockNameCounters.put(blockName, counter + 1);
+			return blockName + counter;
+		}
+	return "";
+	}
 
     
 	/******************************************************** PROJECT **********************************************************************/
@@ -364,10 +381,7 @@ public class JEProject {
     * Checks if a workflow exists
     * */
     public boolean workflowExists(String workflowId) {
-        if(getWorkflowByIdOrName(workflowId) != null) {
-            return true;
-        }
-        return false;
+        return getWorkflowByIdOrName(workflowId) != null;
     }
 
     /*
@@ -468,6 +482,8 @@ public class JEProject {
 		this.events = events;
 	}
 
+	/******************************************************** Variables **********************************************************************/
+
 
     public void addVariable(JEVariable var) {
 		variables.put(var.getJobEngineElementID(), var);
@@ -482,23 +498,21 @@ public class JEProject {
 	}
 
 
+	public ConcurrentHashMap<String, JEVariable> getVariables() {
+		return variables;
+	}
 
 
-
-
-	public String generateUniqueBlockName(String blockNameBase) {
-		if (blockNameBase != null) {
-			String blockName = blockNameBase.replaceAll("\\s+", "");
-			if (!blockNameCounters.containsKey(blockName)) {
-				blockNameCounters.put(blockName, 0);
-			}
-			int counter = blockNameCounters.get(blockName);
-			while (blockNameExists(blockName + counter)) {
-				counter++;
-			}
-			blockNameCounters.put(blockName, counter + 1);
-			return blockName + counter;
+	public void setVariables(ConcurrentHashMap<String, JEVariable> variables) {
+		this.variables = variables;
+	}
+	
+	public JEVariable getVariable(String varId) throws  VariableNotFoundException
+	{
+		if(!variableExists(varId))
+		{
+			throw new VariableNotFoundException(JEMessages.VARIABLE_NOT_FOUND);
 		}
-	return "";
+		return variables.get(varId);
 	}
 }

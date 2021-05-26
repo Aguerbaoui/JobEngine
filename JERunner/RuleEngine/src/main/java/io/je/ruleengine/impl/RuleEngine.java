@@ -2,7 +2,7 @@ package io.je.ruleengine.impl;
 
 import io.je.ruleengine.models.Rule;
 import io.je.utilities.beans.JEData;
-import io.je.utilities.constants.JEMessages;
+import io.je.utilities.beans.JEMessages;
 import io.je.utilities.exceptions.*;
 import io.je.utilities.runtimeobject.JEObject;
 
@@ -163,6 +163,12 @@ public class RuleEngine {
 	public static Rule getRule(String projectId, String ruleId) {
 		ProjectContainer project = projectManager.getProjectContainer(projectId);
 		return project.getRule(ruleId);
+	}
+
+	public static void deleteFact(String projectId, String factId) {
+		ProjectContainer project = projectManager.getProjectContainer(projectId);
+		project.retractFact(factId);
+		
 	}
 
 
