@@ -57,9 +57,12 @@ public class RuleListener extends DefaultAgendaEventListener {
     	List<String> instances = new ArrayList<>();
     	for(Object instance : event.getMatch().getObjects())
     	{
-    		JEObject jeInstance = (JEObject) instance;
-    		//TODO switch to name maybe?
-    		instances.add(jeInstance.getJobEngineElementID());
+    		if(instance instanceof JEObject)
+    		{
+    			JEObject jeInstance = (JEObject) instance;
+        		//TODO switch to name maybe?
+        		instances.add(jeInstance.getJobEngineElementID());
+    		}
     		
     	}
     	ruleMessage.setInstanceNames(instances);
@@ -67,6 +70,10 @@ public class RuleListener extends DefaultAgendaEventListener {
     	//get declared variables 
     	for(String declaredVariableName : event.getMatch().getDeclarationIds())
     	{
+    		if(event.getMatch().getDeclarationValue(declaredVariableName) instanceof JEObject)
+    		{
+    			
+    		}
     		ruleMessage.addBlockMessage(new JEBlockMessage(declaredVariableName,event.getMatch().getDeclarationValue(declaredVariableName).toString()));
     	}
     	
