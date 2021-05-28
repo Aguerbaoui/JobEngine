@@ -14,6 +14,8 @@ public abstract class JEObject {
 
     protected String jobEngineProjectID;
 
+    protected String jobEngineElementName;
+
     protected LocalDateTime jeObjectLastUpdate;
     
     protected LocalDateTime jeObjectCreationDate;
@@ -105,6 +107,17 @@ public abstract class JEObject {
 		this.jeObjectCreationDate = jeObjectCreationDate;
 	}
 
+
+	public String getJobEngineElementName() {
+		return jobEngineElementName;
+	}
+
+
+	public void setJobEngineElementName(String jobEngineElementName) {
+		this.jobEngineElementName = jobEngineElementName;
+	}
+
+	
     
     
 } 

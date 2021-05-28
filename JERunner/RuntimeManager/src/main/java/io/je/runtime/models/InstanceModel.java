@@ -13,6 +13,9 @@ public class InstanceModel {
 	@JsonProperty(InstanceModelMapping.INSTANCEID)
 	String instanceId;
 	
+//	@JsonProperty(InstanceModelMapping.INSTANCENAME)
+	//String instanceName;
+	
 	@JsonProperty(InstanceModelMapping.PAYLOAD)
 	JSONObject payload;
 
@@ -48,12 +51,23 @@ public class InstanceModel {
 		this.payload = payload;
 	}
 
+
+
 	@Override
 	public String toString() {
-		return "InstanceModel [modelId=" + modelId + ", instanceId=" + instanceId + ", payload=" + payload + "]";
+		return "InstanceModel [modelId=" + modelId + ", instanceId=" + instanceId + ", instanceName="  /* + instanceName*/
+				+ ", payload=" + payload + "]";
+	}
+/*
+	public String getInstanceName() {
+		return instanceName;
 	}
 
+	public void setInstanceName(String instanceName) {
+		this.instanceName = instanceName;
+	}
 
+*/
 
 	
 		

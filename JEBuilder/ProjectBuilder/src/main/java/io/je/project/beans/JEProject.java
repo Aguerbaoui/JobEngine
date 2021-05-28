@@ -35,23 +35,23 @@ public class JEProject {
     /*
     * Rules in a project
     * */
-    private ConcurrentHashMap<String, JERule> rules;
+    private ConcurrentHashMap<String, JERule> rules= new ConcurrentHashMap<>();
 
     /*
     * Workflows in a project
     * */
-    private ConcurrentHashMap<String, JEWorkflow> workflows;
+    private ConcurrentHashMap<String, JEWorkflow> workflows= new ConcurrentHashMap<>();
     
     
     /*
      * Events in a project
      * */
-     private ConcurrentHashMap<String, JEEvent> events;
+     private ConcurrentHashMap<String, JEEvent> events= new ConcurrentHashMap<>();
 
 	/*
 	 * Variables in a project
 	 * */
-	private ConcurrentHashMap<String, JEVariable> variables;
+	private ConcurrentHashMap<String, JEVariable> variables= new ConcurrentHashMap<>();
      
 	/*
 	 * block names
@@ -101,7 +101,15 @@ public class JEProject {
 	
 
 
-	 public Map<String, String> getBlockNames() {
+	 private JEProject() {
+	}
+
+
+
+
+
+
+	public Map<String, String> getBlockNames() {
 		return blockNames;
 	}
 

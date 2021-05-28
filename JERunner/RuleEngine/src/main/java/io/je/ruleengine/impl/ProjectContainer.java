@@ -146,6 +146,7 @@ public class ProjectContainer {
 	 */
 	public void fireRules() throws RulesNotFiredException, RuleBuildFailedException, ProjectAlreadyRunningException {
 
+		
 		JELogger.debug(getClass(), "Rule Engine - [projectId ="+projectId+"]" + JEMessages.FIRING_ALL_RULES);
 		facts = new ConcurrentHashMap<String, FactHandle>();
 		if(allRules == null || allRules.isEmpty())
@@ -161,8 +162,8 @@ public class ProjectContainer {
 
 		// check that project is not already running
 		if (status == Status.RUNNING) {
-			JELogger.error(ProjectContainer.class, JEMessages.PROJECT_CONTAINER_RUNNING);
-			throw new ProjectAlreadyRunningException("");
+			stopRuleExecution();
+			
 		}
 
 		// fire rules
@@ -173,6 +174,7 @@ public class ProjectContainer {
 			}
 			Runnable runnable = () -> { 
 				try {
+				kieSession.addEventListener(ruleListener);
 				kieSession.fireUntilHalt();
 				}catch(Exception e)
 				{
@@ -182,7 +184,7 @@ public class ProjectContainer {
 					JELogger.debug(e.getMessage());
 					JELogger.error(JEMessages.RULE_EXECUTION_ERROR +StringUtils.substringBefore(e.getMessage(), " in ") ,  LogCategory.RUNTIME,
                               projectId, LogSubModule.RULE, ruleId);
-
+					e.printStackTrace();
 					try {
 						fireRules();
 					} catch (RulesNotFiredException | RuleBuildFailedException | ProjectAlreadyRunningException e1) {
