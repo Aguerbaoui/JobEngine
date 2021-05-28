@@ -13,6 +13,7 @@ import org.burningwave.core.classes.TypeDeclarationSourceGenerator;
 import org.burningwave.core.classes.UnitSourceGenerator;
 import org.burningwave.core.classes.VariableSourceGenerator;
 
+
 import io.je.classbuilder.entity.ClassType;
 import io.je.classbuilder.models.ClassModel;
 import io.je.classbuilder.models.FieldModel;
@@ -31,6 +32,7 @@ import io.je.utilities.string.JEStringUtils;
  */
 public class ClassBuilder {
 
+	
 
 	/*
 	 * build .java class/interface/enum from classModel
@@ -68,6 +70,11 @@ public class ClassBuilder {
 	private static void addImports(List<String> imports, UnitSourceGenerator unitSG ) {
 		//TODO : remove harcoded imports
 		unitSG.addImport("com.fasterxml.jackson.annotation.JsonProperty");
+		unitSG.addImport("com.fasterxml.jackson.annotation.JsonFormat");
+		unitSG.addImport("com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer");
+		unitSG.addImport("com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer");
+		unitSG.addImport("com.fasterxml.jackson.databind.annotation.JsonSerialize");
+		unitSG.addImport("com.fasterxml.jackson.databind.annotation.JsonDeserialize");
 		unitSG.addImport("io.je.utilities.logger.JELogger");
 		unitSG.addImport("java.lang.*");
 		unitSG.addImport("java.util.*");
@@ -179,9 +186,10 @@ public class ClassBuilder {
 				//TODO: all attributes are public because the data def rest api doesn't provide the attribute's modifier
 				VariableSourceGenerator newField= generateField(field).addModifier(getModifier(field.getFieldVisibility()));
 				if(field.getType().equalsIgnoreCase("DATETIME"))
-				{
-					newField.addAnnotation(new AnnotationSourceGenerator("@JsonFormat (shape = JsonFormat.Shape.STRING, pattern = \""+JEConfiguration.getDataModelDateFormat()+"\")"));
-					
+				{					 
+					newField.addAnnotation(new AnnotationSourceGenerator("JsonDeserialize(using = LocalDateTimeDeserializer.class)"));
+					newField.addAnnotation(new AnnotationSourceGenerator("JsonSerialize(using = LocalDateTimeSerializer.class)"));
+					newField.addAnnotation(new AnnotationSourceGenerator("JsonFormat (shape = JsonFormat.Shape.STRING, pattern = \""+JEConfiguration.getDataModelDateFormat()+"\")"));					
 				}
 				newClass.addField(newField);
 				String attributeName = field.getName();

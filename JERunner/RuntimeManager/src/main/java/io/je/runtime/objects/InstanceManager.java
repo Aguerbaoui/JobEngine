@@ -4,6 +4,7 @@ import org.json.JSONObject;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 
 import io.je.runtime.models.InstanceModel;
 import io.je.runtime.repos.ClassRepository;
@@ -27,8 +28,10 @@ public class InstanceManager {
 		Object instance=null;
 		//addInstanceId
 		JSONObject instanceJson = instanceModel.getPayload();
+
 		instanceJson.put("jobEngineElementID", instanceModel.getInstanceId());
-		
+		//instanceJson.put("jobEngineElementName", instanceModel.getInstanceName());
+
 		try {
 			instance = objectMapper.readValue(instanceModel.getPayload().toString(), instanceClass);
 		} catch (JsonProcessingException e) {
