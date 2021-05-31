@@ -7,20 +7,33 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
+import java.util.HashMap;
 
 public class JEClassLoader extends ClassLoader {
 
+    HashMap<String, InputStream> streams;
     public JEClassLoader(ClassLoader parent) {
         super(parent);
+        streams = new HashMap<>();
     }
 
     @Override
     public Class<?> loadClass(String name) throws ClassNotFoundException {
-        JELogger.debug("Class Loading Started for " + name);
         if (name.startsWith("classes")) {
-            return getClass(name);
+            try {
+                JELogger.debug("Class Loading by je custom loader Started for " + name);
+                Class c = getClass(name);
+                return c;
+            }
+            catch (Exception e) {
+                JELogger.debug("Class Loading failed by je custom loader for " + name);
+                JELogger.error(Arrays.toString(e.getStackTrace()));
+            }
         }
+        //JELogger.debug("Class Loading Started for " + name);
         return super.loadClass(name);
+
     }
 
     /**
@@ -61,12 +74,19 @@ public class JEClassLoader extends ClassLoader {
         InputStream stream = getClass().getClassLoader().getResourceAsStream(
                 name);
         int size = stream.available();
+        streams.put(name, stream);
         byte buff[] = new byte[size];
         DataInputStream in = new DataInputStream(stream);
         // Reading the binary data
         in.readFully(buff);
         in.close();
         return buff;
+    }
+
+    //needed for drools
+    @Override
+    public InputStream getResourceAsStream(final String name) {
+        return streams.get(name);
     }
 
     public static void main(String[] args) throws ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, Exception {
