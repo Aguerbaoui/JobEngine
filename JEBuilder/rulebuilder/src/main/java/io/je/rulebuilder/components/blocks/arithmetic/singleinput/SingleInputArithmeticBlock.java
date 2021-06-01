@@ -38,7 +38,16 @@ public abstract class SingleInputArithmeticBlock extends ArithmeticBlock {
 			}
 		}else if(type.equalsIgnoreCase("string") )
 		{
-			return "String() from " + getFormula();
+			switch(level)
+			{
+			case 0:
+				return " String() from " +  getFormula() ;
+			case 1:
+				return " String(" + Keywords.toBeReplaced +") from " + getFormula() ;
+			default: 
+				return " String() from " + getFormula() ;
+			
+			}
 		}else if(type.equalsIgnoreCase("date") )
 		{
 			return "Date() from " + getFormula();
@@ -112,4 +121,15 @@ public abstract class SingleInputArithmeticBlock extends ArithmeticBlock {
 		expression.append( getBlockNameAsVariable()+" : " +getArithmeticFormula (1,defaultType));
 		return expression.toString();
 	}
+
+
+	public String getDefaultType() {
+		return defaultType;
+	}
+
+
+	public void setDefaultType(String defaultType) {
+		this.defaultType = defaultType;
+	}
+	
 }
