@@ -2,6 +2,8 @@ package io.je.rulebuilder.components.blocks.comparison;
 
 
 import io.je.rulebuilder.components.blocks.PersistableBlock;
+import io.je.rulebuilder.components.blocks.arithmetic.singleinput.SingleInputArithmeticBlock;
+import io.je.rulebuilder.components.blocks.arithmetic.singleinput.TypeConverterBlock;
 import io.je.rulebuilder.components.blocks.getter.AttributeGetterBlock;
 import io.je.rulebuilder.config.Keywords;
 import io.je.rulebuilder.models.BlockModel;
@@ -36,15 +38,29 @@ public  class ComparisonBlock extends PersistableBlock {
 	}
 	protected String getOperationExpression()
 	{
+		String firstOperand = null;
 		if(inputBlocks.get(0) instanceof AttributeGetterBlock)
 		{
-		return inputBlocks.get(0).getRefName()+ getOperator() + threshold;
+			firstOperand = inputBlocks.get(0).getRefName();
 		}
 		else
 		{
-			return "doubleValue " + getOperator() + threshold;
-
+			if(inputBlocks.get(0) instanceof SingleInputArithmeticBlock)
+			{
+				SingleInputArithmeticBlock input = (SingleInputArithmeticBlock) inputBlocks.get(0);
+				if(input.getDefaultType().equals("string"))
+				{
+					firstOperand = "this ";
+				}
+				else
+				{
+					firstOperand = "doubleValue ";
+				}
+						
+			}
 		}
+		return firstOperand+ getOperator() + threshold;
+
 	}
 	
 	public ComparisonBlock() {

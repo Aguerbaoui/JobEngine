@@ -105,6 +105,7 @@ public abstract class Block extends JEObject {
 		return blockName.replaceAll("\\s+", "") ;
 	}
 	
+
 	
 	/*
 	 * get name of variable holding he value expressed by input number index: ex: $age, $block1 ...
