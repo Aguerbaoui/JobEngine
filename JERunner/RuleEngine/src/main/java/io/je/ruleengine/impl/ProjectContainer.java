@@ -4,6 +4,7 @@ import io.je.ruleengine.kie.KieSessionManagerInterface;
 import io.je.ruleengine.listener.RuleListener;
 import io.je.ruleengine.loader.RuleLoader;
 import io.je.ruleengine.models.Rule;
+import io.je.utilities.classloader.JEClassLoader;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.*;
 import io.je.utilities.logger.JELogger;
@@ -29,6 +30,7 @@ import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.runtime.rule.FactHandle;
 
 import java.io.FileNotFoundException;
+import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -95,7 +97,7 @@ public class ProjectContainer {
 	private RuleListener ruleListener;
 
 	private boolean isInitialised = false;
-
+	JEClassLoader loader = new JEClassLoader(ProjectContainer.class.getClassLoader());
 	ConcurrentHashMap<String, FactHandle> facts = new ConcurrentHashMap<>();
 
 	/*
@@ -130,7 +132,7 @@ public class ProjectContainer {
 	 */
 	public void buildProject() throws RuleBuildFailedException {
 		JELogger.info(ProjectContainer.class, JEMessages.BUILDING_PROJECT_CONTAINER);
-
+		 loader = new JEClassLoader(ProjectContainer.class.getClassLoader());
 		// build kie environment
 		if (!buildKie()) {
 			JELogger.error(ProjectContainer.class, JEMessages.BUILDING_PROJECT_CONTAINER_FAILED);
@@ -259,7 +261,7 @@ public class ProjectContainer {
 
 		// build all rules
 		try {
-			kieServices.newKieBuilder(kieFileSystem, null).buildAll(null);
+			kieServices.newKieBuilder(kieFileSystem, loader).buildAll(null);
 		} catch (Exception e) {
 			e.printStackTrace();
 			JELogger.error(ProjectContainer.class, Arrays.toString(e.getStackTrace()));
@@ -403,7 +405,7 @@ public class ProjectContainer {
 		try {
 			releaseId = kieServices.newReleaseId("io.je", "ruleengine", getReleaseVer());
 			kieFileSystem.generateAndWritePomXML(releaseId);
-			kieServices.newKieBuilder(kieFileSystem, classLoader).buildAll(null);
+			kieServices.newKieBuilder(kieFileSystem, loader).buildAll(null);
 			kieContainer.updateToVersion(releaseId);
 			kScanner.scanNow();
 		} catch (Exception e) {
@@ -542,7 +544,18 @@ public class ProjectContainer {
 		RuleLoader.loadRuleContent(rule);
 		String filename = generateResourceName(ResourceType.DRL, rule.getName());
 		kfsToCompile.write(filename, rule.getContent());
-		KieBuilder kieBuilder = kieServices.newKieBuilder(kfsToCompile, null).buildAll(null);
+		//JEClassLoader loader = new JEClassLoader(ProjectContainer.class.getClassLoader());
+		/*try {
+			Class c = loader.loadClass("classes.Car");
+			for(Field f: c.getDeclaredFields()) {
+				JELogger.info("field name in loaded class in project container = " + f.getName());
+			}
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}*/
+		Thread.currentThread().setContextClassLoader( loader );
+		KieBuilder kieBuilder = kieServices.newKieBuilder(kfsToCompile, loader);
+
 		Results results = kieBuilder.getResults();
 		if (results.hasMessages(Message.Level.ERROR)) {
 			JELogger.error(ProjectContainer.class, results.getMessages().toString());
@@ -559,7 +572,7 @@ public class ProjectContainer {
 	public boolean compileAllRules() {
 		JELogger.debug(getClass(), "Rule Engine - [projectId ="+projectId+"]"+JEMessages.COMPILING_RULES);
 
-		KieBuilder kieBuilder = kieServices.newKieBuilder(kieFileSystem, null).buildAll(null);
+		KieBuilder kieBuilder = kieServices.newKieBuilder(kieFileSystem, loader).buildAll(null);
 		Results results = kieBuilder.getResults();
 		if (results.hasMessages(Message.Level.ERROR)) {
 			JELogger.error(ProjectContainer.class, results.getMessages().toString());
