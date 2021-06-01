@@ -201,6 +201,8 @@ public class JEMessages {
 
     public static final String MAIL_SERVICE_TASK_RESPONSE = " Mail service task response";
 
+    public static final String DB_SERVICE_TASK_RESPONSE = " Database service task response";
+
     public static final String UPDATING_A_WORKFLOW_BLOCK_WITH_ID = "Updating a workflow block with id ";
 
     public static final String INFORM_FROM_USER = "Inform from user";

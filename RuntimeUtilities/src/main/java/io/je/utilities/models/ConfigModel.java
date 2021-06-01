@@ -23,6 +23,15 @@ public class ConfigModel {
 	 String dataModelDateFormat;
 	 String loggingSystemURL;
 	 int loggingSystemZmqPublishPort;
+	String databaseApiUrl;
+
+	public String getDatabaseApiUrl() {
+		return databaseApiUrl;
+	}
+
+	public void setDatabaseApiUrl(String databaseApiUrl) {
+		this.databaseApiUrl = databaseApiUrl;
+	}
 
 	public String getEmailApiUrl() {
 		return emailApiUrl;
