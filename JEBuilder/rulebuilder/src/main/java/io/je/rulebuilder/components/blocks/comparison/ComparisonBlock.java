@@ -3,7 +3,6 @@ package io.je.rulebuilder.components.blocks.comparison;
 
 import io.je.rulebuilder.components.blocks.PersistableBlock;
 import io.je.rulebuilder.components.blocks.arithmetic.singleinput.SingleInputArithmeticBlock;
-import io.je.rulebuilder.components.blocks.arithmetic.singleinput.TypeConverterBlock;
 import io.je.rulebuilder.components.blocks.getter.AttributeGetterBlock;
 import io.je.rulebuilder.config.Keywords;
 import io.je.rulebuilder.models.BlockModel;
