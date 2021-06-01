@@ -662,7 +662,7 @@ public class ProjectContainer {
 					// JELogger.info(ProjectContainer.class, " inserting fact ");
 				} catch (Exception e) {
 					e.printStackTrace();
-					JELogger.error(ProjectContainer.class, Arrays.toString(e.getStackTrace()));
+					//JELogger.error(ProjectContainer.class, Arrays.toString(e.getStackTrace()));
 					JELogger.error(ProjectContainer.class,"[factId ="
 							+ fact.getJobEngineElementID() + "]"+ JEMessages.FAILED_TO_UPDATE_FACT + ": " + e.getMessage());
 

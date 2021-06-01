@@ -18,7 +18,16 @@ public  class ComparisonBlock extends PersistableBlock {
 	String threshold=null;
 	String maxRange=null;
 	boolean includeBounds=false;
+	boolean formatToString=false;
 
+	
+	
+	protected ComparisonBlock(String jobEngineElementID, String jobEngineProjectID, String ruleId, String blockName,
+			String blockDescription, int timePersistenceValue, String timePersistenceUnit) {
+		super(jobEngineElementID, jobEngineProjectID, ruleId, blockName, blockDescription, timePersistenceValue,
+				timePersistenceUnit);
+		// TODO Auto-generated constructor stub
+	}
 	public ComparisonBlock(BlockModel blockModel) {
 		super(blockModel.getBlockId(), blockModel.getProjectId(), blockModel.getRuleId(),blockModel.getBlockName(),
 				blockModel.getDescription() ,
@@ -34,6 +43,7 @@ public  class ComparisonBlock extends PersistableBlock {
 		}
 		
 		operator = getOperatorByOperationId(blockModel.getOperationId());
+		formatToString = (blockModel.getOperationId()>=2007 && blockModel.getOperationId()<=2015);
 		
 	}
 	protected String getOperationExpression()
@@ -59,7 +69,7 @@ public  class ComparisonBlock extends PersistableBlock {
 						
 			}
 		}
-		return firstOperand+ getOperator() + threshold;
+		return firstOperand+ getOperator() + formatOperator(threshold);
 
 	}
 	
@@ -263,9 +273,9 @@ public  class ComparisonBlock extends PersistableBlock {
 		case 2013:
 			return "";
 		case 2014:
-			return "<";
-		case 2015:
 			return ">";
+		case 2015:
+			return "<";
 		default:
 			return null;
 		}
@@ -273,6 +283,9 @@ public  class ComparisonBlock extends PersistableBlock {
 	}
 
 
+	public String formatOperator(String operator) {
+		return formatToString? "\""+ operator +"\"":operator;
+	}
 
 	
 
