@@ -4,6 +4,7 @@ import io.je.rulebuilder.components.blocks.Block;
 import io.je.rulebuilder.components.blocks.comparison.ComparisonBlock;
 import io.je.rulebuilder.components.blocks.comparison.InRangeBlock;
 import io.je.rulebuilder.components.blocks.comparison.OutOfRangeBlock;
+import io.je.rulebuilder.components.blocks.comparison.TimeComparisonBlock;
 import io.je.rulebuilder.components.blocks.LogicBlock;
 import io.je.rulebuilder.components.blocks.arithmetic.multipleInput.*;
 import io.je.rulebuilder.components.blocks.arithmetic.singleinput.*;
@@ -25,7 +26,7 @@ public class BlockGenerator {
 		/*
 		 * Comparison blocks
 		 */
-		if(blockModel.getOperationId()>=2001 && blockModel.getOperationId() <= 2015)
+		if(blockModel.getOperationId()>=2001 && blockModel.getOperationId() <= 2013)
 		{
 			return new ComparisonBlock(blockModel);
 		}
@@ -34,6 +35,10 @@ public class BlockGenerator {
 		/*
 		 * Comparison
 		 */
+		case 2014:
+			return new TimeComparisonBlock(blockModel);
+		case 2015:
+			return new TimeComparisonBlock(blockModel);
 		case 2016:
 			return new InRangeBlock(blockModel);
 		case 2017:

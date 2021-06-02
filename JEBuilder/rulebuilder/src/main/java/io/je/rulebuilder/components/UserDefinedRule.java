@@ -1,6 +1,7 @@
 package io.je.rulebuilder.components;
 
-import java.io.FileInputStream;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
@@ -8,9 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap.KeySetView;
-
-import io.je.utilities.config.ConfigurationConstants;
+import io.je.utilities.config.JEConfiguration;
 import io.je.utilities.constants.JEMessages;
 
 import org.drools.template.ObjectDataCompiler;
@@ -19,10 +18,10 @@ import io.je.rulebuilder.components.blocks.Block;
 import io.je.rulebuilder.components.blocks.ConditionBlock;
 import io.je.rulebuilder.components.blocks.PersistableBlock;
 import io.je.rulebuilder.components.blocks.getter.AttributeGetterBlock;
-import io.je.utilities.exceptions.AddRuleBlockException;
 import io.je.utilities.exceptions.RuleBuildFailedException;
 import io.je.utilities.logger.JELogger;
 import io.je.utilities.ruleutils.RuleIdManager;
+import io.je.utilities.time.JEDate;
 
 /*
  * Rules defined graphically by the user.
@@ -110,10 +109,13 @@ public class UserDefinedRule extends JERule {
 		ruleTemplateAttributes.put("consequence", consequences);
 		ruleTemplateAttributes.put("duration", duration);
 		if (ruleParameters.getDateEffective() != null && !ruleParameters.getDateEffective().isEmpty()) {
-			ruleTemplateAttributes.put("dateEffective", "\"" + ruleParameters.getDateEffective() + "\"");
+			LocalDateTime date = LocalDateTime.parse(ruleParameters.getDateEffective(), DateTimeFormatter.ISO_DATE_TIME);
+
+			ruleTemplateAttributes.put("dateEffective", "\"" + JEDate.formatDate(date, JEConfiguration.getDroolsDateFormat()) + "\"");
 		}
 		if (ruleParameters.getDateExpires() != null && !ruleParameters.getDateExpires().isEmpty()) {
-			ruleTemplateAttributes.put("dateExpires", "\"" + ruleParameters.getDateExpires() + "\"");
+			LocalDateTime date = LocalDateTime.parse(ruleParameters.getDateEffective(), DateTimeFormatter.ISO_DATE_TIME);
+			ruleTemplateAttributes.put("dateExpires", "\"" + JEDate.formatDate(date, JEConfiguration.getDroolsDateFormat()) + "\"");
 		}
 
 		ObjectDataCompiler objectDataCompiler = new ObjectDataCompiler();

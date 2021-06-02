@@ -27,8 +27,8 @@ public class JEClassLoader extends ClassLoader {
                 return c;
             }
             catch (Exception e) {
-                JELogger.debug("Class Loading failed by je custom loader for " + name);
-                JELogger.error(Arrays.toString(e.getStackTrace()));
+              //  JELogger.debug("Class Loading failed by je custom loader for " + name);
+               // JELogger.error(Arrays.toString(e.getStackTrace()));
             }
         }
         //JELogger.debug("Class Loading Started for " + name);
