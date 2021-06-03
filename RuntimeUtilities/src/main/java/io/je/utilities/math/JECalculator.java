@@ -9,14 +9,28 @@ public class JECalculator {
 	 */
 	public static double ln(Object x)
 	{
-		return  Math.log((double) x);
+		Object value ;
+		try{
+			value = Math.log((double) x);
+		}catch(Exception e)
+		{
+			value= Math.log((long) x);
+		}
+		return (double) value;
 	}
 	/*
 	 * ceil
 	 */
 	public static double ceil(Object x)
 	{
-		return  Math.ceil((double) x);
+		Object value ;
+		try{
+			value = Math.ceil((double) x);
+		}catch(Exception e)
+		{
+			value= Math.ceil((long) x);
+		}
+		return (double) value;
 	}
 	
 	
@@ -26,7 +40,14 @@ public class JECalculator {
 	 */
 	public static double truncate(Object x)
 	{
-		return  Math.round((double) x);
+		Object value ;
+		try{
+			value = Math.round((double) x);
+		}catch(Exception e)
+		{
+			value= Math.round((long) x);
+		}
+		return (double) value;
 	}
 	
 	/*
@@ -34,15 +55,28 @@ public class JECalculator {
 	 */
 	public static double floor(Object x)
 	{
-		return  Math.floor((double) x);
-	}
+		Object value ;
+		try{
+			value = Math.floor((double) x);
+		}catch(Exception e)
+		{
+			value= Math.floor((long) x);
+		}
+		return (double) value;	}
 	
 	/*
 	 * sin
 	 */
 	public static double sin(Object x)
 	{
-		return  Math.sin((double) x);
+		Object value ;
+		try{
+			value = Math.sin((double) x);
+		}catch(Exception e)
+		{
+			value= Math.sin((long) x);
+		}
+		return (double) value;
 	} 
 	
 	/*
@@ -50,7 +84,14 @@ public class JECalculator {
 	 */
 	public static double cos(Object x)
 	{
-		return  Math.cos((double) x);
+		Object value ;
+		try{
+			value = Math.cos((double) x);
+		}catch(Exception e)
+		{
+			value= Math.cos((long) x);
+		}
+		return (double) value;
 	} 
 	
 	/*
@@ -58,8 +99,14 @@ public class JECalculator {
 	 */
 	public static double asin(Object x)
 	{
-		return  Math.asin((double) x);
-	}
+		Object value ;
+		try{
+			value = Math.asin((double) x);
+		}catch(Exception e)
+		{
+			value= Math.asin((long) x);
+		}
+		return (double) value;	}
 	
 	
 	/*
@@ -67,7 +114,14 @@ public class JECalculator {
 	 */
 	public static double atan(Object x)
 	{
-		return  Math.atan((double) x);
+		Object value ;
+		try{
+			value = Math.atan((double) x);
+		}catch(Exception e)
+		{
+			value= Math.atan((long) x);
+		}
+		return (double) value;
 	}
 	
 
@@ -76,7 +130,14 @@ public class JECalculator {
 	 */
 	public static double tan(Object x)
 	{
-		return  Math.tan((double) x);
+		Object value ;
+		try{
+			value = Math.tan((double) x);
+		}catch(Exception e)
+		{
+			value= Math.tan((long) x);
+		}
+		return (double) value;
 	}
 	
 	/*
@@ -84,34 +145,69 @@ public class JECalculator {
 	 */
 	public static double square(Object x)
 	{
-		return  Math.pow((double) x,2);
+		Object value ;
+		try{
+			value = Math.pow((double) x,2);
+		}catch(Exception e)
+		{
+			value= Math.pow((long) x,2);
+		}
+		return (double) value;
 	}
 	/*
 	 * sqrt
 	 */
 	public static double sqrt(Object x)
 	{
-		return  Math.sqrt((double) x);
+		Object value ;
+		try{
+			value = Math.sqrt((double) x);
+		}catch(Exception e)
+		{
+			value= Math.sqrt((long) x);
+		}
+		return (double) value;
 	}
 	/*
 	 * acos
 	 */
 	public static double acos(Object x)
 	{
-		return  Math.acos((double) x);
+		Object value ;
+		try{
+			value = Math.acos((double) x);
+		}catch(Exception e)
+		{
+			value= Math.acos((long) x);
+		}
+		return (double) value;
 	}/*
 	 * abs
 	 */
 	public static double abs(Object x)
 	{
-		return  Math.abs((double) x);
+		Object value ;
+		try{
+			value = Math.abs((double) x);
+		}catch(Exception e)
+		{
+			value= Math.abs((long) x);
+		}
+		return (double) value;
 	}
 	/*
 	 * log10
 	 */
 	public static double log10(Object x)
 	{
-		return  Math.log10((double) x);
+		Object value ;
+		try{
+			value = Math.log10((double) x);
+		}catch(Exception e)
+		{
+			value= Math.log10((long) x);
+		}
+		return (double) value;
 	}
 	
 	
@@ -120,15 +216,29 @@ public class JECalculator {
 	 */
 	public static double power(Object x, int i)
 	{
-		return  Math.pow((double) x, i);
+		Object value ;
+		try{
+			value = Math.pow((double) x,i);
+		}catch(Exception e)
+		{
+			value= Math.pow((long) x,i);
+		}
+		return (double) value;
 	}
 	
 
 	/*
 	 * exp
 	 */
-	public static long exp(Object x) {
-		return (long) Math.exp((double) x);
+	public static double exp(Object x) {
+		Object value ;
+		try{
+			value = Math.exp((double) x);
+		}catch(Exception e)
+		{
+			value= Math.exp((long) x);
+		}
+		return (double) value;
 
 	}
 	
@@ -137,7 +247,7 @@ public class JECalculator {
 	/*
 	 * factorial
 	 */
-	public static long factorial(double x) {
+	public static double factorial(double x) {
 		Double value = x;
 		return CombinatoricsUtils.factorial(value.intValue());
 
