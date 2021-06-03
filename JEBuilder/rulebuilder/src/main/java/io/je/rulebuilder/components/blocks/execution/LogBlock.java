@@ -13,6 +13,8 @@ public class LogBlock extends ExecutionBlock {
 		{
 			logMessage = blockModel.getBlockConfiguration().getValue();
 		}
+		
+		isProperlyConfigured = logMessage!=null && !logMessage.isEmpty();
 	}
 	
 	 public LogBlock() {
