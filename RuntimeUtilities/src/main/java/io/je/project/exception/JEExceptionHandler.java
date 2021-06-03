@@ -38,6 +38,10 @@ public class JEExceptionHandler {
 		else if ( e instanceof CompletionException) {
 			try {
 				JEException ex = (JEException) e.getCause().getCause();
+				if(ex==null)
+				{
+					ex = (JEException) e.getCause();
+				}
 				JELogger.error(JEExceptionHandler.class, ex.getMessage());
 
 				return ResponseEntity.badRequest().body(new JEResponse(ex.getCode(), ex.getMessage()));
