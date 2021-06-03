@@ -219,6 +219,23 @@ public class RuntimeDispatcher {
                 ActivitiTaskManager.addTask(informTask);
             }
 
+            if(task.getType().equals(DBREADSERVICETASK_TYPE) ||
+                    task.getType().equals(DBWRITESERVICETASK_TYPE) ||
+                    task.getType().equals(DBEDITSERVICETASK_TYPE)) {
+                DatabaseTask databaseTask = new DatabaseTask();
+                databaseTask.setTaskName(task.getTaskName());
+                databaseTask.setTaskId(task.getTaskId());
+                databaseTask.setProjectId(wf.getProjectId());
+                HashMap<String, Object> attributes = task.getAttributes();
+                if(attributes.get(REQUEST) != null) {
+                    databaseTask.setRequest((String) attributes.get(REQUEST));
+                }
+                if(attributes.get(DATABASE_ID) != null) {
+                    databaseTask.setDatabaseId((String) attributes.get(DATABASE_ID));
+                }
+                process.addActivitiTask(databaseTask);
+                ActivitiTaskManager.addTask(databaseTask);
+            }
             if(task.getType().equals(WorkflowConstants.MAILSERVICETASK_TYPE)) {
                 MailTask mailTask = new MailTask();
                 mailTask.setTaskId(task.getTaskId());

@@ -12,7 +12,7 @@
     <sequenceFlow sourceRef="start" targetRef="script"></sequenceFlow>
     <parallelGateway id="split"></parallelGateway>
     <sequenceFlow sourceRef="script" targetRef="split"></sequenceFlow>
-    <serviceTask id="write" activiti:class="io.je.serviceTasks.DatabaseInsertServiceTask"></serviceTask>
+    <serviceTask id="write" activiti:class="io.je.serviceTasks.DatabaseServiceTask"></serviceTask>
     <sequenceFlow sourceRef="split" targetRef="write"></sequenceFlow>
     <parallelGateway id="join"></parallelGateway>
     <sequenceFlow sourceRef="write" targetRef="join"></sequenceFlow>

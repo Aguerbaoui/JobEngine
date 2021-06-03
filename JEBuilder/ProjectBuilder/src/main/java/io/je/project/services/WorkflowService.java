@@ -50,6 +50,7 @@ public class WorkflowService {
     public static final String IMPORTS = "imports";
 
 
+
     @Autowired
     EventService eventService;
 
@@ -256,14 +257,29 @@ public class WorkflowService {
             b.setWorkflowId(block.getWorkflowId());
             b.setJobEngineElementID(block.getId());
             project.addBlockToWorkflow(b);
-        } else if (block.getType().equalsIgnoreCase(WorkflowConstants.DBSERVICETASK_TYPE)) {
+        } else if (block.getType().equalsIgnoreCase(WorkflowConstants.DBREADSERVICETASK_TYPE)) {
+            DBReadBlock b = new DBReadBlock();
+            b.setName((String) block.getAttributes().get(NAME));
+            b.setJobEngineProjectID(block.getProjectId());
+            b.setWorkflowId(block.getWorkflowId());
+            b.setJobEngineElementID(block.getId());
+            project.addBlockToWorkflow(b);
+        } else if (block.getType().equalsIgnoreCase(WorkflowConstants.DBWRITESERVICETASK_TYPE)) {
             DBWriteBlock b = new DBWriteBlock();
             b.setName((String) block.getAttributes().get(NAME));
             b.setJobEngineProjectID(block.getProjectId());
             b.setWorkflowId(block.getWorkflowId());
             b.setJobEngineElementID(block.getId());
             project.addBlockToWorkflow(b);
-        } else if (block.getType().equalsIgnoreCase(WorkflowConstants.MAILSERVICETASK_TYPE)) {
+        }  else if (block.getType().equalsIgnoreCase(DBEDITSERVICETASK_TYPE)) {
+            DBEditBlock b = new DBEditBlock();
+            b.setName((String) block.getAttributes().get(NAME));
+            b.setJobEngineProjectID(block.getProjectId());
+            b.setWorkflowId(block.getWorkflowId());
+            b.setJobEngineElementID(block.getId());
+            project.addBlockToWorkflow(b);
+        }
+        else if (block.getType().equalsIgnoreCase(WorkflowConstants.MAILSERVICETASK_TYPE)) {
             MailBlock b = new MailBlock();
             b.setName((String) block.getAttributes().get(NAME));
             b.setJobEngineProjectID(block.getProjectId());
@@ -570,11 +586,27 @@ public class WorkflowService {
             b.setName((String) block.getAttributes().get(NAME));
             b.setTimeDuration((String) block.getAttributes().get(DURATION));
             project.addBlockToWorkflow(b);
-        } else if (block.getType().equalsIgnoreCase(WorkflowConstants.DBSERVICETASK_TYPE)) {
+        } else if (block.getType().equalsIgnoreCase(WorkflowConstants.DBREADSERVICETASK_TYPE)) {
+            DBReadBlock b = (DBReadBlock) project.getWorkflowByIdOrName(block.getWorkflowId()).getAllBlocks().get(block.getId());
+            b.setName((String) block.getAttributes().get(NAME));
+            b.setRequest((String) block.getAttributes().get(REQUEST));
+            b.setDatabaseId((String) block.getAttributes().get(DATABASE_ID));
+            project.addBlockToWorkflow(b);
+        } else if (block.getType().equalsIgnoreCase(DBEDITSERVICETASK_TYPE)) {
+            DBEditBlock b = (DBEditBlock) project.getWorkflowByIdOrName(block.getWorkflowId()).getAllBlocks().get(block.getId());
+            b.setName((String) block.getAttributes().get(NAME));
+            b.setRequest((String) block.getAttributes().get("request"));
+            b.setDatabaseId((String) block.getAttributes().get("databaseId"));
+            project.addBlockToWorkflow(b);
+        } else if (block.getType().equalsIgnoreCase(DBWRITESERVICETASK_TYPE)) {
             DBWriteBlock b = (DBWriteBlock) project.getWorkflowByIdOrName(block.getWorkflowId()).getAllBlocks().get(block.getId());
             b.setName((String) block.getAttributes().get(NAME));
+            b.setRequest((String) block.getAttributes().get("request"));
+            b.setDatabaseId((String) block.getAttributes().get("databaseId"));
             project.addBlockToWorkflow(b);
-        } else if (block.getType().equalsIgnoreCase(WorkflowConstants.MAILSERVICETASK_TYPE)) {
+        }
+
+        else if (block.getType().equalsIgnoreCase(WorkflowConstants.MAILSERVICETASK_TYPE)) {
             MailBlock b = (MailBlock) project.getWorkflowByIdOrName(block.getWorkflowId()).getAllBlocks().get(block.getId());
             b.setName((String) block.getAttributes().get(NAME));
 

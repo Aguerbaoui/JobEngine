@@ -27,6 +27,11 @@ public class JEConfiguration {
 	//email
 	static String emailApiUrl;
 
+	//database
+	static String databaseApiUrl;
+
+
+
 	//logging system
 	static String loggingSystemURL;
 	static int loggingSystemZmqPublishPort;
@@ -53,6 +58,7 @@ public class JEConfiguration {
 		configModel.setDataModelDateFormat(dataModelDateFormat);
 		configModel.setLoggingSystemURL(loggingSystemURL);
 		configModel.setLoggingSystemZmqPublishPort(loggingSystemZmqPublishPort);
+		configModel.setDatabaseApiUrl(databaseApiUrl);
 		return configModel;
 	}
 	
@@ -69,6 +75,7 @@ public class JEConfiguration {
 		setDataModelDateFormat(configModel.getDataModelDateFormat());
 		setLoggingSystemURL(configModel.getLoggingSystemURL());
 		setLoggingSystemZmqPublishPort(configModel.getLoggingSystemZmqPublishPort());
+		setDatabaseApiUrl(configModel.getDatabaseApiUrl());
 	}
 	
 	
@@ -84,7 +91,15 @@ public class JEConfiguration {
 	public static String getEmailApiUrl() {
 		return emailApiUrl;
 	}
+	public static String getDatabaseApiUrl() {
+		return databaseApiUrl;
+	}
 
+	public static void setDatabaseApiUrl(String databaseApiUrl) {
+		if(databaseApiUrl != null) {
+			JEConfiguration.databaseApiUrl = databaseApiUrl;
+		}
+	}
 	
 	public static void setEmailApiUrl(String emailApiUrl) {
 		if(emailApiUrl!=null)

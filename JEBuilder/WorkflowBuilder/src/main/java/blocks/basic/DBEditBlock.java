@@ -2,7 +2,7 @@ package blocks.basic;
 
 import blocks.WorkflowBlock;
 
-public class DBReadBlock extends WorkflowBlock {
+public class DBEditBlock extends WorkflowBlock {
 
     private String databaseId;
 
