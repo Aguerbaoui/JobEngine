@@ -231,7 +231,7 @@ public class RuntimeDispatcher {
                     databaseTask.setRequest((String) attributes.get(REQUEST));
                 }
                 if(attributes.get(DATABASE_ID) != null) {
-                    databaseTask.setRequest((String) attributes.get(DATABASE_ID));
+                    databaseTask.setDatabaseId((String) attributes.get(DATABASE_ID));
                 }
                 process.addActivitiTask(databaseTask);
                 ActivitiTaskManager.addTask(databaseTask);

@@ -25,11 +25,10 @@ public class DatabaseServiceTask extends ServiceTask {
 
        DatabaseTask databaseTask = (DatabaseTask) ActivitiTaskManager.getTask(execution.getCurrentActivityId());
        if(databaseTask != null) {
-           String url = JEConfiguration.getDatabaseApiUrl() + EXECUTE_DATABASE_COMMAND + "?DBIdentifier" +
-                   databaseTask.getDatabaseId() + "?Command" + databaseTask.getRequest();
+           String url = JEConfiguration.getDatabaseApiUrl() + EXECUTE_DATABASE_COMMAND;
            try {
-               Network network = new Network.Builder(url).hasBody(false)
-                       .withMethod(HttpMethod.GET)
+               Network network = new Network.Builder(url).hasBody(false).hasParameters(true).withParam("DBIdentifier",databaseTask.getDatabaseId() )
+                       .withMethod(HttpMethod.GET).withParam("Command", databaseTask.getRequest())
                        .build();
                Response response = network.call();
                JELogger.info(JEMessages.DB_SERVICE_TASK_RESPONSE + " = " + response.body().string());

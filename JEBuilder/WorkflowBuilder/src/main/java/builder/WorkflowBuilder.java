@@ -110,8 +110,8 @@ public class WorkflowBuilder {
                 t.setTaskId(block.getJobEngineElementID());
                 t.setType(DBWRITESERVICETASK_TYPE);
                 HashMap<String, Object> attributes = new HashMap<>();
-                attributes.put(REQUEST, ((DBReadBlock) block).getRequest());
-                attributes.put(DATABASE_ID, ((DBReadBlock) block).getDatabaseId());
+                attributes.put(REQUEST, ((DBWriteBlock) block).getRequest());
+                attributes.put(DATABASE_ID, ((DBWriteBlock) block).getDatabaseId());
                 t.setAttributes(attributes);
                 tasks.add(t);
             }
@@ -121,8 +121,8 @@ public class WorkflowBuilder {
                 t.setTaskId(block.getJobEngineElementID());
                 t.setType(DBEDITSERVICETASK_TYPE);
                 HashMap<String, Object> attributes = new HashMap<>();
-                attributes.put(REQUEST, ((DBReadBlock) block).getRequest());
-                attributes.put(DATABASE_ID, ((DBReadBlock) block).getDatabaseId());
+                attributes.put(REQUEST, ((DBEditBlock) block).getRequest());
+                attributes.put(DATABASE_ID, ((DBEditBlock) block).getDatabaseId());
                 t.setAttributes(attributes);
                 tasks.add(t);
             }

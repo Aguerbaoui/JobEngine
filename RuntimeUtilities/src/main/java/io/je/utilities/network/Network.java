@@ -7,36 +7,34 @@ import io.je.utilities.apis.BodyType;
 import io.je.utilities.apis.HttpMethod;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.logger.JELogger;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-
 public class Network {
 
     private static final OkHttpClient client = new OkHttpClient();
-
+    private static ThreadPoolTaskExecutor executor = null;
     private HttpMethod method;
-
     private BodyType bodyType;
-
     private String body;
-
     private boolean hasBody;
-
     private String classType;
-
     private String url;
+    private boolean hasParameters;
+    private HashMap<String, String> parameters;
 
     private Network() {
     }
-    private static ThreadPoolTaskExecutor executor = null;
+
     public static Executor getAsyncExecutor() {
 
-        if(executor == null) {
+        if (executor == null) {
             executor = new ThreadPoolTaskExecutor();
             executor.setCorePoolSize(3);
             executor.setMaxPoolSize(10);
@@ -44,8 +42,8 @@ public class Network {
             executor.setThreadNamePrefix("NetworkAsynchThread-");
             executor.initialize();
         }
-		return executor;
-	}
+        return executor;
+    }
 
     public static Response makeGetNetworkCallWithResponse(String url) throws IOException, InterruptedException, ExecutionException {
         JELogger.debug(JEMessages.NETWORK_GET + url);
@@ -56,7 +54,7 @@ public class Network {
             } catch (IOException e) {
                 return null;
             }
-        },getAsyncExecutor());
+        }, getAsyncExecutor());
         return f.get();
     }
 
@@ -69,7 +67,7 @@ public class Network {
             } catch (IOException e) {
                 return null;
             }
-        },getAsyncExecutor());
+        }, getAsyncExecutor());
         return f.get();
     }
 
@@ -90,10 +88,9 @@ public class Network {
             } catch (IOException e) {
                 return null;
             }
-        },getAsyncExecutor());
+        }, getAsyncExecutor());
         return f.get();
     }
-
 
 
     public static Response makeNetworkCallWithStringObjectBodyWithResponse(String json, String url) throws IOException, ExecutionException, InterruptedException {
@@ -106,36 +103,76 @@ public class Network {
             } catch (IOException e) {
                 return null;
             }
-        },getAsyncExecutor());
+        }, getAsyncExecutor());
         return f.get();
     }
 
+    public Response call() throws IOException {
 
+        RequestBody requestBody = null;
+        Request request = null;
+        if (hasBody) {
+            if (bodyType == BodyType.JSON) {
+                body = body.replace("=", ":");
+                requestBody = RequestBody.create(MediaType.parse("application/json"), body);
+            }
+
+            request = new Request.Builder().url(url).post(requestBody).build();
+        } else {
+            if (hasParameters) {
+                HttpUrl.Builder httpBuilder = HttpUrl.parse(url).newBuilder();
+                for (Map.Entry<String, String> param : parameters.entrySet()) {
+                    httpBuilder.addQueryParameter(param.getKey(), param.getValue());
+                }
+
+                request = new Request.Builder().url(httpBuilder.build()).build();
+            } else {
+                request = new Request.Builder().url(url).get().build();
+            }
+        }
+
+        OkHttpClient client = new OkHttpClient();
+        return client.newCall(request).execute();
+    }
 
     /*
-    * Network object builder
-    * */
+     * Network object builder
+     * */
     public static class Builder {
         private HttpMethod method;
         private BodyType bodyType;
         private String body;
         private String classType;
         private String url;
+        private boolean hasParameters;
         private boolean hasBody;
+        private HashMap<String, String> parameters;
+
+        public Builder(String url) {
+            this.url = url;
+        }
+
+        public Builder hasParameters(boolean hasParameters) {
+            this.hasParameters = hasParameters;
+            return this;
+        }
+
+        public Builder withParam(String key, String param) {
+            if (this.parameters == null) this.parameters = new HashMap<>();
+            this.parameters.put(key, param);
+            return this;
+        }
 
         public Builder withMethod(HttpMethod method) {
             this.method = method;
             return this;
         }
 
-        public Builder (String url) {
-            this.url = url;
-        }
-
         public Builder hasBody(boolean hasBody) {
             this.hasBody = hasBody;
             return this;
         }
+
         public Builder withBodyType(BodyType bodyType) {
             this.bodyType = bodyType;
             return this;
@@ -159,27 +196,9 @@ public class Network {
             network.hasBody = this.hasBody;
             network.url = this.url;
             network.method = this.method;
+            network.hasParameters = this.hasParameters;
+            network.parameters = this.parameters;
             return network;
         }
-    }
-
-    public Response call() throws IOException {
-
-        RequestBody requestBody = null;
-        Request request = null;
-        if (hasBody) {
-            if (bodyType == BodyType.JSON) {
-                body = body.replace("=", ":");
-                requestBody = RequestBody.create(MediaType.parse("application/json"), body);
-            }
-
-            request = new Request.Builder().url(url).post(requestBody).build();
-        }
-        else {
-            request = new Request.Builder().url(url).get().build();
-        }
-
-        OkHttpClient client = new OkHttpClient();
-        return client.newCall(request).execute();
     }
 }
