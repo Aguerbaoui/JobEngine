@@ -52,10 +52,17 @@ public class BlockManager {
 
 	
 	
-	public void init() {
+	public void init() throws RuleBuildFailedException {
 		if (!blocks.isEmpty()) {
 			for (Block block : blocks.values()) {
-				initBlock(block);
+				if(block.isProperlyConfigured())
+				{
+					initBlock(block);
+				}
+				else
+				{
+					throw new RuleBuildFailedException(block.getBlockName() + " is not configured properly" );
+				}
 			}
 		}
 	}

@@ -1,21 +1,6 @@
 package io.je.utilities.string;
 
-import io.je.utilities.logger.JELogger;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.text.StringSubstitutor;
-
-import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.Method;
-import java.net.URL;
-import java.net.URLClassLoader;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
 
 public class JEStringUtils {
 
