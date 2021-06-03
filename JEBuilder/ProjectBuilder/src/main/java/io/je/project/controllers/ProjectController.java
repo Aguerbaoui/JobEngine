@@ -6,6 +6,7 @@ import io.je.project.models.ProjectModel;
 import io.je.project.services.ProjectService;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.ResponseCodes;
+import io.je.utilities.exceptions.ProjectNotFoundException;
 import io.je.utilities.logger.JELogger;
 import io.je.utilities.network.JEResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,9 +79,15 @@ public class ProjectController {
 
 		try {
 			project = projectService.getProject(projectId).get();
-			data.put("ruleCount",  project.getRules().size());
-			data.put("workflowCount",  project.getWorkflows().size());
-			data.put("eventCount",  project.getEvents().size());
+			if(project!=null)
+			{
+				data.put("ruleCount",  project.getRules().size());
+				data.put("workflowCount",  project.getWorkflows().size());
+				data.put("eventCount",  project.getEvents().size());
+			}else
+			{
+				return  JEExceptionHandler.handleException(new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND));
+			}
 
 		
 			
