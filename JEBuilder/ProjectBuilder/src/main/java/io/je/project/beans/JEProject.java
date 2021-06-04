@@ -287,7 +287,7 @@ public class JEProject {
 	    public void updateRule(JERule rule) throws RuleNotFoundException {
 	    	if(!rules.containsKey(rule.getJobEngineElementID()))
 	    			{
-	    				throw new RuleNotFoundException(JEMessages.RULE_NOT_FOUND);
+	    		throw new RuleNotFoundException(projectId, rule.getJobEngineElementID());
 	    			}
 	        rules.put(rule.getJobEngineElementID(), rule);
 			rule.setJeObjectLastUpdate( LocalDateTime.now());
@@ -337,8 +337,7 @@ public class JEProject {
 		public void deleteRule(String ruleId) throws RuleNotFoundException {
 			if(!rules.containsKey(ruleId))
 			{
-				throw new RuleNotFoundException(JEMessages.RULE_NOT_FOUND);
-			}
+				throw new RuleNotFoundException(projectId, ruleId);			}
 			//TODO: delete file
 			rules.remove(ruleId);
 			isBuilt=false;
