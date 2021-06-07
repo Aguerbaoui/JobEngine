@@ -1,6 +1,7 @@
 package io.je.project.services;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,16 +41,42 @@ public class ClassService {
 	
 
 	
-	public List<JEClass> addClass(String workspaceId, String classId) throws DataDefinitionUnreachableException, ClassLoadException, IOException, AddClassException, JERunnerErrorException, InterruptedException, ExecutionException {
+	public void addClass(String workspaceId, String classId) throws DataDefinitionUnreachableException, ClassLoadException, IOException, AddClassException, JERunnerErrorException, InterruptedException, ExecutionException {
 		ClassModel classModel = ClassManager.loadClassDefinition(workspaceId,classId);
-		return addClass(classModel);
+		addClass(classModel, false);
+		updateClasses();
+
 	}
-	
-	public List<JEClass> addClass(ClassModel classModel) throws AddClassException, DataDefinitionUnreachableException, ClassLoadException, IOException, JERunnerErrorException, InterruptedException, ExecutionException
+
+	//update classes in JERunner
+	public void updateClasses() throws InterruptedException, JERunnerErrorException, ExecutionException, AddClassException, IOException {
+		addClassesToJeRunner(new ArrayList<>(loadedClasses.values()));
+
+	}
+
+	private void addClassesToJeRunner(List<JEClass> classes) throws InterruptedException, JERunnerErrorException, ExecutionException, AddClassException {
+		ArrayList<HashMap> classesList = new ArrayList<>();
+		for(JEClass clazz: classes) {
+			HashMap<String, String> classMap = new HashMap<>();
+			classMap.put(CLASS_NAME, clazz.getClassName());
+			classMap.put(CLASS_PATH, clazz.getClassPath());
+			classMap.put(CLASS_ID, clazz.getClassId());
+			classesList.add(classMap);
+		}
+		JELogger.trace(ClassService.class, " " + JEMessages.ADDING_CLASSES_TO_RUNNER_FROM_BUILDER );
+		JEResponse jeRunnerResp = JERunnerAPIHandler.addClasses(classesList);
+		if (jeRunnerResp.getCode() != ResponseCodes.CODE_OK) {
+			throw new AddClassException(JEMessages.CLASS_LOAD_FAILED);
+		}
+	}
+
+	public List<JEClass> addClass(ClassModel classModel, boolean sendToRunner) throws AddClassException, DataDefinitionUnreachableException, ClassLoadException, IOException, JERunnerErrorException, InterruptedException, ExecutionException
 	{
 		List<JEClass> builtClasses = ClassManager.buildClass(classModel);
 		for (JEClass _class : builtClasses) {
-			addClassToJeRunner(_class);
+			if(sendToRunner) {
+				addClassToJeRunner(_class);
+			}
 			classRepository.save(_class);
 			loadedClasses.put(_class.getClassId(), _class);
 		}
@@ -75,7 +102,7 @@ public class ClassService {
 	/*
 	 * send class to je runner to be loaded there
 	 */
-	public void addClassToJeRunner(JEClass clazz) throws AddClassException, JERunnerErrorException, IOException, InterruptedException, ExecutionException {
+	public void addClassToJeRunner(JEClass clazz) throws AddClassException, JERunnerErrorException, InterruptedException, ExecutionException {
 		HashMap<String, String> classMap = new HashMap<>();
 		classMap.put(CLASS_NAME, clazz.getClassName());
 		classMap.put(CLASS_PATH, clazz.getClassPath());
