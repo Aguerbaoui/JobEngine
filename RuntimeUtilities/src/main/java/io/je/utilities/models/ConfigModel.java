@@ -1,18 +1,20 @@
 package io.je.utilities.models;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 @Document(collection="JEConfiguration")
-@JsonInclude(Include.NON_NULL)
 public class ConfigModel {
 	
+	@Transient
+	String defaultIp = "http://127.0.0.1:8080";
 	@Id
 	 String identifier="ConfigJE";
-	 String dataDefinitionURL;
+	 String dataDefinitionURL=defaultIp;
 	 String dataManagerURL;
 	 String runtimeManagerURL;
 	 String projectBuilderURL;
@@ -24,6 +26,11 @@ public class ConfigModel {
 	 String loggingSystemURL;
 	 int loggingSystemZmqPublishPort;
 	String databaseApiUrl;
+	
+	
+
+	public ConfigModel() {
+	}
 
 	public String getDatabaseApiUrl() {
 		return databaseApiUrl;
@@ -117,6 +124,7 @@ public class ConfigModel {
 		this.dataModelDateFormat = dataModelDateFormat;
 	}
 
+	
 	@Override
 	public String toString() {
 		return "ConfigModel{" +

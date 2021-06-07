@@ -36,8 +36,6 @@ import io.je.utilities.network.JEResponse;
 public class EventController {
 
 
-	@Autowired
-	ProjectService projectService;
 
 	@Autowired
 	EventService eventService;
@@ -98,7 +96,6 @@ public class EventController {
 		try {
 
 			eventService.addEvent(projectId, eventModel);
-			projectService.saveProject(projectId);
 
 		} catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
@@ -123,7 +120,6 @@ public class EventController {
 		try {
 
 			eventService.updateEvent(projectId, eventModel);
-			projectService.saveProject(projectId);
 
 		} catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
@@ -144,7 +140,6 @@ public class EventController {
 		try {
 
 			eventService.deleteEvent(projectId, eventId);
-			projectService.saveProject(projectId);
 
 		} catch (Exception e) {
 			JELogger.info(ERROR_DELETING_EVENT);
@@ -173,7 +168,6 @@ public class EventController {
 		try {
 
 			eventService.triggerEvent(projectId, eventId);
-			projectService.saveProject(projectId);
 
 		} catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
@@ -192,7 +186,6 @@ public class EventController {
 		try {
 
 			eventService.untriggerEvent(projectId, eventId);
-			projectService.saveProject(projectId);
 
 		} catch (Exception e) {
 			return JEExceptionHandler.handleException(e);

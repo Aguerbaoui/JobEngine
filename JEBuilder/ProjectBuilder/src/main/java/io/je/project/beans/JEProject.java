@@ -10,13 +10,14 @@ import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.*;
 import models.JEWorkflow;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-@Document(collection="JEProject")
+@Document(collection="ProjectDefinitionCollection")
 public class JEProject {
 
     /*
@@ -35,22 +36,26 @@ public class JEProject {
     /*
     * Rules in a project
     * */
+    @DBRef
     private ConcurrentHashMap<String, JERule> rules= new ConcurrentHashMap<>();
 
     /*
     * Workflows in a project
     * */
+    @DBRef
     private ConcurrentHashMap<String, JEWorkflow> workflows= new ConcurrentHashMap<>();
     
     
     /*
      * Events in a project
      * */
+    @DBRef
      private ConcurrentHashMap<String, JEEvent> events= new ConcurrentHashMap<>();
 
 	/*
 	 * Variables in a project
 	 * */
+    @DBRef
 	private ConcurrentHashMap<String, JEVariable> variables= new ConcurrentHashMap<>();
      
 	/*

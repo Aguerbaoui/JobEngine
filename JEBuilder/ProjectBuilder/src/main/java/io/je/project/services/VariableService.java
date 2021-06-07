@@ -1,6 +1,7 @@
 package io.je.project.services;
 
 import io.je.project.beans.JEProject;
+import io.je.project.repository.VariableRepository;
 import io.je.utilities.apis.JERunnerAPIHandler;
 import io.je.utilities.beans.JEEvent;
 import io.je.utilities.beans.JEVariable;
@@ -22,7 +23,8 @@ import java.util.concurrent.ExecutionException;
 @Service
 public class VariableService {
 
-	
+	@Autowired
+	VariableRepository variableRepository;
 	
 	public Collection<VariableModel> getAllVariables(String projectId) throws ProjectNotFoundException {
 		JELogger.trace(  "[project id = " + projectId + "] " + JEMessages.LOADING_VARIABLES);
@@ -31,7 +33,7 @@ public class VariableService {
 			throw new ProjectNotFoundException( JEMessages.PROJECT_NOT_FOUND);
 		}
 		ArrayList<VariableModel> variableModels = new ArrayList<>();
-		for(JEVariable variable: project.getVariables().values())
+		for(JEVariable variable: variableRepository.findByJobEngineProjectID(projectId))
 		{
 			variableModels.add(new VariableModel(variable));
 		}
@@ -50,7 +52,7 @@ public class VariableService {
 		if (project == null) {
 			throw new ProjectNotFoundException( JEMessages.PROJECT_NOT_FOUND);
 		}
-		return project.getVariable(variableId);
+		return variableRepository.findById(variableId).get();
 	}
 	
 	
@@ -79,6 +81,7 @@ public class VariableService {
 
         JERunnerAPIHandler.addVariable(variableModel.getProjectId(), variableModel.getId(), variableModel);
         project.addVariable(var);
+        variableRepository.save(var);
     }
 
     /*
@@ -96,6 +99,7 @@ public class VariableService {
         }
         JERunnerAPIHandler.removeVariable(projectId, varId);
         project.removeVariable(varId);
+        variableRepository.deleteById(varId);
     }
 
     /*
@@ -116,8 +120,10 @@ public class VariableService {
         var.setJeObjectLastUpdate(LocalDateTime.now());
         JERunnerAPIHandler.addVariable(variableModel.getProjectId(), variableModel.getId(), variableModel);
         project.addVariable(var);
+        variableRepository.save(var);
     }
 
+    //TODO: only allowed when project is stopped?
 	public void writeVariableValue(String projectId,String variableId, Object value) throws ConfigException, JERunnerErrorException, IOException, InterruptedException, ExecutionException {
         ConfigurationService.checkConfig();
         JERunnerAPIHandler.writeVariableValue(projectId, variableId, value);

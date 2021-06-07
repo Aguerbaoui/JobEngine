@@ -1,6 +1,7 @@
 package io.je.project.services;
 
 import io.je.project.beans.JEProject;
+import io.je.project.repository.RuleRepository;
 import io.je.rulebuilder.builder.RuleBuilder;
 import io.je.rulebuilder.components.*;
 import io.je.rulebuilder.components.blocks.Block;
@@ -37,6 +38,9 @@ public class RuleService {
 
     private static final String DEFAULT_DELETE_CONSTANT = "DELETED";
 
+    @Autowired
+    RuleRepository ruleRepository;
+    
     @Autowired
     ClassService classService;
 
@@ -76,6 +80,7 @@ public class RuleService {
         ruleParameters.setDateExpires(ruleModel.getDateExpires());
         rule.setRuleParameters(ruleParameters);
         project.addRule(rule);
+        ruleRepository.save(rule);
     }
 
     /*
@@ -104,7 +109,7 @@ public class RuleService {
 
         }
         project.deleteRule(ruleId);
-
+        ruleRepository.deleteById(ruleId);
     }
 
     /*
@@ -179,6 +184,7 @@ public class RuleService {
         }
         ruleToUpdate.setBuilt(false);
         project.setBuilt(false);
+        ruleRepository.save(ruleToUpdate);
     }
 
     /*
@@ -247,6 +253,7 @@ public class RuleService {
         
         project.addBlockName(blockModel.getBlockId(), generatedBlockName);
         project.setBuilt(false);
+        ruleRepository.save(rule);
         return generatedBlockName;
 
 
@@ -335,7 +342,7 @@ public class RuleService {
             classService.addClass(workspaceId,classId);
         }
         project.setBuilt(false);
-
+        ruleRepository.save(rule);
 
     }
 
@@ -355,6 +362,7 @@ public class RuleService {
         JELogger.trace(getClass(), JEMessages.DELETING_BLOCK + blockId + " in rule [id : " + ruleId + ") in project id = " + projectId);
         project.deleteRuleBlock(ruleId, blockId);
         project.removeBlockName(blockId);
+        ruleRepository.save(project.getRule(ruleId));
     }
 
     @Async
@@ -418,7 +426,7 @@ public class RuleService {
 
         List<RuleModel> rules = new ArrayList<>();
         JELogger.trace("[projectId = " + projectId + "]" + JEMessages.LOADING_RULES);
-        for (JERule rule : project.getRules().values()) {
+        for (JERule rule :  ruleRepository.findByJobEngineProjectID(projectId)) {
 
         	   rules.add(new RuleModel(rule));
 
@@ -434,7 +442,7 @@ public class RuleService {
         } else if (!project.ruleExists(ruleId)) {
         	throw new RuleNotFoundException(projectId, ruleId);        }
         JELogger.trace("[projectId = " + projectId + "] [ruleId = " + ruleId + "]" + JEMessages.LOADING_RULE);
-        return new RuleModel(project.getRules().get(ruleId));
+        return new RuleModel(ruleRepository.findById(ruleId).get());
     }
 
     /*
@@ -452,7 +460,7 @@ public class RuleService {
         }
         JELogger.trace("[projectId = " + projectId+"]" + JEMessages.ADDING_SCRIPTED_RULE );
         project.addRule(rule);
-
+        ruleRepository.save(rule);
     }
 
     /*
@@ -471,7 +479,7 @@ public class RuleService {
         }
         JELogger.trace("[projectId = " + projectId+"]" + JEMessages.UPDATING_SCRIPTED_RULE );
         project.updateRule(rule);
-
+        ruleRepository.save(rule);
     }
 
     public void saveRuleFrontConfig(String projectId, String ruleId, String config)
@@ -483,7 +491,7 @@ public class RuleService {
         	throw new RuleNotFoundException(projectId, ruleId);        }
         JELogger.debug("[projectId = " + projectId + "] [ruleId = " + ruleId + "]"+JEMessages.FRONT_CONFIG);
         project.getRule(ruleId).setRuleFrontConfig(config);
-
+        ruleRepository.save(project.getRule(ruleId));
     }
 
     public void verifyBlockFormatIsValid(BlockModel blockModel) throws AddRuleBlockException {
@@ -536,6 +544,7 @@ public class RuleService {
                     }
                     
                     project.deleteRule(ruleId);
+                    ruleRepository.deleteById(ruleId);
                 } catch (Exception e) {
                     undeletedRules.put(ruleId, e.getMessage());
                 }

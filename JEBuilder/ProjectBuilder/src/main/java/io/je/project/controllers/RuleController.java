@@ -34,8 +34,6 @@ public class RuleController {
 	@Autowired
 	RuleService ruleService;
 
-	@Autowired
-	ProjectService projectService;
 
 	
 	
@@ -96,7 +94,6 @@ public class RuleController {
 		try {
 			JELogger.info(getClass(), " Adding rule " + ruleModel.getRuleName() + "..");
 			ruleService.addRule(projectId, ruleModel);
-			projectService.saveProject(projectId).get();
 			
 
 		} catch (Exception e) {
@@ -113,7 +110,6 @@ public class RuleController {
 		try {
 		
 			ruleService.deleteRules(projectId, ruleIds);
-			projectService.saveProject(projectId).get();
 			
 
 		} catch (Exception e) {
@@ -135,7 +131,6 @@ public class RuleController {
 
 		try {
 			ruleService.deleteRule(projectId, ruleId);
-			projectService.saveProject(projectId).get();
 
 		} catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
@@ -152,7 +147,6 @@ public class RuleController {
 
 		try {
 			ruleService.updateRule(projectId, ruleModel);
-			projectService.saveProject(projectId).get();
 		} catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
 
@@ -172,7 +166,6 @@ public class RuleController {
 			blockModel.setRuleId(ruleId);
 			blockModel.setProjectId(projectId);
 			 generatedBlockName = ruleService.addBlockToRule(blockModel);
-			projectService.saveProject(projectId).get();
 		} catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
 		}
@@ -190,7 +183,6 @@ public class RuleController {
 			blockModel.setRuleId(ruleId);
 			blockModel.setProjectId(projectId);
 			ruleService.updateBlockInRule(blockModel);
-			projectService.saveProject(projectId).get();
 		} catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
 		}
@@ -207,7 +199,6 @@ public class RuleController {
 			@PathVariable("ruleId") String ruleId, @PathVariable("blockId") String blockId) {
 		try {
 			ruleService.deleteBlock(projectId, ruleId, blockId);
-			projectService.saveProject(projectId).get();
 		} catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
 
@@ -226,7 +217,6 @@ public class RuleController {
 
 		try {
 			ruleService.buildRule(projectId, ruleId);
-			projectService.saveProject(projectId).get();
 		} catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
 		}
@@ -243,7 +233,6 @@ public class RuleController {
 
 		try {
 			ruleService.saveRuleFrontConfig(projectId, ruleId, config);
-			projectService.saveProject(projectId).get();
 			JELogger.info(getClass(), JEMessages.RULE_ADDED_SUCCESSFULLY);
 
 		} catch (Exception e) {
@@ -266,7 +255,6 @@ public class RuleController {
 
 		try {
 			ruleService.addScriptedRule(projectId, ruleModel);
-			projectService.saveProject(projectId).get();
 
 		} catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
@@ -285,7 +273,6 @@ public class RuleController {
 
 		try {
 			ruleService.updateScriptedRule(projectId, ruleModel);
-			projectService.saveProject(projectId).get();
 
 		} catch (Exception e) {
 			return JEExceptionHandler.handleException(e);

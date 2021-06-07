@@ -7,7 +7,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import io.je.utilities.runtimeobject.JEObject;
 
-@Document(collection="JERule")
+@Document(collection="JERuleCollection")
 public abstract class JERule extends JEObject  {
 	
 	

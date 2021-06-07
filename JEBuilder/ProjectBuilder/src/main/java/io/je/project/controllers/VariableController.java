@@ -26,8 +26,7 @@ public class VariableController {
     @Autowired
     VariableService variableService;
 
-    @Autowired
-    ProjectService projectService;
+
     
 	/*
 	 * Retrieve all variables in a project
@@ -84,7 +83,6 @@ public class VariableController {
 
         try {
         variableService.addVariable(variableModel);
-        projectService.saveProject(variableModel.getProjectId());
         } catch (Exception e) {
             return JEExceptionHandler.handleException(e);
         }
@@ -101,7 +99,6 @@ public class VariableController {
 
         try {
             variableService.deleteVariable(projectId, varId);
-            projectService.saveProject(projectId);
 
         } catch (Exception e) {
             return JEExceptionHandler.handleException(e);
@@ -118,7 +115,6 @@ public class VariableController {
 
         try {
             variableService.updateVariable(variableModel);
-            projectService.saveProject(variableModel.getProjectId());
         } catch (Exception e) {
             return JEExceptionHandler.handleException(e);
 
