@@ -2,6 +2,7 @@ package io.je.ruleengine.impl;
 
 import io.je.ruleengine.models.Rule;
 import io.je.utilities.beans.JEData;
+import io.je.utilities.classloader.JEClassLoader;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.*;
 import io.je.utilities.runtimeobject.JEObject;
@@ -62,6 +63,12 @@ public class RuleEngine {
 	public static void deleteProjectRules(String projectId) {
 		//TODO confirm with manél
 		projectManager.deleteProjectContainer(projectId);
+	}
+
+	public static void setClassLoader(JEClassLoader loader) {
+		for(ProjectContainer projectContainer: projectManager.getAllProjects().values()) {
+			projectContainer.setClassLoader(loader);
+		}
 	}
 
 

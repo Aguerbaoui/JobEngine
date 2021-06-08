@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.je.utilities.classloader.JEClassLoader;
 import org.json.JSONObject;
 
 import io.je.ruleengine.impl.RuleEngine;
@@ -179,5 +180,8 @@ public class RuleEngineHandler {
 		RuleEngine.deleteFact(projectId,id);
 		
 	}
-	
+
+    public static void setClassLoader(JEClassLoader loader) {
+		RuleEngine.setClassLoader(loader);
+    }
 }

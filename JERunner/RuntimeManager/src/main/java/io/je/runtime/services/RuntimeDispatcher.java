@@ -1,6 +1,7 @@
 package io.je.runtime.services;
 
 import io.je.JEProcess;
+import io.je.ruleengine.impl.ProjectContainer;
 import io.je.runtime.data.DataListener;
 import io.je.runtime.events.EventManager;
 import io.je.runtime.models.ClassModel;
@@ -16,6 +17,7 @@ import io.je.utilities.beans.JEData;
 import io.je.utilities.beans.JEEvent;
 import io.je.utilities.beans.JEVariable;
 import io.je.utilities.classloader.JEClassCompiler;
+import io.je.utilities.classloader.JEClassLoader;
 import io.je.utilities.config.ConfigurationConstants;
 import io.je.utilities.constants.ClassBuilderConfig;
 import io.je.utilities.constants.JEMessages;
@@ -294,14 +296,29 @@ public class RuntimeDispatcher {
     // add class
     public void addClass(ClassModel classModel) throws ClassLoadException {
         JELogger.trace(JEMessages.ADDING_CLASS + classModel.getClassName());
-       JEClassCompiler.compileClass(classModel.getClassPath(), ConfigurationConstants.runnerClassLoadPath);
+        JEClassLoader loader = new JEClassLoader(RuntimeDispatcher.class.getClassLoader());
+        JEClassCompiler.compileClass(classModel.getClassPath(), ConfigurationConstants.runnerClassLoadPath);
        try {
-    	   ClassRepository.addClass(classModel.getClassId(), RuntimeDispatcher.class.getClassLoader().loadClass(ClassBuilderConfig.genrationPackageName + "." + classModel.getClassName())); ;
+    	   ClassRepository.addClass(classModel.getClassId(), loader.loadClass(ClassBuilderConfig.genrationPackageName + "." + classModel.getClassName()));
 	} catch (ClassNotFoundException e) {
 		throw new ClassLoadException("[class :"+ classModel.getClassName() +" ]"+JEMessages.CLASS_LOAD_FAILED); 
 	}
-        
 
+    }
+
+    public void updateClasses(List<ClassModel> classes) throws ClassLoadException {
+        JEClassLoader loader = new JEClassLoader(RuntimeDispatcher.class.getClassLoader());
+        for(ClassModel classModel: classes) {
+            JELogger.trace(JEMessages.UPDATING_CLASS + classModel.getClassName());
+            JEClassCompiler.compileClass(classModel.getClassPath(), ConfigurationConstants.runnerClassLoadPath);
+            try {
+                ClassRepository.addClass(classModel.getClassId(), loader.loadClass(ClassBuilderConfig.genrationPackageName + "." + classModel.getClassName()));
+
+            } catch (ClassNotFoundException e) {
+                throw new ClassLoadException("[class :"+ classModel.getClassName() +" ]"+JEMessages.CLASS_LOAD_FAILED);
+            }
+        }
+        RuleEngineHandler.setClassLoader(loader);
     }
 
     // update class

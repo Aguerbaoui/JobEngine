@@ -50,7 +50,7 @@ public class JEMessages {
 
     public static final String TYPE_UNKNOWN = "Type unknown";
 
-    public static final String BUILDING_CLASS = "Building class…";
+    public static final String BUILDING_CLASS = "Building classï¿½";
 
     public static final String CLASS_BUILD_FAILED = "Failed to build class ";
 
@@ -72,7 +72,12 @@ public class JEMessages {
 
     public static final String ADDING_CLASS = "Adding class ";
 
+    public static final String UPDATING_CLASS = "Updating class ";
+
     public static final String ADDING_CLASS_TO_RUNNER_FROM_BUILDER_WITH_ID = "Adding class to JERunner from JEBuilder with id";
+
+    public static final String ADDING_CLASSES_TO_RUNNER_FROM_BUILDER = "Adding class to JERunner from JEBuilder";
+
 
     public static final String FAILED_TO_LOAD_CLASS = "Failed to load class";
 

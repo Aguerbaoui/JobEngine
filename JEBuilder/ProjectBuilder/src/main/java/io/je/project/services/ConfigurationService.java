@@ -189,7 +189,7 @@ public class ConfigurationService {
 				updateRunnerSettings(config);
 
 				for (JEClass clazz : classService.getLoadedClasses().values()) {
-					classService.addClassToJeRunner(clazz);
+					classService.updateClasses();
 				}
 
 				JELogger.info(ProjectService.class, JEMessages.RUNNER_IS_UP_UPDATING_NOW);

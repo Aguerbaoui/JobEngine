@@ -97,7 +97,7 @@ public class ProjectContainer {
 	private RuleListener ruleListener;
 
 	private boolean isInitialised = false;
-	JEClassLoader loader = new JEClassLoader(ProjectContainer.class.getClassLoader());
+	JEClassLoader loader = null;
 	ConcurrentHashMap<String, FactHandle> facts = new ConcurrentHashMap<>();
 
 	/*
@@ -694,4 +694,7 @@ public class ProjectContainer {
 		
 	}
 
+	public void setClassLoader(JEClassLoader loader) {
+		this.loader = loader;
+	}
 }

@@ -15,6 +15,7 @@ import io.je.utilities.network.JEResponse;
 import io.je.utilities.network.Network;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import static io.je.utilities.apis.Request.*;
@@ -86,6 +87,12 @@ public class JERunnerAPIHandler {
 
     public static JEResponse addClass(HashMap<String, String> requestModel) throws JERunnerErrorException, InterruptedException, ExecutionException {
         String requestUrl = runtimeManagerBaseApi + ADD_CLASS;
+        return sendRequestWithBody(requestUrl, requestModel);
+
+    }
+
+    public static JEResponse addClasses(List<HashMap> requestModel) throws JERunnerErrorException, InterruptedException, ExecutionException {
+        String requestUrl = runtimeManagerBaseApi + ADD_CLASSES;
         return sendRequestWithBody(requestUrl, requestModel);
 
     }
