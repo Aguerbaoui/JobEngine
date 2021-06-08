@@ -8,7 +8,7 @@ import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 
-@Document(collection = "JEVariable")
+@Document(collection = "JEVariableCollection")
 public class JEVariable extends JEObject {
 
     private String name;

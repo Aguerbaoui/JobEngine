@@ -57,8 +57,11 @@ public class ConfigurationService {
 				updateRunner(configModel);
 			} else {
 				JELogger.warning(ConfigurationService.class, JEMessages.MISSING_CONFIG);
+				
 
 			}
+		}else {
+			configRepository.save(new ConfigModel());
 		}
 
 	}

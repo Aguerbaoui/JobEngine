@@ -7,15 +7,20 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 
 import io.je.utilities.logger.JELogger;
 import io.je.utilities.models.EventType;
 import io.je.utilities.string.JEStringUtils;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import io.je.project.beans.JEProject;
+import io.je.project.repository.EventRepository;
 import io.je.utilities.apis.JERunnerAPIHandler;
 import io.je.utilities.beans.JEEvent;
 import io.je.utilities.constants.JEMessages;
@@ -29,18 +34,19 @@ import io.je.utilities.models.EventModel;
 @Service
 public class EventService {
 	
+	@Autowired
+	EventRepository eventRepository;
+	
+	
+	
 	/*
 	 * Retrieve list of all events that exist in a project.
 	 */
 	
 	public Collection<EventModel> getAllEvents(String projectId) throws ProjectNotFoundException {
-		JELogger.trace(  "[project id = " + projectId + "] " + JEMessages.LOADING_EVENTS);
-		JEProject project = ProjectService.getProjectById(projectId);
-		if (project == null) {
-			throw new ProjectNotFoundException( JEMessages.PROJECT_NOT_FOUND);
-		}
+		List<JEEvent> events = eventRepository.findByJobEngineProjectID(projectId);
 		ArrayList<EventModel> eventModels = new ArrayList<EventModel>();
-		for(JEEvent event: project.getEvents().values())
+		for(JEEvent event: events)
 		{
 			eventModels.add(new EventModel(event));
 		}
@@ -48,18 +54,24 @@ public class EventService {
 		JELogger.trace(" Found " + eventModels.size() + " events");
 		return eventModels;
 	}
+	
+	public ConcurrentHashMap<String, JEEvent> getAllJEEvents(String projectId) throws ProjectNotFoundException {
+		List<JEEvent> events = eventRepository.findByJobEngineProjectID(projectId);
+		ConcurrentHashMap<String, JEEvent> map = new ConcurrentHashMap<String, JEEvent>();
+		for(JEEvent event : events )
+		{
+			map.put(event.getJobEngineElementID(), event);
+		}
+		return map;
+	}
 
 	/*
 	 * retrieve event from project by id
 	 */
 	
 	public JEEvent getEvent(String projectId, String eventId) throws EventException, ProjectNotFoundException {
-		JELogger.info(getClass(), JEMessages.LOADING_EVENTS +" [ id="+eventId+"] in project id =  " + projectId);
-		JEProject project = ProjectService.getProjectById(projectId);
-		if (project == null) {
-			throw new ProjectNotFoundException( JEMessages.PROJECT_NOT_FOUND);
-		}
-		return project.getEvent(eventId);
+		Optional<JEEvent> event = eventRepository.findById(eventId);
+		return event.orElse(null);
 	}
 
 	/*
@@ -83,6 +95,7 @@ public class EventService {
 		}
 		JEEvent event = new JEEvent(eventModel.getEventId(), projectId, eventModel.getName(), EventType.GENERIC_EVENT,eventModel.getDescription(),eventModel.getTimeout(),eventModel.getTimeoutUnit());
 		registerEvent(event);
+		eventRepository.save(event);
 		
 	}
 	
@@ -114,7 +127,8 @@ public class EventService {
 		}
 		JEEvent event = new JEEvent(eventModel.getEventId(), projectId, eventModel.getName(), EventType.GENERIC_EVENT,eventModel.getDescription(),eventModel.getTimeout(),eventModel.getTimeoutUnit());
 		registerEvent(event);
-		
+		eventRepository.save(event);
+
 		
 	}
 	
@@ -205,6 +219,7 @@ public class EventService {
 		JELogger.info(getClass(), JEMessages.DELETING_EVENT_FROM_RUNNER);
 		JERunnerAPIHandler.deleteEvent(projectId, eventId);
 		project.getEvents().remove(event.getJobEngineElementID());
+		eventRepository.deleteById(eventId);
 		
 	}
 
@@ -240,5 +255,10 @@ public class EventService {
 		event.setTriggered(false);
 		event.setJeObjectLastUpdate(LocalDateTime.now());
 
+	}
+
+	public void deleteAll(String projectId) {
+		eventRepository.deleteByJobEngineProjectID(projectId);
+		
 	}
 }

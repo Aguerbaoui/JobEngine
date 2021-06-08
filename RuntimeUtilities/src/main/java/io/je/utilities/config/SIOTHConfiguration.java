@@ -27,7 +27,7 @@ public class SIOTHConfiguration {
 			mongoServerPort =String.valueOf( mongoConfig.getInt(ConfigurationConstants.mongoServerPort));
 			mongoUserName = mongoConfig.getString(ConfigurationConstants.mongoUserName);
 			mongoPassword = mongoConfig.getString(ConfigurationConstants.mongoPassword);
-			dataBaseName="JobEngine";
+			dataBaseName="SIOTHDatabase";
 
 		}
 	}

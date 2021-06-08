@@ -2,6 +2,7 @@ package io.je.project.services;
 
 import io.je.project.beans.JEProject;
 import io.je.project.controllers.ProjectController;
+import io.je.project.repository.EventRepository;
 import io.je.project.repository.ProjectRepository;
 import io.je.utilities.apis.JERunnerAPIHandler;
 import io.je.utilities.beans.JEEvent;
@@ -90,10 +91,16 @@ public class ProjectService {
         catch (Exception e) {}
         JELogger.trace("[projectId= "+id+"]"+  JEMessages.DELETING_PROJECT);
         JERunnerAPIHandler.cleanProjectDataFromRunner(id);
-        synchronized (projectRepository) {
+    /*    synchronized (projectRepository) {
             projectRepository.deleteById(id);
         }
+        */
         loadedProjects.remove(id);
+        ruleService.deleteAll(id);
+        workflowService.deleteAll(id);
+        eventService.deleteAll(id);
+        variableService.deleteAll(id);
+
         return CompletableFuture.completedFuture(null);
 
     }
@@ -105,11 +112,16 @@ public class ProjectService {
     public static ConcurrentMap<String, JEProject> getLoadedProjects() {
         return loadedProjects;
     }
+    
+    
+
 
     /*
      * Return a project loaded in memory
      */
 
+   
+    
     public static JEProject getProjectById(String id) {
         return loadedProjects.get(id);
 
@@ -196,18 +208,29 @@ public class ProjectService {
     public CompletableFuture<JEProject> getProject(String projectId) throws ProjectNotFoundException,
             JERunnerErrorException, IOException, InterruptedException, ExecutionException, ConfigException {
     	ConfigurationService.checkConfig();
+    	JEProject project = null;
         JELogger.debug("[projectId= "+projectId+"]"+  JEMessages.LOADING_PROJECT);
         if (!loadedProjects.containsKey(projectId)) {
             Optional<JEProject> p = projectRepository.findById(projectId);
-            JEProject project = p.isEmpty() ? null : p.get();
+             project = p.isEmpty() ? null : p.get();
             if (project != null) {
+            	project.setEvents(eventService.getAllJEEvents(projectId));
+            	project.setRules(ruleService.getAllJERules(projectId));
+            	project.setVariables(variableService.getAllJEVariables(projectId));
+            	project.setWorkflows(workflowService.getAllJEWorkflows(projectId));    	
                 project.setBuilt(false);
                 loadedProjects.put(projectId, project);
                 for (JEEvent event : project.getEvents().values()) {
                     eventService.registerEvent(event);
                 }
+                for(JEVariable variable : project.getVariables().values())
+                {
+               	 variableService.addVariableToRunner(variable);
+                }
+            }else {
+            	throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
             }
-
+            saveProject(project);
         }
         JELogger.debug("[projectId= "+projectId+"]"+  JEMessages.PROJECT_FOUND);
         return CompletableFuture.completedFuture(loadedProjects.get(projectId));
@@ -322,21 +345,16 @@ public class ProjectService {
         for (JEProject project : projects) {
         	 if(project.isAutoReload())
              {
-          	   loadedProjects.put(project.getProjectId(), project);
-                 for (JEEvent event : project.getEvents().values()) {
-                     eventService.registerEvent(event);
-                 }
-                 for(JEVariable variable : project.getVariables().values())
-                 {
-                	 variableService.addVariableToRunner(variable);
-                 }
+          	   getProject(project.getProjectId()).get();
              }
              else
              {
           	   project.setBuilt(false);
           	   project.setRunning(false);
-          	   saveProject(project);
+          	 saveProject(project);
+          	  
              }
+        	 
 
         }
         return CompletableFuture.completedFuture(null);

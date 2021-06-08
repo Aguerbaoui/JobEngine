@@ -14,7 +14,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /*
  * Model class for a workflow
  * */
-@Document(collection = "JEWorkflow")
+@Document(collection = "JEWorkflowCollection")
 public class JEWorkflow extends JEObject {
 
     public final static String RUNNING = "RUNNING";

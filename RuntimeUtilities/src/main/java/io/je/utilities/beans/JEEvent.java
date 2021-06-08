@@ -5,7 +5,7 @@ import io.je.utilities.runtimeobject.JEObject;
 
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document(collection = "JEEvent")
+@Document(collection = "JEEventCollection")
 public class JEEvent extends JEObject {
 
 	private String name;
