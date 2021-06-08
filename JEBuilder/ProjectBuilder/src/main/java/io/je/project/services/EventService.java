@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 
 import io.je.utilities.logger.JELogger;
@@ -36,6 +37,8 @@ public class EventService {
 	@Autowired
 	EventRepository eventRepository;
 	
+	
+	
 	/*
 	 * Retrieve list of all events that exist in a project.
 	 */
@@ -50,6 +53,16 @@ public class EventService {
 
 		JELogger.trace(" Found " + eventModels.size() + " events");
 		return eventModels;
+	}
+	
+	public ConcurrentHashMap<String, JEEvent> getAllJEEvents(String projectId) throws ProjectNotFoundException {
+		List<JEEvent> events = eventRepository.findByJobEngineProjectID(projectId);
+		ConcurrentHashMap<String, JEEvent> map = new ConcurrentHashMap<String, JEEvent>();
+		for(JEEvent event : events )
+		{
+			map.put(event.getJobEngineElementID(), event);
+		}
+		return map;
 	}
 
 	/*
@@ -242,5 +255,10 @@ public class EventService {
 		event.setTriggered(false);
 		event.setJeObjectLastUpdate(LocalDateTime.now());
 
+	}
+
+	public void deleteAll(String projectId) {
+		eventRepository.deleteByJobEngineProjectID(projectId);
+		
 	}
 }

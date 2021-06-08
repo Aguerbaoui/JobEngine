@@ -39,6 +39,9 @@ public class EventController {
 
 	@Autowired
 	EventService eventService;
+	
+	@Autowired
+	ProjectService projectService;
 
 	/*
 	 * Retrieve all events in a project
@@ -48,6 +51,8 @@ public class EventController {
 	public ResponseEntity<?> getAllEvents(@PathVariable("projectId") String projectId) {
 		Collection<?> events = null;
 		try {
+			projectService.getProject(projectId).get();
+
 			events = eventService.getAllEvents(projectId);
 			if (events.isEmpty()) {
 				return ResponseEntity.noContent().build();
@@ -71,8 +76,8 @@ public class EventController {
 			@PathVariable("eventId") String eventId) {
 		JEEvent event = null;
 
-
 		try {
+			projectService.getProject(projectId).get();
 			event = eventService.getEvent(projectId, eventId);
 			if (event == null) {
 				return ResponseEntity.noContent().build();
@@ -94,6 +99,7 @@ public class EventController {
 	public ResponseEntity<?> addEvent(@PathVariable("projectId") String projectId, @RequestBody EventModel eventModel) {
 
 		try {
+			projectService.getProject(projectId).get();
 
 			eventService.addEvent(projectId, eventModel);
 
@@ -118,6 +124,7 @@ public class EventController {
 	public ResponseEntity<?> updateEvent(@PathVariable("projectId") String projectId, @RequestBody EventModel eventModel) {
 
 		try {
+			projectService.getProject(projectId).get();
 
 			eventService.updateEvent(projectId, eventModel);
 
@@ -138,6 +145,7 @@ public class EventController {
 			@PathVariable("eventId") String eventId) {
 
 		try {
+			projectService.getProject(projectId).get();
 
 			eventService.deleteEvent(projectId, eventId);
 

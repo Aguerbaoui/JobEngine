@@ -10,6 +10,7 @@ import io.je.utilities.exceptions.*;
 import io.je.utilities.logger.JELogger;
 import io.je.utilities.models.EventModel;
 import io.je.utilities.models.VariableModel;
+import models.JEWorkflow;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,8 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 
 @Service
@@ -131,4 +134,19 @@ public class VariableService {
 
 		
 	}
+
+	public void deleteAll(String projectId) {
+		variableRepository.deleteByJobEngineProjectID(projectId);
+		
+	}
+	
+	   public ConcurrentHashMap<String, JEVariable> getAllJEVariables(String projectId) throws ProjectNotFoundException {
+			List<JEVariable> variables = variableRepository.findByJobEngineProjectID(projectId);
+			ConcurrentHashMap<String, JEVariable> map = new ConcurrentHashMap<String, JEVariable>();
+			for(JEVariable variable : variables )
+			{
+				map.put(variable.getJobEngineElementID(), variable);
+			}
+			return map;
+		}
 }

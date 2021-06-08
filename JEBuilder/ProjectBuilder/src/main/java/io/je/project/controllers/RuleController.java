@@ -34,7 +34,8 @@ public class RuleController {
 	@Autowired
 	RuleService ruleService;
 
-
+	@Autowired
+	ProjectService projectService;
 	
 	
 	/*  Retrieve Rules */
@@ -48,6 +49,8 @@ public class RuleController {
 	public ResponseEntity<?> getAllRule(@PathVariable("projectId") String projectId) {
 		Collection<RuleModel> rules = null;
 		try {
+			projectService.getProject(projectId).get();
+
 			rules = ruleService.getAllRules(projectId);
 			if (rules.isEmpty()) {
 				return ResponseEntity.noContent().build();
@@ -71,6 +74,8 @@ public class RuleController {
 		RuleModel rule = null;
 
 		try {
+			projectService.getProject(projectId).get();
+
 			rule = ruleService.getRule(projectId, ruleId);
 		} catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
@@ -92,6 +97,8 @@ public class RuleController {
 	public ResponseEntity<?> addRule(@PathVariable("projectId") String projectId, @RequestBody RuleModel ruleModel) {
 
 		try {
+			projectService.getProject(projectId).get();
+
 			JELogger.info(getClass(), " Adding rule " + ruleModel.getRuleName() + "..");
 			ruleService.addRule(projectId, ruleModel);
 			
@@ -108,7 +115,8 @@ public class RuleController {
 	public ResponseEntity<?> deleteRules(@PathVariable("projectId") String projectId, @RequestBody List<String> ruleIds) {
 
 		try {
-		
+			projectService.getProject(projectId).get();
+
 			ruleService.deleteRules(projectId, ruleIds);
 			
 
@@ -130,6 +138,8 @@ public class RuleController {
 			@PathVariable("ruleId") String ruleId) {
 
 		try {
+			projectService.getProject(projectId).get();
+
 			ruleService.deleteRule(projectId, ruleId);
 
 		} catch (Exception e) {
@@ -146,6 +156,8 @@ public class RuleController {
 	public ResponseEntity<?> updateRule(@PathVariable("projectId") String projectId, @RequestBody RuleModel ruleModel) {
 
 		try {
+			projectService.getProject(projectId).get();
+
 			ruleService.updateRule(projectId, ruleModel);
 		} catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
@@ -163,8 +175,11 @@ public class RuleController {
 			@PathVariable("ruleId") String ruleId, @RequestBody BlockModel blockModel) {
 		String generatedBlockName = "";
 		try {
+			
 			blockModel.setRuleId(ruleId);
 			blockModel.setProjectId(projectId);
+			projectService.getProject(projectId).get();
+
 			 generatedBlockName = ruleService.addBlockToRule(blockModel);
 		} catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
@@ -180,6 +195,8 @@ public class RuleController {
 	public ResponseEntity<?> updateBlock(@PathVariable("projectId") String projectId,
 			@PathVariable("ruleId") String ruleId, @RequestBody BlockModel blockModel) {
 		try {
+			projectService.getProject(projectId).get();
+
 			blockModel.setRuleId(ruleId);
 			blockModel.setProjectId(projectId);
 			ruleService.updateBlockInRule(blockModel);
@@ -198,6 +215,8 @@ public class RuleController {
 	public ResponseEntity<?> deleteBlock(@PathVariable("projectId") String projectId,
 			@PathVariable("ruleId") String ruleId, @PathVariable("blockId") String blockId) {
 		try {
+			projectService.getProject(projectId).get();
+
 			ruleService.deleteBlock(projectId, ruleId, blockId);
 		} catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
@@ -216,6 +235,8 @@ public class RuleController {
 			@PathVariable("ruleId") String ruleId) {
 
 		try {
+			projectService.getProject(projectId).get();
+
 			ruleService.buildRule(projectId, ruleId);
 		} catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
@@ -232,6 +253,8 @@ public class RuleController {
 			@PathVariable("ruleId") String ruleId, @RequestBody String config) {
 
 		try {
+			projectService.getProject(projectId).get();
+
 			ruleService.saveRuleFrontConfig(projectId, ruleId, config);
 			JELogger.info(getClass(), JEMessages.RULE_ADDED_SUCCESSFULLY);
 
@@ -254,6 +277,8 @@ public class RuleController {
 			@RequestBody ScriptRuleModel ruleModel) {
 
 		try {
+			projectService.getProject(projectId).get();
+
 			ruleService.addScriptedRule(projectId, ruleModel);
 
 		} catch (Exception e) {
@@ -272,6 +297,8 @@ public class RuleController {
 			@RequestBody ScriptRuleModel ruleModel) {
 
 		try {
+			projectService.getProject(projectId).get();
+
 			ruleService.updateScriptedRule(projectId, ruleModel);
 
 		} catch (Exception e) {

@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 
 import static io.je.utilities.constants.WorkflowConstants.*;
@@ -801,4 +802,19 @@ public class WorkflowService {
     	return  workflowRepository.findById(workflowId).get();
 
     }
+
+	public void deleteAll(String projectId) {
+		workflowRepository.deleteByJobEngineProjectID(projectId);
+		
+	}
+	
+	   public ConcurrentHashMap<String, JEWorkflow> getAllJEWorkflows(String projectId) throws ProjectNotFoundException {
+			List<JEWorkflow> workflows = workflowRepository.findByJobEngineProjectID(projectId);
+			ConcurrentHashMap<String, JEWorkflow> map = new ConcurrentHashMap<String, JEWorkflow>();
+			for(JEWorkflow workflow : workflows )
+			{
+				map.put(workflow.getJobEngineElementID(), workflow);
+			}
+			return map;
+		}
 }

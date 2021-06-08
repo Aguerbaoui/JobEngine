@@ -4,6 +4,7 @@ import io.je.project.exception.JEExceptionHandler;
 import io.je.project.models.WorkflowBlockModel;
 import io.je.project.services.ProjectService;
 import io.je.project.services.WorkflowService;
+import io.je.rulebuilder.components.JERule;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.exceptions.ProjectNotFoundException;
@@ -19,6 +20,7 @@ import static io.je.utilities.constants.JEMessages.*;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 /*
  * Workflow builder Rest Controller
@@ -31,12 +33,14 @@ public class WorkflowController {
 
     @Autowired
     WorkflowService workflowService;
-
+    @Autowired
+	ProjectService projectService;
 
 
     @PostMapping(value = "/addWorkflow", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> addWorkflow(@RequestBody WorkflowModel m) {
         try {
+			projectService.getProject(m.getProjectId()).get();
 
             workflowService.addWorkflow(m);
         } catch (Exception e) {
@@ -53,6 +57,8 @@ public class WorkflowController {
     public ResponseEntity<?> buildWorkflow(@PathVariable String projectId, @PathVariable String key) {
 
         try {
+			projectService.getProject(projectId).get();
+
             workflowService.buildWorkflow(projectId, key);
         }catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
@@ -68,6 +74,8 @@ public class WorkflowController {
     @PostMapping(value = "/runWorkflow/{projectId}/{key}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> runWorkflow(@PathVariable String projectId, @PathVariable String key) {
         try {
+			projectService.getProject(projectId).get();
+
             workflowService.runWorkflow(projectId, key);
         }catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
@@ -83,6 +91,8 @@ public class WorkflowController {
     @PostMapping(value = "/stopWorkflow/{projectId}/{key}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> stopWorkflow(@PathVariable String projectId, @PathVariable String key) {
         try {
+			projectService.getProject(projectId).get();
+
             workflowService.stopWorkflow(projectId, key);
         }catch (Exception e) {
             return JEExceptionHandler.handleException(e);
@@ -100,6 +110,8 @@ public class WorkflowController {
                                             @PathVariable("workflowId") String workflowId) {
 
         try {
+			projectService.getProject(projectId).get();
+
             workflowService.removeWorkflow(projectId, workflowId);
         } catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
@@ -117,6 +129,8 @@ public class WorkflowController {
                                             @PathVariable("workflowId") String workflowId, @RequestBody WorkflowModel m) {
 
         try {
+			projectService.getProject(projectId).get();
+
             workflowService.updateWorkflow(projectId, workflowId, m);
         } catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
@@ -130,6 +144,8 @@ public class WorkflowController {
     @ResponseBody
     public ResponseEntity<?> getAllWorkflows(@PathVariable("projectId") String projectId) {
         try {
+			projectService.getProject(projectId).get();
+
             return ResponseEntity.ok(workflowService.getAllWorkflows(projectId));
         } catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
@@ -142,6 +158,8 @@ public class WorkflowController {
     public ResponseEntity<?> getWorkflowById(@PathVariable("projectId") String projectId, @PathVariable("key") String key) {
         JEWorkflow w = null;
         try {
+			projectService.getProject(projectId).get();
+
             w = workflowService.getWorkflow( key);
         }catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
@@ -161,6 +179,7 @@ public class WorkflowController {
     	String generatedBlockName = "";
 
     	try {
+			projectService.getProject(block.getProjectId()).get();
 
         	generatedBlockName=  workflowService.addWorkflowBlock(block);
 
@@ -178,6 +197,8 @@ public class WorkflowController {
     public ResponseEntity<?> updateWorkflowBlock(@RequestBody WorkflowBlockModel block) {
 
         try {
+			projectService.getProject(block.getProjectId()).get();
+
             workflowService.updateWorkflowBlock(block);
         } catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
@@ -193,6 +214,8 @@ public class WorkflowController {
     public ResponseEntity<?> deleteWorkflowBlock(@PathVariable String projectId, @PathVariable String key, @PathVariable String id) {
 
         try {
+			projectService.getProject(projectId).get();
+
             workflowService.deleteWorkflowBlock(projectId, key, id);
         } catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
@@ -208,6 +231,8 @@ public class WorkflowController {
     public ResponseEntity<?> deleteSequenceFlow(@PathVariable String projectId, @PathVariable String key, @PathVariable String from, @PathVariable String to) {
 
         try {
+			projectService.getProject(projectId).get();
+
             workflowService.deleteSequenceFlow(projectId, key, from, to);
         } catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
@@ -224,6 +249,8 @@ public class WorkflowController {
     public ResponseEntity<?> addScriptedRule(@PathVariable("projectId") String projectId, @PathVariable("workflowId") String workflowId, @RequestBody String bpmn) {
 
         try {
+			projectService.getProject(projectId).get();
+
             workflowService.addBpmn(projectId, workflowId, bpmn);
 
         } catch (Exception e) {
@@ -240,6 +267,8 @@ public class WorkflowController {
     @PostMapping(value = "/saveWorkflowFrontConfig/{projectId}/{workflowId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> saveWorkflowFrontConfig(@PathVariable("projectId") String projectId,@PathVariable("workflowId") String workflowId, @RequestBody String config) {
         try {
+			projectService.getProject(projectId).get();
+
             workflowService.setFrontConfig(projectId, workflowId, config);
         } catch (Exception e) {
             return JEExceptionHandler.handleException(e);
@@ -251,6 +280,8 @@ public class WorkflowController {
     @DeleteMapping(value = "/deleteWorkflows/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> deleteRules(@PathVariable("projectId") String projectId, @RequestBody List<String> ids) {
         try {
+			projectService.getProject(projectId).get();
+
             workflowService.removeWorkflows(projectId, ids);
         } catch (Exception e) {
             return JEExceptionHandler.handleException(e);
@@ -258,4 +289,5 @@ public class WorkflowController {
         return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, WORKFLOW_DELETED_SUCCESSFULLY));
     }
 
+ 
 }

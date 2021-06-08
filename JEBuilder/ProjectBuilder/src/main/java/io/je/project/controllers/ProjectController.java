@@ -141,7 +141,7 @@ public class ProjectController {
 	/*
 	 * Add new project
 	 */
-	@PostMapping(value = "/addProject", produces = MediaType.APPLICATION_JSON_VALUE)
+/*	@PostMapping(value = "/addProject", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> addProject(@RequestBody ProjectModel m) {
 		if (projectService.projectExists(m.getProjectId())) {
 			return ResponseEntity.ok(new JEResponse(ResponseCodes.PROJECT_EXISTS, JEMessages.PROJECT_EXISTS));
@@ -154,7 +154,7 @@ public class ProjectController {
 		}
 		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, CREATED_PROJECT_SUCCESSFULLY));
 	}
-
+*/
 	/*
 	 * Add new project
 	 */
@@ -172,7 +172,7 @@ public class ProjectController {
 			return JEExceptionHandler.handleException(e);
 
 		}
-		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, CREATED_PROJECT_SUCCESSFULLY));
+		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, PROJECT_DELETED));
 	}
 
 	@GetMapping("/getProject/{projectId}")

@@ -25,7 +25,8 @@ public class VariableController {
 
     @Autowired
     VariableService variableService;
-
+    @Autowired
+	ProjectService projectService;
 
     
 	/*
@@ -36,6 +37,8 @@ public class VariableController {
 	public ResponseEntity<?> getAllVariables(@PathVariable("projectId") String projectId) {
 		Collection<?> variables = null;
 		try {
+			projectService.getProject(projectId).get();
+
 			variables = variableService.getAllVariables(projectId);
 			if (variables.isEmpty()) {
 				return ResponseEntity.noContent().build();
@@ -61,6 +64,8 @@ public class VariableController {
 
 
 		try {
+			projectService.getProject(projectId).get();
+
 			variable = variableService.getVariable(projectId, variableId);
 			if (variable == null) {
 				return ResponseEntity.noContent().build();
@@ -82,6 +87,8 @@ public class VariableController {
     public ResponseEntity<?> addVariable(@RequestBody VariableModel variableModel) {
 
         try {
+			projectService.getProject(variableModel.getProjectId());
+
         variableService.addVariable(variableModel);
         } catch (Exception e) {
             return JEExceptionHandler.handleException(e);
@@ -98,6 +105,8 @@ public class VariableController {
                                             @PathVariable("varId") String varId) {
 
         try {
+			projectService.getProject(projectId).get();
+
             variableService.deleteVariable(projectId, varId);
 
         } catch (Exception e) {
@@ -114,6 +123,8 @@ public class VariableController {
     public ResponseEntity<?> updateVariable(@RequestBody VariableModel variableModel) {
 
         try {
+			projectService.getProject(variableModel.getProjectId());
+
             variableService.updateVariable(variableModel);
         } catch (Exception e) {
             return JEExceptionHandler.handleException(e);
@@ -130,6 +141,8 @@ public class VariableController {
    public ResponseEntity<?> writeVariableValue(@PathVariable("projectId") String projectId,@PathVariable("variableId") String variableId, @RequestBody String value ) {
 
        try {
+			projectService.getProject(projectId).get();
+
        variableService.writeVariableValue(projectId,variableId, value);
        } catch (Exception e) {
            return JEExceptionHandler.handleException(e);

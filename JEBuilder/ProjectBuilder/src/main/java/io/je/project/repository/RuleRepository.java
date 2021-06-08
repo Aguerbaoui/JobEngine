@@ -12,6 +12,8 @@ import io.je.rulebuilder.components.JERule;
 @Repository
 public interface RuleRepository extends MongoRepository<JERule,String>{
 	List<JERule> findByJobEngineProjectID (String projectId);
+	void deleteByJobEngineProjectID (String projectId);
+
 	
 
 }

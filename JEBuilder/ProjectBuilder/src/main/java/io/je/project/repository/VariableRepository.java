@@ -13,6 +13,8 @@ import io.je.utilities.beans.JEVariable;
 @Repository
 public interface VariableRepository extends MongoRepository<JEVariable,String>{
 	List<JEVariable> findByJobEngineProjectID (String projectId);
+	void deleteByJobEngineProjectID (String projectId);
+
 	
 
 }

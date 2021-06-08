@@ -10,6 +10,7 @@ import io.je.rulebuilder.models.BlockModel;
 import io.je.rulebuilder.models.RuleModel;
 import io.je.rulebuilder.models.ScriptRuleModel;
 import io.je.utilities.apis.JERunnerAPIHandler;
+import io.je.utilities.beans.JEEvent;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.*;
 import io.je.utilities.files.JEFileUtils;
@@ -28,6 +29,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 
 /*
@@ -588,5 +590,21 @@ public class RuleService {
     		project.removeBlockName(blockIds.nextElement());
     	}
     }
+
+	public void deleteAll(String projectId) {
+		ruleRepository.deleteByJobEngineProjectID(projectId);
+		
+	}
+
+	public ConcurrentHashMap<String, JERule> getAllJERules(String projectId) throws ProjectNotFoundException {
+		List<JERule> rules = ruleRepository.findByJobEngineProjectID(projectId);
+		ConcurrentHashMap<String, JERule> map = new ConcurrentHashMap<String, JERule>();
+		for(JERule rule : rules )
+		{
+			map.put(rule.getJobEngineElementID(), rule);
+		}
+		return map;
+	}
+
 
 }

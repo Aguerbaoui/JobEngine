@@ -10,6 +10,8 @@ import io.je.utilities.beans.JEEvent;
 @Repository
 public interface EventRepository extends MongoRepository<JEEvent,String>{
 	List<JEEvent> findByJobEngineProjectID (String projectId);
+	void deleteByJobEngineProjectID (String projectId);
+
 	
 
 }

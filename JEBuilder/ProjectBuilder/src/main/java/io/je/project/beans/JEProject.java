@@ -6,12 +6,16 @@ import io.je.rulebuilder.components.UserDefinedRule;
 import io.je.rulebuilder.components.blocks.Block;
 import io.je.utilities.beans.JEEvent;
 import io.je.utilities.beans.JEVariable;
+import io.je.utilities.config.ConfigurationConstants;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.*;
+import io.je.utilities.execution.JobEngine;
 import models.JEWorkflow;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.time.LocalDateTime;
 import java.util.Map;
@@ -26,6 +30,18 @@ public class JEProject {
     @Id
     private String projectId;
 
+    @Field("key")
+    private String projectName;
+    
+    @Field("CreatedAt")
+    private String createdAt;
+    
+    @Field("ModifiedAt")
+    private String modifiedAt;
+    
+    @Field("description")
+    private String description;
+
 
 
     /*
@@ -36,26 +52,26 @@ public class JEProject {
     /*
     * Rules in a project
     * */
-    @DBRef
+    @Transient
     private ConcurrentHashMap<String, JERule> rules= new ConcurrentHashMap<>();
 
     /*
     * Workflows in a project
     * */
-    @DBRef
+    @Transient
     private ConcurrentHashMap<String, JEWorkflow> workflows= new ConcurrentHashMap<>();
     
     
     /*
      * Events in a project
      * */
-    @DBRef
+    @Transient
      private ConcurrentHashMap<String, JEEvent> events= new ConcurrentHashMap<>();
 
 	/*
 	 * Variables in a project
 	 * */
-    @DBRef
+    @Transient
 	private ConcurrentHashMap<String, JEVariable> variables= new ConcurrentHashMap<>();
      
 	/*
@@ -94,7 +110,7 @@ public class JEProject {
         events = new ConcurrentHashMap<>();
         variables= new ConcurrentHashMap<>();
         this.projectId = projectId;
-        this.configurationPath = configurationPath;
+        this.configurationPath = System.getenv(ConfigurationConstants.SIOTH_ENVIRONMENT_VARIABLE)+"//projects//"+projectName;
         isBuilt = false;
         autoReload = false;
 
@@ -527,4 +543,97 @@ public class JEProject {
 		}
 		return variables.get(varId);
 	}
+
+
+
+
+
+
+	public String getProjectName() {
+		return projectName;
+	}
+
+
+
+
+
+
+	public void setProjectName(String projectName) {
+		this.projectName = projectName;
+	}
+
+
+
+
+
+
+	public String getCreatedAt() {
+		return createdAt;
+	}
+
+
+
+
+
+
+	public void setCreatedAt(String createdAt) {
+		this.createdAt = createdAt;
+	}
+
+
+
+
+
+
+	public String getModifiedAt() {
+		return modifiedAt;
+	}
+
+
+
+
+
+
+	public void setModifiedAt(String modifiedAt) {
+		this.modifiedAt = modifiedAt;
+	}
+
+
+
+
+
+
+	public String getDescription() {
+		return description;
+	}
+
+
+
+
+
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+
+
+
+
+
+	public Map<String, Integer> getBlockNameCounters() {
+		return blockNameCounters;
+	}
+
+
+
+
+
+
+	public void setBlockNameCounters(Map<String, Integer> blockNameCounters) {
+		this.blockNameCounters = blockNameCounters;
+	}
+	
+	
+	
 }
