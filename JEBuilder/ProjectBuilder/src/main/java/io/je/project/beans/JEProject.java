@@ -104,13 +104,12 @@ public class JEProject {
     /*
     * Constructor
     * */
-    public JEProject(String projectId, String configurationPath) {
+    public JEProject(String projectId) {
         rules = new ConcurrentHashMap<>();
         workflows = new ConcurrentHashMap<>();
         events = new ConcurrentHashMap<>();
         variables= new ConcurrentHashMap<>();
         this.projectId = projectId;
-        this.configurationPath = System.getenv(ConfigurationConstants.SIOTH_ENVIRONMENT_VARIABLE)+"//projects//"+projectName;
         isBuilt = false;
         autoReload = false;
 
@@ -123,6 +122,7 @@ public class JEProject {
 
 
 	 private JEProject() {
+
 	}
 
 
@@ -227,6 +227,11 @@ public class JEProject {
 
 
 	public String getConfigurationPath() {
+		if(configurationPath==null)
+		{
+			//TODO: use a default path in sioth config
+			configurationPath =  "D:\\projects\\"+projectName;
+		}
 		return configurationPath;
 	}
 

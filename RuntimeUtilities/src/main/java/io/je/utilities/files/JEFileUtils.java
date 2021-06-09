@@ -21,7 +21,7 @@ public class JEFileUtils {
 		try {
 			FileUtils.writeStringToFile(file, bpmn20Xml, encoding);
 		}  catch (Exception e) {
-			JELogger.error(Arrays.toString(e.getStackTrace()));
+			JELogger.error(e.getMessage());
 		}
 
 	}
