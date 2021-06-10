@@ -12,8 +12,13 @@ public class JEConfiguration {
 
 	static JEConfiguration instance;
 	
-	//datamodel
+	//datamodelest
 	static String dataDefinitionURL;
+	static int dataDefinitionSubscribePort;
+	static int dataDefinitionRequestPort;
+
+	
+	//data model service
 	static String dataManagerURL;
 	static int subscriberPort;
 	static int requestPort;
@@ -59,6 +64,8 @@ public class JEConfiguration {
 		configModel.setLoggingSystemURL(loggingSystemURL);
 		configModel.setLoggingSystemZmqPublishPort(loggingSystemZmqPublishPort);
 		configModel.setDatabaseApiUrl(databaseApiUrl);
+		configModel.setDataDefinitionRequestPort(dataDefinitionRequestPort);
+		configModel.setDataDefinitionSubscribePort(dataDefinitionSubscribePort);
 		return configModel;
 	}
 	
@@ -76,6 +83,8 @@ public class JEConfiguration {
 		setLoggingSystemURL(configModel.getLoggingSystemURL());
 		setLoggingSystemZmqPublishPort(configModel.getLoggingSystemZmqPublishPort());
 		setDatabaseApiUrl(configModel.getDatabaseApiUrl());
+		setDataDefinitionRequestPort(configModel.getDataDefinitionRequestPort());
+		setDataDefinitionSubscribePort(configModel.getDataDefinitionSubscribePort());
 	}
 	
 	
@@ -243,6 +252,36 @@ public class JEConfiguration {
 		if(loggingSystemZmqPublishPort!=0)
 		{
 			JEConfiguration.loggingSystemZmqPublishPort = loggingSystemZmqPublishPort;
+		}
+	}
+
+
+
+	public static int getDataDefinitionSubscribePort() {
+		return dataDefinitionSubscribePort;
+	}
+
+
+
+	public static void setDataDefinitionSubscribePort(int dataDefinitionSubscribePort) {
+		if(dataDefinitionSubscribePort !=0)
+		{
+			JEConfiguration.dataDefinitionSubscribePort = dataDefinitionSubscribePort;
+		}
+	}
+
+
+
+	public static int getDataDefinitionRequestPort() {
+		return dataDefinitionRequestPort;
+	}
+
+
+
+	public static void setDataDefinitionRequestPort(int dataDefinitionRequestPort) {
+		if(dataDefinitionRequestPort!=0)
+		{
+			JEConfiguration.dataDefinitionRequestPort = dataDefinitionRequestPort;
 		}
 	}
 

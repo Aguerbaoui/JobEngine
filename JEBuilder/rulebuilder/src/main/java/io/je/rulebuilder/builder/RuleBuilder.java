@@ -6,6 +6,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -16,6 +17,7 @@ import org.drools.template.ObjectDataCompiler;
 import io.je.rulebuilder.components.UserDefinedRule;
 import io.je.rulebuilder.components.blocks.Block;
 import io.je.rulebuilder.components.blocks.ConditionBlock;
+import io.je.rulebuilder.components.blocks.ExecutionBlock;
 import io.je.rulebuilder.components.blocks.PersistableBlock;
 import io.je.rulebuilder.components.JERule;
 import io.je.rulebuilder.components.RuleParameters;
@@ -106,7 +108,7 @@ public class RuleBuilder {
 		int scriptedRulesCounter = 0;
 		String scriptedRuleid = "";
 		List<ScriptedRule> scriptedRules = new ArrayList<>();
-		Set<Block> rootBlocks = uRule.getBlocks().getRootBlocks();
+		Set<Block> rootBlocks = getRootBlocks(uRule);
 		String subRulePrefix = RuleIdManager.generateSubRulePrefix(uRule.getJobEngineElementID());
 		for (Block root : rootBlocks) {
 			scriptedRuleid = subRulePrefix + uRule.getRuleName() + ++scriptedRulesCounter;
@@ -174,6 +176,40 @@ public class RuleBuilder {
 		}
 		return ruleContent;
 
+	}
+	
+	public static Set<Block> getRootBlocks(UserDefinedRule uRule) throws RuleBuildFailedException {
+		Set<Block> roots = new HashSet<>();
+
+		// number of execution blocks
+		int executionBlockCounter = 0;
+		// get root blocks
+		for (Block ruleBlock : uRule.getBlocks().getAll()) {
+			if (ruleBlock instanceof ExecutionBlock) {
+				executionBlockCounter++;
+				for (Block rootBlock : ruleBlock.getInputBlocks()) {
+					if(rootBlock!=null)
+					{
+						roots.add( uRule.getBlocks().getBlock(rootBlock.getJobEngineElementID()));
+					}
+					
+				}
+				
+				// if exec block has no root, it's a root
+				if(ruleBlock.getInputBlocks().isEmpty())
+				{
+					roots.add(ruleBlock);
+				}
+
+			}
+		}
+		// if this rule has no execution block, then it is not valid.
+		if (executionBlockCounter == 0) {
+			JELogger.error( JEMessages.NO_EXECUTION_BLOCK);
+			throw new RuleBuildFailedException(JEMessages.NO_EXECUTION_BLOCK);
+		}
+
+		return roots;
 	}
 
 }

@@ -7,7 +7,7 @@ import blocks.control.InclusiveGatewayBlock;
 import blocks.control.ParallelGatewayBlock;
 import blocks.events.*;
 import builder.WorkflowBuilder;
-import io.je.classbuilder.models.ClassModel;
+import io.je.classbuilder.models.ClassDefinition;
 import io.je.classbuilder.models.MethodModel;
 import io.je.project.beans.JEProject;
 import io.je.project.models.WorkflowBlockModel;
@@ -569,7 +569,7 @@ public class WorkflowService {
             b.setName((String) block.getAttributes().get(NAME));
             ArrayList<String> imports = (ArrayList) block.getAttributes().get(IMPORTS);
             b.setScript((String) block.getAttributes().get(SCRIPT));
-            ClassModel c = getClassModel(b.getJobEngineElementID(), project.getWorkflowByIdOrName(block.getWorkflowId()).getWorkflowName()+b.getName(), b.getScript());
+            ClassDefinition c = getClassModel(b.getJobEngineElementID(), project.getWorkflowByIdOrName(block.getWorkflowId()).getWorkflowName()+b.getName(), b.getScript());
             c.setImports(imports);
             //True to send directly to JERunner
             classService.addClass(c, true);
@@ -684,8 +684,8 @@ public class WorkflowService {
 
     }
 
-    private ClassModel getClassModel(String id, String name, String script) {
-        ClassModel c = new ClassModel();
+    private ClassDefinition getClassModel(String id, String name, String script) {
+        ClassDefinition c = new ClassDefinition();
         c.setClass(true);
         c.setIdClass(id);
         c.setName(name);

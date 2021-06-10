@@ -7,7 +7,7 @@ public class ClassModelAttributeMapping {
 
 	
 	// Class Model attributes
-	 public static final String CLASSID = "idClass";
+	 public static final String CLASSID = "_id";
 	 public static final String WORKSPACEID = "workspaceId";
 	 public static final String CLASSNAME = "name";
 	 public static final String ATTRIBUTES = "attributes";
@@ -18,7 +18,7 @@ public class ClassModelAttributeMapping {
 	 public static final String ISTRUCT = "isStruct";
 	 public static final String ISENUM = "isEnum";
 	 public static final String VISIBILITY = "classVisibility";
-	 public static final String DEPENDENTENTITIES = "dependentEntities";
+	 public static final String DEPENDENTENTITIES = "DependentEntities";
 	 public static final String INHERITANCESEMANTICS = "inheritanceSemantics";
 	 public static final String IMPORTS = "imports";
 	 

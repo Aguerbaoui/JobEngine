@@ -100,6 +100,7 @@ public class ProjectService {
         workflowService.deleteAll(id);
         eventService.deleteAll(id);
         variableService.deleteAll(id);
+        projectRepository.deleteById(id);
 
         return CompletableFuture.completedFuture(null);
 
@@ -340,20 +341,34 @@ public class ProjectService {
     public CompletableFuture<Void> loadAllProjects() throws ProjectNotFoundException, JERunnerErrorException,
             IOException, InterruptedException, ExecutionException, ConfigException {
     	ConfigurationService.checkConfig();
-        loadedProjects = new ConcurrentHashMap<String, JEProject>();
+        //loadedProjects = new ConcurrentHashMap<String, JEProject>();
         List<JEProject> projects = projectRepository.findAll();
         for (JEProject project : projects) {
-        	 if(project.isAutoReload())
-             {
-          	   getProject(project.getProjectId()).get();
-             }
-             else
-             {
-          	   project.setBuilt(false);
-          	   project.setRunning(false);
-          	 saveProject(project);
-          	  
-             }
+        	 Optional<JEProject> p = projectRepository.findById(project.getProjectId());
+             project = p.isEmpty() ? null : p.get();
+            if (project != null) {
+            	project.setEvents(eventService.getAllJEEvents(project.getProjectId()));
+            	project.setRules(ruleService.getAllJERules(project.getProjectId()));
+            	project.setVariables(variableService.getAllJEVariables(project.getProjectId()));
+            	project.setWorkflows(workflowService.getAllJEWorkflows(project.getProjectId()));    	
+                project.setBuilt(false);
+                loadedProjects.put(project.getProjectId(), project);
+                for (JEEvent event : project.getEvents().values()) {
+                    eventService.registerEvent(event);
+                }
+                for(JEVariable variable : project.getVariables().values())
+                {
+               	 variableService.addVariableToRunner(variable);
+                }
+                if(!project.isAutoReload())       		 
+                {
+             	   project.setBuilt(false);
+             	   project.setRunning(false);
+             	 saveProject(project);
+             	  
+                }
+            }
+        	 
         	 
 
         }
