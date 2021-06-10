@@ -5,7 +5,7 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 
-public class ClassModel {
+public class ClassDefinition {
 	
     @JsonProperty(ClassModelAttributeMapping.CLASSID)
 	String idClass;

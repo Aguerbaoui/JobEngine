@@ -21,7 +21,7 @@ public class RuleLoader {
             JELogger.info(RuleLoader.class, rule.getPath());
             rule.setContent(new String(Files.readAllBytes(Paths.get(rule.getPath()))));
         } catch (IOException e) {
-            throw new JEFileNotFoundException(JEMessages.RULE_FILE_NOT_FOUND);
+            throw new JEFileNotFoundException(JEMessages.RULE_FILE_NOT_FOUND + rule.getPath());
         }
     }
 

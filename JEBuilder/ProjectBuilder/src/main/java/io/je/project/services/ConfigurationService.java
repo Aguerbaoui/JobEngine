@@ -60,6 +60,7 @@ public class ConfigurationService {
 				
 
 			}
+			classService.initClassUpdateListener();
 		}else {
 			configRepository.save(new ConfigModel());
 		}

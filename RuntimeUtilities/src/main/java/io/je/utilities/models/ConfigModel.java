@@ -26,10 +26,26 @@ public class ConfigModel {
 	 String loggingSystemURL;
 	 int loggingSystemZmqPublishPort;
 	String databaseApiUrl;
+	 int dataDefinitionSubscribePort;
+	 int dataDefinitionRequestPort;
 	
 	
 
 	public ConfigModel() {
+		  dataDefinitionURL="";
+		  dataManagerURL="";
+		  runtimeManagerURL="";
+		  projectBuilderURL="";
+		  emailApiUrl="";
+		  subscriberPort=0;
+		  requestPort=0;
+		  droolsDateFormat="";
+		  dataModelDateFormat="";
+		  loggingSystemURL="";
+		  loggingSystemZmqPublishPort=0;
+		 databaseApiUrl="";
+		  dataDefinitionSubscribePort=0;
+		  dataDefinitionRequestPort=0;
 	}
 
 	public String getDatabaseApiUrl() {
@@ -125,17 +141,33 @@ public class ConfigModel {
 	}
 
 	
+	
+	public  int getDataDefinitionSubscribePort() {
+		return dataDefinitionSubscribePort;
+	}
+
+	public  void setDataDefinitionSubscribePort(int dataDefinitionSubscribePort) {
+		this.dataDefinitionSubscribePort = dataDefinitionSubscribePort;
+	}
+
+	public  int getDataDefinitionRequestPort() {
+		return dataDefinitionRequestPort;
+	}
+
+	public  void setDataDefinitionRequestPort(int dataDefinitionRequestPort) {
+		this.dataDefinitionRequestPort = dataDefinitionRequestPort;
+	}
+
 	@Override
 	public String toString() {
-		return "ConfigModel{" +
-				"identifier='" + identifier + '\'' +
-				", dataDefinitionURL='" + dataDefinitionURL + '\'' +
-				", dataManagerURL='" + dataManagerURL + '\'' +
-				", runtimeManagerURL='" + runtimeManagerURL + '\'' +
-				", projectBuilderURL='" + projectBuilderURL + '\'' +
-				", subscriberPort=" + subscriberPort +
-				", requestPort=" + requestPort +
-				", droolsDateFormat='" + droolsDateFormat + '\'' +
-				'}';
+		return "ConfigModel [defaultIp=" + defaultIp + ", identifier=" + identifier + ", dataDefinitionURL="
+				+ dataDefinitionURL + ", dataManagerURL=" + dataManagerURL + ", runtimeManagerURL=" + runtimeManagerURL
+				+ ", projectBuilderURL=" + projectBuilderURL + ", emailApiUrl=" + emailApiUrl + ", subscriberPort="
+				+ subscriberPort + ", requestPort=" + requestPort + ", droolsDateFormat=" + droolsDateFormat
+				+ ", dataModelDateFormat=" + dataModelDateFormat + ", loggingSystemURL=" + loggingSystemURL
+				+ ", loggingSystemZmqPublishPort=" + loggingSystemZmqPublishPort + ", databaseApiUrl=" + databaseApiUrl
+				+ "]";
 	}
+
+
 }

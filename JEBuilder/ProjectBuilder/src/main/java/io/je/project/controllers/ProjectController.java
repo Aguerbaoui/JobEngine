@@ -177,19 +177,23 @@ public class ProjectController {
 
 	@GetMapping("/getProject/{projectId}")
 	public ResponseEntity<?> getProject(@PathVariable String projectId) {
-		JEProject project = null;
+	/*	JEProject project = null;
 		try {
 			project = projectService.getProject(projectId).get();
+			if (project == null) {
+				return ResponseEntity.ok(new JEResponse(ResponseCodes.PROJECT_NOT_FOUND, JEMessages.PROJECT_NOT_FOUND));
+
+			}
+			return ResponseEntity.ok(project);
+			//return ResponseEntity.ok(projects);
+
 		} catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
 
 		}
-		if (project == null) {
-			return ResponseEntity.ok(new JEResponse(ResponseCodes.PROJECT_NOT_FOUND, JEMessages.PROJECT_NOT_FOUND));
-
-		}
-
-		return ResponseEntity.ok(project);
+		
+*/
+		return ResponseEntity.ok("");
 
 	}
 
