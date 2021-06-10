@@ -37,7 +37,7 @@ public class VariableController {
 	public ResponseEntity<?> getAllVariables(@PathVariable("projectId") String projectId) {
 		Collection<?> variables = null;
 		try {
-			projectService.getProject(projectId).get();
+			projectService.getProject(projectId);
 
 			variables = variableService.getAllVariables(projectId);
 			if (variables.isEmpty()) {
@@ -64,7 +64,7 @@ public class VariableController {
 
 
 		try {
-			projectService.getProject(projectId).get();
+			projectService.getProject(projectId);
 
 			variable = variableService.getVariable(projectId, variableId);
 			if (variable == null) {
@@ -105,7 +105,7 @@ public class VariableController {
                                             @PathVariable("varId") String varId) {
 
         try {
-			projectService.getProject(projectId).get();
+			projectService.getProject(projectId);
 
             variableService.deleteVariable(projectId, varId);
 
@@ -141,7 +141,7 @@ public class VariableController {
    public ResponseEntity<?> writeVariableValue(@PathVariable("projectId") String projectId,@PathVariable("variableId") String variableId, @RequestBody String value ) {
 
        try {
-			projectService.getProject(projectId).get();
+			projectService.getProject(projectId);
 
        variableService.writeVariableValue(projectId,variableId, value);
        } catch (Exception e) {

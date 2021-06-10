@@ -205,8 +205,8 @@ public class ProjectService {
     /*
      * Return project by id
      */
-    @Async
-    public CompletableFuture<JEProject> getProject(String projectId) throws ProjectNotFoundException,
+    
+    public JEProject getProject(String projectId) throws ProjectNotFoundException,
             JERunnerErrorException, IOException, InterruptedException, ExecutionException, ConfigException {
     	ConfigurationService.checkConfig();
     	JEProject project = null;
@@ -234,7 +234,7 @@ public class ProjectService {
             saveProject(project);
         }
         JELogger.debug("[projectId= "+projectId+"]"+  JEMessages.PROJECT_FOUND);
-        return CompletableFuture.completedFuture(loadedProjects.get(projectId));
+        return loadedProjects.get(projectId);
     }
 
     public CompletableFuture<Collection<?>> getAllProjects() throws ConfigException {
