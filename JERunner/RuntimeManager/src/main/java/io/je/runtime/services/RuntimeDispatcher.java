@@ -300,6 +300,7 @@ public class RuntimeDispatcher {
         JEClassCompiler.compileClass(classModel.getClassPath(), ConfigurationConstants.runnerClassLoadPath);
        try {
     	   ClassRepository.addClass(classModel.getClassId(), loader.loadClass(ClassBuilderConfig.genrationPackageName + "." + classModel.getClassName()));
+           RuleEngineHandler.setClassLoader(loader);
 	} catch (ClassNotFoundException e) {
 		throw new ClassLoadException("[class :"+ classModel.getClassName() +" ]"+JEMessages.CLASS_LOAD_FAILED); 
 	}

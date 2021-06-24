@@ -132,7 +132,7 @@ public class ProjectContainer {
 	 */
 	public void buildProject() throws RuleBuildFailedException {
 		JELogger.info(ProjectContainer.class, JEMessages.BUILDING_PROJECT_CONTAINER);
-		 loader = new JEClassLoader(ProjectContainer.class.getClassLoader());
+		 //loader = new JEClassLoader(ProjectContainer.class.getClassLoader());
 		// build kie environment
 		if (!buildKie()) {
 			JELogger.error(ProjectContainer.class, JEMessages.BUILDING_PROJECT_CONTAINER_FAILED);
@@ -282,9 +282,12 @@ public class ProjectContainer {
 		if (!isInitialised) {
 			JELogger.debug(getClass(), "Rule Engine - [projectId ="+projectId+"]" + JEMessages.KIE_INIT);
 			if (releaseId != null) {
+				if(loader == null) {
+					loader = new JEClassLoader(ProjectContainer.class.getClassLoader());
+				}
 				// create container
 				try {
-					kieContainer = kieServices.newKieContainer(releaseId, null);
+					kieContainer = kieServices.newKieContainer(releaseId, loader);
 					kScanner = kieServices.newKieScanner(kieContainer);
 					kieBase = kieContainer.getKieBase("kie-base");
 
@@ -405,7 +408,7 @@ public class ProjectContainer {
 		try {
 			releaseId = kieServices.newReleaseId("io.je", "ruleengine", getReleaseVer());
 			kieFileSystem.generateAndWritePomXML(releaseId);
-			kieServices.newKieBuilder(kieFileSystem, loader).buildAll(null);
+			kieServices.newKieBuilder(kieFileSystem, loader);
 			kieContainer.updateToVersion(releaseId);
 			kScanner.scanNow();
 		} catch (Exception e) {
