@@ -97,7 +97,7 @@ public class ProjectContainer {
 	private RuleListener ruleListener;
 
 	private boolean isInitialised = false;
-	JEClassLoader loader = null;
+	//JEClassLoader loader = JEClassLoader.getInstance();
 	ConcurrentHashMap<String, FactHandle> facts = new ConcurrentHashMap<>();
 
 	/*
@@ -177,6 +177,7 @@ public class ProjectContainer {
 			Runnable runnable = () -> { 
 				try {
 				kieSession.addEventListener(ruleListener);
+			//	Thread.currentThread().setContextClassLoader(loader);
 				kieSession.fireUntilHalt();
 				}catch(Exception e)
 				{
@@ -261,7 +262,7 @@ public class ProjectContainer {
 
 		// build all rules
 		try {
-			kieServices.newKieBuilder(kieFileSystem, loader).buildAll(null);
+			kieServices.newKieBuilder(kieFileSystem, JEClassLoader.getInstance()).buildAll(null);
 		} catch (Exception e) {
 			e.printStackTrace();
 			JELogger.error(ProjectContainer.class, Arrays.toString(e.getStackTrace()));
@@ -282,14 +283,14 @@ public class ProjectContainer {
 		if (!isInitialised) {
 			JELogger.debug(getClass(), "Rule Engine - [projectId ="+projectId+"]" + JEMessages.KIE_INIT);
 			if (releaseId != null) {
-				if(loader == null) {
-					loader = new JEClassLoader(ProjectContainer.class.getClassLoader());
-				}
+
 				// create container
 				try {
-					kieContainer = kieServices.newKieContainer(releaseId, loader);
+					kieContainer = kieServices.newKieContainer(releaseId, JEClassLoader.getInstance());
 					kScanner = kieServices.newKieScanner(kieContainer);
 					kieBase = kieContainer.getKieBase("kie-base");
+					Thread.currentThread().setContextClassLoader(JEClassLoader.getInstance());
+
 
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -408,10 +409,25 @@ public class ProjectContainer {
 		try {
 			releaseId = kieServices.newReleaseId("io.je", "ruleengine", getReleaseVer());
 			kieFileSystem.generateAndWritePomXML(releaseId);
-			kieServices.newKieBuilder(kieFileSystem, loader);
+			kieServices.newKieBuilder(kieFileSystem, JEClassLoader.getInstance()).buildAll();
+			if(kieContainer==null)
+			{
+				kieContainer = kieServices.newKieContainer(releaseId, JEClassLoader.getInstance());
+			}
+			//Thread.currentThread().setContextClassLoader(JEClassLoader.getInstance());
+
+			ClassLoader test = kieContainer.getClassLoader();
 			kieContainer.updateToVersion(releaseId);
+			ClassLoader test2 = kieContainer.getClassLoader();
+
+			if(kScanner==null)
+			{
+				 kScanner = kieServices.newKieScanner(kieContainer);
+			}
 			kScanner.scanNow();
+
 		} catch (Exception e) {
+			e.printStackTrace();
 			//JELogger.error(ProjectContainer.class, RuleEngineErrors.FailedToUpdateContainer + e.getMessage());
 		}
 
@@ -556,8 +572,8 @@ public class ProjectContainer {
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}*/
-		Thread.currentThread().setContextClassLoader( loader );
-		KieBuilder kieBuilder = kieServices.newKieBuilder(kfsToCompile, loader);
+		//Thread.currentThread().setContextClassLoader( loader );
+		KieBuilder kieBuilder = kieServices.newKieBuilder(kfsToCompile, JEClassLoader.getInstance()).buildAll();
 
 		Results results = kieBuilder.getResults();
 		if (results.hasMessages(Message.Level.ERROR)) {
@@ -575,7 +591,7 @@ public class ProjectContainer {
 	public boolean compileAllRules() {
 		JELogger.debug(getClass(), "Rule Engine - [projectId ="+projectId+"]"+JEMessages.COMPILING_RULES);
 
-		KieBuilder kieBuilder = kieServices.newKieBuilder(kieFileSystem, loader).buildAll(null);
+		KieBuilder kieBuilder = kieServices.newKieBuilder(kieFileSystem, JEClassLoader.getInstance()).buildAll(null);
 		Results results = kieBuilder.getResults();
 		if (results.hasMessages(Message.Level.ERROR)) {
 			JELogger.error(ProjectContainer.class, results.getMessages().toString());
@@ -647,6 +663,10 @@ public class ProjectContainer {
 			// kieSession.insert(fact);
 			synchronized (kieSession) {
 				try {
+				//	ClassLoader t = this.loader; //io.je.utilities.classloader.JEClassLoader@733aa287
+				//	ClassLoader test = fact.getClass().getClassLoader(); //io.je.utilities.classloader.JEClassLoader@41ee5f60
+
+
 					synchronized(facts)
 					{
 						JELogger.debug(getClass(), "Rule Engine - [projectId ="+projectId+"] [factId :"+fact.getJobEngineElementID()+"]" + JEMessages.UPDATING_FACT);
@@ -697,7 +717,10 @@ public class ProjectContainer {
 		
 	}
 
-	public void setClassLoader(JEClassLoader loader) {
+	/*public void setClassLoader(JEClassLoader loader) {
 		this.loader = loader;
-	}
+		Thread.currentThread().setContextClassLoader(loader);
+		updateContainer();
+
+	}*/
 }

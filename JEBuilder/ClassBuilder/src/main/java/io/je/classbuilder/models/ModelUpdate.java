@@ -4,6 +4,7 @@ public class ModelUpdate {
 
 	DataModelAction action;
 	ClassDefinition model;
+	String workspaceName;
 	
 	public ModelUpdate()
 	{
@@ -27,6 +28,16 @@ public class ModelUpdate {
 	public void setModel(ClassDefinition model) {
 		this.model = model;
 	}
+
+	public String getWorkspaceName() {
+		return workspaceName;
+	}
+
+	public void setWorkspaceName(String workspaceName) {
+		this.workspaceName = workspaceName;
+	}
+	
+	
 	
 	
 }

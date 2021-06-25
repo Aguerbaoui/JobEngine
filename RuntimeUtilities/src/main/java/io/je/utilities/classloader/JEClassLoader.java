@@ -7,20 +7,71 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class JEClassLoader extends ClassLoader {
 
-    HashMap<String, InputStream> streams;
-    public JEClassLoader(ClassLoader parent) {
-        super(parent);
-        streams = new HashMap<>();
-    }
+    HashMap<String, InputStream> streams  = new HashMap<>();
+    static Set<String> customClasses  ;
 
+    
+    static JEClassLoader instance;
+    
+    
+    private JEClassLoader(Set<String> customClasses) {
+        super(JEClassLoader.class.getClassLoader());
+       this.customClasses=customClasses;
+    }
+    
+    
+    
+    public static JEClassLoader getInstance()
+    {
+    	if(instance==null)
+    	{
+    		instance = new JEClassLoader( new HashSet<String>());
+    		
+    	}
+    	return instance;
+    }
+    
+    
+    public static JEClassLoader overrideInstance()
+    {
+    	instance = new JEClassLoader(customClasses);
+    	return instance;
+    }
+    
+    
+    private void loadAllClasses() throws ClassNotFoundException
+    {
+    	
+    	for(String _class : customClasses)
+    	{
+    		try {
+                Class c = getClass(_class);
+              
+            }catch (Exception e) {
+               
+             }
+    	}
+    }
+    
     @Override
     public Class<?> loadClass(String name) throws ClassNotFoundException {
-        if (name.startsWith("classes")) {
+        if(customClasses.contains(name))
+        {
+        	customClasses.remove(name);
+        	loadAllClasses();
+        }
+        if (name.startsWith("jeclasses.") && !name.contains("Propagation")) {
+            customClasses.add(name);
+
             try {
                 JELogger.debug("Class Loading by je custom loader Started for " + name);
                 Class c = getClass(name);
@@ -91,17 +142,17 @@ public class JEClassLoader extends ClassLoader {
 
     public static void main(String[] args) throws ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, Exception {
 
-        JEClassLoader loader = new JEClassLoader(
-                JEClassLoader.class.getClassLoader());
+      //  JEClassLoader loader = new JEClassLoader(
+        //        JEClassLoader.class.getClassLoader());
 
-        System.out.println("loader name---- " +loader.getParent().getClass().getName());
+       // System.out.println("loader name---- " +loader.getParent().getClass().getName());
 
         //This Loads the Class we must always
         //provide binary name of the class
-        Class<?> clazz =
-                loader.loadClass("classes.testScripttScriptt");
+      //  Class<?> clazz =
+          //      loader.loadClass("classes.testScripttScriptt");
 
-        System.out.println("Loaded class name: " + clazz.getName());
+      //  System.out.println("Loaded class name: " + clazz.getName());
 
         //Create instance Of the Class and invoke the particular method
         //Object instance = clazz.newInstance();

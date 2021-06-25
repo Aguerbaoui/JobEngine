@@ -209,10 +209,8 @@ public class Executioner {
                 ClassLoader classLoader = this.getClass().getClassLoader();
                 URLClassLoader urlClassLoader = new URLClassLoader(new URL[]{new File("D:\\Job engine\\JERunner\\RuntimeManager\\target\\classes").toURI().toURL()});
                 Class loadClass = urlClassLoader.loadClass("classes." + name);*/
-                JEClassLoader loader = new JEClassLoader(
-                        Executioner.class.getClassLoader());
-                Class<?> loadClass =
-                        loader.loadClass("classes." + name);
+               
+                Class<?> loadClass =JEClassLoader.getInstance().loadClass("classes." + name);
                 Method method
                         = loadClass.getDeclaredMethods()[0];
                 method.invoke(null);

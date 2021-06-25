@@ -296,30 +296,25 @@ public class RuntimeDispatcher {
     // add class
     public void addClass(ClassModel classModel) throws ClassLoadException {
         JELogger.trace(JEMessages.ADDING_CLASS + classModel.getClassName());
-        JEClassLoader loader = new JEClassLoader(RuntimeDispatcher.class.getClassLoader());
         JEClassCompiler.compileClass(classModel.getClassPath(), ConfigurationConstants.runnerClassLoadPath);
        try {
-    	   ClassRepository.addClass(classModel.getClassId(), loader.loadClass(ClassBuilderConfig.genrationPackageName + "." + classModel.getClassName()));
-           RuleEngineHandler.setClassLoader(loader);
-	} catch (ClassNotFoundException e) {
+    	   //TODO DO THIS ONLY IF CLASS IS TO BE UPDATED/NOT NEW
+    	   JEClassLoader.overrideInstance();
+    	   /////
+    	   ClassRepository.addClass(classModel.getClassId(), JEClassLoader.getInstance().loadClass(ClassBuilderConfig.genrationPackageName + "." + classModel.getClassName()));
+           JELogger.trace("");
+
+       } catch (ClassNotFoundException e) {
+		e.printStackTrace();
 		throw new ClassLoadException("[class :"+ classModel.getClassName() +" ]"+JEMessages.CLASS_LOAD_FAILED); 
 	}
 
     }
 
     public void updateClasses(List<ClassModel> classes) throws ClassLoadException {
-        JEClassLoader loader = new JEClassLoader(RuntimeDispatcher.class.getClassLoader());
         for(ClassModel classModel: classes) {
-            JELogger.trace(JEMessages.UPDATING_CLASS + classModel.getClassName());
-            JEClassCompiler.compileClass(classModel.getClassPath(), ConfigurationConstants.runnerClassLoadPath);
-            try {
-                ClassRepository.addClass(classModel.getClassId(), loader.loadClass(ClassBuilderConfig.genrationPackageName + "." + classModel.getClassName()));
-
-            } catch (ClassNotFoundException e) {
-                throw new ClassLoadException("[class :"+ classModel.getClassName() +" ]"+JEMessages.CLASS_LOAD_FAILED);
-            }
+           addClass(classModel);
         }
-        RuleEngineHandler.setClassLoader(loader);
     }
 
     // update class
