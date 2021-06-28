@@ -122,10 +122,11 @@ public class ClassManager {
 		if(response!=null)
 		{
 			 jeClass = objectMapper.readValue(response, ClassDefinition.class);
+			 jeClass.setWorkspaceId(workspaceId);
+
 		}
 
 		// set workspace id
-		jeClass.setWorkspaceId(workspaceId);
 
 		return jeClass;
 	}
