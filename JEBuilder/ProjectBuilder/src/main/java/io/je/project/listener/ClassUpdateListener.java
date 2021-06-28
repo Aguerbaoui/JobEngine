@@ -59,7 +59,7 @@ public class ClassUpdateListener extends ZMQSubscriber  {
                     {
                     	 if(update.getAction()==DataModelAction.UPDATE)
                          {
-                        	 classService.addClass(update.getModel(), true);
+                        	 classService.addClass(update.getModel(), true,true);
                          }
                     }
                      

@@ -64,13 +64,13 @@ public class ClassService {
 	/*
 	 * Add Class from Class definition
 	 */
-	public List<JEClass> addClass(ClassDefinition classDefinition, boolean sendToRunner)
+	public List<JEClass> addClass(ClassDefinition classDefinition, boolean sendToRunner, boolean reloadClassDefinition)
 			throws AddClassException, DataDefinitionUnreachableException, ClassLoadException, IOException,
 			JERunnerErrorException, InterruptedException, ExecutionException {
 		List<JEClass> builtClasses = ClassManager.buildClass(classDefinition);
 		for (JEClass _class : builtClasses) {
 			if (sendToRunner) {
-				addClassToJeRunner(_class);
+				addClassToJeRunner(_class,reloadClassDefinition);
 			}
 			classRepository.save(_class);
 			loadedClasses.put(_class.getClassId(), _class);
@@ -80,11 +80,16 @@ public class ClassService {
 	}
 	
 	
-	public void addClass(String workspaceId, String classId)
+	public void addClass(String workspaceId, String classId, boolean sendToRunner)
 			throws DataDefinitionUnreachableException, ClassLoadException, IOException, AddClassException,
 			JERunnerErrorException, InterruptedException, ExecutionException {
 		ClassDefinition classDefinition = ClassManager.loadClassDefinition(workspaceId, classId);
-		addClass(classDefinition, true);
+		if(!loadedClasses.containsKey(classId) && classDefinition!=null)
+		{
+			 addClass(classDefinition, sendToRunner,false);
+		}
+		
+		
 	
 
 	}
@@ -99,7 +104,7 @@ public class ClassService {
 		List<JEClass> builtClasses = ClassManager.buildClass(classDefinition);
 		for (JEClass _class : builtClasses) {
 			if (sendToRunner) {
-				addClassToJeRunner(_class);
+				addClassToJeRunner(_class,false);
 			}
 			classRepository.save(_class);
 			loadedClasses.put(_class.getClassId(), _class);
@@ -130,9 +135,8 @@ public class ClassService {
 	
 	
 
-	public List<JEClass> addDBClassesToBuilder(String workspaceId, String classId)
-			throws AddClassException, DataDefinitionUnreachableException, ClassLoadException, IOException,
-			JERunnerErrorException, InterruptedException, ExecutionException {
+/*	public List<JEClass> addDBClassesToBuilder(String workspaceId, String classId)
+			throws AddClassException, DataDefinitionUnreachableException, ClassLoadException, IOException {
 		ClassDefinition classDefinition = ClassManager.loadClassDefinition(workspaceId, classId);
 		List<JEClass> builtClasses = ClassManager.buildClass(classDefinition);
 		for (JEClass _class : builtClasses) {
@@ -142,11 +146,12 @@ public class ClassService {
 		return builtClasses;
 
 	}
-
+*/
 	/*
 	 * send class to je runner to be loaded there
+	 * 
 	 */
-	public void addClassToJeRunner(JEClass clazz)
+	public void addClassToJeRunner(JEClass clazz,boolean reloadClassDefinition)
 			throws AddClassException, JERunnerErrorException, InterruptedException, ExecutionException {
 		HashMap<String, String> classMap = new HashMap<>();
 		classMap.put(CLASS_NAME, clazz.getClassName());
@@ -154,7 +159,17 @@ public class ClassService {
 		classMap.put(CLASS_ID, clazz.getClassId());
 		JELogger.trace(ClassService.class,
 				" " + JEMessages.ADDING_CLASS_TO_RUNNER_FROM_BUILDER_WITH_ID + " = " + clazz.getClassId());
-		JEResponse jeRunnerResp = JERunnerAPIHandler.addClass(classMap);
+		JEResponse jeRunnerResp;
+		
+		if(reloadClassDefinition)
+		{
+			 jeRunnerResp = JERunnerAPIHandler.updateClass(classMap);
+
+		}
+		else
+		{
+			 jeRunnerResp = JERunnerAPIHandler.addClass(classMap);
+		}
 		if (jeRunnerResp.getCode() != ResponseCodes.CODE_OK) {
 			throw new AddClassException(JEMessages.CLASS_LOAD_FAILED);
 		}
@@ -166,14 +181,7 @@ public class ClassService {
 		JELogger.trace(JEMessages.LOADING_ALL_CLASSES_FROM_DB);
 		for (JEClass clazz : classes) {
 			try {
-				String classId = clazz.getClassId();
-				String workspaceId = clazz.getWorkspaceId();
-				if (!loadedClasses.containsKey(classId) && workspaceId != null) {
-					List<JEClass> builtClasses = addDBClassesToBuilder(workspaceId, classId);
-					for (JEClass _class : builtClasses) {
-						loadedClasses.put(_class.getClassId(), _class);
-					}
-				}
+					addClass(clazz.getWorkspaceId(), clazz.getClassId(),false);									
 
 			} catch (Exception e) {
 				JELogger.warning(getClass(), JEMessages.FAILED_TO_LOAD_CLASS + " " + clazz.getClassName());

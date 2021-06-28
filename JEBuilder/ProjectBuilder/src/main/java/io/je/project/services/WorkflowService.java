@@ -572,7 +572,7 @@ public class WorkflowService {
             ClassDefinition c = getClassModel(b.getJobEngineElementID(), project.getWorkflowByIdOrName(block.getWorkflowId()).getWorkflowName()+b.getName(), b.getScript());
             c.setImports(imports);
             //True to send directly to JERunner
-            classService.addClass(c, true);
+            classService.addClass(c, true,true);
             //JEClassLoader.generateScriptTaskClass(b.getName(), b.getScript());
             project.addBlockToWorkflow(b);
         } else if (block.getType().equalsIgnoreCase(WorkflowConstants.PARALLELGATEWAY_TYPE)) {

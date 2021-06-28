@@ -1,5 +1,6 @@
 package io.je.utilities.classloader;
 
+import io.je.utilities.constants.ClassBuilderConfig;
 import io.je.utilities.logger.JELogger;
 
 import java.io.DataInputStream;
@@ -7,11 +8,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public class JEClassLoader extends ClassLoader {
@@ -43,6 +41,10 @@ public class JEClassLoader extends ClassLoader {
     
     public static JEClassLoader overrideInstance()
     {
+    	if(customClasses==null)
+    	{
+    		customClasses=new HashSet<String>();
+    	}
     	instance = new JEClassLoader(customClasses);
     	return instance;
     }
@@ -69,7 +71,8 @@ public class JEClassLoader extends ClassLoader {
         	customClasses.remove(name);
         	loadAllClasses();
         }
-        if (name.startsWith("jeclasses.") && !name.contains("Propagation")) {
+        //TODO Check again 
+        if (name.startsWith(ClassBuilderConfig.generationPackageName+".") && !name.contains("Propagation")) {
             customClasses.add(name);
 
             try {

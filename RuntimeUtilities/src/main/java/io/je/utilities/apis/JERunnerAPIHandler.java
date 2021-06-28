@@ -90,6 +90,12 @@ public class JERunnerAPIHandler {
         return sendRequestWithBody(requestUrl, requestModel);
 
     }
+    
+    public static JEResponse updateClass(HashMap<String, String> requestModel) throws JERunnerErrorException, InterruptedException, ExecutionException {
+        String requestUrl = runtimeManagerBaseApi + UPDATE_CLASS;
+        return sendRequestWithBody(requestUrl, requestModel);
+
+    }
 
     public static JEResponse addClasses(List<HashMap> requestModel) throws JERunnerErrorException, InterruptedException, ExecutionException {
         String requestUrl = runtimeManagerBaseApi + ADD_CLASSES;
@@ -223,4 +229,6 @@ public class JERunnerAPIHandler {
 	       return  sendRequestWithStringBody(requestUrl,String.valueOf(value));
 		
 	}
+
+
 }

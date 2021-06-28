@@ -298,18 +298,23 @@ public class RuntimeDispatcher {
         JELogger.trace(JEMessages.ADDING_CLASS + classModel.getClassName());
         JEClassCompiler.compileClass(classModel.getClassPath(), ConfigurationConstants.runnerClassLoadPath);
        try {
-    	   //TODO DO THIS ONLY IF CLASS IS TO BE UPDATED/NOT NEW
-    	   JEClassLoader.overrideInstance();
-    	   /////
-    	   ClassRepository.addClass(classModel.getClassId(), JEClassLoader.getInstance().loadClass(ClassBuilderConfig.genrationPackageName + "." + classModel.getClassName()));
-           JELogger.trace("");
-
+    	   
+    	   ClassRepository.addClass(classModel.getClassId(), JEClassLoader.getInstance().loadClass(ClassBuilderConfig.generationPackageName + "." + classModel.getClassName()));
+           
        } catch (ClassNotFoundException e) {
 		e.printStackTrace();
 		throw new ClassLoadException("[class :"+ classModel.getClassName() +" ]"+JEMessages.CLASS_LOAD_FAILED); 
 	}
 
     }
+    
+    public void updateClass(ClassModel classModel) throws ClassLoadException {
+ 	   JEClassLoader.overrideInstance();
+ 	   addClass(classModel);
+	}
+
+    
+
 
     public void updateClasses(List<ClassModel> classes) throws ClassLoadException {
         for(ClassModel classModel: classes) {

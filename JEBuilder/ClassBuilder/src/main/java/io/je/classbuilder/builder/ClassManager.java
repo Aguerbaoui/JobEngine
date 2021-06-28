@@ -91,7 +91,7 @@ public class ClassManager {
 		Class<?> loadedClass;
 		try {
 			loadedClass = classLoader
-					.loadClass(ClassBuilderConfig.genrationPackageName + "." + classDefinition.getName());
+					.loadClass(ClassBuilderConfig.generationPackageName + "." + classDefinition.getName());
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 			throw new ClassLoadException(
@@ -115,10 +115,14 @@ public class ClassManager {
 	public static ClassDefinition loadClassDefinition(String workspaceId, String classId)
 			throws IOException, DataDefinitionUnreachableException, ClassLoadException {
 	
+		ClassDefinition jeClass=null;
 
 		String response = requestClassDefinition(workspaceId, classId);
 		// create class model from response
-		ClassDefinition jeClass = objectMapper.readValue(response, ClassDefinition.class);
+		if(response!=null)
+		{
+			 jeClass = objectMapper.readValue(response, ClassDefinition.class);
+		}
 
 		// set workspace id
 		jeClass.setWorkspaceId(workspaceId);
@@ -134,10 +138,10 @@ public class ClassManager {
 			String jsonMsg = objectMapper.writeValueAsString(request);
 			  JELogger.debug(JEMessages.SENDING_REQUEST_TO_DATA_MODEL + " : " + request);
               ZMQRequester requester = new ZMQRequester(JEConfiguration.getDataManagerURL(), JEConfiguration.getDataDefinitionRequestPort());
-               response = requester.sendRequest(jsonMsg);
+               response = requester.sendRequest(jsonMsg) ;
               if (response == null) {
                   JELogger.error(ClassManager.class, JEMessages.CLASS_NOT_FOUND);
-                  throw new ClassNotFoundException(JEMessages.CLASS_NOT_FOUND);
+                  throw new ClassNotFoundException(JEMessages.CLASS_NOT_FOUND + classId);
               } else {
                   JELogger.info("Data Model defintion Returned : " + response);
               }

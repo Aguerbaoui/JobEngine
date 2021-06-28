@@ -250,7 +250,7 @@ public class RuleService {
           
         	   rule.addTopic(classId);
            
-            classService.addClass(workspaceId,classId);
+            classService.addClass(workspaceId,classId,true);
         }
         
         project.addBlockName(blockModel.getBlockId(), generatedBlockName);
@@ -341,7 +341,7 @@ public class RuleService {
 
         	 rule.updateTopic(((AttributeGetterBlock)oldblock).getClassId(), classId);
 
-            classService.addClass(workspaceId,classId);
+            classService.addClass(workspaceId,classId,true);
         }
         project.setBuilt(false);
         ruleRepository.save(rule);

@@ -97,7 +97,7 @@ public class ClassBuilder {
 	 * generate an interface
 	 */
 	private static String generateInterface(ClassDefinition classDefinition, String generationPath) throws ClassLoadException {
-		 UnitSourceGenerator unitSG = UnitSourceGenerator.create(ClassBuilderConfig.genrationPackageName);
+		 UnitSourceGenerator unitSG = UnitSourceGenerator.create(ClassBuilderConfig.generationPackageName);
 			//add imports
 			addImports(classDefinition.getImports(),unitSG);
 		// class name
@@ -142,7 +142,7 @@ public class ClassBuilder {
 		
 		// store class
 				unitSG.addClass(newInterface);
-				String filePath= generationPath + "\\" + ClassBuilderConfig.genrationPackageName  + "\\" + classDefinition.getName() +".java" ;
+				String filePath= generationPath + "\\" + ClassBuilderConfig.generationPackageName  + "\\" + classDefinition.getName() +".java" ;
 				File file = new File(generationPath);
 				file.delete();
 				unitSG.storeToClassPath(generationPath);
@@ -159,7 +159,7 @@ public class ClassBuilder {
 	 * generate a class
 	 */
 	private static String generateClass(ClassDefinition classDefinition, String generationPath) throws ClassLoadException {
-		 UnitSourceGenerator unitSG = UnitSourceGenerator.create(ClassBuilderConfig.genrationPackageName);
+		 UnitSourceGenerator unitSG = UnitSourceGenerator.create(ClassBuilderConfig.generationPackageName);
 			//add imports
 			addImports(classDefinition.getImports(),unitSG);
 			
@@ -289,7 +289,7 @@ public class ClassBuilder {
 
 		// store class
 		unitSG.addClass(newClass);
-		String filePath= generationPath + "\\" + ClassBuilderConfig.genrationPackageName  + "\\" + className +".java" ;
+		String filePath= generationPath + "\\" + ClassBuilderConfig.generationPackageName  + "\\" + className +".java" ;
 		File file = new File(generationPath);
 		file.delete();
 		unitSG.storeToClassPath(generationPath);
