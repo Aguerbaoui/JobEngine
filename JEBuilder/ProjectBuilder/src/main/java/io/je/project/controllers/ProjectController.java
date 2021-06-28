@@ -59,7 +59,7 @@ public class ProjectController {
 	public ResponseEntity<?> getProjectRunStatus(@PathVariable String projectId) {
 		JEProject project = null;
 		try {
-			project = projectService.getProject(projectId).get();
+			project = projectService.getProject(projectId);
 
 		} catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
@@ -78,7 +78,7 @@ public class ProjectController {
 		HashMap<String,Integer> data = new HashMap<>();
 
 		try {
-			project = projectService.getProject(projectId).get();
+			project = projectService.getProject(projectId);
 			if(project!=null)
 			{
 				data.put("ruleCount",  project.getRules().size());
@@ -108,7 +108,7 @@ public class ProjectController {
 	public ResponseEntity<?> getIsBlockNameUnique(@PathVariable String projectId,@PathVariable String blockName) {
 		JEProject project = null;
 		try {
-			project = projectService.getProject(projectId).get();
+			project = projectService.getProject(projectId);
 
 		} catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
@@ -127,7 +127,7 @@ public class ProjectController {
 	public ResponseEntity<?> getProjectBuildStatus(@PathVariable String projectId) {
 		JEProject project = null;
 		try {
-			project = projectService.getProject(projectId).get();
+			project = projectService.getProject(projectId);
 
 		} catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
@@ -179,7 +179,7 @@ public class ProjectController {
 	public ResponseEntity<?> getProject(@PathVariable String projectId) {
 	/*	JEProject project = null;
 		try {
-			project = projectService.getProject(projectId).get();
+			project = projectService.getProject(projectId);
 			if (project == null) {
 				return ResponseEntity.ok(new JEResponse(ResponseCodes.PROJECT_NOT_FOUND, JEMessages.PROJECT_NOT_FOUND));
 
@@ -279,7 +279,7 @@ public class ProjectController {
 			return ResponseEntity.ok(new JEResponse(ResponseCodes.PROJECT_NOT_FOUND, JEMessages.PROJECT_NOT_FOUND));
 		}
 		try {
-			JEProject project = projectService.getProject(projectId).get();
+			JEProject project = projectService.getProject(projectId);
 			JELogger.debug("[projectId ="+projectId+" ]  " + JEMessages.PROJECT_AUTO_RELOAD + autoReload);
 			project.setAutoReload(autoReload);
 			projectService.saveProject(project).get();

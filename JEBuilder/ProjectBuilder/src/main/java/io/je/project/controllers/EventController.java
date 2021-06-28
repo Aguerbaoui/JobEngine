@@ -51,7 +51,7 @@ public class EventController {
 	public ResponseEntity<?> getAllEvents(@PathVariable("projectId") String projectId) {
 		Collection<?> events = null;
 		try {
-			projectService.getProject(projectId).get();
+			projectService.getProject(projectId);
 
 			events = eventService.getAllEvents(projectId);
 			if (events.isEmpty()) {
@@ -77,7 +77,7 @@ public class EventController {
 		JEEvent event = null;
 
 		try {
-			projectService.getProject(projectId).get();
+			projectService.getProject(projectId);
 			event = eventService.getEvent(projectId, eventId);
 			if (event == null) {
 				return ResponseEntity.noContent().build();
@@ -99,7 +99,7 @@ public class EventController {
 	public ResponseEntity<?> addEvent(@PathVariable("projectId") String projectId, @RequestBody EventModel eventModel) {
 
 		try {
-			projectService.getProject(projectId).get();
+			projectService.getProject(projectId);
 
 			eventService.addEvent(projectId, eventModel);
 
@@ -124,7 +124,7 @@ public class EventController {
 	public ResponseEntity<?> updateEvent(@PathVariable("projectId") String projectId, @RequestBody EventModel eventModel) {
 
 		try {
-			projectService.getProject(projectId).get();
+			projectService.getProject(projectId);
 
 			eventService.updateEvent(projectId, eventModel);
 
@@ -145,8 +145,7 @@ public class EventController {
 			@PathVariable("eventId") String eventId) {
 
 		try {
-			projectService.getProject(projectId).get();
-
+			projectService.getProject(projectId);
 			eventService.deleteEvent(projectId, eventId);
 
 		} catch (Exception e) {
