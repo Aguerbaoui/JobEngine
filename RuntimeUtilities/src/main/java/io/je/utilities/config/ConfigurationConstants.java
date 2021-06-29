@@ -42,8 +42,13 @@ public class ConfigurationConstants {
     public static String mongoPassword = "MongoPassword";
     public static final String SIOTH_ENVIRONMENT_VARIABLE = "SIOTHJobEngine";
     public static final String APPLICATION_PROPERTIES_PATH = "file:${"+SIOTH_ENVIRONMENT_VARIABLE+"}/JobEngine/jobengine.properties";
-    public static final String PROJECTS_PATH = "file:${"+SIOTH_ENVIRONMENT_VARIABLE+"}/JobEngine";
-	public static final String SIOTH_JSON_CONFIG = System.getenv(ConfigurationConstants.SIOTH_ENVIRONMENT_VARIABLE) + "\\SIOTHConfig.json";
+    
+    
+    //public static final String PROJECTS_PATH = System.getenv(ConfigurationConstants.SIOTH_ENVIRONMENT_VARIABLE)+ "\\JobEngine\\projects\\";
+	
+    public static final String PROJECTS_PATH = "D:\\JobEngine\\projects\\";
+    
+    public static final String SIOTH_JSON_CONFIG = System.getenv(ConfigurationConstants.SIOTH_ENVIRONMENT_VARIABLE) + "\\SIOTHConfig.json";
 
    
     

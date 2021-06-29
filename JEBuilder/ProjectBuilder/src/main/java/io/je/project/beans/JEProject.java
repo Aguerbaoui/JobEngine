@@ -230,7 +230,7 @@ public class JEProject {
 		if(configurationPath==null)
 		{
 			//TODO: use a default path in sioth config
-			configurationPath =  ConfigurationConstants.PROJECTS_PATH+ "/projects/"+projectName;
+			configurationPath =  ConfigurationConstants.PROJECTS_PATH+projectName;
 		}
 		return configurationPath;
 	}
