@@ -53,8 +53,12 @@ public class DataListener {
         JELogger.info(JEMessages.STOPPED_LISTENING_ON_TOPICS + topics);
         for (String id : topics)
         {
-            agents.get(id).setListening(false);
+        	 if(agents.containsKey(id))
+        	 {
+        		 agents.get(id).setListening(false);
+        	 }
             try {
+            	
                 activeThreads.remove(id);
             }
             catch (Exception e) {

@@ -46,7 +46,27 @@ public class ClassController {
 		
 		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.CLASS_WAS_ADDED_SUCCESSFULLY));
 	}
+	
+	/*
+	 * update class
+	 */
+	@PostMapping(value = "/updateClass", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> updateClass( @RequestBody ClassModel classModel) {
+		
+	
+			try {
+				runtimeDispatcher.updateClass(classModel);
+			} catch (Exception e) {
+				return JEExceptionHandler.handleException(e);
+			}
+		
+			
+		
+		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.CLASS_WAS_ADDED_SUCCESSFULLY));
+	}
 
+	/*
+	
 	/*
 	 * Adding a list of classes
 	 */

@@ -6,6 +6,7 @@ import io.je.utilities.beans.JEBlockMessage;
 import io.je.utilities.beans.JEMessage;
 import io.je.utilities.classloader.JEClassLoader;
 import io.je.utilities.config.JEConfiguration;
+import io.je.utilities.constants.ClassBuilderConfig;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.JERunnerErrorException;
 import io.je.utilities.logger.JELogger;
@@ -209,12 +210,9 @@ public class Executioner {
                 ClassLoader classLoader = this.getClass().getClassLoader();
                 URLClassLoader urlClassLoader = new URLClassLoader(new URL[]{new File("D:\\Job engine\\JERunner\\RuntimeManager\\target\\classes").toURI().toURL()});
                 Class loadClass = urlClassLoader.loadClass("classes." + name);*/
-                JEClassLoader loader = new JEClassLoader(
-                        Executioner.class.getClassLoader());
-                Class<?> loadClass =
-                        loader.loadClass("classes." + name);
-                Method method
-                        = loadClass.getDeclaredMethods()[0];
+               JEClassLoader.overrideInstance();
+                Class<?> loadClass =JEClassLoader.getInstance().loadClass(ClassBuilderConfig.generationPackageName +"." + name);
+                Method method = loadClass.getDeclaredMethods()[0];
                 method.invoke(null);
                 return null;
             }

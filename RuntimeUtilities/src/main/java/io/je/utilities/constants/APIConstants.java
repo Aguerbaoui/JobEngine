@@ -35,6 +35,8 @@ public class APIConstants {
 
 	public static final String ADD_CLASS = "/addClass";
 
+	public static final String UPDATE_CLASS = "/updateClass";
+	
 	public static final String ADD_CLASSES = "/addClasses";
 
 	public static final String TRIGGER_EVENT = "/event/triggerEvent/";

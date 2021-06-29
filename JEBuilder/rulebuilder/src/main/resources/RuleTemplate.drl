@@ -19,7 +19,7 @@ import io.je.utilities.beans.JEMessage;
 import io.je.utilities.beans.JEBlockMessage;
 import java.util.Date;
 import java.util.HashMap;
-import classes.*;
+import jeclasses.*;
 import io.je.utilities.logger.JELogger;
 import io.je.utilities.execution.Executioner;
 import io.je.utilities.beans.JEEvent;

@@ -23,12 +23,14 @@ public class LogBlock extends ExecutionBlock {
 
 	@Override
 	public String getExpression() {
-		return "JEMessage message = new JEMessage();\r\n"
+		
+		return "JELogger.info(\""+logMessage+"\");";
+	/*	return "JEMessage message = new JEMessage();\r\n"
 				+ "JEBlockMessage blockMsg = new JEBlockMessage(\""+blockName+"\",\""+logMessage+"\");\r\n"
 				+ "message.addBlockMessage(blockMsg);\r\n"
 				+ "message.setType(\"BlockMessage\");\r\n"
 				+ "message.setExecutionTime(LocalDateTime.now().toString());\r\n"
-				+ "Executioner.informRuleBlock(\"" +jobEngineProjectID +"\",\"" + ruleId +"\", message );";
+				+ "Executioner.informRuleBlock(\"" +jobEngineProjectID +"\",\"" + ruleId +"\", message );"; */
 	}
 
 

@@ -65,12 +65,12 @@ public class RuleEngine {
 		projectManager.deleteProjectContainer(projectId);
 	}
 
-	public static void setClassLoader(JEClassLoader loader) {
+	/*public static void setClassLoader(JEClassLoader loader) {
 		for(ProjectContainer projectContainer: projectManager.getAllProjects().values()) {
-			projectContainer.setClassLoader(loader);
+			//projectContainer.setClassLoader(loader);
 		}
 	}
-
+*/
 
 	public boolean addRules(List<Rule> rules) throws RuleAlreadyExistsException, RuleCompilationException,
 			JEFileNotFoundException, RuleNotAddedException {

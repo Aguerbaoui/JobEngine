@@ -40,14 +40,17 @@ public class ConfigurationService {
 
 	static boolean isConfiguredProperly = false;
 
+	
+	
+	
+
 	/*
 	 * init configuration : > load config from database >update config
 	 */
 	public void init()
-			throws JERunnerErrorException, InterruptedException, ExecutionException, DataDefinitionUnreachableException,
-			AddClassException, ClassLoadException, IOException, ProjectNotFoundException, ConfigException {
+			throws JERunnerErrorException, InterruptedException, ExecutionException, IOException, ProjectNotFoundException, ConfigException {
 
-		JELogger.trace(JEMessages.INITILIZING_BUILDER);
+		JELogger.info(JEMessages.INITILIZING_BUILDER);
 		ConfigModel configModel = loadConfigFromDb();
 		if (configModel != null) {
 			updateBuilderSettings(configModel);
@@ -191,10 +194,8 @@ public class ConfigurationService {
 				}
 
 				updateRunnerSettings(config);
-
-				for (JEClass clazz : classService.getLoadedClasses().values()) {
-					classService.updateClasses();
-				}
+                classService.sendClassesToJeRunner(classService.getLoadedClasses().values());
+				
 
 				JELogger.info(ProjectService.class, JEMessages.RUNNER_IS_UP_UPDATING_NOW);
 				projectService.resetProjects();
