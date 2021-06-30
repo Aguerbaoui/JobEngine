@@ -67,7 +67,7 @@ public class ClassUpdateListener extends ZMQSubscriber  {
 				}
 			} catch (Exception e) {
 				e.getStackTrace();
-				JELogger.error(ClassUpdateListener.class, Arrays.toString(e.getStackTrace()));
+				JELogger.error(ClassUpdateListener.class, "Error getting class updates");
 			}
              
              try {

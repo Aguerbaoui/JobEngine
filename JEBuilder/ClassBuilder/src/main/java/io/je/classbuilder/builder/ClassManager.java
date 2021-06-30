@@ -131,6 +131,11 @@ public class ClassManager {
 		return jeClass;
 	}
 
+	
+	/*
+	 * request class definition from Data Model RESTAPI via ZMQ
+
+	 */
 	private static String requestClassDefinition(String workspaceId, String classId) {
 
 		String response=null;
@@ -140,10 +145,20 @@ public class ClassManager {
 			  JELogger.debug(JEMessages.SENDING_REQUEST_TO_DATA_MODEL + " : " + request);
               ZMQRequester requester = new ZMQRequester(JEConfiguration.getDataManagerURL(), JEConfiguration.getDataDefinitionRequestPort());
                response = requester.sendRequest(jsonMsg) ;
-              if (response == null) {
-                  JELogger.error(ClassManager.class, JEMessages.CLASS_NOT_FOUND);
+              if (response == null ) {
+            	  
+            	  //Data Model RESTAPI unreachable
+                  JELogger.error(ClassManager.class, "Data Model RESTAPI unreachable");
+                  throw new ClassNotFoundException("Data Model RESTAPI unreachable");
+              } else
+              if(response.isEmpty())
+              {
+            	  //Data Model RESTAPI Error -> check its logs for more details
+            	  JELogger.error(ClassManager.class, JEMessages.CLASS_NOT_FOUND);
                   throw new ClassNotFoundException(JEMessages.CLASS_NOT_FOUND + classId);
-              } else {
+              }
+              else
+              {
                   JELogger.info("Data Model defintion Returned : " + response);
               }
 

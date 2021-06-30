@@ -34,7 +34,7 @@ public class test {
 			Thread.sleep(500);
 
 		}
-		
+	
 
 	/*	while(true)
 		{
