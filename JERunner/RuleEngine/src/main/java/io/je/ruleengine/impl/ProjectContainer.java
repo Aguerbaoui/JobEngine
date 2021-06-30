@@ -164,7 +164,7 @@ public class ProjectContainer {
 
 		// check that project is not already running
 		if (status == Status.RUNNING) {
-			stopRuleExecution();
+			stopRuleExecution(false);
 			
 		}
 
@@ -224,12 +224,17 @@ public class ProjectContainer {
 	/*
 	 * This method stops the rule execution
 	 */
-	public boolean stopRuleExecution() {
+	public boolean stopRuleExecution(boolean destroySession) {
 		JELogger.info(JEMessages.STOPPING_PROJECT_CONTAINER);
 		try {
 
 			kieSession.halt();
 			status = Status.STOPPED;
+			if(destroySession)
+			{
+				kieSession.destroy();
+				facts.clear();
+			}
 
 		} catch (Exception e) {
 			JELogger.error(ProjectContainer.class, JEMessages.STOPPING_PROJECT_CONTAINER_FAILED);
