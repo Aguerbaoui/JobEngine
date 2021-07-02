@@ -48,7 +48,7 @@ public class CalculationBlock extends SingleInputArithmeticBlock {
 					return "sqrt( " + getInputRefName(0)+ ")";
 				// Power
 				case 1008:
-					return "power( " + getInputRefName(0)+ ")";
+					return "power( "  + getInputRefName(0)+ ", " +  value +")";
 				// change sign
 				case 1009:
 					return "changeSign( " + getInputRefName(0)+ ")";
