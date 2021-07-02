@@ -186,6 +186,7 @@ public class EventService {
 			JELogger.trace(" " + JEMessages.UPDATING_EVENT_TYPE_IN_RUNNER);
 			JERunnerAPIHandler.updateEventType(projectId, eventId, eventType);
 			event.setType(t);
+			eventRepository.save(event);
 		} catch (JERunnerErrorException | InterruptedException | ExecutionException | IOException e) {
 			JELogger.error(EventService.class, JEMessages.UPDATING_EVENT_TYPE_FAILED);
 		}
