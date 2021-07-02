@@ -226,16 +226,20 @@ public class ProjectContainer {
 	 */
 	public boolean stopRuleExecution(boolean destroySession) {
 		JELogger.info(JEMessages.STOPPING_PROJECT_CONTAINER);
+		//destroySession=false;
 		try {
 
 			kieSession.halt();
 			status = Status.STOPPED;
 			if(destroySession)
 			{
+				kieSession.dispose();
 				kieSession.destroy();
+				kieSession=null;
 				facts.clear();
 			}
 
+			
 		} catch (Exception e) {
 			JELogger.error(ProjectContainer.class, JEMessages.STOPPING_PROJECT_CONTAINER_FAILED);
 		}

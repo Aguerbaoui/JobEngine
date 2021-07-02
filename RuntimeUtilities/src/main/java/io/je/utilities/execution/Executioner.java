@@ -11,7 +11,10 @@ import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.JERunnerErrorException;
 import io.je.utilities.logger.JELogger;
 import io.je.utilities.logger.LogCategory;
+import io.je.utilities.logger.LogLevel;
+import io.je.utilities.logger.LogMessage;
 import io.je.utilities.logger.LogSubModule;
+import io.je.utilities.logger.ZMQLogPublisher;
 import io.je.utilities.monitoring.MessageModel;
 import io.je.utilities.zmq.ZMQRequester;
 
@@ -40,7 +43,7 @@ public class Executioner {
     /*
      * Execute inform block [ send log to logging system]
      */
-    public static void informRuleBlock(String projectId, String ruleId, JEMessage msg)
+    public static void informRuleBlock(String projectId, String ruleId, String message,String logDate, String BlockName)
     {
     	try {
             new Thread(new Runnable() {
@@ -50,7 +53,10 @@ public class Executioner {
                 public void run() {
                 	
                    try {
-                       JELogger.info(objectMapper.writeValueAsString(msg), LogCategory.RUNTIME, projectId, LogSubModule.RULE, ruleId);
+                	   LogMessage msg = new LogMessage(LogLevel.INFORM,  message,  logDate, "JobEngine",  projectId,
+                				ruleId, LogSubModule.RULE, BlockName, null, "Log", "") ;
+                	   ZMQLogPublisher.publish(msg);
+                	   //   JELogger.info(objectMapper.writeValueAsString(msg), LogCategory.RUNTIME, projectId, LogSubModule.RULE, ruleId);
 				} catch (Exception e) {
 					e.printStackTrace();
                     JELogger.error("Failed to execute Inform Block", LogCategory.RUNTIME, projectId, LogSubModule.RULE, ruleId);
@@ -65,6 +71,14 @@ public class Executioner {
         }
 
     }
+    
+    
+    
+    
+
+
+
+    
 
     /*
      * trigger an event
@@ -81,7 +95,9 @@ public class Executioner {
                    try {
                 	   JERunnerAPIHandler.triggerEvent(eventId, projectId);
                        JEBuilderApiHandler.triggerEvent(eventId, projectId);
-                       JELogger.info("Event was triggered", LogCategory.RUNTIME, projectId, LogSubModule.RULE, eventId);
+                       
+                       
+                      // JELogger.info("Event was triggered", LogCategory.RUNTIME, projectId, LogSubModule.RULE, eventId);
 
                     
 				} catch (Exception e) {
@@ -114,14 +130,19 @@ public class Executioner {
               	
                  try {
               	   JERunnerAPIHandler.triggerEvent(eventId, projectId);
-                     JEBuilderApiHandler.triggerEvent(eventId, projectId);
-                     JEMessage message = new JEMessage();
+                    // JEBuilderApiHandler.triggerEvent(eventId, projectId);
+                     
+                     LogMessage msg = new LogMessage(LogLevel.DEBUG,  eventName + " is triggered ",  LocalDateTime.now().toString(), "JobEngine",  projectId,
+             				ruleId, LogSubModule.RULE, triggerSource, null, "Log", "") ;
+             	      ZMQLogPublisher.publish(msg);
+                     
+                    /* JEMessage message = new JEMessage();
                      message.setExecutionTime(LocalDateTime.now().toString());
                      message.setType("BlockMessage");
                      JEBlockMessage blockMessage = new JEBlockMessage(triggerSource,  eventName +" was triggered");
                      message.addBlockMessage(blockMessage);
                      JELogger.trace(objectMapper.writeValueAsString(message), LogCategory.RUNTIME, projectId, LogSubModule.RULE, ruleId);
-
+*/
                   
 				} catch (Exception e) {
 					e.printStackTrace();

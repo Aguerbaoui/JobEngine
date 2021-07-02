@@ -77,8 +77,8 @@ public class RuleListener extends DefaultAgendaEventListener {
     		ruleMessage.addBlockMessage(new JEBlockMessage(declaredVariableName,event.getMatch().getDeclarationValue(declaredVariableName).toString()));
     	}
     	
-    	Executioner.informRuleBlock( projectId,ruleId, ruleMessage);
-    	
+    	Executioner.informRuleBlock( projectId,  ruleId, "Rule was fired",LocalDateTime.now().toString(), "APP");
+
     	
     	/*String ruleId=RuleIdManager.retrieveIdFromSubRuleName(event.getMatch().getRule().getName());
     	RuleMatch match = ruleMatches.get(ruleId);
