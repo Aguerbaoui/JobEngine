@@ -25,7 +25,7 @@ public class InformServiceTask extends ServiceTask{
             JEBlockMessage blockMessage = new JEBlockMessage(informTask.getTaskName(), informTask.getMessage());*/
 
             LogMessage msg = new LogMessage(LogLevel.INFORM,  informTask.getMessage(),  LocalDateTime.now().toString(), "JobEngine",  informTask.getProjectId(),
-                    informTask.getProcessId(), LogSubModule.RULE, informTask.getTaskName(), null, "Log", "") ;
+                    informTask.getProcessId(), LogSubModule.WORKFLOW, informTask.getTaskName(), null, "Log", "") ;
 
             //message.getBlocks().add(blockMessage);
             try {

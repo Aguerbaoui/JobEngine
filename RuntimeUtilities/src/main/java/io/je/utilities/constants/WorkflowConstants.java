@@ -14,7 +14,7 @@ public class WorkflowConstants {
     public static final  String TASKS_LISTENER_IMPLEMENTATION = "io.je.executionListeners.TasksListener";
     public static final  String START_PROCESS = "start";
     public static final  String END_PROCESS = "end";
-    public static final  String DB_WRITE_TASK_IMPLEMENTATION = "io.je.serviceTasks.DatabaseServiceTask";
+    public static final  String DB_TASK_IMPLEMENTATION = "io.je.serviceTasks.DatabaseServiceTask";
     public static final  String MAIL_TASK_IMPLEMENTATION = "io.je.serviceTasks.MailServiceTask";
     public static final  String START_TYPE = "start";
     public static final  String END_TYPE = "end";

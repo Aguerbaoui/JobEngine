@@ -24,7 +24,7 @@ public class ScriptServiceTask extends ServiceTask {
             throw new BpmnError("Error");
         }
         LogMessage msg = new LogMessage(LogLevel.INFORM,  message,  LocalDateTime.now().toString(), "JobEngine",  task.getProjectId(),
-                task.getProcessId(), LogSubModule.RULE, task.getTaskName(), null, "Log", "") ;
+                task.getProcessId(), LogSubModule.WORKFLOW, task.getTaskName(), null, "Log", "") ;
         ZMQLogPublisher.publish(msg);
 
     }

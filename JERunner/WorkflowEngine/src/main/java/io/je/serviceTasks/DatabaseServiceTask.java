@@ -6,13 +6,14 @@ import io.je.utilities.apis.BodyType;
 import io.je.utilities.apis.HttpMethod;
 import io.je.utilities.config.JEConfiguration;
 import io.je.utilities.constants.JEMessages;
-import io.je.utilities.logger.JELogger;
+import io.je.utilities.logger.*;
 import io.je.utilities.network.Network;
 import org.activiti.engine.delegate.BpmnError;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.HashMap;
 
@@ -32,6 +33,9 @@ public class DatabaseServiceTask extends ServiceTask {
                        .build();
                Response response = network.call();
                JELogger.info(JEMessages.DB_SERVICE_TASK_RESPONSE + " = " + response.body().string());
+               LogMessage msg = new LogMessage(LogLevel.INFORM,  "DB task response code = " + response.code(),  LocalDateTime.now().toString(), "JobEngine",  databaseTask.getProjectId(),
+                       databaseTask.getProcessId(), LogSubModule.WORKFLOW, databaseTask.getTaskName(), null, "Log", "") ;
+               ZMQLogPublisher.publish(msg);
                if(response.code() != 200 || response.code() != 204 ) {
                    throw new BpmnError("Error");
                }

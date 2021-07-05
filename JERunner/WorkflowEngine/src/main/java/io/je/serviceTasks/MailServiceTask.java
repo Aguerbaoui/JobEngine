@@ -51,7 +51,7 @@ public class MailServiceTask extends ServiceTask {
             Response response = network.call();
             JELogger.info(JEMessages.MAIL_SERVICE_TASK_RESPONSE + " = " + response.body().string());
             LogMessage msg = new LogMessage(LogLevel.INFORM,  "Mail task response code = " + response.code(),  LocalDateTime.now().toString(), "JobEngine",  task.getProjectId(),
-                    task.getProcessId(), LogSubModule.RULE, task.getTaskName(), null, "Log", "") ;
+                    task.getProcessId(), LogSubModule.WORKFLOW, task.getTaskName(), null, "Log", "") ;
             ZMQLogPublisher.publish(msg);
             if(response.code() != 200 || response.code() != 204 ) {
                 throw new BpmnError("Error");
