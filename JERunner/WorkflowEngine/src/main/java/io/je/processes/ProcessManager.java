@@ -382,14 +382,7 @@ public class ProcessManager {
     public void stopProjectWorkflows() {
 
         for (JEProcess process : processes.values()) {
-            if (process.isRunning()) {
-                try {
-                    runtimeService.deleteProcessInstance(process.getProcessInstance().getProcessInstanceId(), "User Stopped the execution");
-                    process.setRunning(false);
-                } catch (ActivitiObjectNotFoundException e) {
-                    JELogger.trace(ProcessManager.class, " " + JEMessages.ERROR_DELETING_A_NON_EXISTING_PROCESS);
-                }
-            }
+            removeProcess(process.getKey());
         }
     }
 
