@@ -152,6 +152,7 @@ public class ProcessManager {
                     while(p != null && !p.isEnded()) {
                     }
                     processes.get(id).setRunning(false);
+                    processes.get(id).setProcessInstance(null);
                 }).start();
             } else {
                 JELogger.error(ProcessManager.class, " " + JEMessages.PROCESS_HAS_TO_BE_TRIGGERED_BY_EVENT);
@@ -186,6 +187,7 @@ public class ProcessManager {
                     while(p != null && !p.isEnded()) {
                     }
                     processes.get(id).setRunning(false);
+                    processes.get(id).setProcessInstance(null);
                 }).start();
             }
             catch(BpmnError e) {
@@ -406,7 +408,9 @@ public class ProcessManager {
         try {
 
             JEProcess p = processes.get(workflowId);
-            runtimeService.deleteProcessInstance(p.getProcessInstance().getProcessInstanceId(), "User Deleted the process");
+            if(p.getProcessInstance() != null) {
+                runtimeService.deleteProcessInstance(p.getProcessInstance().getProcessInstanceId(), "User Deleted the process");
+            }
 
         } catch (ActivitiObjectNotFoundException e) {
             JELogger.trace(" " + JEMessages.ERROR_DELETING_A_NON_EXISTING_PROCESS);

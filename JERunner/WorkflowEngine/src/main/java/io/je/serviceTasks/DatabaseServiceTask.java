@@ -33,12 +33,13 @@ public class DatabaseServiceTask extends ServiceTask {
                        .build();
                Response response = network.call();
                JELogger.info(JEMessages.DB_SERVICE_TASK_RESPONSE + " = " + response.body().string());
-               LogMessage msg = new LogMessage(LogLevel.INFORM,  "DB task response code = " + response.code(),  LocalDateTime.now().toString(), "JobEngine",  databaseTask.getProjectId(),
+               LogMessage msg = new LogMessage(LogLevel.INFORM,  "DB task response = " + response.body().string(),  LocalDateTime.now().toString(), "JobEngine",  databaseTask.getProjectId(),
                        databaseTask.getProcessId(), LogSubModule.WORKFLOW, databaseTask.getTaskName(), null, "Log", "") ;
-               ZMQLogPublisher.publish(msg);
                if(response.code() != 200 || response.code() != 204 ) {
+                   msg.setMessage("Database task failed with response code = " + response.code());
                    throw new BpmnError("Error");
                }
+               ZMQLogPublisher.publish(msg);
            }
            catch(Exception e) {
                JELogger.error(Arrays.toString(e.getStackTrace()));

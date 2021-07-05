@@ -52,10 +52,11 @@ public class MailServiceTask extends ServiceTask {
             JELogger.info(JEMessages.MAIL_SERVICE_TASK_RESPONSE + " = " + response.body().string());
             LogMessage msg = new LogMessage(LogLevel.INFORM,  "Mail task response code = " + response.code(),  LocalDateTime.now().toString(), "JobEngine",  task.getProjectId(),
                     task.getProcessId(), LogSubModule.WORKFLOW, task.getTaskName(), null, "Log", "") ;
-            ZMQLogPublisher.publish(msg);
             if(response.code() != 200 || response.code() != 204 ) {
+                msg.setMessage("Mail task failed with response code = " + response.code());
                 throw new BpmnError("Error");
             }
+            ZMQLogPublisher.publish(msg);
         }
         catch(Exception e) {
             JELogger.error(Arrays.toString(e.getStackTrace()));
