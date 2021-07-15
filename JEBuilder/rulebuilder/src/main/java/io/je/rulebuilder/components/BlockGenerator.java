@@ -17,7 +17,6 @@ import io.je.rulebuilder.components.blocks.logic.JoinBlock;
 import io.je.rulebuilder.models.BlockModel;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.AddRuleBlockException;
-import io.je.utilities.exceptions.RuleBuildFailedException;
 
 public class BlockGenerator {
 
@@ -27,7 +26,6 @@ public class BlockGenerator {
 	 * @param blockModel
 	 * @return
 	 * @throws AddRuleBlockException
-	 * @throws RuleBuildFailedException 
 	 */
 	public static Block createBlock(BlockModel blockModel) throws AddRuleBlockException
 	{		

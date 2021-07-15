@@ -8,29 +8,25 @@ import io.je.rulebuilder.models.BlockModel;
  * source : previous block
  * operation id : 5003
  */
-public class SetterBlock extends ExecutionBlock {
+public class SetVariableBlock extends ExecutionBlock {
 	
 
 	
 	/*******************************Instance definition*******************************/
-	String classId;
-	String classPath;
-	String attributeName;
-	String instanceId ; 
+	String variableId;
 
-	public SetterBlock(BlockModel blockModel) {
+
+	public SetVariableBlock(BlockModel blockModel) {
 		super(blockModel);
 		try
 		{
-			classId=blockModel.getBlockConfiguration().getClassId();
-			classPath = blockModel.getBlockConfiguration().getClassName();
-			attributeName = blockModel.getBlockConfiguration().getAttributeName();
-			instanceId = blockModel.getBlockConfiguration().getValue();
+			
+			variableId = blockModel.getBlockConfiguration().getValue();
 			isProperlyConfigured=true;
 		}catch(Exception e) {
 			isProperlyConfigured=false;
 		}finally {
-			if(classId==null || classPath==null || attributeName==null)
+			if(variableId==null)
 			{
 				isProperlyConfigured=false;
 
@@ -41,7 +37,7 @@ public class SetterBlock extends ExecutionBlock {
 
 	}
 
-	public SetterBlock() {
+	public SetVariableBlock() {
 		super();
 	}
 
@@ -50,7 +46,7 @@ public class SetterBlock extends ExecutionBlock {
 	 
 	@Override
 	public String getExpression() {		
-	   return "Executioner.writeToInstance("+instanceId+", "+attributeName +", "+getInputRefName(0)+");";
+	   return "Executioner.updateVariable("+variableId+", "+getInputRefName(0)+");";
 
 	}
 
