@@ -11,15 +11,35 @@ import io.je.utilities.models.ConfigModel;
 public class JEConfiguration {
 
 	static JEConfiguration instance;
+	
+	//datamodelest
 	static String dataDefinitionURL;
+	static int dataDefinitionSubscribePort;
+	static int dataDefinitionRequestPort;
+
+	
+	//data model service
 	static String dataManagerURL;
-	static String runtimeManagerURL;
-	static String projectBuilderURL;
-	static String emailApiUrl;
 	static int subscriberPort;
 	static int requestPort;
-	static String droolsDateFormat;
 	static String dataModelDateFormat;
+
+	//je
+	static String runtimeManagerURL;
+	static String projectBuilderURL;
+	static String droolsDateFormat;
+
+	//email
+	static String emailApiUrl;
+
+	//database
+	static String databaseApiUrl;
+
+
+
+	//logging system
+	static String loggingSystemURL;
+	static int loggingSystemZmqPublishPort;
 	
 	private JEConfiguration() {
 
@@ -41,6 +61,11 @@ public class JEConfiguration {
 		configModel.setDroolsDateFormat(droolsDateFormat);
 		configModel.setEmailApiUrl(emailApiUrl);
 		configModel.setDataModelDateFormat(dataModelDateFormat);
+		configModel.setLoggingSystemURL(loggingSystemURL);
+		configModel.setLoggingSystemZmqPublishPort(loggingSystemZmqPublishPort);
+		configModel.setDatabaseApiUrl(databaseApiUrl);
+		configModel.setDataDefinitionRequestPort(dataDefinitionRequestPort);
+		configModel.setDataDefinitionSubscribePort(dataDefinitionSubscribePort);
 		return configModel;
 	}
 	
@@ -55,6 +80,11 @@ public class JEConfiguration {
 		setDroolsDateFormat(configModel.getDroolsDateFormat());
 		setEmailApiURL(configModel.getEmailApiUrl());
 		setDataModelDateFormat(configModel.getDataModelDateFormat());
+		setLoggingSystemURL(configModel.getLoggingSystemURL());
+		setLoggingSystemZmqPublishPort(configModel.getLoggingSystemZmqPublishPort());
+		setDatabaseApiUrl(configModel.getDatabaseApiUrl());
+		setDataDefinitionRequestPort(configModel.getDataDefinitionRequestPort());
+		setDataDefinitionSubscribePort(configModel.getDataDefinitionSubscribePort());
 	}
 	
 	
@@ -70,6 +100,24 @@ public class JEConfiguration {
 	public static String getEmailApiUrl() {
 		return emailApiUrl;
 	}
+	public static String getDatabaseApiUrl() {
+		return databaseApiUrl;
+	}
+
+	public static void setDatabaseApiUrl(String databaseApiUrl) {
+		if(databaseApiUrl != null) {
+			JEConfiguration.databaseApiUrl = databaseApiUrl;
+		}
+	}
+	
+	public static void setEmailApiUrl(String emailApiUrl) {
+		if(emailApiUrl!=null)
+		{
+			JEConfiguration.emailApiUrl = emailApiUrl;
+		}
+	}
+
+
 
 	public static void setDroolsDateFormat(String droolsDateFormat) {
 		if(droolsDateFormat!=null)
@@ -177,6 +225,67 @@ public class JEConfiguration {
 			}
 	}
 
+
+
+	public static String getLoggingSystemURL() {
+		return loggingSystemURL;
+	}
+
+
+
+	public static void setLoggingSystemURL(String loggingSystemURL) {
+		if(loggingSystemURL!=null)
+		{
+			JEConfiguration.loggingSystemURL = loggingSystemURL;
+		}
+	}
+
+
+
+	public static int getLoggingSystemZmqPublishPort() {
+		return loggingSystemZmqPublishPort;
+	}
+
+
+
+	public static void setLoggingSystemZmqPublishPort(int loggingSystemZmqPublishPort) {
+		if(loggingSystemZmqPublishPort!=0)
+		{
+			JEConfiguration.loggingSystemZmqPublishPort = loggingSystemZmqPublishPort;
+		}
+	}
+
+
+
+	public static int getDataDefinitionSubscribePort() {
+		return dataDefinitionSubscribePort;
+	}
+
+
+
+	public static void setDataDefinitionSubscribePort(int dataDefinitionSubscribePort) {
+		if(dataDefinitionSubscribePort !=0)
+		{
+			JEConfiguration.dataDefinitionSubscribePort = dataDefinitionSubscribePort;
+		}
+	}
+
+
+
+	public static int getDataDefinitionRequestPort() {
+		return dataDefinitionRequestPort;
+	}
+
+
+
+	public static void setDataDefinitionRequestPort(int dataDefinitionRequestPort) {
+		if(dataDefinitionRequestPort!=0)
+		{
+			JEConfiguration.dataDefinitionRequestPort = dataDefinitionRequestPort;
+		}
+	}
+
+	
 	
 
 }

@@ -5,18 +5,19 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.je.utilities.classloader.JEClassLoader;
 import org.json.JSONObject;
 
 import io.je.ruleengine.impl.RuleEngine;
 import io.je.ruleengine.models.Rule;
-import io.je.runtime.config.InstanceModelMapping;
 import io.je.runtime.models.InstanceModel;
+import io.je.runtime.models.InstanceModelMapping;
 import io.je.runtime.models.RuleModel;
 import io.je.runtime.objects.InstanceManager;
-import io.je.utilities.constants.JEMessages;
-
 import io.je.utilities.beans.JEData;
 import io.je.utilities.beans.JEEvent;
+import io.je.utilities.beans.JEVariable;
+import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.*;
 import io.je.utilities.logger.JELogger;
 import io.je.utilities.runtimeobject.JEObject;
@@ -99,6 +100,8 @@ public class RuleEngineHandler {
 		instanceModel.setInstanceId(instanceJson.getString(InstanceModelMapping.INSTANCEID));
 		instanceModel.setModelId(instanceJson.getString(InstanceModelMapping.MODELID));
 		instanceModel.setPayload(instanceJson.getJSONObject(InstanceModelMapping.PAYLOAD));
+		//instanceModel.setInstanceName(instanceJson.getString(InstanceModelMapping.INSTANCENAME));
+
 		JEObject instanceData = (JEObject) InstanceManager.createInstance(instanceModel);
 		instanceData.setJeObjectLastUpdate(LocalDateTime.now());
 		//JELogger.debug("Data : "+ instanceJson );
@@ -161,4 +164,24 @@ public class RuleEngineHandler {
 		}
 		return new ArrayList<>();
 	}
+
+
+	public static void addVariable(JEVariable variable) {
+		RuleEngine.assertFact(variable.getJobEngineProjectID(), variable);
+		
+	}
+
+	public static void deleteVariable(String projectId, String id) {
+		RuleEngine.deleteFact(projectId,id);
+		
+	}
+	
+	public static void deleteEvent(String projectId, String id) {
+		RuleEngine.deleteFact(projectId,id);
+		
+	}
+
+   /* public static void setClassLoader(JEClassLoader loader) {
+		RuleEngine.setClassLoader(loader);
+    }*/
 }

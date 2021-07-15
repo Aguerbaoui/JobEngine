@@ -1,5 +1,6 @@
 package io.je.utilities.classloader;
 
+import io.je.utilities.constants.ClassBuilderConfig;
 import io.je.utilities.logger.JELogger;
 
 import java.io.DataInputStream;
@@ -7,20 +8,87 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 public class JEClassLoader extends ClassLoader {
 
-    public JEClassLoader(ClassLoader parent) {
-        super(parent);
-    }
+    HashMap<String, InputStream> streams  = new HashMap<>();
+    static Set<String> customClasses  ;
 
+    
+    static JEClassLoader instance;
+    
+    
+    private JEClassLoader(Set<String> customClasses) {
+        super(JEClassLoader.class.getClassLoader());
+       this.customClasses=customClasses;
+    }
+    
+    
+    
+    public static JEClassLoader getInstance()
+    {
+    	if(instance==null)
+    	{
+    		instance = new JEClassLoader( new HashSet<String>());
+    		
+    	}
+    	return instance;
+    }
+    
+    
+    public static JEClassLoader overrideInstance()
+    {
+    	if(customClasses==null)
+    	{
+    		customClasses=new HashSet<String>();
+    	}
+    	instance = new JEClassLoader(customClasses);
+    	return instance;
+    }
+    
+    
+    private void loadAllClasses() throws ClassNotFoundException
+    {
+    	
+    	for(String _class : customClasses)
+    	{
+    		try {
+                Class c = getClass(_class);
+              
+            }catch (Exception e) {
+               
+             }
+    	}
+    }
+    
     @Override
     public Class<?> loadClass(String name) throws ClassNotFoundException {
-        JELogger.debug("Class Loading Started for " + name);
-        if (name.startsWith("classes")) {
-            return getClass(name);
+        if(customClasses.contains(name))
+        {
+        	customClasses.remove(name);
+        	//Tempo fix should check later
+        	//loadAllClasses();
         }
+        //TODO Check again 
+        if (name.startsWith(ClassBuilderConfig.generationPackageName+".") && !name.contains("Propagation")) {
+            customClasses.add(name);
+
+            try {
+                JELogger.debug("Class Loading by je custom loader Started for " + name);
+                Class c = getClass(name);
+                return c;
+            }
+            catch (Exception e) {
+              //  JELogger.debug("Class Loading failed by je custom loader for " + name);
+               // JELogger.error(Arrays.toString(e.getStackTrace()));
+            }
+        }
+        //JELogger.debug("Class Loading Started for " + name);
         return super.loadClass(name);
+
     }
 
     /**
@@ -61,6 +129,7 @@ public class JEClassLoader extends ClassLoader {
         InputStream stream = getClass().getClassLoader().getResourceAsStream(
                 name);
         int size = stream.available();
+        streams.put(name, stream);
         byte buff[] = new byte[size];
         DataInputStream in = new DataInputStream(stream);
         // Reading the binary data
@@ -69,19 +138,25 @@ public class JEClassLoader extends ClassLoader {
         return buff;
     }
 
+    //needed for drools
+    @Override
+    public InputStream getResourceAsStream(final String name) {
+        return streams.get(name);
+    }
+
     public static void main(String[] args) throws ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, Exception {
 
-        JEClassLoader loader = new JEClassLoader(
-                JEClassLoader.class.getClassLoader());
+      //  JEClassLoader loader = new JEClassLoader(
+        //        JEClassLoader.class.getClassLoader());
 
-        System.out.println("loader name---- " +loader.getParent().getClass().getName());
+       // System.out.println("loader name---- " +loader.getParent().getClass().getName());
 
         //This Loads the Class we must always
         //provide binary name of the class
-        Class<?> clazz =
-                loader.loadClass("classes.testScripttScriptt");
+      //  Class<?> clazz =
+          //      loader.loadClass("classes.testScripttScriptt");
 
-        System.out.println("Loaded class name: " + clazz.getName());
+      //  System.out.println("Loaded class name: " + clazz.getName());
 
         //Create instance Of the Class and invoke the particular method
         //Object instance = clazz.newInstance();

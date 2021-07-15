@@ -1,13 +1,8 @@
 package builder;
 
 import blocks.WorkflowBlock;
-import blocks.basic.InformBlock;
-import blocks.basic.MailBlock;
-import blocks.basic.ScriptBlock;
-import blocks.basic.WebApiBlock;
+import blocks.basic.*;
 import io.je.utilities.apis.JERunnerAPIHandler;
-import io.je.utilities.config.JEConfiguration;
-import io.je.utilities.constants.APIConstants;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.WorkflowConstants;
 import io.je.utilities.exceptions.JERunnerErrorException;
@@ -29,15 +24,16 @@ import static io.je.utilities.constants.WorkflowConstants.*;
 public class WorkflowBuilder {
 
 
-    private WorkflowBuilder(){}
+    private WorkflowBuilder() {
+    }
 
     /*
-    * Build pbpmn and Deploy it in engine
-    * */
+     * Build pbpmn and Deploy it in engine
+     * */
     public static boolean buildWorkflow(JEWorkflow workflow) throws IOException, InterruptedException, ExecutionException {
-        if(workflow.getWorkflowStartBlock() == null || workflow.getAllBlocks() == null || workflow.getAllBlocks().size() == 0) return false;
-        if(workflow.getStatus().equals(JEWorkflow.BUILT)) return true;
-        if(!workflow.isScript()) {
+        if (workflow.getWorkflowStartBlock() == null || workflow.getAllBlocks() == null || workflow.getAllBlocks().size() == 0)
+            return false;
+        if (!workflow.isScript()) {
             JEToBpmnMapper.createBpmnFromJEWorkflow(workflow);
         }
         WorkflowModel wf = new WorkflowModel();
@@ -47,8 +43,8 @@ public class WorkflowBuilder {
         wf.setTriggeredByEvent(workflow.isTriggeredByEvent());
         wf.setTriggerMessage(workflow.getWorkflowStartBlock().getEventId());
         ArrayList<TaskModel> tasks = new ArrayList<>();
-        for(WorkflowBlock block: workflow.getAllBlocks().values()) {
-            if(block instanceof WebApiBlock) {
+        for (WorkflowBlock block : workflow.getAllBlocks().values()) {
+            if (block instanceof WebApiBlock) {
                 TaskModel t = new TaskModel();
                 t.setTaskName(block.getName());
                 t.setTaskDescription(((WebApiBlock) block).getDescription());
@@ -57,10 +53,9 @@ public class WorkflowBuilder {
                 HashMap<String, Object> attributes = new HashMap<>();
                 attributes.put(URL, ((WebApiBlock) block).getUrl());
                 attributes.put(METHOD, ((WebApiBlock) block).getMethod());
-                if(((WebApiBlock) block).getBody() != null) {
+                if (((WebApiBlock) block).getBody() != null) {
                     attributes.put(BODY, ((WebApiBlock) block).getBody());
-                }
-                else {
+                } else {
                     if (((WebApiBlock) block).getInputs() != null && ((WebApiBlock) block).getInputs().size() > 0) {
                         HashMap<String, Object> inputs = new HashMap<>();
                         for (String key : ((WebApiBlock) block).getInputs().keySet()) {
@@ -78,7 +73,7 @@ public class WorkflowBuilder {
                 t.setAttributes(attributes);
                 tasks.add(t);
             }
-            if(block instanceof ScriptBlock) {
+            if (block instanceof ScriptBlock) {
                 TaskModel t = new TaskModel();
                 t.setTaskName(block.getName());
                 t.setTaskId(block.getJobEngineElementID());
@@ -88,7 +83,7 @@ public class WorkflowBuilder {
                 t.setAttributes(attributes);
                 tasks.add(t);
             }
-            if(block instanceof InformBlock) {
+            if (block instanceof InformBlock) {
                 TaskModel t = new TaskModel();
                 t.setTaskName(block.getName());
                 t.setTaskId(block.getJobEngineElementID());
@@ -98,17 +93,49 @@ public class WorkflowBuilder {
                 t.setAttributes(attributes);
                 tasks.add(t);
             }
-            if(block instanceof MailBlock) {
+            if(block instanceof DBReadBlock) {
+                TaskModel t = new TaskModel();
+                t.setTaskName(block.getName());
+                t.setTaskId(block.getJobEngineElementID());
+                t.setType(DBREADSERVICETASK_TYPE);
+                HashMap<String, Object> attributes = new HashMap<>();
+                attributes.put(REQUEST, ((DBReadBlock) block).getRequest());
+                attributes.put(DATABASE_ID, ((DBReadBlock) block).getDatabaseId());
+                t.setAttributes(attributes);
+                tasks.add(t);
+            }
+            if(block instanceof DBWriteBlock) {
+                TaskModel t = new TaskModel();
+                t.setTaskName(block.getName());
+                t.setTaskId(block.getJobEngineElementID());
+                t.setType(DBWRITESERVICETASK_TYPE);
+                HashMap<String, Object> attributes = new HashMap<>();
+                attributes.put(REQUEST, ((DBWriteBlock) block).getRequest());
+                attributes.put(DATABASE_ID, ((DBWriteBlock) block).getDatabaseId());
+                t.setAttributes(attributes);
+                tasks.add(t);
+            }
+            if(block instanceof DBEditBlock) {
+                TaskModel t = new TaskModel();
+                t.setTaskName(block.getName());
+                t.setTaskId(block.getJobEngineElementID());
+                t.setType(DBEDITSERVICETASK_TYPE);
+                HashMap<String, Object> attributes = new HashMap<>();
+                attributes.put(REQUEST, ((DBEditBlock) block).getRequest());
+                attributes.put(DATABASE_ID, ((DBEditBlock) block).getDatabaseId());
+                t.setAttributes(attributes);
+                tasks.add(t);
+            }
+            if (block instanceof MailBlock) {
                 TaskModel t = new TaskModel();
                 t.setTaskName(block.getName());
                 t.setTaskId(block.getJobEngineElementID());
                 t.setType(MAILSERVICETASK_TYPE);
                 HashMap<String, Object> attributes = new HashMap<>();
-                if(((MailBlock) block).isbUseDefaultCredentials()) {
+                if (((MailBlock) block).isbUseDefaultCredentials()) {
                     attributes.put(WorkflowConstants.ENABLE_SSL, ((MailBlock) block).isbEnableSSL());
                     attributes.put(WorkflowConstants.USE_DEFAULT_CREDENTIALS, ((MailBlock) block).isbUseDefaultCredentials());
-                }
-                else {
+                } else {
                     attributes.put(USERNAME, ((MailBlock) block).getStrUserName());
                     attributes.put(PASSWORD, ((MailBlock) block).getStrPassword());
                 }
@@ -129,8 +156,7 @@ public class WorkflowBuilder {
         JELogger.trace(WorkflowBuilder.class, " " + JEMessages.DEPLOYING_IN_RUNNER_WORKFLOW_WITH_ID + " = " + workflow.getJobEngineElementID());
         try {
             JERunnerAPIHandler.addWorkflow(wf);
-        }
-        catch (JERunnerErrorException e) {
+        } catch (JERunnerErrorException e) {
             JELogger.trace(WorkflowBuilder.class, " " + JEMessages.FAILED_TO_DEPLOY_IN_RUNNER_WORKFLOW_WITH_ID + " = " + workflow.getJobEngineElementID());
             workflow.setStatus(JEWorkflow.IDLE);
             return false;

@@ -40,14 +40,17 @@ public class ConfigurationService {
 
 	static boolean isConfiguredProperly = false;
 
+	
+	
+	
+
 	/*
 	 * init configuration : > load config from database >update config
 	 */
 	public void init()
-			throws JERunnerErrorException, InterruptedException, ExecutionException, DataDefinitionUnreachableException,
-			AddClassException, ClassLoadException, IOException, ProjectNotFoundException, ConfigException {
+			throws JERunnerErrorException, InterruptedException, ExecutionException, IOException, ProjectNotFoundException, ConfigException {
 
-		JELogger.trace(JEMessages.INITILIZING_BUILDER);
+		JELogger.info(JEMessages.INITILIZING_BUILDER);
 		ConfigModel configModel = loadConfigFromDb();
 		if (configModel != null) {
 			updateBuilderSettings(configModel);
@@ -57,8 +60,12 @@ public class ConfigurationService {
 				updateRunner(configModel);
 			} else {
 				JELogger.warning(ConfigurationService.class, JEMessages.MISSING_CONFIG);
+				
 
 			}
+			classService.initClassUpdateListener();
+		}else {
+			configRepository.save(new ConfigModel());
 		}
 
 	}
@@ -69,8 +76,11 @@ public class ConfigurationService {
 	private void updateBuilderSettings(ConfigModel configModel) {
 		JEConfiguration.updateConfig(configModel);
 		if (applicationIsConfiguredProperly()) {
+			
 			ConfigurationService.setConfiguredProperly(true);
 		}
+		configRepository.save(JEConfiguration.getInstance());
+
 
 	}
 
@@ -108,16 +118,19 @@ public class ConfigurationService {
 	 */
 	public boolean applicationIsConfiguredProperly() {
 		boolean configurationIsValid = true;
-		if (JEConfiguration.getDataDefinitionURL() == null) {
+		if (JEConfiguration.getDataDefinitionURL() == null || JEConfiguration.getDataDefinitionURL().isEmpty()) {
 			configurationIsValid = false;
+			JEConfiguration.setDataDefinitionURL("");
 			JELogger.warning(getClass(), JEMessages.DATA_DEFINITION_URL_MISSING);
 		}
-		if (JEConfiguration.getDataManagerURL() == null) {
+		if (JEConfiguration.getDataManagerURL() == null || JEConfiguration.getDataManagerURL().isEmpty()) {
 			configurationIsValid = false;
+			JEConfiguration.setDataManagerURL("");
 			JELogger.warning(getClass(), JEMessages.DATA_MODEL_URL_MISSING);
 		}
-		if (JEConfiguration.getRuntimeManagerURL() == null) {
+		if (JEConfiguration.getRuntimeManagerURL() == null || JEConfiguration.getRuntimeManagerURL().isEmpty()) {
 			configurationIsValid = false;
+			JEConfiguration.setRuntimeManagerURL("");
 			JELogger.warning(getClass(), JEMessages.JERUNNER_URL_MISSING);
 		}
 		if (JEConfiguration.getSubscriberPort() == 0) {
@@ -128,13 +141,33 @@ public class ConfigurationService {
 			configurationIsValid = false;
 			JELogger.warning(getClass(), JEMessages.DATA_MODEL_REQ_PORT_MISSING);
 		}
-		if (JEConfiguration.getDroolsDateFormat() == null) {
+		if (JEConfiguration.getDroolsDateFormat() == null || JEConfiguration.getDroolsDateFormat().isEmpty()) {
 			configurationIsValid = false;
+			JEConfiguration.setDroolsDateFormat("");
 			JELogger.warning(getClass(), JEMessages.DROOLS_DATE_FORMAT_MISSING);
 		}
-		if (JEConfiguration.getDataModelDateFormat() == null) {
+		if (JEConfiguration.getDataModelDateFormat() == null || JEConfiguration.getDataModelDateFormat().isEmpty()) {
 			configurationIsValid = false;
+			JEConfiguration.setDataModelDateFormat("");
 			JELogger.warning(getClass(), JEMessages.DATA_MODEL_DATE_FORMAT_MISSING);
+		}
+		if(JEConfiguration.getLoggingSystemURL()==null || JEConfiguration.getLoggingSystemURL().isEmpty())
+		{
+			configurationIsValid = false;
+			JEConfiguration.setLoggingSystemURL("");
+			JELogger.warning(getClass(), JEMessages.LOGGING_SYSTEM_URL_MISSING);
+		}
+		if(JEConfiguration.getLoggingSystemZmqPublishPort()==0)
+		{
+			configurationIsValid = false;
+			JELogger.warning(getClass(), JEMessages.LOGGING_SYSTEM_PORT_MISSING);
+		}
+		if(JEConfiguration.getEmailApiUrl()==null || JEConfiguration.getEmailApiUrl().isEmpty())
+		{
+			configurationIsValid=false;
+			JEConfiguration.setEmailApiUrl("");
+			JELogger.warning(getClass(), JEMessages.EMAIL_API_URL_MISSING);
+
 		}
 		return configurationIsValid;
 
@@ -161,10 +194,8 @@ public class ConfigurationService {
 				}
 
 				updateRunnerSettings(config);
-
-				for (JEClass clazz : classService.getLoadedClasses().values()) {
-					classService.addClassToJeRunner(clazz);
-				}
+                classService.sendClassesToJeRunner(classService.getLoadedClasses().values());
+				
 
 				JELogger.info(ProjectService.class, JEMessages.RUNNER_IS_UP_UPDATING_NOW);
 				projectService.resetProjects();

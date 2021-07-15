@@ -35,6 +35,10 @@ public class APIConstants {
 
 	public static final String ADD_CLASS = "/addClass";
 
+	public static final String UPDATE_CLASS = "/updateClass";
+	
+	public static final String ADD_CLASSES = "/addClasses";
+
 	public static final String TRIGGER_EVENT = "/event/triggerEvent/";
 
 	public static final String ADD_EVENT = "/event/addEvent";
@@ -62,6 +66,12 @@ public class APIConstants {
 	public static final String EVENT_ADD_EVENT = "/event/addEvent";
 
 	public static final String EVENT_TRIGGER_EVENT = "/event/triggerEvent/";
+	
+	public static final String EVENT_UNTRIGGER_EVENT = "/event/untriggerEvent/";
+	
+	public static final String WRITE_TO_VARIABLE = "/variable/writeVariableValue/";
+	
+
 
 	public static final String UPDATE_CONFIG = "/updateConfig";
 

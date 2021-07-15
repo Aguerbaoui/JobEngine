@@ -7,21 +7,18 @@ import java.util.List;
 import io.je.project.exception.JEExceptionHandler;
 import io.je.project.services.ProjectService;
 
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.fasterxml.jackson.databind.JsonNode;
-
 import io.je.project.services.RuleService;
 import io.je.rulebuilder.models.BlockModel;
 import io.je.rulebuilder.models.RuleModel;
 import io.je.rulebuilder.models.ScriptRuleModel;
-import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.constants.JEMessages;
+import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.logger.JELogger;
 import io.je.utilities.network.JEResponse;
 
@@ -39,7 +36,6 @@ public class RuleController {
 
 	@Autowired
 	ProjectService projectService;
-
 	
 	
 	/*  Retrieve Rules */
@@ -51,8 +47,10 @@ public class RuleController {
 	@GetMapping(value = "{projectId}/getAllRules")
 	@ResponseBody
 	public ResponseEntity<?> getAllRule(@PathVariable("projectId") String projectId) {
-		Collection<?> rules = null;
+		Collection<RuleModel> rules = null;
 		try {
+			projectService.getProject(projectId);
+
 			rules = ruleService.getAllRules(projectId);
 			if (rules.isEmpty()) {
 				return ResponseEntity.noContent().build();
@@ -76,6 +74,8 @@ public class RuleController {
 		RuleModel rule = null;
 
 		try {
+			projectService.getProject(projectId);
+
 			rule = ruleService.getRule(projectId, ruleId);
 		} catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
@@ -97,9 +97,10 @@ public class RuleController {
 	public ResponseEntity<?> addRule(@PathVariable("projectId") String projectId, @RequestBody RuleModel ruleModel) {
 
 		try {
+			projectService.getProject(projectId);
+
 			JELogger.info(getClass(), " Adding rule " + ruleModel.getRuleName() + "..");
 			ruleService.addRule(projectId, ruleModel);
-			projectService.saveProject(projectId).get();
 			
 
 		} catch (Exception e) {
@@ -114,9 +115,9 @@ public class RuleController {
 	public ResponseEntity<?> deleteRules(@PathVariable("projectId") String projectId, @RequestBody List<String> ruleIds) {
 
 		try {
-		
+			projectService.getProject(projectId);
+
 			ruleService.deleteRules(projectId, ruleIds);
-			projectService.saveProject(projectId).get();
 			
 
 		} catch (Exception e) {
@@ -137,8 +138,9 @@ public class RuleController {
 			@PathVariable("ruleId") String ruleId) {
 
 		try {
+			projectService.getProject(projectId);
+
 			ruleService.deleteRule(projectId, ruleId);
-			projectService.saveProject(projectId).get();
 
 		} catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
@@ -154,8 +156,9 @@ public class RuleController {
 	public ResponseEntity<?> updateRule(@PathVariable("projectId") String projectId, @RequestBody RuleModel ruleModel) {
 
 		try {
+			projectService.getProject(projectId);
+
 			ruleService.updateRule(projectId, ruleModel);
-			projectService.saveProject(projectId).get();
 		} catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
 
@@ -172,10 +175,14 @@ public class RuleController {
 			@PathVariable("ruleId") String ruleId, @RequestBody BlockModel blockModel) {
 		String generatedBlockName = "";
 		try {
+			
 			blockModel.setRuleId(ruleId);
 			blockModel.setProjectId(projectId);
+			projectService.getProject(projectId);
+
 			 generatedBlockName = ruleService.addBlockToRule(blockModel);
-			projectService.saveProject(projectId).get();
+				projectService.saveProject(projectId);
+
 		} catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
 		}
@@ -190,10 +197,12 @@ public class RuleController {
 	public ResponseEntity<?> updateBlock(@PathVariable("projectId") String projectId,
 			@PathVariable("ruleId") String ruleId, @RequestBody BlockModel blockModel) {
 		try {
+			projectService.getProject(projectId);
+
 			blockModel.setRuleId(ruleId);
 			blockModel.setProjectId(projectId);
 			ruleService.updateBlockInRule(blockModel);
-			projectService.saveProject(projectId).get();
+			projectService.saveProject(projectId);
 		} catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
 		}
@@ -209,8 +218,11 @@ public class RuleController {
 	public ResponseEntity<?> deleteBlock(@PathVariable("projectId") String projectId,
 			@PathVariable("ruleId") String ruleId, @PathVariable("blockId") String blockId) {
 		try {
+			projectService.getProject(projectId);
+
 			ruleService.deleteBlock(projectId, ruleId, blockId);
-			projectService.saveProject(projectId).get();
+			projectService.saveProject(projectId);
+
 		} catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
 
@@ -228,8 +240,11 @@ public class RuleController {
 			@PathVariable("ruleId") String ruleId) {
 
 		try {
+			projectService.getProject(projectId);
+
 			ruleService.buildRule(projectId, ruleId);
-			projectService.saveProject(projectId).get();
+			projectService.saveProject(projectId);
+
 		} catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
 		}
@@ -245,8 +260,9 @@ public class RuleController {
 			@PathVariable("ruleId") String ruleId, @RequestBody String config) {
 
 		try {
+			projectService.getProject(projectId);
+
 			ruleService.saveRuleFrontConfig(projectId, ruleId, config);
-			projectService.saveProject(projectId).get();
 			JELogger.info(getClass(), JEMessages.RULE_ADDED_SUCCESSFULLY);
 
 		} catch (Exception e) {
@@ -268,8 +284,9 @@ public class RuleController {
 			@RequestBody ScriptRuleModel ruleModel) {
 
 		try {
+			projectService.getProject(projectId);
+
 			ruleService.addScriptedRule(projectId, ruleModel);
-			projectService.saveProject(projectId).get();
 
 		} catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
@@ -287,8 +304,9 @@ public class RuleController {
 			@RequestBody ScriptRuleModel ruleModel) {
 
 		try {
+			projectService.getProject(projectId);
+
 			ruleService.updateScriptedRule(projectId, ruleModel);
-			projectService.saveProject(projectId).get();
 
 		} catch (Exception e) {
 			return JEExceptionHandler.handleException(e);

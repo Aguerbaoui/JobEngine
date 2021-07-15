@@ -3,11 +3,10 @@ package io.je.project.controllers;
 import io.je.project.beans.JEProject;
 import io.je.project.exception.JEExceptionHandler;
 import io.je.project.models.ProjectModel;
-import io.je.project.services.ConfigurationService;
 import io.je.project.services.ProjectService;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.ResponseCodes;
-import io.je.utilities.constants.JEMessages;
+import io.je.utilities.exceptions.ProjectNotFoundException;
 import io.je.utilities.logger.JELogger;
 import io.je.utilities.network.JEResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,9 +15,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Collection;
-
 import static io.je.utilities.constants.JEMessages.*;
+
+import java.util.Collection;
+import java.util.HashMap;
 
 /*
  * Project Rest Controller
@@ -59,13 +59,44 @@ public class ProjectController {
 	public ResponseEntity<?> getProjectRunStatus(@PathVariable String projectId) {
 		JEProject project = null;
 		try {
-			project = projectService.getProject(projectId).get();
+			project = projectService.getProject(projectId);
 
 		} catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
 
 		}
 		return ResponseEntity.ok(project.isRunning());
+
+	}
+	
+	/*
+	 * Get project running status
+	 */
+	@GetMapping("/getProjectGlobalInfo/{projectId}")
+	public ResponseEntity<?> getProjectGlobalInfo(@PathVariable String projectId) {
+		JEProject project = null;
+		HashMap<String,Integer> data = new HashMap<>();
+
+		try {
+			project = projectService.getProject(projectId);
+			if(project!=null)
+			{
+				data.put("ruleCount",  project.getRules().size());
+				data.put("workflowCount",  project.getWorkflows().size());
+				data.put("eventCount",  project.getEvents().size());
+			}else
+			{
+				return  JEExceptionHandler.handleException(new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND));
+			}
+
+		
+			
+
+		} catch (Exception e) {
+			return JEExceptionHandler.handleException(e);
+
+		}
+		return ResponseEntity.ok(data);
 
 	}
 	
@@ -77,7 +108,7 @@ public class ProjectController {
 	public ResponseEntity<?> getIsBlockNameUnique(@PathVariable String projectId,@PathVariable String blockName) {
 		JEProject project = null;
 		try {
-			project = projectService.getProject(projectId).get();
+			project = projectService.getProject(projectId);
 
 		} catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
@@ -96,7 +127,7 @@ public class ProjectController {
 	public ResponseEntity<?> getProjectBuildStatus(@PathVariable String projectId) {
 		JEProject project = null;
 		try {
-			project = projectService.getProject(projectId).get();
+			project = projectService.getProject(projectId);
 
 		} catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
@@ -110,7 +141,7 @@ public class ProjectController {
 	/*
 	 * Add new project
 	 */
-	@PostMapping(value = "/addProject", produces = MediaType.APPLICATION_JSON_VALUE)
+/*	@PostMapping(value = "/addProject", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> addProject(@RequestBody ProjectModel m) {
 		if (projectService.projectExists(m.getProjectId())) {
 			return ResponseEntity.ok(new JEResponse(ResponseCodes.PROJECT_EXISTS, JEMessages.PROJECT_EXISTS));
@@ -123,7 +154,7 @@ public class ProjectController {
 		}
 		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, CREATED_PROJECT_SUCCESSFULLY));
 	}
-
+*/
 	/*
 	 * Add new project
 	 */
@@ -141,24 +172,28 @@ public class ProjectController {
 			return JEExceptionHandler.handleException(e);
 
 		}
-		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, CREATED_PROJECT_SUCCESSFULLY));
+		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, PROJECT_DELETED));
 	}
 
 	@GetMapping("/getProject/{projectId}")
 	public ResponseEntity<?> getProject(@PathVariable String projectId) {
-		JEProject project = null;
+	/*	JEProject project = null;
 		try {
-			project = projectService.getProject(projectId).get();
+			project = projectService.getProject(projectId);
+			if (project == null) {
+				return ResponseEntity.ok(new JEResponse(ResponseCodes.PROJECT_NOT_FOUND, JEMessages.PROJECT_NOT_FOUND));
+
+			}
+			return ResponseEntity.ok(project);
+			//return ResponseEntity.ok(projects);
+
 		} catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
 
 		}
-		if (project == null) {
-			return ResponseEntity.ok(new JEResponse(ResponseCodes.PROJECT_NOT_FOUND, JEMessages.PROJECT_NOT_FOUND));
-
-		}
-
-		return ResponseEntity.ok(project);
+		
+*/
+		return ResponseEntity.ok("");
 
 	}
 
@@ -244,7 +279,7 @@ public class ProjectController {
 			return ResponseEntity.ok(new JEResponse(ResponseCodes.PROJECT_NOT_FOUND, JEMessages.PROJECT_NOT_FOUND));
 		}
 		try {
-			JEProject project = projectService.getProject(projectId).get();
+			JEProject project = projectService.getProject(projectId);
 			JELogger.debug("[projectId ="+projectId+" ]  " + JEMessages.PROJECT_AUTO_RELOAD + autoReload);
 			project.setAutoReload(autoReload);
 			projectService.saveProject(project).get();

@@ -9,13 +9,11 @@ import org.springframework.web.bind.annotation.*;
 import io.je.project.exception.JEExceptionHandler;
 import io.je.runtime.models.ClassModel;
 import io.je.runtime.services.RuntimeDispatcher;
-import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.constants.JEMessages;
-import io.je.utilities.exceptions.ClassLoadException;
+import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.network.JEResponse;
-import org.springframework.web.multipart.MultipartFile;
-
 import java.util.HashMap;
+import java.util.List;
 
 
 /*
@@ -46,6 +44,44 @@ public class ClassController {
 		
 			
 		
+		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.CLASS_WAS_ADDED_SUCCESSFULLY));
+	}
+	
+	/*
+	 * update class
+	 */
+	@PostMapping(value = "/updateClass", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> updateClass( @RequestBody ClassModel classModel) {
+		
+	
+			try {
+				runtimeDispatcher.updateClass(classModel);
+			} catch (Exception e) {
+				return JEExceptionHandler.handleException(e);
+			}
+		
+			
+		
+		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.CLASS_WAS_ADDED_SUCCESSFULLY));
+	}
+
+	/*
+	
+	/*
+	 * Adding a list of classes
+	 */
+	@PostMapping(value = "/addClasses", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> addClasses( @RequestBody List<ClassModel> classModelList) {
+
+
+		try {
+			runtimeDispatcher.updateClasses(classModelList);
+		} catch (Exception e) {
+			return JEExceptionHandler.handleException(e);
+		}
+
+
+
 		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.CLASS_WAS_ADDED_SUCCESSFULLY));
 	}
 

@@ -8,7 +8,6 @@ import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.config.builder.api.*;
 import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
 
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.LinkedList;
@@ -22,28 +21,26 @@ import java.util.Queue;
  */
 public class JELogger {
 
-    private static Queue<String> queue = new LinkedList<>();
+    private static Queue<LogMessage> queue = new LinkedList<>();
     private static  Logger logger = null;
     private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
 
+    
+  
+
+    
+    /*******************************TO BE DELETED ****************************************************/
 
     /*
     * Trace log level
     * */
      public static void trace(Class<?> clazz, String msg) {
-         synchronized (queue) {
-             queue.add(new Timestamp(System.currentTimeMillis()) + " " + msg.trim());
-         }
 
         logger.info( msg.trim());
 
     }
 
     public static void trace(String msg) {
-        synchronized (queue) {
-            queue.add(new Timestamp(System.currentTimeMillis()) + " " + msg.trim());
-        }
-
         logger.info( msg.trim());
 
     }
@@ -53,6 +50,7 @@ public class JELogger {
     public static void debug(Class<?> clazz, String msg) {
 
         logger.debug(clazz.getName() +" : "+ msg.trim());
+        
         
     }
 
@@ -65,7 +63,7 @@ public class JELogger {
 
     }
 
-    public static Queue<String> getQueue() {
+    public static Queue<LogMessage> getQueue() {
         return queue;
     }
 
@@ -73,18 +71,12 @@ public class JELogger {
      * log level 2 : info
      */
     public static void info(Class<?> clazz, String msg) {
-        synchronized (queue) {
-            queue.add(new Timestamp(System.currentTimeMillis()) + " " + msg.trim());
-        }
        // logger.info(logger.getName() + ": " + logger);
 
         logger.info( msg.trim());
     }
 
     public static void info( String msg) {
-        synchronized (queue) {
-            queue.add(new Timestamp(System.currentTimeMillis()) + " " + msg.trim());
-        }
 
         logger.info( msg.trim());
     }
@@ -101,11 +93,7 @@ public class JELogger {
      */
     public static void error(Class<?> clazz, String msg) {
 
-        synchronized (queue) {
-            queue.add(new Timestamp(System.currentTimeMillis()) + " " + msg.trim());
-        }
         logger.error(clazz.getName() +" : "+  msg.trim());
-
 
     }
 
@@ -114,20 +102,129 @@ public class JELogger {
      */
     public static void error(String msg) {
 
-        synchronized (queue) {
-            queue.add(new Timestamp(System.currentTimeMillis()) + " " + msg.trim());
-        }
         logger.error(  msg.trim());
 
 
     }
 
+    
+    
+    /*******************************************************************************************************/
 
+
+    /*
+     * Trace log level
+     * */
+    public static void trace(String message,  LogCategory category,
+                             String projectId, LogSubModule subModule, String objectId) {
+
+        //Log in file
+        logger.trace( message);
+
+
+      //Log in logging service
+        LogMessage logMessage = getLogMessage(LogLevel.CONTROL, message, category, projectId, subModule, objectId);
+        synchronized (queue) {
+            queue.add(logMessage);
+        }
+
+        ZMQLogPublisher.publish(logMessage);
+    }
+
+    /*
+     * Debug log level
+     * */
+    public static void debug(String message,  LogCategory category,
+                             String projectId, LogSubModule subModule, String objectId) {
+
+        //Log in file
+        logger.debug( message);
+
+        //Log in logging service
+        synchronized (queue) {
+            queue.add(getLogMessage(LogLevel.DEBUG, message, category, projectId, subModule, objectId));
+        }
+
+    }
+
+    /*
+     * Inform log level
+     * */
+    public static void info(String message,  LogCategory category,
+                            String projectId, LogSubModule subModule, String objectId) {
+
+        //Log in file
+        logger.info( message);
+
+        //Log in logging service
+        LogMessage logMessage = getLogMessage(LogLevel.INFORM, message, category, projectId, subModule, objectId);
+        synchronized (queue) {
+            queue.add(logMessage);
+        }
+
+        ZMQLogPublisher.publish(logMessage);
+    }
+
+    /*
+     * Error log level
+     * */
+    public static void error(String message,  LogCategory category,
+                             String projectId, LogSubModule subModule, String objectId) {
+
+        //Log in file
+        logger.error( message);
+
+        //Log in logging service
+        synchronized (queue) {
+            queue.add(getLogMessage(LogLevel.ERROR, message, category, projectId, subModule, objectId));
+        }
+
+    }
+
+    /*
+     * Warning log level
+     * */
+    public static void warn(String message,  LogCategory category,
+                            String projectId, LogSubModule subModule, String objectId) {
+
+        //Log in file
+        logger.warn( message);
+
+        //Log in logging service
+        synchronized (queue) {
+            queue.add(getLogMessage(LogLevel.WARNING, message, category, projectId, subModule, objectId));
+        }
+
+    }
+
+    // get Log message object for the logging service
+     public static LogMessage getLogMessage(LogLevel logLevel, String message,  LogCategory category,
+                                            String projectId, LogSubModule subModule, String objectId) {
+         String logDate = LocalDateTime.now().toString();
+         return new LogMessage(logLevel, message, logDate, category, projectId, subModule, objectId);
+     }
+
+    // get log string message
+    public static String getLogStringText(String projectId, String subModule,  String extraInfo, String... objectIds) {
+        // In every log message, we have the porject id, module ( rule/ workflow / event / variable ),
+        // related objects to it and the extra info explaining the action
+        String msg = "[Project Id = " + projectId + "] [Submodule = " + subModule + "] ";
+        if(objectIds != null) {
+            for(int i = 0; i< objectIds.length; i++) {
+                msg = msg + "[Object Id = " + objectIds[i] + " ] ";
+            }
+        }
+        msg += extraInfo;
+        return msg;
+    }
+    /***************************************************************************************************************/
     private static Level getLogLevel(String level)
     {
     	Level lvl = Level.DEBUG;
     	switch(level)
     	{
+    	case "ERROR":
+    		return Level.ERROR;
     	case "DEBUG":
     		break;    	
     	case "INFO":

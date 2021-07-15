@@ -1,6 +1,7 @@
 package io.je.runtime.services;
 
 import io.je.JEProcess;
+import io.je.ruleengine.impl.ProjectContainer;
 import io.je.runtime.data.DataListener;
 import io.je.runtime.events.EventManager;
 import io.je.runtime.models.ClassModel;
@@ -16,6 +17,7 @@ import io.je.utilities.beans.JEData;
 import io.je.utilities.beans.JEEvent;
 import io.je.utilities.beans.JEVariable;
 import io.je.utilities.classloader.JEClassCompiler;
+import io.je.utilities.classloader.JEClassLoader;
 import io.je.utilities.config.ConfigurationConstants;
 import io.je.utilities.constants.ClassBuilderConfig;
 import io.je.utilities.constants.JEMessages;
@@ -31,7 +33,6 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.jar.JarFile;
-
 
 import static io.je.utilities.constants.JEMessages.ADDING_JAR_FILE_TO_RUNNER;
 import static io.je.utilities.constants.WorkflowConstants.*;
@@ -60,8 +61,7 @@ public class RuntimeDispatcher {
     }
 
     // run project
-    public void runProject(String projectId) throws RulesNotFiredException, RuleBuildFailedException,
-            ProjectAlreadyRunningException, WorkflowNotFoundException {
+    public void runProject(String projectId) throws JEException {
 
 
         projectStatus.put(projectId, true);
@@ -221,6 +221,23 @@ public class RuntimeDispatcher {
                 ActivitiTaskManager.addTask(informTask);
             }
 
+            if(task.getType().equals(DBREADSERVICETASK_TYPE) ||
+                    task.getType().equals(DBWRITESERVICETASK_TYPE) ||
+                    task.getType().equals(DBEDITSERVICETASK_TYPE)) {
+                DatabaseTask databaseTask = new DatabaseTask();
+                databaseTask.setTaskName(task.getTaskName());
+                databaseTask.setTaskId(task.getTaskId());
+                databaseTask.setProjectId(wf.getProjectId());
+                HashMap<String, Object> attributes = task.getAttributes();
+                if(attributes.get(REQUEST) != null) {
+                    databaseTask.setRequest((String) attributes.get(REQUEST));
+                }
+                if(attributes.get(DATABASE_ID) != null) {
+                    databaseTask.setDatabaseId((String) attributes.get(DATABASE_ID));
+                }
+                process.addActivitiTask(databaseTask);
+                ActivitiTaskManager.addTask(databaseTask);
+            }
             if(task.getType().equals(WorkflowConstants.MAILSERVICETASK_TYPE)) {
                 MailTask mailTask = new MailTask();
                 mailTask.setTaskId(task.getTaskId());
@@ -279,14 +296,30 @@ public class RuntimeDispatcher {
     // add class
     public void addClass(ClassModel classModel) throws ClassLoadException {
         JELogger.trace(JEMessages.ADDING_CLASS + classModel.getClassName());
-       JEClassCompiler.compileClass(classModel.getClassPath(), ConfigurationConstants.runnerClassLoadPath);
+        JEClassCompiler.compileClass(classModel.getClassPath(), ConfigurationConstants.runnerClassLoadPath);
        try {
-    	   ClassRepository.addClass(classModel.getClassId(), RuntimeDispatcher.class.getClassLoader().loadClass(ClassBuilderConfig.genrationPackageName + "." + classModel.getClassName())); ;
-	} catch (ClassNotFoundException e) {
+    	   
+    	   ClassRepository.addClass(classModel.getClassId(), JEClassLoader.getInstance().loadClass(ClassBuilderConfig.generationPackageName + "." + classModel.getClassName()));
+           
+       } catch (ClassNotFoundException e) {
+		e.printStackTrace();
 		throw new ClassLoadException("[class :"+ classModel.getClassName() +" ]"+JEMessages.CLASS_LOAD_FAILED); 
 	}
-        
 
+    }
+    
+    public void updateClass(ClassModel classModel) throws ClassLoadException {
+ 	   JEClassLoader.overrideInstance();
+ 	   addClass(classModel);
+	}
+
+    
+
+
+    public void updateClasses(List<ClassModel> classes) throws ClassLoadException {
+        for(ClassModel classModel: classes) {
+           addClass(classModel);
+        }
     }
 
     // update class
@@ -332,12 +365,9 @@ public class RuntimeDispatcher {
 
     //Add an event to the runner
     public void addEvent(EventModel eventModel) {
-        JEEvent e = new JEEvent();
-        e.setName(eventModel.getName());
-        e.setTriggeredById(eventModel.getEventId());
-        e.setJobEngineElementID(eventModel.getEventId());
-        e.setJobEngineProjectID(eventModel.getProjectId());
-        e.setType(EventType.valueOf(eventModel.getEventType()));
+        JEEvent e = new JEEvent(eventModel.getEventId(), eventModel.getProjectId(), eventModel.getName(), EventType.valueOf(eventModel.getEventType()), eventModel.getDescription(), eventModel.getTimeout(), eventModel.getTimeoutUnit());
+
+
         JELogger.trace(getClass(), "[projectId = " +e.getJobEngineProjectID() + "] [event = " + e.getJobEngineElementID() + "]" + JEMessages.ADDING_EVENT);
 
         EventManager.addEvent(eventModel.getProjectId(), e);
@@ -396,16 +426,10 @@ public class RuntimeDispatcher {
 
     //add variable to runner
     public void addVariable(VariableModel variableModel) {
-        JEVariable var = new JEVariable();
-        var.setVariableName(variableModel.getName());
-        var.setJobEngineElementID(variableModel.getId());
-        var.setJobEngineProjectID(variableModel.getProjectId());
-        var.setVariableTypeString(variableModel.getType());
-        var.setVariableTypeClass(JEVariable.getType(variableModel.getType()));
-        var.setVariableValue(variableModel.getValue());
+        JEVariable var = new JEVariable(variableModel.getId(),variableModel.getProjectId(),variableModel.getName(),variableModel.getType(), variableModel.getInitialValue());
         var.setJeObjectCreationDate(LocalDateTime.now());
         var.setJeObjectLastUpdate(LocalDateTime.now());
-        JEStringSubstitutor.addVariable(var.getJobEngineProjectID(), var.getVariableName(), (String) var.getVariableValue());
+        //JEStringSubstitutor.addVariable(var.getJobEngineProjectID(), var.getName(), (String) var.getValue());
         VariableManager.addVariable(var);
     }
 
@@ -413,6 +437,13 @@ public class RuntimeDispatcher {
     public void deleteVariable(String projectId, String varId) {
         VariableManager.removeVariable(projectId, varId);
     }
+    
+	public void writeVariableValue(String projectId, String variableId, String value) {
+		VariableManager.updateVariableValue(projectId,variableId, value);
+		
+	}
+
+    
 
     public void addJarToProject(HashMap<String, String> payload) {
         JELogger.debug(ADDING_JAR_FILE_TO_RUNNER+ payload);
@@ -423,4 +454,6 @@ public class RuntimeDispatcher {
             e.printStackTrace();
         }
     }
+
+
 }

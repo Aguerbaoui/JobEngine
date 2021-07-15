@@ -1,18 +1,20 @@
 package io.je.utilities.models;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 @Document(collection="JEConfiguration")
-@JsonInclude(Include.NON_NULL)
 public class ConfigModel {
 	
+	@Transient
+	String defaultIp = "http://127.0.0.1:8080";
 	@Id
 	 String identifier="ConfigJE";
-	 String dataDefinitionURL;
+	 String dataDefinitionURL=defaultIp;
 	 String dataManagerURL;
 	 String runtimeManagerURL;
 	 String projectBuilderURL;
@@ -20,7 +22,39 @@ public class ConfigModel {
 	 int subscriberPort;
 	 int requestPort;
 	 String droolsDateFormat;
-	  String dataModelDateFormat;
+	 String dataModelDateFormat;
+	 String loggingSystemURL;
+	 int loggingSystemZmqPublishPort;
+	String databaseApiUrl;
+	 int dataDefinitionSubscribePort;
+	 int dataDefinitionRequestPort;
+	
+	
+
+	public ConfigModel() {
+		  dataDefinitionURL="";
+		  dataManagerURL="";
+		  runtimeManagerURL="";
+		  projectBuilderURL="";
+		  emailApiUrl="";
+		  subscriberPort=0;
+		  requestPort=0;
+		  droolsDateFormat="";
+		  dataModelDateFormat="";
+		  loggingSystemURL="";
+		  loggingSystemZmqPublishPort=0;
+		 databaseApiUrl="";
+		  dataDefinitionSubscribePort=0;
+		  dataDefinitionRequestPort=0;
+	}
+
+	public String getDatabaseApiUrl() {
+		return databaseApiUrl;
+	}
+
+	public void setDatabaseApiUrl(String databaseApiUrl) {
+		this.databaseApiUrl = databaseApiUrl;
+	}
 
 	public String getEmailApiUrl() {
 		return emailApiUrl;
@@ -81,6 +115,23 @@ public class ConfigModel {
 
 	
 
+	
+	public String getLoggingSystemURL() {
+		return loggingSystemURL;
+	}
+
+	public void setLoggingSystemURL(String loggingSystemURL) {
+		this.loggingSystemURL = loggingSystemURL;
+	}
+
+	public int getLoggingSystemZmqPublishPort() {
+		return loggingSystemZmqPublishPort;
+	}
+
+	public void setLoggingSystemZmqPublishPort(int loggingSystemZmqPublishPort) {
+		this.loggingSystemZmqPublishPort = loggingSystemZmqPublishPort;
+	}
+
 	public String getDataModelDateFormat() {
 		return dataModelDateFormat;
 	}
@@ -89,17 +140,34 @@ public class ConfigModel {
 		this.dataModelDateFormat = dataModelDateFormat;
 	}
 
+	
+	
+	public  int getDataDefinitionSubscribePort() {
+		return dataDefinitionSubscribePort;
+	}
+
+	public  void setDataDefinitionSubscribePort(int dataDefinitionSubscribePort) {
+		this.dataDefinitionSubscribePort = dataDefinitionSubscribePort;
+	}
+
+	public  int getDataDefinitionRequestPort() {
+		return dataDefinitionRequestPort;
+	}
+
+	public  void setDataDefinitionRequestPort(int dataDefinitionRequestPort) {
+		this.dataDefinitionRequestPort = dataDefinitionRequestPort;
+	}
+
 	@Override
 	public String toString() {
-		return "ConfigModel{" +
-				"identifier='" + identifier + '\'' +
-				", dataDefinitionURL='" + dataDefinitionURL + '\'' +
-				", dataManagerURL='" + dataManagerURL + '\'' +
-				", runtimeManagerURL='" + runtimeManagerURL + '\'' +
-				", projectBuilderURL='" + projectBuilderURL + '\'' +
-				", subscriberPort=" + subscriberPort +
-				", requestPort=" + requestPort +
-				", droolsDateFormat='" + droolsDateFormat + '\'' +
-				'}';
+		return "ConfigModel [defaultIp=" + defaultIp + ", identifier=" + identifier + ", dataDefinitionURL="
+				+ dataDefinitionURL + ", dataManagerURL=" + dataManagerURL + ", runtimeManagerURL=" + runtimeManagerURL
+				+ ", projectBuilderURL=" + projectBuilderURL + ", emailApiUrl=" + emailApiUrl + ", subscriberPort="
+				+ subscriberPort + ", requestPort=" + requestPort + ", droolsDateFormat=" + droolsDateFormat
+				+ ", dataModelDateFormat=" + dataModelDateFormat + ", loggingSystemURL=" + loggingSystemURL
+				+ ", loggingSystemZmqPublishPort=" + loggingSystemZmqPublishPort + ", databaseApiUrl=" + databaseApiUrl
+				+ "]";
 	}
+
+
 }

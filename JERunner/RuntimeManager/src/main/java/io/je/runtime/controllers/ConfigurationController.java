@@ -10,9 +10,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.je.runtime.services.RuntimeDispatcher;
 import io.je.utilities.config.JEConfiguration;
-import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.constants.JEMessages;
-import io.je.utilities.logger.JELogger;
+import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.models.ConfigModel;
 import io.je.utilities.network.JEResponse;
 

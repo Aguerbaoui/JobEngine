@@ -6,20 +6,22 @@ import io.je.rulebuilder.components.UserDefinedRule;
 import io.je.rulebuilder.components.blocks.Block;
 import io.je.utilities.beans.JEEvent;
 import io.je.utilities.beans.JEVariable;
-import io.je.utilities.constants.JEMessages;
+import io.je.utilities.config.ConfigurationConstants;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.*;
+import io.je.utilities.execution.JobEngine;
 import models.JEWorkflow;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-@Document(collection="JEProject")
+@Document(collection="ProjectDefinitionCollection")
 public class JEProject {
 
     /*
@@ -27,6 +29,18 @@ public class JEProject {
     * */
     @Id
     private String projectId;
+
+    @Field("key")
+    private String projectName;
+    
+    @Field("CreatedAt")
+    private String createdAt;
+    
+    @Field("ModifiedAt")
+    private String modifiedAt;
+    
+    @Field("description")
+    private String description;
 
 
 
@@ -38,23 +52,27 @@ public class JEProject {
     /*
     * Rules in a project
     * */
-    private ConcurrentHashMap<String, JERule> rules;
+    @Transient
+    private ConcurrentHashMap<String, JERule> rules= new ConcurrentHashMap<>();
 
     /*
-    * workflows in a project
+    * Workflows in a project
     * */
-    private ConcurrentHashMap<String, JEWorkflow> workflows;
+    @Transient
+    private ConcurrentHashMap<String, JEWorkflow> workflows= new ConcurrentHashMap<>();
     
     
     /*
      * Events in a project
      * */
-     private ConcurrentHashMap<String, JEEvent> events;
+    @Transient
+     private ConcurrentHashMap<String, JEEvent> events= new ConcurrentHashMap<>();
 
 	/*
 	 * Variables in a project
 	 * */
-	private ConcurrentHashMap<String, JEVariable> variables;
+    @Transient
+	private ConcurrentHashMap<String, JEVariable> variables= new ConcurrentHashMap<>();
      
 	/*
 	 * block names
@@ -86,12 +104,12 @@ public class JEProject {
     /*
     * Constructor
     * */
-    public JEProject(String projectId, String configurationPath) {
+    public JEProject(String projectId) {
         rules = new ConcurrentHashMap<>();
         workflows = new ConcurrentHashMap<>();
         events = new ConcurrentHashMap<>();
+        variables= new ConcurrentHashMap<>();
         this.projectId = projectId;
-        this.configurationPath = configurationPath;
         isBuilt = false;
         autoReload = false;
 
@@ -103,7 +121,16 @@ public class JEProject {
 	
 
 
-	 public Map<String, String> getBlockNames() {
+	 private JEProject() {
+
+	}
+
+
+
+
+
+
+	public Map<String, String> getBlockNames() {
 		return blockNames;
 	}
 
@@ -149,6 +176,25 @@ public class JEProject {
 	}
 
 
+/*
+ * generate a unique block name from a block name base ( example : script => script44 )
+ */
+	public String generateUniqueBlockName(String blockNameBase) {
+		if (blockNameBase != null) {
+			String blockName = blockNameBase.replaceAll("\\s+", "");
+			if (!blockNameCounters.containsKey(blockName)) {
+				blockNameCounters.put(blockName, 0);
+			}
+			int counter = blockNameCounters.get(blockName);
+			while (blockNameExists(blockName + counter)) {
+				counter++;
+			}
+			blockNameCounters.put(blockName, counter + 1);
+			return blockName + counter;
+		}
+	return "";
+	}
+
     
 	/******************************************************** PROJECT **********************************************************************/
 
@@ -181,6 +227,11 @@ public class JEProject {
 
 
 	public String getConfigurationPath() {
+		if(configurationPath==null)
+		{
+			//TODO: use a default path in sioth config
+			configurationPath =  ConfigurationConstants.PROJECTS_PATH+projectName;
+		}
 		return configurationPath;
 	}
 
@@ -262,7 +313,7 @@ public class JEProject {
 	    public void updateRule(JERule rule) throws RuleNotFoundException {
 	    	if(!rules.containsKey(rule.getJobEngineElementID()))
 	    			{
-	    				throw new RuleNotFoundException(JEMessages.RULE_NOT_FOUND);
+	    		throw new RuleNotFoundException(projectId, rule.getJobEngineElementID());
 	    			}
 	        rules.put(rule.getJobEngineElementID(), rule);
 			rule.setJeObjectLastUpdate( LocalDateTime.now());
@@ -312,8 +363,7 @@ public class JEProject {
 		public void deleteRule(String ruleId) throws RuleNotFoundException {
 			if(!rules.containsKey(ruleId))
 			{
-				throw new RuleNotFoundException(JEMessages.RULE_NOT_FOUND);
-			}
+				throw new RuleNotFoundException(projectId, ruleId);			}
 			//TODO: delete file
 			rules.remove(ruleId);
 			isBuilt=false;
@@ -364,10 +414,7 @@ public class JEProject {
     * Checks if a workflow exists
     * */
     public boolean workflowExists(String workflowId) {
-        if(getWorkflowByIdOrName(workflowId) != null) {
-            return true;
-        }
-        return false;
+        return getWorkflowByIdOrName(workflowId) != null;
     }
 
     /*
@@ -468,6 +515,8 @@ public class JEProject {
 		this.events = events;
 	}
 
+	/******************************************************** Variables **********************************************************************/
+
 
     public void addVariable(JEVariable var) {
 		variables.put(var.getJobEngineElementID(), var);
@@ -482,23 +531,114 @@ public class JEProject {
 	}
 
 
-
-
-
-
-	public String generateUniqueBlockName(String blockNameBase) {
-		if (blockNameBase != null) {
-			String blockName = blockNameBase.replaceAll("\\s+", "");
-			if (!blockNameCounters.containsKey(blockName)) {
-				blockNameCounters.put(blockName, 0);
-			}
-			int counter = blockNameCounters.get(blockName);
-			while (blockNameExists(blockName + counter)) {
-				counter++;
-			}
-			blockNameCounters.put(blockName, counter + 1);
-			return blockName + counter;
-		}
-	return "";
+	public ConcurrentHashMap<String, JEVariable> getVariables() {
+		return variables;
 	}
+
+
+	public void setVariables(ConcurrentHashMap<String, JEVariable> variables) {
+		this.variables = variables;
+	}
+	
+	public JEVariable getVariable(String varId) throws  VariableNotFoundException
+	{
+		if(!variableExists(varId))
+		{
+			throw new VariableNotFoundException(JEMessages.VARIABLE_NOT_FOUND);
+		}
+		return variables.get(varId);
+	}
+
+
+
+
+
+
+	public String getProjectName() {
+		return projectName;
+	}
+
+
+
+
+
+
+	public void setProjectName(String projectName) {
+		this.projectName = projectName;
+	}
+
+
+
+
+
+
+	public String getCreatedAt() {
+		return createdAt;
+	}
+
+
+
+
+
+
+	public void setCreatedAt(String createdAt) {
+		this.createdAt = createdAt;
+	}
+
+
+
+
+
+
+	public String getModifiedAt() {
+		return modifiedAt;
+	}
+
+
+
+
+
+
+	public void setModifiedAt(String modifiedAt) {
+		this.modifiedAt = modifiedAt;
+	}
+
+
+
+
+
+
+	public String getDescription() {
+		return description;
+	}
+
+
+
+
+
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+
+
+
+
+
+	public Map<String, Integer> getBlockNameCounters() {
+		return blockNameCounters;
+	}
+
+
+
+
+
+
+	public void setBlockNameCounters(Map<String, Integer> blockNameCounters) {
+		this.blockNameCounters = blockNameCounters;
+	}
+	
+	
+	
 }

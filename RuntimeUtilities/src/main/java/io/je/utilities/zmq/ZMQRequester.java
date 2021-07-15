@@ -15,7 +15,6 @@ public class ZMQRequester {
 
     private int requestPort;
 
-    private boolean listening = true;
 
     public ZMQRequester(String url, int requestPort) {
         this.url = url;
@@ -43,13 +42,7 @@ public class ZMQRequester {
         return reply;
     }
 
-    public boolean isListening() {
-        return listening;
-    }
-
-    public void setListening(boolean listening) {
-        this.listening = listening;
-    }
+  
     public ZContext getContext() {
         return context;
     }

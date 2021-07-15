@@ -14,6 +14,7 @@ public class ProjectContainerRepository {
     static Map<String, ProjectContainer> allProjects = new ConcurrentHashMap<>();
 
 
+
     /*
      * create new project container
      */
@@ -43,7 +44,7 @@ public class ProjectContainerRepository {
             ProjectContainer project = allProjects.get(projectId);
             if (project.getStatus() == Status.RUNNING) {
                 //TODO: error management
-                project.stopRuleExecution();
+                project.stopRuleExecution(true);
             }
             project = null;
             allProjects.remove(projectId);
@@ -62,4 +63,7 @@ public class ProjectContainerRepository {
     }
 
 
+    public static Map<String, ProjectContainer> getAllProjects() {
+        return allProjects;
+    }
 }

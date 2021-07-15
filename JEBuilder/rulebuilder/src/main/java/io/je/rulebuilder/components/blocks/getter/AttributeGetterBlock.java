@@ -16,10 +16,23 @@ public class AttributeGetterBlock extends GetterBlock {
 
 	public AttributeGetterBlock(BlockModel blockModel) {
 		super(blockModel);
-		classId=blockModel.getBlockConfiguration().getClassId();
-		classPath = blockModel.getBlockConfiguration().getClassName();
-		attributeName = blockModel.getBlockConfiguration().getAttributeName();
-		specificInstances = blockModel.getBlockConfiguration().getSpecificInstances();
+		try
+		{
+			classId=blockModel.getBlockConfiguration().getClassId();
+			classPath = blockModel.getBlockConfiguration().getClassName();
+			attributeName = blockModel.getBlockConfiguration().getAttributeName();
+			specificInstances = blockModel.getBlockConfiguration().getSpecificInstances();
+			isProperlyConfigured=true;
+		}catch(Exception e) {
+			isProperlyConfigured=false;
+		}finally {
+			if(classId==null || classPath==null || attributeName==null)
+			{
+				isProperlyConfigured=false;
+
+			}
+		}
+		
 
 
 	}

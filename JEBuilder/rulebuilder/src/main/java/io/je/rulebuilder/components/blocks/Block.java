@@ -20,6 +20,7 @@ public abstract class Block extends JEObject {
    protected String ruleId;    
    protected String blockName;
    protected String blockDescription;
+   protected boolean isProperlyConfigured=true;
    
    @Transient
    protected List<Block> inputBlocks = new ArrayList<>();
@@ -43,6 +44,11 @@ public abstract class Block extends JEObject {
 	this.ruleId = ruleId;
 	this.blockName = blockName;
 	this.blockDescription = blockDescription;
+	isProperlyConfigured=true;
+	if(blockName==null)
+	{
+		isProperlyConfigured=false;
+	}
 	
 }
 	
@@ -105,6 +111,7 @@ public abstract class Block extends JEObject {
 		return blockName.replaceAll("\\s+", "") ;
 	}
 	
+
 	
 	/*
 	 * get name of variable holding he value expressed by input number index: ex: $age, $block1 ...
@@ -122,6 +129,12 @@ public abstract class Block extends JEObject {
 		}
 		return var;
 	}
+	
+	
+	
+	//get name of input of index i
+	//example : block A has 2 inputs Block B and Block C
+	//blockA.getInputRefName(1) returns "$blockC";
 	public String getInputRefName(int index)
 	{
 		String var = ""; 
@@ -238,6 +251,15 @@ public abstract class Block extends JEObject {
 		}
 	}
 
+
+	
+public boolean isProperlyConfigured() {
+		return isProperlyConfigured;
+	}
+
+	public void setProperlyConfigured(boolean isProperlyConfigured) {
+		this.isProperlyConfigured = isProperlyConfigured;
+	}
 
 public Block getInputById(String id)
 {

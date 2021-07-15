@@ -4,6 +4,7 @@ import io.je.rulebuilder.components.blocks.Block;
 import io.je.rulebuilder.components.blocks.comparison.ComparisonBlock;
 import io.je.rulebuilder.components.blocks.comparison.InRangeBlock;
 import io.je.rulebuilder.components.blocks.comparison.OutOfRangeBlock;
+import io.je.rulebuilder.components.blocks.comparison.TimeComparisonBlock;
 import io.je.rulebuilder.components.blocks.LogicBlock;
 import io.je.rulebuilder.components.blocks.arithmetic.multipleInput.*;
 import io.je.rulebuilder.components.blocks.arithmetic.singleinput.*;
@@ -16,32 +17,51 @@ import io.je.rulebuilder.components.blocks.logic.JoinBlock;
 import io.je.rulebuilder.models.BlockModel;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.AddRuleBlockException;
+import io.je.utilities.exceptions.RuleBuildFailedException;
 
 public class BlockGenerator {
 
 	
+	/**
+	 * creates a block from a block Model based on the operationId specified in the blockModel
+	 * @param blockModel
+	 * @return
+	 * @throws AddRuleBlockException
+	 * @throws RuleBuildFailedException 
+	 */
 	public static Block createBlock(BlockModel blockModel) throws AddRuleBlockException
-	{
-		/*
-		 * Comparison blocks
-		 */
-		if(blockModel.getOperationId()>=2001 && blockModel.getOperationId() <= 2015)
+	{		
+		int operationId=blockModel.getOperationId();
+		
+		/***************************************** COMPARISON BLOCKS ************************************************/
+		
+		if(operationId>=2001 && operationId <= 2013)
 		{
 			return new ComparisonBlock(blockModel);
 		}
 		
-		switch (blockModel.getOperationId()) {
-		/*
-		 * Comparison
-		 */
+		switch (operationId) {
+		case 2014:
+			return new TimeComparisonBlock(blockModel);
+		case 2015:
+			return new TimeComparisonBlock(blockModel);
 		case 2016:
 			return new InRangeBlock(blockModel);
 		case 2017:
 			return new OutOfRangeBlock(blockModel);
+		default : 
+			break;
+		}
+		
+		
+		/***************************************** ARITHMETIC BLOCKS ************************************************/
 
-		/*
-		 * Arithmetic blocks
-		 */
+		if(operationId>=1005 && operationId <= 1026)
+		{
+			return new CalculationBlock(blockModel);
+		}
+		switch (operationId) {
+
 		// sum
 		case 1001:
 			return new SumBlock(blockModel);
@@ -54,55 +74,6 @@ public class BlockGenerator {
 		// Divide
 		case 1004:
 			return new DivideBlock(blockModel);
-		// Factorial
-		case 1005:
-			return new FactorialBlock(blockModel);
-		// Square
-		case 1006:
-			return new SquareBlock(blockModel);
-		// SquareRoot
-		case 1007:
-			return new SQRTBlock(blockModel);
-		// Power
-		case 1008:
-			return new PowerBlock(blockModel);
-		// change sign
-		case 1009:
-			return new ChangeSignBlock(blockModel);
-		case 1010:
-			return new BiasBlock(blockModel);
-		case 1011:
-			return new GainBlock(blockModel);
-		case 1012:
-			return new MultiplicativeInverseBlock(blockModel);
-		case 1013:
-			return new AbsBlock(blockModel);
-		case 1014:
-			return new ExpBlock(blockModel);
-		case 1015:
-			return new Log10Block(blockModel);
-		case 1016:
-			return new TanBlock(blockModel);
-		case 1017:
-			return new ArctanBlock(blockModel);
-		case 1018:
-			return new ArccosBlock(blockModel);
-		case 1019:
-			return new ArcsinBlock(blockModel);
-		case 1020:
-			return new FloorBlock(blockModel);
-		case 1021:
-			return new TruncateBlock(blockModel);
-		case 1022:
-			return new CeilingBlock(blockModel);
-		case 1023:
-			return new SinBlock(blockModel);
-		case 1024:
-			return new CosBlock(blockModel);
-		case 1025:
-			return new LnBlock(blockModel);
-		case 1026:
-			return new LengthBlock(blockModel);
 		case 1027:
 			return new UnitConversionBlock(blockModel);
 		case 1028:

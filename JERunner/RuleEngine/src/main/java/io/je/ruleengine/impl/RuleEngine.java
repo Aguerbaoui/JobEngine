@@ -2,6 +2,7 @@ package io.je.ruleengine.impl;
 
 import io.je.ruleengine.models.Rule;
 import io.je.utilities.beans.JEData;
+import io.je.utilities.classloader.JEClassLoader;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.*;
 import io.je.utilities.runtimeobject.JEObject;
@@ -51,7 +52,7 @@ public class RuleEngine {
 	public static boolean stopRuleExecution(String projectId) {
 
 		ProjectContainer project = projectManager.getProjectContainer(projectId);
-		return project.stopRuleExecution();
+		return project.stopRuleExecution(true);
 	}
 
 	public static boolean fireRules(String projectId, List<Rule> rules, boolean removePreviouslyAddedRules) {
@@ -64,6 +65,12 @@ public class RuleEngine {
 		projectManager.deleteProjectContainer(projectId);
 	}
 
+	/*public static void setClassLoader(JEClassLoader loader) {
+		for(ProjectContainer projectContainer: projectManager.getAllProjects().values()) {
+			//projectContainer.setClassLoader(loader);
+		}
+	}
+*/
 
 	public boolean addRules(List<Rule> rules) throws RuleAlreadyExistsException, RuleCompilationException,
 			JEFileNotFoundException, RuleNotAddedException {
@@ -163,6 +170,12 @@ public class RuleEngine {
 	public static Rule getRule(String projectId, String ruleId) {
 		ProjectContainer project = projectManager.getProjectContainer(projectId);
 		return project.getRule(ruleId);
+	}
+
+	public static void deleteFact(String projectId, String factId) {
+		ProjectContainer project = projectManager.getProjectContainer(projectId);
+		project.retractFact(factId);
+		
 	}
 
 

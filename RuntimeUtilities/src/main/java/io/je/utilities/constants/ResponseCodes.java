@@ -47,6 +47,7 @@ public class ResponseCodes {
 	public static final int EMPTY_SCRIPT = 1034;
 	public static final int VARIABLE_NOT_FOUND = 1035;
 	public static final int VARIABLE_EXISTS = 1036;
+	public static final int VARIABLE_ERROR = 1037;
 
 
 }

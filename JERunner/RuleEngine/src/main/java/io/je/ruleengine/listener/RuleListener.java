@@ -1,5 +1,6 @@
 package io.je.ruleengine.listener;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -8,6 +9,8 @@ import java.util.Map;
 import org.kie.api.event.rule.*;
 
 import io.je.ruleengine.models.RuleMatch;
+import io.je.utilities.beans.JEBlockMessage;
+import io.je.utilities.beans.JEMessage;
 import io.je.utilities.execution.Executioner;
 import io.je.utilities.ruleutils.RuleIdManager;
 import io.je.utilities.runtimeobject.JEObject;
@@ -15,7 +18,10 @@ import io.je.utilities.runtimeobject.JEObject;
 public class RuleListener extends DefaultAgendaEventListener {
 	
 	private String projectId;
-	private  HashMap<String,RuleMatch> ruleMatches = new HashMap<String, RuleMatch>();
+	//private  HashMap<String,RuleMatch> ruleMatches = new HashMap<String, RuleMatch>();
+	
+	
+	
 	
 
     @Override
@@ -24,7 +30,12 @@ public class RuleListener extends DefaultAgendaEventListener {
 
     }
 
-    @Override
+    public RuleListener(String projectId) {
+		super();
+		this.projectId = projectId;
+	}
+
+	@Override
     public void matchCancelled(MatchCancelledEvent event) {
         // TODO Auto-generated method stub
 
@@ -38,8 +49,38 @@ public class RuleListener extends DefaultAgendaEventListener {
 
     @Override
     public void afterMatchFired(AfterMatchFiredEvent event) {
-    	
+ 
+    	JEMessage ruleMessage = new JEMessage();
+    	ruleMessage.setType("RuleExecutionMessage");
     	String ruleId=RuleIdManager.retrieveIdFromSubRuleName(event.getMatch().getRule().getName());
+    	ruleMessage.setExecutionTime(LocalDateTime.now().toString());
+    	List<String> instances = new ArrayList<>();
+    	for(Object instance : event.getMatch().getObjects())
+    	{
+    		if(instance instanceof JEObject)
+    		{
+    			JEObject jeInstance = (JEObject) instance;
+        		//TODO switch to name maybe?
+        		instances.add(jeInstance.getJobEngineElementID());
+    		}
+    		
+    	}
+    	ruleMessage.setInstanceNames(instances);
+
+    	//get declared variables 
+    	for(String declaredVariableName : event.getMatch().getDeclarationIds())
+    	{
+    		if(event.getMatch().getDeclarationValue(declaredVariableName) instanceof JEObject)
+    		{
+    			
+    		}
+    		ruleMessage.addBlockMessage(new JEBlockMessage(declaredVariableName,event.getMatch().getDeclarationValue(declaredVariableName).toString()));
+    	}
+    	
+    	Executioner.informRuleBlock( projectId,  ruleId, "Rule was fired",LocalDateTime.now().toString(), "APP");
+
+    	
+    	/*String ruleId=RuleIdManager.retrieveIdFromSubRuleName(event.getMatch().getRule().getName());
     	RuleMatch match = ruleMatches.get(ruleId);
     	if(match==null)
     	{
@@ -63,7 +104,7 @@ public class RuleListener extends DefaultAgendaEventListener {
     	match.setInstancesMatched(instances);
     	ruleMatches.put(ruleId, match);
     	//send match to monitoring
-    	
+    	*/
     	
     }
 

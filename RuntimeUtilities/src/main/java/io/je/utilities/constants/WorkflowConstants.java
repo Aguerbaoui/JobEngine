@@ -14,7 +14,7 @@ public class WorkflowConstants {
     public static final  String TASKS_LISTENER_IMPLEMENTATION = "io.je.executionListeners.TasksListener";
     public static final  String START_PROCESS = "start";
     public static final  String END_PROCESS = "end";
-    public static final  String DB_WRITE_TASK_IMPLEMENTATION = "io.je.serviceTasks.DatabaseInsertServiceTask";
+    public static final  String DB_TASK_IMPLEMENTATION = "io.je.serviceTasks.DatabaseServiceTask";
     public static final  String MAIL_TASK_IMPLEMENTATION = "io.je.serviceTasks.MailServiceTask";
     public static final  String START_TYPE = "start";
     public static final  String END_TYPE = "end";
@@ -31,7 +31,9 @@ public class WorkflowConstants {
     public static final String DATETIMEREVENT = "datetimerevent";
     public static final String CYCLETIMEREVENT = "cycletimerevent";
     public static final String DURATIONTIMEREVENT = "durationtimerevent";
-    public static final String DBSERVICETASK_TYPE = "dbservicetask";
+    public static final String DBREADSERVICETASK_TYPE = "dbreadservicetask";
+    public static final String DBWRITESERVICETASK_TYPE = "dbwriteservicetask";
+    public static final String DBEDITSERVICETASK_TYPE = "dbeditservicetask";
     public static final String MAILSERVICETASK_TYPE = "mailservicetask";
     public static final String BUILDING = "building";
     public static final String RUNNING = "running";
@@ -46,6 +48,8 @@ public class WorkflowConstants {
     public static final String URL = "url";
     public static final String INPUTS = "inputs";
     public static final String OUTPUTS = "outputs";
+    public static final String REQUEST = "request";
+    public static final String DATABASE_ID = "databaseId";
     public static final String USE_DEFAULT_CREDENTIALS = "bUseDefaultCredentials";
     public static final String PORT = "iPort";
     public static final String SENDER_ADDRESS = "strSenderAddress";

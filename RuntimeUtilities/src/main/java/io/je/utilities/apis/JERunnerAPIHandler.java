@@ -13,10 +13,9 @@ import io.je.utilities.logger.JELogger;
 import io.je.utilities.models.WorkflowModel;
 import io.je.utilities.network.JEResponse;
 import io.je.utilities.network.Network;
-import org.springframework.web.multipart.MultipartFile;
-
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import static io.je.utilities.apis.Request.*;
@@ -91,6 +90,18 @@ public class JERunnerAPIHandler {
         return sendRequestWithBody(requestUrl, requestModel);
 
     }
+    
+    public static JEResponse updateClass(HashMap<String, String> requestModel) throws JERunnerErrorException, InterruptedException, ExecutionException {
+        String requestUrl = runtimeManagerBaseApi + UPDATE_CLASS;
+        return sendRequestWithBody(requestUrl, requestModel);
+
+    }
+
+    public static JEResponse addClasses(List<HashMap> requestModel) throws JERunnerErrorException, InterruptedException, ExecutionException {
+        String requestUrl = runtimeManagerBaseApi + ADD_CLASSES;
+        return sendRequestWithBody(requestUrl, requestModel);
+
+    }
 
     ///////////////////////////////// EVENTS//////////////////////////////
 
@@ -100,7 +111,7 @@ public class JERunnerAPIHandler {
     }
 
     // add event
-    public static JEResponse addEvent(HashMap<String, String> requestModel) throws JERunnerErrorException, IOException, InterruptedException, ExecutionException {
+    public static JEResponse addEvent(HashMap<String, Object> requestModel) throws JERunnerErrorException, IOException, InterruptedException, ExecutionException {
         String requestUrl = runtimeManagerBaseApi + EVENT_ADD_EVENT;
         return sendRequestWithBody(requestUrl, requestModel);
     }
@@ -207,4 +218,17 @@ public class JERunnerAPIHandler {
         //JELogger.debug(JEMessages.ADDING_JAR_FILE_TO_RUNNER + payload);
         sendRequestWithBody(url, payload);
     }
+
+    public static JEResponse untriggerEvent(String eventId, String projectId) throws JERunnerErrorException, InterruptedException, ExecutionException {
+        String requestUrl = runtimeManagerBaseApi + EVENT_UNTRIGGER_EVENT + projectId + "/" + eventId;
+        return sendRequest(requestUrl);
+    }
+
+	public static JEResponse writeVariableValue(String projectId,String variableId, Object value) throws JERunnerErrorException, IOException, InterruptedException, ExecutionException {
+		 String requestUrl = runtimeManagerBaseApi + WRITE_TO_VARIABLE + projectId + "/" + variableId;
+	       return  sendRequestWithStringBody(requestUrl,String.valueOf(value));
+		
+	}
+
+
 }

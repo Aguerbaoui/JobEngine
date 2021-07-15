@@ -1,10 +1,11 @@
 package io.je.project.controllers;
 
+import static io.je.utilities.constants.JEMessages.ERROR_DELETING_EVENT;
+
 import java.util.Collection;
 
 import io.je.project.exception.JEExceptionHandler;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -20,13 +21,11 @@ import org.springframework.web.bind.annotation.RestController;
 import io.je.project.services.EventService;
 import io.je.project.services.ProjectService;
 import io.je.utilities.beans.JEEvent;
-import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.constants.JEMessages;
+import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.logger.JELogger;
 import io.je.utilities.models.EventModel;
 import io.je.utilities.network.JEResponse;
-
-import static io.je.utilities.constants.JEMessages.ERROR_DELETING_EVENT;
 
 /*
  * Project Rest Controller
@@ -37,11 +36,12 @@ import static io.je.utilities.constants.JEMessages.ERROR_DELETING_EVENT;
 public class EventController {
 
 
-	@Autowired
-	ProjectService projectService;
 
 	@Autowired
 	EventService eventService;
+	
+	@Autowired
+	ProjectService projectService;
 
 	/*
 	 * Retrieve all events in a project
@@ -51,6 +51,8 @@ public class EventController {
 	public ResponseEntity<?> getAllEvents(@PathVariable("projectId") String projectId) {
 		Collection<?> events = null;
 		try {
+			projectService.getProject(projectId);
+
 			events = eventService.getAllEvents(projectId);
 			if (events.isEmpty()) {
 				return ResponseEntity.noContent().build();
@@ -66,7 +68,7 @@ public class EventController {
 	}
 
 	/*
-	 * Retrieve all events in a project
+	 * Retrieve an event from a project
 	 */
 	@GetMapping(value = "{projectId}/getEvent/{eventId}")
 	@ResponseBody
@@ -74,8 +76,8 @@ public class EventController {
 			@PathVariable("eventId") String eventId) {
 		JEEvent event = null;
 
-
 		try {
+			projectService.getProject(projectId);
 			event = eventService.getEvent(projectId, eventId);
 			if (event == null) {
 				return ResponseEntity.noContent().build();
@@ -97,9 +99,9 @@ public class EventController {
 	public ResponseEntity<?> addEvent(@PathVariable("projectId") String projectId, @RequestBody EventModel eventModel) {
 
 		try {
+			projectService.getProject(projectId);
 
 			eventService.addEvent(projectId, eventModel);
-			projectService.saveProject(projectId);
 
 		} catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
@@ -110,6 +112,10 @@ public class EventController {
 	}
 	
 	
+	
+
+	
+	
 
 	/*
 	 * update event
@@ -118,9 +124,9 @@ public class EventController {
 	public ResponseEntity<?> updateEvent(@PathVariable("projectId") String projectId, @RequestBody EventModel eventModel) {
 
 		try {
+			projectService.getProject(projectId);
 
 			eventService.updateEvent(projectId, eventModel);
-			projectService.saveProject(projectId);
 
 		} catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
@@ -139,9 +145,8 @@ public class EventController {
 			@PathVariable("eventId") String eventId) {
 
 		try {
-
+			projectService.getProject(projectId);
 			eventService.deleteEvent(projectId, eventId);
-			projectService.saveProject(projectId);
 
 		} catch (Exception e) {
 			JELogger.info(ERROR_DELETING_EVENT);
@@ -151,4 +156,50 @@ public class EventController {
 		JELogger.info(getClass(), " Event [ id="+eventId+"] deleted successfully");
 		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.EVENT_DELETED));
 	}
+	
+	
+	
+	
+	/*
+	 * to be deleted 
+	 */
+	
+	
+	
+	/*
+	 * trigger event
+	 */
+	@GetMapping(value = "/triggerEvent/{projectId}/{eventId}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> triggerEvent(@PathVariable("projectId") String projectId, @PathVariable("eventId") String eventId) {
+
+		try {
+
+			eventService.triggerEvent(projectId, eventId);
+
+		} catch (Exception e) {
+			return JEExceptionHandler.handleException(e);
+
+		}
+		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.EVENT_ADDED));
+	}
+	
+	
+	/*
+	 * untrigger event
+	 */
+	@GetMapping(value = "/untriggerEvent/{projectId}/{eventId}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> untriggerEvent(@PathVariable("projectId") String projectId, @PathVariable("eventId") String eventId) {
+
+		try {
+
+			eventService.untriggerEvent(projectId, eventId);
+
+		} catch (Exception e) {
+			return JEExceptionHandler.handleException(e);
+
+		}
+		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.EVENT_ADDED));
+	}
+	
+	
 }

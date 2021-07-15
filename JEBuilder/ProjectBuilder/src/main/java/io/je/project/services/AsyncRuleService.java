@@ -27,7 +27,7 @@ public class AsyncRuleService {
 			IOException, InterruptedException, ExecutionException {
 		JEProject project = ProjectService.getProjectById(projectId);
 		 if (!project.ruleExists(ruleId)) {
-			throw new RuleNotFoundException(JEMessages.RULE_NOT_FOUND);
+			throw new RuleNotFoundException(projectId, ruleId);
 		}
 		JELogger.trace(" [projectId="+ projectId +" ]" + JEMessages.BUILDING_RULE +" : " + project.getRule(ruleId).getRuleName());
 		RuleBuilder.buildRule(project.getRule(ruleId), project.getConfigurationPath());

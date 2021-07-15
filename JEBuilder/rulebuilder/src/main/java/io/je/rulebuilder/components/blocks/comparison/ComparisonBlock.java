@@ -2,6 +2,7 @@ package io.je.rulebuilder.components.blocks.comparison;
 
 
 import io.je.rulebuilder.components.blocks.PersistableBlock;
+import io.je.rulebuilder.components.blocks.arithmetic.singleinput.SingleInputArithmeticBlock;
 import io.je.rulebuilder.components.blocks.getter.AttributeGetterBlock;
 import io.je.rulebuilder.config.Keywords;
 import io.je.rulebuilder.models.BlockModel;
@@ -12,11 +13,37 @@ import io.je.utilities.exceptions.RuleBuildFailedException;
  */
 public  class ComparisonBlock extends PersistableBlock {
 	
+	/*
+	 * comparison operator
+	 */
 	protected String operator;
+	
+	/*
+	 * static operation threshold. 
+	 * the threshold should be null if this block has more than 1 input
+	 * In the In/Out of Raneg blocks, this attributes holds the minimum value
+	 */
+	
 	String threshold=null;
+	/*
+	 * In the In/Out of Raneg blocks, this attributes holds the maximum value
+	 */
 	String maxRange=null;
+	
+	/*
+	 * In/Out Of Range parameter 
+	 */
 	boolean includeBounds=false;
+	boolean formatToString=false;
 
+	
+	
+	protected ComparisonBlock(String jobEngineElementID, String jobEngineProjectID, String ruleId, String blockName,
+			String blockDescription, int timePersistenceValue, String timePersistenceUnit) {
+		super(jobEngineElementID, jobEngineProjectID, ruleId, blockName, blockDescription, timePersistenceValue,
+				timePersistenceUnit);
+		// TODO Auto-generated constructor stub
+	}
 	public ComparisonBlock(BlockModel blockModel) {
 		super(blockModel.getBlockId(), blockModel.getProjectId(), blockModel.getRuleId(),blockModel.getBlockName(),
 				blockModel.getDescription() ,
@@ -32,19 +59,40 @@ public  class ComparisonBlock extends PersistableBlock {
 		}
 		
 		operator = getOperatorByOperationId(blockModel.getOperationId());
+		formatToString = (blockModel.getOperationId()>=2007 && blockModel.getOperationId()<=2015);
+		isProperlyConfigured=true;
+		if(threshold==null && inputBlockIds.size() < 2)
+		{
+			isProperlyConfigured=false;
+		}
+		
 		
 	}
 	protected String getOperationExpression()
 	{
+		String firstOperand = null;
 		if(inputBlocks.get(0) instanceof AttributeGetterBlock)
 		{
-		return inputBlocks.get(0).getRefName()+ getOperator() + threshold;
+			firstOperand = inputBlocks.get(0).getRefName();
 		}
 		else
 		{
-			return "doubleValue " + getOperator() + threshold;
-
+			if(inputBlocks.get(0) instanceof SingleInputArithmeticBlock)
+			{
+				SingleInputArithmeticBlock input = (SingleInputArithmeticBlock) inputBlocks.get(0);
+				if(input.getDefaultType().equals("string"))
+				{
+					firstOperand = "this ";
+				}
+				else
+				{
+					firstOperand = "doubleValue ";
+				}
+						
+			}
 		}
+		return firstOperand+ getOperator() + formatOperator(threshold);
+
 	}
 	
 	public ComparisonBlock() {
@@ -75,6 +123,7 @@ public  class ComparisonBlock extends PersistableBlock {
 					getOperationExpression());
 			expression.append(inputExpression);
 
+			//in range / out of range blocks
 		} else if (inputBlocks.size() == 3) {
 			String firstOperand = inputBlocks.get(1).getExpression();
 			expression.append(firstOperand);
@@ -86,6 +135,7 @@ public  class ComparisonBlock extends PersistableBlock {
 					getOperationExpression());
 			expression.append(secondOperand);
 
+			//comparison blocks
 		} else if (inputBlocks.size() == 2) {
 			String firstOperand = inputBlocks.get(1).getExpression();
 			expression.append(firstOperand);
@@ -98,6 +148,7 @@ public  class ComparisonBlock extends PersistableBlock {
 		return expression.toString();
 	}
 
+	//check number of inputs
 	protected void checkBlockConfiguration() throws RuleBuildFailedException {
 		if (threshold == null && inputBlocks.size() != 2) {
 			throw new RuleBuildFailedException(blockName + " is not configured properly");
@@ -247,9 +298,9 @@ public  class ComparisonBlock extends PersistableBlock {
 		case 2013:
 			return "";
 		case 2014:
-			return "<";
-		case 2015:
 			return ">";
+		case 2015:
+			return "<";
 		default:
 			return null;
 		}
@@ -257,6 +308,9 @@ public  class ComparisonBlock extends PersistableBlock {
 	}
 
 
+	public String formatOperator(String operator) {
+		return formatToString? "\""+ operator +"\"":operator;
+	}
 
 	
 

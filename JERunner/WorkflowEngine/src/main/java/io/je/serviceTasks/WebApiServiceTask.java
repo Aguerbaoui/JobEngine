@@ -1,14 +1,16 @@
 package io.je.serviceTasks;
 
 import com.squareup.okhttp.Response;
+
 import io.je.utilities.constants.JEMessages;
-import io.je.utilities.logger.JELogger;
+import io.je.utilities.logger.*;
 import io.je.utilities.network.Network;
 import io.je.utilities.string.JEStringSubstitutor;
 import io.je.utilities.string.JEStringUtils;
 import org.activiti.engine.delegate.BpmnError;
 import org.activiti.engine.delegate.DelegateExecution;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 
 public class WebApiServiceTask extends ServiceTask{
@@ -36,6 +38,9 @@ public class WebApiServiceTask extends ServiceTask{
         }
         try {
             Response response = network.call();
+            LogMessage msg = new LogMessage(LogLevel.INFORM,  "Web task response code = " + response.code(),  LocalDateTime.now().toString(), "JobEngine",  task.getProjectId(),
+                    task.getProcessId(), LogSubModule.WORKFLOW, task.getTaskName(), null, "Log", "") ;
+            ZMQLogPublisher.publish(msg);
             JELogger.info(JEMessages.NETWORK_CALL_RESPONSE_IN_WEB_SERVICE_TASK + " = " + response.body().string());
         } catch (Exception e) {
             JELogger.error("Error = " + Arrays.toString(e.getStackTrace()));

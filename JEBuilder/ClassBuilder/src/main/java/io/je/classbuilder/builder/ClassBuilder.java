@@ -13,8 +13,9 @@ import org.burningwave.core.classes.TypeDeclarationSourceGenerator;
 import org.burningwave.core.classes.UnitSourceGenerator;
 import org.burningwave.core.classes.VariableSourceGenerator;
 
+
 import io.je.classbuilder.entity.ClassType;
-import io.je.classbuilder.models.ClassModel;
+import io.je.classbuilder.models.ClassDefinition;
 import io.je.classbuilder.models.FieldModel;
 import io.je.classbuilder.models.MethodModel;
 import io.je.utilities.config.JEConfiguration;
@@ -31,15 +32,16 @@ import io.je.utilities.string.JEStringUtils;
  */
 public class ClassBuilder {
 
+	
 
 	/*
 	 * build .java class/interface/enum from classModel
 	 * returns  path where file was created
 	 */
-	public static String buildClass(ClassModel classModel, String generationPath) throws AddClassException, ClassLoadException {
+	public static String buildClass(ClassDefinition classDefinition, String generationPath) throws AddClassException, ClassLoadException {
 		
 		//check if class format is valid
-		if(classModel.getName()==null)
+		if(classDefinition.getName()==null)
 		{
 			JELogger.error(ClassBuilder.class, JEMessages.CLASS_NAME_NULL);
 			throw new AddClassException(JEMessages.CLASS_NAME_NULL);
@@ -49,15 +51,15 @@ public class ClassBuilder {
 	
 		
 		//generate class
-		if (classModel.getIsClass()) {
-			return  generateClass(classModel, generationPath);
+		if (classDefinition.getIsClass()) {
+			return  generateClass(classDefinition, generationPath);
 			
 
 		}
 
 		//generate interface
-		if (classModel.getIsInterface()) {
-			return generateInterface(classModel, generationPath);
+		if (classDefinition.getIsInterface()) {
+			return generateInterface(classDefinition, generationPath);
 			
 		}
 		return null;
@@ -68,6 +70,11 @@ public class ClassBuilder {
 	private static void addImports(List<String> imports, UnitSourceGenerator unitSG ) {
 		//TODO : remove harcoded imports
 		unitSG.addImport("com.fasterxml.jackson.annotation.JsonProperty");
+		unitSG.addImport("com.fasterxml.jackson.annotation.JsonFormat");
+		unitSG.addImport("com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer");
+		unitSG.addImport("com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer");
+		unitSG.addImport("com.fasterxml.jackson.databind.annotation.JsonSerialize");
+		unitSG.addImport("com.fasterxml.jackson.databind.annotation.JsonDeserialize");
 		unitSG.addImport("io.je.utilities.logger.JELogger");
 		unitSG.addImport("java.lang.*");
 		unitSG.addImport("java.util.*");
@@ -75,29 +82,30 @@ public class ClassBuilder {
 		unitSG.addImport("javax.sql.*");
 		unitSG.addImport("io.je.utilities.execution.*");
 		unitSG.addImport("io.je.utilities.models.*");
+		//TODO: add job engine api 
 		if (imports != null && !imports.isEmpty()) {
-			{
+			
 				for (String import_ : imports) {
-					unitSG.addImport(import_);
+					//unitSG.addImport(import_);
 				}
 			}
-			}
+			
 	}
 		
 
 	/*
 	 * generate an interface
 	 */
-	private static String generateInterface(ClassModel classModel, String generationPath) throws ClassLoadException {
-		 UnitSourceGenerator unitSG = UnitSourceGenerator.create(ClassBuilderConfig.genrationPackageName);
+	private static String generateInterface(ClassDefinition classDefinition, String generationPath) throws ClassLoadException {
+		 UnitSourceGenerator unitSG = UnitSourceGenerator.create(ClassBuilderConfig.generationPackageName);
 			//add imports
-			addImports(classModel.getImports(),unitSG);
+			addImports(classDefinition.getImports(),unitSG);
 		// class name
-		String interfaceName = classModel.getName();
+		String interfaceName = classDefinition.getName();
 		TypeDeclarationSourceGenerator type = TypeDeclarationSourceGenerator.create(interfaceName);
 		ClassSourceGenerator newInterface = ClassSourceGenerator.createInterface(type);
 		// class modifier
-		newInterface.addModifier(getModifier(classModel.getClassVisibility()));
+		newInterface.addModifier(getModifier(classDefinition.getClassVisibility()));
 
 		// TODO: add interface methods
 		
@@ -105,9 +113,9 @@ public class ClassBuilder {
 		String inheritedClass = null;
 		List<String> inheritedInterfaces = new ArrayList<String>();
 
-		if (classModel.getBaseTypes() != null && !classModel.getBaseTypes().isEmpty()) {
+		if (classDefinition.getBaseTypes() != null && !classDefinition.getBaseTypes().isEmpty()) {
 			
-			for(String classId : classModel.getBaseTypes())
+			for(String classId : classDefinition.getBaseTypes())
 			{
 				if(ClassManager.getClassType(classId) == ClassType.CLASS) {
 					inheritedClass=classId ;
@@ -134,7 +142,7 @@ public class ClassBuilder {
 		
 		// store class
 				unitSG.addClass(newInterface);
-				String filePath= generationPath + "\\" + ClassBuilderConfig.genrationPackageName  + "\\" + classModel.getName() +".java" ;
+				String filePath= generationPath + "\\" + ClassBuilderConfig.generationPackageName  + "\\" + classDefinition.getName() +".java" ;
 				File file = new File(generationPath);
 				file.delete();
 				unitSG.storeToClassPath(generationPath);
@@ -150,20 +158,20 @@ public class ClassBuilder {
 	/*
 	 * generate a class
 	 */
-	private static String generateClass(ClassModel classModel, String generationPath) throws ClassLoadException {
-		 UnitSourceGenerator unitSG = UnitSourceGenerator.create(ClassBuilderConfig.genrationPackageName);
+	private static String generateClass(ClassDefinition classDefinition, String generationPath) throws ClassLoadException {
+		 UnitSourceGenerator unitSG = UnitSourceGenerator.create(ClassBuilderConfig.generationPackageName);
 			//add imports
-			addImports(classModel.getImports(),unitSG);
+			addImports(classDefinition.getImports(),unitSG);
 			
 
 		// class name
-		String className = classModel.getName();
+		String className = classDefinition.getName();
 		TypeDeclarationSourceGenerator type = TypeDeclarationSourceGenerator.create(className);
 		ClassSourceGenerator newClass = ClassSourceGenerator.create(type);
 		// class visibility
-		newClass.addModifier(getModifier(classModel.getClassVisibility()));
+		newClass.addModifier(getModifier(classDefinition.getClassVisibility()));
 		// inheritance semantics
-		String inheritanceSemantics = classModel.getInheritanceSemantics();
+		String inheritanceSemantics = classDefinition.getInheritanceSemantics();
 		if(inheritanceSemantics!=null && !inheritanceSemantics.isEmpty())
 		{
 			newClass.addModifier(getModifier(inheritanceSemantics));
@@ -173,14 +181,15 @@ public class ClassBuilder {
 
 
 		// attributes
-		if (classModel.getAttributes() != null) {
-			for (FieldModel field : classModel.getAttributes()) {
+		if (classDefinition.getAttributes() != null) {
+			for (FieldModel field : classDefinition.getAttributes()) {
 				//TODO: all attributes are public because the data def rest api doesn't provide the attribute's modifier
 				VariableSourceGenerator newField= generateField(field).addModifier(getModifier(field.getFieldVisibility()));
 				if(field.getType().equalsIgnoreCase("DATETIME"))
-				{
-					newField.addAnnotation(new AnnotationSourceGenerator("@JsonFormat (shape = JsonFormat.Shape.STRING, pattern = \""+JEConfiguration.getDataModelDateFormat()+"\")"));
-					
+				{					 
+					newField.addAnnotation(new AnnotationSourceGenerator("JsonDeserialize(using = LocalDateTimeDeserializer.class)"));
+					newField.addAnnotation(new AnnotationSourceGenerator("JsonSerialize(using = LocalDateTimeSerializer.class)"));
+					newField.addAnnotation(new AnnotationSourceGenerator("JsonFormat (shape = JsonFormat.Shape.STRING, pattern = \""+JEConfiguration.getDataModelDateFormat()+"\")"));					
 				}
 				newClass.addField(newField);
 				String attributeName = field.getName();
@@ -209,8 +218,8 @@ public class ClassBuilder {
 			
 		}
 		// methods
-		if (classModel.getMethods() != null) {
-			for (MethodModel methodModel : classModel.getMethods()) {
+		if (classDefinition.getMethods() != null) {
+			for (MethodModel methodModel : classDefinition.getMethods()) {
 				String methodName = methodModel.getMethodName();
 				String methodReturnType = methodModel.getReturnType();
 				String methodModifier = methodModel.getMethodVisibility();
@@ -235,10 +244,10 @@ public class ClassBuilder {
 
 		List<String> inheritedInterfaces = new ArrayList<String>();
 
-		if (classModel.getBaseTypes() == null || classModel.getBaseTypes().isEmpty()) {
+		if (classDefinition.getBaseTypes() == null || classDefinition.getBaseTypes().isEmpty()) {
 			newClass.expands(JEObject.class);
 		} else {
-			for(String classId : classModel.getBaseTypes())
+			for(String classId : classDefinition.getBaseTypes())
 			{
 				if(ClassManager.getClassType(classId) == ClassType.CLASS) {
 					inheritedClass.add(classId) ;
@@ -280,7 +289,7 @@ public class ClassBuilder {
 
 		// store class
 		unitSG.addClass(newClass);
-		String filePath= generationPath + "\\" + ClassBuilderConfig.genrationPackageName  + "\\" + className +".java" ;
+		String filePath= generationPath + "\\" + ClassBuilderConfig.generationPackageName  + "\\" + className +".java" ;
 		File file = new File(generationPath);
 		file.delete();
 		unitSG.storeToClassPath(generationPath);

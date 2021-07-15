@@ -51,6 +51,22 @@ public class TypeConverterBlock extends SingleInputArithmeticBlock {
 		}
 	}
 
+	public String getTypeToConvertTo() {
+		return typeToConvertTo;
+	}
+
+	public void setTypeToConvertTo(String typeToConvertTo) {
+		this.typeToConvertTo = typeToConvertTo;
+	}
+
+	public String getDateFormat() {
+		return dateFormat;
+	}
+
+	public void setDateFormat(String dateFormat) {
+		this.dateFormat = dateFormat;
+	}
+
 
 
 	

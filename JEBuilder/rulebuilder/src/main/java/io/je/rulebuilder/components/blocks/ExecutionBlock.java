@@ -9,6 +9,15 @@ public abstract class ExecutionBlock extends Block {
 				blockModel.getDescription());
 	}
 
+	
+	
+	public ExecutionBlock(String jobEngineElementID, String jobEngineProjectID, String ruleId, String blockName,
+			String blockDescription) {
+		super(jobEngineElementID, jobEngineProjectID, ruleId, blockName, blockDescription);
+	}
+
+
+
 	public ExecutionBlock() {
 		super();
 	}

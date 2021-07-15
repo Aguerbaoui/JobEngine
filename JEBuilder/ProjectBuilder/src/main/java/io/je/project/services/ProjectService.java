@@ -2,9 +2,11 @@ package io.je.project.services;
 
 import io.je.project.beans.JEProject;
 import io.je.project.controllers.ProjectController;
+import io.je.project.repository.EventRepository;
 import io.je.project.repository.ProjectRepository;
 import io.je.utilities.apis.JERunnerAPIHandler;
 import io.je.utilities.beans.JEEvent;
+import io.je.utilities.beans.JEVariable;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.*;
 import io.je.utilities.logger.JELogger;
@@ -43,6 +45,9 @@ public class ProjectService {
 
     @Autowired
     EventService eventService;
+    
+    @Autowired
+    VariableService variableService;
 
     @Autowired
     ClassService classService;
@@ -86,10 +91,17 @@ public class ProjectService {
         catch (Exception e) {}
         JELogger.trace("[projectId= "+id+"]"+  JEMessages.DELETING_PROJECT);
         JERunnerAPIHandler.cleanProjectDataFromRunner(id);
-        synchronized (projectRepository) {
+    /*    synchronized (projectRepository) {
             projectRepository.deleteById(id);
         }
+        */
         loadedProjects.remove(id);
+        ruleService.deleteAll(id);
+        workflowService.deleteAll(id);
+        eventService.deleteAll(id);
+        variableService.deleteAll(id);
+        projectRepository.deleteById(id);
+
         return CompletableFuture.completedFuture(null);
 
     }
@@ -101,11 +113,16 @@ public class ProjectService {
     public static ConcurrentMap<String, JEProject> getLoadedProjects() {
         return loadedProjects;
     }
+    
+    
+
 
     /*
      * Return a project loaded in memory
      */
 
+   
+    
     public static JEProject getProjectById(String id) {
         return loadedProjects.get(id);
 
@@ -188,25 +205,36 @@ public class ProjectService {
     /*
      * Return project by id
      */
-    @Async
-    public CompletableFuture<JEProject> getProject(String projectId) throws ProjectNotFoundException,
+    
+    public JEProject getProject(String projectId) throws ProjectNotFoundException,
             JERunnerErrorException, IOException, InterruptedException, ExecutionException, ConfigException {
     	ConfigurationService.checkConfig();
+    	JEProject project = null;
         JELogger.debug("[projectId= "+projectId+"]"+  JEMessages.LOADING_PROJECT);
         if (!loadedProjects.containsKey(projectId)) {
             Optional<JEProject> p = projectRepository.findById(projectId);
-            JEProject project = p.isEmpty() ? null : p.get();
+             project = p.isEmpty() ? null : p.get();
             if (project != null) {
+            	project.setEvents(eventService.getAllJEEvents(projectId));
+            	project.setRules(ruleService.getAllJERules(projectId));
+            	project.setVariables(variableService.getAllJEVariables(projectId));
+            	project.setWorkflows(workflowService.getAllJEWorkflows(projectId));    	
                 project.setBuilt(false);
                 loadedProjects.put(projectId, project);
                 for (JEEvent event : project.getEvents().values()) {
                     eventService.registerEvent(event);
                 }
+                for(JEVariable variable : project.getVariables().values())
+                {
+               	 variableService.addVariableToRunner(variable);
+                }
+            }else {
+            	throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
             }
-
+            saveProject(project);
         }
         JELogger.debug("[projectId= "+projectId+"]"+  JEMessages.PROJECT_FOUND);
-        return CompletableFuture.completedFuture(loadedProjects.get(projectId));
+        return loadedProjects.get(projectId);
     }
 
     public CompletableFuture<Collection<?>> getAllProjects() throws ConfigException {
@@ -291,6 +319,10 @@ public class ProjectService {
             for (JEEvent event : project.getEvents().values()) {
                 eventService.registerEvent(event);
             }
+            for(JEVariable variable : project.getVariables().values())
+            {
+           	 variableService.addVariableToRunner(variable);
+            }
 
             if (project.isBuilt()) {
                 project.setBuilt(false);
@@ -309,22 +341,35 @@ public class ProjectService {
     public CompletableFuture<Void> loadAllProjects() throws ProjectNotFoundException, JERunnerErrorException,
             IOException, InterruptedException, ExecutionException, ConfigException {
     	ConfigurationService.checkConfig();
-        loadedProjects = new ConcurrentHashMap<String, JEProject>();
+        //loadedProjects = new ConcurrentHashMap<String, JEProject>();
         List<JEProject> projects = projectRepository.findAll();
         for (JEProject project : projects) {
-        	 if(project.isAutoReload())
-             {
-          	   loadedProjects.put(project.getProjectId(), project);
-                 for (JEEvent event : project.getEvents().values()) {
-                     eventService.registerEvent(event);
-                 }
-             }
-             else
-             {
-          	   project.setBuilt(false);
-          	   project.setRunning(false);
-          	   saveProject(project);
-             }
+        	 Optional<JEProject> p = projectRepository.findById(project.getProjectId());
+             project = p.isEmpty() ? null : p.get();
+            if (project != null) {
+            	project.setEvents(eventService.getAllJEEvents(project.getProjectId()));
+            	project.setRules(ruleService.getAllJERules(project.getProjectId()));
+            	project.setVariables(variableService.getAllJEVariables(project.getProjectId()));
+            	project.setWorkflows(workflowService.getAllJEWorkflows(project.getProjectId()));    	
+                project.setBuilt(false);
+                loadedProjects.put(project.getProjectId(), project);
+                for (JEEvent event : project.getEvents().values()) {
+                    eventService.registerEvent(event);
+                }
+                for(JEVariable variable : project.getVariables().values())
+                {
+               	 variableService.addVariableToRunner(variable);
+                }
+                if(!project.isAutoReload())       		 
+                {
+             	   project.setBuilt(false);
+             	   project.setRunning(false);
+             	 saveProject(project);
+             	  
+                }
+            }
+        	 
+        	 
 
         }
         return CompletableFuture.completedFuture(null);

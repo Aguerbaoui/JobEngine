@@ -124,9 +124,9 @@ public class JEToBpmnMapper {
                         block.generateBpmnOutflows(wf)));
             }
 
-            else if (block instanceof DBWriteBlock && !block.isProcessed()) {
+            else if (block instanceof DBWriteBlock || block instanceof DBEditBlock || block instanceof DBReadBlock && !block.isProcessed()) {
                 process.addFlowElement(ModelBuilder.createServiceTask(block.getJobEngineElementID(), block.getName(),
-                        WorkflowConstants.DB_WRITE_TASK_IMPLEMENTATION));
+                        WorkflowConstants.DB_TASK_IMPLEMENTATION));
             }
 
             else if (block instanceof MailBlock && !block.isProcessed()) {
