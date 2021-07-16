@@ -1,6 +1,7 @@
 package io.je.runtime;
 
 import io.je.utilities.apis.JEBuilderApiHandler;
+import io.je.utilities.config.Utility;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.logger.JELogger;
 import org.springframework.boot.Banner;
@@ -17,6 +18,8 @@ public class JERunnerApplication {
 
 	
     public static void main(String[] args) {
+    	Utility.init();
+    	 System.setProperty("drools.dateformat", Utility.getSiothConfig().getDateFormat());
         SpringApplication app = new SpringApplication(JERunnerApplication.class);
         app.setBannerMode(Banner.Mode.OFF);
         app.setDefaultProperties(Collections

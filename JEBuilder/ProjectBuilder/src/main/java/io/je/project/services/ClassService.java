@@ -18,7 +18,7 @@ import io.je.classbuilder.models.ClassDefinition;
 import io.je.project.listener.ClassUpdateListener;
 import io.je.project.repository.ClassRepository;
 import io.je.utilities.apis.JERunnerAPIHandler;
-import io.je.utilities.config.JEConfiguration;
+import io.je.utilities.config.Utility;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.exceptions.AddClassException;
@@ -49,8 +49,8 @@ public class ClassService {
 	
 	public void initClassUpdateListener() {
 		// TODO make runnable static
-		ClassUpdateListener runnable = new ClassUpdateListener(JEConfiguration.getDataDefinitionURL(),
-				JEConfiguration.getDataDefinitionSubscribePort(), "ModelTopic");
+		ClassUpdateListener runnable = new ClassUpdateListener("tcp://"+Utility.getSiothConfig().getMachineCredentials().getIpAddress(),
+				Utility.getSiothConfig().getDataModelPORTS().getDmRestAPI_ConfigurationPubAddress(), "ModelTopic");
 		runnable.setListening(true);
 		Thread listener = new Thread(runnable);
 		listener.start();

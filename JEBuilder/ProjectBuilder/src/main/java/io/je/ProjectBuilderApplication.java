@@ -1,6 +1,6 @@
 package io.je;
 
-import io.je.utilities.config.SIOTHConfiguration;
+import io.je.utilities.config.Utility;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.logger.JELogger;
 import org.springframework.boot.Banner;
@@ -15,7 +15,7 @@ import java.util.Collections;
 public class ProjectBuilderApplication {
 
     public static void main(String[] args) {
-    	SIOTHConfiguration.init();
+    	Utility.init();
         SpringApplication app = new SpringApplication(ProjectBuilderApplication.class);
         app.setBannerMode(Banner.Mode.OFF);
         app.setDefaultProperties(Collections

@@ -13,6 +13,7 @@ import io.je.project.beans.JEProject;
 import io.je.project.models.WorkflowBlockModel;
 import io.je.project.repository.WorkflowRepository;
 import io.je.utilities.apis.JERunnerAPIHandler;
+import io.je.utilities.config.ConfigurationConstants;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.constants.WorkflowConstants;
@@ -64,7 +65,7 @@ public class WorkflowService {
      * Add a workflow to a project
      * */
     public void addWorkflow(io.je.utilities.models.WorkflowModel m) throws ProjectNotFoundException, ConfigException {
-    	ConfigurationService.checkConfig();
+    	
         JEProject project = ProjectService.getProjectById(m.getProjectId());
         if (project == null) {
             throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
@@ -86,7 +87,7 @@ public class WorkflowService {
      * */
 
     public void removeWorkflow(String projectId, String workflowId) throws ProjectNotFoundException, WorkflowNotFoundException, ConfigException, InterruptedException, JERunnerErrorException, ExecutionException {
-    	ConfigurationService.checkConfig();
+    	
 
         JEProject project = ProjectService.getProjectById(projectId);
         if (project == null) {
@@ -112,7 +113,7 @@ public class WorkflowService {
      * Add a workflow block to a workflow
      * */
     public String addWorkflowBlock(WorkflowBlockModel block) throws ProjectNotFoundException, WorkflowNotFoundException, InvalidSequenceFlowException, WorkflowBlockNotFound, EventException, ConfigException, WorkflowBlockException {
-    	ConfigurationService.checkConfig();
+    	
     	JEProject project = ProjectService.getProjectById(block.getProjectId());
         if (project == null) {
             throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
@@ -338,7 +339,7 @@ public class WorkflowService {
      * Delete a workflow block
      * */
     public void deleteWorkflowBlock(String projectId, String workflowId, String blockId) throws ProjectNotFoundException, WorkflowNotFoundException, WorkflowBlockNotFound, InvalidSequenceFlowException, ConfigException {
-    	ConfigurationService.checkConfig();
+    	
     	JEProject project = ProjectService.getProjectById(projectId);
         if (project == null) {
             throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
@@ -356,7 +357,7 @@ public class WorkflowService {
      * Delete a Sequence flow
      * */
     public void deleteSequenceFlow(String projectId, String workflowId, String sourceRef, String targetRef) throws ProjectNotFoundException, WorkflowNotFoundException, WorkflowBlockNotFound, InvalidSequenceFlowException, ConfigException {
-    	ConfigurationService.checkConfig();
+    	
     	JEProject project = ProjectService.getProjectById(projectId);
         if (project == null) {
             throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
@@ -373,7 +374,7 @@ public class WorkflowService {
      * Add a Sequence flow
      * */
     public void addSequenceFlow(String projectId, String workflowId, String sourceRef, String targetRef, String condition) throws ProjectNotFoundException, WorkflowNotFoundException, WorkflowBlockNotFound, InvalidSequenceFlowException, ConfigException {
-    	ConfigurationService.checkConfig();
+    	
     	JEProject project = ProjectService.getProjectById(projectId);
         if (project == null) {
             throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
@@ -390,7 +391,10 @@ public class WorkflowService {
      * Build a workflow
      * */
     public void buildWorkflow(String projectId, String workflowId) throws WorkflowNotFoundException, ProjectNotFoundException, IOException, JERunnerErrorException, InterruptedException, ExecutionException, ConfigException {
-    	ConfigurationService.checkConfig();
+    	
+    	
+    	
+    	
     	JEProject project = ProjectService.getProjectById(projectId);
         if (project == null) {
             throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
@@ -409,7 +413,7 @@ public class WorkflowService {
      * */
     @Async
     public CompletableFuture<Void> buildWorkflows(String projectId) throws ProjectNotFoundException, IOException, JERunnerErrorException, InterruptedException, ExecutionException, ConfigException {
-    	ConfigurationService.checkConfig();
+    	
     	JEProject project = ProjectService.getProjectById(projectId);
         if (project == null) {
             throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
@@ -428,7 +432,7 @@ public class WorkflowService {
      * Run a workflow
      * */
     public void runWorkflow(String projectId, String workflowId) throws WorkflowNotFoundException, ProjectNotFoundException, IOException, WorkflowAlreadyRunningException, InterruptedException, ExecutionException, JERunnerErrorException, ConfigException {
-    	ConfigurationService.checkConfig();
+    	
     	JEProject project = ProjectService.getProjectById(projectId);
         if (project == null) {
             throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
@@ -455,7 +459,7 @@ public class WorkflowService {
      * Update workflow block
      * */
     public void updateWorkflowBlock(WorkflowBlockModel block) throws WorkflowBlockNotFound, WorkflowNotFoundException, ProjectNotFoundException, IOException, InterruptedException, ExecutionException, EventException, ConfigException, WorkflowBlockException, ClassLoadException, JERunnerErrorException, AddClassException, DataDefinitionUnreachableException, AddRuleBlockException {
-    	ConfigurationService.checkConfig();
+    	
     	JEProject project = ProjectService.getProjectById(block.getProjectId());
         if (project == null) {
             throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
@@ -703,7 +707,7 @@ public class WorkflowService {
     }
 
     public void addBpmn(String projectId, String workflowId, String bpmn) throws ProjectNotFoundException, ConfigException {
-    	ConfigurationService.checkConfig();
+    	
         JEProject project = ProjectService.getProjectById(projectId);
         if (project == null) {
             throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
@@ -713,7 +717,7 @@ public class WorkflowService {
         wf.setWorkflowName(workflowId);
         wf.setJobEngineProjectID(projectId);
         wf.setJobEngineElementID(workflowId);
-        wf.setBpmnPath(WorkflowConstants.BPMN_PATH + wf.getWorkflowName().trim() + WorkflowConstants.BPMN_EXTENSION);
+        wf.setBpmnPath(ConfigurationConstants.BPMN_PATH + wf.getWorkflowName().trim() + WorkflowConstants.BPMN_EXTENSION);
         wf.setScript(true);
         wf.setScript(bpmn);
         WorkflowBuilder.saveBpmn(wf, bpmn);
@@ -724,7 +728,7 @@ public class WorkflowService {
     }
 
     public void updateWorkflow(String projectId, String workflowId, WorkflowModel m) throws WorkflowNotFoundException, ProjectNotFoundException, ConfigException {
-    	ConfigurationService.checkConfig();
+    	
         JEProject project = ProjectService.getProjectById(projectId);
         if (project == null) {
             throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
@@ -759,7 +763,7 @@ public class WorkflowService {
 
 
     public void removeWorkflows(String projectId, List<String> ids) throws ProjectNotFoundException, ConfigException {
-    	ConfigurationService.checkConfig();
+    	
         JEProject project = ProjectService.getProjectById(projectId);
         if (project == null) {
             throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
@@ -778,7 +782,7 @@ public class WorkflowService {
     }
 
     public void stopWorkflow(String projectId, String workflowId) throws ConfigException, ProjectNotFoundException, WorkflowNotFoundException, InterruptedException, JERunnerErrorException, ExecutionException {
-        ConfigurationService.checkConfig();
+        
         JEProject project = ProjectService.getProjectById(projectId);
         if (project == null) {
             throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);

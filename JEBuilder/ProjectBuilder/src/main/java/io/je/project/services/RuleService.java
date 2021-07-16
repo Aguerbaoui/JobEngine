@@ -54,7 +54,7 @@ public class RuleService {
      */
     public void addRule(String projectId, RuleModel ruleModel)
             throws ProjectNotFoundException, RuleAlreadyExistsException, RuleNotAddedException, ConfigException {
-    	ConfigurationService.checkConfig();
+    	
         JEProject project = ProjectService.getProjectById(projectId);
         if (project == null) {
             throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
@@ -90,7 +90,7 @@ public class RuleService {
      */
 
     public void deleteRule(String projectId, String ruleId) throws ProjectNotFoundException, RuleNotFoundException, JERunnerErrorException, IOException, InterruptedException, ExecutionException, ConfigException {
-    	ConfigurationService.checkConfig();
+    	
     	JEProject project = ProjectService.getProjectById(projectId);
         if (project == null) {
             throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
@@ -120,7 +120,7 @@ public class RuleService {
 
     public void updateRule(String projectId, RuleModel ruleModel)
             throws ProjectNotFoundException, ConfigException {
-    	ConfigurationService.checkConfig();
+    	
     	JEProject project = ProjectService.getProjectById(projectId);
         if (project == null) {
             throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
@@ -195,7 +195,7 @@ public class RuleService {
     public String addBlockToRule(BlockModel blockModel) throws AddRuleBlockException, ProjectNotFoundException,
             RuleNotFoundException, DataDefinitionUnreachableException, JERunnerErrorException, AddClassException,
             ClassLoadException, IOException, InterruptedException, ExecutionException, ConfigException {
-    	ConfigurationService.checkConfig();
+    	
         if (blockModel.getProjectId() == null) {
             throw new AddRuleBlockException(JEMessages.BLOCK_PROJECT_ID_NULL);
         }
@@ -267,7 +267,7 @@ public class RuleService {
     public void updateBlockInRule(BlockModel blockModel) throws AddRuleBlockException, ProjectNotFoundException,
             RuleNotFoundException, DataDefinitionUnreachableException, JERunnerErrorException, AddClassException,
             ClassLoadException, IOException, InterruptedException, ExecutionException, ConfigException, RuleBlockNotFoundException {
-    	ConfigurationService.checkConfig();
+    	
         
     	//check project id is not null
     	if (blockModel.getProjectId() == null) {
@@ -354,7 +354,7 @@ public class RuleService {
 
     public void deleteBlock(String projectId, String ruleId, String blockId) throws ProjectNotFoundException,
             RuleNotFoundException, RuleBlockNotFoundException, ConfigException {
-    	ConfigurationService.checkConfig();
+    	
         JEProject project = ProjectService.getProjectById(projectId);
         if (project == null) {
             throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
@@ -453,7 +453,7 @@ public class RuleService {
 
     public void addScriptedRule(String projectId, ScriptRuleModel ruleModel)
             throws ProjectNotFoundException, RuleAlreadyExistsException, ConfigException {
-    	ConfigurationService.checkConfig();
+    	
         ScriptedRule rule = new ScriptedRule(projectId, ruleModel.getRuleId(), ruleModel.getScript(),
                 ruleModel.getRuleName());
         JEProject project = ProjectService.getProjectById(projectId);
@@ -472,7 +472,7 @@ public class RuleService {
 
     public void updateScriptedRule(String projectId, ScriptRuleModel ruleModel)
             throws ProjectNotFoundException, RuleNotFoundException, ConfigException {
-    	ConfigurationService.checkConfig();
+    	
         ScriptedRule rule = new ScriptedRule(projectId, ruleModel.getRuleId(), ruleModel.getScript(),
                 ruleModel.getRuleName());
         JEProject project = ProjectService.getProjectById(projectId);
@@ -521,7 +521,7 @@ public class RuleService {
      * if some rules were not deleted, throws exception with map [ key: rule that was not deleted , value : cause of the deletion failure ]
      */
     public void deleteRules(String projectId, List<String> ruleIds) throws ProjectNotFoundException, RuleDeletionException, ConfigException {
-    	ConfigurationService.checkConfig();
+    	
         JEProject project = ProjectService.getProjectById(projectId);
         if (project == null) {
             throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
@@ -569,7 +569,7 @@ public class RuleService {
      */
     public void buildRule(String projectId, String ruleId) throws ProjectNotFoundException, RuleNotFoundException,
             RuleBuildFailedException, JERunnerErrorException, IOException, InterruptedException, ExecutionException, ConfigException {
-    	ConfigurationService.checkConfig();
+    	
         JEProject project = ProjectService.getProjectById(projectId);
         if (project == null) {
             throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);

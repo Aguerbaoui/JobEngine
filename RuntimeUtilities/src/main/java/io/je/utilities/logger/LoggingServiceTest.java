@@ -2,7 +2,6 @@ package io.je.utilities.logger;
 
 import java.time.LocalDateTime;
 
-import io.je.utilities.config.JEConfiguration;
 
 
 //TODO: to be deleted, just used for testing
@@ -10,8 +9,8 @@ public class LoggingServiceTest {
 
 	public static void publish(String projectId, LogLevel logLevel, String logDate, LogCategory category,
 			LogSubModule subModule, Object message) {
-			JEConfiguration.setLoggingSystemURL("tcp://localhost");
-			JEConfiguration.setLoggingSystemZmqPublishPort(15001);
+			//JEConfiguration.setLoggingSystemURL("tcp://localhost");
+			//JEConfiguration.setLoggingSystemZmqPublishPort(15001);
 			LogMessage msg = new LogMessage(logLevel, message, logDate, category, projectId,subModule,"ruleId123");
 			ZMQLogPublisher.publish(msg);
 		

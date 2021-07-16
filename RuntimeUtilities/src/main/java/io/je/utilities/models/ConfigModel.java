@@ -1,4 +1,4 @@
-package io.je.utilities.models;
+/*package io.je.utilities.models;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
@@ -171,3 +171,4 @@ public class ConfigModel {
 
 
 }
+*/

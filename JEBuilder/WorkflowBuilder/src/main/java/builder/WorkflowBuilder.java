@@ -3,6 +3,7 @@ package builder;
 import blocks.WorkflowBlock;
 import blocks.basic.*;
 import io.je.utilities.apis.JERunnerAPIHandler;
+import io.je.utilities.config.ConfigurationConstants;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.WorkflowConstants;
 import io.je.utilities.exceptions.JERunnerErrorException;
@@ -38,7 +39,7 @@ public class WorkflowBuilder {
         }
         WorkflowModel wf = new WorkflowModel();
         wf.setKey(workflow.getWorkflowName().trim());
-        wf.setPath(BPMN_PATH + workflow.getWorkflowName().trim() + BPMN_EXTENSION);
+        wf.setPath(ConfigurationConstants.BPMN_PATH + workflow.getWorkflowName().trim() + BPMN_EXTENSION);
         wf.setProjectId(workflow.getJobEngineProjectID());
         wf.setTriggeredByEvent(workflow.isTriggeredByEvent());
         wf.setTriggerMessage(workflow.getWorkflowStartBlock().getEventId());
