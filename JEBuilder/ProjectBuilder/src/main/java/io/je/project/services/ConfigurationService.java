@@ -76,7 +76,6 @@ public class ConfigurationService {
 				}
 
                 classService.sendClassesToJeRunner(classService.getLoadedClasses().values());
-				
 
 				JELogger.info(ProjectService.class, JEMessages.RUNNER_IS_UP_UPDATING_NOW);
 				projectService.resetProjects();
@@ -90,7 +89,7 @@ public class ConfigurationService {
 	private boolean checkRunnerHealth() {
 		try {
 			runnerStatus = JERunnerAPIHandler.checkRunnerHealth();
-		} catch (InterruptedException | JERunnerErrorException | ExecutionException | IOException e) {
+		} catch (Exception e) {
 			JEExceptionHandler.handleException(e);
 			return false;
 		}
