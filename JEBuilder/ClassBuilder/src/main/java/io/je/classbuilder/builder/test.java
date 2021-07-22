@@ -1,7 +1,6 @@
 package io.je.classbuilder.builder;
 
 import io.je.classbuilder.models.GetModelObject;
-import io.je.utilities.config.JEConfiguration;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.logger.JELogger;
 import io.je.utilities.zmq.ZMQRequester;

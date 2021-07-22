@@ -2,10 +2,8 @@ package io.je.utilities.execution;
 
 import io.je.utilities.apis.JEBuilderApiHandler;
 import io.je.utilities.apis.JERunnerAPIHandler;
-import io.je.utilities.beans.JEBlockMessage;
-import io.je.utilities.beans.JEMessage;
 import io.je.utilities.classloader.JEClassLoader;
-import io.je.utilities.config.JEConfiguration;
+import io.je.utilities.config.Utility;
 import io.je.utilities.constants.ClassBuilderConfig;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.JERunnerErrorException;
@@ -179,7 +177,7 @@ public class Executioner {
                 @Override
                 public void run() {
                     JELogger.debug(JEMessages.SENDING_REQUEST_TO_DATA_MODEL + " : " + request);
-                    ZMQRequester requester = new ZMQRequester(JEConfiguration.getDataManagerURL(), JEConfiguration.getRequestPort());
+                    ZMQRequester requester = new ZMQRequester("tcp://"+Utility.getSiothConfig().getMachineCredentials().getIpAddress(), Utility.getSiothConfig().getDataModelPORTS().getDmService_ReqAddress());
                     String response = requester.sendRequest(request);
                     if (response == null) {
                         JELogger.error(getClass(), JEMessages.NO_RESPONSE_FROM_DATA_MODEL);

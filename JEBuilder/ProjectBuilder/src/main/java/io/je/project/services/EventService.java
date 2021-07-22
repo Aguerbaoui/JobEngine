@@ -78,7 +78,7 @@ public class EventService {
 	 * add new event
 	 */
 	public void addEvent(String projectId, EventModel eventModel) throws ProjectNotFoundException, JERunnerErrorException, IOException, InterruptedException, ExecutionException, EventException, ConfigException {
-    	ConfigurationService.checkConfig();
+    	
 		JELogger.info(getClass(),  JEMessages.ADDING_EVENT+ "[ id="+eventModel.getEventId()+"] in project id = " + projectId);
 		JEProject project = ProjectService.getProjectById(projectId);
 		if (project == null) {
@@ -110,7 +110,7 @@ public class EventService {
 	 * update new event
 	 */
 	public void updateEvent(String projectId, EventModel eventModel) throws ProjectNotFoundException, JERunnerErrorException, IOException, InterruptedException, ExecutionException, EventException, ConfigException {
-    	ConfigurationService.checkConfig();
+    	
 		JELogger.info(getClass(), UPDATING_EVENT + " [ id="+eventModel.getEventId()+"] in project id = " + projectId);
 		JEProject project = ProjectService.getProjectById(projectId);
 		if (project == null) {
@@ -137,7 +137,7 @@ public class EventService {
 	 */
 	
 	public void registerEvent( JEEvent event ) throws ProjectNotFoundException, JERunnerErrorException, IOException, InterruptedException, ExecutionException, ConfigException {
-    	ConfigurationService.checkConfig();
+    	
 		JEProject project = ProjectService.getProjectById(event.getJobEngineProjectID());
 		if (project == null) {
 			throw new ProjectNotFoundException( JEMessages.PROJECT_NOT_FOUND);
@@ -160,7 +160,7 @@ public class EventService {
 	}
 
 	public void updateEventType(String projectId, String eventId, String eventType) throws ProjectNotFoundException, EventException, ConfigException {
-    	ConfigurationService.checkConfig();
+    	
 		JELogger.trace(JEMessages.UPDATING_EVENT_TYPE + eventType + " for event id = " + eventId + " in project id = " + projectId);
 		JEProject project = ProjectService.getProjectById(projectId);
 		if (project == null) {
@@ -197,7 +197,7 @@ public class EventService {
 	 */
 	
 	public void deleteEvent(String projectId, String eventId) throws EventException, ProjectNotFoundException, InterruptedException, JERunnerErrorException, ExecutionException, IOException, ConfigException {
-    	ConfigurationService.checkConfig();
+    	
 		JELogger.info(getClass(), JEMessages.DELETING_EVENT+"[ id="+eventId+"] in project id = " + projectId);
 		JEProject project = ProjectService.getProjectById(projectId);
 		if (project == null) {
@@ -225,7 +225,7 @@ public class EventService {
 	}
 
 	public void triggerEvent(String projectId, String eventId) throws ConfigException, ProjectNotFoundException, EventException {
-		ConfigurationService.checkConfig();
+		
 		JEProject project = ProjectService.getProjectById(projectId);
 		if (project == null) {
 			throw new ProjectNotFoundException( JEMessages.PROJECT_NOT_FOUND); //cdc47cf6-28e9-ff1d-996f-b6b1732771a2 -> {JEEvent@10436}
@@ -242,7 +242,7 @@ public class EventService {
 	}
 
 	public void untriggerEvent(String projectId, String eventId) throws ConfigException, ProjectNotFoundException, EventException {
-		ConfigurationService.checkConfig();
+		
 		JEProject project = ProjectService.getProjectById(projectId);
 		if (project == null) {
 			throw new ProjectNotFoundException( JEMessages.PROJECT_NOT_FOUND); //cdc47cf6-28e9-ff1d-996f-b6b1732771a2 -> {JEEvent@10436}

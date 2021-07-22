@@ -9,7 +9,7 @@ import java.util.concurrent.ExecutionException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.squareup.okhttp.Response;
 
-import io.je.utilities.config.JEConfiguration;
+import io.je.utilities.config.Utility;
 import io.je.utilities.constants.APIConstants;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.ResponseCodes;
@@ -23,13 +23,13 @@ public class JEBuilderApiHandler {
 
 	//run workflow
 	public static JEResponse runWorkflow(String projectId, String workflowName) throws JERunnerErrorException, InterruptedException, ExecutionException {
-		String requestUrl = JEConfiguration.getProjectBuilderURL()+ APIConstants.RUN_WORKFLOW + projectId + "/" + workflowName;
+		String requestUrl = Utility.getSiothConfig().getJobEngine().getJeBuilder()+ APIConstants.RUN_WORKFLOW + projectId + "/" + workflowName;
 		return sendRequest(requestUrl);
 
 	}
 	//Stop workflow
 	public static JEResponse stopWorkflow(String projectId, String workflowId) throws InterruptedException, JERunnerErrorException, ExecutionException {
-		String requestUrl = JEConfiguration.getProjectBuilderURL() + DELETE_WORKFLOW + "/" + projectId + "/" + workflowId;
+		String requestUrl = Utility.getSiothConfig().getJobEngine().getJeBuilder() + DELETE_WORKFLOW + "/" + projectId + "/" + workflowId;
 		JELogger.debug(JEMessages.NETWORK_DELETE_WF+" project id = " + projectId + "workflow id = " + workflowId);
 		return sendDeleteRequest(requestUrl);
 	}
@@ -37,50 +37,50 @@ public class JEBuilderApiHandler {
     // request update from builder
     public static JEResponse requestUpdateFromBuilder() throws InterruptedException, JERunnerErrorException, ExecutionException {
 
-        String requestUrl = JEConfiguration.getProjectBuilderURL() + PROJECT_UPDATE_RUNNER;
+        String requestUrl = Utility.getSiothConfig().getJobEngine().getJeBuilder() + PROJECT_UPDATE_RUNNER;
         return sendRequest(requestUrl);
     }
 
     // Remove workflow from project
     public static JEResponse removeWorkflow(String projectId, String workflowId) throws InterruptedException, JERunnerErrorException, ExecutionException {
-		String requestUrl = JEConfiguration.getProjectBuilderURL() + DELETE_WORKFLOW + "/" + projectId + workflowId;
+		String requestUrl = Utility.getSiothConfig().getJobEngine().getJeBuilder() + DELETE_WORKFLOW + "/" + projectId + workflowId;
 		JELogger.debug(JEMessages.NETWORK_DELETE_WF+" project id = " + projectId + "workflow id = " + workflowId);
 		return sendDeleteRequest(requestUrl);
     }
 
     //Remove rule from project
 	public static JEResponse removeRule(String projectId, String ruleId) throws InterruptedException, JERunnerErrorException, ExecutionException {
-		String requestUrl = JEConfiguration.getProjectBuilderURL() + "rule/ " + projectId + "/" + "deleteRule" + "/" + ruleId;
+		String requestUrl = Utility.getSiothConfig().getJobEngine().getJeBuilder() + "rule/ " + projectId + "/" + "deleteRule" + "/" + ruleId;
 		JELogger.debug(JEMessages.NETWORK_DELETE+" project id = " + projectId + " rule id = " + ruleId);
 		return sendDeleteRequest(requestUrl);
 	}
 
 	//Remove variable from project
 	public static JEResponse removeVariable(String projectId, String variableId) throws InterruptedException, JERunnerErrorException, ExecutionException {
-    	String requestUrl = JEConfiguration.getProjectBuilderURL() + DELETE_VARIABLE + "/" + projectId + "/" + variableId;
+    	String requestUrl = Utility.getSiothConfig().getJobEngine().getJeBuilder() + DELETE_VARIABLE + "/" + projectId + "/" + variableId;
 		JELogger.debug(JEMessages.NETWORK_DELETE_VAR+" project id = " + projectId + " var id = " + variableId);
 		return  sendDeleteRequest(requestUrl);
 	}
 
 	//Remove event from project
 	public static JEResponse removeEvent(String projectId, String eventId) throws InterruptedException, JERunnerErrorException, ExecutionException {
-		String requestUrl = JEConfiguration.getProjectBuilderURL() + DELETE_EVENT + "/" + projectId + "/" + eventId;
+		String requestUrl = Utility.getSiothConfig().getJobEngine().getJeBuilder() + DELETE_EVENT + "/" + projectId + "/" + eventId;
 		JELogger.debug(JEMessages.NETWORK_DELETE_EVENT+", project id = " + projectId + "event id = " + eventId);
 		return sendDeleteRequest(requestUrl);
 	}
 
 	//Add variable to project
 	public static JEResponse addVariable(String projectId, String varId, Object body) throws InterruptedException, JERunnerErrorException, ExecutionException {
-		String url = JEConfiguration.getProjectBuilderURL()+ APIConstants.ADD_VARIABLE;
+		String url = Utility.getSiothConfig().getJobEngine().getJeBuilder()+ APIConstants.ADD_VARIABLE;
 		JELogger.debug(JEMessages.NETWORK_ADD_VAR+" project id = " + projectId + " variable id = " + varId);
 		return sendRequestWithBody(url, body);
 	}
 	  public static JEResponse untriggerEvent(String eventId, String projectId) throws JERunnerErrorException, InterruptedException, ExecutionException {
-        String requestUrl = JEConfiguration.getProjectBuilderURL() + EVENT_UNTRIGGER_EVENT + projectId + "/" + eventId;
+        String requestUrl = Utility.getSiothConfig().getJobEngine().getJeBuilder() + EVENT_UNTRIGGER_EVENT + projectId + "/" + eventId;
         return sendRequest(requestUrl);
     }
 	   public static JEResponse triggerEvent(String eventId, String projectId) throws JERunnerErrorException, InterruptedException, ExecutionException {
-        String requestUrl = JEConfiguration.getProjectBuilderURL() + EVENT_TRIGGER_EVENT + projectId + "/" + eventId;
+        String requestUrl = Utility.getSiothConfig().getJobEngine().getJeBuilder() + EVENT_TRIGGER_EVENT + projectId + "/" + eventId;
         return sendRequest(requestUrl);
     }
 }

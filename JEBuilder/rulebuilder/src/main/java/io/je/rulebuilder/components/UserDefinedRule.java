@@ -1,27 +1,10 @@
 package io.je.rulebuilder.components;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import io.je.utilities.config.JEConfiguration;
-import io.je.utilities.constants.JEMessages;
-
-import org.drools.template.ObjectDataCompiler;
-
 import io.je.rulebuilder.components.blocks.Block;
-import io.je.rulebuilder.components.blocks.ConditionBlock;
-import io.je.rulebuilder.components.blocks.PersistableBlock;
 import io.je.rulebuilder.components.blocks.getter.AttributeGetterBlock;
-import io.je.utilities.exceptions.RuleBuildFailedException;
-import io.je.utilities.logger.JELogger;
-import io.je.utilities.ruleutils.RuleIdManager;
-import io.je.utilities.time.JEDate;
 
 /*
  * Rules defined graphically by the user.

@@ -13,7 +13,7 @@ import io.je.classbuilder.models.ClassDefinition;
 import io.je.classbuilder.models.GetModelObject;
 import io.je.utilities.classloader.JEClassCompiler;
 import io.je.utilities.config.ConfigurationConstants;
-import io.je.utilities.config.JEConfiguration;
+import io.je.utilities.config.Utility;
 import io.je.utilities.constants.ClassBuilderConfig;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.AddClassException;
@@ -31,8 +31,8 @@ public class ClassManager {
 
 	static Map<String, JEClass> jeClasses = new ConcurrentHashMap<>(); // key = is, value = jeclass
 	static Map<String, Class<?>> builtClasses = new ConcurrentHashMap<>(); // key = id , value = class
-	static ZMQPublisher publisher = new ZMQPublisher(JEConfiguration.getLoggingSystemURL(),
-			JEConfiguration.getLoggingSystemZmqPublishPort());
+	static ZMQPublisher publisher = new ZMQPublisher("tcp://"+Utility.getSiothConfig().getMachineCredentials().getIpAddress(),
+			Utility.getSiothConfig().getPorts().getLogServicePort());
 	static ObjectMapper objectMapper = new ObjectMapper();
 
 	// TODO: see with islem if possible to change field type to class id instead of
@@ -143,7 +143,7 @@ public class ClassManager {
 			GetModelObject request = new GetModelObject(classId, workspaceId);
 			String jsonMsg = objectMapper.writeValueAsString(request);
 			  JELogger.debug(JEMessages.SENDING_REQUEST_TO_DATA_MODEL + " : " + request);
-              ZMQRequester requester = new ZMQRequester(JEConfiguration.getDataManagerURL(), JEConfiguration.getDataDefinitionRequestPort());
+              ZMQRequester requester = new ZMQRequester("tcp://"+Utility.getSiothConfig().getMachineCredentials().getIpAddress(), Utility.getSiothConfig().getDataModelPORTS().getDmRestAPI_ReqAddress());
                response = requester.sendRequest(jsonMsg) ;
               if (response == null ) {
             	  

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.squareup.okhttp.Response;
 import io.je.utilities.apis.BodyType;
 import io.je.utilities.apis.HttpMethod;
-import io.je.utilities.config.JEConfiguration;
+import io.je.utilities.config.Utility;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.WorkflowConstants;
 import io.je.utilities.logger.*;
@@ -42,7 +42,7 @@ public class MailServiceTask extends ServiceTask {
         attributes.put(RECEIVER_ADDRESS, task.getLstRecieverAddress());
         attributes.put(EMAIL_MESSAGE, task.getEmailMessage());
         attributes.put(SMTP_SERVER, task.getStrSMTPServer());
-        String url = task.isbUseDefaultCredentials() ? JEConfiguration.getEmailApiUrl() + SEND_EMAIL : JEConfiguration.getEmailApiUrl() + SEND_EMAIL_AUTH;
+        String url = task.isbUseDefaultCredentials() ?  Utility.getSiothConfig().getApis().getEmailAPI().getAddress() + SEND_EMAIL : Utility.getSiothConfig().getApis().getEmailAPI().getAddress() + SEND_EMAIL_AUTH;
         try {
             String json = new ObjectMapper().writeValueAsString(attributes);
             Network network = new Network.Builder(url).hasBody(true)

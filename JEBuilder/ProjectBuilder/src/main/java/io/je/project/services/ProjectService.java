@@ -80,7 +80,7 @@ public class ProjectService {
     @Async
     public CompletableFuture<Void> removeProject(String id) throws ProjectNotFoundException, InterruptedException,
             JERunnerErrorException, ExecutionException, ConfigException {
-		ConfigurationService.checkConfig();
+		
         if (!loadedProjects.containsKey(id)) {
             throw new ProjectNotFoundException("[projectId= "+id+"]"+ JEMessages.PROJECT_NOT_FOUND);
         }
@@ -143,7 +143,7 @@ public class ProjectService {
 
     public void buildAll(String projectId) throws ProjectNotFoundException, IOException, RuleBuildFailedException,
             JERunnerErrorException, InterruptedException, ExecutionException, RuleNotFoundException, ConfigException {
-		ConfigurationService.checkConfig();
+		
         JELogger.trace(ProjectService.class, "[projectId= "+projectId+"]"+  JEMessages.BUILDING_PROJECT);
         CompletableFuture<?> buildRules = ruleService.buildRules(projectId);
         CompletableFuture<?> buildWorkflows = workflowService.buildWorkflows(projectId);
@@ -158,7 +158,7 @@ public class ProjectService {
      */
     public void runAll(String projectId) throws ProjectNotFoundException, JERunnerErrorException, ProjectRunException,
             IOException, InterruptedException, ExecutionException, ConfigException {
-		ConfigurationService.checkConfig();
+		
         if (loadedProjects.containsKey(projectId)) {
             JEProject project = loadedProjects.get(projectId);
             if (project.isBuilt()) {
@@ -184,7 +184,7 @@ public class ProjectService {
      */
     public void stopProject(String projectId) throws ProjectNotFoundException, JERunnerErrorException,
             ProjectStatusException, IOException, InterruptedException, ExecutionException, ConfigException {
-		ConfigurationService.checkConfig();
+		
         if (!loadedProjects.containsKey(projectId)) {
             throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
         }
@@ -208,7 +208,7 @@ public class ProjectService {
     
     public JEProject getProject(String projectId) throws ProjectNotFoundException,
             JERunnerErrorException, IOException, InterruptedException, ExecutionException, ConfigException {
-    	ConfigurationService.checkConfig();
+    	
     	JEProject project = null;
         JELogger.debug("[projectId= "+projectId+"]"+  JEMessages.LOADING_PROJECT);
         if (!loadedProjects.containsKey(projectId)) {
@@ -238,7 +238,7 @@ public class ProjectService {
     }
 
     public CompletableFuture<Collection<?>> getAllProjects() throws ConfigException {
-		ConfigurationService.checkConfig();
+		
         JELogger.trace(getClass(), JEMessages.LOADING_PROJECTS);
         List<JEProject> projects = projectRepository.findAll();
         for (JEProject project : projects) {
@@ -313,7 +313,7 @@ public class ProjectService {
     public void resetProjects()
             throws ProjectNotFoundException, EventException, RuleBuildFailedException, JERunnerErrorException,
             RuleNotFoundException, IOException, InterruptedException, ExecutionException, ProjectRunException, ConfigException {
-    	ConfigurationService.checkConfig();
+    	
         loadAllProjects();
         for (JEProject project : loadedProjects.values()) {
             for (JEEvent event : project.getEvents().values()) {
@@ -340,7 +340,7 @@ public class ProjectService {
     @Async
     public CompletableFuture<Void> loadAllProjects() throws ProjectNotFoundException, JERunnerErrorException,
             IOException, InterruptedException, ExecutionException, ConfigException {
-    	ConfigurationService.checkConfig();
+    	
         //loadedProjects = new ConcurrentHashMap<String, JEProject>();
         List<JEProject> projects = projectRepository.findAll();
         for (JEProject project : projects) {

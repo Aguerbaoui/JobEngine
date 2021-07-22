@@ -7,6 +7,7 @@ import blocks.control.ExclusiveGatewayBlock;
 import blocks.control.InclusiveGatewayBlock;
 import blocks.control.ParallelGatewayBlock;
 import blocks.events.*;
+import io.je.utilities.config.ConfigurationConstants;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.WorkflowConstants;
 import io.je.utilities.logger.JELogger;
@@ -42,7 +43,7 @@ public class JEToBpmnMapper {
         addListeners(process);
         parseWorkflowBlock(wf, wf.getWorkflowStartBlock(), process, null);
         model.addProcess(process);
-        String modelPath = WorkflowConstants.BPMN_PATH + wf.getWorkflowName().trim() + WorkflowConstants.BPMN_EXTENSION;
+        String modelPath = ConfigurationConstants.BPMN_PATH + wf.getWorkflowName().trim() + WorkflowConstants.BPMN_EXTENSION;
         ModelBuilder.saveModel(model, modelPath);
         wf.resetBlocks();
         wf.setBpmnPath(modelPath);

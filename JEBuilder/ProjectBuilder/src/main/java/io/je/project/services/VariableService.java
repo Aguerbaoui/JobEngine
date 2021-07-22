@@ -70,7 +70,7 @@ public class VariableService {
     * Add a new variable to the project
     * */
     public void addVariable(VariableModel variableModel) throws ConfigException, ProjectNotFoundException, VariableAlreadyExistsException, JERunnerErrorException, ExecutionException, InterruptedException {
-        ConfigurationService.checkConfig();
+        
         JEProject project = ProjectService.getProjectById(variableModel.getProjectId());
         if (project == null) {
             throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
@@ -91,7 +91,7 @@ public class VariableService {
     * Delete a variable from the project
     * */
     public void deleteVariable(String projectId, String varId) throws ConfigException, ProjectNotFoundException, VariableNotFoundException, InterruptedException, JERunnerErrorException, ExecutionException {
-        ConfigurationService.checkConfig();
+        
         JEProject project = ProjectService.getProjectById(projectId);
         if (project == null) {
             throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
@@ -109,7 +109,7 @@ public class VariableService {
     * Update an existing variable in the project
     * */
     public void updateVariable(VariableModel variableModel) throws ConfigException, ProjectNotFoundException, VariableNotFoundException, InterruptedException, JERunnerErrorException, ExecutionException {
-        ConfigurationService.checkConfig();
+        
         JEProject project = ProjectService.getProjectById(variableModel.getProjectId());
         if (project == null) {
             throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
@@ -128,7 +128,7 @@ public class VariableService {
 
     //TODO: only allowed when project is stopped?
 	public void writeVariableValue(String projectId,String variableId, Object value) throws ConfigException, JERunnerErrorException, IOException, InterruptedException, ExecutionException {
-        ConfigurationService.checkConfig();
+        
         JERunnerAPIHandler.writeVariableValue(projectId, variableId, value);
 
 

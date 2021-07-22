@@ -38,7 +38,6 @@ public class WorkflowConstants {
     public static final String BUILDING = "building";
     public static final String RUNNING = "running";
     public static final String STANDBY = "standby";
-    public static final String BPMN_PATH = "D:\\processes\\";
     public static final String BPMN_EXTENSION = ".bpmn";
     public static final String WEBSERVICETASK_TYPE = "webtask";
     public static final String BOUNDARYEVENT_TYPE = "boundaryevent";

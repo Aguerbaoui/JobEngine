@@ -1,4 +1,4 @@
-package io.je.utilities.config;
+/*package io.je.utilities.config;
 
 import io.je.utilities.apis.JERunnerAPIHandler;
 import io.je.utilities.constants.JEMessages;
@@ -8,7 +8,7 @@ import io.je.utilities.models.ConfigModel;
 /*
  * Singleton class handling JEBuilder Configuration
  */
-public class JEConfiguration {
+/*public class JEConfiguration {
 
 	static JEConfiguration instance;
 	
@@ -289,3 +289,5 @@ public class JEConfiguration {
 	
 
 }
+
+*/
