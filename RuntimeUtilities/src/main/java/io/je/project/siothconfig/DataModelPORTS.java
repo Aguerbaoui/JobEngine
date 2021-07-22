@@ -4,16 +4,16 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class DataModelPORTS {
 	
-	@JsonProperty("DMRestAPI_ConfigurationPubAddress")
+	@JsonProperty("DataModelConfigurationPublishingAddress")
 	public int dmRestAPI_ConfigurationPubAddress;
 	
-	@JsonProperty("DMRestAPI_ReqAddress")
+	@JsonProperty("DataModelRequestAddress")
 	public int dmRestAPI_ReqAddress;
 	
-	@JsonProperty("DMService_ReqAddress")
+	@JsonProperty("DataModelWriteAddress")
 	public int dmService_ReqAddress;
 	
-	@JsonProperty("DMService_PubAddress")
+	@JsonProperty("DataModelPublishAddress")
 	public int dmService_PubAddress;
 	private DataModelPORTS() {
 		// TODO Auto-generated constructor stub

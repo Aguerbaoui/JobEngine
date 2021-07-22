@@ -19,7 +19,7 @@ public class JERunnerApplication {
 	
     public static void main(String[] args) {
     	Utility.init();
-    	 System.setProperty("drools.dateformat", Utility.getSiothConfig().getDateFormat());
+    	System.setProperty("drools.dateformat", Utility.getSiothConfig().getDateFormat());
         SpringApplication app = new SpringApplication(JERunnerApplication.class);
         app.setBannerMode(Banner.Mode.OFF);
         app.setDefaultProperties(Collections

@@ -12,6 +12,8 @@ import io.je.utilities.logger.LogSubModule;
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
+import io.je.utilities.string.JEStringSubstitutor;
+import org.apache.commons.text.StringSubstitutor;
 import org.joda.time.LocalDate;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -32,6 +34,7 @@ public class VariableManager {
         }
         variables.get(variable.getJobEngineProjectID()).put(variable.getJobEngineElementID(),variable);
 	       RuleEngineHandler.addVariable(variable);
+			JEStringSubstitutor.addVariable(variable.getJobEngineProjectID(), variable.getName(), variable.getValue());
 	       JELogger.info("variable added successfully " + variable.toString());
 
     }
