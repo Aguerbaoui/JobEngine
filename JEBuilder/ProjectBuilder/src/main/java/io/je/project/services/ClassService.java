@@ -181,7 +181,12 @@ public class ClassService {
 		JELogger.trace(JEMessages.LOADING_ALL_CLASSES_FROM_DB);
 		for (JEClass clazz : classes) {
 			try {
-					addClass(clazz.getWorkspaceId(), clazz.getClassId(),false);									
+				if(clazz.getWorkspaceId() != null) {
+					addClass(clazz.getWorkspaceId(), clazz.getClassId(), false);
+				}
+				else {
+					addClassToJeRunner(clazz, true);
+				}
 
 			} catch (Exception e) {
 				JELogger.warning(getClass(), JEMessages.FAILED_TO_LOAD_CLASS + " " + clazz.getClassName());
