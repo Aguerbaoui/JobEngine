@@ -229,6 +229,7 @@ public class ClassBuilder {
 				if(methodModel.getMethodScope() != null) {
 					method.addModifier(getModifier(methodModel.getMethodScope()));
 				}
+				method.addThrowable(TypeDeclarationSourceGenerator.create("Exception"));
 				method.addBodyCode(methodModel.getCode());
 				if(methodModel.getInputs() != null) {
 					for (FieldModel parameter : methodModel.getInputs()) {

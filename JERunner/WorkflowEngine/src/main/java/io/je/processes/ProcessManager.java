@@ -191,7 +191,7 @@ public class ProcessManager {
                 }).start();
             }
             catch(BpmnError e) {
-                JELogger.error("Error = " + Arrays.toString(e.getStackTrace()));
+                JELogger.error("Error to be removed after dev = " + Arrays.toString(e.getStackTrace()));
             }
         }
         else {
