@@ -316,13 +316,14 @@ public class ProjectService {
     	
         loadAllProjects();
         for (JEProject project : loadedProjects.values()) {
-            for (JEEvent event : project.getEvents().values()) {
+            //we are loading them in loadAllProjects()
+           /* for (JEEvent event : project.getEvents().values()) {
                 eventService.registerEvent(event);
             }
             for(JEVariable variable : project.getVariables().values())
             {
            	 variableService.addVariableToRunner(variable);
-            }
+            }*/
 
             if (project.isBuilt()) {
                 project.setBuilt(false);
