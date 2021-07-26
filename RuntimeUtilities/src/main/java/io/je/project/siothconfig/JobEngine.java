@@ -6,8 +6,12 @@ public class JobEngine {
 	
 	@JsonProperty("JERunner")
 	public String jeRunner;
+
 	@JsonProperty("JEBuilder")
 	public String jeBuilder;
+
+	@JsonProperty("CheckHealth")
+	public int checkHealthEveryMs;
 	
 	
 	
@@ -38,8 +42,12 @@ public class JobEngine {
 	public void setJeBuilder(String jeBuilder) {
 		this.jeBuilder = jeBuilder;
 	}
-	
-	
-	
 
+	public int getCheckHealthEveryMs() {
+		return checkHealthEveryMs;
+	}
+
+	public void setCheckHealthEveryMs(int checkHealthEveryMs) {
+		this.checkHealthEveryMs = checkHealthEveryMs;
+	}
 }
