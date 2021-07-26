@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 
+import io.je.utilities.config.Utility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import io.je.classbuilder.entity.JEClass;
@@ -34,8 +35,7 @@ public class ConfigurationService {
 
 	static boolean runnerStatus = true;
 
-
-
+	final int healthCheck = Utility.getSiothConfig().jobEngine.getCheckHealthEveryMs();
 	
 	
 	
@@ -71,7 +71,7 @@ public class ConfigurationService {
 				boolean serverUp = false;
 				while (!serverUp) {
 					JELogger.debug(getClass(), " " + JEMessages.RUNNER_IS_DOWN_CHECKING_AGAIN_IN_5_SECONDS);
-					Thread.sleep(5000);
+					Thread.sleep(healthCheck);
 					serverUp = checkRunnerHealth();
 				}
 
