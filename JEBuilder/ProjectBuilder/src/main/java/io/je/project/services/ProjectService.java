@@ -142,7 +142,7 @@ public class ProjectService {
      */
 
     public void buildAll(String projectId) throws ProjectNotFoundException, IOException, RuleBuildFailedException,
-            JERunnerErrorException, InterruptedException, ExecutionException, RuleNotFoundException, ConfigException {
+            JERunnerErrorException, InterruptedException, ExecutionException, RuleNotFoundException, ConfigException, WorkflowBuildException {
 		
         JELogger.trace(ProjectService.class, "[projectId= "+projectId+"]"+  JEMessages.BUILDING_PROJECT);
         CompletableFuture<?> buildRules = ruleService.buildRules(projectId);
@@ -310,10 +310,10 @@ public class ProjectService {
 
     }
 
-    public void resetProjects()
-            throws ProjectNotFoundException, EventException, RuleBuildFailedException, JERunnerErrorException,
-            RuleNotFoundException, IOException, InterruptedException, ExecutionException, ProjectRunException, ConfigException {
-    	
+    /*public void resetProjects()
+            throws ProjectNotFoundException, RuleBuildFailedException, JERunnerErrorException,
+            RuleNotFoundException, IOException, InterruptedException, ExecutionException, ProjectRunException, ConfigException, WorkflowBuildException {
+
         loadAllProjects();
         for (JEProject project : loadedProjects.values()) {
             //we are loading them in loadAllProjects()
@@ -325,7 +325,7 @@ public class ProjectService {
            	 variableService.addVariableToRunner(variable);
             }*/
 
-            if (project.isBuilt()) {
+          /*  if (project.isBuilt()) {
                 project.setBuilt(false);
                 buildAll(project.getProjectId());
             }
@@ -336,7 +336,7 @@ public class ProjectService {
         }
         JELogger.trace(JEMessages.RESETTING_PROJECTS);
 
-    }
+    }*/
 
     @Async
     public CompletableFuture<Void> loadAllProjects() throws ProjectNotFoundException, JERunnerErrorException,
@@ -352,7 +352,7 @@ public class ProjectService {
             	project.setRules(ruleService.getAllJERules(project.getProjectId()));
             	project.setVariables(variableService.getAllJEVariables(project.getProjectId()));
             	project.setWorkflows(workflowService.getAllJEWorkflows(project.getProjectId()));    	
-                project.setBuilt(false);
+                //project.setBuilt(false);
                 loadedProjects.put(project.getProjectId(), project);
                 for (JEEvent event : project.getEvents().values()) {
                     eventService.registerEvent(event);
@@ -365,7 +365,7 @@ public class ProjectService {
                 {
              	   project.setBuilt(false);
              	   project.setRunning(false);
-             	 saveProject(project);
+             	   saveProject(project);
              	  
                 }
             }

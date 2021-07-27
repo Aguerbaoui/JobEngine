@@ -130,7 +130,6 @@ public class WorkflowService {
         }
 
 
-
         if (block.getType().equalsIgnoreCase(WorkflowConstants.START_TYPE)) {
             StartBlock b = new StartBlock();
             b.setName((String) block.getAttributes().get(NAME));
@@ -390,7 +389,7 @@ public class WorkflowService {
     /*
      * Build a workflow
      * */
-    public void buildWorkflow(String projectId, String workflowId) throws WorkflowNotFoundException, ProjectNotFoundException, IOException, JERunnerErrorException, InterruptedException, ExecutionException, ConfigException {
+    public void buildWorkflow(String projectId, String workflowId) throws WorkflowNotFoundException, ProjectNotFoundException, IOException, InterruptedException, ExecutionException, ConfigException, WorkflowBuildException {
     	
     	
     	
@@ -404,7 +403,7 @@ public class WorkflowService {
         JELogger.trace(WorkflowService.class, "[projectId ="+projectId+" ][workflowId = " +workflowId+"]"+ JEMessages.BUILDING_WF);
         JEWorkflow workflow = project.getWorkflowByIdOrName(workflowId);
         if(!WorkflowBuilder.buildWorkflow(workflow)) {
-            throw new JERunnerErrorException(JEMessages.JERUNNER_UNREACHABLE);
+            throw new WorkflowBuildException(JEMessages.WORKFLOW_BUILD_ERROR);
         };
     }
 
@@ -412,7 +411,7 @@ public class WorkflowService {
      * Build all workflow
      * */
     @Async
-    public CompletableFuture<Void> buildWorkflows(String projectId) throws ProjectNotFoundException, IOException, JERunnerErrorException, InterruptedException, ExecutionException, ConfigException {
+    public CompletableFuture<Void> buildWorkflows(String projectId) throws ProjectNotFoundException, IOException,  InterruptedException, ExecutionException, ConfigException, WorkflowBuildException {
     	
     	JEProject project = ProjectService.getProjectById(projectId);
         if (project == null) {
@@ -421,7 +420,7 @@ public class WorkflowService {
         JELogger.trace("[projectId ="+projectId+" ]"+ JEMessages.BUILDING_WFS);
         for (JEWorkflow wf : project.getWorkflows().values()) {
             if(!WorkflowBuilder.buildWorkflow(wf)) {
-                throw new JERunnerErrorException(/*JEMessages.JERUNNER_UNREACHABLE*/ "Failed to build workflow : " +wf.getWorkflowName());
+                throw new WorkflowBuildException(JEMessages.WORKFLOW_BUILD_ERROR);
             };
         }
         return CompletableFuture.completedFuture(null);
@@ -431,7 +430,7 @@ public class WorkflowService {
     /*
      * Run a workflow
      * */
-    public void runWorkflow(String projectId, String workflowId) throws WorkflowNotFoundException, ProjectNotFoundException, IOException, WorkflowAlreadyRunningException, InterruptedException, ExecutionException, JERunnerErrorException, ConfigException {
+    public void runWorkflow(String projectId, String workflowId) throws WorkflowNotFoundException, ProjectNotFoundException, IOException, WorkflowAlreadyRunningException, InterruptedException, ExecutionException, JERunnerErrorException {
     	
     	JEProject project = ProjectService.getProjectById(projectId);
         if (project == null) {
@@ -477,7 +476,7 @@ public class WorkflowService {
         {
         	if(project.blockNameExists((String) block.getAttributes().get(NAME)))
         	{
-        		throw new AddRuleBlockException("Block name can't be updated because it already exists");
+        		throw new WorkflowBlockException(JEMessages.BLOCK_NAME_CAN_T_BE_UPDATED_BECAUSE_IT_ALREADY_EXISTS);
         	}
         	else {
         		project.removeBlockName(block.getId());
@@ -491,14 +490,27 @@ public class WorkflowService {
         if (block.getType().equalsIgnoreCase(WorkflowConstants.START_TYPE)) {
             StartBlock b = (StartBlock) project.getWorkflowByIdOrName(block.getWorkflowId()).getAllBlocks().get(block.getId());
             b.setName((String) block.getAttributes().get(NAME));
+            b.setEventId(null);
+            b.setTimerCycle(null);
+            b.setTimerDate(null);
+            b.setTimeDelay(null);
             if (!JEStringUtils.isEmpty((String) block.getAttributes().get(EVENT_ID))) {
                 eventService.updateEventType(block.getProjectId(), (String) block.getAttributes().get(EVENT_ID),  EventType.START_WORKFLOW.toString());
-                //TODO throw exception in case runner didnt get the event
                 b.setEventId((String) block.getAttributes().get(EVENT_ID));
             }
-            else {
-                b.setEventId(null);
+
+            else if(!JEStringUtils.isEmpty((String) block.getAttributes().get(WorkflowConstants.DATETIMEREVENT))) {
+                b.setTimerDate((String) block.getAttributes().get(WorkflowConstants.DATETIMEREVENT));
             }
+
+            else if(!JEStringUtils.isEmpty((String) block.getAttributes().get(DURATIONTIMEREVENT))) {
+                b.setTimeDelay((String) block.getAttributes().get(WorkflowConstants.DURATIONTIMEREVENT));
+            }
+
+            else if(!JEStringUtils.isEmpty((String) block.getAttributes().get(CYCLETIMEREVENT))) {
+                b.setTimerCycle((String) block.getAttributes().get(WorkflowConstants.CYCLETIMEREVENT));
+            }
+
             project.addBlockToWorkflow(b);
         } else if (block.getType().equalsIgnoreCase(WorkflowConstants.END_TYPE)) {
             EndBlock b = (EndBlock) project.getWorkflowByIdOrName(block.getWorkflowId()).getAllBlocks().get(block.getId());
@@ -567,7 +579,7 @@ public class WorkflowService {
             project.addBlockToWorkflow(b);
         } else if (block.getType().equalsIgnoreCase(WorkflowConstants.SCRIPTTASK_TYPE)) {
             if(JEStringUtils.isEmpty((String) block.getAttributes().get(SCRIPT))) {
-                throw new WorkflowBlockException(ResponseCodes.EMPTY_SCRIPT, JEMessages.EMPTY_SCRIPT);
+                throw new WorkflowBlockException(JEMessages.EMPTY_SCRIPT);
             }
             ScriptBlock b = (ScriptBlock) project.getWorkflowByIdOrName(block.getWorkflowId()).getAllBlocks().get(block.getId());
             b.setName((String) block.getAttributes().get(NAME));

@@ -1,7 +1,8 @@
 package io.je.utilities.logger;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
-
+import java.util.Date;
 
 
 //TODO: to be deleted, just used for testing
@@ -43,7 +44,15 @@ public class LoggingServiceTest {
 		};
 
 		Thread t = new Thread(runnable);
-		t.start();
+		Date date = new Date(System.currentTimeMillis());
+
+// Conversion
+		SimpleDateFormat sdf;
+		sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+		//sdf.setTimeZone(TimeZone.getTimeZone("CET"));
+		String text = sdf.format(date);
+		System.out.println(text);
+		//t.start();
 		
 	/*	ZMQSubscriber sub = new ZMQSubscriber("tcp://127.0.0.1", 15001, "SIOTH##LogTopic") {
 			

@@ -75,7 +75,6 @@ public class WorkflowController {
     public ResponseEntity<?> runWorkflow(@PathVariable String projectId, @PathVariable String key) {
         try {
 			projectService.getProject(projectId);
-
             workflowService.runWorkflow(projectId, key);
         }catch (Exception e) {
 			return JEExceptionHandler.handleException(e);

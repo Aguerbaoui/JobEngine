@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.ExecutionException;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.exceptions.JEException;
@@ -19,8 +20,8 @@ public class JEExceptionHandler {
 		if (e instanceof JEException) {
 			JEException ex = (JEException) e;
 			JELogger.error(JEExceptionHandler.class, e.getMessage());
-
-			return ResponseEntity.badRequest().body(new JEResponse(ex.getCode(), ex.getMessage()));
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new JEResponse(ex.getCode(), ex.getMessage()));
+			//return ResponseEntity.badRequest().body(new JEResponse(ex.getCode(), ex.getMessage()));
 		}
 
 		else if (e instanceof ExecutionException) {

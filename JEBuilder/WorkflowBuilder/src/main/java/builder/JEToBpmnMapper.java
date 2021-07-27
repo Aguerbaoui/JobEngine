@@ -39,7 +39,12 @@ public class JEToBpmnMapper {
         BpmnModel model = ModelBuilder.createNewBPMNModel();
         model.setTargetNamespace(wf.getJobEngineProjectID());
         Process process = ModelBuilder.createProcess(wf.getWorkflowName().trim());
-        process.addFlowElement(ModelBuilder.createStartEvent(wf.getWorkflowStartBlock().getJobEngineElementID(), wf.getWorkflowStartBlock().getEventId()));
+        process.addFlowElement(
+                ModelBuilder.createStartEvent(wf.getWorkflowStartBlock().getJobEngineElementID(),
+                wf.getWorkflowStartBlock().getEventId(),
+                wf.getWorkflowStartBlock().getTimeDelay(),
+                wf.getWorkflowStartBlock().getTimerDate(),
+                wf.getWorkflowStartBlock().getTimerCycle()));
         addListeners(process);
         parseWorkflowBlock(wf, wf.getWorkflowStartBlock(), process, null);
         model.addProcess(process);
@@ -156,7 +161,7 @@ public class JEToBpmnMapper {
             }
 
             else if (block instanceof DurationDelayTimerEvent && !block.isProcessed()) {
-                process.addFlowElement(ModelBuilder.createDateTimerEvent(block.getJobEngineElementID(), block.getName(), ((DurationDelayTimerEvent) block).getTimeDuration()));
+                process.addFlowElement(ModelBuilder.createDurationTimerEvent(block.getJobEngineElementID(), block.getName(), ((DurationDelayTimerEvent) block).getTimeDuration()));
             }
 
             else if (block instanceof WebApiBlock && !block.isProcessed()) {

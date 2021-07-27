@@ -44,11 +44,10 @@ public class ConfigurationService {
 	 * init configuration : > load config from database >update config
 	 */
 	public void init()
-			throws JERunnerErrorException, InterruptedException, ExecutionException, IOException, ProjectNotFoundException, ConfigException {
+			{
 		try{
 				JELogger.info(JEMessages.INITILIZING_BUILDER);
-				classService.loadAllClassesToBuilder();
-				projectService.loadAllProjects();
+
 				updateRunner();
 				classService.initClassUpdateListener();
 		}catch (Exception e) {
@@ -64,8 +63,7 @@ public class ConfigurationService {
 
 
 	
-	public void updateRunner() {
-
+	public void updateRunner(){
 		new Thread(() -> {
 			try {
 				boolean serverUp = false;
@@ -74,11 +72,9 @@ public class ConfigurationService {
 					Thread.sleep(healthCheck);
 					serverUp = checkRunnerHealth();
 				}
-
-                classService.sendClassesToJeRunner(classService.getLoadedClasses().values());
-
 				JELogger.info(ProjectService.class, JEMessages.RUNNER_IS_UP_UPDATING_NOW);
-				projectService.resetProjects();
+				classService.loadAllClassesToBuilder();
+				projectService.loadAllProjects();
 			} catch (Exception e) {
 				JEExceptionHandler.handleException(e);
 			}
@@ -86,7 +82,7 @@ public class ConfigurationService {
 
 	}
 
-	private boolean checkRunnerHealth() {
+	private static boolean checkRunnerHealth() {
 		try {
 			runnerStatus = JERunnerAPIHandler.checkRunnerHealth();
 		} catch (Exception e) {
