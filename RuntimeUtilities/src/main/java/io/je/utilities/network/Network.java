@@ -7,6 +7,8 @@ import io.je.utilities.apis.BodyType;
 import io.je.utilities.apis.HttpMethod;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.logger.JELogger;
+import io.je.utilities.logger.LogCategory;
+import io.je.utilities.logger.LogSubModule;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import java.io.IOException;
@@ -46,7 +48,9 @@ public class Network {
     }
 
     public static Response makeGetNetworkCallWithResponse(String url) throws IOException, InterruptedException, ExecutionException {
-        JELogger.debug(JEMessages.NETWORK_GET + url);
+        JELogger.debug(JEMessages.NETWORK_GET + url,
+                LogCategory.RUNTIME, null,
+                LogSubModule.JERUNNER,null);
         Request request = new Request.Builder().url(url).get().build();
         CompletableFuture<Response> f = CompletableFuture.supplyAsync(() -> {
             try {
@@ -60,7 +64,9 @@ public class Network {
 
     public static Response makeDeleteNetworkCallWithResponse(String url) throws IOException, InterruptedException, ExecutionException {
         Request request = new Request.Builder().url(url).delete().build();
-        JELogger.debug(JEMessages.NETWORK_DELETE + url);
+        JELogger.debug(JEMessages.NETWORK_DELETE + url,
+                LogCategory.RUNTIME, null,
+                LogSubModule.JERUNNER,null);
         CompletableFuture<Response> f = CompletableFuture.supplyAsync(() -> {
             try {
                 return client.newCall(request).execute();
@@ -77,9 +83,14 @@ public class Network {
             jsonStr = new ObjectMapper().writeValueAsString(json);
 
         } catch (JsonProcessingException e) {
-            JELogger.info(Network.class, e.getMessage());
+            JELogger.error("Json parsing error" + e.getMessage(),
+                    LogCategory.RUNTIME, null,
+                    LogSubModule.JERUNNER,null);
+
         }
-        JELogger.trace(JEMessages.NETWORK_POST + url);
+        JELogger.debug(JEMessages.NETWORK_POST + url,
+                LogCategory.RUNTIME, null,
+                LogSubModule.JERUNNER,null);
         RequestBody body = RequestBody.create(MediaType.parse("application/json"), jsonStr);
         Request request = new Request.Builder().url(url).post(body).build();
         CompletableFuture<Response> f = CompletableFuture.supplyAsync(() -> {
@@ -96,7 +107,9 @@ public class Network {
     public static Response makeNetworkCallWithStringObjectBodyWithResponse(String json, String url) throws IOException, ExecutionException, InterruptedException {
         RequestBody body = RequestBody.create(MediaType.parse("application/json"), json);
         Request request = new Request.Builder().url(url).post(body).build();
-        JELogger.trace(JEMessages.NETWORK_POST + url);
+        JELogger.debug(JEMessages.NETWORK_POST + url,
+                LogCategory.RUNTIME, null,
+                LogSubModule.JERUNNER,null);
         CompletableFuture<Response> f = CompletableFuture.supplyAsync(() -> {
             try {
                 return client.newCall(request).execute();

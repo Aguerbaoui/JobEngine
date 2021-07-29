@@ -23,7 +23,7 @@ public class JELogger {
 
     private static Queue<LogMessage> queue = new LinkedList<>();
     private static  Logger logger = null;
-    private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
 
     
   
@@ -31,19 +31,7 @@ public class JELogger {
     
     /*******************************TO BE DELETED ****************************************************/
 
-    /*
-    * Trace log level
-    * */
-     public static void trace(Class<?> clazz, String msg) {
 
-        logger.info( msg.trim());
-
-    }
-
-    public static void trace(String msg) {
-        logger.info( msg.trim());
-
-    }
     /*
      * log level 1 : debug
      */
@@ -117,17 +105,11 @@ public class JELogger {
      * */
     public static void trace(String message,  LogCategory category,
                              String projectId, LogSubModule subModule, String objectId) {
-
         //Log in file
         logger.trace( message);
 
-
-      //Log in logging service
+        //Log in logging service
         LogMessage logMessage = getLogMessage(LogLevel.CONTROL, message, category, projectId, subModule, objectId);
-        synchronized (queue) {
-            queue.add(logMessage);
-        }
-
         ZMQLogPublisher.publish(logMessage);
     }
 
@@ -136,14 +118,12 @@ public class JELogger {
      * */
     public static void debug(String message,  LogCategory category,
                              String projectId, LogSubModule subModule, String objectId) {
-
         //Log in file
         logger.debug( message);
 
         //Log in logging service
-        synchronized (queue) {
-            queue.add(getLogMessage(LogLevel.DEBUG, message, category, projectId, subModule, objectId));
-        }
+        LogMessage logMessage = getLogMessage(LogLevel.DEBUG, message, category, projectId, subModule, objectId);
+        ZMQLogPublisher.publish(logMessage);
 
     }
 
@@ -152,16 +132,11 @@ public class JELogger {
      * */
     public static void info(String message,  LogCategory category,
                             String projectId, LogSubModule subModule, String objectId) {
-
         //Log in file
         logger.info( message);
 
         //Log in logging service
         LogMessage logMessage = getLogMessage(LogLevel.INFORM, message, category, projectId, subModule, objectId);
-        synchronized (queue) {
-            queue.add(logMessage);
-        }
-
         ZMQLogPublisher.publish(logMessage);
     }
 
@@ -170,15 +145,12 @@ public class JELogger {
      * */
     public static void error(String message,  LogCategory category,
                              String projectId, LogSubModule subModule, String objectId) {
-
         //Log in file
         logger.error( message);
 
         //Log in logging service
-        synchronized (queue) {
-            queue.add(getLogMessage(LogLevel.ERROR, message, category, projectId, subModule, objectId));
-        }
-
+        LogMessage logMessage = getLogMessage(LogLevel.ERROR, message, category, projectId, subModule, objectId);
+        ZMQLogPublisher.publish(logMessage);
     }
 
     /*
@@ -186,15 +158,12 @@ public class JELogger {
      * */
     public static void warn(String message,  LogCategory category,
                             String projectId, LogSubModule subModule, String objectId) {
-
         //Log in file
         logger.warn( message);
 
         //Log in logging service
-        synchronized (queue) {
-            queue.add(getLogMessage(LogLevel.WARNING, message, category, projectId, subModule, objectId));
-        }
-
+        LogMessage logMessage = getLogMessage(LogLevel.WARNING, message, category, projectId, subModule, objectId);
+        ZMQLogPublisher.publish(logMessage);
     }
 
     // get Log message object for the logging service
@@ -220,6 +189,7 @@ public class JELogger {
     /***************************************************************************************************************/
     private static Level getLogLevel(String level)
     {
+        //ALL < TRACE/CONTROL < DEBUG < INFO < WARN < ERROR < FATAL < OFF
     	Level lvl = Level.DEBUG;
     	switch(level)
     	{
@@ -241,14 +211,14 @@ public class JELogger {
     	return lvl;
     }
 
-    public static void initBuilderLogger(String jeBuilderLogPath, String level) {
+    public static void initLogger(String appName, String logPath, String level) {
         //TODO Remove the old logger context initialization (spring/activiti/drools)
 
-    	String pattern = "[%d] [%p] JEBuilder :: %m%n";
+        String pattern = "[%d] [%p]" + appName + " :: %m%n";
         ConfigurationBuilder<BuiltConfiguration> builder = ConfigurationBuilderFactory.newConfigurationBuilder();
 
-        builder.setStatusLevel(Level.OFF);
-        builder.setConfigurationName("JobEngineBuilderLogger");
+        builder.setStatusLevel(getLogLevel(level));
+        builder.setConfigurationName(appName + "Logger");
         RootLoggerComponentBuilder rootLogger = builder.newRootLogger(getLogLevel(level));
         // create a console appender
         AppenderComponentBuilder consoleAppender = builder.newAppender("Console", "CONSOLE").addAttribute("target",
@@ -265,8 +235,8 @@ public class JELogger {
         ComponentBuilder triggeringPolicy = builder.newComponent("Policies")
                 .addComponent(builder.newComponent("SizeBasedTriggeringPolicy").addAttribute("size", "10MB"));
         AppenderComponentBuilder appenderBuilder = builder.newAppender("LogToRollingFile", "RollingFile")
-                .addAttribute("fileName", jeBuilderLogPath)
-                .addAttribute("filePattern", jeBuilderLogPath + "-%d{MM-dd-yy-HH}.log.")
+                .addAttribute("fileName", logPath)
+                .addAttribute("filePattern", logPath + "-%d{MM-dd-yy-HH}.log.")
                 .add(layoutBuilder)
                 .addComponent(triggeringPolicy);
         builder.add(appenderBuilder);
@@ -277,53 +247,11 @@ public class JELogger {
         Configurator.shutdown(context);
         context = Configurator.initialize(builder.build());
         logger = context.getLogger("JobEngineLogger");
-       // trace(JELogger.class, "Builder Logger initialized");
-        info(JELogger.class, getInitialLogMessage("JEBuilder",level) );
+        // trace(JELogger.class, "Builder Logger initialized");
+        info(JELogger.class, getInitialLogMessage(appName,level) );
 
     }
 
-    public static void initRunnerLogger(String jeRunnerLogPath, String level) {
-        //TODO Remove the old logger context initialization (spring/activiti/drools)
-    	String pattern = "[%d] [%p] JERunner :: %m%n";
-
-        ConfigurationBuilder<BuiltConfiguration> builder = ConfigurationBuilderFactory.newConfigurationBuilder();
-
-        builder.setStatusLevel(Level.OFF);
-        builder.setConfigurationName("JobEngineRunnerLogger");
-        RootLoggerComponentBuilder rootLogger = builder.newRootLogger(getLogLevel(level));
-        // create a console appender
-        AppenderComponentBuilder consoleAppender = builder.newAppender("Console", "CONSOLE").addAttribute("target",
-                ConsoleAppender.Target.SYSTEM_OUT);
-        consoleAppender.add(builder.newLayout("PatternLayout")
-                .addAttribute("pattern", pattern));
-        rootLogger.add(builder.newAppenderRef("Console"));
-
-        builder.add(consoleAppender);
-
-        // create a rolling file appender
-        LayoutComponentBuilder layoutBuilder = builder.newLayout("PatternLayout")
-                .addAttribute("pattern", pattern);
-        ComponentBuilder triggeringPolicy = builder.newComponent("Policies")
-                .addComponent(builder.newComponent("SizeBasedTriggeringPolicy").addAttribute("size", "10MB"));
-        AppenderComponentBuilder appenderBuilder = builder.newAppender("LogToRollingFile", "RollingFile")
-                .addAttribute("fileName", jeRunnerLogPath)
-                .addAttribute("filePattern", jeRunnerLogPath + "-%d{MM-dd-yy-HH}.log.")
-                .add(layoutBuilder)
-                .addComponent(triggeringPolicy);
-        builder.add(appenderBuilder);
-
-        rootLogger.add(builder.newAppenderRef("LogToRollingFile"));
-        builder.add(rootLogger);
-        LoggerContext context = Configurator.initialize(builder.build());
-        Configurator.shutdown(context);
-        context = Configurator.initialize(builder.build());
-        logger = context.getLogger("JobEngineLogger");
-        //trace(JELogger.class, "Runtime Logger initialized");
-        info(JELogger.class, getInitialLogMessage("JERunner",level) );
-
-
-    }
-    
     
     private static String getInitialLogMessage(String appName, String level)
     {

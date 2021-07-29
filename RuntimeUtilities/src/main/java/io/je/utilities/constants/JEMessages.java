@@ -165,9 +165,9 @@ public class JEMessages {
 
     public static final String SAVING_BPMN_FILE_TO_PATH = "Saving BPMP file to path";
 
-    public static final String DEPLOYING_IN_RUNNER_WORKFLOW_WITH_ID = "Deploying in JERunner workflow with" +
+    public static final String DEPLOYING_IN_RUNNER_WORKFLOW_WITH_ID = " Deploying in JERunner workflow with" +
             "h id ";
-    public static final String FAILED_TO_DEPLOY_IN_RUNNER_WORKFLOW_WITH_ID = "Failed to deploy in JERunner workflow with id";
+    public static final String FAILED_TO_DEPLOY_IN_RUNNER_WORKFLOW_WITH_ID = " Failed to deploy in JERunner workflow with id";
 
     public static final String TRANSITIONING_FROM = "Transitioning from";
 
@@ -176,15 +176,17 @@ public class JEMessages {
     public static final String JUST_EXECUTED = "just executed";
     public static final String TASK_ID = "Task id";
 
-    public static final String PROCESS_HAS_TO_BE_TRIGGERED_BY_EVENT = "Process has to be triggered by event";
+    public static final String PROCESS_HAS_TO_BE_TRIGGERED_BY_EVENT = " Process has to be triggered by event";
+
+    public static final String PROCESS_EXITED = " Process has ended execution";
 
     public static final String RUNNING_ALL_WORKFLOWS_IN_PROJECT_ID = "Running all workflows in project id";
 
     public static final String BUILDING_WORKFLOWS_IN_PROJECT = "Building workflows in project";
 
-    public static final String ERROR_DELETING_A_NON_EXISTING_PROCESS = "Error deleting a non-existing process";
+    public static final String ERROR_DELETING_A_NON_EXISTING_PROCESS = " Error deleting a non-existing process";
 
-    public static final String EXECUTING_WEB_API_TASK = "Executing web api task";
+    public static final String EXECUTING_WEB_API_TASK = " Executing web api task";
 
     public static final String NETWORK_CALL_RESPONSE_IN_WEB_SERVICE_TASK = "Network call response in web service task";
 
@@ -196,7 +198,7 @@ public class JEMessages {
 
     public static final String DB_SERVICE_TASK_RESPONSE = " Database service task response";
 
-    public static final String UPDATING_A_WORKFLOW_BLOCK_WITH_ID = "Updating a workflow block with id ";
+    public static final String UPDATING_A_WORKFLOW_BLOCK_WITH_ID = " Updating a workflow block with id ";
 
     public static final String INFORM_FROM_USER = "Inform from user";
 
@@ -356,9 +358,11 @@ public class JEMessages {
 
     public static final String DELETING_EVENT = " deleting event";
 
+    public static final String DELETING_EVENTS = " deleting events";
+
     public static final String DELETING_EVENT_FROM_RUNNER = " deleting event from JERunner";
 
-    public static final String UPDATING_EVENT_TYPE_IN_RUNNER = "Updating event type in JERunner";
+    public static final String UPDATING_EVENT_TYPE_IN_RUNNER = " Updating event type in JERunner";
 
 
     // ****************************************rules**************************************************
@@ -421,6 +425,14 @@ public class JEMessages {
     public static final String VAR_ADDED_SUCCESSFULLY = " Variable added successfully.";
 
     public static final String VAR_DELETED = "Variable was sucessfully deleted ";
+
+    public static final String ADDING_VARIABLE = "Adding variable ";
+
+    public static final String REMOVING_VARIABLE = "Removing variable ";
+
+    public static final String UPDATING_VARIABLE = "Updating variable ";
+
+
 
     // ****************************************RuleBuilder**************************************************
 
@@ -587,4 +599,7 @@ public class JEMessages {
     public static final String BLOCK_NAME_CAN_T_BE_UPDATED_BECAUSE_IT_ALREADY_EXISTS = "Block name can't be updated because it already exists";
     public static final String WORKFLOW_BUILD_ERROR = "Error while building the workflow ";
     public static final String WORKFLOW_RUN_ERROR = " Error while running the workflow ";
+    public static final String UPLOADED_JAR_TO_PATH = "Uploaded jar to path ";
+    public static final String SENDING_VARIABLE_TO_RUNNER = "Sending variable to runner";
+    public static final String DELETING_VARIABLE = "Deleting variable ";
 }

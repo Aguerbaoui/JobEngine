@@ -17,7 +17,9 @@ public class WebApiServiceTask extends ServiceTask{
     @Override
     public void execute(DelegateExecution execution) {
         WebApiTask task = (WebApiTask) ActivitiTaskManager.getTask(execution.getCurrentActivityId());
-        JELogger.trace(WebApiServiceTask.class, " " + JEMessages.EXECUTING_WEB_API_TASK + task.getTaskId());
+        JELogger.debug(JEMessages.EXECUTING_WEB_API_TASK + task.getTaskId(),
+                LogCategory.RUNTIME, task.getProjectId(),
+                LogSubModule.WORKFLOW, task.getTaskId());
         Network network = null;
         if(task.hasBody()) {
             try {

@@ -15,6 +15,8 @@ import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.*;
 import io.je.utilities.files.JEFileUtils;
 import io.je.utilities.logger.JELogger;
+import io.je.utilities.logger.LogCategory;
+import io.je.utilities.logger.LogSubModule;
 import io.je.utilities.ruleutils.RuleIdManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
@@ -95,7 +97,10 @@ public class RuleService {
         if (project == null) {
             throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
         }
-        JELogger.trace(getClass(), "[projectId = " + projectId + "] [ruleId = " + ruleId + "]" + JEMessages.DELETING_RULE);
+
+        JELogger.debug( "[projectId = " + projectId + "] [ruleId = " + ruleId + "]"
+                        + JEMessages.DELETING_RULE,
+                LogCategory.DESIGN_MODE, projectId, LogSubModule.RULE, ruleId);
         if (project.getRule(ruleId) instanceof UserDefinedRule) {
             UserDefinedRule rule = (UserDefinedRule) project.getRule(ruleId);
             if (rule.getSubRules() != null) {
@@ -128,7 +133,8 @@ public class RuleService {
         UserDefinedRule ruleToUpdate = (UserDefinedRule) project.getRule(ruleModel.getRuleId());
         ruleToUpdate.setJeObjectLastUpdate(LocalDateTime.now());
 
-        JELogger.trace(getClass(), "[projectId = " + projectId + "] [ruleId = " + ruleModel.getRuleId() + "]" + JEMessages.DELETING_RULE);
+        JELogger.debug( "[projectId = " + projectId + "] [ruleId = " + ruleModel.getRuleId() + "]" + JEMessages.UPDATING_RULE,
+                LogCategory.DESIGN_MODE, projectId, LogSubModule.RULE, ruleModel.getRuleId());
         // update rule name
         if (ruleModel.getRuleName() != null && !ruleModel.getRuleName().equals(DEFAULT_DELETE_CONSTANT)) {
             ruleToUpdate.setRuleName(ruleModel.getRuleName());
@@ -208,7 +214,8 @@ public class RuleService {
         if (project == null) {
             throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
         } else if (!project.ruleExists(blockModel.getRuleId())) {
-            JELogger.error(getClass(), JEMessages.RULE_NOT_FOUND + " [ " + blockModel.getRuleId() + "]");
+            JELogger.error( JEMessages.RULE_NOT_FOUND + " [ " + blockModel.getRuleId() + "]",
+                    LogCategory.DESIGN_MODE, blockModel.getProjectId(), LogSubModule.RULE, blockModel.getRuleId());
             throw new RuleNotFoundException(blockModel.getProjectId(), blockModel.getRuleId());
         }
         verifyBlockFormatIsValid(blockModel);
@@ -223,9 +230,9 @@ public class RuleService {
         {
         	throw new AddRuleBlockException("A block with this id already exists");
         }
-       
-         JELogger.trace(getClass(), JEMessages.ADDING_BLOCK + blockModel.getBlockName() + " to rule [id : " + blockModel.getRuleId() + "]");
 
+        JELogger.debug( JEMessages.ADDING_BLOCK + blockModel.getBlockName() + " to rule [id : " + blockModel.getRuleId() + "]",
+                LogCategory.DESIGN_MODE, blockModel.getProjectId(), LogSubModule.RULE, blockModel.getRuleId());
          String generatedBlockName = project.generateUniqueBlockName(blockModel.getBlockName());
          blockModel.setBlockName(generatedBlockName);
 
@@ -287,7 +294,8 @@ public class RuleService {
             throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
         //check rule exists    
         } else if (!project.ruleExists(blockModel.getRuleId())) {
-            JELogger.error(getClass(), JEMessages.RULE_NOT_FOUND + " [ " + blockModel.getRuleId() + "]");
+            JELogger.error( JEMessages.RULE_NOT_FOUND + " [ " + blockModel.getRuleId() + "]",
+                    LogCategory.DESIGN_MODE, blockModel.getProjectId(), LogSubModule.RULE, blockModel.getRuleId());
             throw new RuleNotFoundException(blockModel.getProjectId(), blockModel.getRuleId());        }
         
         //check block exists
@@ -295,7 +303,8 @@ public class RuleService {
         boolean blockExists = rule.containsBlock(blockModel.getBlockId());
 
          if(!blockExists)
-        {
+        {       JELogger.error( JEMessages.BLOCK_NOT_FOUND + " [ " + blockModel.getBlockId() + "]",
+                LogCategory.DESIGN_MODE, blockModel.getProjectId(), LogSubModule.RULE, blockModel.getBlockId());
             throw new RuleBlockNotFoundException(JEMessages.RULE_NOT_FOUND + " [ " + blockModel.getRuleId() + "]");
 
         }
@@ -306,8 +315,8 @@ public class RuleService {
         //check if block already exists
         Block oldblock = rule.getBlocks().getBlock(blockModel.getBlockId());
 
-        JELogger.trace(getClass(), JEMessages.UPDATING_BLOCK + blockModel.getBlockName() + " in rule [id : " + blockModel.getRuleId() + "]");
-
+        JELogger.debug( JEMessages.UPDATING_BLOCK + blockModel.getBlockName() + " in rule [id : " + blockModel.getRuleId() + "]",
+                LogCategory.DESIGN_MODE, blockModel.getProjectId(), LogSubModule.RULE, blockModel.getBlockId());
 
         //create block
         Block block = BlockGenerator.createBlock(blockModel);
@@ -361,7 +370,8 @@ public class RuleService {
         } else if (!project.ruleExists(ruleId)) {
         	throw new RuleNotFoundException(projectId, ruleId);
         	}
-        JELogger.trace(getClass(), JEMessages.DELETING_BLOCK + blockId + " in rule [id : " + ruleId + ") in project id = " + projectId);
+        JELogger.debug( JEMessages.DELETING_BLOCK + blockId + " in rule [id : " + ruleId + ") in project id = " + projectId,
+                LogCategory.DESIGN_MODE, projectId, LogSubModule.RULE, blockId);
         project.deleteRuleBlock(ruleId, blockId);
         project.removeBlockName(blockId);
         ruleRepository.save(project.getRule(ruleId));
@@ -375,8 +385,8 @@ public class RuleService {
         if (project == null) {
             throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
         }
-
-        JELogger.trace("[projectId = " + projectId + "]" + JEMessages.BUILDING_RULES);
+        JELogger.debug( "[projectId = " + projectId + "]" + JEMessages.BUILDING_RULES,
+                LogCategory.DESIGN_MODE, projectId, LogSubModule.RULE, null);
         cleanUpRules(project);
         ArrayList<CompletableFuture<?>> ruleFuture = new ArrayList<>();
 
@@ -401,7 +411,8 @@ public class RuleService {
 
         String rulePrefix = RuleIdManager.generateSubRulePrefix(ruleId);
         JEFileUtils.deleteFilesInPathByPrefix(project.getConfigurationPath(), rulePrefix);
-        JELogger.trace(JEMessages.DELETING_RULE_RUNNER);
+        JELogger.debug( JEMessages.DELETING_RULE_RUNNER,
+                LogCategory.DESIGN_MODE, project.getProjectId(), LogSubModule.RULE, ruleId);
        if( project.getRule(ruleId) instanceof UserDefinedRule)
        {
     	   UserDefinedRule rule = (UserDefinedRule ) project.getRule(ruleId);
@@ -427,7 +438,8 @@ public class RuleService {
         }
 
         List<RuleModel> rules = new ArrayList<>();
-        JELogger.trace("[projectId = " + projectId + "]" + JEMessages.LOADING_RULES);
+        JELogger.debug( "[projectId = " + projectId + "]" + JEMessages.LOADING_RULES,
+                LogCategory.DESIGN_MODE, project.getProjectId(), LogSubModule.RULE, null);
         for (JERule rule :  ruleRepository.findByJobEngineProjectID(projectId)) {
 
         	   rules.add(new RuleModel(rule));
@@ -443,7 +455,8 @@ public class RuleService {
 
         } else if (!project.ruleExists(ruleId)) {
         	throw new RuleNotFoundException(projectId, ruleId);        }
-        JELogger.trace("[projectId = " + projectId + "] [ruleId = " + ruleId + "]" + JEMessages.LOADING_RULE);
+        JELogger.debug( "[projectId = " + projectId + "] [ruleId = " + ruleId + "]" + JEMessages.LOADING_RULE,
+                LogCategory.DESIGN_MODE, project.getProjectId(), LogSubModule.RULE, ruleId);
         return new RuleModel(ruleRepository.findById(ruleId).get());
     }
 
@@ -460,7 +473,8 @@ public class RuleService {
         if (project == null) {
             throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
         }
-        JELogger.trace("[projectId = " + projectId+"]" + JEMessages.ADDING_SCRIPTED_RULE );
+        JELogger.debug( "[projectId = " + projectId+"]" + JEMessages.ADDING_SCRIPTED_RULE,
+                LogCategory.DESIGN_MODE, project.getProjectId(), LogSubModule.RULE, ruleModel.getRuleId());
         project.addRule(rule);
         ruleRepository.save(rule);
     }
@@ -479,7 +493,8 @@ public class RuleService {
         if (project == null) {
             throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
         }
-        JELogger.trace("[projectId = " + projectId+"]" + JEMessages.UPDATING_SCRIPTED_RULE );
+        JELogger.debug( "[projectId = " + projectId+"]" + JEMessages.UPDATING_SCRIPTED_RULE,
+                LogCategory.DESIGN_MODE, projectId, LogSubModule.RULE, ruleModel.getRuleId());
         project.updateRule(rule);
         ruleRepository.save(rule);
     }
@@ -491,7 +506,8 @@ public class RuleService {
             throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
         } else if (!project.ruleExists(ruleId)) {
         	throw new RuleNotFoundException(projectId, ruleId);        }
-        JELogger.debug("[projectId = " + projectId + "] [ruleId = " + ruleId + "]"+JEMessages.FRONT_CONFIG);
+        JELogger.debug( "[projectId = " + projectId + "] [ruleId = " + ruleId + "]"+JEMessages.FRONT_CONFIG,
+                LogCategory.DESIGN_MODE, projectId, LogSubModule.RULE, ruleId);
         project.getRule(ruleId).setRuleFrontConfig(config);
         ruleRepository.save(project.getRule(ruleId));
     }
@@ -527,11 +543,11 @@ public class RuleService {
             throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
         }
         HashMap<String, String> undeletedRules = new HashMap<String, String>();
-        JELogger.trace(JEMessages.DELETING_RULES + ruleIds + " In project id = " + projectId);
         for (String ruleId : ruleIds) {
             if (project.ruleExists(ruleId)) {
                 try {
-                    JELogger.trace(getClass(), "[projectId = " + projectId + "] [ruleId = " + ruleId + "]"+JEMessages.DELETING_RULE);
+                    JELogger.debug( "[projectId = " + projectId + "] [ruleId = " + ruleId + "]"+JEMessages.DELETING_RULE,
+                            LogCategory.DESIGN_MODE, projectId, LogSubModule.RULE, ruleId);
                     if (project.getRule(ruleId) instanceof UserDefinedRule) {
                         UserDefinedRule rule = (UserDefinedRule) project.getRule(ruleId);
                         if (rule.getSubRules() != null) {
@@ -574,8 +590,10 @@ public class RuleService {
         if (project == null) {
             throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
         } else if (!project.ruleExists(ruleId)) {
-        	throw new RuleNotFoundException(projectId, ruleId);        }
-        JELogger.trace(getClass(), "[projectId = " + projectId + "] [ruleId = " + ruleId + "]"+JEMessages.BUILDING_RULE);
+        	throw new RuleNotFoundException(projectId, ruleId);
+        }
+        JELogger.debug( "[projectId = " + projectId + "] [ruleId = " + ruleId + "]"+JEMessages.BUILDING_RULE,
+                LogCategory.DESIGN_MODE, projectId, LogSubModule.RULE, ruleId);
         cleanUpRule(project, ruleId);
         RuleBuilder.buildRule(project.getRule(ruleId), project.getConfigurationPath());
         

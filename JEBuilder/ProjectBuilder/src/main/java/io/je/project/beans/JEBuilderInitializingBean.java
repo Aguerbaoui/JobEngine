@@ -3,6 +3,8 @@ package io.je.project.beans;
 import io.je.project.services.ProjectService;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.*;
+import io.je.utilities.logger.LogCategory;
+import io.je.utilities.logger.LogSubModule;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -29,8 +31,10 @@ public class JEBuilderInitializingBean implements InitializingBean {
     @Override
     public void afterPropertiesSet() {
         try {
-            JELogger.initBuilderLogger(builderProperties.getJeBuilderLogPath(),builderProperties.getJeBuilderLogLevel());
-            JELogger.trace(JEMessages.LOGGER_INITIALIZED);
+            JELogger.initLogger("JEBuilder", builderProperties.getJeBuilderLogPath(),builderProperties.getJeBuilderLogLevel());
+            JELogger.debug(JEMessages.LOGGER_INITIALIZED,
+                    LogCategory.DESIGN_MODE, null,
+                    LogSubModule.JEBUILDER, null);
         	configService.init();
         } catch (  Exception   e) {
            JELogger.error(getClass(), e.getMessage());

@@ -568,7 +568,11 @@ public class ProjectContainer {
 	public void compileRule(Rule rule) throws RuleCompilationException, JEFileNotFoundException {
 
 		// load rule content from rule path
-		JELogger.trace( "Rule Engine - [projectId ="+projectId+"]"+JEMessages.COMPILING_RULE+" ["+rule.getName()+"]..");
+
+		JELogger.debug("Rule Engine - [projectId ="+projectId+"]"+
+						JEMessages.COMPILING_RULE+" ["+rule.getName()+"]..",
+				LogCategory.DESIGN_MODE, rule.getJobEngineProjectID(),
+				LogSubModule.RULE,rule.getJobEngineElementID());
 		RuleLoader.loadRuleContent(rule);
 		String filename = generateResourceName(ResourceType.DRL, rule.getName());
 		kfsToCompile.write(filename, rule.getContent());

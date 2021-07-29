@@ -169,7 +169,7 @@ public class EventController {
 	/*
 	 * trigger event
 	 */
-	@GetMapping(value = "/triggerEvent/{projectId}/{eventId}", produces = MediaType.APPLICATION_JSON_VALUE)
+	/*@GetMapping(value = "/triggerEvent/{projectId}/{eventId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> triggerEvent(@PathVariable("projectId") String projectId, @PathVariable("eventId") String eventId) {
 
 		try {
@@ -181,25 +181,8 @@ public class EventController {
 
 		}
 		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.EVENT_ADDED));
-	}
-	
-	
-	/*
-	 * untrigger event
-	 */
-	@GetMapping(value = "/untriggerEvent/{projectId}/{eventId}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> untriggerEvent(@PathVariable("projectId") String projectId, @PathVariable("eventId") String eventId) {
+	}*/
 
-		try {
-
-			eventService.untriggerEvent(projectId, eventId);
-
-		} catch (Exception e) {
-			return JEExceptionHandler.handleException(e);
-
-		}
-		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.EVENT_ADDED));
-	}
 	
 	
 }

@@ -2,6 +2,8 @@ package io.je.utilities.files;
 
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.logger.JELogger;
+import io.je.utilities.logger.LogCategory;
+import io.je.utilities.logger.LogSubModule;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -12,6 +14,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
+
+import static io.je.utilities.constants.JEMessages.ADDING_JAR_FILE_TO_RUNNER;
 
 public class JEFileUtils {
 
@@ -29,7 +33,9 @@ public class JEFileUtils {
 	public static String getStringFromFile(String path) {
 		String content = null;
 		try {
-			JELogger.trace(JEFileUtils.class, JEMessages.READING_FILE + path);
+			JELogger.debug(JEMessages.READING_FILE + path,
+					LogCategory.RUNTIME, null,
+					LogSubModule.JERUNNER, null);
 			content = new String(Files.readAllBytes(Paths.get(path)));
 		} catch (IOException e) {
 			JELogger.error(JEFileUtils.class, Arrays.toString(e.getStackTrace()));
