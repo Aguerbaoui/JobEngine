@@ -8,6 +8,12 @@ public class StartBlock extends WorkflowBlock {
 
     private String eventId = null;
 
+    private String timeDelay = null;
+
+    private String timerCycle = null;
+
+    private String timerDate = null;
+
     public String getEventId() {
         return eventId;
     }
@@ -18,5 +24,29 @@ public class StartBlock extends WorkflowBlock {
             this.eventId = null;
         else
             this.eventId = eventId;
+    }
+
+    public String getTimeDelay() {
+        return timeDelay;
+    }
+
+    public void setTimeDelay(String timeDelay) {
+        this.timeDelay = timeDelay;
+    }
+
+    public String getTimerCycle() {
+        return timerCycle;
+    }
+
+    public void setTimerCycle(String timerCycle) {
+        this.timerCycle = timerCycle;
+    }
+
+    public String getTimerDate() {
+        return timerDate;
+    }
+
+    public void setTimerDate(String timerDate) {
+        this.timerDate = timerDate;
     }
 }

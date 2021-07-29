@@ -32,7 +32,7 @@ public class JEBuilderInitializingBean implements InitializingBean {
             JELogger.initBuilderLogger(builderProperties.getJeBuilderLogPath(),builderProperties.getJeBuilderLogLevel());
             JELogger.trace(JEMessages.LOGGER_INITIALIZED);
         	configService.init();
-        } catch (  JERunnerErrorException   | IOException | InterruptedException | ExecutionException | ProjectNotFoundException | ConfigException   e) {
+        } catch (  Exception   e) {
            JELogger.error(getClass(), e.getMessage());
         }
 

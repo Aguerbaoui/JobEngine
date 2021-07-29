@@ -79,13 +79,25 @@ public class ModelBuilder {
     /*
      * Create a user start event and return it
      * */
-    public static StartEvent createStartEvent(String id, String reference) {
+    public static StartEvent createStartEvent(String id, String reference, String timerDelay, String timeDate, String timeCycle) {
         StartEvent startEvent = new StartEvent();
         startEvent.setId(id);
         if(reference != null) {
             MessageEventDefinition eventDefinition = new MessageEventDefinition();
             eventDefinition.setMessageRef(reference);
             startEvent.addEventDefinition(eventDefinition);
+        }
+
+        else if(timerDelay != null) {
+            startEvent.addEventDefinition(createTimerEvent(timerDelay, null, null, null));
+        }
+
+        else if(timeDate != null) {
+            startEvent.addEventDefinition(createTimerEvent(null, timeDate, null, null));
+        }
+
+        else if(timeCycle != null) {
+            startEvent.addEventDefinition(createTimerEvent(null, null, timeCycle, null));
         }
         return startEvent;
     }
@@ -167,9 +179,7 @@ public class ModelBuilder {
         ThrowEvent event = new ThrowEvent();
         event.setName(name);
         event.setId(id);
-        TimerEventDefinition timerEventDefinition = new TimerEventDefinition();
-        timerEventDefinition.setTimeDate(timeDate);
-        event.addEventDefinition(timerEventDefinition);
+        event.addEventDefinition(createTimerEvent(null, timeDate, null, null));
         return event;
     }
 
@@ -180,10 +190,7 @@ public class ModelBuilder {
         ThrowEvent event = new ThrowEvent();
         event.setName(name);
         event.setId(id);
-        TimerEventDefinition timerEventDefinition = new TimerEventDefinition();
-        timerEventDefinition.setTimeCycle(timeCycle);
-        timerEventDefinition.setEndDate(endDate);
-        event.addEventDefinition(timerEventDefinition);
+        event.addEventDefinition(createTimerEvent(null, null, timeCycle, endDate));
         return event;
     }
 
@@ -194,10 +201,26 @@ public class ModelBuilder {
         ThrowEvent event = new ThrowEvent();
         event.setName(name);
         event.setId(id);
-        TimerEventDefinition timerEventDefinition = new TimerEventDefinition();
-        timerEventDefinition.setTimeDuration(timeDuration);
-        event.addEventDefinition(timerEventDefinition);
+        event.addEventDefinition(createTimerEvent(timeDuration, null, null, null));
         return event;
+    }
+
+    public static TimerEventDefinition createTimerEvent(String timerDelay, String timerDate, String timerCycle, String endDate) {
+        TimerEventDefinition timerEventDefinition = new TimerEventDefinition();
+        if(timerDelay != null) {
+            timerEventDefinition.setTimeDuration(timerDelay);
+        }
+
+        else if(timerDate != null) {
+            timerEventDefinition.setTimeDate(timerDate);
+        }
+
+        else if(timerCycle != null) {
+            timerEventDefinition.setTimeCycle(timerCycle);
+            if(endDate != null) timerEventDefinition.setEndDate(endDate);
+        }
+
+        return timerEventDefinition;
     }
 
     public static ActivitiListener getListener(String implementation, String eventType, String implementationType) {

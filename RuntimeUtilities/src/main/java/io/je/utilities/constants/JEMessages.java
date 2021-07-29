@@ -302,6 +302,8 @@ public class JEMessages {
 
     public static final String EVENT_NOT_FOUND = " No event with this id was found ";
 
+    public static final String ERROR_SETTING_EVENT = " Error while setting event in Runner ";
+
     public static final String NOT_ALPHABETICAL = "Must only contain alphabetical characters ";
 
     public static final String WORKFLOW_TRIGGERED_BY_EVENT = " Workflow cannot start manually";
@@ -582,7 +584,7 @@ public class JEMessages {
     public static final String ERROR_DELETING_A_PROCESS = "Error deleting a process";
 
 
-
-
-
+    public static final String BLOCK_NAME_CAN_T_BE_UPDATED_BECAUSE_IT_ALREADY_EXISTS = "Block name can't be updated because it already exists";
+    public static final String WORKFLOW_BUILD_ERROR = "Error while building the workflow ";
+    public static final String WORKFLOW_RUN_ERROR = " Error while running the workflow ";
 }
