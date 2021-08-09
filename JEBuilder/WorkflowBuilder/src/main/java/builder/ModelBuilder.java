@@ -326,7 +326,9 @@ public class ModelBuilder {
                     LogCategory.DESIGN_MODE, null,
                     LogSubModule.WORKFLOW,null);
             String bpmn20Xml = new String(bpmnXMLConverter.convertToXML(model), "UTF-8");
-            JELogger.info(BPMN + " = \n" +  bpmn20Xml);
+            JELogger.debug(BPMN + " = \n" +  bpmn20Xml,
+                    LogCategory.DESIGN_MODE, null,
+                    LogSubModule.WORKFLOW,null);
             JEFileUtils.copyStringToFile(bpmn20Xml, fileName, "utf-8");
         } catch (Exception e) {
             e.printStackTrace();

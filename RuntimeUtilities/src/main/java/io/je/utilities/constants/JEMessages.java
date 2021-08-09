@@ -507,7 +507,7 @@ public class JEMessages {
 
     public static final String STOPPING_PROJECT_CONTAINER_FAILED = "Failed to stop project container";
 
-    public static final String UNEXPECTED_ERROR = "An unexpected error occurred";
+    public static final String UNEXPECTED_ERROR = "An unexpected error occurred\n";
 
     public static final String RULE_ADDED = "Rule added successfully ";
 
@@ -580,7 +580,7 @@ public class JEMessages {
 //******************************************************* updates ****************************************
     
     public static final String ADDING_JAR_TO_PROJECT = "Adding jar to project";
-    public static final String ADDING_JAR_FILE_TO_RUNNER = "Adding jar file to JERunner";
+    public static final String ADDING_JAR_FILE_TO_RUNNER = "Adding jar file to JERunner\n";
     public static final String CLASS_COMPILATION_FAILED = "Class compilation failed ";
     public static final String DATA_MODEL_DATE_FORMAT_MISSING = "DataModel date format is not specified";
     public static final String VARIABLE_NOT_FOUND = "Variable cannot be found";
@@ -602,4 +602,10 @@ public class JEMessages {
     public static final String UPLOADED_JAR_TO_PATH = "Uploaded jar to path ";
     public static final String SENDING_VARIABLE_TO_RUNNER = "Sending variable to runner";
     public static final String DELETING_VARIABLE = "Deleting variable ";
+    public static final String ERROR_ADDING_VARIABLE_TO_PROJECT = "Error adding variable to project";
+    public static final String ERROR_DELETING_VARIABLE_TO_PROJECT = "Error deleting variable to project";
+    public static final String ERROR_TRIGGERING_EVENT = "Error triggering event";
+    public static final String ERROR_REMOVING_RULE = "Error removing rule";
+    public static final String ERROR_GETTING_CLASS_UPDATES = "Error getting class updates";
+    public static final String FAILED_TO_SEND_LOG_MESSAGE_TO_THE_LOGGING_SYSTEM = "Failed to send log message to the logging system : \n";
 }

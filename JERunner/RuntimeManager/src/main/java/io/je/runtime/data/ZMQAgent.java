@@ -4,6 +4,8 @@ import io.je.runtime.services.RuntimeDispatcher;
 import io.je.utilities.beans.JEData;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.logger.JELogger;
+import io.je.utilities.logger.LogCategory;
+import io.je.utilities.logger.LogSubModule;
 import io.je.utilities.zmq.ZMQSubscriber;
 
 import java.util.Arrays;
@@ -29,18 +31,21 @@ public class ZMQAgent extends ZMQSubscriber {
 
              try {
             	 if( data !=null && !data.equals(topic) && !data.startsWith(topic))
-				{
-                     JELogger.info(ZMQAgent.class, JEMessages.DATA_RECEIVED + data);
+				{ ;
+					JELogger.debug(JEMessages.DATA_RECEIVED + data,  LogCategory.RUNTIME,
+							null, LogSubModule.RULE, null);
             		 RuntimeDispatcher.injectData(new JEData(this.topic, data));
 				}
 			} catch (Exception e) {
-				JELogger.error(ZMQAgent.class, Arrays.toString(e.getStackTrace()));
+				 JELogger.error(JEMessages.UKNOWN_ERROR + Arrays.toString(e.getStackTrace()), LogCategory.RUNTIME, null,
+						 LogSubModule.JERUNNER, null);
 			}
              
              try {
 				Thread.sleep(100);
 			} catch (InterruptedException e) {
-                 JELogger.error(ZMQAgent.class,JEMessages.THREAD_INTERRUPTED );
+				 JELogger.error(JEMessages.THREAD_INTERRUPTED, LogCategory.RUNTIME, null,
+						 LogSubModule.JERUNNER, null);
 			}
     	}
 		

@@ -282,9 +282,12 @@ public class ProjectController {
 		}
 		try {
 			JEProject project = projectService.getProject(projectId);
-			JELogger.debug("[projectId ="+projectId+" ]  " + JEMessages.PROJECT_AUTO_RELOAD + autoReload);
-			project.setAutoReload(autoReload);
-			projectService.saveProject(project).get();
+			if(project != null) {
+				JELogger.debug("[projectId =" + projectId + " ]  " + JEMessages.PROJECT_AUTO_RELOAD + autoReload, LogCategory.DESIGN_MODE,
+						projectId, LogSubModule.JEBUILDER, null);
+				project.setAutoReload(autoReload);
+				projectService.saveProject(project).get();
+			}
 		} catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
 		}

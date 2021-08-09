@@ -25,7 +25,8 @@ public class JEFileUtils {
 		try {
 			FileUtils.writeStringToFile(file, bpmn20Xml, encoding);
 		}  catch (Exception e) {
-			JELogger.error(e.getMessage());
+			JELogger.error(JEMessages.UNEXPECTED_ERROR + Arrays.toString(e.getStackTrace()) ,  LogCategory.DESIGN_MODE,
+					null, LogSubModule.JEBUILDER, null);
 		}
 
 	}
@@ -38,7 +39,8 @@ public class JEFileUtils {
 					LogSubModule.JERUNNER, null);
 			content = new String(Files.readAllBytes(Paths.get(path)));
 		} catch (IOException e) {
-			JELogger.error(JEFileUtils.class, Arrays.toString(e.getStackTrace()));
+			JELogger.error(JEMessages.UNEXPECTED_ERROR +  Arrays.toString(e.getStackTrace()), LogCategory.RUNTIME, null,
+					LogSubModule.JEBUILDER, null);
 		}
 		return content;
 	}
@@ -46,12 +48,10 @@ public class JEFileUtils {
 	public static void deleteFileFromPath(String path) {
 		try {
 			File file = new File(path);
-			if(file.delete()){
-				JELogger.info("deleted");
-			}
 		}
 		catch (Exception e) {
-			JELogger.error(JEMessages.DELETE_FILE_FAILED );
+			JELogger.error(JEMessages.DELETE_FILE_FAILED ,  LogCategory.DESIGN_MODE,
+					null, LogSubModule.JEBUILDER, null);
 		}
 	}
 	public static void deleteFilesInPathByPrefix(final String path, final String prefix) {
@@ -66,7 +66,8 @@ public class JEFileUtils {
 		}
 		}
 		}catch (Exception e) {
-			JELogger.error(JEFileUtils.class, JEMessages.DELETE_FILE_FAILED );
+			JELogger.error(JEMessages.DELETE_FILE_FAILED ,  LogCategory.DESIGN_MODE,
+					null, LogSubModule.JEBUILDER, null);
 		}
 
 		

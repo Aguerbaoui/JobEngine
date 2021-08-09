@@ -55,7 +55,7 @@ public class RuleService {
      * Add a rule to a project
      */
     public void addRule(String projectId, RuleModel ruleModel)
-            throws ProjectNotFoundException, RuleAlreadyExistsException, RuleNotAddedException, ConfigException {
+            throws ProjectNotFoundException, RuleAlreadyExistsException, RuleNotAddedException {
     	
         JEProject project = ProjectService.getProjectById(projectId);
         if (project == null) {
@@ -69,6 +69,9 @@ public class RuleService {
         if (ruleModel.getRuleName() == null) {
             throw new RuleNotAddedException(JEMessages.RULE_NAME_NULL);
         }
+
+        JELogger.debug(" Adding rule " + ruleModel.getRuleName() + "..",  LogCategory.RUNTIME,
+                projectId, LogSubModule.RULE, ruleModel.getRuleId());
         UserDefinedRule rule = new UserDefinedRule();
         rule.setJobEngineElementID(ruleModel.getRuleId());
         rule.setJobEngineProjectID(projectId);

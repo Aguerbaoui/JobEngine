@@ -35,7 +35,6 @@ public class VariableManager {
         variables.get(variable.getJobEngineProjectID()).put(variable.getJobEngineElementID(),variable);
 	       RuleEngineHandler.addVariable(variable);
 			JEStringSubstitutor.addVariable(variable.getJobEngineProjectID(), variable.getName(), variable.getValue());
-	       JELogger.info("variable added successfully " + variable.toString());
 
     }
 
@@ -73,7 +72,7 @@ public class VariableManager {
 	       message.getBlocks().add(blockMessage);
 	       message.getVariables().add(varMessage);
            try {
-			JELogger.trace(objectMapper.writeValueAsString(message), LogCategory.RUNTIME, projectId, LogSubModule.VARIABLE, variableId);
+			JELogger.debug(objectMapper.writeValueAsString(message), LogCategory.RUNTIME, projectId, LogSubModule.VARIABLE, variableId);
 		} catch (JsonProcessingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -13,6 +13,8 @@ import io.je.project.services.ClassService;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.InstanceCreationFailed;
 import io.je.utilities.logger.JELogger;
+import io.je.utilities.logger.LogCategory;
+import io.je.utilities.logger.LogSubModule;
 import io.je.utilities.zmq.ZMQSubscriber;
 
 public class ClassUpdateListener extends ZMQSubscriber  {
@@ -44,7 +46,8 @@ public class ClassUpdateListener extends ZMQSubscriber  {
              try {
             	 if( data !=null && !data.equals(topic))
 				{
-                     JELogger.info(ClassUpdateListener.class, JEMessages.DATA_RECEIVED + data);
+					JELogger.debug(JEMessages.DATA_RECEIVED + data,  LogCategory.RUNTIME,
+							null, LogSubModule.CLASS, null);
                      List<ModelUpdate> updates = null;
                      try {
                     	 updates = Arrays.asList(objectMapper.readValue(data, ModelUpdate[].class));
@@ -66,14 +69,15 @@ public class ClassUpdateListener extends ZMQSubscriber  {
                      
 				}
 			} catch (Exception e) {
-				e.getStackTrace();
-				JELogger.error(ClassUpdateListener.class, "Error getting class updates");
+				 JELogger.error(JEMessages.ERROR_GETTING_CLASS_UPDATES, LogCategory.DESIGN_MODE, null,
+						 LogSubModule.CLASS, null);
 			}
              
              try {
 				Thread.sleep(100);
 			} catch (InterruptedException e) {
-                 JELogger.error(ClassUpdateListener.class,JEMessages.THREAD_INTERRUPTED );
+				 JELogger.error(JEMessages.THREAD_INTERRUPTED, LogCategory.DESIGN_MODE, null,
+						 LogSubModule.CLASS, null);
 			}
     	}
 		

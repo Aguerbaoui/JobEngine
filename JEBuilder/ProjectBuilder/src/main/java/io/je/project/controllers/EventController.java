@@ -107,7 +107,6 @@ public class EventController {
 			return JEExceptionHandler.handleException(e);
 
 		}
-		JELogger.info(getClass(), " Event [ id="+eventModel.getEventId()+"] added successfully");
 		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.EVENT_ADDED));
 	}
 	
@@ -132,7 +131,6 @@ public class EventController {
 			return JEExceptionHandler.handleException(e);
 
 		}
-		JELogger.info(getClass(), " Event [ id="+eventModel.getEventId()+"] updated successfully");
 		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.EVENT_UPDATED));
 	}
 
@@ -149,11 +147,9 @@ public class EventController {
 			eventService.deleteEvent(projectId, eventId);
 
 		} catch (Exception e) {
-			JELogger.info(ERROR_DELETING_EVENT);
 			return JEExceptionHandler.handleException(e);
 			
 		}
-		JELogger.info(getClass(), " Event [ id="+eventId+"] deleted successfully");
 		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.EVENT_DELETED));
 	}
 	

@@ -2,6 +2,7 @@ package io.je.utilities.execution;
 
 import io.je.utilities.apis.JEBuilderApiHandler;
 import io.je.utilities.apis.JERunnerAPIHandler;
+import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.logger.*;
 import io.je.utilities.models.VariableModel;
@@ -22,7 +23,8 @@ public class JobEngine {
             JEResponse response = JEBuilderApiHandler.runWorkflow(projectId, workflowName);
             return response.getCode();
         } catch (Exception e) {
-           JELogger.info("Error running the workflow");
+            JELogger.error(JEMessages.WORKFLOW_RUN_ERROR ,  LogCategory.RUNTIME,
+                    projectId, LogSubModule.WORKFLOW, workflowName);
            return ResponseCodes.UNKNOWN_ERROR;
         }
     }
@@ -35,7 +37,8 @@ public class JobEngine {
             JEResponse response = JEBuilderApiHandler.stopWorkflow(projectId, workflowName);
             return response.getCode();
         } catch (Exception e) {
-            JELogger.info("Error running the workflow");
+            JELogger.error(JEMessages.DELETE_WORKFLOW_FAILED ,  LogCategory.RUNTIME,
+                    projectId, LogSubModule.WORKFLOW, workflowName);
             return ResponseCodes.UNKNOWN_ERROR;
         }
 
@@ -49,7 +52,9 @@ public class JobEngine {
             JEResponse response = JEBuilderApiHandler.addVariable(varProjectId, varName, getVariableBody(varName, varProjectId, varName, varValue, "int"));
             return response.getCode();
         } catch (Exception e) {
-            JELogger.info("Error adding the variable");
+            //JELogger.info("Error adding the variable");
+            JELogger.error(JEMessages.ERROR_ADDING_VARIABLE_TO_PROJECT,  LogCategory.RUNTIME,
+                    varProjectId, LogSubModule.VARIABLE, varName);
             return ResponseCodes.UNKNOWN_ERROR;
         }
     }
@@ -62,7 +67,8 @@ public class JobEngine {
             JEResponse response = JEBuilderApiHandler.addVariable(varProjectId, varName, getVariableBody(varName, varProjectId, varName, varValue, "long"));
             return response.getCode();
         } catch (Exception e) {
-            JELogger.info("Error adding the variable");
+            JELogger.error(JEMessages.ERROR_ADDING_VARIABLE_TO_PROJECT,  LogCategory.RUNTIME,
+                    varProjectId, LogSubModule.VARIABLE, varName);
             return ResponseCodes.UNKNOWN_ERROR;
         }
     }
@@ -75,7 +81,8 @@ public class JobEngine {
             JEResponse response = JEBuilderApiHandler.addVariable(varProjectId, varName, getVariableBody(varName, varProjectId, varName, varValue, "double"));
             return response.getCode();
         } catch (Exception e) {
-            JELogger.error("Error adding the variable");
+            JELogger.error(JEMessages.ERROR_ADDING_VARIABLE_TO_PROJECT,  LogCategory.RUNTIME,
+                    varProjectId, LogSubModule.VARIABLE, varName);
             return ResponseCodes.UNKNOWN_ERROR;
         }
 
@@ -90,7 +97,8 @@ public class JobEngine {
                 JEResponse response = JEBuilderApiHandler.addVariable(varProjectId, varName, getVariableBody(varName, varProjectId, varName, varValue, "string"));
                 return response.getCode();
             } catch (Exception e) {
-                JELogger.error("Error adding the variable");
+                JELogger.error(JEMessages.ERROR_ADDING_VARIABLE_TO_PROJECT,  LogCategory.RUNTIME,
+                        varProjectId, LogSubModule.VARIABLE, varName);
                 return ResponseCodes.UNKNOWN_ERROR;
             }
 
@@ -104,7 +112,8 @@ public class JobEngine {
             JEResponse response = JEBuilderApiHandler.addVariable(varProjectId, varName, getVariableBody(varName, varProjectId, varName, varValue, "boolean"));
             return response.getCode();
         } catch (Exception e) {
-            JELogger.info("Error adding the variable");
+            JELogger.error(JEMessages.ERROR_ADDING_VARIABLE_TO_PROJECT,  LogCategory.RUNTIME,
+                    varProjectId, LogSubModule.VARIABLE, varName);
             return ResponseCodes.UNKNOWN_ERROR;
         }
 
@@ -118,7 +127,8 @@ public class JobEngine {
                             variableModel.getId(), getVariableBody(variableModel.getId(), variableModel.getProjectId(),
                                     variableModel.getName(), variableModel.getValue(), variableModel.getType()));
                 } catch (Exception e) {
-                    JELogger.info("Error adding the variables ");
+                    JELogger.error(JEMessages.ERROR_ADDING_VARIABLE_TO_PROJECT,  LogCategory.RUNTIME,
+                            variableModel.getProjectId(), LogSubModule.VARIABLE, variableModel.getId());
                     return ResponseCodes.UNKNOWN_ERROR;
                 }
             }
@@ -146,7 +156,9 @@ public class JobEngine {
             JEResponse response = JEBuilderApiHandler.removeVariable(projectId, variableName);
             return response.getCode();
         }  catch (Exception e) {
-            JELogger.error("Error adding the variable");
+            //JELogger.error("Error adding the variable");
+            JELogger.error(JEMessages.ERROR_DELETING_VARIABLE_TO_PROJECT,  LogCategory.RUNTIME,
+                    projectId, LogSubModule.VARIABLE, variableName);
             return ResponseCodes.UNKNOWN_ERROR;
         }
 
@@ -155,10 +167,10 @@ public class JobEngine {
     /*
     * Send user message
     * */
-    public static int informUser(String message) {
+    public static int informUser(String message, String projectId) {
         if(!JEStringUtils.isEmpty(message)) {
-            JELogger.info(message);
-            //send to monitoring when its ready
+            JELogger.info( message,  LogCategory.RUNTIME,  projectId,
+                    LogSubModule.WORKFLOW, null);
         }
 
         return ResponseCodes.CODE_OK;
@@ -169,10 +181,8 @@ public class JobEngine {
      * */
     public static int informUser(String level, String message, String projectId, String processId, String taskName) {
         if(!JEStringUtils.isEmpty(message)) {
-            JELogger.info(message);
-            LogMessage msg = new LogMessage(LogLevel.INFORM,  message,  LocalDateTime.now().toString(), "JobEngine",  projectId,
-                    processId, LogSubModule.WORKFLOW, taskName, null, "Log", "") ;
-            ZMQLogPublisher.publish(msg);
+            JELogger.info( message,  LogCategory.RUNTIME,  projectId,
+                    LogSubModule.WORKFLOW, processId);
             //send to monitoring when its ready
         }
 
@@ -188,7 +198,8 @@ public class JobEngine {
             JEResponse response = JERunnerAPIHandler.triggerEvent(eventName, projectId);
             return response.getCode();
         } catch (Exception e) {
-            JELogger.error("Error triggering event");
+            JELogger.error(JEMessages.ERROR_TRIGGERING_EVENT,  LogCategory.RUNTIME,
+                    projectId, LogSubModule.EVENT, eventName);
             return ResponseCodes.UNKNOWN_ERROR;
         }
     }
@@ -199,7 +210,8 @@ public class JobEngine {
             JEResponse response = JEBuilderApiHandler.removeWorkflow(projectId, workflowId);
             return response.getCode();
         } catch (Exception e) {
-            JELogger.error("Error removing workflow");
+            JELogger.error(JEMessages.DELETE_WORKFLOW_FAILED ,  LogCategory.RUNTIME,
+                    projectId, LogSubModule.WORKFLOW, workflowId);
             return ResponseCodes.UNKNOWN_ERROR;
         }
     }
@@ -209,7 +221,8 @@ public class JobEngine {
             JEResponse response = JEBuilderApiHandler.removeEvent(projectId, eventId);
             return response.getCode();
         } catch (Exception e) {
-            JELogger.error("Error removing event");
+            JELogger.error(JEMessages.ERROR_DELETING_EVENT ,  LogCategory.RUNTIME,
+                    projectId, LogSubModule.WORKFLOW, eventId);
             return ResponseCodes.UNKNOWN_ERROR;
         }
     }
@@ -220,7 +233,8 @@ public class JobEngine {
             JEResponse response = JEBuilderApiHandler.removeRule(projectId, ruleId);
             return response.getCode();
         } catch (Exception e) {
-            JELogger.error("Error removing rule");
+            JELogger.error(JEMessages.ERROR_REMOVING_RULE ,  LogCategory.RUNTIME,
+                    projectId, LogSubModule.WORKFLOW, ruleId);
             return ResponseCodes.UNKNOWN_ERROR;
         }
     }

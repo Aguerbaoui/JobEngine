@@ -11,6 +11,7 @@ import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.LinkedList;
+import java.util.Locale;
 import java.util.Queue;
 
 
@@ -32,74 +33,24 @@ public class JELogger {
     /*******************************TO BE DELETED ****************************************************/
 
 
-    /*
-     * log level 1 : debug
-     */
-    public static void debug(Class<?> clazz, String msg) {
-
-        logger.debug(clazz.getName() +" : "+ msg.trim());
-        
-        
-    }
-
-    /*
-     * log level 1 : debug
-     */
-    public static void debug(String msg) {
-
-        logger.debug(msg.trim());
-
-    }
-
     public static Queue<LogMessage> getQueue() {
         return queue;
-    }
-
-    /*
-     * log level 2 : info
-     */
-    public static void info(Class<?> clazz, String msg) {
-       // logger.info(logger.getName() + ": " + logger);
-
-        logger.info( msg.trim());
-    }
-
-    public static void info( String msg) {
-
-        logger.info( msg.trim());
-    }
-    /*
-     * log level 3 : warn
-     */
-    public static void warning(Class<?> clazz, String msg) {
-        logger.warn( msg.trim());
-    }
-    
-    
-    /*
-     * log level 4 : error
-     */
-    public static void error(Class<?> clazz, String msg) {
-
-        logger.error(clazz.getName() +" : "+  msg.trim());
-
-    }
-
-    /*
-     * log level 4 : error
-     */
-    public static void error(String msg) {
-
-        logger.error(  msg.trim());
-
-
     }
 
     
     
     /*******************************************************************************************************/
 
-
+    /*
+    * Publish log message to SIOTHTracker
+    * */
+    private static void publishLogMessage(LogMessage logMessage) {
+        //Debug > Inform > control > Error
+        Level lvl = getLogLevel(logMessage.logLevel.toString());
+        if(lvl == logger.getLevel() || lvl == Level.DEBUG || lvl == Level.ALL) {
+            ZMQLogPublisher.publish(logMessage);
+        }
+    }
     /*
      * Trace log level
      * */
@@ -109,8 +60,8 @@ public class JELogger {
         logger.trace( message);
 
         //Log in logging service
-        LogMessage logMessage = getLogMessage(LogLevel.CONTROL, message, category, projectId, subModule, objectId);
-        ZMQLogPublisher.publish(logMessage);
+        LogMessage logMessage = getLogMessage(LogLevel.Control, message, category, projectId, subModule, objectId);
+        publishLogMessage(logMessage);
     }
 
     /*
@@ -122,8 +73,8 @@ public class JELogger {
         logger.debug( message);
 
         //Log in logging service
-        LogMessage logMessage = getLogMessage(LogLevel.DEBUG, message, category, projectId, subModule, objectId);
-        ZMQLogPublisher.publish(logMessage);
+        LogMessage logMessage = getLogMessage(LogLevel.Debug, message, category, projectId, subModule, objectId);
+        publishLogMessage(logMessage);
 
     }
 
@@ -136,8 +87,8 @@ public class JELogger {
         logger.info( message);
 
         //Log in logging service
-        LogMessage logMessage = getLogMessage(LogLevel.INFORM, message, category, projectId, subModule, objectId);
-        ZMQLogPublisher.publish(logMessage);
+        LogMessage logMessage = getLogMessage(LogLevel.Inform, message, category, projectId, subModule, objectId);
+        publishLogMessage(logMessage);
     }
 
     /*
@@ -149,8 +100,8 @@ public class JELogger {
         logger.error( message);
 
         //Log in logging service
-        LogMessage logMessage = getLogMessage(LogLevel.ERROR, message, category, projectId, subModule, objectId);
-        ZMQLogPublisher.publish(logMessage);
+        LogMessage logMessage = getLogMessage(LogLevel.Error, message, category, projectId, subModule, objectId);
+        publishLogMessage(logMessage);
     }
 
     /*
@@ -162,19 +113,19 @@ public class JELogger {
         logger.warn( message);
 
         //Log in logging service
-        LogMessage logMessage = getLogMessage(LogLevel.WARNING, message, category, projectId, subModule, objectId);
-        ZMQLogPublisher.publish(logMessage);
+        LogMessage logMessage = getLogMessage(LogLevel.Warning, message, category, projectId, subModule, objectId);
+        publishLogMessage(logMessage);
     }
 
     // get Log message object for the logging service
      public static LogMessage getLogMessage(LogLevel logLevel, String message,  LogCategory category,
                                             String projectId, LogSubModule subModule, String objectId) {
          String logDate = LocalDateTime.now().toString();
-         return new LogMessage(logLevel, message, logDate, category, projectId, subModule, objectId);
+         return new LogMessage(logLevel, message, logDate, /*category,*/ projectId, subModule, objectId);
      }
 
     // get log string message
-    public static String getLogStringText(String projectId, String subModule,  String extraInfo, String... objectIds) {
+   /* public static String getLogStringText(String projectId, String subModule,  String extraInfo, String... objectIds) {
         // In every log message, we have the porject id, module ( rule/ workflow / event / variable ),
         // related objects to it and the extra info explaining the action
         String msg = "[Project Id = " + projectId + "] [Submodule = " + subModule + "] ";
@@ -185,13 +136,13 @@ public class JELogger {
         }
         msg += extraInfo;
         return msg;
-    }
+    }*/
     /***************************************************************************************************************/
     private static Level getLogLevel(String level)
     {
         //ALL < TRACE/CONTROL < DEBUG < INFO < WARN < ERROR < FATAL < OFF
     	Level lvl = Level.DEBUG;
-    	switch(level)
+    	switch(level.toUpperCase())
     	{
     	case "ERROR":
     		return Level.ERROR;
@@ -213,7 +164,6 @@ public class JELogger {
 
     public static void initLogger(String appName, String logPath, String level) {
         //TODO Remove the old logger context initialization (spring/activiti/drools)
-
         String pattern = "[%d] [%p]" + appName + " :: %m%n";
         ConfigurationBuilder<BuiltConfiguration> builder = ConfigurationBuilderFactory.newConfigurationBuilder();
 
@@ -248,7 +198,7 @@ public class JELogger {
         context = Configurator.initialize(builder.build());
         logger = context.getLogger("JobEngineLogger");
         // trace(JELogger.class, "Builder Logger initialized");
-        info(JELogger.class, getInitialLogMessage(appName,level) );
+        logger.info(getInitialLogMessage(appName,level));
 
     }
 

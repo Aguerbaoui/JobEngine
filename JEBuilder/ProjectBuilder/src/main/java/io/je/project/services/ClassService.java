@@ -192,7 +192,8 @@ public class ClassService {
 				}
 
 			} catch (Exception e) {
-				JELogger.warning(getClass(), JEMessages.FAILED_TO_LOAD_CLASS + " " + clazz.getClassName());
+				JELogger.error(JEMessages.FAILED_TO_LOAD_CLASS + " " + clazz.getClassName() ,  LogCategory.DESIGN_MODE,
+						null, LogSubModule.CLASS, null);
 			}
 		}
 
