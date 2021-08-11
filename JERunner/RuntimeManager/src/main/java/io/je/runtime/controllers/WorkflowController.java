@@ -4,6 +4,7 @@ import io.je.project.exception.JEExceptionHandler;
 import io.je.runtime.services.RuntimeDispatcher;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.ResponseCodes;
+import io.je.utilities.exceptions.WorkflowBuildException;
 import io.je.utilities.models.WorkflowModel;
 import io.je.utilities.network.JEResponse;
 
@@ -31,7 +32,11 @@ public class WorkflowController {
     @PostMapping(value = "/addWorkflow", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> addWorkflow(@RequestBody WorkflowModel wf) {
         dispatcher.addWorkflow(wf);
-        dispatcher.buildWorkflow(wf.getProjectId(), wf.getKey());
+        try {
+            dispatcher.buildWorkflow(wf.getProjectId(), wf.getKey());
+        } catch (WorkflowBuildException e) {
+            return JEExceptionHandler.handleException(e);
+        }
         return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ADDED_WORKFLOW_SUCCESSFULLY));
 
     }
@@ -41,7 +46,11 @@ public class WorkflowController {
      * */
     @PostMapping(value = "/buildWorkflow/{projectId}/{key}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> buildWorkflow(@PathVariable String projectId, @PathVariable String key) {
-        dispatcher.buildWorkflow(projectId, key);
+        try {
+            dispatcher.buildWorkflow(projectId, key);
+        } catch (WorkflowBuildException e) {
+            return JEExceptionHandler.handleException(e);
+        }
         return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, WORKFLOW_DEPLOYED));
     }
 

@@ -1,5 +1,6 @@
 package io.je.rulebuilder.components.blocks.execution;
 
+
 import io.je.rulebuilder.components.blocks.ExecutionBlock;
 import io.je.rulebuilder.models.BlockModel;
 
@@ -11,10 +12,10 @@ public class LogBlock extends ExecutionBlock {
 		super(blockModel);
 		if(blockModel.getBlockConfiguration()!=null && blockModel.getBlockConfiguration().getValue()!=null)
 		{
-			logMessage = blockModel.getBlockConfiguration().getValue();
+			this.logMessage = blockModel.getBlockConfiguration().getValue();
 		}
 		
-		isProperlyConfigured = logMessage!=null && !logMessage.isEmpty();
+		this.isProperlyConfigured = this.logMessage!=null && !this.logMessage.isEmpty();
 	}
 	
 	 public LogBlock() {
@@ -24,13 +25,13 @@ public class LogBlock extends ExecutionBlock {
 	@Override
 	public String getExpression() {
 		
-		return "JELogger.info(\""+logMessage+"\");";
-	/*	return "JEMessage message = new JEMessage();\r\n"
+		//return "JELogger.info(\""+logMessage+"\");";
+		return /*"JEMessage message = new JEMessage();\r\n"
 				+ "JEBlockMessage blockMsg = new JEBlockMessage(\""+blockName+"\",\""+logMessage+"\");\r\n"
 				+ "message.addBlockMessage(blockMsg);\r\n"
 				+ "message.setType(\"BlockMessage\");\r\n"
 				+ "message.setExecutionTime(LocalDateTime.now().toString());\r\n"
-				+ "Executioner.informRuleBlock(\"" +jobEngineProjectID +"\",\"" + ruleId +"\", message );"; */
+				+ */"Executioner.informRuleBlock(\"" +this.jobEngineProjectID +"\",\"" + this.ruleId +"\",\" "+this.logMessage+ "\",LocalDateTime.now().toString(),\""+this.blockName +" \" );"; 
 	}
 
 

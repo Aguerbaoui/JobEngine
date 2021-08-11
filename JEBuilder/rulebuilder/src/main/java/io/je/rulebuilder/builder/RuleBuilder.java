@@ -23,7 +23,7 @@ import io.je.rulebuilder.components.JERule;
 import io.je.rulebuilder.components.RuleParameters;
 import io.je.rulebuilder.components.ScriptedRule;
 import io.je.utilities.apis.JERunnerAPIHandler;
-import io.je.utilities.config.JEConfiguration;
+import io.je.utilities.config.Utility;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.exceptions.JERunnerErrorException;
@@ -159,11 +159,11 @@ public class RuleBuilder {
 		if (ruleParameters.getDateEffective() != null && !ruleParameters.getDateEffective().isEmpty()) {
 			LocalDateTime date = LocalDateTime.parse(ruleParameters.getDateEffective(), DateTimeFormatter.ISO_DATE_TIME);
 
-			ruleTemplateAttributes.put("dateEffective", "\"" + JEDate.formatDate(date, JEConfiguration.getDroolsDateFormat()) + "\"");
+			ruleTemplateAttributes.put("dateEffective", "\"" + JEDate.formatDate(date, Utility.getSiothConfig().getDateFormat()) + "\"");
 		}
 		if (ruleParameters.getDateExpires() != null && !ruleParameters.getDateExpires().isEmpty()) {
 			LocalDateTime date = LocalDateTime.parse(ruleParameters.getDateEffective(), DateTimeFormatter.ISO_DATE_TIME);
-			ruleTemplateAttributes.put("dateExpires", "\"" + JEDate.formatDate(date, JEConfiguration.getDroolsDateFormat()) + "\"");
+			ruleTemplateAttributes.put("dateExpires", "\"" + JEDate.formatDate(date, Utility.getSiothConfig().getDateFormat()) + "\"");
 		}
 
 		ObjectDataCompiler objectDataCompiler = new ObjectDataCompiler();

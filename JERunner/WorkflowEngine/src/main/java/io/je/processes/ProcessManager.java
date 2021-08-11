@@ -6,6 +6,7 @@ import io.je.serviceTasks.ActivitiTask;
 import io.je.serviceTasks.InformTask;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.WorkflowAlreadyRunningException;
+import io.je.utilities.exceptions.WorkflowBuildException;
 import io.je.utilities.exceptions.WorkflowNotFoundException;
 import io.je.utilities.exceptions.WorkflwTriggeredByEventException;
 import io.je.utilities.files.JEFileUtils;
@@ -115,23 +116,28 @@ public class ProcessManager {
     /*
      * Deploy a process to engine
      * */
-    public void deployProcess(String key) {
+    public void deployProcess(String key) throws WorkflowBuildException {
         ResourceBundle.clearCache(Thread.currentThread().getContextClassLoader());
         //repoService.
-        JELogger.trace(ProcessManager.class, JEMessages.DEPLOYING_IN_RUNNER_WORKFLOW_WITH_ID + " = " + key);
-        String processXml = JEFileUtils.getStringFromFile(processes.get(key).getBpmnPath());
-        DeploymentBuilder deploymentBuilder = processEngine.getRepositoryService().createDeployment().name(key);
-        deploymentBuilder.addString(key + ".bpmn", processXml);
-        Deployment dep = deploymentBuilder.deploy();
-        processes.get(key).setDeployed(true);
-        JELogger.debug("Deleting bpmn file after loading ...");
-        JEFileUtils.deleteFileFromPath(processes.get(key).getBpmnPath());
+        try {
+            JELogger.trace(ProcessManager.class, JEMessages.DEPLOYING_IN_RUNNER_WORKFLOW_WITH_ID + " = " + key);
+            String processXml = JEFileUtils.getStringFromFile(processes.get(key).getBpmnPath());
+            DeploymentBuilder deploymentBuilder = processEngine.getRepositoryService().createDeployment().name(key);
+            deploymentBuilder.addString(key + ".bpmn", processXml);
+            Deployment dep = deploymentBuilder.deploy();
+            processes.get(key).setDeployed(true);
+            JELogger.debug("Deleting bpmn file after loading ...");
+            JEFileUtils.deleteFileFromPath(processes.get(key).getBpmnPath());
+        }
+        catch (Exception e) {
+            throw new WorkflowBuildException(JEMessages.WORKFLOW_BUILD_ERROR + " with id = " + key);
+        }
     }
 
     /*
      * Launch process by key without variables
      * */
-    public void launchProcessByKeyWithoutVariables(String id) throws WorkflowNotFoundException, WorkflowAlreadyRunningException, WorkflwTriggeredByEventException {
+    public void launchProcessByKeyWithoutVariables(String id) throws WorkflowNotFoundException, WorkflowAlreadyRunningException, WorkflwTriggeredByEventException, WorkflowBuildException {
         if (processes.get(id) == null) {
             throw new WorkflowNotFoundException(JEMessages.WORKFLOW_NOT_FOUND);
         }
@@ -152,6 +158,7 @@ public class ProcessManager {
                     while(p != null && !p.isEnded()) {
                     }
                     processes.get(id).setRunning(false);
+                    processes.get(id).setProcessInstance(null);
                 }).start();
             } else {
                 JELogger.error(ProcessManager.class, " " + JEMessages.PROCESS_HAS_TO_BE_TRIGGERED_BY_EVENT);
@@ -164,7 +171,7 @@ public class ProcessManager {
     /*
      * Launch process by key wit variables
      * */
-    public void launchProcessByKeyWithVariables(String id) throws WorkflowAlreadyRunningException {
+    public void launchProcessByKeyWithVariables(String id) throws WorkflowAlreadyRunningException, WorkflowBuildException {
         if(processes.get(id).isRunning()) {
             throw new WorkflowAlreadyRunningException(JEMessages.WORKFLOW_ALREADY_RUNNING);
         }
@@ -186,10 +193,12 @@ public class ProcessManager {
                     while(p != null && !p.isEnded()) {
                     }
                     processes.get(id).setRunning(false);
+                    processes.get(id).setProcessInstance(null);
                 }).start();
             }
             catch(BpmnError e) {
-                JELogger.error("Error = " + Arrays.toString(e.getStackTrace()));
+                JELogger.error("Error to be removed after dev = " + Arrays.toString(e.getStackTrace()));
+                throw new WorkflowBuildException(JEMessages.WORKFLOW_RUN_ERROR);
             }
         }
         else {
@@ -352,12 +361,14 @@ public class ProcessManager {
                     JELogger.error(ProcessManager.class, JEMessages.WORKFLOW_ALREADY_RUNNING + process.getKey());
                 } catch (WorkflwTriggeredByEventException e) {
                     JELogger.error(ProcessManager.class, JEMessages.PROCESS_HAS_TO_BE_TRIGGERED_BY_EVENT + process.getKey());
+                } catch (WorkflowBuildException e) {
+                    JELogger.error(ProcessManager.class, JEMessages.WORKFLOW_RUN_ERROR + process.getKey());
                 }
             }
         }
     }
 
-    public void buildProjectWorkflows(String projectId) {
+    public void buildProjectWorkflows(String projectId) throws WorkflowBuildException{
         JELogger.info(JEMessages.BUILDING_WORKFLOWS_IN_PROJECT + " id = " + projectId);
         for (JEProcess process : processes.values()) {
             if (process.getProjectId().equals(projectId) && !process.isDeployed()) {
@@ -380,14 +391,7 @@ public class ProcessManager {
     public void stopProjectWorkflows() {
 
         for (JEProcess process : processes.values()) {
-            if (process.isRunning()) {
-                try {
-                    runtimeService.deleteProcessInstance(process.getProcessInstance().getProcessInstanceId(), "User Stopped the execution");
-                    process.setRunning(false);
-                } catch (ActivitiObjectNotFoundException e) {
-                    JELogger.trace(ProcessManager.class, " " + JEMessages.ERROR_DELETING_A_NON_EXISTING_PROCESS);
-                }
-            }
+            removeProcess(process.getKey());
         }
     }
 
@@ -406,12 +410,14 @@ public class ProcessManager {
         try {
 
             JEProcess p = processes.get(workflowId);
-            runtimeService.deleteProcessInstance(p.getProcessInstance().getProcessInstanceId(), "User Deleted the process");
+            if(p.getProcessInstance() != null) {
+                runtimeService.deleteProcessInstance(p.getProcessInstance().getProcessInstanceId(), "User Deleted the process");
+            }
 
         } catch (ActivitiObjectNotFoundException e) {
-            JELogger.trace(" " + JEMessages.ERROR_DELETING_A_NON_EXISTING_PROCESS);
+            JELogger.debug(" " + JEMessages.ERROR_DELETING_A_NON_EXISTING_PROCESS);
         } catch (Exception e) {
-            JELogger.trace(" " + JEMessages.ERROR_DELETING_A_PROCESS + "\n" + Arrays.toString(e.getStackTrace()));
+            JELogger.debug(" " + JEMessages.ERROR_DELETING_A_PROCESS + "\n" + Arrays.toString(e.getStackTrace()));
         }
 
     }

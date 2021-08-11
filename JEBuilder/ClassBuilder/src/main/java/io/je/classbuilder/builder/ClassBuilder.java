@@ -18,7 +18,7 @@ import io.je.classbuilder.entity.ClassType;
 import io.je.classbuilder.models.ClassDefinition;
 import io.je.classbuilder.models.FieldModel;
 import io.je.classbuilder.models.MethodModel;
-import io.je.utilities.config.JEConfiguration;
+import io.je.utilities.config.Utility;
 import io.je.utilities.constants.ClassBuilderConfig;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.AddClassException;
@@ -189,7 +189,7 @@ public class ClassBuilder {
 				{					 
 					newField.addAnnotation(new AnnotationSourceGenerator("JsonDeserialize(using = LocalDateTimeDeserializer.class)"));
 					newField.addAnnotation(new AnnotationSourceGenerator("JsonSerialize(using = LocalDateTimeSerializer.class)"));
-					newField.addAnnotation(new AnnotationSourceGenerator("JsonFormat (shape = JsonFormat.Shape.STRING, pattern = \""+JEConfiguration.getDataModelDateFormat()+"\")"));					
+					newField.addAnnotation(new AnnotationSourceGenerator("JsonFormat (shape = JsonFormat.Shape.STRING, pattern = \""+Utility.getSiothConfig().getDateFormat()+"\")"));					
 				}
 				newClass.addField(newField);
 				String attributeName = field.getName();
@@ -229,6 +229,7 @@ public class ClassBuilder {
 				if(methodModel.getMethodScope() != null) {
 					method.addModifier(getModifier(methodModel.getMethodScope()));
 				}
+				method.addThrowable(TypeDeclarationSourceGenerator.create("Exception"));
 				method.addBodyCode(methodModel.getCode());
 				if(methodModel.getInputs() != null) {
 					for (FieldModel parameter : methodModel.getInputs()) {

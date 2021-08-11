@@ -13,7 +13,10 @@ import io.je.utilities.beans.JEMessage;
 import io.je.utilities.exceptions.JERunnerErrorException;
 import io.je.utilities.logger.JELogger;
 import io.je.utilities.logger.LogCategory;
+import io.je.utilities.logger.LogLevel;
+import io.je.utilities.logger.LogMessage;
 import io.je.utilities.logger.LogSubModule;
+import io.je.utilities.logger.ZMQLogPublisher;
 
 public class EventTimeoutRunnable implements Runnable {
 	
@@ -39,23 +42,28 @@ public class EventTimeoutRunnable implements Runnable {
 				{
 						event.setTriggered(false);
 						//TODO: I think we should remove the call to the builder, and runtime should read those values elsewhere.
-		        		try {
-							JEBuilderApiHandler.untriggerEvent(event.getJobEngineElementID(), event.getJobEngineProjectID());
+		        	/*	try {
+							//JEBuilderApiHandler.untriggerEvent(event.getJobEngineElementID(), event.getJobEngineProjectID());
 						} catch (JERunnerErrorException | ExecutionException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
-	                    JEMessage message = new JEMessage();
+		        		*/
+		        		 LogMessage msg = new LogMessage(LogLevel.DEBUG,  event.getName() + " timed out ",  LocalDateTime.now().toString(), "JobEngine",  event.getJobEngineProjectID(),
+	                				event.getJobEngineElementID(), LogSubModule.EVENT, "APP", null, "Log", "") ;
+	                	   ZMQLogPublisher.publish(msg);
+	                  /*  JEMessage message = new JEMessage();
 	                    message.setExecutionTime(LocalDateTime.now().toString());
 	                    message.setType("BlockMessage");
 	                    JEBlockMessage blockMessage = new JEBlockMessage("Application",  event.getName() +" was untriggered");
 	                    message.addBlockMessage(blockMessage);
+	                    
 	                    try {
-							JELogger.trace(objectMapper.writeValueAsString(message), LogCategory.RUNTIME, event.getJobEngineElementID(), LogSubModule.EVENT, event.getJobEngineElementID());
+							//JELogger.trace(objectMapper.writeValueAsString(message), LogCategory.RUNTIME, event.getJobEngineElementID(), LogSubModule.EVENT, event.getJobEngineElementID());
 						} catch (JsonProcessingException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
-						}
+						}*/
 					}
 				
 

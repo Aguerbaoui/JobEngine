@@ -1,6 +1,6 @@
 package io.je.runtime.data;
 
-import io.je.utilities.config.JEConfiguration;
+import io.je.utilities.config.Utility;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.logger.JELogger;
 
@@ -23,7 +23,7 @@ public class DataListener {
 
     private static void createNewZmqAgent(String topic) {
         if(!agents.containsKey(topic)) {
-            ZMQAgent agent = new ZMQAgent(JEConfiguration.getDataManagerURL(), JEConfiguration.getSubscriberPort(), topic);
+            ZMQAgent agent = new ZMQAgent("tcp://"+Utility.getSiothConfig().getMachineCredentials().getIpAddress(), Utility.getSiothConfig().getDataModelPORTS().getDmService_PubAddress(), topic);
             agents.put(topic, agent);
         }
         else {

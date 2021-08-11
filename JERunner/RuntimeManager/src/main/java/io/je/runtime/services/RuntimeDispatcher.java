@@ -1,7 +1,6 @@
 package io.je.runtime.services;
 
 import io.je.JEProcess;
-import io.je.ruleengine.impl.ProjectContainer;
 import io.je.runtime.data.DataListener;
 import io.je.runtime.events.EventManager;
 import io.je.runtime.models.ClassModel;
@@ -25,7 +24,6 @@ import io.je.utilities.constants.WorkflowConstants;
 import io.je.utilities.exceptions.*;
 import io.je.utilities.logger.JELogger;
 import io.je.utilities.models.*;
-import io.je.utilities.string.JEStringSubstitutor;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -36,7 +34,6 @@ import java.util.jar.JarFile;
 
 import static io.je.utilities.constants.JEMessages.ADDING_JAR_FILE_TO_RUNNER;
 import static io.je.utilities.constants.WorkflowConstants.*;
-import static io.je.utilities.constants.WorkflowConstants.USERNAME;
 
 /*
  * Service class to handle JERunner inputs
@@ -51,7 +48,7 @@ public class RuntimeDispatcher {
 
     ///////////////////////////////// PROJECT
     // build project
-    public void buildProject(String projectId) throws RuleBuildFailedException {
+    public void buildProject(String projectId) throws RuleBuildFailedException, WorkflowBuildException {
 
         JELogger.trace("[projectId  = " + projectId+"]" +JEMessages.BUILDING_PROJECT);
         RuleEngineHandler.buildProject(projectId);
@@ -267,13 +264,10 @@ public class RuntimeDispatcher {
     /*
      * Launch a workflow without variables
      */
-    public void launchProcessWithoutVariables(String projectId, String key) throws WorkflowNotFoundException, WorkflwTriggeredByEventException, WorkflowAlreadyRunningException {
-        try {
-            JELogger.trace(getClass(), "[projectId = " + projectId + "] [workflow = " + key + "]" + JEMessages.RUNNING_WF);
-            WorkflowEngineHandler.launchProcessWithoutVariables(projectId, key);
-        } catch (WorkflowAlreadyRunningException e) {
-            e.printStackTrace();
-        }
+    public void launchProcessWithoutVariables(String projectId, String key) throws WorkflowNotFoundException, WorkflwTriggeredByEventException, WorkflowAlreadyRunningException, WorkflowBuildException {
+        JELogger.trace(getClass(), "[projectId = " + projectId + "] [workflow = " + key + "]" + JEMessages.RUNNING_WF);
+        WorkflowEngineHandler.launchProcessWithoutVariables(projectId, key);
+
     }
 
     /*
@@ -287,7 +281,7 @@ public class RuntimeDispatcher {
     /*
      * Deploy a workflow to the engine
      */
-    public void buildWorkflow(String projectId, String key) {
+    public void buildWorkflow(String projectId, String key) throws WorkflowBuildException {
         JELogger.trace(getClass(), "[projectId = " + projectId + "] [workflow = " + key + "]" + JEMessages.DEPLOYING_WF);
         WorkflowEngineHandler.deployBPMN(projectId, key);
     }

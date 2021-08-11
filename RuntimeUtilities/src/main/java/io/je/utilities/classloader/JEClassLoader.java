@@ -69,7 +69,8 @@ public class JEClassLoader extends ClassLoader {
         if(customClasses.contains(name))
         {
         	customClasses.remove(name);
-        	loadAllClasses();
+        	//Tempo fix should check later
+        	//loadAllClasses();
         }
         //TODO Check again 
         if (name.startsWith(ClassBuilderConfig.generationPackageName+".") && !name.contains("Propagation")) {

@@ -221,7 +221,13 @@ public class JECalculator {
 			value = Math.pow((double) x,i);
 		}catch(Exception e)
 		{
-			value= Math.pow((long) x,i);
+			//Tempo fix should revise later
+			try {
+				value = Math.pow((long) x, i);
+			}
+			catch(Exception ex ) {
+				value = Math.pow((Float) x, i);
+			}
 		}
 		return (double) value;
 	}

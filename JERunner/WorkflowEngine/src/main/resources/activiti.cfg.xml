@@ -10,8 +10,8 @@
         <property name="jdbcDriver" value="org.h2.Driver"/>
         <property name="jdbcUsername" value="root"/>
         <property name="jdbcPassword" value=""/>
-
         <property name="databaseSchemaUpdate" value="true"/>
+        <property name="asyncExecutorActivate" value="true"/>
     </bean>
 
 </beans>

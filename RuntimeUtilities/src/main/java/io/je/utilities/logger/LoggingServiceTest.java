@@ -1,8 +1,8 @@
 package io.je.utilities.logger;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
-
-import io.je.utilities.config.JEConfiguration;
+import java.util.Date;
 
 
 //TODO: to be deleted, just used for testing
@@ -10,8 +10,8 @@ public class LoggingServiceTest {
 
 	public static void publish(String projectId, LogLevel logLevel, String logDate, LogCategory category,
 			LogSubModule subModule, Object message) {
-			JEConfiguration.setLoggingSystemURL("tcp://localhost");
-			JEConfiguration.setLoggingSystemZmqPublishPort(15001);
+			//JEConfiguration.setLoggingSystemURL("tcp://localhost");
+			//JEConfiguration.setLoggingSystemZmqPublishPort(15001);
 			LogMessage msg = new LogMessage(logLevel, message, logDate, category, projectId,subModule,"ruleId123");
 			ZMQLogPublisher.publish(msg);
 		
@@ -44,7 +44,15 @@ public class LoggingServiceTest {
 		};
 
 		Thread t = new Thread(runnable);
-		t.start();
+		Date date = new Date(System.currentTimeMillis());
+
+// Conversion
+		SimpleDateFormat sdf;
+		sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+		//sdf.setTimeZone(TimeZone.getTimeZone("CET"));
+		String text = sdf.format(date);
+		System.out.println(text);
+		//t.start();
 		
 	/*	ZMQSubscriber sub = new ZMQSubscriber("tcp://127.0.0.1", 15001, "SIOTH##LogTopic") {
 			

@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 import io.je.rulebuilder.models.BlockModel;
-import io.je.utilities.config.JEConfiguration;
+import io.je.utilities.config.Utility;
 import io.je.utilities.time.JEDate;
 
 public class TimeComparisonBlock extends ComparisonBlock {
@@ -24,7 +24,7 @@ public class TimeComparisonBlock extends ComparisonBlock {
 		{
 			LocalDateTime date = LocalDateTime.parse(blockModel.getBlockConfiguration().getValue(), DateTimeFormatter.ISO_DATE_TIME);
 
-			threshold = "\""+JEDate.formatDate(date, JEConfiguration.getDroolsDateFormat())+"\"";
+			threshold = "\""+JEDate.formatDate(date, Utility.getSiothConfig().getDateFormat())+"\"";
 		}
 		
 		operator = getOperatorByOperationId(blockModel.getOperationId());

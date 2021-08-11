@@ -4,6 +4,7 @@ import org.apache.commons.text.StringSubstitutor;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class JEStringSubstitutor {
@@ -26,8 +27,10 @@ public class JEStringSubstitutor {
     }
 
     public static String replace(String projectId, String toBeReplaced) {
-        if (variables.containsKey(projectId))
+        if (variables.containsKey(projectId)) {
+            //HashMap<String, Object> subMap = variables.get(projectId);
             return substitutor.replace(toBeReplaced, variables.get(projectId));
+        }
         else return toBeReplaced;
     }
 
@@ -45,17 +48,20 @@ public class JEStringSubstitutor {
                     "}";
 
 
+            String test =  "{\n" +
+                    "  \"id\":\"${testVar}\"\n" +
+                    "}";
 
 
             // the value map does not define "balance" variable
             Map<String, String> valuesMap = new HashMap<>();
-            valuesMap.put("testVarName", "123");
+            valuesMap.put("testVar", "123");
 
-            StringSubstitutor stringSubstitutor = new StringSubstitutor(valuesMap);
+            StringSubstitutor stringSubstitutor = new StringSubstitutor();
 
             // Sets this flag to true to throw exception if any variable is undefined.
             stringSubstitutor.setEnableUndefinedVariableException(true);
-            String result = stringSubstitutor.replace(templateString);
+            String result = stringSubstitutor.replace(test, valuesMap);
 
             System.out.println(result);
         }catch (Exception ex){

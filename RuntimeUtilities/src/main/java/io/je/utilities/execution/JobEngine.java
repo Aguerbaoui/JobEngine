@@ -3,11 +3,12 @@ package io.je.utilities.execution;
 import io.je.utilities.apis.JEBuilderApiHandler;
 import io.je.utilities.apis.JERunnerAPIHandler;
 import io.je.utilities.constants.ResponseCodes;
-import io.je.utilities.logger.JELogger;
+import io.je.utilities.logger.*;
 import io.je.utilities.models.VariableModel;
 import io.je.utilities.network.JEResponse;
 import io.je.utilities.string.JEStringUtils;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -162,6 +163,22 @@ public class JobEngine {
 
         return ResponseCodes.CODE_OK;
     }
+
+    /*
+     * Send user message
+     * */
+    public static int informUser(String level, String message, String projectId, String processId, String taskName) {
+        if(!JEStringUtils.isEmpty(message)) {
+            JELogger.info(message);
+            LogMessage msg = new LogMessage(LogLevel.INFORM,  message,  LocalDateTime.now().toString(), "JobEngine",  projectId,
+                    processId, LogSubModule.WORKFLOW, taskName, null, "Log", "") ;
+            ZMQLogPublisher.publish(msg);
+            //send to monitoring when its ready
+        }
+
+        return ResponseCodes.CODE_OK;
+    }
+
 
     /*
     * Trigger event from script

@@ -48,6 +48,10 @@ public class ResponseCodes {
 	public static final int VARIABLE_NOT_FOUND = 1035;
 	public static final int VARIABLE_EXISTS = 1036;
 	public static final int VARIABLE_ERROR = 1037;
+	public static final int CODE_INJECTION_ERROR = 1038;
+	public static final int WORKFLOW_BLOCK_ERROR = 1039;
+	public static final int WORKFLOW_BUILD_ERROR = 1040;
+
 
 
 }

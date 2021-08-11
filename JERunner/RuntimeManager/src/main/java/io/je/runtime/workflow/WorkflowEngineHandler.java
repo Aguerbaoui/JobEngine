@@ -4,6 +4,7 @@ import io.je.JEProcess;
 import io.je.processes.ProcessManager;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.WorkflowAlreadyRunningException;
+import io.je.utilities.exceptions.WorkflowBuildException;
 import io.je.utilities.exceptions.WorkflowNotFoundException;
 import io.je.utilities.exceptions.WorkflwTriggeredByEventException;
 import io.je.utilities.logger.JELogger;
@@ -23,7 +24,7 @@ public class WorkflowEngineHandler {
     /*
      * Deploy bpmn process
      * */
-    public static void deployBPMN(String projectId, String key) {
+    public static void deployBPMN(String projectId, String key) throws WorkflowBuildException{
         processManagerHashMap.get(projectId).deployProcess(key);
     }
 
@@ -38,7 +39,7 @@ public class WorkflowEngineHandler {
     /*
      * Launch process without variables
      * */
-    public static void launchProcessWithoutVariables(String projectId, String processId) throws WorkflowNotFoundException, WorkflowAlreadyRunningException, WorkflwTriggeredByEventException {
+    public static void launchProcessWithoutVariables(String projectId, String processId) throws WorkflowNotFoundException, WorkflowAlreadyRunningException, WorkflwTriggeredByEventException, WorkflowBuildException {
 		JELogger.trace("[projectId = " + projectId +"][workflow = "+processId+"]"+JEMessages.REMOVING_WF);
         processManagerHashMap.get(projectId).launchProcessByKeyWithoutVariables(processId);
     }
@@ -90,7 +91,7 @@ public class WorkflowEngineHandler {
     /*
     * Deploy project workflows
     * */
-    public static void buildProject(String projectId) {
+    public static void buildProject(String projectId) throws WorkflowBuildException {
         processManagerHashMap.get(projectId).buildProjectWorkflows(projectId);
     }
 

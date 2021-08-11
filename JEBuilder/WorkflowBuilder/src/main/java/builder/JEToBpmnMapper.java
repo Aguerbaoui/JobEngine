@@ -7,6 +7,7 @@ import blocks.control.ExclusiveGatewayBlock;
 import blocks.control.InclusiveGatewayBlock;
 import blocks.control.ParallelGatewayBlock;
 import blocks.events.*;
+import io.je.utilities.config.ConfigurationConstants;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.WorkflowConstants;
 import io.je.utilities.logger.JELogger;
@@ -38,11 +39,16 @@ public class JEToBpmnMapper {
         BpmnModel model = ModelBuilder.createNewBPMNModel();
         model.setTargetNamespace(wf.getJobEngineProjectID());
         Process process = ModelBuilder.createProcess(wf.getWorkflowName().trim());
-        process.addFlowElement(ModelBuilder.createStartEvent(wf.getWorkflowStartBlock().getJobEngineElementID(), wf.getWorkflowStartBlock().getEventId()));
+        process.addFlowElement(
+                ModelBuilder.createStartEvent(wf.getWorkflowStartBlock().getJobEngineElementID(),
+                wf.getWorkflowStartBlock().getEventId(),
+                wf.getWorkflowStartBlock().getTimeDelay(),
+                wf.getWorkflowStartBlock().getTimerDate(),
+                wf.getWorkflowStartBlock().getTimerCycle()));
         addListeners(process);
         parseWorkflowBlock(wf, wf.getWorkflowStartBlock(), process, null);
         model.addProcess(process);
-        String modelPath = WorkflowConstants.BPMN_PATH + wf.getWorkflowName().trim() + WorkflowConstants.BPMN_EXTENSION;
+        String modelPath = ConfigurationConstants.BPMN_PATH + wf.getWorkflowName().trim() + WorkflowConstants.BPMN_EXTENSION;
         ModelBuilder.saveModel(model, modelPath);
         wf.resetBlocks();
         wf.setBpmnPath(modelPath);
@@ -124,9 +130,9 @@ public class JEToBpmnMapper {
                         block.generateBpmnOutflows(wf)));
             }
 
-            else if (block instanceof DBWriteBlock && !block.isProcessed()) {
+            else if (block instanceof DBWriteBlock || block instanceof DBEditBlock || block instanceof DBReadBlock && !block.isProcessed()) {
                 process.addFlowElement(ModelBuilder.createServiceTask(block.getJobEngineElementID(), block.getName(),
-                        WorkflowConstants.DB_WRITE_TASK_IMPLEMENTATION));
+                        WorkflowConstants.DB_TASK_IMPLEMENTATION));
             }
 
             else if (block instanceof MailBlock && !block.isProcessed()) {
@@ -155,7 +161,7 @@ public class JEToBpmnMapper {
             }
 
             else if (block instanceof DurationDelayTimerEvent && !block.isProcessed()) {
-                process.addFlowElement(ModelBuilder.createDateTimerEvent(block.getJobEngineElementID(), block.getName(), ((DurationDelayTimerEvent) block).getTimeDuration()));
+                process.addFlowElement(ModelBuilder.createDurationTimerEvent(block.getJobEngineElementID(), block.getName(), ((DurationDelayTimerEvent) block).getTimeDuration()));
             }
 
             else if (block instanceof WebApiBlock && !block.isProcessed()) {
