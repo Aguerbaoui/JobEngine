@@ -49,6 +49,9 @@ public class BlockConfigurationModel {
     @JsonProperty(AttributesMapping.ATTRIBUTENAME)
 	String attributeName;
     
+    @JsonProperty("destinationAttributeName")
+ 	String destinationAttributeName;
+    
     @JsonProperty(AttributesMapping.TYPE)
 	String type;
 
@@ -159,6 +162,15 @@ public class BlockConfigurationModel {
 	}
 	public void setNewValue(Object newValue) {
 		this.newValue = newValue;
+	}
+	
+	
+	
+	public String getDestinationAttributeName() {
+		return destinationAttributeName;
+	}
+	public void setDestinationAttributeName(String destinationAttributeName) {
+		this.destinationAttributeName = destinationAttributeName;
 	}
 	@Override
 	public String toString() {

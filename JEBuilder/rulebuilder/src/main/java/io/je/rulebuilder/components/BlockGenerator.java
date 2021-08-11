@@ -10,6 +10,8 @@ import io.je.rulebuilder.components.blocks.arithmetic.multipleInput.*;
 import io.je.rulebuilder.components.blocks.arithmetic.singleinput.*;
 import io.je.rulebuilder.components.blocks.event.AcceptEventBlock;
 import io.je.rulebuilder.components.blocks.execution.LogBlock;
+import io.je.rulebuilder.components.blocks.execution.SetterBlock;
+import io.je.rulebuilder.components.blocks.execution.AttachedSetterBlock;
 import io.je.rulebuilder.components.blocks.execution.LinkedSetterBlock;
 import io.je.rulebuilder.components.blocks.execution.TriggerEventBlock;
 import io.je.rulebuilder.components.blocks.getter.AttributeGetterBlock;
@@ -128,6 +130,10 @@ public class BlockGenerator {
 			return new TriggerEventBlock(blockModel);
 		case 5003:
 			return new LinkedSetterBlock(blockModel);	
+		case 5004:
+			return new AttachedSetterBlock(blockModel);
+		case 5005:
+			return new SetterBlock(blockModel);
 		case 6001:
 			return new AcceptEventBlock(blockModel);
 		// no operation with such id

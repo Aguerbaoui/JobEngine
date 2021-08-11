@@ -1,5 +1,7 @@
 package io.je.runtime.objects;
 
+import java.util.HashMap;
+
 import org.json.JSONObject;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -14,6 +16,9 @@ public class InstanceManager {
 	
 	static ObjectMapper objectMapper = new ObjectMapper();
 
+	//instanceId/Instance
+	static HashMap<String, Object> instancesLastValue = new HashMap<>();
+	
 	public static Object createInstance(InstanceModel instanceModel ) throws InstanceCreationFailed
 	{
 		//get instance class
@@ -41,8 +46,13 @@ public class InstanceManager {
 			throw new InstanceCreationFailed("Failed to create instance : " + e.getMessage());
 
 		}
-		
+		instancesLastValue.put(instanceModel.getInstanceId(), instance);
 		return instance ;
+	}
+	
+	public static Object getInstance(String instanceId)
+	{
+		return instancesLastValue.getOrDefault(instanceId, null);
 	}
 
 }

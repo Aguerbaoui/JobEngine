@@ -1,5 +1,6 @@
 package io.je.utilities.execution;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.je.utilities.apis.JEBuilderApiHandler;
 import io.je.utilities.apis.JERunnerAPIHandler;
@@ -16,6 +17,9 @@ import io.je.utilities.zmq.ZMQRequester;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.*;
 
 //import org.influxdb.InfluxDB;
@@ -145,14 +149,12 @@ public class Executioner {
     }
 
 
-    public static void writeToInstance(String instanceId, String attributeName, String attributeNewValue) {
+    public static void writeToInstance(String instanceId, String attributeName, Object value) {
         //Rework to use a callable for exception handling
-        String request = generateDMWriteRequestt(instanceId,  attributeName,  attributeNewValue);
+        String request = generateDMWriteRequest(instanceId, attributeName, value);
 
-        if(!request.equals(""))
-        {
-        	try {
-                new Thread(new Runnable() {
+        try {
+            new Thread(new Runnable() {
 
                 @Override
                 public void run() {
@@ -166,11 +168,10 @@ public class Executioner {
                     }
 
 
-                    }
-                }).start();
-            } catch (Exception e) {
-                // TODO: handle exception
-            }
+                }
+            }).start();
+        } catch (Exception e) {
+            // TODO: handle exception
         }
 
     }
@@ -193,12 +194,13 @@ public class Executioner {
         return req;
     }
 
- private static String generateDMWriteRequestt(String instanceId, String attributeName, String attributeNewValue) {
-	
+    
+    private static String generateDMWriteRequest(String instanceId, String attributeName, Object attributeNewValue) {
+    	
     	HashMap<String, Object> payload = new HashMap<>();
     	payload.put("InstanceId", instanceId);   	
-    	List<HashMap<String, String>> attributesList = new ArrayList<>();
-    	HashMap<String, String> attributes = new HashMap<>();
+    	List<HashMap<String, Object>> attributesList = new ArrayList<>();
+    	HashMap<String, Object> attributes = new HashMap<>();
     	attributes.put(attributeName, attributeNewValue);
     	attributesList.add(attributes);
     	payload.put("Attributes", attributesList);
@@ -211,28 +213,33 @@ public class Executioner {
 		}
     	return request;
     }
-    public static void executeScript(String name) throws Exception {
-      /*  JEClassLoader loader = new JEClassLoader(
-                Executioner.class.getClassLoader());
-        Class<?> loadClass =
-                loader.loadClass("classes." + name);
-        Method method
-                = loadClass.getDeclaredMethods()[0];
-        method.invoke(null);
-*/
-        executor.submit(new Callable<Void>() {
-            @Override
-            public Void call() throws Exception {
-               /* Class<?> clazz = null;
-                clazz = Class.forName("classes." + name);
-                ClassLoader classLoader = this.getClass().getClassLoader();
-                URLClassLoader urlClassLoader = new URLClassLoader(new URL[]{new File("D:\\Job engine\\JERunner\\RuntimeManager\\target\\classes").toURI().toURL()});
-                Class loadClass = urlClassLoader.loadClass("classes." + name);*/
-               JEClassLoader.overrideInstance();
-                Class<?> loadClass =JEClassLoader.getInstance().loadClass(ClassBuilderConfig.generationPackageName +"." + name);
-                Method method = loadClass.getDeclaredMethods()[0];
-                method.invoke(null);
-                return null;
+    
+   /* public static void main(String[] args) {
+        executeScript("test", "", "");
+    }*/
+    public static void executeScript(String name, String processId, String projectId) throws JavaCodeInjectionError {
+        ExecutorService executor = Executors.newFixedThreadPool(1);
+
+        //Task to be executed in a separate thread
+        Future<Void> task = executor.submit(() -> {
+            JEClassLoader.overrideInstance();
+            Class<?> loadClass =JEClassLoader.getInstance().loadClass(ClassBuilderConfig.generationPackageName +"." + name);
+            Method method = loadClass.getDeclaredMethods()[0];
+            method.invoke(null);
+            return null;
+        });
+        String msg = "Unknown error";
+        try {
+            task.get(10, TimeUnit.SECONDS);
+        } catch (ExecutionException e) {
+            msg = "Script task in workflow with id = " + processId + " in project with id = " + projectId + " failed during the execution";
+            JELogger.error(msg);
+            throw new JavaCodeInjectionError(msg);
+        } catch (InterruptedException e) {
+            msg = "Script task in workflow with id = " + processId + " in project with id = " + projectId + " was interrupted during the execution";
+            JELogger.error(msg);
+            if(Thread.currentThread().isInterrupted()) {
+                Thread.currentThread().interrupt();
             }
             throw new JavaCodeInjectionError(msg);
         } catch (TimeoutException e) {
