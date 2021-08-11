@@ -10,14 +10,13 @@ import io.je.rulebuilder.components.blocks.arithmetic.multipleInput.*;
 import io.je.rulebuilder.components.blocks.arithmetic.singleinput.*;
 import io.je.rulebuilder.components.blocks.event.AcceptEventBlock;
 import io.je.rulebuilder.components.blocks.execution.LogBlock;
-import io.je.rulebuilder.components.blocks.execution.SetterBlock;
+import io.je.rulebuilder.components.blocks.execution.LinkedSetterBlock;
 import io.je.rulebuilder.components.blocks.execution.TriggerEventBlock;
 import io.je.rulebuilder.components.blocks.getter.AttributeGetterBlock;
 import io.je.rulebuilder.components.blocks.logic.JoinBlock;
 import io.je.rulebuilder.models.BlockModel;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.AddRuleBlockException;
-import io.je.utilities.exceptions.RuleBuildFailedException;
 
 public class BlockGenerator {
 
@@ -27,7 +26,6 @@ public class BlockGenerator {
 	 * @param blockModel
 	 * @return
 	 * @throws AddRuleBlockException
-	 * @throws RuleBuildFailedException 
 	 */
 	public static Block createBlock(BlockModel blockModel) throws AddRuleBlockException
 	{		
@@ -129,7 +127,7 @@ public class BlockGenerator {
 		case 5002:
 			return new TriggerEventBlock(blockModel);
 		case 5003:
-			return new SetterBlock(blockModel);	
+			return new LinkedSetterBlock(blockModel);	
 		case 6001:
 			return new AcceptEventBlock(blockModel);
 		// no operation with such id

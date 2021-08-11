@@ -145,12 +145,14 @@ public class Executioner {
     }
 
 
-    public static void writeToInstance(String instanceId, String attributeName, String value) {
+    public static void writeToInstance(String instanceId, String attributeName, String attributeNewValue) {
         //Rework to use a callable for exception handling
-        String request = generateRequest(instanceId, attributeName, value);
+        String request = generateDMWriteRequestt(instanceId,  attributeName,  attributeNewValue);
 
-        try {
-            new Thread(new Runnable() {
+        if(!request.equals(""))
+        {
+        	try {
+                new Thread(new Runnable() {
 
                 @Override
                 public void run() {
@@ -164,10 +166,11 @@ public class Executioner {
                     }
 
 
-                }
-            }).start();
-        } catch (Exception e) {
-            // TODO: handle exception
+                    }
+                }).start();
+            } catch (Exception e) {
+                // TODO: handle exception
+            }
         }
 
     }
@@ -190,32 +193,46 @@ public class Executioner {
         return req;
     }
 
-   /* public static void main(String[] args) {
-        executeScript("test", "", "");
-    }*/
-    public static void executeScript(String name, String processId, String projectId) throws JavaCodeInjectionError {
-        ExecutorService executor = Executors.newFixedThreadPool(1);
-
-        //Task to be executed in a separate thread
-        Future<Void> task = executor.submit(() -> {
-            JEClassLoader.overrideInstance();
-            Class<?> loadClass =JEClassLoader.getInstance().loadClass(ClassBuilderConfig.generationPackageName +"." + name);
-            Method method = loadClass.getDeclaredMethods()[0];
-            method.invoke(null);
-            return null;
-        });
-        String msg = "Unknown error";
-        try {
-            task.get(10, TimeUnit.SECONDS);
-        } catch (ExecutionException e) {
-            msg = "Script task in workflow with id = " + processId + " in project with id = " + projectId + " failed during the execution";
-            JELogger.error(msg);
-            throw new JavaCodeInjectionError(msg);
-        } catch (InterruptedException e) {
-            msg = "Script task in workflow with id = " + processId + " in project with id = " + projectId + " was interrupted during the execution";
-            JELogger.error(msg);
-            if(Thread.currentThread().isInterrupted()) {
-                Thread.currentThread().interrupt();
+ private static String generateDMWriteRequestt(String instanceId, String attributeName, String attributeNewValue) {
+	
+    	HashMap<String, Object> payload = new HashMap<>();
+    	payload.put("InstanceId", instanceId);   	
+    	List<HashMap<String, String>> attributesList = new ArrayList<>();
+    	HashMap<String, String> attributes = new HashMap<>();
+    	attributes.put(attributeName, attributeNewValue);
+    	attributesList.add(attributes);
+    	payload.put("Attributes", attributesList);
+    	String request= "";
+    	try {
+			 request = objectMapper.writeValueAsString(payload);
+		} catch (JsonProcessingException e) {
+			// TODO Auto-generated catch block
+			//JELogger.error : failed to generate request
+		}
+    	return request;
+    }
+    public static void executeScript(String name) throws Exception {
+      /*  JEClassLoader loader = new JEClassLoader(
+                Executioner.class.getClassLoader());
+        Class<?> loadClass =
+                loader.loadClass("classes." + name);
+        Method method
+                = loadClass.getDeclaredMethods()[0];
+        method.invoke(null);
+*/
+        executor.submit(new Callable<Void>() {
+            @Override
+            public Void call() throws Exception {
+               /* Class<?> clazz = null;
+                clazz = Class.forName("classes." + name);
+                ClassLoader classLoader = this.getClass().getClassLoader();
+                URLClassLoader urlClassLoader = new URLClassLoader(new URL[]{new File("D:\\Job engine\\JERunner\\RuntimeManager\\target\\classes").toURI().toURL()});
+                Class loadClass = urlClassLoader.loadClass("classes." + name);*/
+               JEClassLoader.overrideInstance();
+                Class<?> loadClass =JEClassLoader.getInstance().loadClass(ClassBuilderConfig.generationPackageName +"." + name);
+                Method method = loadClass.getDeclaredMethods()[0];
+                method.invoke(null);
+                return null;
             }
             throw new JavaCodeInjectionError(msg);
         } catch (TimeoutException e) {
