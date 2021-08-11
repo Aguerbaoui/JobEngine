@@ -1,7 +1,5 @@
 package io.je.rulebuilder.components.blocks;
 
-import java.util.List;
-
 import io.je.utilities.exceptions.RuleBuildFailedException;
 
 public abstract class ConditionBlock extends Block{

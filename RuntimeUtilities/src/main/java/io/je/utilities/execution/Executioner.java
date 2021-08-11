@@ -18,11 +18,15 @@ import io.je.utilities.zmq.ZMQRequester;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 //import org.influxdb.InfluxDB;
@@ -148,29 +152,32 @@ public class Executioner {
     }
 
 
-    public static void writeToInstance(String instanceId, String attributeName, String value) {
+    public static void writeToInstance(String instanceId, String attributeName, String attributeNewValue) {
         //Rework to use a callable for exception handling
-        String request = generateRequest(instanceId, attributeName, value);
+        String request = generateDMWriteRequestt(instanceId,  attributeName,  attributeNewValue);
 
-        try {
-            new Thread(new Runnable() {
+        if(!request.equals(""))
+        {
+        	try {
+                new Thread(new Runnable() {
 
-                @Override
-                public void run() {
-                    JELogger.debug(JEMessages.SENDING_REQUEST_TO_DATA_MODEL + " : " + request);
-                    ZMQRequester requester = new ZMQRequester(JEConfiguration.getDataManagerURL(), JEConfiguration.getRequestPort());
-                    String response = requester.sendRequest(request);
-                    if (response == null) {
-                        JELogger.error(getClass(), JEMessages.NO_RESPONSE_FROM_DATA_MODEL);
-                    } else {
-                        JELogger.info("Data Model Returned : " + response);
+                    @Override
+                    public void run() {
+                        JELogger.debug(JEMessages.SENDING_REQUEST_TO_DATA_MODEL + " : " + request);
+                        ZMQRequester requester = new ZMQRequester(JEConfiguration.getDataManagerURL(), JEConfiguration.getRequestPort());
+                        String response = requester.sendRequest(request);
+                        if (response == null) {
+                            JELogger.error(getClass(), JEMessages.NO_RESPONSE_FROM_DATA_MODEL);
+                        } else {
+                            JELogger.info("Data Model Returned : " + response);
+                        }
+
+
                     }
-
-
-                }
-            }).start();
-        } catch (Exception e) {
-            // TODO: handle exception
+                }).start();
+            } catch (Exception e) {
+                // TODO: handle exception
+            }
         }
 
     }
@@ -193,6 +200,24 @@ public class Executioner {
         return req;
     }
 
+ private static String generateDMWriteRequestt(String instanceId, String attributeName, String attributeNewValue) {
+	
+    	HashMap<String, Object> payload = new HashMap<>();
+    	payload.put("InstanceId", instanceId);   	
+    	List<HashMap<String, String>> attributesList = new ArrayList<>();
+    	HashMap<String, String> attributes = new HashMap<>();
+    	attributes.put(attributeName, attributeNewValue);
+    	attributesList.add(attributes);
+    	payload.put("Attributes", attributesList);
+    	String request= "";
+    	try {
+			 request = objectMapper.writeValueAsString(payload);
+		} catch (JsonProcessingException e) {
+			// TODO Auto-generated catch block
+			//JELogger.error : failed to generate request
+		}
+    	return request;
+    }
     public static void executeScript(String name) throws Exception {
       /*  JEClassLoader loader = new JEClassLoader(
                 Executioner.class.getClassLoader());

@@ -11,6 +11,14 @@ public class BlockConfigurationModel {
 	
 	//attribute for Function blocks (power,bias,gain)
 	// or comparison Threshold for comparison blocks 
+
+   	@JsonProperty("newValue")
+	Object newValue;	    
+	
+    @JsonProperty("linkedGetterName")
+   	String linkedGetterName;
+       
+   	
     @JsonProperty(AttributesMapping.VALUE)
 	String value;
     
@@ -137,9 +145,25 @@ public class BlockConfigurationModel {
 	public void setBooleanValue(String booleanValue) {
 		this.booleanValue = booleanValue;
 	}
+	
+	
+	
+	public String getLinkedGetterName() {
+		return linkedGetterName;
+	}
+	public void setLinkedGetterName(String linkedGetterName) {
+		this.linkedGetterName = linkedGetterName;
+	}
+	public Object getNewValue() {
+		return newValue;
+	}
+	public void setNewValue(Object newValue) {
+		this.newValue = newValue;
+	}
 	@Override
 	public String toString() {
-		return "BlockConfigurationModel [value=" + value + ", inputUnit=" + inputUnit + ", outputUnit=" + outputUnit
+		return "BlockConfigurationModel [newValue=" + newValue + ", value=" + value + ", value2=" + value2
+				+ ", booleanValue=" + booleanValue + ", inputUnit=" + inputUnit + ", outputUnit=" + outputUnit
 				+ ", classId=" + classId + ", className=" + className + ", workspaceId=" + workspaceId
 				+ ", attributeName=" + attributeName + ", type=" + type + ", specificInstances=" + specificInstances
 				+ ", instanceId=" + instanceId + "]";

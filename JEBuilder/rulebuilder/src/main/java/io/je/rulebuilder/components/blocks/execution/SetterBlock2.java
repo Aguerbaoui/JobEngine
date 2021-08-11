@@ -2,6 +2,7 @@ package io.je.rulebuilder.components.blocks.execution;
 
 import io.je.rulebuilder.components.blocks.ExecutionBlock;
 import io.je.rulebuilder.models.BlockModel;
+import io.je.rulebuilder.models.ValueType;
 import io.je.utilities.exceptions.RuleBuildFailedException;
 
 /*
@@ -9,13 +10,10 @@ import io.je.utilities.exceptions.RuleBuildFailedException;
  * operation id : 5004
  */
 public class SetterBlock2 extends ExecutionBlock {
-	
-
-	
-
+		
 	String getterId;
 	String attributeName;
-	String newValueType; //static , variable, attribute
+	ValueType newValueType; //static , variable, attribute
 	
 	//static
 	Object value;
@@ -57,17 +55,18 @@ public class SetterBlock2 extends ExecutionBlock {
 	public String getExpression() throws RuleBuildFailedException {		
 	   switch(newValueType)
 	   {
-	   case "static":
+	   case STATIC :
 		   return "Executioner.writeToInstance("+instanceId+", "+attributeName +", "+value+");";
-	   case "variable":
+	   case VARIABLE:
 		   return "Executioner.writeToInstance("+instanceId+", "+attributeName +", VariableManager.getVariable("+variableId+"));";
-	   case "attribute":
+	   case ATTRIBUTE :
 		   return "Executioner.writeToInstance("+instanceId+", "+attributeName +", InstanceManager.getVariable("+variableId+"));";
-	  
+	  default:
+		  throw new RuleBuildFailedException("INVALID CONFIGURATION");
+
 	   }
 	   
-	  throw new RuleBuildFailedException("INVALID CONFIGURATION");
-
+	  
 	}
 
 
