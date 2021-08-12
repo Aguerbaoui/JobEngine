@@ -1,8 +1,10 @@
-package io.je.runtime.models;
+package io.je.utilities.models;
 
 import org.json.JSONObject;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import io.je.utilities.mapping.InstanceModelMapping;
 
 
 public class InstanceModel {

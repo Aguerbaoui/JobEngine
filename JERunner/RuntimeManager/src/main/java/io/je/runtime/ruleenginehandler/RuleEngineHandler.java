@@ -8,18 +8,19 @@ import java.util.List;
 import io.je.utilities.classloader.JEClassLoader;
 import io.je.utilities.logger.LogCategory;
 import io.je.utilities.logger.LogSubModule;
+import io.je.utilities.mapping.InstanceModelMapping;
+import io.je.utilities.models.InstanceModel;
+
 import org.json.JSONObject;
 
 import io.je.ruleengine.impl.RuleEngine;
 import io.je.ruleengine.models.Rule;
-import io.je.runtime.models.InstanceModel;
-import io.je.runtime.models.InstanceModelMapping;
 import io.je.runtime.models.RuleModel;
-import io.je.runtime.objects.InstanceManager;
 import io.je.utilities.beans.JEData;
 import io.je.utilities.beans.JEEvent;
 import io.je.utilities.beans.JEVariable;
 import io.je.utilities.constants.JEMessages;
+import io.je.utilities.datamodel.InstanceManager;
 import io.je.utilities.exceptions.*;
 import io.je.utilities.logger.JELogger;
 import io.je.utilities.runtimeobject.JEObject;

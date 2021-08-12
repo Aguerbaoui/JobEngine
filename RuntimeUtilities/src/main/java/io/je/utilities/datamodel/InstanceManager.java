@@ -1,16 +1,15 @@
-package io.je.runtime.objects;
+package io.je.utilities.datamodel;
 
+import java.io.IOException;
 import java.util.HashMap;
 
 import org.json.JSONObject;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 
-import io.je.runtime.models.InstanceModel;
-import io.je.runtime.repos.ClassRepository;
 import io.je.utilities.exceptions.InstanceCreationFailed;
+import io.je.utilities.models.InstanceModel;
 
 public class InstanceManager {
 	
@@ -39,7 +38,7 @@ public class InstanceManager {
 
 		try {
 			instance = objectMapper.readValue(instanceModel.getPayload().toString(), instanceClass);
-		} catch (JsonProcessingException e) {
+		} catch (Exception e) {
 			
 			e.printStackTrace();
 			//TODO: add error msg to config
