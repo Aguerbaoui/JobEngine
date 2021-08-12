@@ -20,7 +20,9 @@ import io.je.utilities.exceptions.AddClassException;
 import io.je.utilities.exceptions.ClassLoadException;
 import io.je.utilities.exceptions.DataDefinitionUnreachableException;
 import io.je.utilities.logger.JELogger;
+import io.je.utilities.logger.LogCategory;
 import io.je.utilities.logger.LogMessage;
+import io.je.utilities.logger.LogSubModule;
 import io.je.utilities.zmq.ZMQPublisher;
 import io.je.utilities.zmq.ZMQRequester;
 
@@ -48,8 +50,9 @@ public class ClassManager {
 	public static List<JEClass> buildClass(ClassDefinition classDefinition)
 			throws AddClassException, DataDefinitionUnreachableException, IOException, ClassLoadException {
 
-		JELogger.debug(ClassManager.class,
-				JEMessages.BUILDING_CLASS + "[className = " + classDefinition.getName() + "]");
+		JELogger.debug(JEMessages.BUILDING_CLASS + "[className = " + classDefinition.getName() + "]",
+				LogCategory.DESIGN_MODE, null,
+				LogSubModule.CLASS,null);
 		ArrayList<JEClass> classes = new ArrayList<>();
 
 		/*
@@ -142,30 +145,38 @@ public class ClassManager {
 		try {
 			GetModelObject request = new GetModelObject(classId, workspaceId);
 			String jsonMsg = objectMapper.writeValueAsString(request);
-			  JELogger.debug(JEMessages.SENDING_REQUEST_TO_DATA_MODEL + " : " + request);
+			JELogger.debug(JEMessages.SENDING_REQUEST_TO_DATA_MODEL + " : " + request,
+					LogCategory.DESIGN_MODE, null,
+					LogSubModule.JEBUILDER,null);
               ZMQRequester requester = new ZMQRequester("tcp://"+Utility.getSiothConfig().getMachineCredentials().getIpAddress(), Utility.getSiothConfig().getDataModelPORTS().getDmRestAPI_ReqAddress());
                response = requester.sendRequest(jsonMsg) ;
               if (response == null ) {
             	  
             	  //Data Model RESTAPI unreachable
-                  JELogger.error(ClassManager.class, "Data Model RESTAPI unreachable");
+				  JELogger.error("Data Model RESTAPI unreachable",
+						  LogCategory.DESIGN_MODE, null,
+						  LogSubModule.JEBUILDER,null);
                   throw new ClassNotFoundException("Data Model RESTAPI unreachable");
               } else
               if(response.isEmpty())
               {
             	  //Data Model RESTAPI Error -> check its logs for more details
-            	  JELogger.error(ClassManager.class, JEMessages.CLASS_NOT_FOUND);
+				  JELogger.error(JEMessages.CLASS_NOT_FOUND,
+						  LogCategory.DESIGN_MODE, null,
+						  LogSubModule.JEBUILDER,null);
                   throw new ClassNotFoundException(JEMessages.CLASS_NOT_FOUND + classId);
               }
               else
               {
-                  JELogger.info("Data Model defintion Returned : " + response);
+				  JELogger.debug("Data Model defintion Returned : " + response,
+						  LogCategory.DESIGN_MODE, null,
+						  LogSubModule.JEBUILDER,null);
               }
 
 		} catch (Exception e) {
-			// TODO : replace with custom exception
-			e.printStackTrace();
-			JELogger.error("Failed to send log message to the logging system : " + e.getMessage());
+			JELogger.error("Failed to send log message to the logging system : " + e.getMessage(),
+					LogCategory.DESIGN_MODE, null,
+					LogSubModule.JEBUILDER,null);
 		}
 		return  response;
 	}

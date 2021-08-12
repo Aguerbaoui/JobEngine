@@ -15,7 +15,7 @@ public class JERunnerInitBean implements InitializingBean {
     @Override
     public void afterPropertiesSet() throws Exception {
         try {
-            JELogger.initRunnerLogger(runnerProperties.getJeRunnerLogPath(),runnerProperties.getJeRunnerLogLevel());
+            JELogger.initLogger("JERunner", runnerProperties.getJeRunnerLogPath(),runnerProperties.getJeRunnerLogLevel());
         }
         catch (Exception e) {e.printStackTrace();}
     }

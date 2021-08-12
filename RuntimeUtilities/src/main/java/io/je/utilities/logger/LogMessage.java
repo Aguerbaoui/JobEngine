@@ -17,8 +17,8 @@ public class LogMessage {
     @JsonProperty("Module")
     public String module="JobEngine" ;
     
-    @JsonProperty("Category")
-    public LogCategory category ;
+   /* @JsonProperty("Category")
+    public LogCategory category ;*/
     
     @JsonProperty("ProjectId")
     public String projectId ;
@@ -33,93 +33,29 @@ public class LogMessage {
     @JsonProperty("Source")
     public String source ;
     
-    @JsonProperty("Value")
-    public Object value ;
+   /* @JsonProperty("Value")
+    public Object value ;*/
 
     @JsonProperty("Type")
     public String type = "Log";
     
-    @JsonProperty("Description")
-    public String description ="N/A" ;
- 
-    
-    
-    
-    
-    
-    public LogMessage(LogLevel logLevel, Object message, String logDate, String module, String projectId,
-			String objectId, LogSubModule subModule, String source, Object value, String type, String description) {
-		super();
-		this.logLevel = logLevel;
-		this.message = message;
-		this.logDate = logDate;
-		this.module = module;
-		this.projectId = projectId;
-		this.objectId = objectId;
-		this.subModule = subModule;
-		this.source = source;
-		this.value = value;
-		this.type = type;
-		this.description = description;
-	}
-
-	/*
-    //log msgs
-	public LogMessage(LogLevel logLevel, Object message, String logDate, String module, 
-			String projectId, LogSubModule subModule) {
-		super();
-		this.logLevel = logLevel;
-		this.message = message;
-		this.logDate = logDate;
-		this.module = module;
-		this.projectId = projectId;
-		this.subModule = subModule;
-	}
-	
-	
-
-		
-		 //Monitoring msgs + description
-			public LogMessage(String logDate, String module, 
-					String projectId, String objectId, LogSubModule subModule,Object value,String source,String description) {
-				super();
-				this.module = module;
-				this.projectId = projectId;
-				this.objectId = objectId;
-				this.subModule = subModule;
-				this.value = value;
-				this.logDate = logDate;
-				this.description = description;
-				this.source=source;
-				type = "Log";
+   /* @JsonProperty("Description")
+    public String description ="N/A" ;*/
 
 
-			}*/	
-	 public LogMessage(LogLevel logLevel, Object message, String logDate, LogCategory category,
+	 public LogMessage(LogLevel logLevel, Object message, String logDate,
 				String projectId, LogSubModule subModule, String objectId) {
 			super();
 			this.logLevel = logLevel;
 			this.message = message;
 			this.logDate = logDate;
-			this.category = category;
 			this.projectId = projectId;
 			this.subModule = subModule;
 			this.objectId = objectId;
 		}
 
 
-	/*    public LogMessage(String message, String logDate, LogCategory category, String projectId, LogSubModule subModule, String objectId) {
-	        super();
-	        this.message = message;
-	        this.logDate = logDate;
-	        this.category = category;
-	        this.projectId = projectId;
-	        this.subModule = subModule;
-	        this.objectId = objectId;
-	    }
-*/
 	private LogMessage() {
-		// TODO Auto-generated constructor stub
 	}
 
 	public LogLevel getLogLevel() {
@@ -154,13 +90,13 @@ public class LogMessage {
 		this.module = module;
 	}
 
-	public LogCategory getCategory() {
+	/*public LogCategory getCategory() {
 		return category;
 	}
 
 	public void setCategory(LogCategory category) {
 		this.category = category;
-	}
+	}*/
 
 	public String getProjectId() {
 		return projectId;
@@ -194,13 +130,13 @@ public class LogMessage {
 		this.source = source;
 	}
 
-	public Object getValue() {
+	/*public Object getValue() {
 		return value;
 	}
 
 	public void setValue(Object value) {
 		this.value = value;
-	}
+	}*/
 
 	public String getType() {
 		return type;
@@ -211,14 +147,14 @@ public class LogMessage {
 	}
 
 
-	public String getDescription() {
+/*	public String getDescription() {
 		return description;
 	}
 
 
 	public void setDescription(String description) {
 		this.description = description;
-	}
+	}*/
 	
     
 

@@ -12,7 +12,7 @@ public class LoggingServiceTest {
 			LogSubModule subModule, Object message) {
 			//JEConfiguration.setLoggingSystemURL("tcp://localhost");
 			//JEConfiguration.setLoggingSystemZmqPublishPort(15001);
-			LogMessage msg = new LogMessage(logLevel, message, logDate, category, projectId,subModule,"ruleId123");
+			LogMessage msg = new LogMessage(logLevel, message, logDate,  projectId,subModule,"ruleId123");
 			ZMQLogPublisher.publish(msg);
 		
 	}
@@ -28,7 +28,7 @@ public class LoggingServiceTest {
 					
 		   			System.out.println("***");
 
-					LoggingServiceTest.publish((i++).toString(), LogLevel.INFORM, LocalDateTime.now().toString(), LogCategory.RUNTIME, LogSubModule.RULE,
+					LoggingServiceTest.publish((i++).toString(), LogLevel.Inform, LocalDateTime.now().toString(), LogCategory.RUNTIME, LogSubModule.RULE,
 							"Rule was added");
 					System.out.println("Sent message");
 					try {

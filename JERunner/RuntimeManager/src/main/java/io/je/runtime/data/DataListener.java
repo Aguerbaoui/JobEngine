@@ -3,6 +3,8 @@ package io.je.runtime.data;
 import io.je.utilities.config.Utility;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.logger.JELogger;
+import io.je.utilities.logger.LogCategory;
+import io.je.utilities.logger.LogSubModule;
 
 import java.util.HashMap;
 import java.util.List;
@@ -32,7 +34,8 @@ public class DataListener {
     }
 
     public static void startListening(List<String> topics) {
-        JELogger.info( JEMessages.LISTENING_ON_TOPICS + topics);
+        JELogger.debug(JEMessages.LISTENING_ON_TOPICS + topics,  LogCategory.RUNTIME,
+                null, LogSubModule.JERUNNER, null);
     	for (String id : topics)
     	{
     		ZMQAgent agent = agents.get(id);
@@ -50,7 +53,8 @@ public class DataListener {
     }
 
     public static void stopListening(List<String> topics) {
-        JELogger.info(JEMessages.STOPPED_LISTENING_ON_TOPICS + topics);
+        JELogger.debug(JEMessages.STOPPED_LISTENING_ON_TOPICS + topics,  LogCategory.RUNTIME,
+                null, LogSubModule.JERUNNER, null);
         for (String id : topics)
         {
         	 if(agents.containsKey(id))
@@ -62,7 +66,8 @@ public class DataListener {
                 activeThreads.remove(id);
             }
             catch (Exception e) {
-                JELogger.error(DataListener.class, JEMessages.INTERRUPT_TOPIC_ERROR + id);
+                JELogger.error(JEMessages.INTERRUPT_TOPIC_ERROR + id,  LogCategory.RUNTIME,
+                        null, LogSubModule.JERUNNER, null);
             }
         }
     }

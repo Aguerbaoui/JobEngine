@@ -7,7 +7,7 @@ import io.je.utilities.logger.JELogger;
 public class WorkflowCallback implements OnExecuteOperation {
 
     public void onDatabaseInsertOperation(String id) {
-        JELogger.info(WorkflowCallback.class, JEMessages.DB_TASK + id);
+        //JELogger.info(WorkflowCallback.class, JEMessages.DB_TASK + id);
 
     }
 

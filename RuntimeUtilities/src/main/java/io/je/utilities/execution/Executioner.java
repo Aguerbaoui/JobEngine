@@ -8,6 +8,7 @@ import io.je.utilities.classloader.JEClassLoader;
 import io.je.utilities.config.Utility;
 import io.je.utilities.constants.ClassBuilderConfig;
 import io.je.utilities.constants.JEMessages;
+import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.exceptions.JERunnerErrorException;
 import io.je.utilities.exceptions.JavaCodeInjectionError;
 import io.je.utilities.logger.*;
@@ -46,8 +47,8 @@ public class Executioner {
                 public void run() {
 
                     try {
-                        LogMessage msg = new LogMessage(LogLevel.INFORM, message, logDate, "JobEngine", projectId,
-                                ruleId, LogSubModule.RULE, BlockName, null, "Log", "");
+                        LogMessage msg = new LogMessage(LogLevel.Inform, message, logDate, projectId,
+                                 LogSubModule.RULE, BlockName);
                         ZMQLogPublisher.publish(msg);
                         //   JELogger.info(objectMapper.writeValueAsString(msg), LogCategory.RUNTIME, projectId, LogSubModule.RULE, ruleId);
                     } catch (Exception e) {
@@ -117,8 +118,8 @@ public class Executioner {
                         JERunnerAPIHandler.triggerEvent(eventId, projectId);
                         // JEBuilderApiHandler.triggerEvent(eventId, projectId);
 
-                        LogMessage msg = new LogMessage(LogLevel.DEBUG, eventName + " is triggered ", LocalDateTime.now().toString(), "JobEngine", projectId,
-                                ruleId, LogSubModule.RULE, triggerSource, null, "Log", "");
+                        LogMessage msg = new LogMessage(LogLevel.Debug, eventName + " is triggered ", LocalDateTime.now().toString(),  projectId,
+                                 LogSubModule.RULE, triggerSource);
                         ZMQLogPublisher.publish(msg);
                      
                     /* JEMessage message = new JEMessage();
@@ -158,7 +159,8 @@ public class Executioner {
 
                 @Override
                 public void run() {
-                    JELogger.debug(JEMessages.SENDING_REQUEST_TO_DATA_MODEL + " : " + request);
+                    JELogger.debug(JEMessages.SENDING_REQUEST_TO_DATA_MODEL + " : " + request,  LogCategory.RUNTIME,
+                            null, LogSubModule.RULE, null);
                     ZMQRequester requester = new ZMQRequester("tcp://" + Utility.getSiothConfig().getMachineCredentials().getIpAddress(), Utility.getSiothConfig().getDataModelPORTS().getDmService_ReqAddress());
                     String response = requester.sendRequest(request);
                     if (response == null) {
@@ -174,7 +176,7 @@ public class Executioner {
             // TODO: handle exception
         }
 
-    }
+    }*/
 
 
     /*
@@ -233,18 +235,21 @@ public class Executioner {
             task.get(10, TimeUnit.SECONDS);
         } catch (ExecutionException e) {
             msg = "Script task in workflow with id = " + processId + " in project with id = " + projectId + " failed during the execution";
-            JELogger.error(msg);
+            JELogger.error(msg, LogCategory.RUNTIME, projectId,
+                    LogSubModule.JERUNNER, processId);
             throw new JavaCodeInjectionError(msg);
         } catch (InterruptedException e) {
             msg = "Script task in workflow with id = " + processId + " in project with id = " + projectId + " was interrupted during the execution";
-            JELogger.error(msg);
+            JELogger.error(msg, LogCategory.RUNTIME, projectId,
+                    LogSubModule.JERUNNER, processId);
             if(Thread.currentThread().isInterrupted()) {
                 Thread.currentThread().interrupt();
             }
             throw new JavaCodeInjectionError(msg);
         } catch (TimeoutException e) {
             msg = "Script task in workflow with id = " + processId + " in project with id = " + projectId + " Timed out the execution";
-            JELogger.error(msg);
+            JELogger.error(msg, LogCategory.RUNTIME, projectId,
+                    LogSubModule.JERUNNER, processId);
             executor.shutdown();
             task.cancel(true);
             throw new JavaCodeInjectionError(msg);

@@ -10,8 +10,6 @@ import io.je.runtime.repos.VariableManager;
 import io.je.runtime.ruleenginehandler.RuleEngineHandler;
 import io.je.runtime.workflow.WorkflowEngineHandler;
 import io.je.serviceTasks.*;
-import io.je.utilities.apis.BodyType;
-import io.je.utilities.apis.HttpMethod;
 import io.je.utilities.beans.JEData;
 import io.je.utilities.beans.JEEvent;
 import io.je.utilities.beans.JEVariable;
@@ -20,9 +18,10 @@ import io.je.utilities.classloader.JEClassLoader;
 import io.je.utilities.config.ConfigurationConstants;
 import io.je.utilities.constants.ClassBuilderConfig;
 import io.je.utilities.constants.JEMessages;
-import io.je.utilities.constants.WorkflowConstants;
 import io.je.utilities.exceptions.*;
 import io.je.utilities.logger.JELogger;
+import io.je.utilities.logger.LogCategory;
+import io.je.utilities.logger.LogSubModule;
 import io.je.utilities.models.*;
 import org.springframework.stereotype.Service;
 
@@ -33,7 +32,6 @@ import java.util.Map.Entry;
 import java.util.jar.JarFile;
 
 import static io.je.utilities.constants.JEMessages.ADDING_JAR_FILE_TO_RUNNER;
-import static io.je.utilities.constants.WorkflowConstants.*;
 
 /*
  * Service class to handle JERunner inputs
@@ -49,8 +47,9 @@ public class RuntimeDispatcher {
     ///////////////////////////////// PROJECT
     // build project
     public void buildProject(String projectId) throws RuleBuildFailedException, WorkflowBuildException {
-
-        JELogger.trace("[projectId  = " + projectId+"]" +JEMessages.BUILDING_PROJECT);
+        JELogger.debug("[projectId  = " + projectId+"]" +JEMessages.BUILDING_PROJECT,
+                LogCategory.RUNTIME, projectId,
+                LogSubModule.JERUNNER, null);
         RuleEngineHandler.buildProject(projectId);
         WorkflowEngineHandler.buildProject(projectId);
 
@@ -70,14 +69,18 @@ public class RuntimeDispatcher {
             }
 
         }
-        JELogger.trace("[projectId  = " + projectId+"]"+JEMessages.RUNNING_PROJECT);
+        JELogger.debug("[projectId  = " + projectId+"]"+JEMessages.RUNNING_PROJECT,
+                LogCategory.RUNTIME, projectId,
+                LogSubModule.JERUNNER, null);
         try
         {
         	DataListener.startListening(topics);
             RuleEngineHandler.runRuleEngineProject(projectId);
             WorkflowEngineHandler.runAllWorkflows(projectId);
         }catch (JEException e) {
-            JELogger.warning(getClass()," [projectId  = " + projectId+"]"+JEMessages.PROJECT_RUN_FAILED);
+            JELogger.error(" [projectId  = " + projectId+"]"+JEMessages.PROJECT_RUN_FAILED,
+                    LogCategory.RUNTIME, projectId,
+                    LogSubModule.JERUNNER, null);
 			DataListener.stopListening(topics);
 			RuleEngineHandler.stopRuleEngineProjectExecution(projectId);
 			WorkflowEngineHandler.stopProjectWorfklows(projectId);
@@ -92,7 +95,9 @@ public class RuntimeDispatcher {
     public void stopProject(String projectId) {
 
         // stop workflows
-        JELogger.trace("[projectId  = " + projectId+"]"+JEMessages.STOPPING_PROJECT);
+        JELogger.debug("[projectId  = " + projectId+"]"+JEMessages.STOPPING_PROJECT,
+                LogCategory.RUNTIME, projectId,
+                LogSubModule.JERUNNER, null);
         WorkflowEngineHandler.stopProjectWorfklows(projectId);
         RuleEngineHandler.stopRuleEngineProjectExecution(projectId);
 
@@ -133,14 +138,18 @@ public class RuntimeDispatcher {
     public void addRule(RuleModel ruleModel) throws RuleAlreadyExistsException, RuleCompilationException,
             RuleNotAddedException, JEFileNotFoundException, RuleFormatNotValidException {
 
-        JELogger.trace( JEMessages.ADDING_RULE + " : " + ruleModel.getRuleName());
+        JELogger.debug(JEMessages.ADDING_RULE + " : " + ruleModel.getRuleName(),
+                LogCategory.RUNTIME, ruleModel.getProjectId(),
+                LogSubModule.RULE, ruleModel.getRuleId());
         RuleEngineHandler.addRule(ruleModel);
     }
 
     // update rule
     public void updateRule(RuleModel ruleModel)
             throws RuleCompilationException, JEFileNotFoundException, RuleFormatNotValidException {
-        JELogger.trace(JEMessages.UPDATING_RULE + " : " + ruleModel.getRuleId());
+        JELogger.debug(JEMessages.UPDATING_RULE + " : " + ruleModel.getRuleId(),
+                LogCategory.RUNTIME, ruleModel.getProjectId(),
+                LogSubModule.RULE, ruleModel.getRuleId());
         RuleEngineHandler.updateRule(ruleModel);
 
     }
@@ -148,13 +157,18 @@ public class RuntimeDispatcher {
     // compile rule
     public void compileRule(RuleModel ruleModel)
             throws RuleFormatNotValidException, RuleCompilationException, JEFileNotFoundException {
-        JELogger.trace(JEMessages.COMPILING_RULE + " : " + ruleModel.getRuleId());
+        JELogger.debug(JEMessages.COMPILING_RULE + " : " + ruleModel.getRuleId(),
+                LogCategory.RUNTIME, ruleModel.getProjectId(),
+                LogSubModule.RULE, ruleModel.getRuleId());
         RuleEngineHandler.compileRule(ruleModel);
     }
 
     // delete rule
     public void deleteRule(String projectId, String ruleId) throws DeleteRuleException {
-        JELogger.trace(getClass(), "[projectId = " + projectId + "] [ruleId = " + ruleId + "]" + JEMessages.DELETING_RULE);
+        JELogger.debug("[projectId = " + projectId + "] [ruleId = " + ruleId + "]" +
+                        JEMessages.DELETING_RULE,
+                LogCategory.RUNTIME, projectId,
+                LogSubModule.RULE, ruleId);
         RuleEngineHandler.deleteRule(projectId, ruleId);
     }
 
@@ -163,99 +177,17 @@ public class RuntimeDispatcher {
      * Add a workflow to the engine
      */
     public void addWorkflow(WorkflowModel wf) {
-        JELogger.trace(getClass(), "[projectId = " + wf.getProjectId() + "] [workflow = " + wf.getKey() + "]" + JEMessages.ADDING_WF);
+        JELogger.debug("[projectId = " + wf.getProjectId() + "] [workflow = " + wf.getKey() + "]" + JEMessages.ADDING_WF,
+                LogCategory.RUNTIME, wf.getProjectId(),
+                LogSubModule.WORKFLOW, wf.getKey());
         JEProcess process = new JEProcess(wf.getKey(), wf.getName(), wf.getPath(), wf.getProjectId(), wf.isTriggeredByEvent());
         if(wf.isTriggeredByEvent()) {
            process.setTriggerMessage(wf.getTriggerMessage());
         }
         for(TaskModel task: wf.getTasks()) {
-            if(task.getType().equals(WorkflowConstants.WEBSERVICETASK_TYPE)) {
-                WebApiTask webApiTask = new WebApiTask();
-                webApiTask.setBodyType(BodyType.JSON);
-                webApiTask.setTaskId(task.getTaskId());
-                webApiTask.setTaskName(task.getTaskName());
-                webApiTask.setProcessId(wf.getKey());
-                webApiTask.setProjectId(wf.getProjectId());
-                HashMap<String, Object> attributes = task.getAttributes();
-                if(attributes.get(INPUTS) != null) {
-                    webApiTask.setHasBody(true);
-                    webApiTask.setBody((HashMap<String, String>) attributes.get(INPUTS));
-                }
-                else {
-                    webApiTask.setHasBody(true);
-                    webApiTask.setStringBody((String) attributes.get(BODY));
-                }
-                webApiTask.setHttpMethod(HttpMethod.valueOf((String) attributes.get(METHOD)));
-                webApiTask.setUrl((String) attributes.get(URL));
-                process.addActivitiTask(webApiTask);
-                ActivitiTaskManager.addTask(webApiTask);
-            }
-
-            if(task.getType().equals(WorkflowConstants.SCRIPTTASK_TYPE)) {
-                ScriptTask scriptTask = new ScriptTask();
-                scriptTask.setTaskName(task.getTaskName());
-                scriptTask.setTaskId(task.getTaskId());
-                scriptTask.setProjectId(wf.getProjectId());
-                HashMap<String, Object> attributes = task.getAttributes();
-                if(attributes.containsKey(SCRIPT)) {
-                    scriptTask.setScript((String) attributes.get(SCRIPT));
-                }
-                //JEClassLoader.generateScriptTaskClass(scriptTask.getTaskName(), scriptTask.getScript());
-                process.addActivitiTask(scriptTask);
-                ActivitiTaskManager.addTask(scriptTask);
-            }
-
-            if(task.getType().equals(WorkflowConstants.INFORMSERVICETASK_TYPE)) {
-                InformTask informTask = new InformTask();
-                informTask.setTaskName(task.getTaskName());
-                informTask.setTaskId(task.getTaskId());
-                informTask.setProjectId(wf.getProjectId());
-                HashMap<String, Object> attributes = task.getAttributes();
-                if(attributes.get(MESSAGE) != null) {
-                    informTask.setMessage((String) attributes.get(MESSAGE));
-                }
-                process.addActivitiTask(informTask);
-                ActivitiTaskManager.addTask(informTask);
-            }
-
-            if(task.getType().equals(DBREADSERVICETASK_TYPE) ||
-                    task.getType().equals(DBWRITESERVICETASK_TYPE) ||
-                    task.getType().equals(DBEDITSERVICETASK_TYPE)) {
-                DatabaseTask databaseTask = new DatabaseTask();
-                databaseTask.setTaskName(task.getTaskName());
-                databaseTask.setTaskId(task.getTaskId());
-                databaseTask.setProjectId(wf.getProjectId());
-                HashMap<String, Object> attributes = task.getAttributes();
-                if(attributes.get(REQUEST) != null) {
-                    databaseTask.setRequest((String) attributes.get(REQUEST));
-                }
-                if(attributes.get(DATABASE_ID) != null) {
-                    databaseTask.setDatabaseId((String) attributes.get(DATABASE_ID));
-                }
-                process.addActivitiTask(databaseTask);
-                ActivitiTaskManager.addTask(databaseTask);
-            }
-            if(task.getType().equals(WorkflowConstants.MAILSERVICETASK_TYPE)) {
-                MailTask mailTask = new MailTask();
-                mailTask.setTaskId(task.getTaskId());
-                mailTask.setTaskName(task.getTaskName());
-                mailTask.setProjectId(wf.getProjectId());
-                HashMap<String, Object> attributes = task.getAttributes();
-                if(attributes.containsKey(USE_DEFAULT_CREDENTIALS)) {
-                    mailTask.setbUseDefaultCredentials((boolean) task.getAttributes().get(USE_DEFAULT_CREDENTIALS));
-                    mailTask.setbEnableSSL((boolean) task.getAttributes().get(ENABLE_SSL));
-                }
-                mailTask.setiPort((Integer) task.getAttributes().get(PORT));
-                mailTask.setStrSenderAddress((String) task.getAttributes().get(SENDER_ADDRESS));
-                mailTask.setiSendTimeOut((Integer) task.getAttributes().get(SEND_TIME_OUT));
-                mailTask.setLstRecieverAddress((List<String>) task.getAttributes().get(RECEIVER_ADDRESS));
-                mailTask.setEmailMessage((HashMap<String, String>) task.getAttributes().get(EMAIL_MESSAGE));
-                mailTask.setStrSMTPServer((String) task.getAttributes().get(SMTP_SERVER));
-                mailTask.setStrPassword((String) task.getAttributes().get(PASSWORD));
-                mailTask.setStrUserName((String) task.getAttributes().get(USERNAME));
-                process.addActivitiTask(mailTask);
-                ActivitiTaskManager.addTask(mailTask);
-            }
+            ActivitiTask activitiTask = WorkflowEngineHandler.parseTask(wf.getProjectId(), wf.getKey(), task);
+            ActivitiTaskManager.addTask(activitiTask);
+            process.addActivitiTask(activitiTask);
         }
         WorkflowEngineHandler.addProcess(process);
 
@@ -265,7 +197,9 @@ public class RuntimeDispatcher {
      * Launch a workflow without variables
      */
     public void launchProcessWithoutVariables(String projectId, String key) throws WorkflowNotFoundException, WorkflwTriggeredByEventException, WorkflowAlreadyRunningException, WorkflowBuildException {
-        JELogger.trace(getClass(), "[projectId = " + projectId + "] [workflow = " + key + "]" + JEMessages.RUNNING_WF);
+        JELogger.debug("[projectId = " + projectId + "] [workflow = " + key + "]" + JEMessages.RUNNING_WF,
+                LogCategory.RUNTIME, projectId,
+                LogSubModule.WORKFLOW, key);
         WorkflowEngineHandler.launchProcessWithoutVariables(projectId, key);
 
     }
@@ -274,7 +208,9 @@ public class RuntimeDispatcher {
      * Run all workflows deployed in the engine without project specification
      */
     public void runAllWorkflows(String projectId) throws WorkflowNotFoundException {
-        JELogger.trace(getClass(), "[projectId = " + projectId + "]"+ JEMessages.RUNNING_WFS);
+        JELogger.debug("[projectId = " + projectId + "]"+ JEMessages.RUNNING_WFS,
+                LogCategory.RUNTIME, projectId,
+                LogSubModule.WORKFLOW, null);
         WorkflowEngineHandler.runAllWorkflows(projectId);
     }
 
@@ -282,14 +218,18 @@ public class RuntimeDispatcher {
      * Deploy a workflow to the engine
      */
     public void buildWorkflow(String projectId, String key) throws WorkflowBuildException {
-        JELogger.trace(getClass(), "[projectId = " + projectId + "] [workflow = " + key + "]" + JEMessages.DEPLOYING_WF);
+        JELogger.debug("[projectId = " + projectId + "] [workflow = " + key + "]" + JEMessages.DEPLOYING_WF,
+                LogCategory.RUNTIME, projectId,
+                LogSubModule.WORKFLOW, key);
         WorkflowEngineHandler.deployBPMN(projectId, key);
     }
 
     ///////////////////////////// Classes
     // add class
     public void addClass(ClassModel classModel) throws ClassLoadException {
-        JELogger.trace(JEMessages.ADDING_CLASS + classModel.getClassName());
+        JELogger.debug(JEMessages.ADDING_CLASS,
+                LogCategory.RUNTIME, null,
+                LogSubModule.CLASS, null);
         JEClassCompiler.compileClass(classModel.getClassPath(), ConfigurationConstants.runnerClassLoadPath);
        try {
     	   
@@ -321,7 +261,9 @@ public class RuntimeDispatcher {
 
 
     public static void injectData(JEData jeData) throws InstanceCreationFailed {
-        JELogger.debug(JEMessages.INJECTING_DATA);
+        JELogger.debug(JEMessages.INJECTING_DATA,
+                LogCategory.RUNTIME, null,
+                LogSubModule.JERUNNER, null);
         for (String projectId : projectsByTopic.get(jeData.getTopic())) {
             if (Boolean.TRUE.equals(projectStatus.get(projectId))) {
                 RuleEngineHandler.injectData(projectId, jeData);
@@ -334,7 +276,9 @@ public class RuntimeDispatcher {
      * add a topic
      */
     public void addTopics(String projectId, List<String> topics) {
-        JELogger.trace(JEMessages.ADDING_TOPICS + topics);
+        JELogger.debug(JEMessages.ADDING_TOPICS + topics,
+                LogCategory.RUNTIME, projectId,
+                LogSubModule.JERUNNER, null);
         if (topics != null) {
             for (String topic : topics) {
                 if (!projectsByTopic.containsKey(topic)) {
@@ -353,7 +297,9 @@ public class RuntimeDispatcher {
 
     //Trigger an event
     public void triggerEvent(String projectId, String id) throws EventException, ProjectNotFoundException {
-        JELogger.trace(getClass(), "[projectId = " + projectId + "] [event = " + id + "]" + JEMessages.EVENT_TRIGGERED);
+        JELogger.debug("[projectId = " + projectId + "] [event = " + id + "]" + JEMessages.EVENT_TRIGGERED,
+                LogCategory.RUNTIME, projectId,
+                LogSubModule.EVENT, id);
         EventManager.triggerEvent(projectId, id);
     }
 
@@ -361,27 +307,34 @@ public class RuntimeDispatcher {
     public void addEvent(EventModel eventModel) {
         JEEvent e = new JEEvent(eventModel.getEventId(), eventModel.getProjectId(), eventModel.getName(), EventType.valueOf(eventModel.getEventType()), eventModel.getDescription(), eventModel.getTimeout(), eventModel.getTimeoutUnit());
 
-
-        JELogger.trace(getClass(), "[projectId = " +e.getJobEngineProjectID() + "] [event = " + e.getJobEngineElementID() + "]" + JEMessages.ADDING_EVENT);
+        JELogger.debug("[projectId = " +e.getJobEngineProjectID() + "] [event = " + e.getJobEngineElementID() + "]" + JEMessages.ADDING_EVENT,
+                LogCategory.RUNTIME, eventModel.getProjectId(),
+                LogSubModule.EVENT, eventModel.getEventId());
 
         EventManager.addEvent(eventModel.getProjectId(), e);
     }
 
 
     public void updateEventType(String projectId, String eventId, String eventType) throws ProjectNotFoundException, EventException {
-        JELogger.trace("[projectId = " +projectId + "] [event = " + eventId + "]" + JEMessages.UPDATING_EVENT+" to type = " + eventType);
+        JELogger.debug("[projectId = " +projectId + "] [event = " + eventId + "]" + JEMessages.UPDATING_EVENT+" to type = " + eventType,
+                LogCategory.RUNTIME, projectId,
+                LogSubModule.EVENT, eventId);
         EventManager.updateEventType(projectId, eventId, eventType);
     }
 
     public void deleteEvent(String projectId, String eventId) throws ProjectNotFoundException, EventException {
-        JELogger.trace("[projectId = " +projectId + "] [event = " + eventId + "]" + JEMessages.DELETING_EVENT);
+        JELogger.debug("[projectId = " +projectId + "] [event = " + eventId + "]" + JEMessages.DELETING_EVENT,
+                LogCategory.RUNTIME, projectId,
+                LogSubModule.EVENT, eventId);
         EventManager.deleteEvent(projectId, eventId);
     }
 
     //clean project data from runner
     //Remove events, topics to listen to, rules and workflows
     public void removeProjectData(String projectId) {
-        JELogger.trace("[projectId = " +projectId + "]"+ JEMessages.DELETING_PROJECT );
+        JELogger.debug("[projectId = " +projectId + "]"+ JEMessages.DELETING_PROJECT ,
+                LogCategory.RUNTIME, projectId,
+                LogSubModule.JERUNNER, null);
         EventManager.deleteProjectEvents(projectId);
         WorkflowEngineHandler.deleteProjectProcesses(projectId);
         RuleEngineHandler.deleteProjectRules(projectId);
@@ -390,7 +343,9 @@ public class RuntimeDispatcher {
 
     //decrement topic subscription count for a project
     public void decrementTopicSubscriptionCount(String projectId) {
-        JELogger.trace("[projectId = " +projectId + "]"+ JEMessages.REMOVING_TOPIC_SUBSCRIPTION );
+        JELogger.debug("[projectId = " +projectId + "]"+ JEMessages.REMOVING_TOPIC_SUBSCRIPTION ,
+                LogCategory.RUNTIME, projectId,
+                LogSubModule.JERUNNER, null);
         for (String topic : projectsByTopic.keySet()) {
             HashSet<String> set = (HashSet<String>) projectsByTopic.get(topic);
             for (String id : set) {
@@ -414,12 +369,17 @@ public class RuntimeDispatcher {
 
 	//remove/stop workflow from runner
     public void removeWorkflow(String projectId, String workflowId) {
-        JELogger.trace(getClass(), "[projectId = " + projectId + "] [workflow = " + workflowId + "]" + JEMessages.REMOVING_WF);
+        JELogger.debug("[projectId = " + projectId + "] [workflow = " + workflowId + "]" + JEMessages.REMOVING_WF,
+                LogCategory.RUNTIME, projectId,
+                LogSubModule.WORKFLOW, workflowId);
         WorkflowEngineHandler.deleteProcess(projectId,workflowId);
     }
 
     //add variable to runner
     public void addVariable(VariableModel variableModel) {
+        JELogger.debug("[projectId = " + variableModel.getProjectId() + "] [variable = " + variableModel.getId() + "]" + JEMessages.ADDING_VARIABLE,
+                LogCategory.RUNTIME, variableModel.getProjectId(),
+                LogSubModule.VARIABLE, variableModel.getId());
         JEVariable var = new JEVariable(variableModel.getId(),variableModel.getProjectId(),variableModel.getName(),variableModel.getType(), variableModel.getInitialValue());
         var.setJeObjectCreationDate(LocalDateTime.now());
         var.setJeObjectLastUpdate(LocalDateTime.now());
@@ -429,10 +389,16 @@ public class RuntimeDispatcher {
 
     //remove variable from runner
     public void deleteVariable(String projectId, String varId) {
+        JELogger.debug("[projectId = " + projectId + "] [variable = " + varId + "]" + JEMessages.REMOVING_VARIABLE,
+                LogCategory.RUNTIME, projectId,
+                LogSubModule.VARIABLE, varId);
         VariableManager.removeVariable(projectId, varId);
     }
     
 	public void writeVariableValue(String projectId, String variableId, String value) {
+        JELogger.debug("[projectId = " + projectId + "] [variable = " + variableId + "]" + JEMessages.UPDATING_VARIABLE,
+                LogCategory.RUNTIME, projectId,
+                LogSubModule.VARIABLE, variableId);
 		VariableManager.updateVariableValue(projectId,variableId, value);
 		
 	}
@@ -440,7 +406,9 @@ public class RuntimeDispatcher {
     
 
     public void addJarToProject(HashMap<String, String> payload) {
-        JELogger.debug(ADDING_JAR_FILE_TO_RUNNER+ payload);
+        JELogger.debug(ADDING_JAR_FILE_TO_RUNNER+ payload,
+                LogCategory.RUNTIME, null,
+                LogSubModule.JERUNNER, null);
         //TODO finish this once the ui specs are decided
         try {
             JarFile j = new JarFile(payload.get("path"));

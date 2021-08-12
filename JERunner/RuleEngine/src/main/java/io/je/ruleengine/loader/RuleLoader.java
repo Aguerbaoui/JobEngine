@@ -9,6 +9,8 @@ import java.nio.file.Paths;
 
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.JEFileNotFoundException;
+import io.je.utilities.logger.LogCategory;
+import io.je.utilities.logger.LogSubModule;
 
 /*
  * load rule content from file path
@@ -18,7 +20,8 @@ public class RuleLoader {
 
     public static void loadRuleContent(Rule rule) throws JEFileNotFoundException {
         try {
-            JELogger.info(RuleLoader.class, rule.getPath());
+            JELogger.debug("Rule path = " + rule.getPath(),  LogCategory.RUNTIME,
+                    rule.getJobEngineProjectID(), LogSubModule.RULE, rule.getJobEngineElementID());
             rule.setContent(new String(Files.readAllBytes(Paths.get(rule.getPath()))));
         } catch (IOException e) {
             throw new JEFileNotFoundException(JEMessages.RULE_FILE_NOT_FOUND + rule.getPath());

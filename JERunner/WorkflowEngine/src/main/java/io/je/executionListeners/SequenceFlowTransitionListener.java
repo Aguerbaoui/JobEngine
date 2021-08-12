@@ -8,7 +8,7 @@ import org.activiti.engine.delegate.ExecutionListener;
 public class SequenceFlowTransitionListener implements ExecutionListener {
 
     public void notify(DelegateExecution execution) {
-        JELogger.info(SequenceFlowTransitionListener.class, JEMessages.TRANSITIONING_FROM + " " + execution.getCurrentFlowElement());
+        //JELogger.info(SequenceFlowTransitionListener.class, JEMessages.TRANSITIONING_FROM + " " + execution.getCurrentFlowElement());
 
     }
 }

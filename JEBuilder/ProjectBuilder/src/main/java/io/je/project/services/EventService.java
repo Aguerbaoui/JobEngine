@@ -1,5 +1,6 @@
 package io.je.project.services;
 
+import static io.je.utilities.constants.JEMessages.ADDING_JAR_FILE_TO_RUNNER;
 import static io.je.utilities.constants.JEMessages.UPDATING_EVENT;
 
 import java.io.IOException;
@@ -13,6 +14,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 
 import io.je.utilities.logger.JELogger;
+import io.je.utilities.logger.LogCategory;
+import io.je.utilities.logger.LogSubModule;
 import io.je.utilities.models.EventType;
 import io.je.utilities.string.JEStringUtils;
 
@@ -50,8 +53,9 @@ public class EventService {
 		{
 			eventModels.add(new EventModel(event));
 		}
-
-		JELogger.trace(" Found " + eventModels.size() + " events");
+		JELogger.debug(" Found " + eventModels.size() + " events",
+				LogCategory.DESIGN_MODE, projectId,
+				LogSubModule.EVENT, null);
 		return eventModels;
 	}
 	
@@ -78,8 +82,10 @@ public class EventService {
 	 * add new event
 	 */
 	public void addEvent(String projectId, EventModel eventModel) throws ProjectNotFoundException, JERunnerErrorException, IOException, InterruptedException, ExecutionException, EventException, ConfigException {
-    	
-		JELogger.info(getClass(),  JEMessages.ADDING_EVENT+ "[ id="+eventModel.getEventId()+"] in project id = " + projectId);
+
+		JELogger.debug(JEMessages.ADDING_EVENT+ "[ id="+eventModel.getEventId()+"] in project id = " + projectId,
+				LogCategory.DESIGN_MODE, projectId,
+				LogSubModule.EVENT, eventModel.getEventId());
 		JEProject project = ProjectService.getProjectById(projectId);
 		if (project == null) {
 			throw new ProjectNotFoundException( JEMessages.PROJECT_NOT_FOUND);
@@ -110,8 +116,9 @@ public class EventService {
 	 * update new event
 	 */
 	public void updateEvent(String projectId, EventModel eventModel) throws ProjectNotFoundException, JERunnerErrorException, IOException, InterruptedException, ExecutionException, EventException, ConfigException {
-    	
-		JELogger.info(getClass(), UPDATING_EVENT + " [ id="+eventModel.getEventId()+"] in project id = " + projectId);
+		JELogger.debug(UPDATING_EVENT + " [ id="+eventModel.getEventId()+"] in project id = " + projectId,
+				LogCategory.DESIGN_MODE, projectId,
+				LogSubModule.EVENT, eventModel.getEventId());
 		JEProject project = ProjectService.getProjectById(projectId);
 		if (project == null) {
 			throw new ProjectNotFoundException( JEMessages.PROJECT_NOT_FOUND);
@@ -151,7 +158,9 @@ public class EventService {
 		eventMap.put(EventModelMapping.EVENTTYPE, event.getType().toString());
 		eventMap.put(EventModelMapping.TIMEOUTUNIT, event.getTimeoutUnit());
 		eventMap.put(EventModelMapping.TIMOUTVALUE, event.getTimeoutValue());
-		JELogger.trace(JEMessages.REGISTERING_EVENT);
+		JELogger.debug(JEMessages.REGISTERING_EVENT,
+				LogCategory.DESIGN_MODE, event.getJobEngineProjectID(),
+				LogSubModule.EVENT,event.getJobEngineElementID());
 		JERunnerAPIHandler.addEvent(eventMap);
 		project.addEvent(event);
 	
@@ -160,8 +169,10 @@ public class EventService {
 	}
 
 	public void updateEventType(String projectId, String eventId, String eventType) throws ProjectNotFoundException, EventException, ConfigException {
-    	
-		JELogger.trace(JEMessages.UPDATING_EVENT_TYPE + eventType + " for event id = " + eventId + " in project id = " + projectId);
+
+		JELogger.debug(JEMessages.UPDATING_EVENT_TYPE + eventType + " for event id = " + eventId + " in project id = " + projectId,
+				LogCategory.DESIGN_MODE, projectId,
+				LogSubModule.EVENT,eventId);
 		JEProject project = ProjectService.getProjectById(projectId);
 		if (project == null) {
 			throw new ProjectNotFoundException( JEMessages.PROJECT_NOT_FOUND); //cdc47cf6-28e9-ff1d-996f-b6b1732771a2 -> {JEEvent@10436}
@@ -183,7 +194,9 @@ public class EventService {
 
 		EventType t = EventType.valueOf(eventType);
 		try {
-			JELogger.trace(" " + JEMessages.UPDATING_EVENT_TYPE_IN_RUNNER);
+			JELogger.debug(JEMessages.UPDATING_EVENT_TYPE_IN_RUNNER,
+					LogCategory.DESIGN_MODE, projectId,
+					LogSubModule.EVENT,eventId);
 			JERunnerAPIHandler.updateEventType(projectId, eventId, eventType);
 		} catch (Exception e) {
 			throw new EventException(JEMessages.EVENT_NOT_FOUND);
@@ -196,9 +209,10 @@ public class EventService {
 	 * delete event
 	 */
 	
-	public void deleteEvent(String projectId, String eventId) throws EventException, ProjectNotFoundException, InterruptedException, JERunnerErrorException, ExecutionException, IOException, ConfigException {
-    	
-		JELogger.info(getClass(), JEMessages.DELETING_EVENT+"[ id="+eventId+"] in project id = " + projectId);
+	public void deleteEvent(String projectId, String eventId) throws EventException, ProjectNotFoundException, InterruptedException, JERunnerErrorException, ExecutionException {
+		JELogger.debug(JEMessages.DELETING_EVENT+"[ id="+eventId+"] in project id = " + projectId,
+				LogCategory.DESIGN_MODE, projectId,
+				LogSubModule.EVENT,eventId);
 		JEProject project = ProjectService.getProjectById(projectId);
 		if (project == null) {
 			throw new ProjectNotFoundException( JEMessages.PROJECT_NOT_FOUND);
@@ -217,14 +231,16 @@ public class EventService {
 		if(event == null)  {
 			throw new EventException(JEMessages.EVENT_NOT_FOUND);
 		}
-		JELogger.info(getClass(), JEMessages.DELETING_EVENT_FROM_RUNNER);
+		JELogger.debug(JEMessages.DELETING_EVENT_FROM_RUNNER,
+				LogCategory.DESIGN_MODE, projectId,
+				LogSubModule.EVENT,eventId);
 		JERunnerAPIHandler.deleteEvent(projectId, eventId);
 		project.getEvents().remove(event.getJobEngineElementID());
 		eventRepository.deleteById(eventId);
 		
 	}
 
-	public void triggerEvent(String projectId, String eventId) throws ConfigException, ProjectNotFoundException, EventException {
+	/*public void triggerEvent(String projectId, String eventId) throws ConfigException, ProjectNotFoundException, EventException {
 		
 		JEProject project = ProjectService.getProjectById(projectId);
 		if (project == null) {
@@ -256,9 +272,12 @@ public class EventService {
 		event.setTriggered(false);
 		event.setJeObjectLastUpdate(LocalDateTime.now());
 
-	}
+	}*/
 
 	public void deleteAll(String projectId) {
+		JELogger.debug(JEMessages.DELETING_EVENTS,
+				LogCategory.DESIGN_MODE, projectId,
+				LogSubModule.EVENT,null);
 		eventRepository.deleteByJobEngineProjectID(projectId);
 		
 	}

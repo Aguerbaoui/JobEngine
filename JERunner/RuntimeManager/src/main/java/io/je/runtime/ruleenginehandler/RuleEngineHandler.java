@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.je.utilities.classloader.JEClassLoader;
+import io.je.utilities.logger.LogCategory;
+import io.je.utilities.logger.LogSubModule;
 import org.json.JSONObject;
 
 import io.je.ruleengine.impl.RuleEngine;
@@ -35,7 +37,9 @@ public class RuleEngineHandler {
     
     private static String verifyRuleIsValid(RuleModel ruleModel) throws RuleFormatNotValidException
     {
-    	JELogger.trace(JEMessages.VALIDATING_RULE);
+		JELogger.debug(JEMessages.VALIDATING_RULE ,
+				LogCategory.RUNTIME, ruleModel.getProjectId(),
+				LogSubModule.RULE,ruleModel.getRuleId());
     	String errorMsg = null;
     	if(ruleModel.getRuleId() == null || ruleModel.getRuleId().isEmpty())
     	{
@@ -108,7 +112,9 @@ public class RuleEngineHandler {
         RuleEngine.assertFact(projectId,instanceData);
     }catch(InstanceCreationFailed e)
     {
-    	JELogger.warning(RuleEngineHandler.class, JEMessages.ADD_INSTANCE_FAILED+" ["+data.getData()+"]" + e.getMessage());
+		JELogger.warn(JEMessages.ADD_INSTANCE_FAILED+" ["+data.getData()+"]" + e.getMessage(),
+				LogCategory.RUNTIME, projectId,
+				LogSubModule.RULE,null);
     	}
     	
         
@@ -151,7 +157,9 @@ public class RuleEngineHandler {
 	}
 
 	public static void deleteProjectRules(String projectId) {
-		JELogger.trace("[project id = " + projectId+"]"+JEMessages.DELETING_RULES);
+		JELogger.debug("[project id = " + projectId+"]"+JEMessages.DELETING_RULES,
+				LogCategory.RUNTIME, projectId,
+				LogSubModule.RULE,null);
 		RuleEngine.deleteProjectRules(projectId);
 	}
 

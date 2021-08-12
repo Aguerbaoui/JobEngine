@@ -1,18 +1,10 @@
 package io.je.runtime.events;
 
 import java.time.LocalDateTime;
-import java.util.concurrent.ExecutionException;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.je.utilities.apis.JEBuilderApiHandler;
-import io.je.utilities.beans.JEBlockMessage;
 import io.je.utilities.beans.JEEvent;
-import io.je.utilities.beans.JEMessage;
-import io.je.utilities.exceptions.JERunnerErrorException;
-import io.je.utilities.logger.JELogger;
-import io.je.utilities.logger.LogCategory;
 import io.je.utilities.logger.LogLevel;
 import io.je.utilities.logger.LogMessage;
 import io.je.utilities.logger.LogSubModule;
@@ -49,8 +41,8 @@ public class EventTimeoutRunnable implements Runnable {
 							e.printStackTrace();
 						}
 		        		*/
-		        		 LogMessage msg = new LogMessage(LogLevel.DEBUG,  event.getName() + " timed out ",  LocalDateTime.now().toString(), "JobEngine",  event.getJobEngineProjectID(),
-	                				event.getJobEngineElementID(), LogSubModule.EVENT, "APP", null, "Log", "") ;
+		        		 LogMessage msg = new LogMessage(LogLevel.Debug,  event.getName() + " timed out ",  LocalDateTime.now().toString(),   event.getJobEngineProjectID(),
+	                				 LogSubModule.EVENT, event.getJobEngineElementID()) ;
 	                	   ZMQLogPublisher.publish(msg);
 	                  /*  JEMessage message = new JEMessage();
 	                    message.setExecutionTime(LocalDateTime.now().toString());

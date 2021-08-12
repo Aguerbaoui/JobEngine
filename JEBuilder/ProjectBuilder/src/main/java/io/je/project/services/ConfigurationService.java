@@ -1,10 +1,13 @@
 package io.je.project.services;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 
 import io.je.utilities.config.Utility;
+import io.je.utilities.logger.LogCategory;
+import io.je.utilities.logger.LogSubModule;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import io.je.classbuilder.entity.JEClass;
@@ -46,12 +49,13 @@ public class ConfigurationService {
 	public void init()
 			{
 		try{
-				JELogger.info(JEMessages.INITILIZING_BUILDER);
-
+				JELogger.debug(JEMessages.INITILIZING_BUILDER,  LogCategory.DESIGN_MODE,
+					null, LogSubModule.JEBUILDER, null);
 				updateRunner();
 				classService.initClassUpdateListener();
 		}catch (Exception e) {
-			JELogger.error("JEBuilder did not start properly");
+			JELogger.debug("JEBuilder did not start properly\n" + Arrays.toString(e.getStackTrace()),  LogCategory.DESIGN_MODE,
+					null, LogSubModule.JEBUILDER, null);
 		}
 	
 	}
@@ -68,11 +72,15 @@ public class ConfigurationService {
 			try {
 				boolean serverUp = false;
 				while (!serverUp) {
-					JELogger.debug(getClass(), " " + JEMessages.RUNNER_IS_DOWN_CHECKING_AGAIN_IN_5_SECONDS);
+					JELogger.debug(JEMessages.RUNNER_IS_DOWN_CHECKING_AGAIN_IN_5_SECONDS,
+							LogCategory.DESIGN_MODE, null,
+							LogSubModule.JEBUILDER,null);
 					Thread.sleep(healthCheck);
 					serverUp = checkRunnerHealth();
 				}
-				JELogger.info(ProjectService.class, JEMessages.RUNNER_IS_UP_UPDATING_NOW);
+				JELogger.debug(JEMessages.RUNNER_IS_UP_UPDATING_NOW,
+						LogCategory.DESIGN_MODE, null,
+						LogSubModule.JEBUILDER,null);
 				classService.loadAllClassesToBuilder();
 				projectService.loadAllProjects();
 			} catch (Exception e) {

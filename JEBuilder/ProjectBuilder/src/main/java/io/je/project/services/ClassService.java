@@ -9,6 +9,8 @@ import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 import io.je.utilities.logger.JELogger;
+import io.je.utilities.logger.LogCategory;
+import io.je.utilities.logger.LogSubModule;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -123,7 +125,7 @@ public class ClassService {
 			classMap.put(CLASS_ID, clazz.getClassId());
 			classesList.add(classMap);
 		}
-		JELogger.trace(ClassService.class, " " + JEMessages.ADDING_CLASSES_TO_RUNNER_FROM_BUILDER);
+		JELogger.debug(JEMessages.ADDING_CLASSES_TO_RUNNER_FROM_BUILDER, LogCategory.DESIGN_MODE, null, LogSubModule.CLASS,null);
 		JEResponse jeRunnerResp = JERunnerAPIHandler.addClasses(classesList);
 		if (jeRunnerResp.getCode() != ResponseCodes.CODE_OK) {
 			throw new AddClassException(JEMessages.CLASS_LOAD_FAILED);
@@ -157,8 +159,7 @@ public class ClassService {
 		classMap.put(CLASS_NAME, clazz.getClassName());
 		classMap.put(CLASS_PATH, clazz.getClassPath());
 		classMap.put(CLASS_ID, clazz.getClassId());
-		JELogger.trace(ClassService.class,
-				" " + JEMessages.ADDING_CLASS_TO_RUNNER_FROM_BUILDER_WITH_ID + " = " + clazz.getClassId());
+		JELogger.debug(JEMessages.ADDING_CLASSES_TO_RUNNER_FROM_BUILDER, LogCategory.DESIGN_MODE, null, LogSubModule.CLASS, clazz.getClassName());
 		JEResponse jeRunnerResp;
 		
 		if(reloadClassDefinition)
@@ -178,7 +179,9 @@ public class ClassService {
 
 	public void loadAllClassesToBuilder() {
 		List<JEClass> classes = classRepository.findAll();
-		JELogger.trace(JEMessages.LOADING_ALL_CLASSES_FROM_DB);
+		JELogger.debug(JEMessages.LOADING_ALL_CLASSES_FROM_DB,
+				LogCategory.DESIGN_MODE, null,
+				LogSubModule.CLASS, null);
 		for (JEClass clazz : classes) {
 			try {
 				if(clazz.getWorkspaceId() != null) {
@@ -189,7 +192,8 @@ public class ClassService {
 				}
 
 			} catch (Exception e) {
-				JELogger.warning(getClass(), JEMessages.FAILED_TO_LOAD_CLASS + " " + clazz.getClassName());
+				JELogger.error(JEMessages.FAILED_TO_LOAD_CLASS + " " + clazz.getClassName() ,  LogCategory.DESIGN_MODE,
+						null, LogSubModule.CLASS, null);
 			}
 		}
 

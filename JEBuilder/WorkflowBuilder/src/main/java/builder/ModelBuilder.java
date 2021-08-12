@@ -4,6 +4,8 @@ import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.WorkflowConstants;
 import io.je.utilities.files.JEFileUtils;
 import io.je.utilities.logger.JELogger;
+import io.je.utilities.logger.LogCategory;
+import io.je.utilities.logger.LogSubModule;
 import io.je.utilities.string.JEStringUtils;
 import org.activiti.bpmn.converter.BpmnXMLConverter;
 import org.activiti.bpmn.model.Process;
@@ -320,9 +322,13 @@ public class ModelBuilder {
     public static void saveModel(BpmnModel model, String fileName) {
         BpmnXMLConverter bpmnXMLConverter = new BpmnXMLConverter();
         try {
-            JELogger.trace(JEMessages.SAVING_BPMN_FILE_TO_PATH + " = " + fileName);
+            JELogger.debug(JEMessages.SAVING_BPMN_FILE_TO_PATH + " = " + fileName,
+                    LogCategory.DESIGN_MODE, null,
+                    LogSubModule.WORKFLOW,null);
             String bpmn20Xml = new String(bpmnXMLConverter.convertToXML(model), "UTF-8");
-            JELogger.info(BPMN + " = \n" +  bpmn20Xml);
+            JELogger.debug(BPMN + " = \n" +  bpmn20Xml,
+                    LogCategory.DESIGN_MODE, null,
+                    LogSubModule.WORKFLOW,null);
             JEFileUtils.copyStringToFile(bpmn20Xml, fileName, "utf-8");
         } catch (Exception e) {
             e.printStackTrace();

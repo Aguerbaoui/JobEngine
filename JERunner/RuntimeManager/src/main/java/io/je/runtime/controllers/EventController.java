@@ -76,11 +76,9 @@ public class EventController {
 										 @PathVariable("eventId") String eventId) {
 
 		try {
-			JELogger.info(JEMessages.DELETING_EVENT + " [ id="+eventId+"]");
 			runtimeDispatcher.deleteEvent(projectId, eventId);
 
 		} catch (Exception e) {
-			JELogger.info(getClass(), JEMessages.ERROR_DELETING_EVENT);
 			return JEExceptionHandler.handleException(e);
 		}
 

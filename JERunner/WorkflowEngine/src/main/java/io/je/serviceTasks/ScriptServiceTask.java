@@ -6,7 +6,6 @@ import org.activiti.engine.delegate.BpmnError;
 import org.activiti.engine.delegate.DelegateExecution;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
 
 public class ScriptServiceTask extends ServiceTask {
 
@@ -15,8 +14,8 @@ public class ScriptServiceTask extends ServiceTask {
 
         ScriptTask task = (ScriptTask) ActivitiTaskManager.getTask(execution.getCurrentActivityId());
         String message = "Executing script task with id = " + task.getTaskId();
-        LogMessage msg = new LogMessage(LogLevel.INFORM,  message,  LocalDateTime.now().toString(), "JobEngine",  task.getProjectId(),
-                task.getProcessId(), LogSubModule.WORKFLOW, task.getTaskName(), null, "Log", "") ;
+        LogMessage msg = new LogMessage(LogLevel.Inform,  message,  LocalDateTime.now().toString(),   task.getProjectId(),
+                LogSubModule.WORKFLOW, task.getTaskName()) ;
         try {
             Executioner.executeScript(execution.getCurrentFlowElement().getName(), execution.getCurrentActivityId(), task.getProjectId());
         } catch (Exception e) {

@@ -11,6 +11,8 @@ import io.je.utilities.config.ConfigurationConstants;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.ClassLoadException;
 import io.je.utilities.logger.JELogger;
+import io.je.utilities.logger.LogCategory;
+import io.je.utilities.logger.LogSubModule;
 
 /*
  * class responsible for loading user defined classes
@@ -27,8 +29,10 @@ public class JEClassCompiler {
 	public static void compileClass(String filePath, String loadPath) throws ClassLoadException {
 		
 		try {
-			JELogger.info(JEClassCompiler.class, " loadPath = " + loadPath);
-			JELogger.info(JEClassCompiler.class, " Filepath = "+ filePath);
+			JELogger.debug(" loadPath = " + loadPath, LogCategory.RUNTIME,
+					null, LogSubModule.JERUNNER, null);
+			JELogger.debug(" Filepath = "+ filePath, LogCategory.RUNTIME,
+					null, LogSubModule.JERUNNER, null);
 			File sourceFile = new File(filePath);
 			JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
 			StandardJavaFileManager fileManager = compiler.getStandardFileManager(null, null, null);
@@ -56,14 +60,16 @@ public class JEClassCompiler {
 			JavaCompiler.CompilationTask task = compiler.getTask(null, fileManager, null, null, null,
 					compilationUnit);
 			if(task.call()) {
-				JELogger.debug("Compilation in JEClassLoader succeded");
+				JELogger.debug("Compilation in JEClassLoader succeeded", LogCategory.RUNTIME,
+						null, LogSubModule.JERUNNER, null);
 			}
 			else throw new ClassLoadException(JEMessages.CLASS_COMPILATION_FAILED);
 			fileManager.close();
 		}catch (Exception e) {
 			//TODO: move msg to error clas
 			//e.printStackTrace();
-			JELogger.error(Arrays.toString(e.getStackTrace()));
+			JELogger.error(JEMessages.UNEXPECTED_ERROR + Arrays.toString(e.getStackTrace()), LogCategory.RUNTIME,
+					null, LogSubModule.JERUNNER, null);
 			throw new ClassLoadException(JEMessages.CLASS_LOAD_FAILED);
 		}
 
