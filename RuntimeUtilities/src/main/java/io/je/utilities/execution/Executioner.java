@@ -1,5 +1,6 @@
 package io.je.utilities.execution;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.je.utilities.apis.JEBuilderApiHandler;
 import io.je.utilities.apis.JERunnerAPIHandler;
@@ -16,6 +17,9 @@ import io.je.utilities.zmq.ZMQRequester;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.*;
 
 //import org.influxdb.InfluxDB;
@@ -145,9 +149,9 @@ public class Executioner {
     }
 
 
-    public static void writeToInstance(String instanceId, String attributeName, String value) {
+    public static void writeToInstance(String instanceId, String attributeName, Object value) {
         //Rework to use a callable for exception handling
-        String request = generateRequest(instanceId, attributeName, value);
+        String request = generateDMWriteRequest(instanceId, attributeName, value);
 
         try {
             new Thread(new Runnable() {
@@ -190,6 +194,26 @@ public class Executioner {
         return req;
     }
 
+    
+    private static String generateDMWriteRequest(String instanceId, String attributeName, Object attributeNewValue) {
+    	
+    	HashMap<String, Object> payload = new HashMap<>();
+    	payload.put("InstanceId", instanceId);   	
+    	List<HashMap<String, Object>> attributesList = new ArrayList<>();
+    	HashMap<String, Object> attributes = new HashMap<>();
+    	attributes.put(attributeName, attributeNewValue);
+    	attributesList.add(attributes);
+    	payload.put("Attributes", attributesList);
+    	String request= "";
+    	try {
+			 request = objectMapper.writeValueAsString(payload);
+		} catch (JsonProcessingException e) {
+			// TODO Auto-generated catch block
+			//JELogger.error : failed to generate request
+		}
+    	return request;
+    }
+    
    /* public static void main(String[] args) {
         executeScript("test", "", "");
     }*/
