@@ -164,9 +164,9 @@ public class Executioner {
                     ZMQRequester requester = new ZMQRequester("tcp://" + Utility.getSiothConfig().getMachineCredentials().getIpAddress(), Utility.getSiothConfig().getDataModelPORTS().getDmService_ReqAddress());
                     String response = requester.sendRequest(request);
                     if (response == null) {
-                        JELogger.error(getClass(), JEMessages.NO_RESPONSE_FROM_DATA_MODEL);
+                      //  JELogger.error(getClass(), JEMessages.NO_RESPONSE_FROM_DATA_MODEL);
                     } else {
-                        JELogger.info("Data Model Returned : " + response);
+                      //  JELogger.info("Data Model Returned : " + response);
                     }
 
 
@@ -176,7 +176,7 @@ public class Executioner {
             // TODO: handle exception
         }
 
-    }*/
+    }
 
 
     /*
