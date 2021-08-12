@@ -9,11 +9,11 @@ import io.je.utilities.exceptions.RuleBuildFailedException;
 
 /*
  * Block used to writing in an instance's attribute (from DM)
- * operation id : 5005
+ * operation id : 5004
  * source:DM/Variable
  * destination : Linked to getter
  */
-public class SetterBlock extends ExecutionBlock {
+public class AttachedSetterBlock extends ExecutionBlock {
 		
 	//SOURCE
 	ValueType newValueType; //Static , Dynamic
@@ -25,11 +25,11 @@ public class SetterBlock extends ExecutionBlock {
 	String variableId;
 	
 	//DM
-	String sourceInstanceId ; 
+	String instanceId ; 
 	String sourceAttributeName;
 	
 	//DESTINATION
-	String destinationInstanceId ; 
+	String getterName;
 	String destinationAttributeName;
 
 	
@@ -37,7 +37,7 @@ public class SetterBlock extends ExecutionBlock {
 	String executionerMethod= "Executioner.writeToInstance(";
 	
 
-	public SetterBlock(BlockModel blockModel) {
+	public AttachedSetterBlock(BlockModel blockModel) {
 		super(blockModel);
 		try
 		{
@@ -46,10 +46,9 @@ public class SetterBlock extends ExecutionBlock {
 			newValueType = ValueType.valueOf(blockModel.getBlockConfiguration().getType());
 			destinationAttributeName = blockModel.getBlockConfiguration().getDestinationAttributeName();
 			sourceAttributeName = blockModel.getBlockConfiguration().getAttributeName();
-			sourceInstanceId = blockModel.getBlockConfiguration().getValue();
-			destinationInstanceId = blockModel.getBlockConfiguration().getValue2();
-
+			instanceId = blockModel.getBlockConfiguration().getValue();
 			variableId = blockModel.getBlockConfiguration().getValue();
+			getterName =  blockModel.getBlockConfiguration().getLinkedGetterName();
 			
 			
 			isProperlyConfigured=true;
@@ -62,7 +61,7 @@ public class SetterBlock extends ExecutionBlock {
 
 	}
 
-	public SetterBlock() {
+	public AttachedSetterBlock() {
 		super();
 	}
 
@@ -72,14 +71,15 @@ public class SetterBlock extends ExecutionBlock {
 	@Override
 	public String getExpression() throws RuleBuildFailedException {		
 		
+		String getterInstanceId = getterName.replaceAll("\\s+", "")+ ".getJobEngineElementID()";
 	   switch(newValueType)
 	   {
 	   case STATIC :		   
-		   return executionerMethod+destinationInstanceId+", "+destinationAttributeName +", "+value+");";
+		   return executionerMethod+getterInstanceId+", "+destinationAttributeName +", "+value+");";
 	   case VARIABLE:
-		   return executionerMethod+destinationInstanceId+", "+destinationAttributeName +", VariableManager.getVariable("+variableId+"));";
+		   return executionerMethod+getterInstanceId+", "+destinationAttributeName +", VariableManager.getVariable("+variableId+"));";
 	   case ATTRIBUTE :
-		   return executionerMethod+destinationInstanceId+", "+destinationAttributeName +", InstanceManager.getInstance("+sourceInstanceId+").get"+ StringUtils.capitalize(sourceAttributeName)+ "());";
+		   return executionerMethod+getterInstanceId+", "+destinationAttributeName +", InstanceManager.getInstance("+instanceId+").get"+ StringUtils.capitalize(sourceAttributeName)+ "());";
 	  default:
 		  throw new RuleBuildFailedException("INVALID CONFIGURATION");
 

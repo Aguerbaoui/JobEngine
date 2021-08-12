@@ -5,6 +5,8 @@ import io.je.utilities.beans.JEBlockMessage;
 import io.je.utilities.beans.JEMessage;
 import io.je.utilities.beans.JEVariable;
 import io.je.utilities.beans.JEVariableMessage;
+import io.je.utilities.constants.JEMessages;
+import io.je.utilities.exceptions.VariableNotFoundException;
 import io.je.utilities.logger.JELogger;
 import io.je.utilities.logger.LogCategory;
 import io.je.utilities.logger.LogSubModule;
@@ -25,6 +27,21 @@ public class VariableManager {
     public static ConcurrentHashMap<String, HashMap<String, JEVariable>> variables = new ConcurrentHashMap<>();
     private static 	ObjectMapper objectMapper = new ObjectMapper();
 
+    /*
+     * Add variable to variable manager
+     * */
+     public static Object getVariableValue(String  projectId, String variableId) throws VariableNotFoundException {
+         try {
+        	 return variables.get(projectId).get(variableId).getValue();       	 
+         }
+         catch(Exception e)
+         {
+        	 throw new VariableNotFoundException(JEMessages.VARIABLE_NOT_FOUND);
+         }
+ 	      
+     }
+    
+    
     /*
     * Add variable to variable manager
     * */
