@@ -32,30 +32,8 @@ public class EventTimeoutRunnable implements Runnable {
 				Thread.sleep(event.getTimeout());
 				synchronized(event)
 				{
-						event.setTriggered(false);
-						//TODO: I think we should remove the call to the builder, and runtime should read those values elsewhere.
-		        	/*	try {
-							//JEBuilderApiHandler.untriggerEvent(event.getJobEngineElementID(), event.getJobEngineProjectID());
-						} catch (JERunnerErrorException | ExecutionException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-		        		*/
-		        		 LogMessage msg = new LogMessage(LogLevel.Debug,  event.getName() + " timed out ",  LocalDateTime.now().toString(),   event.getJobEngineProjectID(),
-	                				 LogSubModule.EVENT, event.getJobEngineElementID()) ;
-	                	   ZMQLogPublisher.publish(msg);
-	                  /*  JEMessage message = new JEMessage();
-	                    message.setExecutionTime(LocalDateTime.now().toString());
-	                    message.setType("BlockMessage");
-	                    JEBlockMessage blockMessage = new JEBlockMessage("Application",  event.getName() +" was untriggered");
-	                    message.addBlockMessage(blockMessage);
-	                    
-	                    try {
-							//JELogger.trace(objectMapper.writeValueAsString(message), LogCategory.RUNTIME, event.getJobEngineElementID(), LogSubModule.EVENT, event.getJobEngineElementID());
-						} catch (JsonProcessingException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}*/
+						event.untrigger();
+	                 
 					}
 				
 
