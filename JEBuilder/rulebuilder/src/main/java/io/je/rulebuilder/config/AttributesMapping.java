@@ -41,6 +41,7 @@ public class AttributesMapping {
 	public static final String CLASSID = "idClass";
 	public static final String ATTRIBUTENAME = "attribute_name";
 	public static final String SPECIFICINSTANCES = "specific_instances";
+	public static final String OBJECTID = "objectId";
 	
     //rule attributes 
 	public static final String SCRIPT = "script";

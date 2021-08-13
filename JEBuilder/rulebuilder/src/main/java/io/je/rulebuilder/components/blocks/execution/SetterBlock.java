@@ -46,10 +46,10 @@ public class SetterBlock extends ExecutionBlock {
 			newValueType = ValueType.valueOf(blockModel.getBlockConfiguration().getType());
 			destinationAttributeName = blockModel.getBlockConfiguration().getDestinationAttributeName();
 			sourceAttributeName = blockModel.getBlockConfiguration().getAttributeName();
-			sourceInstanceId = blockModel.getBlockConfiguration().getValue();
+			sourceInstanceId = blockModel.getBlockConfiguration().getObjectId();
 			destinationInstanceId = blockModel.getBlockConfiguration().getValue2();
 
-			variableId = blockModel.getBlockConfiguration().getValue();
+			variableId = blockModel.getBlockConfiguration().getObjectId();
 			
 			
 			isProperlyConfigured=true;

@@ -58,8 +58,8 @@ public class BlockConfigurationModel {
     @JsonProperty(AttributesMapping.SPECIFICINSTANCES)
     List<String> specificInstances;
 	
-    @JsonProperty(AttributesMapping.INSTANCEID)
-    String instanceId;
+    @JsonProperty(AttributesMapping.OBJECTID)
+    String objectId;
     
 	
 	
@@ -123,15 +123,16 @@ public class BlockConfigurationModel {
 	public void setType(String type) {
 		this.type = type;
 	}
-	public String getInstanceId() {
-		return instanceId;
+
+	
+	
+	
+	public String getObjectId() {
+		return objectId;
 	}
-	public void setInstanceId(String instanceId) {
-		this.instanceId = instanceId;
+	public void setObjectId(String objectId) {
+		this.objectId = objectId;
 	}
-	
-	
-	
 	public String getValue2() {
 		return value2;
 	}
@@ -178,7 +179,7 @@ public class BlockConfigurationModel {
 				+ ", booleanValue=" + booleanValue + ", inputUnit=" + inputUnit + ", outputUnit=" + outputUnit
 				+ ", classId=" + classId + ", className=" + className + ", workspaceId=" + workspaceId
 				+ ", attributeName=" + attributeName + ", type=" + type + ", specificInstances=" + specificInstances
-				+ ", instanceId=" + instanceId + "]";
+				+ ", objectId=" + objectId + "]";
 	}
 
 	

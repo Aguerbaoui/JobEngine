@@ -46,8 +46,8 @@ public class AttachedSetterBlock extends ExecutionBlock {
 			newValueType = ValueType.valueOf(blockModel.getBlockConfiguration().getType());
 			destinationAttributeName = blockModel.getBlockConfiguration().getDestinationAttributeName();
 			sourceAttributeName = blockModel.getBlockConfiguration().getAttributeName();
-			instanceId = blockModel.getBlockConfiguration().getValue();
-			variableId = blockModel.getBlockConfiguration().getValue();
+			instanceId = blockModel.getBlockConfiguration().getObjectId();
+			variableId = blockModel.getBlockConfiguration().getObjectId();
 			getterName =  blockModel.getBlockConfiguration().getLinkedGetterName();
 			
 			
