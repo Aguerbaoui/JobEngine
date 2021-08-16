@@ -65,7 +65,9 @@ public class EventManager {
     * */
     //TODO update with rule events
     public static void triggerEvent(String projectId, String eventId) throws ProjectNotFoundException, EventException {
-        if(!events.containsKey(projectId)) {
+       
+    	//Retrieve event
+    	if(!events.containsKey(projectId)) {
             throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
         }
         JEEvent event = events.get(projectId).get(eventId);
@@ -77,11 +79,17 @@ public class EventManager {
                 }
             }
         }
+        //When event is found:
         if(event != null) {
             JELogger.debug(JEMessages.FOUND_EVENT + eventId + JEMessages.TRIGGERING_NOW,
                     LogCategory.RUNTIME, event.getJobEngineProjectID(),
                     LogSubModule.EVENT,event.getJobEngineElementID());
-            RuleEngineHandler.addEvent(event);
+            
+            //trigger event
+            event.trigger();
+
+            
+            //Update Event in WorkflowEngine
             if(event.getType().equals(EventType.MESSAGE_EVENT)) {
                 throwMessageEventInWorkflow(projectId, event.getName());
             }
@@ -91,12 +99,15 @@ public class EventManager {
             else if(event.getType().equals(EventType.START_WORKFLOW)) {
                 startProcessInstanceByMessage(projectId, event.getName());
             }
-            event.trigger();
+
             if(event.getTimeout()!=0)
             {
             	setEventTimeOut(event);
             }
             
+            //update event in workflow engine
+            RuleEngineHandler.addEvent(event);
+
            
         }
         else {

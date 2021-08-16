@@ -47,6 +47,8 @@ public class Executioner {
                 public void run() {
 
                     try {
+                    	
+                    	//TODO: be replaced with JELogger
                         LogMessage msg = new LogMessage(LogLevel.Inform, message, logDate, projectId,
                                  LogSubModule.RULE, BlockName);
                         ZMQLogPublisher.publish(msg);
@@ -116,20 +118,7 @@ public class Executioner {
 
                     try {
                         JERunnerAPIHandler.triggerEvent(eventId, projectId);
-                        // JEBuilderApiHandler.triggerEvent(eventId, projectId);
-
-                        LogMessage msg = new LogMessage(LogLevel.Debug, eventName + " is triggered ", LocalDateTime.now().toString(),  projectId,
-                                 LogSubModule.RULE, triggerSource);
-                        ZMQLogPublisher.publish(msg);
-                     
-                    /* JEMessage message = new JEMessage();
-                     message.setExecutionTime(LocalDateTime.now().toString());
-                     message.setType("BlockMessage");
-                     JEBlockMessage blockMessage = new JEBlockMessage(triggerSource,  eventName +" was triggered");
-                     message.addBlockMessage(blockMessage);
-                     JELogger.trace(objectMapper.writeValueAsString(message), LogCategory.RUNTIME, projectId, LogSubModule.RULE, ruleId);
-*/
-
+                  
                     } catch (Exception e) {
                         e.printStackTrace();
 

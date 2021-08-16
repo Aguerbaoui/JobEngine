@@ -1,12 +1,16 @@
 package io.je.utilities.beans;
 
 import io.je.utilities.models.EventType;
+import io.je.utilities.monitoring.JEMonitor;
+import io.je.utilities.monitoring.ObjectType;
 import io.je.utilities.runtimeobject.JEObject;
+
+import java.time.LocalDateTime;
 
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "JEEventCollection")
-public class JEEvent extends JEObject {
+public class JEEvent extends JEMonitoredData {
 
 	private String name;
 
@@ -74,6 +78,19 @@ public class JEEvent extends JEObject {
 	}
 
 	public JEEvent(String jobEngineElementID, String jobEngineProjectID, String name, EventType type,
+			String description, int timeoutValue, String timeoutUnit,ArchiveOption isArchived,
+			boolean isBroadcasted) {
+		super(jobEngineElementID, jobEngineProjectID);
+		this.name = name;
+		this.type = type;
+		this.triggeredById = jobEngineElementID;
+		this.description = description;
+		this.timeoutValue = timeoutValue;
+		this.timeoutUnit = timeoutUnit;
+		setTimeout();
+	}
+	
+	public JEEvent(String jobEngineElementID, String jobEngineProjectID, String name, EventType type,
 			String description, int timeoutValue, String timeoutUnit) {
 		super(jobEngineElementID, jobEngineProjectID);
 		this.name = name;
@@ -112,6 +129,15 @@ public class JEEvent extends JEObject {
 	public void trigger() {
 		isTriggered = true;
 		lastTriggerTime = System.nanoTime();
+		JEMonitor.publish(LocalDateTime.now(), jobEngineElementID, ObjectType.JEEVENT, jobEngineProjectID, String.valueOf(isTriggered), isArchived, isBroadcasted);
+		
+
+	}
+	
+	public void untrigger() {
+		isTriggered = false;
+		lastTriggerTime = System.nanoTime();
+		JEMonitor.publish(LocalDateTime.now(), jobEngineElementID, ObjectType.JEEVENT, jobEngineProjectID, String.valueOf(isTriggered), isArchived, isBroadcasted);
 		
 
 	}

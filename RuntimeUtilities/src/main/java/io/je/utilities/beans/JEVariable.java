@@ -9,7 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 
 @Document(collection = "JEVariableCollection")
-public class JEVariable extends JEObject {
+public class JEVariable extends JEMonitoredData {
 
     private String name;
 
@@ -21,6 +21,8 @@ public class JEVariable extends JEObject {
     private Object initialValue;
     
     private Object value;
+    
+   
 
 
 
@@ -30,10 +32,26 @@ public class JEVariable extends JEObject {
 
 	}
 
+    
+    
 
     public JEVariable(String jobEngineElementID, String jobEngineProjectID, String name, String type,
 			String initialValue) {
 		super(jobEngineElementID, jobEngineProjectID);
+		this.name = name;
+		this.type = JEType.valueOf(type);
+		this.initialValue = castValue(initialValue);
+		typeClass = getType(this.type);
+		this.value=this.initialValue;
+	}
+
+
+
+
+	public JEVariable(String jobEngineElementID, String jobEngineProjectID, String name, String type,
+			String initialValue,ArchiveOption isArchived,
+			boolean isBroadcasted) {
+		super(jobEngineElementID, jobEngineProjectID, isArchived, isBroadcasted);
 		this.name = name;
 		this.type = JEType.valueOf(type);
 		this.initialValue = castValue(initialValue);
