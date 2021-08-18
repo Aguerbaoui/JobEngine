@@ -31,6 +31,7 @@ public class SetterBlock extends ExecutionBlock {
 	//DESTINATION
 	String destinationInstanceId ; 
 	String destinationAttributeName;
+	String destinationClassId;
 
 	
 	//Constants
@@ -48,6 +49,7 @@ public class SetterBlock extends ExecutionBlock {
 			sourceAttributeName = blockModel.getBlockConfiguration().getAttributeName();
 			sourceInstanceId = blockModel.getBlockConfiguration().getObjectId();
 			destinationInstanceId = blockModel.getBlockConfiguration().getValue2();
+			destinationClassId = blockModel.getBlockConfiguration().getDestinationClassId();
 
 			variableId = blockModel.getBlockConfiguration().getObjectId();
 			

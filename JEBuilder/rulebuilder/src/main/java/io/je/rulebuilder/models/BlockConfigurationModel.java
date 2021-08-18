@@ -52,12 +52,15 @@ public class BlockConfigurationModel {
     @JsonProperty("destinationAttributeName")
  	String destinationAttributeName;
     
-    @JsonProperty(AttributesMapping.TYPE)
+    @JsonProperty("sourceValueType")
 	String type;
 
     @JsonProperty(AttributesMapping.SPECIFICINSTANCES)
     List<String> specificInstances;
 	
+    @JsonProperty("destinationClassId")
+    String destinationClassId;
+    
     @JsonProperty(AttributesMapping.OBJECTID)
     String objectId;
     
@@ -167,6 +170,12 @@ public class BlockConfigurationModel {
 	
 	
 	
+	public String getDestinationClassId() {
+		return destinationClassId;
+	}
+	public void setDestinationClassId(String destinationClassId) {
+		this.destinationClassId = destinationClassId;
+	}
 	public String getDestinationAttributeName() {
 		return destinationAttributeName;
 	}
