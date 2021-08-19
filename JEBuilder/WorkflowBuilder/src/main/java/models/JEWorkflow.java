@@ -69,6 +69,11 @@ public class JEWorkflow extends JEObject {
      * */
     private boolean triggeredByEvent;
 
+    /*
+    * True if the workflow starts with project boot
+    * */
+    private boolean onProjectBoot = false;
+
     private String description;
 
     public String getScript() {
@@ -174,6 +179,20 @@ public class JEWorkflow extends JEObject {
      */
     public void setAllBlocks(ConcurrentHashMap<String, WorkflowBlock> allBlocks) {
         this.allBlocks = allBlocks;
+    }
+
+    /*
+    * True if the workflow starts on project boot
+    * */
+    public boolean isOnProjectBoot() {
+        return onProjectBoot;
+    }
+
+    /*
+     * True if the workflow starts on project boot
+     * */
+    public void setOnProjectBoot(boolean onProjectBoot) {
+        this.onProjectBoot = onProjectBoot;
     }
 
     /*

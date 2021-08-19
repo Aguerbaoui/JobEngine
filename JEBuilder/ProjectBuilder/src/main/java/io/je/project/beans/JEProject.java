@@ -638,7 +638,11 @@ public class JEProject {
 	public void setBlockNameCounters(Map<String, Integer> blockNameCounters) {
 		this.blockNameCounters = blockNameCounters;
 	}
-	
-	
-	
+
+
+    public void resetStartupWorkflow() {
+    	for(JEWorkflow wf: workflows.values()) {
+    		wf.setOnProjectBoot(false);
+		}
+    }
 }

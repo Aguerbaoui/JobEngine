@@ -152,7 +152,8 @@ public class ProcessManager {
             if (processes.get(id).isRunning()) {
                 throw new WorkflowAlreadyRunningException(JEMessages.WORKFLOW_ALREADY_RUNNING);
             }
-            if (!processes.get(id).isTriggeredByEvent()) {
+            //TODO add support for scheduled workflows
+            if (!processes.get(id).isTriggeredByEvent() && processes.get(id).isOnProjectBoot()) {
                 processes.get(id).setRunning(true);
                 if(processes.get(id).getProcessInstance() != null) {
                     removeProcess(id);
@@ -182,7 +183,7 @@ public class ProcessManager {
         if(processes.get(id).isRunning()) {
             throw new WorkflowAlreadyRunningException(JEMessages.WORKFLOW_ALREADY_RUNNING);
         }
-        if (!processes.get(id).isTriggeredByEvent()) {
+        if (!processes.get(id).isTriggeredByEvent() && processes.get(id).isOnProjectBoot()) {
             Map<String, Object> variables = new HashMap<>();
             for (ActivitiTask task : processes.get(id).getActivitiTasks().values()) {
                 if (task instanceof InformTask) {
