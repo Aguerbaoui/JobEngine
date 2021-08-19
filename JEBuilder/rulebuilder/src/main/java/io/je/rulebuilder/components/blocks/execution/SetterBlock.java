@@ -3,6 +3,7 @@ package io.je.rulebuilder.components.blocks.execution;
 import org.apache.commons.lang3.StringUtils;
 
 import io.je.rulebuilder.components.blocks.ExecutionBlock;
+import io.je.rulebuilder.config.AttributesMapping;
 import io.je.rulebuilder.models.BlockModel;
 import io.je.rulebuilder.models.ValueType;
 import io.je.utilities.exceptions.RuleBuildFailedException;
@@ -43,15 +44,14 @@ public class SetterBlock extends ExecutionBlock {
 		try
 		{
 		
-			value = blockModel.getBlockConfiguration().getNewValue();
-			newValueType = ValueType.valueOf(blockModel.getBlockConfiguration().getType());
-			destinationAttributeName = blockModel.getBlockConfiguration().getDestinationAttributeName();
-			sourceAttributeName = blockModel.getBlockConfiguration().getAttributeName();
-			sourceInstanceId = blockModel.getBlockConfiguration().getObjectId();
-			destinationInstanceId = blockModel.getBlockConfiguration().getValue2();
-			destinationClassId = blockModel.getBlockConfiguration().getDestinationClassId();
-
-			variableId = blockModel.getBlockConfiguration().getObjectId();
+			value = blockModel.getBlockConfiguration().get(AttributesMapping.NEWVALUE);
+			newValueType = ValueType.valueOf((String)blockModel.getBlockConfiguration().get(AttributesMapping.TYPE));
+			destinationAttributeName = (String) blockModel.getBlockConfiguration().get(AttributesMapping.DESTINATION_ATTRIBUTE_NAME);
+			sourceAttributeName = (String) blockModel.getBlockConfiguration().get(AttributesMapping.ATTRIBUTENAME);
+			sourceInstanceId = (String) blockModel.getBlockConfiguration().get(AttributesMapping.OBJECTID);
+			destinationInstanceId = (String) blockModel.getBlockConfiguration().get(AttributesMapping.VALUE2);
+			destinationClassId = (String) blockModel.getBlockConfiguration().get(AttributesMapping.DESTINATION_CLASSID);
+			variableId = (String) blockModel.getBlockConfiguration().get(AttributesMapping.OBJECTID);
 			
 			
 			isProperlyConfigured=true;

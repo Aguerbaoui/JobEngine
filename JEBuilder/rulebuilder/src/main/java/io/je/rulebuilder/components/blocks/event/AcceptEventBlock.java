@@ -3,6 +3,7 @@ package io.je.rulebuilder.components.blocks.event;
 
 import io.je.rulebuilder.components.blocks.Block;
 import io.je.rulebuilder.components.blocks.ConditionBlock;
+import io.je.rulebuilder.config.AttributesMapping;
 import io.je.rulebuilder.models.BlockModel;
 
 public  class AcceptEventBlock extends ConditionBlock {
@@ -13,9 +14,9 @@ public  class AcceptEventBlock extends ConditionBlock {
 	public AcceptEventBlock(BlockModel blockModel) {
 		super(blockModel.getBlockId(), blockModel.getProjectId(), blockModel.getRuleId(), blockModel.getBlockName(),
 				blockModel.getDescription());
-		if(blockModel.getBlockConfiguration()!=null && blockModel.getBlockConfiguration().getValue()!=null)
+		if(blockModel.getBlockConfiguration()!=null && blockModel.getBlockConfiguration().get(AttributesMapping.VALUE)!=null)
 		{
-			eventId = blockModel.getBlockConfiguration().getValue();
+			eventId = (String) blockModel.getBlockConfiguration().get(AttributesMapping.VALUE);
 		}
 
 	}

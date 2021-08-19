@@ -55,10 +55,15 @@ public class AttributesMapping {
 	public static final String CLASSES = "classes";
 	public static final String FRONTCONFIG = "ruleFrontConfig";
 	public static final String TYPE = "type";
+	public static final String SOURCE_VALUE_TYPE = "sourceValueType";
+
 	public static final String INSTANCEID = "instanceId";
 	public static final String DATEVALUE = "dateValue";
-
+	public static final String NEWVALUE = "newValue";
 	public static final String BOOLEANVALUE = "includeBounds";
+	public static final String DESTINATION_CLASSID = "destinationClassId";
+	public static final String LINKED_GETTER_NAME = "linkedGetterName";
+	public static final String DESTINATION_ATTRIBUTE_NAME = "destinationAttributeName";
 
   
     

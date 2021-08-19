@@ -122,7 +122,7 @@ public class ClassManager {
 
 		String response = requestClassDefinition(workspaceId, classId);
 		// create class model from response
-		if(response!=null)
+		if(response!=null && jeClass!=null)
 		{
 			 jeClass = objectMapper.readValue(response, ClassDefinition.class);
 			 jeClass.setWorkspaceId(workspaceId);

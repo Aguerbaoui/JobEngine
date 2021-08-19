@@ -1,5 +1,6 @@
 package io.je.rulebuilder.components.blocks.arithmetic.singleinput;
 
+import io.je.rulebuilder.config.AttributesMapping;
 import io.je.rulebuilder.models.BlockModel;
 
 public class CalculationBlock extends SingleInputArithmeticBlock {
@@ -13,7 +14,7 @@ public class CalculationBlock extends SingleInputArithmeticBlock {
 		operationId = blockModel.getOperationId();
 		if(blockModel.getBlockConfiguration()!=null)
 		{
-			value = (blockModel.getBlockConfiguration().getValue());
+			value = String.valueOf(blockModel.getBlockConfiguration().get(AttributesMapping.VALUE));
 		}
 	}
 
