@@ -72,9 +72,6 @@ public class WorkflowService {
         if (project == null) {
             throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
         }
-        if(m.isOnProjectBoot()) {
-            project.resetStartupWorkflow();
-        }
         JEWorkflow wf = new JEWorkflow();
         wf.setJobEngineElementID(m.getKey());
         wf.setJobEngineProjectID(m.getProjectId());
@@ -82,7 +79,15 @@ public class WorkflowService {
         wf.setDescription(m.getDescription());
         wf.setJeObjectLastUpdate(LocalDateTime.now());
         wf.setJeObjectCreationDate(LocalDateTime.now());
-        wf.setOnProjectBoot(m.isOnProjectBoot());
+        if(m.isOnProjectBoot()) {
+            JEWorkflow startupWorkflow = project.getStartupWorkflow();
+            if(startupWorkflow != null) {
+                startupWorkflow.setOnProjectBoot(false);
+                workflowRepository.save(startupWorkflow);
+            }
+            wf.setOnProjectBoot(true);
+        }
+
         JELogger.debug( "[projectId ="+m.getProjectId()+" ][workflowId = " +
                         wf.getJobEngineElementID()+"]"+JEMessages.ADDING_WF ,
                 LogCategory.DESIGN_MODE, m.getProjectId(), LogSubModule.WORKFLOW, m.getKey());
@@ -788,10 +793,16 @@ public class WorkflowService {
                     LogSubModule.WORKFLOW, workflowId);
             project.getWorkflowByIdOrName(workflowId).setWorkflowName(m.getName());
         }
+
         if(m.isOnProjectBoot()) {
-            project.resetStartupWorkflow();
-            project.getWorkflowByIdOrName(workflowId).setOnProjectBoot(m.isOnProjectBoot());
+            JEWorkflow startupWorkflow = project.getStartupWorkflow();
+            if(startupWorkflow != null) {
+                startupWorkflow.setOnProjectBoot(false);
+                workflowRepository.save(startupWorkflow);
+            }
+
         }
+        project.getWorkflowByIdOrName(workflowId).setOnProjectBoot(m.isOnProjectBoot());
         workflowRepository.save(project.getWorkflowByIdOrName(workflowId));
 
 

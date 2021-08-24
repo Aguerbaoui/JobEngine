@@ -640,9 +640,11 @@ public class JEProject {
 	}
 
 
-    public void resetStartupWorkflow() {
-    	for(JEWorkflow wf: workflows.values()) {
-    		wf.setOnProjectBoot(false);
+	public JEWorkflow getStartupWorkflow() {
+		for(JEWorkflow wf: workflows.values()) {
+			if(wf.isOnProjectBoot()) return wf;
 		}
-    }
+		return null;
+	}
+
 }
