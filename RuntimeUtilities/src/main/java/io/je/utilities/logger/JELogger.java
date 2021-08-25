@@ -45,12 +45,26 @@ public class JELogger {
     /*******************************************************************************************************/
 
     /*
+     * check if the message's log level is more specific than the logger's level 
+     */
+    
+    private static boolean logLevelIsEnabled(Level lvl)
+    {
+    	if(lvl == logger.getLevel() || lvl == Level.ALL || lvl.isMoreSpecificThan(logger.getLevel()))
+    	{
+    		return true;
+    	}
+
+    	return false;
+    }
+    
+    /*
     * Publish log message to SIOTHTracker
     * */
     private static void publishLogMessage(LogMessage logMessage) {
         //Debug > Inform > control > Error
         Level lvl = getLogLevel(logMessage.logLevel.toString());
-        if(lvl == logger.getLevel() || lvl == Level.DEBUG || lvl == Level.ALL) {
+        if(logLevelIsEnabled(lvl)) {
             ZMQLogPublisher.publish(logMessage);
         }
     }
@@ -77,7 +91,7 @@ public class JELogger {
 
         //Log in logging service
         LogMessage logMessage = getLogMessage(LogLevel.Debug, message, category, projectId, subModule, objectId);
-        publishLogMessage(logMessage);
+      //  publishLogMessage(logMessage);
 
     }
 
