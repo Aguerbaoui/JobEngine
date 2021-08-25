@@ -8,6 +8,10 @@ import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.config.builder.api.*;
 import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
 
+import io.je.utilities.beans.JEData;
+import io.je.utilities.config.Utility;
+import io.je.utilities.time.JEDate;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.LinkedList;
@@ -119,7 +123,8 @@ public class JELogger {
     // get Log message object for the logging service
      public static LogMessage getLogMessage(LogLevel logLevel, String message,  LogCategory category,
                                             String projectId, LogSubModule subModule, String objectId) {
-         String logDate = LocalDateTime.now().toString();
+         String logDate = JEDate.formatDate(LocalDateTime.now(), Utility.getSiothConfig().getDateFormat().replace(".fff", ".SSS"));
+        		 
          return new LogMessage(logLevel, message, logDate, /*category,*/ projectId, subModule, objectId);
      }
 
