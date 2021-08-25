@@ -208,7 +208,7 @@ public class Executioner {
    /* public static void main(String[] args) {
         executeScript("test", "", "");
     }*/
-    public static void executeScript(String name, String processId, String projectId) throws JavaCodeInjectionError {
+    public static void executeScript(String name, String processId, String projectId, int timeout) throws JavaCodeInjectionError {
         ExecutorService executor = Executors.newFixedThreadPool(1);
 
         //Task to be executed in a separate thread
@@ -221,7 +221,12 @@ public class Executioner {
         });
         String msg = "Unknown error";
         try {
-            task.get(10, TimeUnit.SECONDS);
+            if(timeout > 0) {
+                task.get(timeout, TimeUnit.SECONDS);
+            }
+            else {
+                task.get(600, TimeUnit.SECONDS);
+            }
         } catch (ExecutionException e) {
             msg = "Script task in workflow with id = " + processId + " in project with id = " + projectId + " failed during the execution";
             JELogger.error(msg, LogCategory.RUNTIME, projectId,

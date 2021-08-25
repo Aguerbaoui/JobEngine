@@ -9,6 +9,7 @@ import blocks.control.ParallelGatewayBlock;
 import blocks.events.*;
 import io.je.utilities.config.ConfigurationConstants;
 import io.je.utilities.constants.JEMessages;
+import io.je.utilities.constants.Timers;
 import io.je.utilities.constants.WorkflowConstants;
 import io.je.utilities.logger.JELogger;
 import io.je.utilities.logger.LogCategory;
@@ -46,9 +47,7 @@ public class JEToBpmnMapper {
         process.addFlowElement(
                 ModelBuilder.createStartEvent(wf.getWorkflowStartBlock().getJobEngineElementID(),
                 wf.getWorkflowStartBlock().getEventId(),
-                wf.getWorkflowStartBlock().getTimeDelay(),
-                wf.getWorkflowStartBlock().getTimerDate(),
-                wf.getWorkflowStartBlock().getTimerCycle()));
+                wf.getWorkflowStartBlock().getTimerEvent()));
         addListeners(wf, process);
         parseWorkflowBlock(wf, wf.getWorkflowStartBlock(), process, null);
         model.addProcess(process);
@@ -161,17 +160,25 @@ public class JEToBpmnMapper {
                         block.generateBpmnOutflows(wf)));
             }
 
-            else if (block instanceof DateTimerEvent && !block.isProcessed()) {
-                process.addFlowElement(ModelBuilder.createDateTimerEvent(block.getJobEngineElementID(), block.getName(), ((DateTimerEvent) block).getTimeDate()));
+            else if (block instanceof TimerEvent && !block.isProcessed()) {
+                if(((TimerEvent) block).getTimer() == Timers.DATE_TIME) {
+                    process.addFlowElement(ModelBuilder.createDateTimerEvent(block.getJobEngineElementID(), block.getName(), ((TimerEvent) block).getTimeDate()));
+                }
+                else if(((TimerEvent) block).getTimer() == Timers.CYCLIC) {
+                    process.addFlowElement(ModelBuilder.createCycleTimerEvent(block.getJobEngineElementID(), block.getName(), ((TimerEvent) block).getTimeCycle(), ((TimerEvent) block).getEndDate()));
+                }
+                else {
+                    process.addFlowElement(ModelBuilder.createDurationTimerEvent(block.getJobEngineElementID(), block.getName(), ((TimerEvent) block).getTimeDuration()));
+                }
             }
 
-            else if (block instanceof CycleTimerEvent && !block.isProcessed()) {
+            /*else if (block instanceof CycleTimerEvent && !block.isProcessed()) {
                 process.addFlowElement(ModelBuilder.createCycleTimerEvent(block.getJobEngineElementID(), block.getName(), ((CycleTimerEvent) block).getTimeCycle(), ((CycleTimerEvent) block).getEndDate()));
             }
 
             else if (block instanceof DurationDelayTimerEvent && !block.isProcessed()) {
                 process.addFlowElement(ModelBuilder.createDurationTimerEvent(block.getJobEngineElementID(), block.getName(), ((DurationDelayTimerEvent) block).getTimeDuration()));
-            }
+            }*/
 
             else if (block instanceof WebApiBlock && !block.isProcessed()) {
                 process.addFlowElement(ModelBuilder.createServiceTask(block.getJobEngineElementID(), block.getName(),

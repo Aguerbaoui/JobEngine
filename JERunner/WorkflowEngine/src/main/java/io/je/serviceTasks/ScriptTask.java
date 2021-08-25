@@ -8,6 +8,8 @@ public class ScriptTask extends ActivitiTask{
 
     private String classPath;
 
+    private int timeout;
+
     public String getScript() {
         return script;
     }
@@ -32,4 +34,12 @@ public class ScriptTask extends ActivitiTask{
         this.classPath = classPath;
     }
 
+
+    public int getTimeout() {
+        return timeout;
+    }
+
+    public void setTimeout(int timeout) {
+        this.timeout = timeout;
+    }
 }

@@ -1,6 +1,8 @@
 package builder;
 
+import blocks.events.TimerEvent;
 import io.je.utilities.constants.JEMessages;
+import io.je.utilities.constants.Timers;
 import io.je.utilities.constants.WorkflowConstants;
 import io.je.utilities.files.JEFileUtils;
 import io.je.utilities.logger.JELogger;
@@ -81,7 +83,7 @@ public class ModelBuilder {
     /*
      * Create a user start event and return it
      * */
-    public static StartEvent createStartEvent(String id, String reference, String timerDelay, String timeDate, String timeCycle) {
+    public static StartEvent createStartEvent(String id, String reference, TimerEvent timerEvent) {
         StartEvent startEvent = new StartEvent();
         startEvent.setId(id);
         if(reference != null) {
@@ -90,17 +92,19 @@ public class ModelBuilder {
             startEvent.addEventDefinition(eventDefinition);
         }
 
-        else if(timerDelay != null) {
-            startEvent.addEventDefinition(createTimerEvent(timerDelay, null, null, null));
+        else if(timerEvent != null) {
+            if(timerEvent.getTimer().equals(Timers.DELAY)) {
+                startEvent.addEventDefinition(createTimerEvent(timerEvent.getTimeDuration(), null, null, null));
+            }
+            else if(timerEvent.getTimer().equals(Timers.CYCLIC)) {
+                startEvent.addEventDefinition(createTimerEvent(null, timerEvent.getTimeDate(), timerEvent.getTimeCycle(), null));
+            }
+            else {
+                startEvent.addEventDefinition(createTimerEvent(null, timerEvent.getTimeDate(), null, null));
+            }
+
         }
 
-        else if(timeDate != null) {
-            startEvent.addEventDefinition(createTimerEvent(null, timeDate, null, null));
-        }
-
-        else if(timeCycle != null) {
-            startEvent.addEventDefinition(createTimerEvent(null, null, timeCycle, null));
-        }
         return startEvent;
     }
 
@@ -213,13 +217,16 @@ public class ModelBuilder {
             timerEventDefinition.setTimeDuration(timerDelay);
         }
 
-        else if(timerDate != null) {
+        if(timerDate != null) {
             timerEventDefinition.setTimeDate(timerDate);
         }
 
-        else if(timerCycle != null) {
+        if(timerCycle != null) {
             timerEventDefinition.setTimeCycle(timerCycle);
-            if(endDate != null) timerEventDefinition.setEndDate(endDate);
+            timerEventDefinition.setTimeDate(null);
+        }
+        if(endDate != null) {
+            timerEventDefinition.setEndDate(endDate);
         }
 
         return timerEventDefinition;
