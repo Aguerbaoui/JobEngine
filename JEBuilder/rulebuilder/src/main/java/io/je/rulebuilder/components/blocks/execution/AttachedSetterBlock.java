@@ -3,6 +3,7 @@ package io.je.rulebuilder.components.blocks.execution;
 import org.apache.commons.lang3.StringUtils;
 
 import io.je.rulebuilder.components.blocks.ExecutionBlock;
+import io.je.rulebuilder.config.AttributesMapping;
 import io.je.rulebuilder.models.BlockModel;
 import io.je.rulebuilder.models.ValueType;
 import io.je.utilities.exceptions.RuleBuildFailedException;
@@ -42,13 +43,13 @@ public class AttachedSetterBlock extends ExecutionBlock {
 		try
 		{
 		
-			value = blockModel.getBlockConfiguration().getNewValue();
-			newValueType = ValueType.valueOf(blockModel.getBlockConfiguration().getType());
-			destinationAttributeName = blockModel.getBlockConfiguration().getDestinationAttributeName();
-			sourceAttributeName = blockModel.getBlockConfiguration().getAttributeName();
-			instanceId = blockModel.getBlockConfiguration().getObjectId();
-			variableId = blockModel.getBlockConfiguration().getObjectId();
-			getterName =  blockModel.getBlockConfiguration().getLinkedGetterName();
+			value = blockModel.getBlockConfiguration().get(AttributesMapping.NEWVALUE);
+			newValueType = ValueType.valueOf((String)blockModel.getBlockConfiguration().get(AttributesMapping.SOURCE_VALUE_TYPE));
+			destinationAttributeName = (String) blockModel.getBlockConfiguration().get(AttributesMapping.DESTINATION_ATTRIBUTE_NAME);
+			sourceAttributeName = (String) blockModel.getBlockConfiguration().get(AttributesMapping.ATTRIBUTENAME);
+			instanceId = (String) blockModel.getBlockConfiguration().get(AttributesMapping.OBJECTID);
+			variableId = (String) blockModel.getBlockConfiguration().get(AttributesMapping.OBJECTID);
+			getterName =  (String) blockModel.getBlockConfiguration().get(AttributesMapping.LINKED_GETTER_NAME);
 			
 			
 			isProperlyConfigured=true;
@@ -75,11 +76,11 @@ public class AttachedSetterBlock extends ExecutionBlock {
 	   switch(newValueType)
 	   {
 	   case STATIC :		   
-		   return executionerMethod+getterInstanceId+", "+destinationAttributeName +", "+value+");";
+		   return executionerMethod+getterInstanceId+",\" "+destinationAttributeName +"\", "+value+");";
 	   case VARIABLE:
-		   return executionerMethod+getterInstanceId+", "+destinationAttributeName +", VariableManager.getVariable("+variableId+"));";
+		   return executionerMethod+getterInstanceId+", \""+destinationAttributeName +"\", VariableManager.getVariable("+variableId+"));";
 	   case ATTRIBUTE :
-		   return executionerMethod+getterInstanceId+", "+destinationAttributeName +", InstanceManager.getInstance("+instanceId+").get"+ StringUtils.capitalize(sourceAttributeName)+ "());";
+		   return executionerMethod+getterInstanceId+", \""+destinationAttributeName +"\", InstanceManager.getInstance(\""+instanceId+"\").get"+ StringUtils.capitalize(sourceAttributeName)+ "());";
 	  default:
 		  throw new RuleBuildFailedException("INVALID CONFIGURATION");
 

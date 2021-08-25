@@ -3,6 +3,7 @@ package io.je.rulebuilder.components.blocks.execution;
 import java.util.List;
 
 import io.je.rulebuilder.components.blocks.ExecutionBlock;
+import io.je.rulebuilder.config.AttributesMapping;
 import io.je.rulebuilder.models.BlockModel;
 
 /*
@@ -24,10 +25,10 @@ public class LinkedSetterBlock extends ExecutionBlock {
 		super(blockModel);
 		try
 		{
-			classId=blockModel.getBlockConfiguration().getClassId();
-			classPath = blockModel.getBlockConfiguration().getClassName();
-			attributeName = blockModel.getBlockConfiguration().getAttributeName();
-			instances = blockModel.getBlockConfiguration().getSpecificInstances();
+			classId=(String) blockModel.getBlockConfiguration().get(AttributesMapping.CLASSID);
+			classPath = (String) blockModel.getBlockConfiguration().get(AttributesMapping.CLASSNAME);
+			attributeName = (String) blockModel.getBlockConfiguration().get(AttributesMapping.ATTRIBUTENAME);
+			instances = (List<String>) blockModel.getBlockConfiguration().get(AttributesMapping.SPECIFICINSTANCES);
 			isProperlyConfigured=true;
 		}catch(Exception e) {
 			isProperlyConfigured=false;

@@ -3,6 +3,7 @@ package io.je.rulebuilder.components.blocks.getter;
 import java.util.List;
 
 import io.je.rulebuilder.components.blocks.GetterBlock;
+import io.je.rulebuilder.config.AttributesMapping;
 import io.je.rulebuilder.config.Keywords;
 import io.je.rulebuilder.models.BlockModel;
 import io.je.utilities.exceptions.RuleBuildFailedException;
@@ -18,10 +19,10 @@ public class AttributeGetterBlock extends GetterBlock {
 		super(blockModel);
 		try
 		{
-			classId=blockModel.getBlockConfiguration().getClassId();
-			classPath = blockModel.getBlockConfiguration().getClassName();
-			attributeName = blockModel.getBlockConfiguration().getAttributeName();
-			specificInstances = blockModel.getBlockConfiguration().getSpecificInstances();
+			classId=(String) blockModel.getBlockConfiguration().get(AttributesMapping.CLASSID);
+			classPath = (String) blockModel.getBlockConfiguration().get(AttributesMapping.CLASSNAME);
+			attributeName = (String) blockModel.getBlockConfiguration().get(AttributesMapping.ATTRIBUTENAME);
+			specificInstances = (List<String>) blockModel.getBlockConfiguration().get(AttributesMapping.SPECIFICINSTANCES);
 			isProperlyConfigured=true;
 		}catch(Exception e) {
 			isProperlyConfigured=false;

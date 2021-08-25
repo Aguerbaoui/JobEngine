@@ -6,6 +6,7 @@ import io.je.rulebuilder.builder.RuleBuilder;
 import io.je.rulebuilder.components.*;
 import io.je.rulebuilder.components.blocks.Block;
 import io.je.rulebuilder.components.blocks.getter.AttributeGetterBlock;
+import io.je.rulebuilder.config.AttributesMapping;
 import io.je.rulebuilder.models.BlockModel;
 import io.je.rulebuilder.models.RuleModel;
 import io.je.rulebuilder.models.ScriptRuleModel;
@@ -251,10 +252,10 @@ public class RuleService {
         
         // retrieve topic names from getter blocks
         if (blockModel.getOperationId() == 4002 && blockModel.getBlockConfiguration() != null
-                && blockModel.getBlockConfiguration().getClassId() != null) {
+                && blockModel.getBlockConfiguration().get(AttributesMapping.CLASSID) != null) {
           
-            String classId =  blockModel.getBlockConfiguration().getClassId();
-            String workspaceId=blockModel.getBlockConfiguration().getWorkspaceId();
+            String classId =  (String) blockModel.getBlockConfiguration().get(AttributesMapping.CLASSID);
+            String workspaceId=(String) blockModel.getBlockConfiguration().get(AttributesMapping.WORKSPACEID);
             
          
           
@@ -346,10 +347,10 @@ public class RuleService {
         
         // retrieve topic names from getter blocks
         if (blockModel.getOperationId() == 4002 && blockModel.getBlockConfiguration() != null
-                && blockModel.getBlockConfiguration().getClassId() != null) {
+                && blockModel.getBlockConfiguration().get(AttributesMapping.CLASSID) != null) {
           
-            String classId =  blockModel.getBlockConfiguration().getClassId();
-            String workspaceId=blockModel.getBlockConfiguration().getWorkspaceId();
+            String classId =  (String) blockModel.getBlockConfiguration().get(AttributesMapping.CLASSID);
+            String workspaceId=(String) blockModel.getBlockConfiguration().get(AttributesMapping.WORKSPACEID);
 
         	 rule.updateTopic(((AttributeGetterBlock)oldblock).getClassId(), classId);
 
@@ -359,6 +360,8 @@ public class RuleService {
         ruleRepository.save(rule);
 
     }
+    
+
 
     /*
      * delete block

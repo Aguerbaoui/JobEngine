@@ -4,6 +4,7 @@ package io.je.rulebuilder.components.blocks.comparison;
 import io.je.rulebuilder.components.blocks.PersistableBlock;
 import io.je.rulebuilder.components.blocks.arithmetic.singleinput.SingleInputArithmeticBlock;
 import io.je.rulebuilder.components.blocks.getter.AttributeGetterBlock;
+import io.je.rulebuilder.config.AttributesMapping;
 import io.je.rulebuilder.config.Keywords;
 import io.je.rulebuilder.models.BlockModel;
 import io.je.utilities.exceptions.RuleBuildFailedException;
@@ -53,9 +54,24 @@ public  class ComparisonBlock extends PersistableBlock {
 
 		if(blockModel.getBlockConfiguration()!=null )
 		{
-			threshold = blockModel.getBlockConfiguration().getValue();
-			maxRange = blockModel.getBlockConfiguration().getValue2();
-			includeBounds = Boolean.valueOf(blockModel.getBlockConfiguration().getBooleanValue());
+
+			if(blockModel.getBlockConfiguration().containsKey(AttributesMapping.VALUE))
+			{
+				threshold = String.valueOf(blockModel.getBlockConfiguration().get(AttributesMapping.VALUE));
+
+			}
+			if(blockModel.getBlockConfiguration().containsKey(AttributesMapping.VALUE2))
+			{
+				maxRange = (String) blockModel.getBlockConfiguration().get(AttributesMapping.VALUE2);
+
+			}
+			if(blockModel.getBlockConfiguration().containsKey(AttributesMapping.BOOLEANVALUE))
+			{
+				includeBounds = (Boolean)blockModel.getBlockConfiguration().get(AttributesMapping.BOOLEANVALUE);
+
+			}
+			
+		
 		}
 		
 		operator = getOperatorByOperationId(blockModel.getOperationId());
