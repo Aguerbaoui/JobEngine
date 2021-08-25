@@ -181,6 +181,7 @@ public class RuntimeDispatcher {
                 LogCategory.RUNTIME, wf.getProjectId(),
                 LogSubModule.WORKFLOW, wf.getKey());
         JEProcess process = new JEProcess(wf.getKey(), wf.getName(), wf.getPath(), wf.getProjectId(), wf.isTriggeredByEvent());
+        process.setOnProjectBoot(wf.isOnProjectBoot());
         if(wf.isTriggeredByEvent()) {
            process.setTriggerMessage(wf.getTriggerMessage());
         }

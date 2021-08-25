@@ -79,6 +79,15 @@ public class WorkflowService {
         wf.setDescription(m.getDescription());
         wf.setJeObjectLastUpdate(LocalDateTime.now());
         wf.setJeObjectCreationDate(LocalDateTime.now());
+        if(m.isOnProjectBoot()) {
+            JEWorkflow startupWorkflow = project.getStartupWorkflow();
+            if(startupWorkflow != null) {
+                startupWorkflow.setOnProjectBoot(false);
+                workflowRepository.save(startupWorkflow);
+            }
+            wf.setOnProjectBoot(true);
+        }
+
         JELogger.debug( "[projectId ="+m.getProjectId()+" ][workflowId = " +
                         wf.getJobEngineElementID()+"]"+JEMessages.ADDING_WF ,
                 LogCategory.DESIGN_MODE, m.getProjectId(), LogSubModule.WORKFLOW, m.getKey());
@@ -784,6 +793,16 @@ public class WorkflowService {
                     LogSubModule.WORKFLOW, workflowId);
             project.getWorkflowByIdOrName(workflowId).setWorkflowName(m.getName());
         }
+
+        if(m.isOnProjectBoot()) {
+            JEWorkflow startupWorkflow = project.getStartupWorkflow();
+            if(startupWorkflow != null) {
+                startupWorkflow.setOnProjectBoot(false);
+                workflowRepository.save(startupWorkflow);
+            }
+
+        }
+        project.getWorkflowByIdOrName(workflowId).setOnProjectBoot(m.isOnProjectBoot());
         workflowRepository.save(project.getWorkflowByIdOrName(workflowId));
 
 

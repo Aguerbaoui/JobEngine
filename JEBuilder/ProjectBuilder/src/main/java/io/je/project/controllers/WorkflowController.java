@@ -45,7 +45,6 @@ public class WorkflowController {
             workflowService.addWorkflow(m);
         } catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
-
 		}
         return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ADDED_WORKFLOW_SUCCESSFULLY));
     }

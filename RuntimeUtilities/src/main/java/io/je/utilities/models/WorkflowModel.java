@@ -16,6 +16,8 @@ public class WorkflowModel {
 
     private boolean triggeredByEvent;
 
+    private boolean onProjectBoot;
+
     private String triggerMessage;
 
     private ArrayList<EventModel> events;
@@ -107,6 +109,14 @@ public class WorkflowModel {
 
     public void setTasks(ArrayList<TaskModel> tasks) {
         this.tasks = tasks;
+    }
+
+    public boolean isOnProjectBoot() {
+        return onProjectBoot;
+    }
+
+    public void setOnProjectBoot(boolean onProjectBoot) {
+        this.onProjectBoot = onProjectBoot;
     }
 
     @Override

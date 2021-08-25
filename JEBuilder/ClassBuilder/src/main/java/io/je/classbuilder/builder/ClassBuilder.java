@@ -89,7 +89,7 @@ public class ClassBuilder {
 		if (imports != null && !imports.isEmpty()) {
 			
 				for (String import_ : imports) {
-					//unitSG.addImport(import_);
+					unitSG.addImport(import_);
 				}
 			}
 			
