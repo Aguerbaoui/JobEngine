@@ -70,6 +70,7 @@ public class WorkflowBuilder {
     private static HashMap<String, Object > getScriptAttributesMap(ScriptBlock block) {
         HashMap<String, Object> attributes = new HashMap<>();
         attributes.put(SCRIPT,  block.getScript());
+        attributes.put(TIMEOUT,  block.getTimeout());
         return attributes;
     }
 

@@ -50,11 +50,11 @@ public class WorkflowEngineHandler {
     /*
      * Launch process without variables
      * */
-    public static void launchProcessWithoutVariables(String projectId, String processId) throws WorkflowNotFoundException, WorkflowAlreadyRunningException, WorkflwTriggeredByEventException, WorkflowBuildException {
+    public static void launchProcessWithoutVariables(String projectId, String processId, boolean runProject) throws WorkflowNotFoundException, WorkflowAlreadyRunningException, WorkflwTriggeredByEventException, WorkflowBuildException {
         JELogger.debug("[projectId = " + projectId +"][workflow = "+processId+"]"+JEMessages.REMOVING_WF,
                 LogCategory.RUNTIME, projectId,
                 LogSubModule.WORKFLOW,processId);
-        processManagerHashMap.get(projectId).launchProcessByKeyWithoutVariables(processId);
+        processManagerHashMap.get(projectId).launchProcessByKeyWithoutVariables(processId, runProject);
     }
 
     /*
@@ -184,6 +184,7 @@ public class WorkflowEngineHandler {
             HashMap<String, Object> attributes = task.getAttributes();
             if(attributes.containsKey(SCRIPT)) {
                 scriptTask.setScript((String) attributes.get(SCRIPT));
+                scriptTask.setTimeout((Integer) attributes.get(TIMEOUT));
             }
             return scriptTask;
         }

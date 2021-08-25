@@ -60,7 +60,7 @@ public class WorkflowController {
     @GetMapping(value = "/runWorkflow/{projectId}/{key}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> runWorkflow(@PathVariable String projectId, @PathVariable String key) {
         try {
-            dispatcher.launchProcessWithoutVariables(projectId, key);
+            dispatcher.launchProcessWithoutVariables(projectId, key, false);
         } catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
 		}

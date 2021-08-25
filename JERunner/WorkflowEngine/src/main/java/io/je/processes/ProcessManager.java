@@ -142,18 +142,18 @@ public class ProcessManager {
     /*
      * Launch process by key without variables
      * */
-    public void launchProcessByKeyWithoutVariables(String id) throws WorkflowNotFoundException, WorkflowAlreadyRunningException, WorkflwTriggeredByEventException, WorkflowBuildException {
+    public void launchProcessByKeyWithoutVariables(String id, boolean runProject) throws WorkflowNotFoundException, WorkflowAlreadyRunningException, WorkflwTriggeredByEventException, WorkflowBuildException {
         if (processes.get(id) == null) {
             throw new WorkflowNotFoundException(JEMessages.WORKFLOW_NOT_FOUND);
         }
         if (processes.get(id).getActivitiTasks().size() > 0) {
-            launchProcessByKeyWithVariables(id);
+            launchProcessByKeyWithVariables(id, runProject);
         } else {
             if (processes.get(id).isRunning()) {
                 throw new WorkflowAlreadyRunningException(JEMessages.WORKFLOW_ALREADY_RUNNING);
             }
             //TODO add support for scheduled workflows
-            if (!processes.get(id).isTriggeredByEvent() && processes.get(id).isOnProjectBoot()) {
+            if (!processes.get(id).isTriggeredByEvent() && (processes.get(id).isOnProjectBoot() || !runProject)) {
                 processes.get(id).setRunning(true);
                 if(processes.get(id).getProcessInstance() != null) {
                     removeProcess(id);
@@ -179,11 +179,11 @@ public class ProcessManager {
     /*
      * Launch process by key wit variables
      * */
-    public void launchProcessByKeyWithVariables(String id) throws WorkflowAlreadyRunningException, WorkflowBuildException {
+    public void launchProcessByKeyWithVariables(String id, boolean runProject) throws WorkflowAlreadyRunningException, WorkflowBuildException {
         if(processes.get(id).isRunning()) {
             throw new WorkflowAlreadyRunningException(JEMessages.WORKFLOW_ALREADY_RUNNING);
         }
-        if (!processes.get(id).isTriggeredByEvent() && processes.get(id).isOnProjectBoot()) {
+        if (!processes.get(id).isTriggeredByEvent() && (processes.get(id).isOnProjectBoot() || !runProject)) {
             Map<String, Object> variables = new HashMap<>();
             for (ActivitiTask task : processes.get(id).getActivitiTasks().values()) {
                 if (task instanceof InformTask) {
@@ -378,7 +378,7 @@ public class ProcessManager {
         for (JEProcess process : processes.values()) {
             if (process.getProjectId().equals(projectId) && process.isDeployed() && !process.isRunning()) {
                 try {
-                    launchProcessByKeyWithoutVariables(process.getKey());
+                    launchProcessByKeyWithoutVariables(process.getKey(), true);
                 } catch (WorkflowAlreadyRunningException e) {
                     JELogger.error(JEMessages.WORKFLOW_ALREADY_RUNNING + process.getKey(),
                             LogCategory.RUNTIME, projectId,
@@ -442,7 +442,7 @@ public class ProcessManager {
         try {
 
             JEProcess p = processes.get(workflowId);
-            if(p.getProcessInstance() != null) {
+            if(p != null && p.getProcessInstance() != null) {
                 runtimeService.deleteProcessInstance(p.getProcessInstance().getProcessInstanceId(), "User Deleted the process");
             }
 

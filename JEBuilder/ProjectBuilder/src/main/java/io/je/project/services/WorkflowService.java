@@ -15,7 +15,7 @@ import io.je.project.repository.WorkflowRepository;
 import io.je.utilities.apis.JERunnerAPIHandler;
 import io.je.utilities.config.ConfigurationConstants;
 import io.je.utilities.constants.JEMessages;
-import io.je.utilities.constants.ResponseCodes;
+import io.je.utilities.constants.Timers;
 import io.je.utilities.constants.WorkflowConstants;
 import io.je.utilities.exceptions.*;
 import io.je.utilities.logger.JELogger;
@@ -46,7 +46,6 @@ public class WorkflowService {
     public static final String ENDDATE = "enddate";
     public static final String TIMECYCLE = "timecycle";
     public static final String TIMEDATE = "timedate";
-    public static final String SCRIPT = "script";
     public static final String EVENT_ID = "eventId";
     public static final String SOURCE_REF = "sourceRef";
     public static final String TARGET_REF = "targetRef";
@@ -239,6 +238,7 @@ public class WorkflowService {
             ScriptBlock b = new ScriptBlock();
             b.setName((String) block.getAttributes().get(NAME));
             b.setScript((String) block.getAttributes().get(SCRIPT));
+            b.setTimeout(Integer.parseInt((String) block.getAttributes().get(TIMEOUT)));
             b.setJobEngineProjectID(block.getProjectId());
             b.setWorkflowId(block.getWorkflowId());
             b.setJobEngineElementID(block.getId());
@@ -258,29 +258,32 @@ public class WorkflowService {
             b.setJobEngineElementID(block.getId());
             project.addBlockToWorkflow(b);
         } else if (block.getType().equalsIgnoreCase(WorkflowConstants.DATETIMEREVENT)) {
-            DateTimerEvent b = new DateTimerEvent();
+            TimerEvent b = new TimerEvent();
             b.setName((String) block.getAttributes().get(NAME));
             b.setTimeDate((String) block.getAttributes().get(TIMEDATE));
             b.setJobEngineProjectID(block.getProjectId());
             b.setWorkflowId(block.getWorkflowId());
             b.setJobEngineElementID(block.getId());
+            b.setTimer(Timers.DATE_TIME);
             project.addBlockToWorkflow(b);
         } else if (block.getType().equalsIgnoreCase(WorkflowConstants.CYCLETIMEREVENT)) {
-            CycleTimerEvent b = new CycleTimerEvent();
+            TimerEvent b = new TimerEvent();
             b.setName((String) block.getAttributes().get(NAME));
             b.setTimeCycle((String) block.getAttributes().get(TIMECYCLE));
             b.setEndDate((String) block.getAttributes().get(ENDDATE));
             b.setJobEngineProjectID(block.getProjectId());
             b.setWorkflowId(block.getWorkflowId());
             b.setJobEngineElementID(block.getId());
+            b.setTimer(Timers.CYCLIC);
             project.addBlockToWorkflow(b);
         } else if (block.getType().equalsIgnoreCase(WorkflowConstants.DURATIONTIMEREVENT)) {
-            DurationDelayTimerEvent b = new DurationDelayTimerEvent();
+            TimerEvent b = new TimerEvent();
             b.setName((String) block.getAttributes().get(NAME));
             b.setTimeDuration((String) block.getAttributes().get(DURATION));
             b.setJobEngineProjectID(block.getProjectId());
             b.setWorkflowId(block.getWorkflowId());
             b.setJobEngineElementID(block.getId());
+            b.setTimer(Timers.DELAY);
             project.addBlockToWorkflow(b);
         } else if (block.getType().equalsIgnoreCase(WorkflowConstants.DBREADSERVICETASK_TYPE)) {
             DBReadBlock b = new DBReadBlock();
@@ -527,24 +530,42 @@ public class WorkflowService {
             StartBlock b = (StartBlock) project.getWorkflowByIdOrName(block.getWorkflowId()).getAllBlocks().get(block.getId());
             b.setName((String) block.getAttributes().get(NAME));
             b.setEventId(null);
-            b.setTimerCycle(null);
-            b.setTimerDate(null);
-            b.setTimeDelay(null);
             if (!JEStringUtils.isEmpty((String) block.getAttributes().get(EVENT_ID))) {
                 eventService.updateEventType(block.getProjectId(), (String) block.getAttributes().get(EVENT_ID),  EventType.START_WORKFLOW.toString());
                 b.setEventId((String) block.getAttributes().get(EVENT_ID));
             }
 
-            else if(!JEStringUtils.isEmpty((String) block.getAttributes().get(WorkflowConstants.DATETIMEREVENT))) {
-                b.setTimerDate((String) block.getAttributes().get(WorkflowConstants.DATETIMEREVENT));
+            else if(WorkflowConstants.DATETIMEREVENT.equals(block.getAttributes().get(WorkflowConstants.EVENT_TYPE))) {
+                TimerEvent timerEvent = new TimerEvent();
+                timerEvent.setName((String) block.getAttributes().get(NAME));
+                timerEvent.setTimeDate((String) block.getAttributes().get(ENDDATE));
+                timerEvent.setTimer(Timers.DATE_TIME);
+                timerEvent.setTimeDuration(null);
+                timerEvent.setEndDate(null);
+                timerEvent.setTimeCycle(null);
+                b.setTimerEvent(timerEvent);
             }
 
-            else if(!JEStringUtils.isEmpty((String) block.getAttributes().get(DURATIONTIMEREVENT))) {
-                b.setTimeDelay((String) block.getAttributes().get(WorkflowConstants.DURATIONTIMEREVENT));
+            else if(WorkflowConstants.DURATIONTIMEREVENT.equals(block.getAttributes().get(WorkflowConstants.EVENT_TYPE))) {
+                TimerEvent timerEvent = new TimerEvent();
+                timerEvent.setName((String) block.getAttributes().get(NAME));
+                timerEvent.setTimeDuration((String) block.getAttributes().get(TIMECYCLE));
+                timerEvent.setTimeDate((String) block.getAttributes().get(ENDDATE));
+                timerEvent.setTimeCycle(null);
+                timerEvent.setEndDate(null);
+                timerEvent.setTimer(Timers.DELAY);
+                b.setTimerEvent(timerEvent);
             }
 
-            else if(!JEStringUtils.isEmpty((String) block.getAttributes().get(CYCLETIMEREVENT))) {
-                b.setTimerCycle((String) block.getAttributes().get(WorkflowConstants.CYCLETIMEREVENT));
+            else if(WorkflowConstants.CYCLETIMEREVENT.equals(block.getAttributes().get(WorkflowConstants.EVENT_TYPE))) {
+                TimerEvent timerEvent = new TimerEvent();
+                timerEvent.setName((String) block.getAttributes().get(NAME));
+                timerEvent.setTimeCycle((String) block.getAttributes().get(TIMECYCLE));
+                timerEvent.setTimeDate((String) block.getAttributes().get(ENDDATE));
+                timerEvent.setTimer(Timers.CYCLIC);
+                timerEvent.setEndDate(null);
+                timerEvent.setTimeDuration(null);
+                b.setTimerEvent(timerEvent);
             }
 
             project.addBlockToWorkflow(b);
@@ -621,6 +642,7 @@ public class WorkflowService {
             b.setName((String) block.getAttributes().get(NAME));
             ArrayList<String> imports = (ArrayList) block.getAttributes().get(IMPORTS);
             b.setScript((String) block.getAttributes().get(SCRIPT));
+            b.setTimeout((Integer) block.getAttributes().get(TIMEOUT));
             ClassDefinition c = getClassModel(b.getJobEngineElementID(), project.getWorkflowByIdOrName(block.getWorkflowId()).getWorkflowName()+b.getName(), b.getScript());
             c.setImports(imports);
             //True to send directly to JERunner
@@ -636,20 +658,32 @@ public class WorkflowService {
             b.setName((String) block.getAttributes().get(NAME));
             project.addBlockToWorkflow(b);
         } else if (block.getType().equalsIgnoreCase(WorkflowConstants.DATETIMEREVENT)) {
-            DateTimerEvent b = (DateTimerEvent) project.getWorkflowByIdOrName(block.getWorkflowId()).getAllBlocks().get(block.getId());
+            TimerEvent b = (TimerEvent) project.getWorkflowByIdOrName(block.getWorkflowId()).getAllBlocks().get(block.getId());
             b.setName((String) block.getAttributes().get(NAME));
-            b.setTimeDate((String) block.getAttributes().get(TIMEDATE));
+            b.setTimeDate((String) block.getAttributes().get(ENDDATE));
+            b.setTimer(Timers.DATE_TIME);
+            b.setTimeDuration(null);
+            b.setEndDate(null);
+            b.setTimeCycle(null);
             project.addBlockToWorkflow(b);
         } else if (block.getType().equalsIgnoreCase(WorkflowConstants.CYCLETIMEREVENT)) {
-            CycleTimerEvent b = (CycleTimerEvent) project.getWorkflowByIdOrName(block.getWorkflowId()).getAllBlocks().get(block.getId());
+            TimerEvent b = (TimerEvent) project.getWorkflowByIdOrName(block.getWorkflowId()).getAllBlocks().get(block.getId());
             b.setName((String) block.getAttributes().get(NAME));
             b.setTimeCycle((String) block.getAttributes().get(TIMECYCLE));
-            b.setEndDate((String) block.getAttributes().get(ENDDATE));
+            //b.setEndDate((String) block.getAttributes().get(ENDDATE));
+            b.setTimeDate((String) block.getAttributes().get(ENDDATE));
+            b.setTimer(Timers.CYCLIC);
+            b.setEndDate(null);
+            b.setTimeDuration(null);
             project.addBlockToWorkflow(b);
         } else if (block.getType().equalsIgnoreCase(WorkflowConstants.DURATIONTIMEREVENT)) {
-            DurationDelayTimerEvent b = (DurationDelayTimerEvent) project.getWorkflowByIdOrName(block.getWorkflowId()).getAllBlocks().get(block.getId());
+            TimerEvent b = (TimerEvent) project.getWorkflowByIdOrName(block.getWorkflowId()).getAllBlocks().get(block.getId());
             b.setName((String) block.getAttributes().get(NAME));
-            b.setTimeDuration((String) block.getAttributes().get(DURATION));
+            b.setTimeDuration((String) block.getAttributes().get(TIMECYCLE));
+            b.setTimeDate((String) block.getAttributes().get(ENDDATE));
+            b.setTimeCycle(null);
+            b.setEndDate(null);
+            b.setTimer(Timers.DELAY);
             project.addBlockToWorkflow(b);
         } else if (block.getType().equalsIgnoreCase(WorkflowConstants.DBREADSERVICETASK_TYPE)) {
             DBReadBlock b = (DBReadBlock) project.getWorkflowByIdOrName(block.getWorkflowId()).getAllBlocks().get(block.getId());
@@ -880,7 +914,7 @@ public class WorkflowService {
 		
 	}
 	
-	   public ConcurrentHashMap<String, JEWorkflow> getAllJEWorkflows(String projectId) throws ProjectNotFoundException {
+	   public ConcurrentHashMap<String, JEWorkflow> getAllJEWorkflows(String projectId) {
 			List<JEWorkflow> workflows = workflowRepository.findByJobEngineProjectID(projectId);
 			ConcurrentHashMap<String, JEWorkflow> map = new ConcurrentHashMap<String, JEWorkflow>();
 			for(JEWorkflow workflow : workflows )
