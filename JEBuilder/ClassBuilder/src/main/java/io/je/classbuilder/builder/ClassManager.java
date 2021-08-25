@@ -63,7 +63,7 @@ public class ClassManager {
 		ClassType classType = getClassType(classDefinition);
 
 		// build inherited classes
-		if (classDefinition.getBaseTypes() != null && !classDefinition.getBaseTypes().isEmpty()) {
+		if (classDefinition.getBaseTypes() != null && !classDefinition.getBaseTypes().get(0).equals("None")) {
 			for (String baseTypeId : classDefinition.getBaseTypes()) {
 				ClassDefinition inheritedClassModel = loadClassDefinition(classDefinition.getWorkspaceId(), baseTypeId);
 				// load inherited class
@@ -122,10 +122,19 @@ public class ClassManager {
 
 		String response = requestClassDefinition(workspaceId, classId);
 		// create class model from response
-		if(response!=null && jeClass!=null)
+		if(response!=null )
 		{
-			 jeClass = objectMapper.readValue(response, ClassDefinition.class);
-			 jeClass.setWorkspaceId(workspaceId);
+		try
+		{
+			jeClass = objectMapper.readValue(response, ClassDefinition.class);
+			// jeClass.setWorkspaceId(workspaceId);
+
+		}catch(Exception e)
+		{
+			e.printStackTrace();
+			throw new ClassLoadException("Failed to load the following class : " + response);
+		}
+
 
 		}
 

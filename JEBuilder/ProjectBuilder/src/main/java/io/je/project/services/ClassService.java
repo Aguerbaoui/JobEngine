@@ -86,9 +86,13 @@ public class ClassService {
 			throws DataDefinitionUnreachableException, ClassLoadException, IOException, AddClassException,
 			JERunnerErrorException, InterruptedException, ExecutionException {
 		ClassDefinition classDefinition = ClassManager.loadClassDefinition(workspaceId, classId);
+
+				
 		if(!loadedClasses.containsKey(classId) && classDefinition!=null)
 		{
+			  classDefinition.setWorkspaceId(workspaceId);
 			 addClass(classDefinition, sendToRunner,false);
+			 JELogger.info("Class " + classDefinition.getName() + " loaded successfully.", null, null, null, classDefinition.getIdClass());
 		}
 		
 		
