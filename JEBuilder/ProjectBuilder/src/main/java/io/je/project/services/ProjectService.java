@@ -241,7 +241,7 @@ public class ProjectService {
             }
             saveProject(project);
         }
-        JELogger.info( "[projectId= "+projectId+"]"+  JEMessages.PROJECT_FOUND,
+        JELogger.debug( "[projectId= "+projectId+"]"+  JEMessages.PROJECT_FOUND,
                 LogCategory.DESIGN_MODE, projectId, LogSubModule.JEBUILDER, null);
         return loadedProjects.get(projectId);
     }

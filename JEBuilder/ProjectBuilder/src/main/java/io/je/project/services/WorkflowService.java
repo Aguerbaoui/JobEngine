@@ -238,7 +238,7 @@ public class WorkflowService {
             ScriptBlock b = new ScriptBlock();
             b.setName((String) block.getAttributes().get(NAME));
             b.setScript((String) block.getAttributes().get(SCRIPT));
-            b.setTimeout(Integer.parseInt((String) block.getAttributes().get(TIMEOUT)));
+            b.setTimeout((Integer)block.getAttributes().get(TIMEOUT));
             b.setJobEngineProjectID(block.getProjectId());
             b.setWorkflowId(block.getWorkflowId());
             b.setJobEngineElementID(block.getId());

@@ -309,7 +309,7 @@ public class RuleService {
          if(!blockExists)
         {       JELogger.error( JEMessages.BLOCK_NOT_FOUND + " [ " + blockModel.getBlockId() + "]",
                 LogCategory.DESIGN_MODE, blockModel.getProjectId(), LogSubModule.RULE, blockModel.getBlockId());
-            throw new RuleBlockNotFoundException(JEMessages.RULE_NOT_FOUND + " [ " + blockModel.getRuleId() + "]");
+            throw new RuleBlockNotFoundException("Block not found" + " [ " + blockModel.getRuleId() + "]");
 
         }
         verifyBlockFormatIsValid(blockModel);
