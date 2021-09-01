@@ -198,6 +198,8 @@ public class JEMessages {
 
     public static final String DB_SERVICE_TASK_RESPONSE = " Database service task response";
 
+    public static final String DB_API_RESPONSE = " Database Api response";
+
     public static final String UPDATING_A_WORKFLOW_BLOCK_WITH_ID = " Updating a workflow block with id ";
 
     public static final String INFORM_FROM_USER = "Inform from user";
@@ -606,6 +608,7 @@ public class JEMessages {
     public static final String ERROR_DELETING_VARIABLE_TO_PROJECT = "Error deleting variable to project";
     public static final String ERROR_TRIGGERING_EVENT = "Error triggering event";
     public static final String ERROR_REMOVING_RULE = "Error removing rule";
+    public static final String ERROR_EXECUTING_DB_QUERY = "Error executing the database query";
     public static final String ERROR_GETTING_CLASS_UPDATES = "Error getting class updates";
     public static final String FAILED_TO_SEND_LOG_MESSAGE_TO_THE_LOGGING_SYSTEM = "Failed to send log message to the logging system : \n";
 }

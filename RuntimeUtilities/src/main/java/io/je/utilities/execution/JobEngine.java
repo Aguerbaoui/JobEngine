@@ -1,5 +1,6 @@
 package io.je.utilities.execution;
 
+import io.je.utilities.apis.DatabaseApiHandler;
 import io.je.utilities.apis.JEBuilderApiHandler;
 import io.je.utilities.apis.JERunnerAPIHandler;
 import io.je.utilities.constants.JEMessages;
@@ -237,5 +238,18 @@ public class JobEngine {
                     projectId, LogSubModule.WORKFLOW, ruleId);
             return ResponseCodes.UNKNOWN_ERROR;
         }
+    }
+
+    //Execute a database sql query
+    public static int executeSqlQuery(String projectId, String dbId, String query) {
+        int responseCode = 500;
+        try {
+            responseCode = DatabaseApiHandler.executeCommand(dbId, query);
+        }
+        catch (Exception e) {
+            JELogger.error(JEMessages.ERROR_EXECUTING_DB_QUERY ,  LogCategory.RUNTIME,
+                    projectId, LogSubModule.WORKFLOW, null);
+        }
+        return responseCode;
     }
 }
