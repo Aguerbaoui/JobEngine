@@ -20,6 +20,10 @@ public class RunnerProperties {
 	
 	@Value("${jobenginerunner.log.level}")
 	 String jeRunnerLogLevel;
+	
+	@Value("${use.ZMQ.Security}")
+	Boolean useZmqSecurity;
+
 
 	public String getJeRunnerLogPath() {
 		return jeRunnerLogPath;
@@ -32,6 +36,12 @@ public class RunnerProperties {
 	}
 	public void setJeRunnerLogLevel(String jeRunnerLogLevel) {
 		this.jeRunnerLogLevel = jeRunnerLogLevel;
+	}
+	public Boolean getUseZmqSecurity() {
+		return useZmqSecurity;
+	}
+	public void setUseZmqSecurity(Boolean useZmqSecurity) {
+		this.useZmqSecurity = useZmqSecurity;
 	}
 	
 	

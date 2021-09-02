@@ -5,6 +5,8 @@ import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.*;
 import io.je.utilities.logger.LogCategory;
 import io.je.utilities.logger.LogSubModule;
+import io.je.utilities.zmq.ZMQSecurity;
+
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -32,6 +34,7 @@ public class JEBuilderInitializingBean implements InitializingBean {
     public void afterPropertiesSet() {
         try {
             JELogger.initLogger("JEBuilder", builderProperties.getJeBuilderLogPath(),builderProperties.getJeBuilderLogLevel());
+            ZMQSecurity.setSecure(builderProperties.getUseZmqSecurity());
             JELogger.debug(JEMessages.LOGGER_INITIALIZED,
                     LogCategory.DESIGN_MODE, null,
                     LogSubModule.JEBUILDER, null);
