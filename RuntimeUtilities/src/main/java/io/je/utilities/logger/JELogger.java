@@ -137,7 +137,7 @@ public class JELogger {
     // get Log message object for the logging service
      public static LogMessage getLogMessage(LogLevel logLevel, String message,  LogCategory category,
                                             String projectId, LogSubModule subModule, String objectId) {
-         String logDate = JEDate.formatDate(LocalDateTime.now(), Utility.getSiothConfig().getDateFormat().replace(".fff", ".SSS"));
+         String logDate = JEDate.formatDate(LocalDateTime.now(), "yyyy-MM-dd HH:mm:ss.SSS");
         		 
          return new LogMessage(logLevel, message, logDate, /*category,*/ projectId, subModule, objectId);
      }
@@ -227,7 +227,7 @@ public class JELogger {
     			+ "==                                     "+appName+"                                     ==\r\n"
     			+ "==                                 Version : 1.0.0                                  ==\r\n"
     			+ "==                                 Build Date : "+LocalDateTime.now().format(formatter)+"                            ==\r\n"
-    			+ "==                       Copyright ï¿½ 2020 Integration Objects                       ==\r\n"
+    			+ "==                       Copyright © 2021 Integration Objects                       ==\r\n"
     			+ "======================================================================================\r\n"
     			+ "==                             Trace level : [ "+level+" ]                              ==\r\n"
     			+ "======================================================================================";

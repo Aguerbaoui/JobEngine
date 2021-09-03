@@ -20,6 +20,12 @@ public class ZMQPublisher {
 		context = new ZContext();
 		socket = context.createSocket(SocketType.PUB);
 		socket.connect(connectionUrl);
+		if(ZMQSecurity.isSecure())
+		{
+			socket.setCurveServer(true);
+			socket.setCurveSecretKey(ZMQSecurity.getServerPair().secretKey.getBytes());
+			socket.setCurvePublicKey(ZMQSecurity.getServerPair().publicKey.getBytes());
+		}
 	}
 
 	public void publish(String msgToBePublished,String topic) {

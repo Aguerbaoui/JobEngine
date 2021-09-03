@@ -36,6 +36,12 @@ public abstract class ZMQSubscriber implements Runnable {
                 this.subSocket.setReceiveTimeOut(1000);
                 this.subSocket.connect(url+":"+subPort);
                 this.subSocket.subscribe(topic.getBytes());
+               if(ZMQSecurity.isSecure())
+               {
+            	   subSocket.setCurveServerKey(ZMQSecurity.getServerPair().publicKey.getBytes());
+                   subSocket.setCurveSecretKey(ZMQSecurity.getServerPair().secretKey.getBytes());
+           		   subSocket.setCurvePublicKey(ZMQSecurity.getServerPair().publicKey.getBytes());
+               }
 
             } catch (Exception e) {
             	System.out.println( e.getMessage());

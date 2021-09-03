@@ -28,9 +28,15 @@ public class ScriptedRule extends  JERule {
 
 
 	public String generateDRL(String buildPath) {
-		String fileName = buildPath +"\\" + jobEngineElementID +".drl";
-       // JELogger.info(getClass(), script);
-        JEFileUtils.copyStringToFile(script, fileName, "UTF-8");
+		
+		String fileName="";
+		try{
+			 fileName = buildPath +"\\" + jobEngineElementID +".drl";
+	        JEFileUtils.copyStringToFile(script, fileName, "UTF-8");
+
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
 		return fileName;
 		
 		

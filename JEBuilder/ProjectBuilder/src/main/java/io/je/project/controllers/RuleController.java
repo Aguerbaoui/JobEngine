@@ -46,7 +46,7 @@ public class RuleController {
 	 */
 	@GetMapping(value = "{projectId}/getAllRules")
 	@ResponseBody
-	public ResponseEntity<?> getAllRule(@PathVariable("projectId") String projectId) {
+	public ResponseEntity<?> getAllRules(@PathVariable("projectId") String projectId) {
 		Collection<RuleModel> rules = null;
 		try {
 			projectService.getProject(projectId);

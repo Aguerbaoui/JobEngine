@@ -27,6 +27,12 @@ public class ZMQRequester {
         String reply = "";
         try {
             requestSocket = context.createSocket(SocketType.REQ);
+            if(ZMQSecurity.isSecure())
+            {
+            	requestSocket.setCurveServerKey(ZMQSecurity.getServerPair().publicKey.getBytes());
+            	requestSocket.setCurveSecretKey(ZMQSecurity.getServerPair().secretKey.getBytes());
+            	requestSocket.setCurvePublicKey(ZMQSecurity.getServerPair().publicKey.getBytes());
+            }
             requestSocket.setReceiveTimeOut(1000);
             String cnxUrl = url+":"+requestPort;
             requestSocket.connect(cnxUrl);

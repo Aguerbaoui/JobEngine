@@ -63,7 +63,7 @@ public class ClassManager {
 		ClassType classType = getClassType(classDefinition);
 
 		// build inherited classes
-		if (classDefinition.getBaseTypes() != null && !classDefinition.getBaseTypes().get(0).equals("None")) {
+		if (classDefinition.getBaseTypes() != null && !classDefinition.getBaseTypes().isEmpty()) {
 			for (String baseTypeId : classDefinition.getBaseTypes()) {
 				ClassDefinition inheritedClassModel = loadClassDefinition(classDefinition.getWorkspaceId(), baseTypeId);
 				// load inherited class

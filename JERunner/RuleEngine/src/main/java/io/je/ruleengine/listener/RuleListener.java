@@ -12,6 +12,9 @@ import io.je.ruleengine.models.RuleMatch;
 import io.je.utilities.beans.JEBlockMessage;
 import io.je.utilities.beans.JEMessage;
 import io.je.utilities.execution.Executioner;
+import io.je.utilities.logger.JELogger;
+import io.je.utilities.logger.LogCategory;
+import io.je.utilities.logger.LogSubModule;
 import io.je.utilities.ruleutils.RuleIdManager;
 import io.je.utilities.runtimeobject.JEObject;
 
@@ -77,7 +80,8 @@ public class RuleListener extends DefaultAgendaEventListener {
     		ruleMessage.addBlockMessage(new JEBlockMessage(declaredVariableName,event.getMatch().getDeclarationValue(declaredVariableName).toString()));
     	}
     	
-    	Executioner.informRuleBlock( projectId,  ruleId, "Rule was fired",LocalDateTime.now().toString(), "APP");
+    	JELogger.debug("Rule["+ruleId+"] was fired",LogCategory.NOT_ASSIGNED , ruleId, LogSubModule.RULE, ruleId);
+    	//Executioner.informRuleBlock( projectId,  ruleId, "Rule was fired",LocalDateTime.now().toString(), "APP");
 
     	
     	/*String ruleId=RuleIdManager.retrieveIdFromSubRuleName(event.getMatch().getRule().getName());
