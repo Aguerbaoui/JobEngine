@@ -66,7 +66,7 @@ public class ProjectService {
      */
     @Async
     public CompletableFuture<Void> saveProject(JEProject project) {
-        JELogger.info( "[projectId= "+project.getProjectId()+"]"+  JEMessages.CREATING_PROJECT,
+        JELogger.debug( "[projectId= "+project.getProjectId()+"]"+  JEMessages.CREATING_PROJECT,
          LogCategory.DESIGN_MODE, project.getProjectId(), LogSubModule.JEBUILDER, null);
         synchronized (projectRepository) {
             projectRepository.save(project);

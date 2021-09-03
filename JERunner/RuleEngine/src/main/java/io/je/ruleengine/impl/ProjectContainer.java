@@ -697,8 +697,8 @@ public class ProjectContainer {
 			// kieSession.insert(fact);
 			synchronized (kieSession) {
 				try {
-				//	ClassLoader t = this.loader; //io.je.utilities.classloader.JEClassLoader@733aa287
-				//	ClassLoader test = fact.getClass().getClassLoader(); //io.je.utilities.classloader.JEClassLoader@41ee5f60
+					ClassLoader t = JEClassLoader.getInstance(); //io.je.utilities.classloader.JEClassLoader@733aa287
+					ClassLoader test = fact.getClass().getClassLoader(); //io.je.utilities.classloader.JEClassLoader@41ee5f60
 
 
 					synchronized(facts)

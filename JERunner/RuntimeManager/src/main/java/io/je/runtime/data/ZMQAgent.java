@@ -17,8 +17,12 @@ public class ZMQAgent extends ZMQSubscriber {
 		super(url, subPort, topic);
 	}
 
+	
+	
 	@Override
 	public void run() {
+		JELogger.info("[topic = "+topic+"]Started listening for data.. " ,  LogCategory.RUNTIME,
+				null, LogSubModule.JERUNNER, null);
 		while(listening)
     	{
    		 String data = null;
@@ -31,9 +35,9 @@ public class ZMQAgent extends ZMQSubscriber {
 
              try {
             	 if( data !=null && !data.equals(topic) && !data.startsWith(topic))
-				{ ;
-					JELogger.debug(JEMessages.DATA_RECEIVED + data,  LogCategory.RUNTIME,
-							null, LogSubModule.RULE, null);
+				{ 
+					JELogger.trace(JEMessages.DATA_RECEIVED + data,  LogCategory.RUNTIME,
+							null, LogSubModule.JERUNNER, null);
             		 RuntimeDispatcher.injectData(new JEData(this.topic, data));
 				}
 			} catch (Exception e) {
