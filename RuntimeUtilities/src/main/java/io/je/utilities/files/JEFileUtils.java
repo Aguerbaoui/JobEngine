@@ -25,7 +25,7 @@ public class JEFileUtils {
 		try {
 			FileUtils.writeStringToFile(file, bpmn20Xml, encoding);
 		}  catch (Exception e) {
-			JELogger.error(JEMessages.UNEXPECTED_ERROR + Arrays.toString(e.getStackTrace()) ,  LogCategory.DESIGN_MODE,
+			JELogger.error(JEMessages.UNEXPECTED_ERROR + e.getMessage() ,  LogCategory.DESIGN_MODE,
 					null, LogSubModule.JEBUILDER, null);
 		}
 

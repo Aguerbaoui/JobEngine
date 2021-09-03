@@ -38,7 +38,7 @@ public class ConfigurationService {
 
 	static boolean runnerStatus = true;
 
-	final int healthCheck = Utility.getSiothConfig().jobEngine.getCheckHealthEveryMs();
+	final int healthCheck = Utility.getSiothConfig().getJobEngine().getCheckHealthEveryMs();
 	
 	
 	
@@ -81,7 +81,7 @@ public class ConfigurationService {
 				JELogger.debug(JEMessages.RUNNER_IS_UP_UPDATING_NOW,
 						LogCategory.DESIGN_MODE, null,
 						LogSubModule.JEBUILDER,null);
-				classService.loadAllClassesToBuilder();
+				classService.loadAllClasses();
 				projectService.loadAllProjects();
 			} catch (Exception e) {
 				JEExceptionHandler.handleException(e);

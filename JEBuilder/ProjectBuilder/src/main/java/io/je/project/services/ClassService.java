@@ -48,7 +48,9 @@ public class ClassService {
 	/*****************************************************  Class Listener  ***********************************************************************/
 
 	
-	
+	/*
+	 * Init a thread that listens to the DataModelRestApi for class definition updates
+	 */
 	public void initClassUpdateListener() {
 		// TODO make runnable static
 		ClassUpdateListener runnable = new ClassUpdateListener("tcp://"+Utility.getSiothConfig().getMachineCredentials().getIpAddress(),
@@ -136,23 +138,7 @@ public class ClassService {
 		}
 	}
 
-	
-	
-	
-	
 
-/*	public List<JEClass> addDBClassesToBuilder(String workspaceId, String classId)
-			throws AddClassException, DataDefinitionUnreachableException, ClassLoadException, IOException {
-		ClassDefinition classDefinition = ClassManager.loadClassDefinition(workspaceId, classId);
-		List<JEClass> builtClasses = ClassManager.buildClass(classDefinition);
-		for (JEClass _class : builtClasses) {
-			classRepository.save(_class);
-			loadedClasses.put(_class.getClassId(), _class);
-		}
-		return builtClasses;
-
-	}
-*/
 	/*
 	 * send class to je runner to be loaded there
 	 * 
@@ -180,6 +166,30 @@ public class ClassService {
 		}
 
 	}
+	
+	
+	public void loadAllClasses() {
+		List<JEClass> classes = classRepository.findAll();
+		JELogger.debug(JEMessages.LOADING_ALL_CLASSES_FROM_DB,
+				LogCategory.DESIGN_MODE, null,
+				LogSubModule.CLASS, null);
+		for (JEClass clazz : classes) {
+			try {
+				if(clazz.getWorkspaceId() != null) {
+					addClass(clazz.getWorkspaceId(), clazz.getClassId(), true);
+				}
+				else {
+					addClassToJeRunner(clazz, true);
+				}
+
+			} catch (Exception e) {
+				JELogger.error(JEMessages.FAILED_TO_LOAD_CLASS + " " + clazz.getClassName() ,  LogCategory.DESIGN_MODE,
+						null, LogSubModule.CLASS, null);
+			}
+		}
+
+	}
+	
 
 	public void loadAllClassesToBuilder() {
 		List<JEClass> classes = classRepository.findAll();

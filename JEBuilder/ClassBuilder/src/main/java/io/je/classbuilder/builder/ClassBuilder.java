@@ -119,7 +119,7 @@ public class ClassBuilder {
 		String inheritedClass = null;
 		List<String> inheritedInterfaces = new ArrayList<String>();
 
-		if (classDefinition.getBaseTypes() != null && classDefinition.getBaseTypes().get(0)!="None") {
+		if (classDefinition.getBaseTypes() != null && !classDefinition.getBaseTypes().isEmpty()) {
 			
 			for(String classId : classDefinition.getBaseTypes())
 			{
@@ -251,7 +251,7 @@ public class ClassBuilder {
 
 		List<String> inheritedInterfaces = new ArrayList<String>();
 
-		if (classDefinition.getBaseTypes() == null || classDefinition.getBaseTypes().get(0).equals("None")) {
+		if (classDefinition.getBaseTypes() == null || classDefinition.getBaseTypes().isEmpty()) {
 			newClass.expands(JEObject.class);
 		} else {
 			for(String classId : classDefinition.getBaseTypes())
