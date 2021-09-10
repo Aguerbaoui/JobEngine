@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.je.rulebuilder.components.JERule;
 import io.je.rulebuilder.components.UserDefinedRule;
 import io.je.rulebuilder.config.AttributesMapping;
+import io.je.utilities.config.Utility;
 
 
 /*
@@ -56,7 +57,7 @@ public class RuleModel {
     String ruleFrontConfig;
     
     
-    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yyyy, h:mm:ss a");
+    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern(Utility.getSiothConfig().getDateFormat());
 
 
     

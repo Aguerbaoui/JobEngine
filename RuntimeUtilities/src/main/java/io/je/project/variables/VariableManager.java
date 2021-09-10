@@ -1,6 +1,5 @@
-package io.je.runtime.repos;
+package io.je.project.variables;
 
-import io.je.runtime.ruleenginehandler.RuleEngineHandler;
 import io.je.utilities.beans.JEBlockMessage;
 import io.je.utilities.beans.JEMessage;
 import io.je.utilities.beans.JEVariable;
@@ -11,13 +10,13 @@ import io.je.utilities.logger.JELogger;
 import io.je.utilities.logger.LogCategory;
 import io.je.utilities.logger.LogSubModule;
 
+import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import io.je.utilities.string.JEStringSubstitutor;
-import org.apache.commons.text.StringSubstitutor;
-import org.joda.time.LocalDate;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -50,7 +49,6 @@ public class VariableManager {
             variables.put(variable.getJobEngineProjectID(), new HashMap<>());
         }
         variables.get(variable.getJobEngineProjectID()).put(variable.getJobEngineElementID(),variable);
-	       RuleEngineHandler.addVariable(variable);
 			JEStringSubstitutor.addVariable(variable.getJobEngineProjectID(), variable.getName(), variable.getValue());
 
     }
@@ -68,20 +66,18 @@ public class VariableManager {
     public static void removeVariable(String projectId, String id) {
         if(variables.containsKey(projectId)) {
             variables.get(projectId).remove(id);
- 	       RuleEngineHandler.deleteVariable(projectId,id);
 
         }
     }
 
-	public static void updateVariableValue(String projectId, String variableId, String value) {
+	public static JEVariable updateVariableValue(String projectId, String variableId, Object value) {
 		 if(!variables.containsKey(projectId)) {  
 	            variables.put(projectId, new HashMap<>());
 	        }
 	       JEVariable variable = variables.get(projectId).get(variableId);
-	       variable.setValue(value);
-	       RuleEngineHandler.addVariable(variable);
+	       variable.setValue(String.valueOf(value));
 	       JEMessage message = new JEMessage();
-	       message.setExecutionTime(LocalDate.now().toString());
+	       message.setExecutionTime(LocalDateTime.now().toString());
 	       message.setType("Variable");
 	       JEVariableMessage varMessage = new JEVariableMessage(variable.getName(), variable.getValue().toString());
 	       //to be removed
@@ -89,12 +85,35 @@ public class VariableManager {
 	       message.getBlocks().add(blockMessage);
 	       message.getVariables().add(varMessage);
            try {
+   			JELogger.info("Variable "+variable.getName() + " = " +variable.getValue(), LogCategory.RUNTIME, projectId, LogSubModule.VARIABLE, variableId);
+
 			JELogger.debug(objectMapper.writeValueAsString(message), LogCategory.RUNTIME, projectId, LogSubModule.VARIABLE, variableId);
 		} catch (JsonProcessingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+           return variable;
 
+	}
+
+	public static Collection<JEVariable> getAllVariables(String projectId)
+	{
+		 if(!variables.containsKey(projectId)) {  
+	            variables.put(projectId, new HashMap<>());
+	        }
+		 return variables.get(projectId).values();
+	}
+	
+	public static void resetVariableValues(String projectId) {
+		 if(!variables.containsKey(projectId)) {  
+	            variables.put(projectId, new HashMap<>());
+	            return ;
+	        }
+		for(Map.Entry<String, JEVariable>  variable : variables.get(projectId).entrySet())
+		{
+			variable.getValue().setValue( (String) variable.getValue().getInitialValue());
+			
+		}
 	}
 
 

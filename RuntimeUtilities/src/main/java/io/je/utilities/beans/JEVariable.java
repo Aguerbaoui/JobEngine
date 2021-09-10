@@ -1,5 +1,7 @@
 package io.je.utilities.beans;
 
+import io.je.utilities.logger.JELogger;
+import io.je.utilities.logger.LogSubModule;
 import io.je.utilities.runtimeobject.JEObject;
 
 import java.time.LocalDateTime;
@@ -141,7 +143,7 @@ public class JEVariable extends JEMonitoredData {
 		case BOOLEAN:
 			return Boolean.valueOf(value);
 		default:
-			//TOOD: throw error msg
+			JELogger.error("Failed to set variable\""+this.name+"\" value to "+value+": Incompatible Type", null, this.jobEngineProjectID, LogSubModule.VARIABLE, this.jobEngineElementID);
 			return null;
 		
 		}

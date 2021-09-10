@@ -716,8 +716,9 @@ public class ProjectContainer {
 						}
 					}
 				} catch (Exception e) {
+					e.printStackTrace();
 					JELogger.error("[factId ="
-									+ fact.getJobEngineElementID() + "]"+ JEMessages.FAILED_TO_UPDATE_FACT + ": " + e.getMessage() + "\n" + Arrays.toString(e.getStackTrace()),  LogCategory.RUNTIME,
+									+ fact.getJobEngineElementID() + "]"+ JEMessages.FAILED_TO_UPDATE_FACT + ": " + e.getMessage() + "\n" ,  LogCategory.RUNTIME,
 							projectId, LogSubModule.RULE, fact.getJobEngineElementID());
 
 				}

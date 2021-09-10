@@ -54,10 +54,10 @@ public class EventController {
 			projectService.getProject(projectId);
 
 			events = eventService.getAllEvents(projectId);
-			if (events.isEmpty()) {
+			/*if (events.isEmpty()) {
 				return ResponseEntity.noContent().build();
 
-			}
+			}*/
 		} catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
 

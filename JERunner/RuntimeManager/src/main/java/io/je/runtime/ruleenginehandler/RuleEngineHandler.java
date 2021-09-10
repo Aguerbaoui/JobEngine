@@ -20,8 +20,8 @@ import io.je.utilities.beans.JEData;
 import io.je.utilities.beans.JEEvent;
 import io.je.utilities.beans.JEVariable;
 import io.je.utilities.constants.JEMessages;
-import io.je.utilities.datamodel.InstanceManager;
 import io.je.utilities.exceptions.*;
+import io.je.utilities.instances.InstanceManager;
 import io.je.utilities.logger.JELogger;
 import io.je.utilities.runtimeobject.JEObject;
 
@@ -96,24 +96,14 @@ public class RuleEngineHandler {
     }
 
 
-    public static void injectData(String projectId,JEData data) throws InstanceCreationFailed {
+    public static void injectData(String projectId,JEObject instance) throws InstanceCreationFailed {
     try
     {
-    	JSONObject instanceJson = new JSONObject(data.getData());
-		//JELogger.debug(RuleEngineHandler.class, instanceJson.toString());
-		InstanceModel instanceModel = new InstanceModel();
-		instanceModel.setInstanceId(instanceJson.getString(InstanceModelMapping.INSTANCEID));
-		instanceModel.setModelId(instanceJson.getString(InstanceModelMapping.MODELID));
-		instanceModel.setPayload(instanceJson.getJSONObject(InstanceModelMapping.PAYLOAD));
-		//instanceModel.setInstanceName(instanceJson.getString(InstanceModelMapping.INSTANCENAME));
-
-		JEObject instanceData = (JEObject) InstanceManager.createInstance(instanceModel);
-		instanceData.setJeObjectLastUpdate(LocalDateTime.now());
-		//JELogger.debug("Data : "+ instanceJson );
-        RuleEngine.assertFact(projectId,instanceData);
-    }catch(InstanceCreationFailed e)
+    	
+        RuleEngine.assertFact(projectId,instance);
+    }catch(Exception e)
     {
-		JELogger.warn(JEMessages.ADD_INSTANCE_FAILED+" ["+data.getData()+"]" + e.getMessage(),
+		JELogger.warn(JEMessages.ADD_INSTANCE_FAILED + e.getMessage(),
 				LogCategory.RUNTIME, projectId,
 				LogSubModule.RULE,null);
     	}

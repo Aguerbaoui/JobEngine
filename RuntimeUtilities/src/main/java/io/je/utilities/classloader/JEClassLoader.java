@@ -79,7 +79,7 @@ public class JEClassLoader extends ClassLoader {
             customClasses.add(name);
 
             try {
-                JELogger.debug("Class Loading by je custom loader Started for " + name, LogCategory.RUNTIME,
+                JELogger.trace("Class Loading by je custom loader Started for " + name, LogCategory.RUNTIME,
                         null, LogSubModule.CLASS, null);
                 Class c = getClass(name);
                 return c;
@@ -109,7 +109,7 @@ public class JEClassLoader extends ClassLoader {
         try {
             // This loads the byte code data from the file
             byteArr = loadClassData(file);
-            JELogger.debug("Size of byte array for the class "+byteArr.length, LogCategory.RUNTIME,
+            JELogger.trace("Size of byte array for the class "+byteArr.length, LogCategory.RUNTIME,
                     null, LogSubModule.CLASS, null);
             Class<?> c = defineClass(name, byteArr, 0, byteArr.length);
             resolveClass(c);

@@ -5,6 +5,7 @@ import io.je.utilities.beans.JEData;
 import io.je.utilities.config.Utility;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.InstanceCreationFailed;
+import io.je.utilities.instances.DataModelRequester;
 import io.je.utilities.logger.JELogger;
 import io.je.utilities.logger.LogCategory;
 import io.je.utilities.logger.LogSubModule;
@@ -17,7 +18,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 
-public class DataListener {
+public class DataModelListener {
 
     /*
      * Map of topic-listener
@@ -28,42 +29,6 @@ public class DataListener {
     private static 	TypeFactory typeFactory = objectMapper.getTypeFactory();
 
 
-    /*
-     * ZMQ Request to DataModel to read last values for specific class(by ModelId)
-     */
-    private static void readInitialValues(String topic) {
-    	JELogger.trace("Loading last values for topic = " +topic ,  LogCategory.RUNTIME,
-				null, LogSubModule.JERUNNER, null);
-    	try {
-    		
-    		
-    		ZMQRequester requester = new ZMQRequester("tcp://"+Utility.getSiothConfig().getMachineCredentials().getIpAddress(), Utility.getSiothConfig().getDataModelPORTS().getDmService_ReqAddress());
-    	 	HashMap<String,String> requestMap = new HashMap<String, String>();
-        	requestMap.put("Type", "ReadInitialValues");
-        	requestMap.put("ModelId", topic);
-			String data = requester.sendRequest(objectMapper.writeValueAsString(requestMap));
-			JELogger.trace(JEMessages.DATA_RECEIVED + data,  LogCategory.RUNTIME,
-					null, LogSubModule.JERUNNER, null);
-			 if( data !=null )
-				{ 
-					List<String> values = objectMapper.readValue(data, typeFactory.constructCollectionType(List.class, String.class));
-					for(String value : values)
-					{
-		         		 try {
-							RuntimeDispatcher.injectData(new JEData(topic, value));
-						} catch (InstanceCreationFailed e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-
-					}
-					
-				}
-		} catch (JsonProcessingException e) {
-			JELogger.error("Failed to read last values for topic : " + topic , null, "", LogSubModule.JERUNNER, topic);
-		}
-    	
-    }
     
     public static void subscribeToTopic(String topic )
     {
@@ -100,7 +65,22 @@ public class DataListener {
     
     }
 
-    public static void stopListening(List<String> topics) {
+    private static void readInitialValues(String modelId) {
+		List<Object> initialValues = DataModelRequester.readInitialValues(modelId);
+		for(Object value : initialValues)
+		{
+     		 try {
+				RuntimeDispatcher.injectData(new JEData(modelId, value.toString()));
+			} catch (InstanceCreationFailed e) {
+				e.printStackTrace();
+			}
+
+		}
+		
+		
+	}
+
+	public static void stopListening(List<String> topics) {
         JELogger.debug(JEMessages.STOPPED_LISTENING_ON_TOPICS + topics,  LogCategory.RUNTIME,
                 null, LogSubModule.JERUNNER, null);
         for (String id : topics)

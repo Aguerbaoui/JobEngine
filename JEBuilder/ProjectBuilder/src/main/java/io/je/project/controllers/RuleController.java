@@ -52,10 +52,10 @@ public class RuleController {
 			projectService.getProject(projectId);
 
 			rules = ruleService.getAllRules(projectId);
-			if (rules.isEmpty()) {
+			/*if (rules.isEmpty()) {
 				return ResponseEntity.noContent().build();
 
-			}
+			}*/
 		} catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
 		}

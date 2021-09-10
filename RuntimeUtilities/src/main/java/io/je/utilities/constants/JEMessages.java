@@ -80,6 +80,8 @@ public class JEMessages {
 
 
     public static final String FAILED_TO_LOAD_CLASS = "Failed to load class";
+    
+    public static final String CLASS_ALREADY_EXISTS = "This class has already been added.";
 
     // ****************************************Data Listener**************************************************
 
@@ -611,4 +613,7 @@ public class JEMessages {
     public static final String ERROR_EXECUTING_DB_QUERY = "Error executing the database query";
     public static final String ERROR_GETTING_CLASS_UPDATES = "Error getting class updates";
     public static final String FAILED_TO_SEND_LOG_MESSAGE_TO_THE_LOGGING_SYSTEM = "Failed to send log message to the logging system : \n";
+    public static final String WRITE_INSTANCE_FAILED = "Failed to update instance value. Data Model responded with : ";
+
+
 }

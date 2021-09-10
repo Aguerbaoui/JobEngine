@@ -21,7 +21,6 @@ import io.je.utilities.exceptions.ClassLoadException;
 import io.je.utilities.exceptions.DataDefinitionUnreachableException;
 import io.je.utilities.logger.JELogger;
 import io.je.utilities.logger.LogCategory;
-import io.je.utilities.logger.LogMessage;
 import io.je.utilities.logger.LogSubModule;
 import io.je.utilities.zmq.ZMQPublisher;
 import io.je.utilities.zmq.ZMQRequester;

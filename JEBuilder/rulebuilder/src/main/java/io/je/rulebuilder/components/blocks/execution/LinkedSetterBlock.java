@@ -33,7 +33,7 @@ public class LinkedSetterBlock extends ExecutionBlock {
 		}catch(Exception e) {
 			isProperlyConfigured=false;
 		}finally {
-			if(classId==null || classPath==null || attributeName==null)
+			if(classId==null || classPath==null || attributeName==null || instances==null || instances.isEmpty())
 			{
 				isProperlyConfigured=false;
 
@@ -56,7 +56,11 @@ public class LinkedSetterBlock extends ExecutionBlock {
 		StringBuilder expression = new StringBuilder();
 		for(String instance : instances)
 		{
-			expression.append("Executioner.writeToInstance("+instance+", "+attributeName +", "+getInputRefName(0)+");");
+			expression.append(  "Executioner.updateInstanceAttributeValueFromStaticValue( "
+					  +"\"" + instance  +"\","
+					  +"\"" + this.attributeName  +"\","
+					  + getInputRefName(0)
+					  +");\r\n");
 			expression.append("\n");
 		}
 		

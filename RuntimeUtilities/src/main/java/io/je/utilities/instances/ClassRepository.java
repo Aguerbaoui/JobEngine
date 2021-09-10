@@ -1,4 +1,4 @@
-package io.je.utilities.datamodel;
+package io.je.utilities.instances;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -21,5 +21,11 @@ public class ClassRepository {
 	 */
 	public static Class<?> getClassById(String classId){
 		return loadedClasses.get(classId);
+	}
+	
+	
+	public static boolean containsClass(String classId)
+	{
+		return loadedClasses.containsKey(classId);
 	}
 }

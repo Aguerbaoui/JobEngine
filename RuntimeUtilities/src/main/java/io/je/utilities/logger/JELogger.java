@@ -21,7 +21,7 @@ import java.util.Queue;
 /*
  * Class Responsible for logging 
  * A log request of level p in a logger with level q is enabled if p >= q. 
- * It assumes that levels are ordered. For the standard levels, we have   DEBUG < INFO < WARN < ERROR
+ * It assumes that levels are ordered. For the standard levels, we have   TRACE < DEBUG < INFO < WARN < ERROR
  */
 public class JELogger {
 
@@ -77,8 +77,8 @@ public class JELogger {
         logger.trace( message);
 
         //Log in logging service
-        LogMessage logMessage = getLogMessage(LogLevel.Control, message, category, projectId, subModule, objectId);
-        publishLogMessage(logMessage);
+        //LogMessage logMessage = getLogMessage(LogLevel.Control, message, category, projectId, subModule, objectId);
+        //publishLogMessage(logMessage);
     }
 
     /*

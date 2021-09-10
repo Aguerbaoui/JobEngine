@@ -12,12 +12,19 @@ public class InstanceModel {
 	@JsonProperty(InstanceModelMapping.MODELID)
 	String modelId;
 	
+	@JsonProperty(InstanceModelMapping.MODELNAME)
+	String modelName;
+	
 	@JsonProperty(InstanceModelMapping.INSTANCEID)
 	String instanceId;
 	
-//	@JsonProperty(InstanceModelMapping.INSTANCENAME)
-	//String instanceName;
+	@JsonProperty(InstanceModelMapping.INSTANCENAME)
+	String instanceName;
 	
+	@JsonProperty(InstanceModelMapping.ISHDA)
+	boolean isHDA;
+	
+
 	@JsonProperty(InstanceModelMapping.PAYLOAD)
 	JSONObject payload;
 
@@ -55,12 +62,14 @@ public class InstanceModel {
 
 
 
-	@Override
-	public String toString() {
-		return "InstanceModel [modelId=" + modelId + ", instanceId=" + instanceId + ", instanceName="  /* + instanceName*/
-				+ ", payload=" + payload + "]";
+	public String getModelName() {
+		return modelName;
 	}
-/*
+
+	public void setModelName(String modelName) {
+		this.modelName = modelName;
+	}
+
 	public String getInstanceName() {
 		return instanceName;
 	}
@@ -69,7 +78,21 @@ public class InstanceModel {
 		this.instanceName = instanceName;
 	}
 
-*/
+	public boolean isHDA() {
+		return isHDA;
+	}
+
+	public void setHDA(boolean isHDA) {
+		this.isHDA = isHDA;
+	}
+
+	@Override
+	public String toString() {
+		return "InstanceModel [modelId=" + modelId + ", modelName=" + modelName + ", instanceId=" + instanceId
+				+ ", instanceName=" + instanceName + ", isHDA=" + isHDA + ", payload=" + payload + "]";
+	}
+
+	
 
 	
 		

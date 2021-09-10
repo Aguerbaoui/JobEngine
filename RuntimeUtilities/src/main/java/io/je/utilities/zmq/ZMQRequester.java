@@ -4,6 +4,8 @@ import org.zeromq.SocketType;
 import org.zeromq.ZContext;
 import org.zeromq.ZMQ;
 
+
+
 public class ZMQRequester {
 
     private ZContext context = null;
@@ -38,7 +40,6 @@ public class ZMQRequester {
             requestSocket.connect(cnxUrl);
             requestSocket.send(request, 0);
             reply = requestSocket.recvStr(0);
-            context.close();
             requestSocket.close();
             requestSocket = null;
             return reply;

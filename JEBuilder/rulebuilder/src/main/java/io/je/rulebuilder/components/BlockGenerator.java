@@ -13,8 +13,10 @@ import io.je.rulebuilder.components.blocks.execution.LogBlock;
 import io.je.rulebuilder.components.blocks.execution.SetterBlock;
 import io.je.rulebuilder.components.blocks.execution.AttachedSetterBlock;
 import io.je.rulebuilder.components.blocks.execution.LinkedSetterBlock;
+import io.je.rulebuilder.components.blocks.execution.LinkedVariableSetterBlock;
 import io.je.rulebuilder.components.blocks.execution.TriggerEventBlock;
 import io.je.rulebuilder.components.blocks.getter.AttributeGetterBlock;
+import io.je.rulebuilder.components.blocks.getter.VariableGetterBlock;
 import io.je.rulebuilder.components.blocks.logic.JoinBlock;
 import io.je.rulebuilder.models.BlockModel;
 import io.je.utilities.constants.JEMessages;
@@ -120,6 +122,8 @@ public class BlockGenerator {
 			return new AttributeGetterBlock(blockModel);
 		case 4003:
 			break;
+		case 4005:
+			return new VariableGetterBlock(blockModel);
 		
 		/*
 		 * Execution blocks
@@ -134,6 +138,8 @@ public class BlockGenerator {
 			return new AttachedSetterBlock(blockModel);
 		case 5005:
 			return new SetterBlock(blockModel);
+		case 5007:
+			return new LinkedVariableSetterBlock(blockModel);
 		case 6001:
 			return new AcceptEventBlock(blockModel);
 		// no operation with such id
