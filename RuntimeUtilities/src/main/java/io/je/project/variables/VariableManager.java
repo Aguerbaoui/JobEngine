@@ -1,5 +1,6 @@
 package io.je.project.variables;
 
+import io.je.utilities.beans.ArchiveOption;
 import io.je.utilities.beans.JEBlockMessage;
 import io.je.utilities.beans.JEMessage;
 import io.je.utilities.beans.JEVariable;
@@ -9,6 +10,8 @@ import io.je.utilities.exceptions.VariableNotFoundException;
 import io.je.utilities.logger.JELogger;
 import io.je.utilities.logger.LogCategory;
 import io.je.utilities.logger.LogSubModule;
+import io.je.utilities.monitoring.JEMonitor;
+import io.je.utilities.monitoring.ObjectType;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -17,6 +20,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import io.je.utilities.string.JEStringSubstitutor;
+import io.je.utilities.time.JEDate;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -74,24 +79,33 @@ public class VariableManager {
 		 if(!variables.containsKey(projectId)) {  
 	            variables.put(projectId, new HashMap<>());
 	        }
+		
 	       JEVariable variable = variables.get(projectId).get(variableId);
-	       variable.setValue(String.valueOf(value));
-	       JEMessage message = new JEMessage();
-	       message.setExecutionTime(LocalDateTime.now().toString());
-	       message.setType("Variable");
-	       JEVariableMessage varMessage = new JEVariableMessage(variable.getName(), variable.getValue().toString());
-	       //to be removed
-	       JEBlockMessage blockMessage = new JEBlockMessage(variable.getName(), variable.getValue().toString());
-	       message.getBlocks().add(blockMessage);
-	       message.getVariables().add(varMessage);
-           try {
-   			JELogger.info("Variable "+variable.getName() + " = " +variable.getValue(), LogCategory.RUNTIME, projectId, LogSubModule.VARIABLE, variableId);
-
-			JELogger.debug(objectMapper.writeValueAsString(message), LogCategory.RUNTIME, projectId, LogSubModule.VARIABLE, variableId);
-		} catch (JsonProcessingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	       
+ 	       if(variable!=null)
+	       {
+	    	   variable.setValue(String.valueOf(value));
+		       JEMessage message = new JEMessage();
+		       message.setExecutionTime(LocalDateTime.now().toString());
+		       message.setType("Variable");
+		       JEVariableMessage varMessage = new JEVariableMessage(variable.getName(), variable.getValue().toString());
+		       //to be removed
+		       JEBlockMessage blockMessage = new JEBlockMessage(variable.getName(), variable.getValue().toString());
+		       message.getBlocks().add(blockMessage);
+		       message.getVariables().add(varMessage);
+	           try {
+	   			JELogger.info("Variable "+variable.getName() + " = " +variable.getValue(), LogCategory.RUNTIME, projectId, LogSubModule.VARIABLE, variableId);
+	   			JEMonitor.publish(LocalDateTime.now(), variable.getJobEngineElementID(), ObjectType.JEVARIABLE, variable.getJobEngineProjectID(), variable.getValue(), ArchiveOption.asSourceData, false);
+				JELogger.debug(objectMapper.writeValueAsString(message), LogCategory.RUNTIME, projectId, LogSubModule.VARIABLE, variableId);
+			} catch (JsonProcessingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	    	   
+	       }else {
+	    	   JELogger.error(JEMessages.UPDATING_VARIABLE_FAILED , LogCategory.RUNTIME, projectId, LogSubModule.VARIABLE, variableId);
+	       }
+	       
            return variable;
 
 	}

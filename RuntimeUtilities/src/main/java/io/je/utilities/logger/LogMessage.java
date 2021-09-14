@@ -2,47 +2,46 @@ package io.je.utilities.logger;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-
 public class LogMessage {
 
 	@JsonProperty("LogLevel")
-	public LogLevel logLevel ;
+	public LogLevel logLevel;
 
 	@JsonProperty("Message")
-	public Object message ;
+	public Object message;
 
 	@JsonProperty("LogDate")
-	public String logDate ;
+	public String logDate;
 
 	@JsonProperty("Source")
-	public String module="JobEngine" ;
+	public String module = "JobEngine";
 
-   /* @JsonProperty("Category")
-    public LogCategory category ;*/
+	/*
+	 * @JsonProperty("Category") public LogCategory category ;
+	 */
 
 	@JsonProperty("ProjectId")
-	public String projectId ;
+	public String projectId;
 
 	@JsonProperty("ObjectId")
 	public String objectId;
 
+	@JsonProperty("BlockName")
+	public String blockName;
 
 	@JsonProperty("Category")
-	public LogSubModule subModule ;
+	public LogSubModule subModule;
 
+	/*
+	 * @JsonProperty("Value") public Object value ;
+	 */
 
+	/*
+	 * @JsonProperty("Description") public String description ="N/A" ;
+	 */
 
-   /* @JsonProperty("Value")
-    public Object value ;*/
-
-
-
-   /* @JsonProperty("Description")
-    public String description ="N/A" ;*/
-
-
-	public LogMessage(LogLevel logLevel, Object message, String logDate,
-					  String projectId, LogSubModule subModule, String objectId) {
+	public LogMessage(LogLevel logLevel, Object message, String logDate, String projectId, LogSubModule subModule,
+			String objectId) {
 		super();
 		this.logLevel = logLevel;
 		this.message = message;
@@ -52,6 +51,20 @@ public class LogMessage {
 		this.objectId = objectId;
 	}
 
+	/*
+	 * temporary
+	 */
+	public LogMessage(LogLevel logLevel, Object message, String logDate, String projectId, LogSubModule subModule,
+			String objectId,String blockName) {
+		super();
+		this.logLevel = logLevel;
+		this.message = message;
+		this.logDate = logDate;
+		this.projectId = projectId;
+		this.subModule = subModule;
+		this.objectId = objectId;
+		this.blockName=blockName;
+	}
 
 	private LogMessage() {
 	}
@@ -88,13 +101,11 @@ public class LogMessage {
 		this.module = module;
 	}
 
-	/*public LogCategory getCategory() {
-		return category;
-	}
-
-	public void setCategory(LogCategory category) {
-		this.category = category;
-	}*/
+	/*
+	 * public LogCategory getCategory() { return category; }
+	 * 
+	 * public void setCategory(LogCategory category) { this.category = category; }
+	 */
 
 	public String getProjectId() {
 		return projectId;
@@ -120,31 +131,18 @@ public class LogMessage {
 		this.subModule = subModule;
 	}
 
+	/*
+	 * public Object getValue() { return value; }
+	 * 
+	 * public void setValue(Object value) { this.value = value; }
+	 */
 
-
-	/*public Object getValue() {
-		return value;
-	}
-
-	public void setValue(Object value) {
-		this.value = value;
-	}*/
-
-
-
-/*	public String getDescription() {
-		return description;
-	}
-
-
-	public void setDescription(String description) {
-		this.description = description;
-	}*/
-
-
-
-
-
-
+	/*
+	 * public String getDescription() { return description; }
+	 * 
+	 * 
+	 * public void setDescription(String description) { this.description =
+	 * description; }
+	 */
 
 }

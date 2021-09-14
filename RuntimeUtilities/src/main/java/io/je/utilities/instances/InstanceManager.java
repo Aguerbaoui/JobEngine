@@ -1,8 +1,10 @@
 package io.je.utilities.instances;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -53,7 +55,7 @@ public class InstanceManager {
 		Class<?> instanceClass = ClassRepository.getClassById(instanceModel.getModelId());
 		if(instanceClass == null)
 		{
-			throw new InstanceCreationFailed("Loaded classes list does not recognize this id :" + instanceModel.getInstanceId());
+			throw new InstanceCreationFailed(JEMessages.CLASS_NOT_LOADED + instanceModel.getInstanceId());
 		}
 			
 		
@@ -71,8 +73,7 @@ public class InstanceManager {
 		} catch (Exception e) {
 			
 			e.printStackTrace();
-			//TODO: add error msg to config
-			throw new InstanceCreationFailed("Failed to create instance : " + e.getMessage());
+			throw new InstanceCreationFailed(JEMessages.ADD_INSTANCE_FAILED + e.getMessage());
 
 		}
 		instancesLastValue.put(instanceModel.getInstanceId(), (JEObject) instance);
@@ -86,23 +87,20 @@ public class InstanceManager {
 		try {
 
     		String dataReceived = DataModelRequester.getLastInstanceValue(instanceId);
-    		
+
+
     		if(dataReceived!=null)
     		{
-    			JSONArray attributes = new JSONArray(dataReceived);
-    			for(Object attribute : attributes)
-    			{
-    				try {
-    					JSONObject instanceJson = new JSONObject(attribute);
-    	    			if(instanceJson.getString("attributeName").equals(attributeName))
-    	    			{
-    	    				return instanceJson.getString("value");
-    	    			}
-    				}catch (Exception e) {
-						
-					}
-    			}
-    			
+        	    List<HashMap<String,Object>> attributes = objectMapper.readValue(dataReceived, objectMapper.getTypeFactory().constructCollectionType(ArrayList.class, HashMap.class));
+        	    for(HashMap<String, Object> attribute : attributes)
+        	    {
+        	    	if(attribute.get("attributeName").equals(attributeName))
+        	    	{
+        	    		return attribute.get("value").toString();
+        	    	}
+        	    }
+        	    
+        	   
     	   		
     		}else {
     			JELogger.error("Failed to read last values for topic : " + instanceId , null, "", LogSubModule.JERUNNER, instanceId);
@@ -138,12 +136,12 @@ public class InstanceManager {
     		{
     			return createInstance(data);
     		}else {
-    			JELogger.error("Failed to read last values for topic : " + instanceId , null, "", LogSubModule.JERUNNER, instanceId);
+    			JELogger.error(JEMessages.READ_INSTANCE_FAILED+ instanceId , null, "", LogSubModule.JERUNNER, instanceId);
 
     		}
 			 
 		} catch (Exception e) {
-			JELogger.error("Failed to read last values for topic : " + instanceId , null, "", LogSubModule.JERUNNER, instanceId);
+			JELogger.error(JEMessages.READ_INSTANCE_FAILED + instanceId , null, "", LogSubModule.JERUNNER, instanceId);
 		}
 		return null;
 	}
@@ -161,8 +159,10 @@ public class InstanceManager {
                     null, LogSubModule.RULE, null);
 			if(!response.getJSONArray("Success").isEmpty())
 			{
-				JELogger.trace("Instance was updated successfully",  LogCategory.RUNTIME,
+				JELogger.trace(JEMessages.INSTANCE_UPDATE_SUCCESS,  LogCategory.RUNTIME,
 	                    null, LogSubModule.RULE, null);
+			}else {
+				JELogger.error(JEMessages.WRITE_INSTANCE_FAILED +response.getJSONObject("Fail")+" ."+JEMessages.CHECK_DM_FOR_DETAILS, LogCategory.RUNTIME, "", LogSubModule.JERUNNER, instanceId);
 			}
 
 	

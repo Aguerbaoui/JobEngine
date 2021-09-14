@@ -19,7 +19,7 @@ public class JEMonitor  {
 	static ObjectMapper objectMapper = new ObjectMapper();
 
 	public static void publish(LocalDateTime timestamp, String objectId, ObjectType objectType, String objectProjectId,
-			String objectValue, ArchiveOption isArchived, boolean isBroadcasted) {
+			Object objectValue, ArchiveOption isArchived, boolean isBroadcasted) {
 		try {
 			MonitoringMessage msg = new MonitoringMessage(timestamp, objectId, objectType, objectProjectId, objectValue, isArchived, isBroadcasted);
 			String jsonMsg = objectMapper.writeValueAsString(msg);

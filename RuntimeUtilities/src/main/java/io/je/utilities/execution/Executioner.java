@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.je.project.variables.VariableManager;
 import io.je.utilities.apis.JEBuilderApiHandler;
 import io.je.utilities.apis.JERunnerAPIHandler;
+import io.je.utilities.beans.JEVariable;
 import io.je.utilities.classloader.JEClassLoader;
 import io.je.utilities.config.Utility;
 import io.je.utilities.constants.ClassBuilderConfig;
@@ -44,7 +45,7 @@ public class Executioner {
     /*
      * Execute inform block 
      */
-    public static void informRuleBlock(String projectId, String ruleId, String message, String logDate, String BlockName) {
+    public static void informRuleBlock(String projectId, String ruleId, String message, String logDate, String blockName) {
         try {
             new Thread(new Runnable() {
 
@@ -54,11 +55,11 @@ public class Executioner {
 
                     try {
                     	
-                        JELogger.info(message, LogCategory.RUNTIME, projectId, LogSubModule.RULE, ruleId);
+                        JELogger.info(message, LogCategory.RUNTIME, projectId, LogSubModule.RULE, ruleId,blockName);
                         //   JELogger.info(objectMapper.writeValueAsString(msg), LogCategory.RUNTIME, projectId, LogSubModule.RULE, ruleId);
                     } catch (Exception e) {
                         e.printStackTrace();
-                        JELogger.error("Failed to execute Inform Block", LogCategory.RUNTIME, projectId, LogSubModule.RULE, ruleId);
+                        JELogger.error(JEMessages.INFORM_BLOCK_ERROR, LogCategory.RUNTIME, projectId, LogSubModule.RULE, ruleId);
 
                     }
 
@@ -166,7 +167,7 @@ public class Executioner {
                 public void run() {
 
                     try {
-                        VariableManager.updateVariableValue(projectId, variableId, value);
+                       JERunnerAPIHandler.writeVariableValue(projectId, variableId, value);
                     } catch (Exception e) {
                         e.printStackTrace();
 
@@ -195,7 +196,7 @@ public class Executioner {
                 public void run() {
 
                     try {
-                        VariableManager.updateVariableValue(projectId, destinationVariableId, VariableManager.getVariableValue(projectId, sourceVariableId));
+                    	JERunnerAPIHandler.writeVariableValue(projectId, destinationVariableId, VariableManager.getVariableValue(projectId, sourceVariableId));
                     } catch (Exception e) {
                         e.printStackTrace();
 
@@ -215,7 +216,7 @@ public class Executioner {
     /*
      * update Variable from a data model instance
      */
-    public static void updateVariableValueFromDataModel(String projectId,String variableId, String instanceId, String attributeName) {
+    public static void updateVariableValueFromDataModel(String projectId,String destinationVariableId, String sourceInstanceId, String sourceAttributeName) {
 
         try {
             new Thread(new Runnable() {
@@ -225,8 +226,8 @@ public class Executioner {
                 public void run() {
 
                     try {
-                        Object attribueValue = InstanceManager.getAttributeValue(instanceId, attributeName);
-                        VariableManager.updateVariableValue(projectId, variableId, attribueValue);
+                        Object attribueValue = InstanceManager.getAttributeValue(sourceInstanceId, sourceAttributeName);
+                        JERunnerAPIHandler.writeVariableValue(projectId, destinationVariableId, attribueValue);
                   
                     } catch (Exception e) {
                         e.printStackTrace();

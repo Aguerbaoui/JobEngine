@@ -68,13 +68,20 @@ public  class VariableGetterBlock extends ConditionBlock {
 
 	@Override
 	public String getExpression() {
-		return "$"+blockName.replaceAll("\\s+", "")+" : JEVariable ( jobEngineElementID == \""+variableId +"\" )";
+		return blockName.replaceAll("\\s+", "")+" : JEVariable ( jobEngineElementID == \""+variableId +"\","+  getAttributeVariableName() + " : value )";
 	}
+	
+
+
 
 	@Override
 	public String getJoinExpressionAsFirstOperand() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	public String getAttributeVariableName() {
+		return blockName.replaceAll("\\s+", "")+"Value";
 	}
 
 }

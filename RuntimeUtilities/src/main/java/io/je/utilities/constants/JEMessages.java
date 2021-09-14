@@ -47,10 +47,12 @@ public class JEMessages {
     public static final String CLASS_NAME_NULL = "Class name cannot be empty";
 
     public static final String CLASS_UNKNOWN = "Class unknown";
+    
+    public static final String CLASS_NOT_LOADED ="Loaded classes list does not recognize this id :";
 
     public static final String TYPE_UNKNOWN = "Type unknown";
 
-    public static final String BUILDING_CLASS = "Building class�";
+    public static final String BUILDING_CLASS = "Building class ";
 
     public static final String CLASS_BUILD_FAILED = "Failed to build class ";
 
@@ -245,7 +247,6 @@ public class JEMessages {
 
     public static final String VALIDATING_RULE = "Checking rule validity";
 
-    public static final String ADD_INSTANCE_FAILED = "failed to create instance";
     //events
 
     public static final String FOUND_EVENT = "Found event with id = ";
@@ -436,6 +437,8 @@ public class JEMessages {
 
     public static final String UPDATING_VARIABLE = "Updating variable ";
 
+    public static final String UPDATING_VARIABLE_FAILED = "Failed to update variable. ";
+
 
 
     // ****************************************RuleBuilder**************************************************
@@ -537,7 +540,7 @@ public class JEMessages {
 
     public static final String KIE_INIT = "Initialising knowledge base.";
 
-    public static final String KIE_INIT_FAILED = "failed to initialise knowledge base";
+    public static final String KIE_INIT_FAILED = "Failed to initialise knowledge base";
 
     public static final String FAILED_TO_UPDATE_FACT = "Failed to update fact";
 
@@ -593,12 +596,12 @@ public class JEMessages {
 	public static final String LOGGING_SYSTEM_URL_MISSING = "Logging System URL is not configured";
 	public static final String LOGGING_SYSTEM_PORT_MISSING = "Logging System port is not configured";
 	public static final String EMAIL_API_URL_MISSING = "Email API URL is not configured";
-	public static final String LOADING_VARIABLES = "loading variables..";
-    public static final String PROJECT_AUTO_RELOAD = "setting project auto reload to";
+	public static final String LOADING_VARIABLES = "Loading variables..";
+    public static final String PROJECT_AUTO_RELOAD = "Setting project auto reload to";
     public static final String PROJECT_UPDATED = "Project updated successfully";
     public static final String RULE_EXECUTION_ERROR = "RULE EXECUTION ERROR : ";
     public static final String ERROR_DELETING_A_PROCESS = "Error deleting a process";
-
+    public static final String INFORM_BLOCK_ERROR = "Failed to execute Inform Block";
 
     public static final String BLOCK_NAME_CAN_T_BE_UPDATED_BECAUSE_IT_ALREADY_EXISTS = "Block name can't be updated because it already exists";
     public static final String WORKFLOW_BUILD_ERROR = "Error while building the workflow ";
@@ -613,7 +616,18 @@ public class JEMessages {
     public static final String ERROR_EXECUTING_DB_QUERY = "Error executing the database query";
     public static final String ERROR_GETTING_CLASS_UPDATES = "Error getting class updates";
     public static final String FAILED_TO_SEND_LOG_MESSAGE_TO_THE_LOGGING_SYSTEM = "Failed to send log message to the logging system : \n";
-    public static final String WRITE_INSTANCE_FAILED = "Failed to update instance value. Data Model responded with : ";
+    public static final String CHECK_DM_FOR_DETAILS = "Check Integration Objects' SIOTH Data Model Service's log for more details. ";
 
+//********************************************************* instances ******************************************************
+    public static final String WRITE_INSTANCE_FAILED = "Failed to update instance value. ";
+    
+    public static final String READ_INSTANCE_FAILED = "Failed to read last values for instance : ";
+    
+    public static final String INSTANCE_UPDATE_SUCCESS ="Instance was updated successfully";
 
+    public static final String ADD_INSTANCE_FAILED = "Failed to create instance : ";
+    
+    
+    
+    
 }

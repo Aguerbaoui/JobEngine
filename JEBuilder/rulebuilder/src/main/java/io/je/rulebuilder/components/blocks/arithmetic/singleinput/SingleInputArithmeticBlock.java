@@ -11,7 +11,11 @@ public abstract class SingleInputArithmeticBlock extends ArithmeticBlock {
 	
 	public SingleInputArithmeticBlock(BlockModel blockModel) {
 		super(blockModel);
+		if(inputBlockIds.isEmpty())
+		{
+			isProperlyConfigured=false;
 
+		}
 	}
 	
 

@@ -1,5 +1,7 @@
 package io.je.rulebuilder.components.blocks.execution;
 
+import java.util.List;
+
 import org.apache.commons.lang3.StringUtils;
 
 import io.je.rulebuilder.components.blocks.ExecutionBlock;
@@ -23,7 +25,7 @@ public class SetterBlock extends ExecutionBlock {
 	Object value;
 	
 	//variable
-	String variableId;
+	String sourceVariableId;
 	
 	//DM
 	String sourceClassName;
@@ -34,8 +36,9 @@ public class SetterBlock extends ExecutionBlock {
 	ValueType destinationType; //ATTRIBUTE/VARIBLE
 	
 	//DESTINATION
-	String destinationInstanceId ; 
+	List<String> destinationInstancesId ; 
 	String destinationAttributeName;
+	String destinationAttributeType;
 	String destinationClassName;
 
 	//variable
@@ -60,7 +63,7 @@ public class SetterBlock extends ExecutionBlock {
 			sourceInstanceId = (String) blockModel.getBlockConfiguration().get("objectId");
 			
 			//if source variable
-			variableId = (String) blockModel.getBlockConfiguration().get("objectId");
+			sourceVariableId = (String) blockModel.getBlockConfiguration().get("objectId");
 
 			value = blockModel.getBlockConfiguration().get("newValue");
 		//destination configuration 
@@ -69,9 +72,14 @@ public class SetterBlock extends ExecutionBlock {
 
 			
 			destinationAttributeName = (String) blockModel.getBlockConfiguration().get("destinationAttributeName");			
-			destinationInstanceId = (String) blockModel.getBlockConfiguration().get("destinationInstanceId");
+			
+			if( blockModel.getBlockConfiguration().containsKey(AttributesMapping.SPECIFICINSTANCES) )
+			{
+				destinationInstancesId = (List<String>) blockModel.getBlockConfiguration().get(AttributesMapping.SPECIFICINSTANCES);
+			}
+			
 			destinationClassName = (String) blockModel.getBlockConfiguration().get("destinationClassName");
-		
+			destinationAttributeType = (String) blockModel.getBlockConfiguration().get("destinationAttributeType");		
 			destinationVariableId = (String) blockModel.getBlockConfiguration().get("destinationVariableId");
 
 			
@@ -100,28 +108,35 @@ public class SetterBlock extends ExecutionBlock {
 		  switch(sourceType)
 		   {
 		   case STATIC :		   
-			   return "Executioner.updateInstanceAttributeValueFromStaticValue( "
-				  +"\"" + this.destinationInstanceId  +"\","
+			   return "Executioner.updateInstanceAttributeValueFromStaticValue( "//done
+				  +"\"" + this.destinationInstancesId  +"\","
 				  +"\"" + this.destinationAttributeName  +"\","
 				  +"\"" + this.value  +"\""
 				  +");\r\n";
 		   case VARIABLE:
-			   return "Executioner.updateInstanceAttributeValueFromVariable( "
+			   return "Executioner.updateInstanceAttributeValueFromVariable( "//done
 				  +"\"" + this.jobEngineProjectID  +"\","
 				  +"\"" + this.ruleId  +"\","
 				  +"\"" + this.sourceInstanceId  +"\","
 				  +"\"" + this.sourceAttributeName  +"\","
-				  +"\"" + this.variableId  +"\""
+				  +"\"" + this.sourceVariableId  +"\""
 				  +");\r\n";
 		   case ATTRIBUTE :
-			  return "Executioner.updateInstanceAttributeValueFromAnotherInstance( "
-					  +"\"" + this.jobEngineProjectID  +"\","
-					  +"\"" + this.ruleId  +"\","
-					  +"\"" + this.sourceInstanceId  +"\","
-					  +"\"" + this.sourceAttributeName  +"\","
-					  +"\"" + this.destinationInstanceId  +"\","
-					  +"\"" + this.destinationAttributeName  +"\""
-					  +");\r\n";
+			   StringBuilder expression = new StringBuilder();
+				for(String instanceId : destinationInstancesId)
+				{
+					expression.append("Executioner.updateInstanceAttributeValueFromAnotherInstance( "
+							  +"\"" + this.jobEngineProjectID  +"\","
+							  +"\"" + this.ruleId  +"\","
+							  +"\"" + this.sourceInstanceId  +"\","
+							  +"\"" + this.sourceAttributeName  +"\","
+							  +"\"" + instanceId  +"\","
+							  +"\"" + this.destinationAttributeName  +"\""
+							  +");\r\n");
+					expression.append("\n");
+					
+				}
+			  
 			  		
 		  default:
 			  throw new RuleBuildFailedException("INVALID CONFIGURATION");
@@ -133,21 +148,21 @@ public class SetterBlock extends ExecutionBlock {
 		  switch(sourceType)
 		   {
 		   case STATIC :		   
-			   return "Executioner.updateVariableValue( "
+			   return "Executioner.updateVariableValue( " //done
 				  +"\"" + this.jobEngineProjectID  +"\","
 				  +"\"" + this.destinationVariableId  +"\","
 				  +"\"" + this.value  +"\""
 				  +");\r\n";
 		   case VARIABLE:
-			   return "Executioner.updateVariableValueFromAnotherVariable( "
+			   return "Executioner.updateVariableValueFromAnotherVariable( " //done
 				  +"\"" + this.jobEngineProjectID  +"\","
-				  +"\"" + this.variableId  +"\","
+				  +"\"" + this.sourceVariableId  +"\","
 				  +"\"" + this.destinationVariableId  +"\""
 				  +");\r\n";
 		   case ATTRIBUTE :
-			   return "Executioner.updateVariableValueFromDataModel( "
+			   return "Executioner.updateVariableValueFromDataModel( " //done
 				  +"\"" + this.jobEngineProjectID  +"\","
-				  +"\"" + this.variableId  +"\","
+				  +"\"" + this.destinationVariableId  +"\","
 				  +"\"" + this.sourceInstanceId  +"\","
 				  +"\"" + this.sourceAttributeName  +"\""
 				  +");\r\n";

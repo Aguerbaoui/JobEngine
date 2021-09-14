@@ -20,8 +20,12 @@ public class LinkedVariableSetterBlock extends ExecutionBlock {
 		try
 		{
 			variableId=(String) blockModel.getBlockConfiguration().get("variableId");
-			
 			isProperlyConfigured=true;
+			if(inputBlockIds.isEmpty())
+			{
+				isProperlyConfigured=false;
+
+			}
 		}catch(Exception e) {
 			isProperlyConfigured=false;
 		}

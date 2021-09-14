@@ -108,6 +108,21 @@ public class JELogger {
         publishLogMessage(logMessage);
     }
 
+    
+    /*
+     * Block Inform log
+     * */
+    public static void info(String message,  LogCategory category,
+                            String projectId, LogSubModule subModule, String objectId,String blockName) {
+        //Log in file
+        logger.info( message);
+
+        //Log in logging service
+        LogMessage logMessage = getLogMessage(LogLevel.Inform, message, category, projectId, subModule, objectId,blockName);
+        publishLogMessage(logMessage);
+    }
+    
+    
     /*
      * Error log level
      * */
@@ -142,6 +157,15 @@ public class JELogger {
          return new LogMessage(logLevel, message, logDate, /*category,*/ projectId, subModule, objectId);
      }
 
+     
+     // get Log message object for the logging service
+     public static LogMessage getLogMessage(LogLevel logLevel, String message,  LogCategory category,
+                                            String projectId, LogSubModule subModule, String objectId,String blockName) {
+         String logDate = JEDate.formatDate(LocalDateTime.now(), "yyyy-MM-dd HH:mm:ss.SSS");
+        		 
+         return new LogMessage(logLevel, message, logDate, /*category,*/ projectId, subModule, objectId,blockName);
+     }
+     
     // get log string message
    /* public static String getLogStringText(String projectId, String subModule,  String extraInfo, String... objectIds) {
         // In every log message, we have the porject id, module ( rule/ workflow / event / variable ),
@@ -158,7 +182,7 @@ public class JELogger {
     /***************************************************************************************************************/
     private static Level getLogLevel(String level)
     {
-        //ALL < TRACE/CONTROL < DEBUG < INFO < WARN < ERROR < FATAL < OFF
+        //ALL < TRACE < DEBUG < INFO < WARN < ERROR < FATAL < OFF
     	Level lvl = Level.DEBUG;
     	switch(level.toUpperCase())
     	{

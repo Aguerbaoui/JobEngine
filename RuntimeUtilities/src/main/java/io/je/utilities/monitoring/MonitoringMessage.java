@@ -13,16 +13,17 @@ public class MonitoringMessage {
 	@JsonProperty("ModelId")
 	ObjectType objectType; //Variable/Event : ClassName
 	String objectProjectId;
-	String objectValue;
-	ArchiveOption isArchived = ArchiveOption.asInstance;
+	Object objectValue;
+	ArchiveOption isArchived = ArchiveOption.asSourceData;
 	boolean isBroadcasted=true;
+	String Source="JobEngine";
 	
 	
 	
 	
 	
 	public MonitoringMessage(LocalDateTime timestamp, String objectId, ObjectType objectType, String objectProjectId,
-			String objectValue, ArchiveOption isArchived, boolean isBroadcasted) {
+			Object objectValue, ArchiveOption isArchived, boolean isBroadcasted) {
 		super();
 		this.timestamp = timestamp.toString();
 		this.objectId = objectId;
@@ -56,10 +57,10 @@ public class MonitoringMessage {
 	public void setObjectProjectId(String objectProjectId) {
 		this.objectProjectId = objectProjectId;
 	}
-	public String getObjectValue() {
+	public Object getObjectValue() {
 		return objectValue;
 	}
-	public void setObjectValue(String objectValue) {
+	public void setObjectValue(Object objectValue) {
 		this.objectValue = objectValue;
 	}
 	public ArchiveOption getIsArchived() {

@@ -18,7 +18,9 @@ public class LinkedSetterBlock extends ExecutionBlock {
 	/*******************************Instance definition*******************************/
 	String classId;
 	String classPath;
-	String attributeName;
+	String destinationAttributeName;
+	String destinationAttributeType;
+
 	List<String> instances ; 
 
 	public LinkedSetterBlock(BlockModel blockModel) {
@@ -27,13 +29,18 @@ public class LinkedSetterBlock extends ExecutionBlock {
 		{
 			classId=(String) blockModel.getBlockConfiguration().get(AttributesMapping.CLASSID);
 			classPath = (String) blockModel.getBlockConfiguration().get(AttributesMapping.CLASSNAME);
-			attributeName = (String) blockModel.getBlockConfiguration().get(AttributesMapping.ATTRIBUTENAME);
+			destinationAttributeName = (String) blockModel.getBlockConfiguration().get(AttributesMapping.ATTRIBUTENAME);
 			instances = (List<String>) blockModel.getBlockConfiguration().get(AttributesMapping.SPECIFICINSTANCES);
 			isProperlyConfigured=true;
+			if(inputBlockIds.isEmpty())
+			{
+				isProperlyConfigured=false;
+
+			}
 		}catch(Exception e) {
 			isProperlyConfigured=false;
 		}finally {
-			if(classId==null || classPath==null || attributeName==null || instances==null || instances.isEmpty())
+			if(classId==null || classPath==null || destinationAttributeName==null || instances==null || instances.isEmpty())
 			{
 				isProperlyConfigured=false;
 
@@ -58,7 +65,7 @@ public class LinkedSetterBlock extends ExecutionBlock {
 		{
 			expression.append(  "Executioner.updateInstanceAttributeValueFromStaticValue( "
 					  +"\"" + instance  +"\","
-					  +"\"" + this.attributeName  +"\","
+					  +"\"" + this.destinationAttributeName  +"\","
 					  + getInputRefName(0)
 					  +");\r\n");
 			expression.append("\n");

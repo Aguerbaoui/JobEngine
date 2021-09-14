@@ -409,7 +409,10 @@ public class RuntimeDispatcher {
 		JELogger.debug("[projectId = " + projectId + "] [variable = " + variableId + "]" + JEMessages.UPDATING_VARIABLE,
 				LogCategory.RUNTIME, projectId, LogSubModule.VARIABLE, variableId);
 		JEVariable var = VariableManager.updateVariableValue(projectId, variableId, value);
-		RuleEngineHandler.addVariable(var);
+		if(var!=null)
+			{
+				RuleEngineHandler.addVariable(var);
+			}
 
 	}
 
