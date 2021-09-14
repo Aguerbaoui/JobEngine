@@ -1,6 +1,11 @@
 package io.je.utilities.models;
 
+import java.time.format.DateTimeFormatter;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import io.je.utilities.beans.JEVariable;
+import io.je.utilities.config.Utility;
 
 public class VariableModel {
 
@@ -16,6 +21,13 @@ public class VariableModel {
     
     private String initialValue;
 
+    String createdAt;
+    
+    String lastModifiedAt;
+    
+    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern(Utility.getSiothConfig().getDateFormat());
+
+    
     public String getId() {
         return id;
     }
@@ -59,7 +71,23 @@ public class VariableModel {
     
     
     
-    public String getInitialValue() {
+    public String getCreatedAt() {
+		return createdAt;
+	}
+
+	public void setCreatedAt(String createdAt) {
+		this.createdAt = createdAt;
+	}
+
+	public String getLastModifiedAt() {
+		return lastModifiedAt;
+	}
+
+	public void setLastModifiedAt(String lastModifiedAt) {
+		this.lastModifiedAt = lastModifiedAt;
+	}
+
+	public String getInitialValue() {
 		return initialValue;
 	}
 
@@ -91,6 +119,8 @@ public class VariableModel {
 	        this.name = variable.getName();
 	        this.type = variable.getType().toString();
 	        this.initialValue = String.valueOf(variable.getInitialValue());
+			this.createdAt = variable.getJeObjectCreationDate().format(formatter);
+			this.lastModifiedAt = variable.getJeObjectLastUpdate().format(formatter);
 	        this.value = null;
 	}
 }
