@@ -269,7 +269,7 @@ public class RuntimeDispatcher {
 	// delete class
 
 	public static void injectData(JEData jeData) throws InstanceCreationFailed {
-		JELogger.debug(JEMessages.INJECTING_DATA, LogCategory.RUNTIME, null, LogSubModule.JERUNNER, null);
+		JELogger.trace(JEMessages.INJECTING_DATA, LogCategory.RUNTIME, null, LogSubModule.JERUNNER, null);
 		try {
 			JEObject instanceData = InstanceManager.createInstance(jeData.getData());
 			for (String projectId : projectsByTopic.get(jeData.getTopic())) {
@@ -278,7 +278,7 @@ public class RuntimeDispatcher {
 				}
 			}
 		} catch (Exception e) {
-			JELogger.error("Failed to inject data : " + e.getMessage(), LogCategory.RUNTIME, null,
+			JELogger.error(JEMessages.FAILED_TO_INJECT_DATA + e.getMessage(), LogCategory.RUNTIME, null,
 					LogSubModule.JERUNNER, null);
 		}
 

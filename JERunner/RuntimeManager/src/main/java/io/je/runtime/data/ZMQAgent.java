@@ -23,7 +23,7 @@ public class ZMQAgent extends ZMQSubscriber {
 	
 	@Override
 	public void run() {
-		JELogger.info("[topic = "+topic+"]Started listening for data.. " ,  LogCategory.RUNTIME,
+		JELogger.info("[topic = "+topic+"]"+JEMessages.DATA_LISTENTING_STARTED ,  LogCategory.RUNTIME,
 				null, LogSubModule.JERUNNER, null);
 		while(listening)
     	{

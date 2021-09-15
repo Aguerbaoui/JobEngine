@@ -629,6 +629,10 @@ public class JEMessages {
     public static final String INSTANCE_UPDATE_SUCCESS ="Instance was updated successfully";
 
     public static final String ADD_INSTANCE_FAILED = "Failed to create instance : ";
+
+	public static final String FAILED_TO_INJECT_DATA = "Failed to inject data : ";
+
+	public static final String DATA_LISTENTING_STARTED = "Started listening for data.. ";
     
     
     

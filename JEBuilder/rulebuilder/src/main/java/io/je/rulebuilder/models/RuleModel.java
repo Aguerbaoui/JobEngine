@@ -34,6 +34,7 @@ public class RuleModel {
     @JsonProperty(AttributesMapping.ENABLED)
     String enabled;
 	
+   
     @JsonProperty(AttributesMapping.DATEEFFECTIVE)
     String dateEffective;
 	
