@@ -1,6 +1,8 @@
 package io.je.rulebuilder.components.blocks.comparison;
 
 
+import java.util.List;
+
 import io.je.rulebuilder.components.blocks.PersistableBlock;
 import io.je.rulebuilder.components.blocks.arithmetic.singleinput.SingleInputArithmeticBlock;
 import io.je.rulebuilder.components.blocks.getter.AttributeGetterBlock;
@@ -40,15 +42,15 @@ public  class ComparisonBlock extends PersistableBlock {
 	
 	
 	protected ComparisonBlock(String jobEngineElementID, String jobEngineProjectID, String ruleId, String blockName,
-			String blockDescription, int timePersistenceValue, String timePersistenceUnit) {
+			String blockDescription, int timePersistenceValue, String timePersistenceUnit,List<String> inputBlockIds, List<String> outputBlocksIds) {
 		super(jobEngineElementID, jobEngineProjectID, ruleId, blockName, blockDescription, timePersistenceValue,
-				timePersistenceUnit);
+				timePersistenceUnit,inputBlockIds,outputBlocksIds);
 		// TODO Auto-generated constructor stub
 	}
 	public ComparisonBlock(BlockModel blockModel) {
 		super(blockModel.getBlockId(), blockModel.getProjectId(), blockModel.getRuleId(),blockModel.getBlockName(),
 				blockModel.getDescription() ,
-				blockModel.getTimePersistenceValue(),blockModel.getTimePersistenceUnit());
+				blockModel.getTimePersistenceValue(),blockModel.getTimePersistenceUnit() ,blockModel.getInputBlocksIds(),blockModel.getOutputBlocksIds());
 
 		
 

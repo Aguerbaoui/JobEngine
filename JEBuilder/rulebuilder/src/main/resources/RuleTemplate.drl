@@ -25,6 +25,7 @@ import io.je.utilities.execution.Executioner;
 import io.je.utilities.beans.JEEvent;
 import io.je.utilities.beans.JEVariable;
 import io.je.utilities.math.*;
+import io.je.project.variables.VariableManager;
 
 template "JobEngineRuleTemplate"
 

@@ -74,7 +74,7 @@ public class EventController {
 	@ResponseBody
 	public ResponseEntity<?> getEvent(@PathVariable("projectId") String projectId,
 			@PathVariable("eventId") String eventId) {
-		JEEvent event = null;
+		EventModel event = null;
 
 		try {
 			projectService.getProject(projectId);
@@ -88,7 +88,7 @@ public class EventController {
 
 		}
 
-		return ResponseEntity.ok(new EventModel(event));
+		return ResponseEntity.ok(event);
 
 	}
 

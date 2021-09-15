@@ -30,7 +30,7 @@ public class RuleListener extends DefaultAgendaEventListener {
     @Override
     public void matchCreated(MatchCreatedEvent event) {
         // TODO Auto-generated method stub
-
+    int i = 0;
     }
 
     public RuleListener(String projectId) {
@@ -47,6 +47,8 @@ public class RuleListener extends DefaultAgendaEventListener {
     @Override
     public void beforeMatchFired(BeforeMatchFiredEvent event) {
         // TODO Auto-generated method stub
+        int i = 0;
+
 
     }
 
@@ -150,7 +152,8 @@ public class RuleListener extends DefaultAgendaEventListener {
     
     
     public void executionReached(String executionId) {
-    	
+        int i = 0;
+
     }
 
 }

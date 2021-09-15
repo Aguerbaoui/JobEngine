@@ -17,7 +17,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.LinkedList;
 import java.util.Queue;
 
-
 /*
  * Class Responsible for logging 
  * A log request of level p in a logger with level q is enabled if p >= q. 
@@ -25,238 +24,260 @@ import java.util.Queue;
  */
 public class JELogger {
 
-    private static Queue<LogMessage> queue = new LinkedList<>();
-    private static  Logger logger = null;
-    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+	private static Queue<LogMessage> queue = new LinkedList<>();
+	private static Logger logger = null;
+	private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
 
-    
-  
+	/*******************************
+	 * TO BE DELETED
+	 ****************************************************/
 
-    
-    /*******************************TO BE DELETED ****************************************************/
+	public static Queue<LogMessage> getQueue() {
+		return queue;
+	}
 
+	/*******************************************************************************************************/
 
-    public static Queue<LogMessage> getQueue() {
-        return queue;
-    }
+	/*
+	 * check if the message's log level is more specific than the logger's level
+	 */
 
-    
-    
-    /*******************************************************************************************************/
+	private static boolean logLevelIsEnabled(Level lvl) {
+		if (lvl == logger.getLevel() || lvl == Level.ALL || lvl.isMoreSpecificThan(logger.getLevel())) {
+			return true;
+		}
 
-    /*
-     * check if the message's log level is more specific than the logger's level 
-     */
-    
-    private static boolean logLevelIsEnabled(Level lvl)
-    {
-    	if(lvl == logger.getLevel() || lvl == Level.ALL || lvl.isMoreSpecificThan(logger.getLevel()))
-    	{
-    		return true;
-    	}
+		return false;
+	}
 
-    	return false;
-    }
-    
-    /*
-    * Publish log message to SIOTHTracker
-    * */
-    private static void publishLogMessage(LogMessage logMessage) {
-        //Debug > Inform > control > Error
-        Level lvl = getLogLevel(logMessage.logLevel.toString());
-        if(logLevelIsEnabled(lvl)) {
-            ZMQLogPublisher.publish(logMessage);
-        }
-    }
-    /*
-     * Trace log level
-     * */
-    public static void trace(String message,  LogCategory category,
-                             String projectId, LogSubModule subModule, String objectId) {
-        //Log in file
-        logger.trace( message);
+	/*
+	 * Publish log message to SIOTHTracker
+	 */
+	private static void publishLogMessage(LogMessage logMessage) {
+		// Debug > Inform > control > Error
+		Level lvl = getLogLevel(logMessage.logLevel.toString());
+		if (logLevelIsEnabled(lvl)) {
+			ZMQLogPublisher.publish(logMessage);
+		}
+	}
 
-        //Log in logging service
-        //LogMessage logMessage = getLogMessage(LogLevel.Control, message, category, projectId, subModule, objectId);
-        //publishLogMessage(logMessage);
-    }
+	/*
+	 * Trace log level
+	 */
+	public static void trace(String message, LogCategory category, String projectId, LogSubModule subModule,
+			String objectId) {
+		// Log in file
+		logger.trace(message);
 
-    /*
-     * Debug log level
-     * */
-    public static void debug(String message,  LogCategory category,
-                             String projectId, LogSubModule subModule, String objectId) {
-        //Log in file
-        logger.debug( message);
+		// Log in logging service
+		// LogMessage logMessage = getLogMessage(LogLevel.Control, message, category,
+		// projectId, subModule, objectId);
+		// publishLogMessage(logMessage);
+	}
 
-        //Log in logging service
-        LogMessage logMessage = getLogMessage(LogLevel.Debug, message, category, projectId, subModule, objectId);
-      //  publishLogMessage(logMessage);
+	/*
+	 * Debug log level
+	 */
+	public static void debug(String message, LogCategory category, String projectId, LogSubModule subModule,
+			String objectId) {
+		// Log in file
+		logger.debug(message);
 
-    }
+		// Log in logging service
+		LogMessage logMessage = getLogMessage(LogLevel.Debug, message, category, projectId, subModule, objectId);
+		publishLogMessage(logMessage);
 
-    /*
-     * Inform log level
-     * */
-    public static void info(String message,  LogCategory category,
-                            String projectId, LogSubModule subModule, String objectId) {
-        //Log in file
-        logger.info( message);
+	}
 
-        //Log in logging service
-        LogMessage logMessage = getLogMessage(LogLevel.Inform, message, category, projectId, subModule, objectId);
-        publishLogMessage(logMessage);
-    }
+	public static void debugWithoutPublish(String message, LogCategory category, String projectId, LogSubModule subModule,
+			String objectId) {
+//Log in file
+		logger.debug(message);
 
-    
-    /*
-     * Block Inform log
-     * */
-    public static void info(String message,  LogCategory category,
-                            String projectId, LogSubModule subModule, String objectId,String blockName) {
-        //Log in file
-        logger.info( message);
+//Log in logging service
+		LogMessage logMessage = getLogMessage(LogLevel.Debug, message, category, projectId, subModule, objectId);
+		//publishLogMessage(logMessage);
 
-        //Log in logging service
-        LogMessage logMessage = getLogMessage(LogLevel.Inform, message, category, projectId, subModule, objectId,blockName);
-        publishLogMessage(logMessage);
-    }
-    
-    
-    /*
-     * Error log level
-     * */
-    public static void error(String message,  LogCategory category,
-                             String projectId, LogSubModule subModule, String objectId) {
-        //Log in file
-        logger.error( message);
+	}
 
-        //Log in logging service
-        LogMessage logMessage = getLogMessage(LogLevel.Error, message, category, projectId, subModule, objectId);
-        publishLogMessage(logMessage);
-    }
+	/*
+	 * Debug log level
+	 */
+	public static void debug(String message, LogCategory category, String projectId, LogSubModule subModule,
+			String objectId, String blockName) {
+		// Log in file
+		logger.debug(message);
 
-    /*
-     * Warning log level
-     * */
-    public static void warn(String message,  LogCategory category,
-                            String projectId, LogSubModule subModule, String objectId) {
-        //Log in file
-        logger.warn( message);
+		// Log in logging service
+		LogMessage logMessage = getLogMessage(LogLevel.Debug, message, category, projectId, subModule, objectId,
+				blockName);
+		// publishLogMessage(logMessage);
 
-        //Log in logging service
-        LogMessage logMessage = getLogMessage(LogLevel.Warning, message, category, projectId, subModule, objectId);
-        publishLogMessage(logMessage);
-    }
+	}
 
-    // get Log message object for the logging service
-     public static LogMessage getLogMessage(LogLevel logLevel, String message,  LogCategory category,
-                                            String projectId, LogSubModule subModule, String objectId) {
-         String logDate = JEDate.formatDate(LocalDateTime.now(), "yyyy-MM-dd HH:mm:ss.SSS");
-        		 
-         return new LogMessage(logLevel, message, logDate, /*category,*/ projectId, subModule, objectId);
-     }
+	/*
+	 * Inform log level
+	 */
+	public static void info(String message, LogCategory category, String projectId, LogSubModule subModule,
+			String objectId) {
+		// Log in file
+		logger.info(message);
 
-     
-     // get Log message object for the logging service
-     public static LogMessage getLogMessage(LogLevel logLevel, String message,  LogCategory category,
-                                            String projectId, LogSubModule subModule, String objectId,String blockName) {
-         String logDate = JEDate.formatDate(LocalDateTime.now(), "yyyy-MM-dd HH:mm:ss.SSS");
-        		 
-         return new LogMessage(logLevel, message, logDate, /*category,*/ projectId, subModule, objectId,blockName);
-     }
-     
-    // get log string message
-   /* public static String getLogStringText(String projectId, String subModule,  String extraInfo, String... objectIds) {
-        // In every log message, we have the porject id, module ( rule/ workflow / event / variable ),
-        // related objects to it and the extra info explaining the action
-        String msg = "[Project Id = " + projectId + "] [Submodule = " + subModule + "] ";
-        if(objectIds != null) {
-            for(int i = 0; i< objectIds.length; i++) {
-                msg = msg + "[Object Id = " + objectIds[i] + " ] ";
-            }
-        }
-        msg += extraInfo;
-        return msg;
-    }*/
-    /***************************************************************************************************************/
-    private static Level getLogLevel(String level)
-    {
-        //ALL < TRACE < DEBUG < INFO < WARN < ERROR < FATAL < OFF
-    	Level lvl = Level.DEBUG;
-    	switch(level.toUpperCase())
-    	{
-    	case "ERROR":
-    		return Level.ERROR;
-    	case "DEBUG":
-    		break;    	
-    	case "INFO":
-    		return Level.INFO;
-    	case "WARN":
-    		return Level.WARN;
-    	case "TRACE":
-    		return Level.TRACE;
-    	case "OFF":
-    		return Level.OFF;
-    	case "ALL":
-    		return Level.ALL;
-    	}
-    	return lvl;
-    }
+		// Log in logging service
+		LogMessage logMessage = getLogMessage(LogLevel.Inform, message, category, projectId, subModule, objectId);
+		publishLogMessage(logMessage);
+	}
 
-    public static void initLogger(String appName, String logPath, String level) {
-        //TODO Remove the old logger context initialization (spring/activiti/drools)
-        String pattern = "[%d] [%p]" + appName + " :: %m%n";
-        ConfigurationBuilder<BuiltConfiguration> builder = ConfigurationBuilderFactory.newConfigurationBuilder();
+	/*
+	 * Block Inform log
+	 */
+	public static void info(String message, LogCategory category, String projectId, LogSubModule subModule,
+			String objectId, String blockName) {
+		// Log in file
+		logger.info(message);
 
-        builder.setStatusLevel(getLogLevel(level));
-        builder.setConfigurationName(appName + "Logger");
-        RootLoggerComponentBuilder rootLogger = builder.newRootLogger(getLogLevel(level));
-        // create a console appender
-        AppenderComponentBuilder consoleAppender = builder.newAppender("Console", "CONSOLE").addAttribute("target",
-                ConsoleAppender.Target.SYSTEM_OUT);
-        consoleAppender.add(builder.newLayout("PatternLayout")
-                .addAttribute("pattern", pattern));
-        rootLogger.add(builder.newAppenderRef("Console"));
+		// Log in logging service
+		LogMessage logMessage = getLogMessage(LogLevel.Inform, message, category, projectId, subModule, objectId,
+				blockName);
+		publishLogMessage(logMessage);
+	}
 
-        builder.add(consoleAppender);
+	/*
+	 * Error log level
+	 */
+	public static void error(String message, LogCategory category, String projectId, LogSubModule subModule,
+			String objectId) {
+		// Log in file
+		logger.error(message);
 
-        // create a rolling file appender
-        LayoutComponentBuilder layoutBuilder = builder.newLayout("PatternLayout")
-                .addAttribute("pattern", pattern);
-        ComponentBuilder triggeringPolicy = builder.newComponent("Policies")
-                .addComponent(builder.newComponent("SizeBasedTriggeringPolicy").addAttribute("size", "10MB"));
-        AppenderComponentBuilder appenderBuilder = builder.newAppender("LogToRollingFile", "RollingFile")
-                .addAttribute("fileName", logPath)
-                .addAttribute("filePattern", logPath + "-%d{MM-dd-yy-HH}.log.")
-                .add(layoutBuilder)
-                .addComponent(triggeringPolicy);
-        builder.add(appenderBuilder);
+		// Log in logging service
+		LogMessage logMessage = getLogMessage(LogLevel.Error, message, category, projectId, subModule, objectId);
+		publishLogMessage(logMessage);
+	}
 
-        rootLogger.add(builder.newAppenderRef("LogToRollingFile"));
-        builder.add(rootLogger);
-        LoggerContext context = Configurator.initialize(builder.build());
-        Configurator.shutdown(context);
-        context = Configurator.initialize(builder.build());
-        logger = context.getLogger("JobEngineLogger");
-        // trace(JELogger.class, "Builder Logger initialized");
-        logger.info(getInitialLogMessage(appName,level));
+	/*
+	 * Error log level
+	 */
+	public static void error(String message, LogCategory category, String projectId, LogSubModule subModule,
+			String objectId, String blockName) {
+		// Log in file
+		logger.error(message);
 
-    }
+		// Log in logging service
+		LogMessage logMessage = getLogMessage(LogLevel.Error, message, category, projectId, subModule, objectId,
+				blockName);
+		publishLogMessage(logMessage);
+	}
 
-    
-    private static String getInitialLogMessage(String appName, String level)
-    {
-    	return "\n======================================================================================\r\n"
-    			+ "==                                     "+appName+"                                     ==\r\n"
-    			+ "==                                 Version : 1.0.0                                  ==\r\n"
-    			+ "==                                 Build Date : "+LocalDateTime.now().format(formatter)+"                            ==\r\n"
-    			+ "==                       Copyright © 2021 Integration Objects                       ==\r\n"
-    			+ "======================================================================================\r\n"
-    			+ "==                             Trace level : [ "+level+" ]                              ==\r\n"
-    			+ "======================================================================================";
-    	
-    	
-    }
+	/*
+	 * Warning log level
+	 */
+	public static void warn(String message, LogCategory category, String projectId, LogSubModule subModule,
+			String objectId) {
+		// Log in file
+		logger.warn(message);
+
+		// Log in logging service
+		LogMessage logMessage = getLogMessage(LogLevel.Warning, message, category, projectId, subModule, objectId);
+		publishLogMessage(logMessage);
+	}
+
+	// get Log message object for the logging service
+	public static LogMessage getLogMessage(LogLevel logLevel, String message, LogCategory category, String projectId,
+			LogSubModule subModule, String objectId) {
+		String logDate = JEDate.formatDate(LocalDateTime.now(), "yyyy-MM-dd HH:mm:ss.SSS");
+
+		return new LogMessage(logLevel, message, logDate, /* category, */ projectId, subModule, objectId);
+	}
+
+	// get Log message object for the logging service
+	public static LogMessage getLogMessage(LogLevel logLevel, String message, LogCategory category, String projectId,
+			LogSubModule subModule, String objectId, String blockName) {
+		String logDate = JEDate.formatDate(LocalDateTime.now(), "yyyy-MM-dd HH:mm:ss.SSS");
+
+		return new LogMessage(logLevel, message, logDate, /* category, */ projectId, subModule, objectId, blockName);
+	}
+
+	// get log string message
+	/*
+	 * public static String getLogStringText(String projectId, String subModule,
+	 * String extraInfo, String... objectIds) { // In every log message, we have the
+	 * porject id, module ( rule/ workflow / event / variable ), // related objects
+	 * to it and the extra info explaining the action String msg = "[Project Id = "
+	 * + projectId + "] [Submodule = " + subModule + "] "; if(objectIds != null) {
+	 * for(int i = 0; i< objectIds.length; i++) { msg = msg + "[Object Id = " +
+	 * objectIds[i] + " ] "; } } msg += extraInfo; return msg; }
+	 */
+	/***************************************************************************************************************/
+	private static Level getLogLevel(String level) {
+		// ALL < TRACE < DEBUG < INFO < WARN < ERROR < FATAL < OFF
+		Level lvl = Level.DEBUG;
+		switch (level.toUpperCase()) {
+		case "ERROR":
+			return Level.ERROR;
+		case "DEBUG":
+			break;
+		case "INFO":
+			return Level.INFO;
+		case "WARN":
+			return Level.WARN;
+		case "TRACE":
+			return Level.TRACE;
+		case "OFF":
+			return Level.OFF;
+		case "ALL":
+			return Level.ALL;
+		}
+		return lvl;
+	}
+
+	public static void initLogger(String appName, String logPath, String level) {
+		// TODO Remove the old logger context initialization (spring/activiti/drools)
+		String pattern = "[%d] [%p]" + appName + " :: %m%n";
+		ConfigurationBuilder<BuiltConfiguration> builder = ConfigurationBuilderFactory.newConfigurationBuilder();
+
+		builder.setStatusLevel(getLogLevel(level));
+		builder.setConfigurationName(appName + "Logger");
+		RootLoggerComponentBuilder rootLogger = builder.newRootLogger(getLogLevel(level));
+		// create a console appender
+		AppenderComponentBuilder consoleAppender = builder.newAppender("Console", "CONSOLE").addAttribute("target",
+				ConsoleAppender.Target.SYSTEM_OUT);
+		consoleAppender.add(builder.newLayout("PatternLayout").addAttribute("pattern", pattern));
+		rootLogger.add(builder.newAppenderRef("Console"));
+
+		builder.add(consoleAppender);
+
+		// create a rolling file appender
+		LayoutComponentBuilder layoutBuilder = builder.newLayout("PatternLayout").addAttribute("pattern", pattern);
+		ComponentBuilder triggeringPolicy = builder.newComponent("Policies")
+				.addComponent(builder.newComponent("SizeBasedTriggeringPolicy").addAttribute("size", "10MB"));
+		AppenderComponentBuilder appenderBuilder = builder.newAppender("LogToRollingFile", "RollingFile")
+				.addAttribute("fileName", logPath).addAttribute("filePattern", logPath + "-%d{MM-dd-yy-HH}.log.")
+				.add(layoutBuilder).addComponent(triggeringPolicy);
+		builder.add(appenderBuilder);
+
+		rootLogger.add(builder.newAppenderRef("LogToRollingFile"));
+		builder.add(rootLogger);
+		LoggerContext context = Configurator.initialize(builder.build());
+		Configurator.shutdown(context);
+		context = Configurator.initialize(builder.build());
+		logger = context.getLogger("JobEngineLogger");
+		// trace(JELogger.class, "Builder Logger initialized");
+		logger.info(getInitialLogMessage(appName, level));
+
+	}
+
+	private static String getInitialLogMessage(String appName, String level) {
+		return "\n======================================================================================\r\n"
+				+ "==                                     " + appName + "                                     ==\r\n"
+				+ "==                                 Version : 1.0.0                                  ==\r\n"
+				+ "==                                 Build Date : " + LocalDateTime.now().format(formatter)
+				+ "                            ==\r\n"
+				+ "==                       Copyright © 2021 Integration Objects                       ==\r\n"
+				+ "======================================================================================\r\n"
+				+ "==                             Trace level : [ " + level + " ]                              ==\r\n"
+				+ "======================================================================================";
+
+	}
 
 }

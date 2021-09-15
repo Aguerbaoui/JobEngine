@@ -40,7 +40,7 @@ public abstract class Block extends JEObject {
    
    
 	public Block(String jobEngineElementID, String jobEngineProjectID, String ruleId, String blockName,
-		String blockDescription) {
+		String blockDescription,List<String> inputBlockIds, List<String> outputBlocksIds) {
 	super(jobEngineElementID, jobEngineProjectID);
 	this.ruleId = ruleId;
 	this.blockName = blockName;
@@ -50,6 +50,8 @@ public abstract class Block extends JEObject {
 	{
 		isProperlyConfigured=false;
 	}
+	this.inputBlockIds= inputBlockIds;
+	this.outputBlockIds = outputBlocksIds;
 	
 }
 	

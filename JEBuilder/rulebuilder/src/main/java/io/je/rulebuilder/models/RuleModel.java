@@ -2,6 +2,7 @@ package io.je.rulebuilder.models;
 
 import java.time.format.DateTimeFormatter;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.je.rulebuilder.components.JERule;
@@ -52,11 +53,16 @@ public class RuleModel {
     String isBuilt;
     
     
+    String createdBy;
+    String modifiedBy;
+    
+    
     //temporary 
     @JsonProperty(AttributesMapping.FRONTCONFIG)
     String ruleFrontConfig;
     
     
+    @JsonIgnore
     private DateTimeFormatter formatter = DateTimeFormatter.ofPattern(Utility.getSiothConfig().getDateFormat());
 
 
@@ -69,6 +75,8 @@ public class RuleModel {
 		this.isBuilt = String.valueOf(rule.isBuilt());
 		this.createdAt = rule.getJeObjectCreationDate().format(formatter);
 		this.lastModifiedAt = rule.getJeObjectLastUpdate().format(formatter);
+		this.createdBy = rule.getJeObjectCreatedBy();
+		this.modifiedBy = rule.getJeObjectModifiedBy();
 		if(rule instanceof UserDefinedRule) {
 			this.salience = ((UserDefinedRule)rule).getRuleParameters().getSalience();
 			this.enabled = ((UserDefinedRule)rule).getRuleParameters().getEnabled();
@@ -76,6 +84,7 @@ public class RuleModel {
 			this.dateExpires = ((UserDefinedRule)rule).getRuleParameters().getDateExpires();
 			this.timer = ((UserDefinedRule)rule).getRuleParameters().getTimer();
 			this.ruleFrontConfig = ((UserDefinedRule)rule).getRuleFrontConfig();
+			
 
 		}
 		
@@ -95,6 +104,34 @@ public class RuleModel {
 
 
 	
+
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
+
+
+
+	public String getModifiedBy() {
+		return modifiedBy;
+	}
+
+
+
+	public void setModifiedBy(String modifiedBy) {
+		this.modifiedBy = modifiedBy;
+	}
+
+
+
+
+
+
 
 	public String getSalience() {
 		return salience;

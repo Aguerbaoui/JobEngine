@@ -176,7 +176,7 @@ public class ClassManager {
               }
               else
               {
-				  JELogger.debug("Data Model defintion Returned : " + response,
+				  JELogger.debug("Data Model definition returned : " + response,
 						  LogCategory.DESIGN_MODE, null,
 						  LogSubModule.JEBUILDER,null);
               }

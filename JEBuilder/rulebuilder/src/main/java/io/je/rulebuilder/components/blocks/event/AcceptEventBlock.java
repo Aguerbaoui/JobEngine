@@ -13,7 +13,7 @@ public  class AcceptEventBlock extends ConditionBlock {
 
 	public AcceptEventBlock(BlockModel blockModel) {
 		super(blockModel.getBlockId(), blockModel.getProjectId(), blockModel.getRuleId(), blockModel.getBlockName(),
-				blockModel.getDescription());
+				blockModel.getDescription(),blockModel.getInputBlocksIds(),blockModel.getOutputBlocksIds());
 		if(blockModel.getBlockConfiguration()!=null && blockModel.getBlockConfiguration().get(AttributesMapping.VALUE)!=null)
 		{
 			eventId = (String) blockModel.getBlockConfiguration().get(AttributesMapping.VALUE);

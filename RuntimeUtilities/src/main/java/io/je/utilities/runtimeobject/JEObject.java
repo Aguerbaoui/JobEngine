@@ -13,12 +13,19 @@ public abstract class JEObject {
     protected String jobEngineElementID;
 
     protected String jobEngineProjectID;
-
+    
+    protected String jobEngineProjectName;
+    
     protected String jobEngineElementName;
 
     protected LocalDateTime jeObjectLastUpdate;
     
     protected LocalDateTime jeObjectCreationDate;
+    
+    protected String jeObjectCreatedBy;
+
+    protected String jeObjectModifiedBy;
+
 
 
 
@@ -117,6 +124,37 @@ public abstract class JEObject {
 		this.jobEngineElementName = jobEngineElementName;
 	}
 
+
+	public String getJeObjectCreatedBy() {
+		return jeObjectCreatedBy;
+	}
+
+
+	public void setJeObjectCreatedBy(String jeObjectCreatedBy) {
+		this.jeObjectCreatedBy = jeObjectCreatedBy;
+	}
+
+
+	public String getJeObjectModifiedBy() {
+		return jeObjectModifiedBy;
+	}
+
+
+	public void setJeObjectModifiedBy(String jeObjectModifiedBy) {
+		this.jeObjectModifiedBy = jeObjectModifiedBy;
+	}
+
+
+	public String getJobEngineProjectName() {
+		return jobEngineProjectName;
+	}
+
+
+	public void setJobEngineProjectName(String jobEngineProjectName) {
+		this.jobEngineProjectName = jobEngineProjectName;
+	}
+
+	
 	
     
     

@@ -78,6 +78,8 @@ public class WorkflowService {
         wf.setDescription(m.getDescription());
         wf.setJeObjectLastUpdate(LocalDateTime.now());
         wf.setJeObjectCreationDate(LocalDateTime.now());
+        wf.setJeObjectCreatedBy(m.getCreatedBy());
+        wf.setJeObjectModifiedBy(m.getModifiedBy());
         if(m.isOnProjectBoot()) {
             JEWorkflow startupWorkflow = project.getStartupWorkflow();
             if(startupWorkflow != null) {
@@ -826,6 +828,9 @@ public class WorkflowService {
                     LogCategory.DESIGN_MODE, projectId,
                     LogSubModule.WORKFLOW, workflowId);
             project.getWorkflowByIdOrName(workflowId).setWorkflowName(m.getName());
+            project.getWorkflowByIdOrName(workflowId).setDescription(m.getDescription());
+            project.getWorkflowByIdOrName(workflowId).setJeObjectCreatedBy(m.getCreatedBy());
+            project.getWorkflowByIdOrName(workflowId).setJeObjectModifiedBy(m.getModifiedBy());
         }
 
         if(m.isOnProjectBoot()) {

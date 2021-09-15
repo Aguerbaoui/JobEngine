@@ -15,7 +15,7 @@ public  class VariableGetterBlock extends ConditionBlock {
 
 	public VariableGetterBlock(BlockModel blockModel) {
 		super(blockModel.getBlockId(), blockModel.getProjectId(), blockModel.getRuleId(), blockModel.getBlockName(),
-				blockModel.getDescription());
+				blockModel.getDescription(),blockModel.getInputBlocksIds(),blockModel.getOutputBlocksIds());
 		try {
 			variableId = (String) blockModel.getBlockConfiguration().get("variableId");
 			isProperlyConfigured = true;

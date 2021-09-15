@@ -1,6 +1,8 @@
 package io.je.rulebuilder.components.blocks.event;
 
 
+import java.util.List;
+
 import io.je.rulebuilder.components.blocks.PersistableBlock;
 
 public  class TimeOutEventBlock extends PersistableBlock {
@@ -15,9 +17,9 @@ public  class TimeOutEventBlock extends PersistableBlock {
 
 
 	public TimeOutEventBlock(String jobEngineElementID, String jobEngineProjectID, String ruleId, String blockName,
-			String blockDescription, int timePersistenceValue, String timePersistenceUnit, String eventId) {
+			String blockDescription, int timePersistenceValue, String timePersistenceUnit, String eventId,List<String> inputBlockIds, List<String> outputBlocksIds) {
 		super(jobEngineElementID, jobEngineProjectID, ruleId, blockName, blockDescription, timePersistenceValue,
-				timePersistenceUnit);
+				timePersistenceUnit,inputBlockIds,outputBlocksIds);
 		this.eventId = eventId;
 	}
 

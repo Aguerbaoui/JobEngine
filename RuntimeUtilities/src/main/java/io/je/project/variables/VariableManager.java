@@ -94,9 +94,9 @@ public class VariableManager {
 		       message.getBlocks().add(blockMessage);
 		       message.getVariables().add(varMessage);
 	           try {
-	   			JELogger.info("Variable "+variable.getName() + " = " +variable.getValue(), LogCategory.RUNTIME, projectId, LogSubModule.VARIABLE, variableId);
+	   			JELogger.debug("Variable ["+variable.getName() + "] = " +variable.getValue(), LogCategory.RUNTIME, projectId, LogSubModule.VARIABLE, variableId);
 	   			JEMonitor.publish(LocalDateTime.now(), variable.getJobEngineElementID(), ObjectType.JEVARIABLE, variable.getJobEngineProjectID(), variable.getValue(), ArchiveOption.asSourceData, false);
-				JELogger.debug(objectMapper.writeValueAsString(message), LogCategory.RUNTIME, projectId, LogSubModule.VARIABLE, variableId);
+				JELogger.debugWithoutPublish(objectMapper.writeValueAsString(message), LogCategory.RUNTIME, projectId, LogSubModule.VARIABLE, variableId);
 			} catch (JsonProcessingException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -125,7 +125,7 @@ public class VariableManager {
 	        }
 		for(Map.Entry<String, JEVariable>  variable : variables.get(projectId).entrySet())
 		{
-			variable.getValue().setValue( (String) variable.getValue().getInitialValue());
+			variable.getValue().setValue( String.valueOf(variable.getValue().getInitialValue()));
 			
 		}
 	}

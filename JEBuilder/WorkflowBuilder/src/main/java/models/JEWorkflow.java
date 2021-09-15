@@ -286,6 +286,7 @@ public class JEWorkflow extends JEObject {
         workflowStartBlock.setProcessed(false);
         status = IDLE;
     }
+    
 
     @Override
     public String toString() {

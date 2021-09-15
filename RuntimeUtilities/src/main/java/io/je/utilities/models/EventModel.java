@@ -1,11 +1,15 @@
 package io.je.utilities.models;
 
+import java.time.format.DateTimeFormatter;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.je.utilities.beans.JEEvent;
+import io.je.utilities.config.Utility;
 import io.je.utilities.mapping.EventModelMapping;
 
 @JsonInclude(Include.NON_NULL)
@@ -41,7 +45,12 @@ public class EventModel {
     @JsonProperty(EventModelMapping.TIMEOUTUNIT)
     private String timeoutUnit;
 
+    private String createdBy;
+   
+    private String modifiedBy;
     
+    @JsonIgnore
+    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern(Utility.getSiothConfig().getDateFormat());
     
     public String getProjectId() {
         return projectId;
@@ -59,13 +68,13 @@ public class EventModel {
         this.name = name;
     }
 
-    public EventModel(String id, String projectId, EventType type, String name) {
+  /*  public EventModel(String id, String projectId, EventType type, String name) {
         super();
         this.name = name;
         this.eventId = id;
         this.projectId = projectId;
     }
-
+*/
     public EventModel() {
         super();
     }
@@ -75,11 +84,13 @@ public class EventModel {
         this.eventId = event.getJobEngineElementID();
         this.projectId = event.getJobEngineProjectID();
         this.description = event.getDescription();
-        this.createdAt = event.getJeObjectCreationDate().toString();
-        this.lastModifiedAt = event.getJeObjectLastUpdate().toString();
+        this.createdAt = event.getJeObjectCreationDate().format(formatter);
+		this.lastModifiedAt = event.getJeObjectLastUpdate().format(formatter);
         this.triggered = event.isTriggered();
         this.timeout = event.getTimeoutValue();
         this.timeoutUnit = event.getTimeoutUnit();
+		this.createdBy = event.getJeObjectCreatedBy();
+		this.modifiedBy = event.getJeObjectModifiedBy();
 	}
 
 	public String getEventId() {
@@ -144,6 +155,22 @@ public class EventModel {
 
 	public void setTimeoutUnit(String timeoutUnit) {
 		this.timeoutUnit = timeoutUnit;
+	}
+
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public String getModifiedBy() {
+		return modifiedBy;
+	}
+
+	public void setModifiedBy(String modifiedBy) {
+		this.modifiedBy = modifiedBy;
 	}
     
     

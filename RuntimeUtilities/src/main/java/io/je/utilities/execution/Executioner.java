@@ -74,7 +74,7 @@ public class Executioner {
     /*************************************************** SETTERS *******************************************************************/
     /*************************************** SET DATA MODEL INSTANCE VALUE *********************************************************/
     /*****SET FROM STATIC VALUE*****/
-    public static void updateInstanceAttributeValueFromStaticValue(String instanceId, String attributeName, Object value) {
+    public static void updateInstanceAttributeValueFromStaticValue(String projectId, String ruleId, String blockName,String instanceId, String attributeName, Object value) {
         //Rework to use a callable for exception handling
 
         try {
@@ -82,14 +82,23 @@ public class Executioner {
 
                 @Override
                 public void run() {
-                   InstanceManager.writeToDataModelInstance(instanceId,attributeName,value);
-
+                   
+                	try{
+                		//TODO: add blockName
+                		InstanceManager.writeToDataModelInstance(instanceId,attributeName,value);
+                		JELogger.debug(JEMessages.INSTANCE_UPDATE_SUCCESS ,  LogCategory.RUNTIME,
+                                projectId, LogSubModule.RULE, ruleId,blockName);
+                	}catch(Exception e)
+                	{
+                		JELogger.error(JEMessages.WRITE_INSTANCE_FAILED + e.getMessage(),  LogCategory.RUNTIME,
+                				projectId, LogSubModule.RULE, ruleId,blockName);
+                	}
 
                 }
             }).start();
         } catch (Exception e) {
         	JELogger.error(JEMessages.WRITE_INSTANCE_FAILED ,  LogCategory.RUNTIME,
-                    null, LogSubModule.RULE, null);
+        			projectId, LogSubModule.RULE, ruleId,blockName);
         }
 
     }

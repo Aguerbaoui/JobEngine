@@ -81,7 +81,9 @@ public class RuleService {
         rule.setJeObjectCreationDate(LocalDateTime.now());
         rule.setJeObjectLastUpdate(LocalDateTime.now());
         RuleParameters ruleParameters = new RuleParameters();
-        ruleParameters.setSalience(String.valueOf(ruleModel.getSalience()));
+        rule.setJeObjectCreatedBy(ruleModel.getCreatedBy());
+        rule.setJeObjectModifiedBy(ruleModel.getModifiedBy());
+        ruleParameters.setSalience(ruleModel.getSalience());
         ruleParameters.setTimer(ruleModel.getTimer());
         ruleParameters.setEnabled(ruleModel.getEnabled());
         ruleParameters.setDateEffective(ruleModel.getDateEffective());
@@ -146,6 +148,23 @@ public class RuleService {
             ruleToUpdate.setRuleName(null);
 
         }
+        
+        // update createdBy
+        if (ruleModel.getCreatedBy() != null && !ruleModel.getCreatedBy().equals(DEFAULT_DELETE_CONSTANT)) {
+            ruleToUpdate.setJeObjectCreatedBy(ruleModel.getCreatedBy());
+        } else if (ruleModel.getCreatedBy() != null && ruleModel.getCreatedBy().equals(DEFAULT_DELETE_CONSTANT)) {
+            ruleToUpdate.setJeObjectCreatedBy(null);
+
+        }
+
+        // update modifiedBy
+        if (ruleModel.getModifiedBy() != null && !ruleModel.getModifiedBy().equals(DEFAULT_DELETE_CONSTANT)) {
+            ruleToUpdate.setJeObjectModifiedBy(ruleModel.getModifiedBy());
+        } else if (ruleModel.getModifiedBy() != null && ruleModel.getModifiedBy().equals(DEFAULT_DELETE_CONSTANT)) {
+            ruleToUpdate.setJeObjectModifiedBy(null);
+
+        }
+
 
         // update rule description
         if (ruleModel.getDescription() != null && !ruleModel.getDescription().equals(DEFAULT_DELETE_CONSTANT)) {
@@ -232,7 +251,7 @@ public class RuleService {
         boolean blockExists = rule.containsBlock(blockModel.getBlockId());
         if(blockExists)
         {
-        	throw new AddRuleBlockException("A block with this id already exists");
+        	throw new AddRuleBlockException(JEMessages.BLOCK_EXISTS);
         }
 
         JELogger.debug( JEMessages.ADDING_BLOCK + blockModel.getBlockName() + " to rule [id : " + blockModel.getRuleId() + "]",
@@ -242,9 +261,7 @@ public class RuleService {
 
         //create block
         Block block = BlockGenerator.createBlock(blockModel);
-        block.setInputBlockIds(blockModel.getInputBlocksIds());
-        block.setOutputBlockIds(blockModel.getOutputBlocksIds()); 
-        
+   
         //add block to rule
         rule.addBlock(block);
         rule.setJeObjectLastUpdate(LocalDateTime.now());
@@ -324,15 +341,14 @@ public class RuleService {
 
         //create block
         Block block = BlockGenerator.createBlock(blockModel);
-        block.setInputBlockIds(blockModel.getInputBlocksIds());
-        block.setOutputBlockIds(blockModel.getOutputBlocksIds()); 
+
         
         //check block name is valid
         if(!oldblock.getBlockName().equals(block.getBlockName()) )
         {
         	if(project.blockNameExists(block.getBlockName()))
         	{
-        		throw new AddRuleBlockException("Block name can't be updated because it already exists");
+        		throw new AddRuleBlockException(JEMessages.BLOCK_NAME_EXISTS);
         	}
         	else {
         		project.removeBlockName(block.getJobEngineElementID());
@@ -376,7 +392,7 @@ public class RuleService {
         } else if (!project.ruleExists(ruleId)) {
         	throw new RuleNotFoundException(projectId, ruleId);
         	}
-        JELogger.debug( JEMessages.DELETING_BLOCK + blockId + " in rule [id : " + ruleId + ") in project id = " + projectId,
+        JELogger.debug( JEMessages.DELETING_BLOCK + blockId + " in rule [id : " + ruleId + "] in project id = " + projectId,
                 LogCategory.DESIGN_MODE, projectId, LogSubModule.RULE, blockId);
         project.deleteRuleBlock(ruleId, blockId);
         project.removeBlockName(blockId);

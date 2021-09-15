@@ -64,6 +64,9 @@ public class LinkedSetterBlock extends ExecutionBlock {
 		for(String instance : instances)
 		{
 			expression.append(  "Executioner.updateInstanceAttributeValueFromStaticValue( "
+					 +"\"" + this.jobEngineProjectID  +"\","
+					  +"\"" + this.ruleId  +"\","
+					  +"\"" + this.blockName  +"\","				  					  
 					  +"\"" + instance  +"\","
 					  +"\"" + this.destinationAttributeName  +"\","
 					  + getInputRefName(0)

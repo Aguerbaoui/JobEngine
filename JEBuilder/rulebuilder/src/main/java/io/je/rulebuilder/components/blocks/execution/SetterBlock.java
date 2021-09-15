@@ -108,13 +108,16 @@ public class SetterBlock extends ExecutionBlock {
 		  switch(sourceType)
 		   {
 		   case STATIC :		   
-			   return "Executioner.updateInstanceAttributeValueFromStaticValue( "//done
+			   return "Executioner.updateInstanceAttributeValueFromStaticValue( "
+			   	  +"\"" + this.jobEngineProjectID  +"\","
+				  +"\"" + this.ruleId  +"\","
+				  +"\"" + this.blockName  +"\","				  
 				  +"\"" + this.destinationInstancesId  +"\","
 				  +"\"" + this.destinationAttributeName  +"\","
 				  +"\"" + this.value  +"\""
 				  +");\r\n";
 		   case VARIABLE:
-			   return "Executioner.updateInstanceAttributeValueFromVariable( "//done
+			   return "Executioner.updateInstanceAttributeValueFromVariable( "
 				  +"\"" + this.jobEngineProjectID  +"\","
 				  +"\"" + this.ruleId  +"\","
 				  +"\"" + this.sourceInstanceId  +"\","
@@ -148,19 +151,19 @@ public class SetterBlock extends ExecutionBlock {
 		  switch(sourceType)
 		   {
 		   case STATIC :		   
-			   return "Executioner.updateVariableValue( " //done
+			   return "Executioner.updateVariableValue( " 
 				  +"\"" + this.jobEngineProjectID  +"\","
 				  +"\"" + this.destinationVariableId  +"\","
 				  +"\"" + this.value  +"\""
 				  +");\r\n";
 		   case VARIABLE:
-			   return "Executioner.updateVariableValueFromAnotherVariable( " //done
+			   return "Executioner.updateVariableValueFromAnotherVariable( " 
 				  +"\"" + this.jobEngineProjectID  +"\","
 				  +"\"" + this.sourceVariableId  +"\","
 				  +"\"" + this.destinationVariableId  +"\""
 				  +");\r\n";
 		   case ATTRIBUTE :
-			   return "Executioner.updateVariableValueFromDataModel( " //done
+			   return "Executioner.updateVariableValueFromDataModel( " 
 				  +"\"" + this.jobEngineProjectID  +"\","
 				  +"\"" + this.destinationVariableId  +"\","
 				  +"\"" + this.sourceInstanceId  +"\","

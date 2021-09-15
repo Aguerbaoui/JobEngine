@@ -73,9 +73,13 @@ public class EventService {
 	 * retrieve event from project by id
 	 */
 	
-	public JEEvent getEvent(String projectId, String eventId) throws EventException, ProjectNotFoundException {
+	public EventModel getEvent(String projectId, String eventId) throws EventException, ProjectNotFoundException {
 		Optional<JEEvent> event = eventRepository.findById(eventId);
-		return event.orElse(null);
+		if(event.isPresent())
+		{
+			return new EventModel(event.get());
+		}
+		return null;
 	}
 
 	/*
@@ -99,7 +103,7 @@ public class EventService {
 		if(!JEStringUtils.isStringOnlyAlphabet(eventModel.getName())) {
 			throw new EventException(JEMessages.NOT_ALPHABETICAL);
 		}
-		JEEvent event = new JEEvent(eventModel.getEventId(), projectId, eventModel.getName(), EventType.GENERIC_EVENT,eventModel.getDescription(),eventModel.getTimeout(),eventModel.getTimeoutUnit());
+		JEEvent event = new JEEvent(eventModel.getEventId(), projectId, eventModel.getName(), EventType.GENERIC_EVENT,eventModel.getDescription(),eventModel.getTimeout(),eventModel.getTimeoutUnit(),eventModel.getCreatedBy(),eventModel.getModifiedBy());
 		registerEvent(event);
 		eventRepository.save(event);
 		
@@ -132,7 +136,7 @@ public class EventService {
 		if(!JEStringUtils.isStringOnlyAlphabet(eventModel.getName())) {
 			throw new EventException(JEMessages.NOT_ALPHABETICAL);
 		}
-		JEEvent event = new JEEvent(eventModel.getEventId(), projectId, eventModel.getName(), EventType.GENERIC_EVENT,eventModel.getDescription(),eventModel.getTimeout(),eventModel.getTimeoutUnit());
+		JEEvent event = new JEEvent(eventModel.getEventId(), projectId, eventModel.getName(), EventType.GENERIC_EVENT,eventModel.getDescription(),eventModel.getTimeout(),eventModel.getTimeoutUnit(),eventModel.getCreatedBy(),eventModel.getModifiedBy());
 		registerEvent(event);
 		eventRepository.save(event);
 

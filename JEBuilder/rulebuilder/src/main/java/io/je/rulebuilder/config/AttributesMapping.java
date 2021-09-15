@@ -12,8 +12,8 @@ public class AttributesMapping {
     public static final String RULEID = "rule_id";
 	public static final String RULENAME = "rule_name";
 	public static final String DESC = "description";
-	public static final String CREATEDAT = "created_at";
-	public static final String LASTUPDATE = "last_update_at";
+	public static final String CREATEDAT = "createdAt";
+	public static final String LASTUPDATE = "lastModifiedAt";
 	public static final String BUILDSTATUS = "isBuilt";
 
 

@@ -3,8 +3,6 @@ package io.je.utilities.beans;
 import io.je.utilities.models.EventType;
 import io.je.utilities.monitoring.JEMonitor;
 import io.je.utilities.monitoring.ObjectType;
-import io.je.utilities.runtimeobject.JEObject;
-
 import java.time.LocalDateTime;
 
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -79,7 +77,7 @@ public class JEEvent extends JEMonitoredData {
 
 	public JEEvent(String jobEngineElementID, String jobEngineProjectID, String name, EventType type,
 			String description, int timeoutValue, String timeoutUnit,ArchiveOption isArchived,
-			boolean isBroadcasted) {
+			boolean isBroadcasted,String createdBy, String modifiedBy ) {
 		super(jobEngineElementID, jobEngineProjectID);
 		this.name = name;
 		this.type = type;
@@ -87,11 +85,16 @@ public class JEEvent extends JEMonitoredData {
 		this.description = description;
 		this.timeoutValue = timeoutValue;
 		this.timeoutUnit = timeoutUnit;
+		this.jeObjectCreatedBy=createdBy;
+		this.jeObjectModifiedBy = modifiedBy;
 		setTimeout();
 	}
 	
+	
+
+	
 	public JEEvent(String jobEngineElementID, String jobEngineProjectID, String name, EventType type,
-			String description, int timeoutValue, String timeoutUnit) {
+			String description, int timeoutValue, String timeoutUnit,String createdBy, String modifiedBy) {
 		super(jobEngineElementID, jobEngineProjectID);
 		this.name = name;
 		this.type = type;
@@ -99,6 +102,8 @@ public class JEEvent extends JEMonitoredData {
 		this.description = description;
 		this.timeoutValue = timeoutValue;
 		this.timeoutUnit = timeoutUnit;
+		this.jeObjectCreatedBy=createdBy;
+		this.jeObjectModifiedBy = modifiedBy;
 		setTimeout();
 	}
 

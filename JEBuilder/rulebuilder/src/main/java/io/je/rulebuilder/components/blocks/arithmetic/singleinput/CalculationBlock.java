@@ -55,6 +55,8 @@ public class CalculationBlock extends SingleInputArithmeticBlock {
 					return calculatorReference+"changeSign( " + getInputRefName(0)+ ")";
 				//Bias	
 				case 1010:
+					//return calculatorReference+"bias( " + getInputRefName(0)+ ","+value+")";
+
 					return getInputRefName(0)+ " + " + value ;
 				//gain
 				case 1011:

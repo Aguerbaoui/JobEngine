@@ -23,6 +23,11 @@ public class WorkflowModel {
     private ArrayList<EventModel> events;
 
     private ArrayList<TaskModel> tasks;
+    
+    private   String createdBy;
+    
+    private String modifiedBy;
+    
 
     public WorkflowModel(String projectId, String key, String path, String name, ArrayList<EventModel> events,
                          ArrayList<TaskModel> tasks) {
@@ -119,7 +124,25 @@ public class WorkflowModel {
         this.onProjectBoot = onProjectBoot;
     }
 
-    @Override
+    
+    
+    public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public String getModifiedBy() {
+		return modifiedBy;
+	}
+
+	public void setModifiedBy(String modifiedBy) {
+		this.modifiedBy = modifiedBy;
+	}
+
+	@Override
     public String toString() {
         return "WorkflowModel [projectId=" + projectId + ", key=" + key + ", path=" + path + ", events=" + events
                 + ", tasks=" + tasks + "]";

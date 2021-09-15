@@ -83,14 +83,16 @@ public class RuntimeDispatcher {
 
 			// reset variables TODO: make it configurable//Same for events
 			VariableManager.resetVariableValues(projectId);
-			for (JEVariable variable : VariableManager.getAllVariables(projectId)) {
-				RuleEngineHandler.addVariable(variable);
-			}
+
 
 			// run workflows
 			WorkflowEngineHandler.runAllWorkflows(projectId);
 			RuleEngineHandler.runRuleEngineProject(projectId);
-
+			for (JEVariable variable : VariableManager.getAllVariables(projectId)) {
+				RuleEngineHandler.addVariable(variable);
+				RuleEngineHandler.addVariable(variable);
+				
+			}
 		} catch (JEException e) {
 			JELogger.error(" [projectId  = " + projectId + "]" + JEMessages.PROJECT_RUN_FAILED, LogCategory.RUNTIME,
 					projectId, LogSubModule.JERUNNER, null);
@@ -314,7 +316,7 @@ public class RuntimeDispatcher {
 	public void addEvent(EventModel eventModel) {
 		JEEvent e = new JEEvent(eventModel.getEventId(), eventModel.getProjectId(), eventModel.getName(),
 				EventType.valueOf(eventModel.getEventType()), eventModel.getDescription(), eventModel.getTimeout(),
-				eventModel.getTimeoutUnit());
+				eventModel.getTimeoutUnit(),eventModel.getCreatedBy(),eventModel.getModifiedBy());
 
 		JELogger.debug(
 				"[projectId = " + e.getJobEngineProjectID() + "] [event = " + e.getJobEngineElementID() + "]"

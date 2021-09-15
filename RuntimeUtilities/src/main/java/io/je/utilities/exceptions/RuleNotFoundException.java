@@ -11,7 +11,7 @@ public class RuleNotFoundException extends JEException {
 	public RuleNotFoundException( String projectId, String ruleId, String...optionalDescription) {
 		super(ResponseCodes.RULE_NOT_FOUND,
 				getProjectIdMessage(projectId) + getRuleIdMessage(ruleId) + " : " + JEMessages.RULE_NOT_FOUND +
-				(optionalDescription.length==0? null : JEKeys.ERROR_DESC +optionalDescription[0]));
+				(optionalDescription.length==0? "" : JEKeys.ERROR_DESC +optionalDescription[0]));
 		
 	}
 	

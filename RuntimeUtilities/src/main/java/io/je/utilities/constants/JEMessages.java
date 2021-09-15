@@ -48,7 +48,7 @@ public class JEMessages {
 
     public static final String CLASS_UNKNOWN = "Class unknown";
     
-    public static final String CLASS_NOT_LOADED ="Loaded classes list does not recognize this id :";
+    public static final String CLASS_NOT_LOADED ="Loaded classes list does not recognize this Id :";
 
     public static final String TYPE_UNKNOWN = "Type unknown";
 
@@ -66,7 +66,7 @@ public class JEMessages {
 
     public static final String MULTIPLE_INHERITANCE = "Multiple inheritance is not supported";
 
-    public static final String CLASS_NOT_FOUND = "No class matching this id was found in DataModelRestApi";
+    public static final String CLASS_NOT_FOUND = "No class matching this Id was found in DataModelRestApi";
 
     public static final String GETTING_CLASS_DEFINITION = "Loading class definition";
 
@@ -76,7 +76,7 @@ public class JEMessages {
 
     public static final String UPDATING_CLASS = "Updating class ";
 
-    public static final String ADDING_CLASS_TO_RUNNER_FROM_BUILDER_WITH_ID = "Adding class to JERunner from JEBuilder with id";
+    public static final String ADDING_CLASS_TO_RUNNER_FROM_BUILDER_WITH_ID = "Adding class to JERunner from JEBuilder with Id";
 
     public static final String ADDING_CLASSES_TO_RUNNER_FROM_BUILDER = "Adding class to JERunner from JEBuilder";
 
@@ -169,22 +169,21 @@ public class JEMessages {
 
     public static final String SAVING_BPMN_FILE_TO_PATH = "Saving BPMP file to path";
 
-    public static final String DEPLOYING_IN_RUNNER_WORKFLOW_WITH_ID = " Deploying in JERunner workflow with" +
-            "h id ";
-    public static final String FAILED_TO_DEPLOY_IN_RUNNER_WORKFLOW_WITH_ID = " Failed to deploy in JERunner workflow with id";
+    public static final String DEPLOYING_IN_RUNNER_WORKFLOW_WITH_ID = " Deploying in JERunner workflow with Id ";
+    public static final String FAILED_TO_DEPLOY_IN_RUNNER_WORKFLOW_WITH_ID = " Failed to deploy in JERunner workflow with Id";
 
     public static final String TRANSITIONING_FROM = "Transitioning from";
 
-    public static final String GATEWAY_ID = "Gateway id";
+    public static final String GATEWAY_ID = "Gateway Id";
 
     public static final String JUST_EXECUTED = "just executed";
-    public static final String TASK_ID = "Task id";
+    public static final String TASK_ID = "Task Id";
 
     public static final String PROCESS_HAS_TO_BE_TRIGGERED_BY_EVENT = " Process has to be triggered by event or following a specific schedule";
 
     public static final String PROCESS_EXITED = " Process has ended execution";
 
-    public static final String RUNNING_ALL_WORKFLOWS_IN_PROJECT_ID = "Running all workflows in project id";
+    public static final String RUNNING_ALL_WORKFLOWS_IN_PROJECT_ID = "Running all workflows in project Id";
 
     public static final String BUILDING_WORKFLOWS_IN_PROJECT = "Building workflows in project";
 
@@ -204,7 +203,7 @@ public class JEMessages {
 
     public static final String DB_API_RESPONSE = " Database Api response";
 
-    public static final String UPDATING_A_WORKFLOW_BLOCK_WITH_ID = " Updating a workflow block with id ";
+    public static final String UPDATING_A_WORKFLOW_BLOCK_WITH_ID = " Updating a workflow block with Id ";
 
     public static final String INFORM_FROM_USER = "Inform from user";
 
@@ -249,9 +248,9 @@ public class JEMessages {
 
     //events
 
-    public static final String FOUND_EVENT = "Found event with id = ";
+    public static final String FOUND_EVENT = "Found event with Id = ";
 
-    public static final String UPDATING_EVENT = "Found event with id = ";
+    public static final String UPDATING_EVENT = "Found event with Id = ";
 
     public static final String REMOVING_EVENTS = "Updating fact";
 
@@ -293,7 +292,7 @@ public class JEMessages {
 
     public static final String JERUNNER_ERROR = "JERunner error";
 
-    public static final String DATA_DEFINITION_CLASS_NOT_FOUND = "No class with this id was found";
+    public static final String DATA_DEFINITION_CLASS_NOT_FOUND = "No class with this Id was found";
 
     public static final String PROJECT_RUNNING = "Project already running";
 
@@ -307,7 +306,7 @@ public class JEMessages {
 
     public static final String WORKFLOW_NEEDS_BUILD = "Workflow needs build";
 
-    public static final String EVENT_NOT_FOUND = " No event with this id was found ";
+    public static final String EVENT_NOT_FOUND = " No event with this Id was found ";
 
     public static final String ERROR_SETTING_EVENT = " Error while setting event in Runner ";
 
@@ -315,7 +314,7 @@ public class JEMessages {
 
     public static final String WORKFLOW_TRIGGERED_BY_EVENT = " Workflow cannot start manually";
 
-    public static final String EVENT_ALREADY_EXISTS = "An event with this id already exists";
+    public static final String EVENT_ALREADY_EXISTS = "An event with this Id already exists";
 
     public static final String MISSING_CONFIG = "Application configuration is missing. Make sure to properly configure the application before proceeding.";
 
@@ -406,7 +405,7 @@ public class JEMessages {
 
     public static final String BUILT_EVERYTHING_SUCCESSFULLY = " Built everything successfully";
 
-    public static final String BUILDING_BPMN_FROM_JEWORKFLOW = "Building bpmn from jeworkflow id =";
+    public static final String BUILDING_BPMN_FROM_JEWORKFLOW = "Building bpmn from jeworkflow Id =";
 
 
     public static final String ADDED_WORKFLOW_SUCCESSFULLY = "Added workflow successfully";
@@ -445,26 +444,28 @@ public class JEMessages {
 
     // rules
 
-    public static final String RULE_ID_NULL = "Rule identifier can't be empty";
+    public static final String RULE_ID_NULL = "Rule Identifier can't be empty";
 
     public static final String RULE_NAME_NULL = "Rule name can't be empty";
 
-    public static final String PROJECT_ID_NULL = "Project identifier can't be empty";
+    public static final String PROJECT_ID_NULL = "Project Identifier can't be empty";
 
-    public static final String RULE_PROJECT_ID_NULL = "Rule's project id was not found";
+    public static final String RULE_PROJECT_ID_NULL = "Rule's project Id was not found";
 
     public static final String NO_EXECUTION_BLOCK = "Rule must have at least one execution block";
 
-    public static final String RULE_NOT_FOUND = "No rule with this ID was found";
+    public static final String RULE_NOT_FOUND = "No rule with this Id was found";
 
-    public static final String RULE_EXISTS = "a rule with this Id already exists. ";
+    public static final String RULE_EXISTS = "A rule with this Id already exists. ";
 
     // rule blocks
     public static final String ADD_BLOCK_FAIL = "Failed to Add Block";
+    
+    public static final String BLOCK_NAME_EXISTS = "A block with this name already exists.";
 
-    public static final String BLOCK_EXISTS = "A block with this id already exists.";
+    public static final String BLOCK_EXISTS = "A block with this Id already exists.";
 
-    public static final String BLOCK_NOT_FOUND = "No Block with this id was found";
+    public static final String BLOCK_NOT_FOUND = "No Block with this Id was found";
 
     public static final String BLOCK_ID_NULL = "A block must have an Id";
 
@@ -472,9 +473,9 @@ public class JEMessages {
 
     public static final String BLOCK_PROJECT_ID_NULL = "A block must have a project Id";
 
-    public static final String BLOCK_OPERATION_ID_NULL = "A block operation id cannot be empty";
+    public static final String BLOCK_OPERATION_ID_NULL = "A block operation Id cannot be empty";
 
-    public static final String BLOCK_OPERATION_ID_UNKNOWN = "Block operation id is unknown.";
+    public static final String BLOCK_OPERATION_ID_UNKNOWN = "Block operation Id is unknown.";
 
     public static final String BLOCK_NAME_EMPTY = "Block name can't be empty";
 
@@ -482,7 +483,7 @@ public class JEMessages {
 
     public static final String UPDATE_BLOCK_FAILED = "Failed to update block";
 
-    public static final String ID_NOT_FOUND = "Failed to read rule id";
+    public static final String ID_NOT_FOUND = "Failed to read rule Id";
 
     public static final String RULE_CONTAINS_ERRORS = "Rule contains errors";
 
@@ -622,6 +623,8 @@ public class JEMessages {
     public static final String WRITE_INSTANCE_FAILED = "Failed to update instance value. ";
     
     public static final String READ_INSTANCE_FAILED = "Failed to read last values for instance : ";
+    
+    public static final String UPDATING_INSTANCE_VALUE = " Updating instance value..";
     
     public static final String INSTANCE_UPDATE_SUCCESS ="Instance was updated successfully";
 

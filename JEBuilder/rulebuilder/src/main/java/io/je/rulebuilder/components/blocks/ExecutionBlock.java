@@ -1,19 +1,21 @@
 package io.je.rulebuilder.components.blocks;
 
+import java.util.List;
+
 import io.je.rulebuilder.models.BlockModel;
 
 public abstract class ExecutionBlock extends Block {
 
 	public ExecutionBlock(BlockModel blockModel) {
 		super(blockModel.getBlockId(), blockModel.getProjectId(), blockModel.getRuleId(), blockModel.getBlockName(),
-				blockModel.getDescription());
+				blockModel.getDescription(),blockModel.getInputBlocksIds(),blockModel.getOutputBlocksIds());
 	}
 
 	
 	
 	public ExecutionBlock(String jobEngineElementID, String jobEngineProjectID, String ruleId, String blockName,
-			String blockDescription) {
-		super(jobEngineElementID, jobEngineProjectID, ruleId, blockName, blockDescription);
+			String blockDescription,List<String> inputBlockIds, List<String> outputBlocksIds) {
+		super(jobEngineElementID, jobEngineProjectID, ruleId, blockName, blockDescription,inputBlockIds,outputBlocksIds);
 	}
 
 

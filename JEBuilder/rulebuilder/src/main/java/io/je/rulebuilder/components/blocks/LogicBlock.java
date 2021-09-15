@@ -8,7 +8,7 @@ public  class LogicBlock extends PersistableBlock {
 	String operator;
 	public LogicBlock(BlockModel blockModel) {
 		super(blockModel.getBlockId(), blockModel.getProjectId(), blockModel.getRuleId(), 
-				blockModel.getBlockName(), blockModel.getDescription(),blockModel.getTimePersistenceValue(),blockModel.getTimePersistenceUnit());
+				blockModel.getBlockName(), blockModel.getDescription(),blockModel.getTimePersistenceValue(),blockModel.getTimePersistenceUnit(),blockModel.getInputBlocksIds(),blockModel.getOutputBlocksIds());
 		switch(blockModel.getOperationId())
 		{
 		//and
