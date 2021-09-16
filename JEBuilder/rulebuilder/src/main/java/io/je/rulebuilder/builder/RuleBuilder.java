@@ -91,7 +91,7 @@ public class RuleBuilder {
         JEResponse jeRunnerResp = null;
         jeRunnerResp = JERunnerAPIHandler.updateRule(ruleMap);
 
-        if (jeRunnerResp == null && jeRunnerResp.getCode() != ResponseCodes.CODE_OK) {
+        if (jeRunnerResp == null || jeRunnerResp.getCode() != ResponseCodes.CODE_OK) {
 			JELogger.error("[rule id =" + rule.getRuleName() + " ]" + JEMessages.RULE_BUILD_FAILED + jeRunnerResp.getMessage(),
 					LogCategory.DESIGN_MODE, rule.getJobEngineProjectID(),
 					LogSubModule.RULE, rule.getJobEngineElementID());
