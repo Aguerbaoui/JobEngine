@@ -92,7 +92,7 @@ public class VariableService {
             throw new VariableAlreadyExistsException(JEMessages.VARIABLE_EXISTS);
         }
 
-        JEVariable var = new JEVariable(variableModel.getId(),variableModel.getProjectId(),variableModel.getName(),variableModel.getType(),variableModel.getInitialValue());
+        JEVariable var = new JEVariable(variableModel.getId(),variableModel.getProjectId(),variableModel.getName(),variableModel.getType(),variableModel.getInitialValue(),variableModel.getDescription(),variableModel.getCreatedBy(),variableModel.getModifiedBy());
 
         JERunnerAPIHandler.addVariable(variableModel.getProjectId(), variableModel.getId(), variableModel);
         project.addVariable(var);
@@ -134,7 +134,7 @@ public class VariableService {
         if(!project.variableExists(variableModel.getId())) {
             throw new VariableNotFoundException(JEMessages.VARIABLE_NOT_FOUND);
         }
-        JEVariable var = new JEVariable(variableModel.getId(),variableModel.getProjectId(),variableModel.getName(),variableModel.getType(), variableModel.getInitialValue());
+        JEVariable var = new JEVariable(variableModel.getId(),variableModel.getProjectId(),variableModel.getName(),variableModel.getType(), variableModel.getInitialValue(),variableModel.getDescription(),variableModel.getCreatedBy(),variableModel.getModifiedBy());
         var.setJeObjectCreationDate(LocalDateTime.now());
         var.setJeObjectLastUpdate(LocalDateTime.now());
         JERunnerAPIHandler.addVariable(variableModel.getProjectId(), variableModel.getId(), variableModel);

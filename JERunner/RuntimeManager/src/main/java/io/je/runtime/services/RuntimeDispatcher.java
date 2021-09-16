@@ -388,7 +388,7 @@ public class RuntimeDispatcher {
 						+ JEMessages.ADDING_VARIABLE,
 				LogCategory.RUNTIME, variableModel.getProjectId(), LogSubModule.VARIABLE, variableModel.getId());
 		JEVariable var = new JEVariable(variableModel.getId(), variableModel.getProjectId(), variableModel.getName(),
-				variableModel.getType(), variableModel.getInitialValue());
+				variableModel.getType(), variableModel.getInitialValue(), variableModel.getDescription(),variableModel.getCreatedBy(),variableModel.getModifiedBy());
 		var.setJeObjectCreationDate(LocalDateTime.now());
 		var.setJeObjectLastUpdate(LocalDateTime.now());
 		// JEStringSubstitutor.addVariable(var.getJobEngineProjectID(), var.getName(),

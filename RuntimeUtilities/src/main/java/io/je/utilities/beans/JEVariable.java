@@ -24,6 +24,8 @@ public class JEVariable extends JEMonitoredData {
     
     private Object value;
     
+    private String description;
+    
    
 
 
@@ -38,13 +40,16 @@ public class JEVariable extends JEMonitoredData {
     
 
     public JEVariable(String jobEngineElementID, String jobEngineProjectID, String name, String type,
-			String initialValue) {
+			String initialValue,String description,String createdBy,String modifiedby) {
 		super(jobEngineElementID, jobEngineProjectID);
 		this.name = name;
 		this.type = JEType.valueOf(type);
 		this.initialValue = castValue(initialValue);
 		typeClass = getType(this.type);
 		this.value=this.initialValue;
+		this.jeObjectCreatedBy=createdBy;
+		this.jeObjectModifiedBy = modifiedby;
+		this.description=description;
 	}
 
 
@@ -52,13 +57,16 @@ public class JEVariable extends JEMonitoredData {
 
 	public JEVariable(String jobEngineElementID, String jobEngineProjectID, String name, String type,
 			String initialValue,ArchiveOption isArchived,
-			boolean isBroadcasted) {
+			boolean isBroadcasted,String description,String createdBy,String modifiedby) {
 		super(jobEngineElementID, jobEngineProjectID, isArchived, isBroadcasted);
 		this.name = name;
 		this.type = JEType.valueOf(type);
 		this.initialValue = castValue(initialValue);
 		typeClass = getType(this.type);
 		this.value=this.initialValue;
+		this.jeObjectCreatedBy=createdBy;
+		this.jeObjectModifiedBy = modifiedby;
+		this.description=description;
 	}
 
 
@@ -119,6 +127,41 @@ public class JEVariable extends JEMonitoredData {
 	}
 
 
+
+
+
+
+	public Class<?> getTypeClass() {
+		return typeClass;
+	}
+
+
+
+
+	public void setTypeClass(Class<?> typeClass) {
+		this.typeClass = typeClass;
+	}
+
+
+
+
+	public String getDescription() {
+		return description;
+	}
+
+
+
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+
+
+
+	public void setValue(Object value) {
+		this.value = value;
+	}
 
 
 
@@ -201,4 +244,7 @@ public class JEVariable extends JEMonitoredData {
         }
         return classType;
     }
+    
+    
+    
 }

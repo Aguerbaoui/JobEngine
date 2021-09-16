@@ -18,15 +18,17 @@ public class VariableModel {
 
     private String value;
     
+    private String description;
+    
     private String initialValue;
 
-    String createdAt;
+    private String createdAt;
     
-    String lastModifiedAt;
+    private String lastModifiedAt;
     
-    String createdBy;
+    private String createdBy;
     
-    String modifiedBy;
+    private String modifiedBy;
     
     
     @JsonIgnore
@@ -76,7 +78,23 @@ public class VariableModel {
     
     
     
-    public String getCreatedBy() {
+    public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public DateTimeFormatter getFormatter() {
+		return formatter;
+	}
+
+	public void setFormatter(DateTimeFormatter formatter) {
+		this.formatter = formatter;
+	}
+
+	public String getCreatedBy() {
 		return createdBy;
 	}
 
@@ -116,23 +134,9 @@ public class VariableModel {
 		this.initialValue = initialValue;
 	}
 
-	public VariableModel() {}
-    public VariableModel(String projectId, String id, String name, String type, String value, String initialValue) {
-        this.projectId = projectId;
-        this.id = id;
-        this.name = name;
-        this.type = type;
-        this.value = value;
-        this.initialValue = initialValue;
-    }
+	private VariableModel() {}
 
-    public VariableModel(String projectId,  String name, String type, String value) {
-        this.projectId = projectId;
-        this.id = name;
-        this.name = name;
-        this.type = type;
-        this.value = value;
-    }
+
 
 	public VariableModel(JEVariable variable) {
 		 this.projectId = variable.getJobEngineProjectID();
@@ -145,5 +149,6 @@ public class VariableModel {
 	        this.value = null;
 			this.createdBy = variable.getJeObjectCreatedBy();
 			this.modifiedBy = variable.getJeObjectModifiedBy();
+			this.description = variable.getDescription();
 	}
 }
