@@ -1,5 +1,6 @@
 package io.je.project.siothconfig;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 

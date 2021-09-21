@@ -1,7 +1,5 @@
 package io.je.utilities.config;
 
-import org.json.JSONObject;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.je.project.siothconfig.SIOTHConfig;

@@ -1,6 +1,7 @@
 package io.je.project.beans;
 
 import io.je.project.services.ProjectService;
+import io.je.utilities.config.Utility;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.*;
 import io.je.utilities.logger.LogCategory;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import io.je.project.config.BuilderProperties;
+import io.je.project.config.LicenseProperties;
 import io.je.project.services.ConfigurationService;
 import io.je.utilities.logger.JELogger;
 
@@ -34,11 +36,31 @@ public class JEBuilderInitializingBean implements InitializingBean {
     public void afterPropertiesSet() {
         try {
             JELogger.initLogger("JEBuilder", builderProperties.getJeBuilderLogPath(),builderProperties.getJeBuilderLogLevel());
-            ZMQSecurity.setSecure(builderProperties.getUseZmqSecurity());
             JELogger.debug(JEMessages.LOGGER_INITIALIZED,
                     LogCategory.DESIGN_MODE, null,
                     LogSubModule.JEBUILDER, null);
-        	configService.init();
+            LicenseProperties.init();
+        	while(!LicenseProperties.licenseIsActive())
+        	{
+        		try {
+        			Thread.sleep(20000);
+    				LicenseProperties.checkLicenseIsActive();    				
+    			} catch (LicenseNotActiveException e) {
+    				JELogger.error(e.getMessage(), LogCategory.SIOTH_APPLICATION, "",
+    						LogSubModule.JEBUILDER, "");
+    			} catch (InterruptedException e) {
+    				// TODO Auto-generated catch block
+    				e.printStackTrace();
+    			}
+        	}
+        	
+            
+            
+            ZMQSecurity.setSecure(builderProperties.getUseZmqSecurity());
+            
+            JELogger.debug(JEMessages.BUILDER_STARTED,  LogCategory.DESIGN_MODE,
+                    null, LogSubModule.JEBUILDER, null);
+            configService.init();
         } catch (  Exception   e) {
             JELogger.error(JEMessages.UNEXPECTED_ERROR , LogCategory.DESIGN_MODE, null,
                     LogSubModule.JEBUILDER, null);

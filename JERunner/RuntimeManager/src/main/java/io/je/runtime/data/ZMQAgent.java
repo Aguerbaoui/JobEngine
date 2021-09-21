@@ -14,48 +14,43 @@ import java.util.HashMap;
 
 public class ZMQAgent extends ZMQSubscriber {
 
-
 	public ZMQAgent(String url, int subPort, String topic) {
 		super(url, subPort, topic);
 	}
 
-	
-	
 	@Override
 	public void run() {
-		JELogger.info("[topic = "+topic+"]"+JEMessages.DATA_LISTENTING_STARTED ,  LogCategory.RUNTIME,
-				null, LogSubModule.JERUNNER, null);
-		while(listening)
-    	{
-   		 String data = null;
-   		 try {
-   			data = this.getSubSocket().recvStr();
-   		 }catch (Exception e) {
-			e.printStackTrace();
-			continue;
-		}
+		JELogger.info("[topic = " + topic + "]" + JEMessages.DATA_LISTENTING_STARTED, LogCategory.RUNTIME, null,
+				LogSubModule.JERUNNER, null);
+		while (listening) {
+			String data = null;
+			try {
+				data = this.getSubSocket().recvStr();
+			} catch (Exception e) {
+				e.printStackTrace();
+				continue;
+			}
 
-             try {
-            	 if( data !=null && !data.equals(topic) && !data.startsWith(topic))
-				{ 
-					JELogger.trace(JEMessages.DATA_RECEIVED + data,  LogCategory.RUNTIME,
-							null, LogSubModule.JERUNNER, null);
-            		 RuntimeDispatcher.injectData(new JEData(this.topic, data));
+			try {
+				if (data != null && !data.equals(topic) && !data.startsWith(topic)) {
+					JELogger.trace(JEMessages.DATA_RECEIVED + data, LogCategory.RUNTIME, null, LogSubModule.JERUNNER,
+							null);
+					RuntimeDispatcher.injectData(new JEData(this.topic, data));
 				}
 			} catch (Exception e) {
-				 JELogger.error(JEMessages.UKNOWN_ERROR + Arrays.toString(e.getStackTrace()), LogCategory.RUNTIME, null,
-						 LogSubModule.JERUNNER, null);
+				JELogger.error(JEMessages.UKNOWN_ERROR + Arrays.toString(e.getStackTrace()), LogCategory.RUNTIME, null,
+						LogSubModule.JERUNNER, null);
 			}
-             
-             try {
+
+			try {
 				Thread.sleep(100);
 			} catch (InterruptedException e) {
-				 JELogger.error(JEMessages.THREAD_INTERRUPTED, LogCategory.RUNTIME, null,
-						 LogSubModule.JERUNNER, null);
+				JELogger.error(JEMessages.THREAD_INTERRUPTED, LogCategory.RUNTIME, null, LogSubModule.JERUNNER, null);
 			}
-    	}
-		
-	}
+		}
 
+		closeSocket();
+
+	}
 
 }
