@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import io.je.project.beans.JEProject;
+import io.je.project.config.LicenseProperties;
 import io.je.project.repository.EventRepository;
 import io.je.utilities.apis.JERunnerAPIHandler;
 import io.je.utilities.beans.JEEvent;
@@ -30,6 +31,7 @@ import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.ConfigException;
 import io.je.utilities.exceptions.EventException;
 import io.je.utilities.exceptions.JERunnerErrorException;
+import io.je.utilities.exceptions.LicenseNotActiveException;
 import io.je.utilities.exceptions.ProjectNotFoundException;
 import io.je.utilities.mapping.EventModelMapping;
 import io.je.utilities.models.EventModel;
@@ -46,7 +48,9 @@ public class EventService {
 	 * Retrieve list of all events that exist in a project.
 	 */
 	
-	public Collection<EventModel> getAllEvents(String projectId) throws ProjectNotFoundException {
+	public Collection<EventModel> getAllEvents(String projectId) throws ProjectNotFoundException, LicenseNotActiveException {
+    	LicenseProperties.checkLicenseIsActive();
+
 		List<JEEvent> events = eventRepository.findByJobEngineProjectID(projectId);
 		ArrayList<EventModel> eventModels = new ArrayList<EventModel>();
 		for(JEEvent event: events)
@@ -59,7 +63,9 @@ public class EventService {
 		return eventModels;
 	}
 	
-	public ConcurrentHashMap<String, JEEvent> getAllJEEvents(String projectId) throws ProjectNotFoundException {
+	public ConcurrentHashMap<String, JEEvent> getAllJEEvents(String projectId) throws ProjectNotFoundException, LicenseNotActiveException {
+    	LicenseProperties.checkLicenseIsActive();
+
 		List<JEEvent> events = eventRepository.findByJobEngineProjectID(projectId);
 		ConcurrentHashMap<String, JEEvent> map = new ConcurrentHashMap<String, JEEvent>();
 		for(JEEvent event : events )
@@ -73,7 +79,9 @@ public class EventService {
 	 * retrieve event from project by id
 	 */
 	
-	public EventModel getEvent(String projectId, String eventId) throws EventException, ProjectNotFoundException {
+	public EventModel getEvent(String projectId, String eventId) throws EventException, ProjectNotFoundException, LicenseNotActiveException {
+    	LicenseProperties.checkLicenseIsActive();
+
 		Optional<JEEvent> event = eventRepository.findById(eventId);
 		if(event.isPresent())
 		{
@@ -85,7 +93,8 @@ public class EventService {
 	/*
 	 * add new event
 	 */
-	public void addEvent(String projectId, EventModel eventModel) throws ProjectNotFoundException, JERunnerErrorException, IOException, InterruptedException, ExecutionException, EventException, ConfigException {
+	public void addEvent(String projectId, EventModel eventModel) throws ProjectNotFoundException, JERunnerErrorException, IOException, InterruptedException, ExecutionException, EventException, ConfigException, LicenseNotActiveException {
+    	LicenseProperties.checkLicenseIsActive();
 
 		JELogger.debug(JEMessages.ADDING_EVENT+ "[ id="+eventModel.getEventId()+"] in project id = " + projectId,
 				LogCategory.DESIGN_MODE, projectId,
@@ -119,7 +128,9 @@ public class EventService {
 	/*
 	 * update new event
 	 */
-	public void updateEvent(String projectId, EventModel eventModel) throws ProjectNotFoundException, JERunnerErrorException, IOException, InterruptedException, ExecutionException, EventException, ConfigException {
+	public void updateEvent(String projectId, EventModel eventModel) throws ProjectNotFoundException, JERunnerErrorException, IOException, InterruptedException, ExecutionException, EventException, ConfigException, LicenseNotActiveException {
+    	LicenseProperties.checkLicenseIsActive();
+
 		JELogger.debug(UPDATING_EVENT + " [ id="+eventModel.getEventId()+"] in project id = " + projectId,
 				LogCategory.DESIGN_MODE, projectId,
 				LogSubModule.EVENT, eventModel.getEventId());
@@ -147,8 +158,9 @@ public class EventService {
 	 * register event in runner
 	 */
 	
-	public void registerEvent( JEEvent event ) throws ProjectNotFoundException, JERunnerErrorException, IOException, InterruptedException, ExecutionException, ConfigException {
-    	
+	public void registerEvent( JEEvent event ) throws ProjectNotFoundException, JERunnerErrorException, IOException, InterruptedException, ExecutionException, ConfigException, LicenseNotActiveException {
+    	LicenseProperties.checkLicenseIsActive();
+
 		JEProject project = ProjectService.getProjectById(event.getJobEngineProjectID());
 		if (project == null) {
 			throw new ProjectNotFoundException( JEMessages.PROJECT_NOT_FOUND);
@@ -172,7 +184,8 @@ public class EventService {
 		
 	}
 
-	public void updateEventType(String projectId, String eventId, String eventType) throws ProjectNotFoundException, EventException, ConfigException {
+	public void updateEventType(String projectId, String eventId, String eventType) throws ProjectNotFoundException, EventException, ConfigException, LicenseNotActiveException {
+    	LicenseProperties.checkLicenseIsActive();
 
 		JELogger.debug(JEMessages.UPDATING_EVENT_TYPE + eventType + " for event id = " + eventId + " in project id = " + projectId,
 				LogCategory.DESIGN_MODE, projectId,
@@ -213,7 +226,9 @@ public class EventService {
 	 * delete event
 	 */
 	
-	public void deleteEvent(String projectId, String eventId) throws EventException, ProjectNotFoundException, InterruptedException, JERunnerErrorException, ExecutionException {
+	public void deleteEvent(String projectId, String eventId) throws EventException, ProjectNotFoundException, InterruptedException, JERunnerErrorException, ExecutionException, LicenseNotActiveException {
+    	LicenseProperties.checkLicenseIsActive();
+
 		JELogger.debug(JEMessages.DELETING_EVENT+"[ id="+eventId+"] in project id = " + projectId,
 				LogCategory.DESIGN_MODE, projectId,
 				LogSubModule.EVENT,eventId);
@@ -278,7 +293,9 @@ public class EventService {
 
 	}*/
 
-	public void deleteAll(String projectId) {
+	public void deleteAll(String projectId) throws LicenseNotActiveException {
+    	LicenseProperties.checkLicenseIsActive();
+
 		JELogger.debug(JEMessages.DELETING_EVENTS,
 				LogCategory.DESIGN_MODE, projectId,
 				LogSubModule.EVENT,null);

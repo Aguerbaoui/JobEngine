@@ -1,8 +1,6 @@
 package io.je.project.services;
 
 import io.je.project.beans.JEProject;
-import io.je.project.controllers.ProjectController;
-import io.je.project.repository.EventRepository;
 import io.je.project.repository.ProjectRepository;
 import io.je.utilities.apis.JERunnerAPIHandler;
 import io.je.utilities.beans.JEEvent;
@@ -12,7 +10,6 @@ import io.je.utilities.exceptions.*;
 import io.je.utilities.logger.JELogger;
 import io.je.utilities.logger.LogCategory;
 import io.je.utilities.logger.LogSubModule;
-import models.JEWorkflow;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -21,7 +18,6 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
@@ -81,7 +77,7 @@ public class ProjectService {
      */
     @Async
     public CompletableFuture<Void> removeProject(String id) throws ProjectNotFoundException, InterruptedException,
-            JERunnerErrorException, ExecutionException, ConfigException {
+            JERunnerErrorException, ExecutionException, ConfigException, LicenseNotActiveException {
 		
         if (!loadedProjects.containsKey(id)) {
             throw new ProjectNotFoundException("[projectId= "+id+"]"+ JEMessages.PROJECT_NOT_FOUND);
@@ -145,7 +141,7 @@ public class ProjectService {
      */
 
     public void buildAll(String projectId) throws ProjectNotFoundException, IOException, RuleBuildFailedException,
-            JERunnerErrorException, InterruptedException, ExecutionException, RuleNotFoundException, ConfigException, WorkflowBuildException {
+            JERunnerErrorException, InterruptedException, ExecutionException, RuleNotFoundException, ConfigException, WorkflowBuildException, LicenseNotActiveException {
         JELogger.info( "[projectId= "+projectId+"]"+  JEMessages.BUILDING_PROJECT,
                 LogCategory.DESIGN_MODE, projectId, LogSubModule.JEBUILDER, null);
         CompletableFuture<?> buildRules = ruleService.buildRules(projectId);
@@ -214,7 +210,7 @@ public class ProjectService {
      */
     
     public JEProject getProject(String projectId) throws ProjectNotFoundException,
-            JERunnerErrorException, IOException, InterruptedException, ExecutionException, ConfigException {
+            JERunnerErrorException, IOException, InterruptedException, ExecutionException, ConfigException, LicenseNotActiveException {
     	
     	JEProject project = null;
         JELogger.debug( "[projectId= "+projectId+"]"+  JEMessages.LOADING_PROJECT,
@@ -326,7 +322,7 @@ public class ProjectService {
 
     @Async
     public CompletableFuture<Void> loadAllProjects() throws ProjectNotFoundException, JERunnerErrorException,
-            IOException, InterruptedException, ExecutionException, ConfigException {
+            IOException, InterruptedException, ExecutionException, ConfigException, LicenseNotActiveException {
     	
         //loadedProjects = new ConcurrentHashMap<String, JEProject>();
         JELogger.info( JEMessages.LOADING_PROJECTS,

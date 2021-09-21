@@ -1,6 +1,7 @@
 package io.je.project.services;
 
 import io.je.project.beans.JEProject;
+import io.je.project.config.LicenseProperties;
 import io.je.project.repository.VariableRepository;
 import io.je.utilities.apis.JERunnerAPIHandler;
 import io.je.utilities.beans.JEEvent;
@@ -31,8 +32,10 @@ public class VariableService {
     @Autowired
 	VariableRepository variableRepository;
 	
-	public Collection<VariableModel> getAllVariables(String projectId) throws ProjectNotFoundException {
-        JELogger.debug("[project id = " + projectId + "] " + JEMessages.LOADING_VARIABLES,
+	public Collection<VariableModel> getAllVariables(String projectId) throws ProjectNotFoundException, LicenseNotActiveException {
+    	LicenseProperties.checkLicenseIsActive();
+
+		JELogger.debug("[project id = " + projectId + "] " + JEMessages.LOADING_VARIABLES,
                 LogCategory.DESIGN_MODE, projectId,
                 LogSubModule.VARIABLE,null);
 		JEProject project = ProjectService.getProjectById(projectId);
@@ -54,8 +57,10 @@ public class VariableService {
 	 * retrieve event from project by id
 	 */
 	
-	public JEVariable getVariable(String projectId, String variableId) throws  ProjectNotFoundException, VariableNotFoundException {
-        JELogger.debug(JEMessages.LOADING_VARIABLES +" [ id="+variableId+"] in project id =  " + projectId,
+	public JEVariable getVariable(String projectId, String variableId) throws  ProjectNotFoundException, VariableNotFoundException, LicenseNotActiveException {
+    	LicenseProperties.checkLicenseIsActive();
+
+		JELogger.debug(JEMessages.LOADING_VARIABLES +" [ id="+variableId+"] in project id =  " + projectId,
                 LogCategory.DESIGN_MODE, projectId,
                 LogSubModule.VARIABLE,variableId);
 		JEProject project = ProjectService.getProjectById(projectId);
@@ -66,8 +71,10 @@ public class VariableService {
 	}
 	
 	
-	public void addVariableToRunner(JEVariable variable) throws JERunnerErrorException, InterruptedException, ExecutionException
+	public void addVariableToRunner(JEVariable variable) throws JERunnerErrorException, InterruptedException, ExecutionException, LicenseNotActiveException
 	{
+    	LicenseProperties.checkLicenseIsActive();
+
         JELogger.debug(JEMessages.SENDING_VARIABLE_TO_RUNNER,
                 LogCategory.DESIGN_MODE, variable.getJobEngineProjectID(),
                 LogSubModule.VARIABLE,variable.getJobEngineElementID());
@@ -79,8 +86,10 @@ public class VariableService {
     /*
     * Add a new variable to the project
     * */
-    public void addVariable(VariableModel variableModel) throws ConfigException, ProjectNotFoundException, VariableAlreadyExistsException, JERunnerErrorException, ExecutionException, InterruptedException {
-        JELogger.debug(JEMessages.ADDING_VARIABLE,
+    public void addVariable(VariableModel variableModel) throws ConfigException, ProjectNotFoundException, VariableAlreadyExistsException, JERunnerErrorException, ExecutionException, InterruptedException, LicenseNotActiveException {
+    	LicenseProperties.checkLicenseIsActive();
+
+    	JELogger.debug(JEMessages.ADDING_VARIABLE,
                 LogCategory.DESIGN_MODE, variableModel.getProjectId(),
                 LogSubModule.VARIABLE,variableModel.getId());
         JEProject project = ProjectService.getProjectById(variableModel.getProjectId());
@@ -102,8 +111,10 @@ public class VariableService {
     /*
     * Delete a variable from the project
     * */
-    public void deleteVariable(String projectId, String varId) throws ProjectNotFoundException, VariableNotFoundException, InterruptedException, JERunnerErrorException, ExecutionException {
-        JELogger.debug(JEMessages.DELETING_VARIABLE,
+    public void deleteVariable(String projectId, String varId) throws ProjectNotFoundException, VariableNotFoundException, InterruptedException, JERunnerErrorException, ExecutionException, LicenseNotActiveException {
+    	LicenseProperties.checkLicenseIsActive();
+
+    	JELogger.debug(JEMessages.DELETING_VARIABLE,
                 LogCategory.DESIGN_MODE, projectId,
                 LogSubModule.VARIABLE,varId);
         JEProject project = ProjectService.getProjectById(projectId);
@@ -122,8 +133,10 @@ public class VariableService {
     /*
     * Update an existing variable in the project
     * */
-    public void updateVariable(VariableModel variableModel) throws ConfigException, ProjectNotFoundException, VariableNotFoundException, InterruptedException, JERunnerErrorException, ExecutionException {
-        JELogger.debug(JEMessages.ADDING_VARIABLE,
+    public void updateVariable(VariableModel variableModel) throws ConfigException, ProjectNotFoundException, VariableNotFoundException, InterruptedException, JERunnerErrorException, ExecutionException, LicenseNotActiveException {
+    	LicenseProperties.checkLicenseIsActive();
+
+    	JELogger.debug(JEMessages.ADDING_VARIABLE,
                 LogCategory.DESIGN_MODE, variableModel.getProjectId(),
                 LogSubModule.VARIABLE,variableModel.getId());
         JEProject project = ProjectService.getProjectById(variableModel.getProjectId());
@@ -143,21 +156,26 @@ public class VariableService {
     }
 
     //TODO: only allowed when project is stopped?
-	public void writeVariableValue(String projectId,String variableId, Object value) throws ConfigException, JERunnerErrorException, IOException, InterruptedException, ExecutionException {
-        
+	public void writeVariableValue(String projectId,String variableId, Object value) throws ConfigException, JERunnerErrorException, IOException, InterruptedException, ExecutionException, LicenseNotActiveException {
+    	LicenseProperties.checkLicenseIsActive();
+
         JERunnerAPIHandler.writeVariableValue(projectId, variableId, value);
 
 
 		
 	}
 
-	public void deleteAll(String projectId) {
+	public void deleteAll(String projectId) throws LicenseNotActiveException {
+    	LicenseProperties.checkLicenseIsActive();
+
 		variableRepository.deleteByJobEngineProjectID(projectId);
 		
 	}
 	
-	   public ConcurrentHashMap<String, JEVariable> getAllJEVariables(String projectId) throws ProjectNotFoundException {
-			List<JEVariable> variables = variableRepository.findByJobEngineProjectID(projectId);
+	   public ConcurrentHashMap<String, JEVariable> getAllJEVariables(String projectId) throws ProjectNotFoundException, LicenseNotActiveException {
+	    	LicenseProperties.checkLicenseIsActive();
+
+		   List<JEVariable> variables = variableRepository.findByJobEngineProjectID(projectId);
 			ConcurrentHashMap<String, JEVariable> map = new ConcurrentHashMap<String, JEVariable>();
 			for(JEVariable variable : variables )
 			{

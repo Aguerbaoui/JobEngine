@@ -85,7 +85,11 @@
 			<artifactId>spring-boot-configuration-processor</artifactId>
 			<optional>true</optional>
 		</dependency>
-		
+		<dependency>
+		<groupId>io.licensemanager</groupId>
+	<artifactId>LicenseManager</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<finalName>ProjectBuilder</finalName>

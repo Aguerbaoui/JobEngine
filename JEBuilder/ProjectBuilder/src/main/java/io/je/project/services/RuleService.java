@@ -1,6 +1,7 @@
 package io.je.project.services;
 
 import io.je.project.beans.JEProject;
+import io.je.project.config.LicenseProperties;
 import io.je.project.repository.RuleRepository;
 import io.je.rulebuilder.builder.RuleBuilder;
 import io.je.rulebuilder.components.*;
@@ -11,7 +12,6 @@ import io.je.rulebuilder.models.BlockModel;
 import io.je.rulebuilder.models.RuleModel;
 import io.je.rulebuilder.models.ScriptRuleModel;
 import io.je.utilities.apis.JERunnerAPIHandler;
-import io.je.utilities.beans.JEEvent;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.*;
 import io.je.utilities.files.JEFileUtils;
@@ -56,8 +56,8 @@ public class RuleService {
      * Add a rule to a project
      */
     public void addRule(String projectId, RuleModel ruleModel)
-            throws ProjectNotFoundException, RuleAlreadyExistsException, RuleNotAddedException {
-    	
+            throws ProjectNotFoundException, RuleAlreadyExistsException, RuleNotAddedException, LicenseNotActiveException {
+    	LicenseProperties.checkLicenseIsActive();  
         JEProject project = ProjectService.getProjectById(projectId);
         if (project == null) {
             throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
@@ -97,8 +97,8 @@ public class RuleService {
      * delete rule from a project
      */
 
-    public void deleteRule(String projectId, String ruleId) throws ProjectNotFoundException, RuleNotFoundException, JERunnerErrorException, IOException, InterruptedException, ExecutionException, ConfigException {
-    	
+    public void deleteRule(String projectId, String ruleId) throws ProjectNotFoundException, RuleNotFoundException, JERunnerErrorException, IOException, InterruptedException, ExecutionException, ConfigException, LicenseNotActiveException {
+    	LicenseProperties.checkLicenseIsActive();  
     	JEProject project = ProjectService.getProjectById(projectId);
         if (project == null) {
             throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
@@ -130,8 +130,8 @@ public class RuleService {
      */
 
     public void updateRule(String projectId, RuleModel ruleModel)
-            throws ProjectNotFoundException, ConfigException {
-    	
+            throws ProjectNotFoundException, ConfigException, LicenseNotActiveException {
+    	LicenseProperties.checkLicenseIsActive();  
     	JEProject project = ProjectService.getProjectById(projectId);
         if (project == null) {
             throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
@@ -223,8 +223,8 @@ public class RuleService {
      */
     public String addBlockToRule(BlockModel blockModel) throws AddRuleBlockException, ProjectNotFoundException,
             RuleNotFoundException, DataDefinitionUnreachableException, JERunnerErrorException, AddClassException,
-            ClassLoadException, IOException, InterruptedException, ExecutionException, ConfigException {
-    	
+            ClassLoadException, IOException, InterruptedException, ExecutionException, ConfigException, LicenseNotActiveException {
+    	LicenseProperties.checkLicenseIsActive();
         if (blockModel.getProjectId() == null) {
             throw new AddRuleBlockException(JEMessages.BLOCK_PROJECT_ID_NULL);
         }
@@ -294,9 +294,9 @@ public class RuleService {
      */
     public void updateBlockInRule(BlockModel blockModel) throws AddRuleBlockException, ProjectNotFoundException,
             RuleNotFoundException, DataDefinitionUnreachableException, JERunnerErrorException, AddClassException,
-            ClassLoadException, IOException, InterruptedException, ExecutionException, ConfigException, RuleBlockNotFoundException {
+            ClassLoadException, IOException, InterruptedException, ExecutionException, ConfigException, RuleBlockNotFoundException, LicenseNotActiveException {
     	
-        
+    	LicenseProperties.checkLicenseIsActive();
     	//check project id is not null
     	if (blockModel.getProjectId() == null) {
             throw new AddRuleBlockException(JEMessages.BLOCK_PROJECT_ID_NULL);
@@ -384,8 +384,8 @@ public class RuleService {
      */
 
     public void deleteBlock(String projectId, String ruleId, String blockId) throws ProjectNotFoundException,
-            RuleNotFoundException, RuleBlockNotFoundException, ConfigException {
-    	
+            RuleNotFoundException, RuleBlockNotFoundException, ConfigException, LicenseNotActiveException {
+    	LicenseProperties.checkLicenseIsActive();
         JEProject project = ProjectService.getProjectById(projectId);
         if (project == null) {
             throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
@@ -453,7 +453,8 @@ public class RuleService {
      * Retrieve list of all rules that exist in a project.
      */
 
-    public Collection<RuleModel> getAllRules(String projectId) throws ProjectNotFoundException {
+    public Collection<RuleModel> getAllRules(String projectId) throws ProjectNotFoundException, LicenseNotActiveException {
+    	LicenseProperties.checkLicenseIsActive();
         JEProject project = ProjectService.getProjectById(projectId);
         if (project == null) {
             throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
@@ -470,8 +471,9 @@ public class RuleService {
         return rules;
     }
 
-    public RuleModel getRule(String projectId, String ruleId) throws ProjectNotFoundException, RuleNotFoundException {
-        JEProject project = ProjectService.getProjectById(projectId);
+    public RuleModel getRule(String projectId, String ruleId) throws ProjectNotFoundException, RuleNotFoundException, LicenseNotActiveException {
+    	LicenseProperties.checkLicenseIsActive();
+    	JEProject project = ProjectService.getProjectById(projectId);
         if (project == null) {
             throw new ProjectNotFoundException("["+ projectId + "] "+JEMessages.PROJECT_NOT_FOUND );
 
@@ -487,8 +489,9 @@ public class RuleService {
      */
 
     public void addScriptedRule(String projectId, ScriptRuleModel ruleModel)
-            throws ProjectNotFoundException, RuleAlreadyExistsException, ConfigException {
-    	
+            throws ProjectNotFoundException, RuleAlreadyExistsException, ConfigException, LicenseNotActiveException {
+    	LicenseProperties.checkLicenseIsActive();
+
         ScriptedRule rule = new ScriptedRule(projectId, ruleModel.getRuleId(), ruleModel.getScript(),
                 ruleModel.getRuleName());
         JEProject project = ProjectService.getProjectById(projectId);
@@ -522,8 +525,10 @@ public class RuleService {
     }
 
     public void saveRuleFrontConfig(String projectId, String ruleId, String config)
-            throws ProjectNotFoundException, RuleNotFoundException {
-        JEProject project = ProjectService.getProjectById(projectId);
+            throws ProjectNotFoundException, RuleNotFoundException, LicenseNotActiveException {
+    	LicenseProperties.checkLicenseIsActive();
+
+    	JEProject project = ProjectService.getProjectById(projectId);
         if (project == null) {
             throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
         } else if (!project.ruleExists(ruleId)) {
@@ -534,8 +539,10 @@ public class RuleService {
         ruleRepository.save(project.getRule(ruleId));
     }
 
-    public void verifyBlockFormatIsValid(BlockModel blockModel) throws AddRuleBlockException {
-        // block Id can't be null
+    public void verifyBlockFormatIsValid(BlockModel blockModel) throws AddRuleBlockException, LicenseNotActiveException {
+    	LicenseProperties.checkLicenseIsActive();
+
+    	// block Id can't be null
         if (blockModel == null || blockModel.getBlockId() == null || blockModel.getBlockId().isEmpty()) {
             throw new AddRuleBlockException(JEMessages.BLOCK_ID_NULL);
 
@@ -558,8 +565,9 @@ public class RuleService {
      * returns nothing if rules were deleted successfully
      * if some rules were not deleted, throws exception with map [ key: rule that was not deleted , value : cause of the deletion failure ]
      */
-    public void deleteRules(String projectId, List<String> ruleIds) throws ProjectNotFoundException, RuleDeletionException, ConfigException {
-    	
+    public void deleteRules(String projectId, List<String> ruleIds) throws ProjectNotFoundException, RuleDeletionException, ConfigException, LicenseNotActiveException {
+    	LicenseProperties.checkLicenseIsActive();
+
         JEProject project = ProjectService.getProjectById(projectId);
         if (project == null) {
             throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
@@ -606,8 +614,9 @@ public class RuleService {
      * build rule : create drl + check for compilation errors
      */
     public void buildRule(String projectId, String ruleId) throws ProjectNotFoundException, RuleNotFoundException,
-            RuleBuildFailedException, JERunnerErrorException, IOException, InterruptedException, ExecutionException, ConfigException {
-    	
+            RuleBuildFailedException, JERunnerErrorException, IOException, InterruptedException, ExecutionException, ConfigException, LicenseNotActiveException {
+    	LicenseProperties.checkLicenseIsActive();
+
         JEProject project = ProjectService.getProjectById(projectId);
         if (project == null) {
             throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
@@ -621,8 +630,9 @@ public class RuleService {
         
     }
     
-    private void removeAllRuleBlockNames(String projectId,String ruleId)
-    {
+    private void removeAllRuleBlockNames(String projectId,String ruleId) throws LicenseNotActiveException
+    {    	LicenseProperties.checkLicenseIsActive();
+
     	JEProject project = ProjectService.getProjectById(projectId);
     	Enumeration<String> blockIds =((UserDefinedRule) project.getRule(ruleId)).getBlocks().getAllBlockIds();
     	while(blockIds.hasMoreElements())
@@ -636,7 +646,8 @@ public class RuleService {
 		
 	}
 
-	public ConcurrentHashMap<String, JERule> getAllJERules(String projectId) throws ProjectNotFoundException {
+	public ConcurrentHashMap<String, JERule> getAllJERules(String projectId) throws ProjectNotFoundException, LicenseNotActiveException {
+    	LicenseProperties.checkLicenseIsActive();
 		List<JERule> rules = ruleRepository.findByJobEngineProjectID(projectId);
 		ConcurrentHashMap<String, JERule> map = new ConcurrentHashMap<String, JERule>();
 		for(JERule rule : rules )

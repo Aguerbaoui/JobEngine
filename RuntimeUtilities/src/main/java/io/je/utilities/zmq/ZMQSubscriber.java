@@ -29,6 +29,14 @@ public abstract class ZMQSubscriber implements Runnable {
         subscribers += 1;
     }
 
+    
+    public void closeSocket()
+    {
+    	this.subSocket.close();
+		this.context.destroySocket(subSocket);
+		this.subSocket=null;
+    }
+    
     public ZMQ.Socket getSubSocket() {
         if(subSocket == null) {
             try {
