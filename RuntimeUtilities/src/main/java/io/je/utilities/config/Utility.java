@@ -1,5 +1,8 @@
 package io.je.utilities.config;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import org.json.JSONObject;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.je.project.siothconfig.SIOTHConfig;
@@ -17,7 +20,7 @@ public class Utility {
 	}
 
 	public static void init() {
-		ObjectMapper objectMapper = new ObjectMapper();
+		ObjectMapper objectMapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 		String jsonString = loadSIOTHConfig();
 		if (jsonString != null) {
 			try {
