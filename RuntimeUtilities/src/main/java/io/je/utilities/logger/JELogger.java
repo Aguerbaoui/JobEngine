@@ -273,7 +273,7 @@ public class JELogger {
 				+ "==                                 Version : 1.0.0                                  ==\r\n"
 				+ "==                                 Build Date : " + LocalDateTime.now().format(formatter)
 				+ "                            ==\r\n"
-				+ "==                       Copyright © 2021 Integration Objects                       ==\r\n"
+				+ "==                       Copyright ï¿½ 2021 Integration Objects                       ==\r\n"
 				+ "======================================================================================\r\n"
 				+ "==                             Trace level : [ " + level + " ]                              ==\r\n"
 				+ "======================================================================================";
