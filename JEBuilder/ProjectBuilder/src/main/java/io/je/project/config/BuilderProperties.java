@@ -23,6 +23,9 @@ public class BuilderProperties {
 	@Value("${use.ZMQ.Security}")
 	Boolean useZmqSecurity;
 
+	@Value("${ids4.issuer}")
+	String issuer;
+
 
 	public String getJeBuilderLogPath() {
 		return jeBuilderLogPath;
@@ -43,9 +46,11 @@ public class BuilderProperties {
 		this.useZmqSecurity = useZmqSecurity;
 	}
 
-	
-	
-	
+	public String getIssuer() {
+		return issuer;
+	}
 
-
+	public void setIssuer(String issuer) {
+		this.issuer = issuer;
+	}
 }
