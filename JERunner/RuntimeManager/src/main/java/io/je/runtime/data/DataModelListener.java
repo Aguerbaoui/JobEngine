@@ -70,7 +70,12 @@ public class DataModelListener {
 		for(Object value : initialValues)
 		{
      		 try {
-				RuntimeDispatcher.injectData(new JEData(modelId, value.toString()));
+				try {
+					RuntimeDispatcher.injectData(new JEData(modelId, objectMapper.writeValueAsString(value)));
+				} catch (JsonProcessingException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			} catch (InstanceCreationFailed e) {
 				e.printStackTrace();
 			}
