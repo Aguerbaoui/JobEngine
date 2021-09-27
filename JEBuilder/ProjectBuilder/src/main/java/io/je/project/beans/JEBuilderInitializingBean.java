@@ -34,12 +34,12 @@ public class JEBuilderInitializingBean implements InitializingBean {
             JELogger.debug(JEMessages.LOGGER_INITIALIZED,
                     LogCategory.DESIGN_MODE, null,
                     LogSubModule.JEBUILDER, null);
-            AuthenticationInterceptor.init(builderProperties.getJwksUrl(), builderProperties.getIssuer());
+            AuthenticationInterceptor.init(builderProperties.getIssuer());
             LicenseProperties.init();
         	while(!LicenseProperties.licenseIsActive())
         	{
         		try {
-        			Thread.sleep(20000);
+        			Thread.sleep(5000);
     				LicenseProperties.checkLicenseIsActive();    				
     			} catch (LicenseNotActiveException e) {
     				JELogger.error(e.getMessage(), LogCategory.SIOTH_APPLICATION, "",

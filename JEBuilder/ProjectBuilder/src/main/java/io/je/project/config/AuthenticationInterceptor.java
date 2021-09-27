@@ -27,8 +27,8 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
 
     private static String issuer;
 
-    public static void init(String jwksUrls, String issueUrl) {
-        jwksUrl = jwksUrls;
+    public static void init(String issueUrl) {
+        jwksUrl = issueUrl + "/.well-known/openid-configuration/jwks";
         issuer = issueUrl;
     }
 

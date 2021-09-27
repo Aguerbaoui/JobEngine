@@ -23,9 +23,6 @@ public class BuilderProperties {
 	@Value("${use.ZMQ.Security}")
 	Boolean useZmqSecurity;
 
-	@Value("${ids4.jwks.url}")
-	String jwksUrl;
-
 	@Value("${ids4.issuer}")
 	String issuer;
 
@@ -47,14 +44,6 @@ public class BuilderProperties {
 	}
 	public void setUseZmqSecurity(Boolean useZmqSecurity) {
 		this.useZmqSecurity = useZmqSecurity;
-	}
-
-	public String getJwksUrl() {
-		return jwksUrl;
-	}
-
-	public void setJwksUrl(String jwksUrl) {
-		this.jwksUrl = jwksUrl;
 	}
 
 	public String getIssuer() {
