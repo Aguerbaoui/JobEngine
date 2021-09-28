@@ -5,6 +5,7 @@ import java.time.format.DateTimeFormatter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.je.utilities.beans.JEVariable;
 import io.je.utilities.config.Utility;
+import io.je.utilities.time.JEDate;
 
 public class VariableModel {
 
@@ -29,10 +30,7 @@ public class VariableModel {
     private String createdBy;
     
     private String modifiedBy;
-    
-    
-    @JsonIgnore
-    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern(Utility.getSiothConfig().getDateFormat());
+
 
     
     public String getId() {
@@ -86,14 +84,6 @@ public class VariableModel {
 		this.description = description;
 	}
 
-	public DateTimeFormatter getFormatter() {
-		return formatter;
-	}
-
-	public void setFormatter(DateTimeFormatter formatter) {
-		this.formatter = formatter;
-	}
-
 	public String getCreatedBy() {
 		return createdBy;
 	}
@@ -144,8 +134,8 @@ public class VariableModel {
 	        this.name = variable.getName();
 	        this.type = variable.getType().toString();
 	        this.initialValue = String.valueOf(variable.getInitialValue());
-			this.createdAt = variable.getJeObjectCreationDate().format(formatter);
-			this.lastModifiedAt = variable.getJeObjectLastUpdate().format(formatter);
+			this.createdAt = JEDate.formatDateToSIOTHFormat(variable.getJeObjectCreationDate());
+			this.lastModifiedAt = JEDate.formatDateToSIOTHFormat(variable.getJeObjectLastUpdate());
 	        this.value = null;
 			this.createdBy = variable.getJeObjectCreatedBy();
 			this.modifiedBy = variable.getJeObjectModifiedBy();

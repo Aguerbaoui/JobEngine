@@ -34,13 +34,13 @@ public class WorkflowModel {
 
     private String status;
 
-    private LocalDateTime modifiedAt;
+    private String modifiedAt;
 
-    private LocalDateTime createdAt;
+    private String createdAt;
 
     private String frontConfig;
 
-    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern(Utility.getSiothConfig().getDateFormat());
+
 
     public WorkflowModel(String projectId, String id, String path, String name, ArrayList<EventModel> events,
                          ArrayList<TaskModel> tasks) {
@@ -163,19 +163,19 @@ public class WorkflowModel {
         this.status = status;
     }
 
-    public LocalDateTime getModifiedAt() {
+    public String getModifiedAt() {
         return modifiedAt;
     }
 
-    public void setModifiedAt(LocalDateTime modifiedAt) {
+    public void setModifiedAt(String modifiedAt) {
         this.modifiedAt = modifiedAt;
     }
 
-    public LocalDateTime getCreatedAt() {
+    public String getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
+    public void setCreatedAt(String createdAt) {
         this.createdAt = createdAt;
     }
 
