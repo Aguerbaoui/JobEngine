@@ -1,7 +1,7 @@
 package io.je.project.controllers;
 
 import io.je.project.exception.JEExceptionHandler;
-import io.je.project.models.WorkflowBlockModel;
+import io.je.utilities.models.WorkflowBlockModel;
 import io.je.project.services.ProjectService;
 import io.je.project.services.WorkflowService;
 import io.je.utilities.constants.JEMessages;
@@ -151,7 +151,7 @@ public class WorkflowController {
     @GetMapping(value = "/getWorkflowById/{projectId}/{key}")
     @ResponseBody
     public ResponseEntity<?> getWorkflowById(@PathVariable("projectId") String projectId, @PathVariable("key") String key) {
-        JEWorkflow w = null;
+        WorkflowModel w = null;
         try {
 			projectService.getProject(projectId);
 

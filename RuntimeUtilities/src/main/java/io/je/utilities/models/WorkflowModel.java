@@ -1,12 +1,16 @@
 package io.je.utilities.models;
 
+import io.je.utilities.config.Utility;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 public class WorkflowModel {
 
     private String projectId;
 
-    private String key;
+    private String id;
 
     private String path;
 
@@ -27,13 +31,22 @@ public class WorkflowModel {
     private   String createdBy;
     
     private String modifiedBy;
-    
 
-    public WorkflowModel(String projectId, String key, String path, String name, ArrayList<EventModel> events,
+    private String status;
+
+    private LocalDateTime modifiedAt;
+
+    private LocalDateTime createdAt;
+
+    private String frontConfig;
+
+    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern(Utility.getSiothConfig().getDateFormat());
+
+    public WorkflowModel(String projectId, String id, String path, String name, ArrayList<EventModel> events,
                          ArrayList<TaskModel> tasks) {
         super();
         this.projectId = projectId;
-        this.key = key;
+        this.id = id;
         this.path = path;
         this.events = events;
         this.tasks = tasks;
@@ -84,12 +97,12 @@ public class WorkflowModel {
         this.name = name;
     }
 
-    public String getKey() {
-        return key;
+    public String getId() {
+        return id;
     }
 
-    public void setKey(String key) {
-        this.key = key;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getPath() {
@@ -142,9 +155,42 @@ public class WorkflowModel {
 		this.modifiedBy = modifiedBy;
 	}
 
-	@Override
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public LocalDateTime getModifiedAt() {
+        return modifiedAt;
+    }
+
+    public void setModifiedAt(LocalDateTime modifiedAt) {
+        this.modifiedAt = modifiedAt;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public String getFrontConfig() {
+        return frontConfig;
+    }
+
+    public void setFrontConfig(String frontConfig) {
+        this.frontConfig = frontConfig;
+    }
+
+
+    @Override
     public String toString() {
-        return "WorkflowModel [projectId=" + projectId + ", key=" + key + ", path=" + path + ", events=" + events
+        return "WorkflowModel [projectId=" + projectId + ", key=" + id + ", path=" + path + ", events=" + events
                 + ", tasks=" + tasks + "]";
     }
 

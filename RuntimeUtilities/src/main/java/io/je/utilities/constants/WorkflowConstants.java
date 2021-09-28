@@ -28,6 +28,7 @@ public class WorkflowConstants {
     public static final String SEQ_FLOW_TYPE = "sequenceflow";
     public static final String EXCLUSIVEGATEWAY_TYPE = "exclusivegateway";
     public static final String SCRIPTTASK_TYPE = "scripttask";
+    public static final String CALLACTIVITYTASK_TYPE = "callworkflowtask";
     public static final String PARALLELGATEWAY_TYPE = "parallelgateway";
     public static final String INCLUSIVEGATEWAY_TYPE = "inclusivegateway";
     public static final String DATETIMEREVENT = "datetimerevent";

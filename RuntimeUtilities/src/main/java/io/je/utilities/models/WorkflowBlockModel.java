@@ -1,4 +1,4 @@
-package io.je.project.models;
+package io.je.utilities.models;
 
 import java.util.Map;
 

@@ -323,6 +323,14 @@ public class ModelBuilder {
         return event;
     }
 
+    public static CallActivity createCallActivity(String id, String name, String calledElement) {
+        CallActivity callActivity = new CallActivity();
+        callActivity.setCalledElement(calledElement);
+        callActivity.setId(id);
+        callActivity.setName(name);
+        return callActivity;
+    }
+
     /*
      * Save Bpmn model to a file
      * */

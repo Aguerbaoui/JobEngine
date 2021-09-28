@@ -2,7 +2,6 @@ package io.je.project.controllers;
 
 import io.je.project.beans.JEProject;
 import io.je.project.exception.JEExceptionHandler;
-import io.je.project.models.ProjectModel;
 import io.je.project.services.ProjectService;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.ResponseCodes;
@@ -19,7 +18,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import static io.je.utilities.constants.JEMessages.*;
 
-import java.util.Collection;
 import java.util.HashMap;
 
 /*
