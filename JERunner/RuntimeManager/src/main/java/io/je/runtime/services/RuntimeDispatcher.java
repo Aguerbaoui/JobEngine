@@ -23,11 +23,9 @@ import io.je.utilities.instances.InstanceManager;
 import io.je.utilities.logger.JELogger;
 import io.je.utilities.logger.LogCategory;
 import io.je.utilities.logger.LogSubModule;
-import io.je.utilities.mapping.InstanceModelMapping;
 import io.je.utilities.models.*;
 import io.je.utilities.runtimeobject.JEObject;
 
-import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -183,16 +181,16 @@ public class RuntimeDispatcher {
 	 */
 	public void addWorkflow(WorkflowModel wf) {
 		JELogger.debug(
-				"[projectId = " + wf.getProjectId() + "] [workflow = " + wf.getKey() + "]" + JEMessages.ADDING_WF,
-				LogCategory.RUNTIME, wf.getProjectId(), LogSubModule.WORKFLOW, wf.getKey());
-		JEProcess process = new JEProcess(wf.getKey(), wf.getName(), wf.getPath(), wf.getProjectId(),
+				"[projectId = " + wf.getProjectId() + "] [workflow = " + wf.getId() + "]" + JEMessages.ADDING_WF,
+				LogCategory.RUNTIME, wf.getProjectId(), LogSubModule.WORKFLOW, wf.getId());
+		JEProcess process = new JEProcess(wf.getId(), wf.getName(), wf.getPath(), wf.getProjectId(),
 				wf.isTriggeredByEvent());
 		process.setOnProjectBoot(wf.isOnProjectBoot());
 		if (wf.isTriggeredByEvent()) {
 			process.setTriggerMessage(wf.getTriggerMessage());
 		}
 		for (TaskModel task : wf.getTasks()) {
-			ActivitiTask activitiTask = WorkflowEngineHandler.parseTask(wf.getProjectId(), wf.getKey(), task);
+			ActivitiTask activitiTask = WorkflowEngineHandler.parseTask(wf.getProjectId(), wf.getId(), task);
 			ActivitiTaskManager.addTask(activitiTask);
 			process.addActivitiTask(activitiTask);
 		}

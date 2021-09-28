@@ -9,6 +9,7 @@ import io.je.rulebuilder.components.JERule;
 import io.je.rulebuilder.components.UserDefinedRule;
 import io.je.rulebuilder.config.AttributesMapping;
 import io.je.utilities.config.Utility;
+import io.je.utilities.time.JEDate;
 
 
 /*
@@ -61,11 +62,6 @@ public class RuleModel {
     //temporary 
     @JsonProperty(AttributesMapping.FRONTCONFIG)
     String ruleFrontConfig;
-    
-    
-    @JsonIgnore
-    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern(Utility.getSiothConfig().getDateFormat());
-
 
     
     public RuleModel(JERule rule) {
@@ -74,8 +70,8 @@ public class RuleModel {
 		this.ruleName = rule.getRuleName();
 		this.description = rule.getDescription();
 		this.isBuilt = String.valueOf(rule.isBuilt());
-		this.createdAt = rule.getJeObjectCreationDate().format(formatter);
-		this.lastModifiedAt = rule.getJeObjectLastUpdate().format(formatter);
+		this.createdAt = JEDate.formatDateToSIOTHFormat(rule.getJeObjectCreationDate());
+		this.lastModifiedAt = JEDate.formatDateToSIOTHFormat(rule.getJeObjectLastUpdate());
 		this.createdBy = rule.getJeObjectCreatedBy();
 		this.modifiedBy = rule.getJeObjectModifiedBy();
 		if(rule instanceof UserDefinedRule) {

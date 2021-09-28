@@ -33,7 +33,7 @@ public class WorkflowController {
     public ResponseEntity<?> addWorkflow(@RequestBody WorkflowModel wf) {
         dispatcher.addWorkflow(wf);
         try {
-            dispatcher.buildWorkflow(wf.getProjectId(), wf.getKey());
+            dispatcher.buildWorkflow(wf.getProjectId(), wf.getId());
         } catch (WorkflowBuildException e) {
             return JEExceptionHandler.handleException(e);
         }

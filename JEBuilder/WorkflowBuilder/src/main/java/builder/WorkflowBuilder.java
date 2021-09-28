@@ -134,7 +134,7 @@ public class WorkflowBuilder {
             JEToBpmnMapper.createBpmnFromJEWorkflow(workflow);
         }
         WorkflowModel wf = new WorkflowModel();
-        wf.setKey(workflow.getWorkflowName().trim());
+        wf.setId(workflow.getWorkflowName().trim());
         wf.setPath(ConfigurationConstants.BPMN_PATH + workflow.getWorkflowName().trim() + BPMN_EXTENSION);
         wf.setProjectId(workflow.getJobEngineProjectID());
         wf.setTriggeredByEvent(workflow.isTriggeredByEvent());
