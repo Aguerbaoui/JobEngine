@@ -33,7 +33,7 @@ public class ClassManager {
 	static Map<String, JEClass> jeClasses = new ConcurrentHashMap<>(); // key = is, value = jeclass
 	static Map<String, Class<?>> builtClasses = new ConcurrentHashMap<>(); // key = id , value = class
 	static ZMQPublisher publisher = new ZMQPublisher("tcp://"+Utility.getSiothConfig().getMachineCredentials().getIpAddress(),
-			Utility.getSiothConfig().getPorts().getLogServicePort());
+			Utility.getSiothConfig().getPorts().getTrackerPort());
 	static ObjectMapper objectMapper = new ObjectMapper();
 
 	// TODO: see with islem if possible to change field type to class id instead of

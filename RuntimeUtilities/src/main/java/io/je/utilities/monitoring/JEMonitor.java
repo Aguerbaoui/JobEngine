@@ -15,7 +15,7 @@ import io.je.utilities.zmq.ZMQPublisher;
 
 public class JEMonitor  {
 	
-	static ZMQPublisher publisher = new ZMQPublisher("tcp://"+Utility.getSiothConfig().getMachineCredentials().getIpAddress() , Utility.getSiothConfig().getPorts().getMonitoringPort());
+	static ZMQPublisher publisher = new ZMQPublisher("tcp://"+Utility.getSiothConfig().getMachineCredentials().getIpAddress() , Utility.getSiothConfig().getPorts().getTrackerPort());
 	static ObjectMapper objectMapper = new ObjectMapper();
 
 	public static void publish(LocalDateTime timestamp, String objectId, ObjectType objectType, String objectProjectId,

@@ -88,7 +88,7 @@
         <dependency>
             <groupId>io.licensemanager</groupId>
             <artifactId>LicenseManager</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>0.0.1</version>
       </dependency>
         <dependency>
             <groupId>com.auth0</groupId>

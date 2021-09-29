@@ -700,16 +700,17 @@ public class ProjectContainer {
 				try {
 					//ClassLoader t = JEClassLoader.getInstance(); //io.je.utilities.classloader.JEClassLoader@733aa287
 					//ClassLoader test = fact.getClass().getClassLoader(); //io.je.utilities.classloader.JEClassLoader@41ee5f60
-
+					JELogger.trace(JEClassLoader.getInstance().toString(), LogCategory.RUNTIME, projectId, LogSubModule.RULE, fact.getJobEngineElementID());
+					JELogger.trace(fact.getClass().getClassLoader().toString(), LogCategory.RUNTIME, projectId, LogSubModule.RULE, fact.getJobEngineElementID());
 
 					synchronized(facts)
 					{
-						JELogger.debugWithoutPublish("Rule Engine - [projectId ="+projectId+"] [factId :"+fact.getJobEngineElementID()+"]" + JEMessages.UPDATING_FACT,
+						JELogger.debug("Rule Engine - [projectId ="+projectId+"] [factId :"+fact.getJobEngineElementID()+"]" + JEMessages.UPDATING_FACT,
 								LogCategory.DESIGN_MODE, projectId,
 								LogSubModule.RULE,fact.getJobEngineElementID());
 						if (facts.containsKey(fact.getJobEngineElementID())) {
-							kieSession.update(facts.get(fact.getJobEngineElementID()), fact);
-
+							kieSession.update(facts.get(fact.getJobEngineElementID()), fact); 
+							
 
 						} else {
 							facts.put(fact.getJobEngineElementID(), kieSession.insert(fact));
