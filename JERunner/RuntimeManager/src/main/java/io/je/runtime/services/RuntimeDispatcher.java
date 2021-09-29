@@ -84,7 +84,7 @@ public class RuntimeDispatcher {
 
 
 			// run workflows
-			WorkflowEngineHandler.runAllWorkflows(projectId);
+			WorkflowEngineHandler.runAllWorkflows(projectId, true);
 			RuleEngineHandler.runRuleEngineProject(projectId);
 			for (JEVariable variable : VariableManager.getAllVariables(projectId)) {
 				RuleEngineHandler.addVariable(variable);
@@ -206,6 +206,7 @@ public class RuntimeDispatcher {
 			WorkflowBuildException {
 		JELogger.debug("[projectId = " + projectId + "] [workflow = " + key + "]" + JEMessages.RUNNING_WF,
 				LogCategory.RUNTIME, projectId, LogSubModule.WORKFLOW, key);
+		buildWorkflow(projectId, key);
 		WorkflowEngineHandler.launchProcessWithoutVariables(projectId, key, runProject);
 
 	}
@@ -213,10 +214,10 @@ public class RuntimeDispatcher {
 	/*
 	 * Run all workflows deployed in the engine without project specification
 	 */
-	public void runAllWorkflows(String projectId) throws WorkflowNotFoundException {
+	public void runAllWorkflows(String projectId) throws WorkflowNotFoundException, WorkflowBuildException {
 		JELogger.debug("[projectId = " + projectId + "]" + JEMessages.RUNNING_WFS, LogCategory.RUNTIME, projectId,
 				LogSubModule.WORKFLOW, null);
-		WorkflowEngineHandler.runAllWorkflows(projectId);
+		WorkflowEngineHandler.runAllWorkflows(projectId, false);
 	}
 
 	/*

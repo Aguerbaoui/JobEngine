@@ -16,6 +16,8 @@ public class TimerEvent extends WorkflowBlock {
 
     Timers timer;
 
+    int occurrences = -1;
+
     public String getTimeDate() {
         return timeDate;
     }
@@ -43,7 +45,12 @@ public class TimerEvent extends WorkflowBlock {
 
     public void setTimeCycle(String timeCycle) {
         if(timeCycle != null) {
-            this.timeCycle = "R1000/PT" + timeCycle.toUpperCase();
+            if(occurrences != -1) {
+                this.timeCycle = "R" + occurrences + "/PT" + timeCycle.toUpperCase();
+            }
+            else {
+                this.timeCycle = "R100000/PT" + timeCycle.toUpperCase();
+            }
         }
         else {
             this.timeCycle = null;
@@ -64,5 +71,13 @@ public class TimerEvent extends WorkflowBlock {
 
     public void setTimer(Timers timer) {
         this.timer = timer;
+    }
+
+    public int getOccurrences() {
+        return occurrences;
+    }
+
+    public void setOccurrences(int occurrences) {
+        this.occurrences = occurrences;
     }
 }

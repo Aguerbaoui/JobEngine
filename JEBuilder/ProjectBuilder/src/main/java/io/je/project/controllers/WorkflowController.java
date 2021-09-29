@@ -278,7 +278,7 @@ public class WorkflowController {
     }
 
     @DeleteMapping(value = "/deleteWorkflows/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> deleteRules(@PathVariable("projectId") String projectId, @RequestBody List<String> ids) {
+    public ResponseEntity<?> deleteWorkflows(@PathVariable("projectId") String projectId, @RequestBody List<String> ids) {
         try {
 			projectService.getProject(projectId);
 
