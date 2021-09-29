@@ -25,7 +25,7 @@ public class JEClassLoader extends ClassLoader {
     
     private JEClassLoader(Set<String> customClasses) {
         super(JEClassLoader.class.getClassLoader());
-       this.customClasses=customClasses;
+       JEClassLoader.customClasses =customClasses;
     }
     
     
