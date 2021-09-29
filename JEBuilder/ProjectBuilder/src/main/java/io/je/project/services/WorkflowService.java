@@ -53,6 +53,7 @@ public class WorkflowService {
     public static final String DURATION = "duration";
     public static final String ENDDATE = "enddate";
     public static final String TIMECYCLE = "timecycle";
+    public static final String NBOCCURENCES = "occurrences";
     public static final String TIMEDATE = "timedate";
     public static final String EVENT_ID = "eventId";
     public static final String SOURCE_REF = "sourceRef";
@@ -545,7 +546,8 @@ public class WorkflowService {
             if (!JEStringUtils.isEmpty((String) block.getAttributes().get(EVENT_ID))) {
                 eventService.updateEventType(block.getProjectId(), (String) block.getAttributes().get(EVENT_ID), EventType.START_WORKFLOW.toString());
                 b.setEventId((String) block.getAttributes().get(EVENT_ID));
-            } else if (WorkflowConstants.DATETIMEREVENT.equals(block.getAttributes().get(WorkflowConstants.EVENT_TYPE))) {
+            }
+            else if (WorkflowConstants.DATETIMEREVENT.equals(block.getAttributes().get(WorkflowConstants.EVENT_TYPE))) {
                 TimerEvent timerEvent = new TimerEvent();
                 timerEvent.setName((String) block.getAttributes().get(NAME));
                 timerEvent.setTimeDate((String) block.getAttributes().get(ENDDATE));
@@ -553,8 +555,10 @@ public class WorkflowService {
                 timerEvent.setTimeDuration(null);
                 timerEvent.setEndDate(null);
                 timerEvent.setTimeCycle(null);
+                timerEvent.setOccurrences(-1);
                 b.setTimerEvent(timerEvent);
-            } else if (WorkflowConstants.DURATIONTIMEREVENT.equals(block.getAttributes().get(WorkflowConstants.EVENT_TYPE))) {
+            }
+            else if (WorkflowConstants.DURATIONTIMEREVENT.equals(block.getAttributes().get(WorkflowConstants.EVENT_TYPE))) {
                 TimerEvent timerEvent = new TimerEvent();
                 timerEvent.setName((String) block.getAttributes().get(NAME));
                 timerEvent.setTimeDuration((String) block.getAttributes().get(TIMECYCLE));
@@ -562,15 +566,20 @@ public class WorkflowService {
                 timerEvent.setTimeCycle(null);
                 timerEvent.setEndDate(null);
                 timerEvent.setTimer(Timers.DELAY);
+                timerEvent.setOccurrences(-1);
                 b.setTimerEvent(timerEvent);
-            } else if (WorkflowConstants.CYCLETIMEREVENT.equals(block.getAttributes().get(WorkflowConstants.EVENT_TYPE))) {
+            }
+            else if (WorkflowConstants.CYCLETIMEREVENT.equals(block.getAttributes().get(WorkflowConstants.EVENT_TYPE))) {
                 TimerEvent timerEvent = new TimerEvent();
                 timerEvent.setName((String) block.getAttributes().get(NAME));
+                if( block.getAttributes().get(NBOCCURENCES) != null) {
+                    timerEvent.setOccurrences((Integer) block.getAttributes().get(NBOCCURENCES));
+                }
                 timerEvent.setTimeCycle((String) block.getAttributes().get(TIMECYCLE));
-                timerEvent.setTimeDate((String) block.getAttributes().get(ENDDATE));
                 timerEvent.setTimer(Timers.CYCLIC);
-                timerEvent.setEndDate(null);
+                timerEvent.setEndDate((String) block.getAttributes().get(ENDDATE));
                 timerEvent.setTimeDuration(null);
+
                 b.setTimerEvent(timerEvent);
             }
 
@@ -667,16 +676,20 @@ public class WorkflowService {
             b.setTimeDuration(null);
             b.setEndDate(null);
             b.setTimeCycle(null);
+            b.setOccurrences(-1);
             project.addBlockToWorkflow(b);
         } else if (block.getType().equalsIgnoreCase(WorkflowConstants.CYCLETIMEREVENT)) {
             TimerEvent b = (TimerEvent) project.getWorkflowByIdOrName(block.getWorkflowId()).getAllBlocks().get(block.getId());
             b.setName((String) block.getAttributes().get(NAME));
+            if( block.getAttributes().get(NBOCCURENCES) != null) {
+                b.setOccurrences((Integer) block.getAttributes().get(NBOCCURENCES));
+            }
             b.setTimeCycle((String) block.getAttributes().get(TIMECYCLE));
             //b.setEndDate((String) block.getAttributes().get(ENDDATE));
-            b.setTimeDate((String) block.getAttributes().get(ENDDATE));
             b.setTimer(Timers.CYCLIC);
-            b.setEndDate(null);
+            b.setEndDate((String) block.getAttributes().get(ENDDATE));
             b.setTimeDuration(null);
+
             project.addBlockToWorkflow(b);
         } else if (block.getType().equalsIgnoreCase(WorkflowConstants.DURATIONTIMEREVENT)) {
             TimerEvent b = (TimerEvent) project.getWorkflowByIdOrName(block.getWorkflowId()).getAllBlocks().get(block.getId());
@@ -685,6 +698,7 @@ public class WorkflowService {
             b.setTimeDate((String) block.getAttributes().get(ENDDATE));
             b.setTimeCycle(null);
             b.setEndDate(null);
+            b.setOccurrences(-1);
             b.setTimer(Timers.DELAY);
             project.addBlockToWorkflow(b);
         } else if (block.getType().equalsIgnoreCase(WorkflowConstants.DBREADSERVICETASK_TYPE)) {
@@ -892,7 +906,7 @@ public class WorkflowService {
         }
     }
 
-    public void stopWorkflow(String projectId, String workflowId) throws ConfigException, ProjectNotFoundException, WorkflowNotFoundException, InterruptedException, JERunnerErrorException, ExecutionException, LicenseNotActiveException {
+    public void stopWorkflow(String projectId, String workflowId) throws ProjectNotFoundException, WorkflowNotFoundException, InterruptedException, JERunnerErrorException, ExecutionException, LicenseNotActiveException {
         LicenseProperties.checkLicenseIsActive();
 
         JEProject project = ProjectService.getProjectById(projectId);

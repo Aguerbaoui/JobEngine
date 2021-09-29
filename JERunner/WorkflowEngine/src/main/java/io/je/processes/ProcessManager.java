@@ -371,14 +371,17 @@ public class ProcessManager {
     }
 
 
-    public void runAll(String projectId) throws WorkflowNotFoundException {
+    /*
+    * Run all workflows ( in case runProject == false we run all kinds of workflows( scheduled or not ) )
+    * */
+    public void runAll(String projectId, boolean runProject) throws WorkflowNotFoundException, WorkflowBuildException {
         JELogger.debug(JEMessages.RUNNING_ALL_WORKFLOWS_IN_PROJECT_ID + " = " + projectId,
                 LogCategory.RUNTIME, projectId,
                 LogSubModule.WORKFLOW, null);
         for (JEProcess process : processes.values()) {
             if (process.getProjectId().equals(projectId) && process.isDeployed() && !process.isRunning()) {
                 try {
-                    launchProcessByKeyWithoutVariables(process.getKey(), true);
+                    launchProcessByKeyWithoutVariables(process.getKey(), runProject);
                 } catch (WorkflowAlreadyRunningException e) {
                     JELogger.error(JEMessages.WORKFLOW_ALREADY_RUNNING + process.getKey(),
                             LogCategory.RUNTIME, projectId,
