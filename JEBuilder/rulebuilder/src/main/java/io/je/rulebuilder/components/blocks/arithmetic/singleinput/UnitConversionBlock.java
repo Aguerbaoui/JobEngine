@@ -24,7 +24,7 @@ public class UnitConversionBlock extends SingleInputArithmeticBlock {
 	
 	@Override
 	protected String getFormula() {
-		return "JEConverter.convert( " +getInputRefName(0) + ","+ inputUnit +","+ outputUnit+")" ;
+		return "ConversionUtilities.convert( " +getInputRefName(0) + ","+ inputUnit +","+ outputUnit+")" ;
 	}
 
 

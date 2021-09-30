@@ -16,7 +16,7 @@ public class HighLimitingBlock extends MultipleInputArithmeticBlock {
 
 	@Override
 	protected String getArithmeticFormula(int level,String type) {
-		return "JECalculator.highLimiting( "  ;
+		return "MathUtilities.highLimiting( "  ;
 
 	}
 
