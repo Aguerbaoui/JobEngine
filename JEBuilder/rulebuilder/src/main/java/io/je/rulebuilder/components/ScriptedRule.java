@@ -1,6 +1,7 @@
 package io.je.rulebuilder.components;
 
-import io.je.utilities.files.JEFileUtils;
+
+import utils.files.FileUtilities;
 
 public class ScriptedRule extends  JERule {
 
@@ -32,7 +33,7 @@ public class ScriptedRule extends  JERule {
 		String fileName="";
 		try{
 			 fileName = buildPath +"\\" + jobEngineElementID +".drl";
-	        JEFileUtils.copyStringToFile(script, fileName, "UTF-8");
+			FileUtilities.copyStringToFile(script, fileName, "UTF-8");
 
 		}catch (Exception e) {
 			e.printStackTrace();

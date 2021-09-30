@@ -7,10 +7,9 @@ import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.logger.*;
 import io.je.utilities.models.VariableModel;
-import io.je.utilities.network.JEResponse;
-import io.je.utilities.string.JEStringUtils;
+import io.je.utilities.beans.JEResponse;
+import utils.string.StringUtilities;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -169,7 +168,7 @@ public class JobEngine {
     * Send user message
     * */
     public static int informUser(String message, String projectId) {
-        if(!JEStringUtils.isEmpty(message)) {
+        if(!StringUtilities.isEmpty(message)) {
             JELogger.info( message,  LogCategory.RUNTIME,  projectId,
                     LogSubModule.WORKFLOW, null);
         }
@@ -181,7 +180,7 @@ public class JobEngine {
      * Send user message
      * */
     public static int informUser(String level, String message, String projectId, String processId, String taskName) {
-        if(!JEStringUtils.isEmpty(message)) {
+        if(!StringUtilities.isEmpty(message)) {
             JELogger.info( message,  LogCategory.RUNTIME,  projectId,
                     LogSubModule.WORKFLOW, processId);
             //send to monitoring when its ready

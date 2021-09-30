@@ -1,18 +1,14 @@
+package utils.maths;
 
-
-package io.je.utilities.unitconversion;
+import utils.maths.Unit;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+public class UnitConverter {
 
-public class JEUnitConverter {
     public enum Category {
         ACCELERATION,
         ANGLE,
@@ -247,20 +243,20 @@ public class JEUnitConverter {
         // Blood Glucose
         MILLIGRAM_PER_DECILITER(new Unit(Category.BLOOD_GLUCOSE, "mg/dl", "Milligram per deciliter", new BigDecimal("0.0555"))),
         MILLIMOL_PER_LITER(new Unit(Category.BLOOD_GLUCOSE, "mmol/l", "Millimols per liter", new BigDecimal("1.0"))),
-    	
-        
+
+
         /*
          * offset x : 1 newUnit = x baseUnit
          */
-    	//DENSITY
+        //DENSITY
         KILOGRAM_PER_CUBIC_METER(new Unit(Category.DENSITY,"kg/m\u00b3","Kilogram per cubic meter", new BigDecimal("1.0E0"))),
         GRAM_PER_CUBIC_CENTIMETER(new Unit(Category.DENSITY,"g/cm\u00b3","gram per cubic centimeter", new BigDecimal("1.0E3"))),
-    	GRAM_PER_CUBIC_METER(new Unit(Category.DENSITY,"g/m\u00b3","Gram per cubic meter", new BigDecimal("1.0E-3"))),
-    	MILLIGRAM_PER_CUBIC_METER(new Unit(Category.DENSITY,"mg/m\u00b3","Milligram per cubic meter", new BigDecimal("1.0E-6"))),
-    	POUND_PER_CUBIC_FOOT(new Unit(Category.DENSITY,"ib/ft\u00b3","Pound per cubic foot", new BigDecimal("16.01846352"))),
-    	OUNCE_PER_GALLON(new Unit(Category.DENSITY,"oz/gal","Ounce per gallon", new BigDecimal("7.489151776"))) ,
-    	
-    	//FLOW
+        GRAM_PER_CUBIC_METER(new Unit(Category.DENSITY,"g/m\u00b3","Gram per cubic meter", new BigDecimal("1.0E-3"))),
+        MILLIGRAM_PER_CUBIC_METER(new Unit(Category.DENSITY,"mg/m\u00b3","Milligram per cubic meter", new BigDecimal("1.0E-6"))),
+        POUND_PER_CUBIC_FOOT(new Unit(Category.DENSITY,"ib/ft\u00b3","Pound per cubic foot", new BigDecimal("16.01846352"))),
+        OUNCE_PER_GALLON(new Unit(Category.DENSITY,"oz/gal","Ounce per gallon", new BigDecimal("7.489151776"))) ,
+
+        //FLOW
         KILOGRAM_PER_SECOND(new Unit(Category.FLOW,"kg/s","Kilogram per second", new BigDecimal("1.0E0"))),
         KILOGRAM_PER_HOUR(new Unit(Category.FLOW,"kg/h","Kilogram per hour", new BigDecimal("0.00027778"))),
         CUBIC_FOOT_PER_MINUTE(new Unit(Category.FLOW,"ft\u00b3/mn","Cubic foot per minute", new BigDecimal("0.35"))),
@@ -268,7 +264,7 @@ public class JEUnitConverter {
         GALLON_UPS_PER_MINUTE(new Unit(Category.FLOW,"gal/mn","Gallon US per minute", new BigDecimal("0.047"))),
 
 
-    	//VISCOSITY 
+        //VISCOSITY
         CENTIPOISE(new Unit(Category.FLOW,"cP","Centipoise", new BigDecimal("1.0E-3"))),
         KILOGRAM_PER_METER_SECOND(new Unit(Category.FLOW,"kg/(m.s)","Kilogram per meter second", new BigDecimal("1.0E0"))),
         POUND_PER_FOOT_HOUR(new Unit(Category.FLOW,"lb/(ft.h)","Pound per foot hour", new BigDecimal("0.00041")));
@@ -318,16 +314,16 @@ public class JEUnitConverter {
 
     private UnitDefinition                 baseUnitDefinition;
     private Unit                           bean;
-    private Locale                         locale;
+    private Locale locale;
     private int                            decimals;
     private String                         formatString;
 
 
     // ******************** Constructors **************************************
-    public JEUnitConverter(final Category UNIT_TYPE) {
+    public UnitConverter(final Category UNIT_TYPE) {
         this(UNIT_TYPE, BASE_UNITS.get(UNIT_TYPE));
     }
-    public JEUnitConverter(final Category UNIT_TYPE, final UnitDefinition BASE_UNIT_DEFINITION) {
+    public UnitConverter(final Category UNIT_TYPE, final UnitDefinition BASE_UNIT_DEFINITION) {
         baseUnitDefinition = BASE_UNIT_DEFINITION;
         bean               = BASE_UNITS.get(UNIT_TYPE).UNIT;
         locale             = Locale.US;
@@ -375,7 +371,7 @@ public class JEUnitConverter {
     public final double convert(final double VALUE, final UnitDefinition UNIT_DEFINITION) {
         if (UNIT_DEFINITION.UNIT.getCategory() != getUnitType()) { throw new IllegalArgumentException("units have to be of the same type"); }
         return ((((VALUE + baseUnitDefinition.UNIT.getOffset().doubleValue()) * baseUnitDefinition.UNIT.getFactor().doubleValue()) + bean.getOffset().doubleValue()) * bean.getFactor().doubleValue()) / UNIT_DEFINITION.UNIT
-            .getFactor().doubleValue() - UNIT_DEFINITION.UNIT.getOffset().doubleValue();
+                .getFactor().doubleValue() - UNIT_DEFINITION.UNIT.getOffset().doubleValue();
     }
 
     public final String convertToString(final double VALUE, final UnitDefinition UNIT_DEFINITION) {
@@ -384,7 +380,7 @@ public class JEUnitConverter {
 
     public final double convertToBaseUnit(final double VALUE, final UnitDefinition UNIT_DEFINITION) {
         return ((((VALUE + UNIT_DEFINITION.UNIT.getOffset().doubleValue()) * UNIT_DEFINITION.UNIT.getFactor().doubleValue()) + bean.getOffset().doubleValue()) * bean.getFactor().doubleValue()) / baseUnitDefinition.UNIT
-            .getFactor().doubleValue() - baseUnitDefinition.UNIT.getOffset().doubleValue();
+                .getFactor().doubleValue() - baseUnitDefinition.UNIT.getOffset().doubleValue();
     }
 
     public final Pattern getPattern() {

@@ -9,11 +9,10 @@ import io.je.utilities.exceptions.JERunnerErrorException;
 import io.je.utilities.logger.JELogger;
 import io.je.utilities.logger.LogCategory;
 import io.je.utilities.logger.LogSubModule;
-import io.je.utilities.network.JEResponse;
-import io.je.utilities.network.Network;
+import io.je.utilities.beans.JEResponse;
+import utils.network.Network;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
 
 public class Request {

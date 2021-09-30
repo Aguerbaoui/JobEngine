@@ -1,4 +1,4 @@
-package io.je.utilities.zmq;
+package utils.zmq;
 
 
 import org.zeromq.SocketType;
@@ -21,7 +21,7 @@ public abstract class ZMQSubscriber implements Runnable {
 
     protected boolean listening = false;
 
-    public ZMQSubscriber(String url,int subPort, String topic) {
+    public ZMQSubscriber(String url, int subPort, String topic) {
         this.url = url;
         this.subPort = subPort;
         this.topic = topic;

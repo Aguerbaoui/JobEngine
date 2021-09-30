@@ -101,7 +101,11 @@
             <artifactId>jwks-rsa</artifactId>
             <version>0.18.0</version>
         </dependency>
-
+        <dependency>
+            <groupId>io.utils</groupId>
+            <artifactId>Utilities</artifactId>
+            <version>0.0.1</version>
+        </dependency>
     </dependencies>
     <build>
         <finalName>ProjectBuilder</finalName>

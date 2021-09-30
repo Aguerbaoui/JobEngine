@@ -9,7 +9,6 @@ import io.je.utilities.instances.DataModelRequester;
 import io.je.utilities.logger.JELogger;
 import io.je.utilities.logger.LogCategory;
 import io.je.utilities.logger.LogSubModule;
-import io.je.utilities.zmq.ZMQRequester;
 
 import java.util.HashMap;
 import java.util.List;

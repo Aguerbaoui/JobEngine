@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.je.utilities.config.Utility;
 import io.je.utilities.constants.JEMessages;
-import io.je.utilities.zmq.ZMQPublisher;
+import utils.zmq.ZMQPublisher;
 
 import java.util.Arrays;
 

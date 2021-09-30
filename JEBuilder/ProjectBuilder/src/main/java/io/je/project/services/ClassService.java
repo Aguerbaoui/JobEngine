@@ -27,7 +27,7 @@ import io.je.utilities.exceptions.AddClassException;
 import io.je.utilities.exceptions.ClassLoadException;
 import io.je.utilities.exceptions.DataDefinitionUnreachableException;
 import io.je.utilities.exceptions.JERunnerErrorException;
-import io.je.utilities.network.JEResponse;
+import io.je.utilities.beans.JEResponse;
 
 /*
  * Service class to handle classes

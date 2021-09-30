@@ -13,7 +13,7 @@ import org.springframework.http.ResponseEntity;
 import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.exceptions.JEException;
 import io.je.utilities.logger.JELogger;
-import io.je.utilities.network.JEResponse;
+import io.je.utilities.beans.JEResponse;
 
 public class JEExceptionHandler {
 

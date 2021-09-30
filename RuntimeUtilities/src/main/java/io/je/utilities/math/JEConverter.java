@@ -1,20 +1,20 @@
 package io.je.utilities.math;
 
+import utils.maths.ConversionUtilities;
+import utils.maths.UnitConverter;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
-import io.je.utilities.unitconversion.JEUnitConverter;
-import io.je.utilities.unitconversion.JEUnitConverter.UnitDefinition;
 
 public class JEConverter {
 	
 	/*
 	 * convert between units
 	 */
-	public static double convert(double value ,UnitDefinition initialUnit, UnitDefinition finalUnit)
+	public static double convert(double value , UnitConverter.UnitDefinition initialUnit, UnitConverter.UnitDefinition finalUnit)
 	{
-		 JEUnitConverter unitConverter = new JEUnitConverter(initialUnit.UNIT.getCategory() , initialUnit); 
+		UnitConverter unitConverter = new UnitConverter(initialUnit.UNIT.getCategory() , initialUnit);
 	        return  unitConverter.convert(value, finalUnit);
 	}
 	

@@ -112,6 +112,12 @@
             <artifactId>mssql-jdbc</artifactId>
             <version>7.2.2.jre11</version>
         </dependency>
+        <dependency>
+            <groupId>io.utils</groupId>
+            <artifactId>Utilities</artifactId>
+            <version>0.0.1</version>
+            <scope>compile</scope>
+        </dependency>
 
 
     </dependencies>

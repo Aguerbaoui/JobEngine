@@ -6,7 +6,8 @@ import io.je.utilities.constants.JEMessages;
 import io.je.utilities.logger.JELogger;
 import io.je.utilities.logger.LogCategory;
 import io.je.utilities.logger.LogSubModule;
-import io.je.utilities.network.Network;
+import utils.network.HttpMethod;
+import utils.network.Network;
 
 import java.io.IOException;
 

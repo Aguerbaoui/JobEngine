@@ -1,4 +1,4 @@
-package io.je.utilities.apis;
+package utils.network;
 
 public enum BodyType {
     JSON,

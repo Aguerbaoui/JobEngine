@@ -10,7 +10,7 @@ import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
 
 import io.je.utilities.beans.JEData;
 import io.je.utilities.config.Utility;
-import io.je.utilities.time.JEDate;
+import utils.date.DateUtils;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -200,7 +200,7 @@ public class JELogger {
 	// get Log message object for the logging service
 	public static LogMessage getLogMessage(LogLevel logLevel, String message, LogCategory category, String projectId,
 			LogSubModule subModule, String objectId) {
-		String logDate = JEDate.formatDate(LocalDateTime.now(), "yyyy-MM-dd HH:mm:ss.SSS");
+		String logDate = DateUtils.formatDate(LocalDateTime.now(), "yyyy-MM-dd HH:mm:ss.SSS");
 
 		return new LogMessage(logLevel, message, logDate, /* category, */ projectId, subModule, objectId);
 	}
@@ -208,7 +208,7 @@ public class JELogger {
 	// get Log message object for the logging service
 	public static LogMessage getLogMessage(LogLevel logLevel, String message, LogCategory category, String projectId,
 			LogSubModule subModule, String objectId, String blockName) {
-		String logDate = JEDate.formatDate(LocalDateTime.now(), "yyyy-MM-dd HH:mm:ss.SSS");
+		String logDate = DateUtils.formatDate(LocalDateTime.now(), "yyyy-MM-dd HH:mm:ss.SSS");
 
 		return new LogMessage(logLevel, message, logDate, /* category, */ projectId, subModule, objectId, blockName);
 	}

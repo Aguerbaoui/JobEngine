@@ -1,4 +1,4 @@
-package io.je.utilities.network;
+package io.je.utilities.beans;
 
 public class JEResponse {
 

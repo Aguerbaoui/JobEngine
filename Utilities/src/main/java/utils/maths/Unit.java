@@ -1,12 +1,10 @@
-package io.je.utilities.unitconversion;
+package utils.maths;
 
 import java.math.BigDecimal;
-
-import io.je.utilities.unitconversion.JEUnitConverter.Category;
-
-
+import utils.maths.UnitConverter.Category;
 public class Unit {
-    private          Category   category;
+
+    private Category category;
     private          String     unitShort;
     private          String     unitName;
     private volatile BigDecimal factor;
@@ -66,18 +64,16 @@ public class Unit {
 
     @Override public final String toString() {
         return new StringBuilder().append(category)
-                                  .append(" ")
-                                  .append(unitShort)
-                                  .append(" (")
-                                  .append(unitName)
-                                  .append(") ")
-                                  .append(factor)
-                                  .append(", ")
-                                  .append(offset).toString();
+                .append(" ")
+                .append(unitShort)
+                .append(" (")
+                .append(unitName)
+                .append(") ")
+                .append(factor)
+                .append(", ")
+                .append(offset).toString();
     }
-	public void setCategory(Category category) {
-		this.category = category;
-	}
-    
-    
+    public void setCategory(Category category) {
+        this.category = category;
+    }
 }

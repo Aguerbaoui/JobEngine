@@ -27,11 +27,11 @@ import io.je.utilities.logger.LogSubModule;
 import io.je.utilities.models.EventType;
 import io.je.utilities.models.WorkflowBlockModel;
 import io.je.utilities.models.WorkflowModel;
-import io.je.utilities.string.JEStringUtils;
 import models.JEWorkflow;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import utils.string.StringUtilities;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -164,7 +164,7 @@ public class WorkflowService {
         if (block.getType().equalsIgnoreCase(WorkflowConstants.START_TYPE)) {
             StartBlock b = new StartBlock();
             b.setJobEngineElementName((String) block.getAttributes().get(NAME));
-            if (!JEStringUtils.isEmpty((String) block.getAttributes().get(EVENT_ID))) {
+            if (!StringUtilities.isEmpty((String) block.getAttributes().get(EVENT_ID))) {
                 eventService.updateEventType(block.getProjectId(), (String) block.getAttributes().get(EVENT_ID), EventType.START_WORKFLOW.toString());
                 //TODO throw exception in case runner didnt get the event
                 b.setEventId((String) block.getAttributes().get(EVENT_ID));
@@ -190,7 +190,7 @@ public class WorkflowService {
         } else if (block.getType().equalsIgnoreCase(WorkflowConstants.MESSAGEINTERMEDIATECATCHEVENT_TYPE)) {
             MessageEvent b = new MessageEvent();
             b.setJobEngineElementName((String) block.getAttributes().get(NAME));
-            if (!JEStringUtils.isEmpty((String) block.getAttributes().get(EVENT_ID))) {
+            if (!StringUtilities.isEmpty((String) block.getAttributes().get(EVENT_ID))) {
 
                 eventService.updateEventType(block.getProjectId(), (String) block.getAttributes().get(EVENT_ID), EventType.MESSAGE_EVENT.toString());
                 b.setEventId((String) block.getAttributes().get(EVENT_ID));
@@ -217,7 +217,7 @@ public class WorkflowService {
         }*/ else if (block.getType().equalsIgnoreCase(WorkflowConstants.SIGNALINTERMEDIATECATCHEVENT_TYPE)) {
             SignalEvent b = new SignalEvent();
             b.setJobEngineElementName((String) block.getAttributes().get(NAME));
-            if (!JEStringUtils.isEmpty((String) block.getAttributes().get(EVENT_ID))) {
+            if (!StringUtilities.isEmpty((String) block.getAttributes().get(EVENT_ID))) {
 
                 eventService.updateEventType(block.getProjectId(), (String) block.getAttributes().get(EVENT_ID), EventType.SIGNAL_EVENT.toString());
                 b.setEventId((String) block.getAttributes().get(EVENT_ID));
@@ -230,7 +230,7 @@ public class WorkflowService {
         } else if (block.getType().equalsIgnoreCase(WorkflowConstants.SIGNAL_THROW_EVENT_TYPE)) {
             SignalEvent b = new SignalEvent();
             b.setJobEngineElementName((String) block.getAttributes().get(NAME));
-            if (!JEStringUtils.isEmpty((String) block.getAttributes().get(EVENT_ID))) {
+            if (!StringUtilities.isEmpty((String) block.getAttributes().get(EVENT_ID))) {
 
                 eventService.updateEventType(block.getProjectId(), (String) block.getAttributes().get(EVENT_ID), EventType.SIGNAL_EVENT.toString());
                 b.setEventId((String) block.getAttributes().get(EVENT_ID));
@@ -543,7 +543,7 @@ public class WorkflowService {
             StartBlock b = (StartBlock) project.getWorkflowByIdOrName(block.getWorkflowId()).getAllBlocks().get(block.getId());
             b.setJobEngineElementName((String) block.getAttributes().get(NAME));
             b.setEventId(null);
-            if (!JEStringUtils.isEmpty((String) block.getAttributes().get(EVENT_ID))) {
+            if (!StringUtilities.isEmpty((String) block.getAttributes().get(EVENT_ID))) {
                 eventService.updateEventType(block.getProjectId(), (String) block.getAttributes().get(EVENT_ID), EventType.START_WORKFLOW.toString());
                 b.setEventId((String) block.getAttributes().get(EVENT_ID));
             }
@@ -595,7 +595,7 @@ public class WorkflowService {
         } else if (block.getType().equalsIgnoreCase(WorkflowConstants.MESSAGEINTERMEDIATECATCHEVENT_TYPE)) {
             MessageEvent b = (MessageEvent) project.getWorkflowByIdOrName(block.getWorkflowId()).getAllBlocks().get(block.getId());
             b.setJobEngineElementName((String) block.getAttributes().get(NAME));
-            if (!JEStringUtils.isEmpty((String) block.getAttributes().get(EVENT_ID))) {
+            if (!StringUtilities.isEmpty((String) block.getAttributes().get(EVENT_ID))) {
 
                 eventService.updateEventType(block.getProjectId(), (String) block.getAttributes().get(EVENT_ID), EventType.MESSAGE_EVENT.toString());
                 b.setEventId((String) block.getAttributes().get(EVENT_ID));
@@ -608,7 +608,7 @@ public class WorkflowService {
         } else if (block.getType().equalsIgnoreCase(WorkflowConstants.MESSAGE_THROW_EVENT_TYPE)) {
             MessageEvent b = (MessageEvent) project.getWorkflowByIdOrName(block.getWorkflowId()).getAllBlocks().get(block.getId());
             b.setJobEngineElementName((String) block.getAttributes().get(NAME));
-            if (!JEStringUtils.isEmpty((String) block.getAttributes().get(EVENT_ID))) {
+            if (!StringUtilities.isEmpty((String) block.getAttributes().get(EVENT_ID))) {
 
                 eventService.updateEventType(block.getProjectId(), (String) block.getAttributes().get(EVENT_ID), EventType.MESSAGE_EVENT.toString());
                 b.setEventId((String) block.getAttributes().get(EVENT_ID));
@@ -620,7 +620,7 @@ public class WorkflowService {
         } else if (block.getType().equalsIgnoreCase(WorkflowConstants.SIGNALINTERMEDIATECATCHEVENT_TYPE)) {
             SignalEvent b = (SignalEvent) project.getWorkflowByIdOrName(block.getWorkflowId()).getAllBlocks().get(block.getId());
             b.setJobEngineElementName((String) block.getAttributes().get(NAME));
-            if (!JEStringUtils.isEmpty((String) block.getAttributes().get(EVENT_ID))) {
+            if (!StringUtilities.isEmpty((String) block.getAttributes().get(EVENT_ID))) {
 
                 eventService.updateEventType(block.getProjectId(), (String) block.getAttributes().get(EVENT_ID), EventType.SIGNAL_EVENT.toString());
                 b.setEventId((String) block.getAttributes().get(EVENT_ID));
@@ -632,7 +632,7 @@ public class WorkflowService {
         } else if (block.getType().equalsIgnoreCase(WorkflowConstants.SIGNAL_THROW_EVENT_TYPE)) {
             SignalEvent b = (SignalEvent) project.getWorkflowByIdOrName(block.getWorkflowId()).getAllBlocks().get(block.getId());
             b.setJobEngineElementName((String) block.getAttributes().get(NAME));
-            if (!JEStringUtils.isEmpty((String) block.getAttributes().get(EVENT_ID))) {
+            if (!StringUtilities.isEmpty((String) block.getAttributes().get(EVENT_ID))) {
 
                 eventService.updateEventType(block.getProjectId(), (String) block.getAttributes().get(EVENT_ID), EventType.SIGNAL_EVENT.toString());
                 b.setEventId((String) block.getAttributes().get(EVENT_ID));
@@ -646,7 +646,7 @@ public class WorkflowService {
             b.setJobEngineElementName((String) block.getAttributes().get(NAME));
             project.addBlockToWorkflow(b);
         } else if (block.getType().equalsIgnoreCase(WorkflowConstants.SCRIPTTASK_TYPE)) {
-            if (JEStringUtils.isEmpty((String) block.getAttributes().get(SCRIPT))) {
+            if (StringUtilities.isEmpty((String) block.getAttributes().get(SCRIPT))) {
                 throw new WorkflowBlockException(JEMessages.EMPTY_SCRIPT);
             }
             ScriptBlock b = (ScriptBlock) project.getWorkflowByIdOrName(block.getWorkflowId()).getAllBlocks().get(block.getId());

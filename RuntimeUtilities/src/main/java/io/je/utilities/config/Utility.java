@@ -6,6 +6,7 @@ import org.json.JSONObject;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.je.project.siothconfig.SIOTHConfig;
+import utils.date.DateUtils;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -25,6 +26,7 @@ public class Utility {
 		if (jsonString != null) {
 			try {
 				siothConfig =  objectMapper.readValue(jsonString, SIOTHConfig.class);
+				DateUtils.setFormatter(siothConfig.getDateFormat());
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

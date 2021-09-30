@@ -14,7 +14,6 @@ import io.je.rulebuilder.models.ScriptRuleModel;
 import io.je.utilities.apis.JERunnerAPIHandler;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.*;
-import io.je.utilities.files.JEFileUtils;
 import io.je.utilities.logger.JELogger;
 import io.je.utilities.logger.LogCategory;
 import io.je.utilities.logger.LogSubModule;
@@ -22,14 +21,11 @@ import io.je.utilities.ruleutils.RuleIdManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import utils.files.FileUtilities;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.Map.Entry;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
@@ -432,7 +428,7 @@ public class RuleService {
     private void cleanUpRule(JEProject project, String ruleId) throws JERunnerErrorException, IOException, InterruptedException, ExecutionException {
 
         String rulePrefix = RuleIdManager.generateSubRulePrefix(ruleId);
-        JEFileUtils.deleteFilesInPathByPrefix(project.getConfigurationPath(), rulePrefix);
+        FileUtilities.deleteFilesInPathByPrefix(project.getConfigurationPath(), rulePrefix);
         JELogger.debug( JEMessages.DELETING_RULE_RUNNER,
                 LogCategory.DESIGN_MODE, project.getProjectId(), LogSubModule.RULE, ruleId);
        if( project.getRule(ruleId) instanceof UserDefinedRule)

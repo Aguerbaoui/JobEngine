@@ -9,21 +9,19 @@ import io.je.utilities.exceptions.WorkflowAlreadyRunningException;
 import io.je.utilities.exceptions.WorkflowBuildException;
 import io.je.utilities.exceptions.WorkflowNotFoundException;
 import io.je.utilities.exceptions.WorkflwTriggeredByEventException;
-import io.je.utilities.files.JEFileUtils;
 import io.je.utilities.logger.JELogger;
 import io.je.utilities.logger.LogCategory;
 import io.je.utilities.logger.LogSubModule;
 import org.activiti.engine.*;
 import org.activiti.engine.delegate.BpmnError;
-import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.DeploymentBuilder;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
+import utils.files.FileUtilities;
 
 import java.util.*;
 
-import static io.je.utilities.constants.JEMessages.ADDING_JAR_FILE_TO_RUNNER;
 import static io.je.utilities.constants.ResponseCodes.WORKFLOW_EVENT_TRIGGER;
 
 
@@ -126,13 +124,13 @@ public class ProcessManager {
             JELogger.debug(JEMessages.DEPLOYING_IN_RUNNER_WORKFLOW_WITH_ID + " = " + key,
                     LogCategory.RUNTIME, processes.get(key).getProjectId(),
                     LogSubModule.WORKFLOW, key);
-            String processXml = JEFileUtils.getStringFromFile(processes.get(key).getBpmnPath());
+            String processXml = FileUtilities.getStringFromFile(processes.get(key).getBpmnPath());
             DeploymentBuilder deploymentBuilder = processEngine.getRepositoryService().createDeployment().name(key);
             deploymentBuilder.addString(key + ".bpmn", processXml);
             //Deployment dep = deploymentBuilder.deploy(); to debug it if needed
             deploymentBuilder.deploy();
             processes.get(key).setDeployed(true);
-            JEFileUtils.deleteFileFromPath(processes.get(key).getBpmnPath());
+            FileUtilities.deleteFileFromPath(processes.get(key).getBpmnPath());
         }
         catch (Exception e) {
             throw new WorkflowBuildException(JEMessages.WORKFLOW_BUILD_ERROR + " with id = " + key);

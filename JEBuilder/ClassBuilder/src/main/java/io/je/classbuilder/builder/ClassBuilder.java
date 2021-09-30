@@ -27,7 +27,7 @@ import io.je.utilities.exceptions.AddClassException;
 import io.je.utilities.exceptions.ClassLoadException;
 import io.je.utilities.logger.JELogger;
 import io.je.utilities.runtimeobject.JEObject;
-import io.je.utilities.string.JEStringUtils;
+import utils.string.StringUtilities;
 
 /*
  * build class from class definition
@@ -199,7 +199,7 @@ public class ClassBuilder {
 				}
 				newClass.addField(newField);
 				String attributeName = field.getName();
-				String capitalizedAttributeName = JEStringUtils.capitalize(attributeName);
+				String capitalizedAttributeName = StringUtilities.capitalize(attributeName);
 				Class<?> attributeType = getType(field.getType());
 			
 				

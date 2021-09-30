@@ -22,8 +22,9 @@ import io.je.utilities.exceptions.DataDefinitionUnreachableException;
 import io.je.utilities.logger.JELogger;
 import io.je.utilities.logger.LogCategory;
 import io.je.utilities.logger.LogSubModule;
-import io.je.utilities.zmq.ZMQPublisher;
-import io.je.utilities.zmq.ZMQRequester;
+import utils.zmq.ZMQPublisher;
+import utils.zmq.ZMQRequester;
+
 
 /*
  * Class to manage user defined Models 

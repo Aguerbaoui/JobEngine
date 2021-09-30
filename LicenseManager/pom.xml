@@ -18,8 +18,8 @@
 	</properties>
 	<dependencies>
 		<dependency>
-			<groupId>io.je</groupId>
-			<artifactId>RuntimeUtilities</artifactId>
+			<groupId>io.utils</groupId>
+			<artifactId>Utilities</artifactId>
 			<version>0.0.1</version>
 		</dependency>
 	</dependencies>

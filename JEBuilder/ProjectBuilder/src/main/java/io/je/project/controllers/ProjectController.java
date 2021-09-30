@@ -9,7 +9,7 @@ import io.je.utilities.exceptions.ProjectNotFoundException;
 import io.je.utilities.logger.JELogger;
 import io.je.utilities.logger.LogCategory;
 import io.je.utilities.logger.LogSubModule;
-import io.je.utilities.network.JEResponse;
+import io.je.utilities.beans.JEResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;

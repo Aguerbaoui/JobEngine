@@ -18,10 +18,10 @@ import io.je.utilities.logger.JELogger;
 import io.je.utilities.logger.LogCategory;
 import io.je.utilities.logger.LogSubModule;
 import io.je.utilities.mapping.JERunnerRuleMapping;
-import io.je.utilities.network.JEResponse;
+import io.je.utilities.beans.JEResponse;
 import io.je.utilities.ruleutils.RuleIdManager;
-import io.je.utilities.time.JEDate;
 import org.drools.template.ObjectDataCompiler;
+import utils.date.DateUtils;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -164,11 +164,11 @@ public class RuleBuilder {
         if (ruleParameters.getDateEffective() != null && !ruleParameters.getDateEffective().isEmpty()) {
             LocalDateTime date = LocalDateTime.parse(ruleParameters.getDateEffective(), DateTimeFormatter.ISO_DATE_TIME);
 
-            ruleTemplateAttributes.put("dateEffective", "\"" + JEDate.formatDate(date, Utility.getSiothConfig().getDateFormat()) + "\"");
+            ruleTemplateAttributes.put("dateEffective", "\"" + DateUtils.formatDate(date, Utility.getSiothConfig().getDateFormat()) + "\"");
         }
         if (ruleParameters.getDateExpires() != null && !ruleParameters.getDateExpires().isEmpty()) {
             LocalDateTime date = LocalDateTime.parse(ruleParameters.getDateEffective(), DateTimeFormatter.ISO_DATE_TIME);
-            ruleTemplateAttributes.put("dateExpires", "\"" + JEDate.formatDate(date, Utility.getSiothConfig().getDateFormat()) + "\"");
+            ruleTemplateAttributes.put("dateExpires", "\"" + DateUtils.formatDate(date, Utility.getSiothConfig().getDateFormat()) + "\"");
         }
 
         ObjectDataCompiler objectDataCompiler = new ObjectDataCompiler();

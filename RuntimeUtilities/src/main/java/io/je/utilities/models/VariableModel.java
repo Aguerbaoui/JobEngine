@@ -1,11 +1,8 @@
 package io.je.utilities.models;
 
-import java.time.format.DateTimeFormatter;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.je.utilities.beans.JEVariable;
-import io.je.utilities.config.Utility;
-import io.je.utilities.time.JEDate;
+import utils.date.DateUtils;
+
 
 public class VariableModel {
 
@@ -134,8 +131,8 @@ public class VariableModel {
 	        this.name = variable.getJobEngineElementName();
 	        this.type = variable.getType().toString();
 	        this.initialValue = String.valueOf(variable.getInitialValue());
-			this.createdAt = JEDate.formatDateToSIOTHFormat(variable.getJeObjectCreationDate());
-			this.lastModifiedAt = JEDate.formatDateToSIOTHFormat(variable.getJeObjectLastUpdate());
+			this.createdAt = DateUtils.formatDateToSIOTHFormat(variable.getJeObjectCreationDate());
+			this.lastModifiedAt = DateUtils.formatDateToSIOTHFormat(variable.getJeObjectLastUpdate());
 	        this.value = null;
 			this.createdBy = variable.getJeObjectCreatedBy();
 			this.modifiedBy = variable.getJeObjectModifiedBy();

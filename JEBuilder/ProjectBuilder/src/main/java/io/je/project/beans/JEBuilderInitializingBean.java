@@ -5,15 +5,17 @@ import io.je.project.config.BuilderProperties;
 import io.je.project.config.LicenseProperties;
 import io.je.project.services.ConfigurationService;
 import io.je.project.services.ProjectService;
+import io.je.utilities.config.Utility;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.LicenseNotActiveException;
 import io.je.utilities.logger.JELogger;
 import io.je.utilities.logger.LogCategory;
 import io.je.utilities.logger.LogSubModule;
-import io.je.utilities.zmq.ZMQSecurity;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import utils.date.DateUtils;
+import utils.zmq.ZMQSecurity;
 
 @Component
 public class JEBuilderInitializingBean implements InitializingBean {
@@ -53,10 +55,10 @@ public class JEBuilderInitializingBean implements InitializingBean {
             
             
             ZMQSecurity.setSecure(builderProperties.getUseZmqSecurity());
-            
+			configService.init();
             JELogger.debug(JEMessages.BUILDER_STARTED,  LogCategory.DESIGN_MODE,
                     null, LogSubModule.JEBUILDER, null);
-            configService.init();
+
         } catch (  Exception   e) {
             JELogger.error(JEMessages.UNEXPECTED_ERROR , LogCategory.DESIGN_MODE, null,
                     LogSubModule.JEBUILDER, null);

@@ -3,22 +3,16 @@ package io.je.utilities.apis;
 import static io.je.utilities.apis.Request.*;
 import static io.je.utilities.constants.APIConstants.*;
 
-import java.io.IOException;
 import java.util.concurrent.ExecutionException;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.squareup.okhttp.Response;
 
 import io.je.utilities.config.Utility;
 import io.je.utilities.constants.APIConstants;
 import io.je.utilities.constants.JEMessages;
-import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.exceptions.JERunnerErrorException;
 import io.je.utilities.logger.JELogger;
 import io.je.utilities.logger.LogCategory;
 import io.je.utilities.logger.LogSubModule;
-import io.je.utilities.network.JEResponse;
-import io.je.utilities.network.Network;
+import io.je.utilities.beans.JEResponse;
 
 public class JEBuilderApiHandler {
 

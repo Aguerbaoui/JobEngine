@@ -1,21 +1,20 @@
-package io.je.utilities.string;
+package utils.string;
 
 import org.apache.commons.text.StringSubstitutor;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class JEStringSubstitutor {
+public class StringSub {
 
     //Project variable substitutions
     private static ConcurrentHashMap<String, HashMap<String, Object>> variables = new ConcurrentHashMap<>();
 
-    private static StringSubstitutor substitutor = null;
+    private static org.apache.commons.text.StringSubstitutor substitutor = null;
 
-    public static StringSubstitutor getStringSubstitutor(HashMap<String, Object> variables) {
-        if (substitutor == null) substitutor = new StringSubstitutor();
+    public static org.apache.commons.text.StringSubstitutor getStringSubstitutor(HashMap<String, Object> variables) {
+        if (substitutor == null) substitutor = new org.apache.commons.text.StringSubstitutor();
         return substitutor;
     }
 
@@ -57,7 +56,7 @@ public class JEStringSubstitutor {
             Map<String, String> valuesMap = new HashMap<>();
             valuesMap.put("testVar", "123");
 
-            StringSubstitutor stringSubstitutor = new StringSubstitutor();
+            org.apache.commons.text.StringSubstitutor stringSubstitutor = new org.apache.commons.text.StringSubstitutor();
 
             // Sets this flag to true to throw exception if any variable is undefined.
             stringSubstitutor.setEnableUndefinedVariableException(true);

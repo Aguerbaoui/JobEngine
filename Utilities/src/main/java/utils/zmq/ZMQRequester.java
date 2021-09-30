@@ -1,9 +1,8 @@
-package io.je.utilities.zmq;
+package utils.zmq;
 
 import org.zeromq.SocketType;
 import org.zeromq.ZContext;
 import org.zeromq.ZMQ;
-
 
 
 public class ZMQRequester {

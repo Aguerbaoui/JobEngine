@@ -19,8 +19,7 @@ import io.je.rulebuilder.models.RuleModel;
 import io.je.rulebuilder.models.ScriptRuleModel;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.ResponseCodes;
-import io.je.utilities.logger.JELogger;
-import io.je.utilities.network.JEResponse;
+import io.je.utilities.beans.JEResponse;
 
 /*
  * Rule Builder Rest Controller

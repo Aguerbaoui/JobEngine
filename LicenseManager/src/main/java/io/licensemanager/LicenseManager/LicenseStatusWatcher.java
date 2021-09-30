@@ -3,14 +3,13 @@ package io.licensemanager.LicenseManager;
 import java.net.InetAddress;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import io.je.utilities.zmq.ZMQRequester;
 import io.licensemanager.common.GeneralKeys;
 import io.licensemanager.common.SIOTHLicenseRequest;
 import io.licensemanager.common.SIOTHLicenseResponse;
 import io.licensemanager.common.enums.SIOTHLicenseStatus;
 import io.licensemanager.eventlistener.LicenseStatusChangeHandler;
 import io.licensemanager.utilities.LicenseUtilities;
+import utils.zmq.ZMQRequester;
 
 public class LicenseStatusWatcher implements Runnable {
 

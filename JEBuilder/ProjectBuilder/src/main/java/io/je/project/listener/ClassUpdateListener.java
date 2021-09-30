@@ -15,9 +15,10 @@ import io.je.utilities.exceptions.InstanceCreationFailed;
 import io.je.utilities.logger.JELogger;
 import io.je.utilities.logger.LogCategory;
 import io.je.utilities.logger.LogSubModule;
-import io.je.utilities.zmq.ZMQSubscriber;
+import utils.zmq.ZMQSubscriber;
 
-public class ClassUpdateListener extends ZMQSubscriber  {
+
+public class ClassUpdateListener extends ZMQSubscriber {
 
 	ClassService classService = new ClassService();
 	

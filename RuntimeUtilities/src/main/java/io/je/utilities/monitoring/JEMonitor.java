@@ -11,7 +11,7 @@ import io.je.utilities.constants.JEMessages;
 import io.je.utilities.logger.JELogger;
 import io.je.utilities.logger.LogCategory;
 import io.je.utilities.logger.LogSubModule;
-import io.je.utilities.zmq.ZMQPublisher;
+import utils.zmq.ZMQPublisher;
 
 public class JEMonitor  {
 	

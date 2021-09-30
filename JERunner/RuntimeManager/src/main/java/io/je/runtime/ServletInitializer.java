@@ -1,6 +1,7 @@
 package io.je.runtime;
 
 
+import org.springframework.boot.Banner;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 
@@ -13,7 +14,7 @@ public class ServletInitializer extends SpringBootServletInitializer {
 		Utility.init();
 		System.setProperty("drools.dateformat", Utility.getSiothConfig().getDateFormat());
 
-		return application.sources(JERunnerApplication.class);
+		return application.sources(JERunnerApplication.class).bannerMode(Banner.Mode.OFF);
 	}
 
 }

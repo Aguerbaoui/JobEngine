@@ -17,7 +17,6 @@ import io.je.utilities.logger.JELogger;
 import io.je.utilities.logger.LogCategory;
 import io.je.utilities.logger.LogSubModule;
 import io.je.utilities.models.EventType;
-import io.je.utilities.string.JEStringUtils;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,6 +34,7 @@ import io.je.utilities.exceptions.LicenseNotActiveException;
 import io.je.utilities.exceptions.ProjectNotFoundException;
 import io.je.utilities.mapping.EventModelMapping;
 import io.je.utilities.models.EventModel;
+import utils.string.StringUtilities;
 
 @Service
 public class EventService {
@@ -109,7 +109,7 @@ public class EventService {
 			throw new EventException(JEMessages.EVENT_ALREADY_EXISTS);
 		}
 
-		if(!JEStringUtils.isStringOnlyAlphabet(eventModel.getName())) {
+		if(!StringUtilities.isStringOnlyAlphabet(eventModel.getName())) {
 			throw new EventException(JEMessages.NOT_ALPHABETICAL);
 		}
 		JEEvent event = new JEEvent(eventModel.getEventId(), projectId, eventModel.getName(), EventType.GENERIC_EVENT,eventModel.getDescription(),eventModel.getTimeout(),eventModel.getTimeoutUnit(),eventModel.getCreatedBy(),eventModel.getModifiedBy());
@@ -144,7 +144,7 @@ public class EventService {
 			throw new EventException(JEMessages.EVENT_NOT_FOUND);
 		}
 
-		if(!JEStringUtils.isStringOnlyAlphabet(eventModel.getName())) {
+		if(!StringUtilities.isStringOnlyAlphabet(eventModel.getName())) {
 			throw new EventException(JEMessages.NOT_ALPHABETICAL);
 		}
 		JEEvent event = new JEEvent(eventModel.getEventId(), projectId, eventModel.getName(), EventType.GENERIC_EVENT,eventModel.getDescription(),eventModel.getTimeout(),eventModel.getTimeoutUnit(),eventModel.getCreatedBy(),eventModel.getModifiedBy());

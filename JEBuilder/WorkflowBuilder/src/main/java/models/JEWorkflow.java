@@ -9,8 +9,8 @@ import io.je.utilities.exceptions.InvalidSequenceFlowException;
 import io.je.utilities.exceptions.WorkflowBlockNotFound;
 import io.je.utilities.models.WorkflowModel;
 import io.je.utilities.runtimeobject.JEObject;
-import io.je.utilities.time.JEDate;
 import org.springframework.data.mongodb.core.mapping.Document;
+import utils.date.DateUtils;
 
 import java.time.format.DateTimeFormatter;
 import java.util.concurrent.ConcurrentHashMap;
@@ -286,8 +286,8 @@ public class JEWorkflow extends JEObject {
         model.setProjectId(wf.getJobEngineProjectID());
         model.setTriggeredByEvent(wf.isTriggeredByEvent());
         model.setStatus(wf.getStatus());
-        model.setCreatedAt(JEDate.formatDateToSIOTHFormat(wf.getJeObjectCreationDate()));
-        model.setModifiedAt(JEDate.formatDateToSIOTHFormat(wf.getJeObjectLastUpdate()));
+        model.setCreatedAt(DateUtils.formatDateToSIOTHFormat(wf.getJeObjectCreationDate()));
+        model.setModifiedAt(DateUtils.formatDateToSIOTHFormat(wf.getJeObjectLastUpdate()));
         model.setFrontConfig(wf.getFrontConfig());
         return model;
     }

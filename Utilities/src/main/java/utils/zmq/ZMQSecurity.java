@@ -1,4 +1,4 @@
-package io.je.utilities.zmq;
+package utils.zmq;
 
 import org.zeromq.ZMQ.Curve.KeyPair;
 

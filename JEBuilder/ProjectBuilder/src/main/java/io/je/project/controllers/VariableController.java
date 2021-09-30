@@ -7,7 +7,7 @@ import io.je.utilities.beans.JEVariable;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.models.VariableModel;
-import io.je.utilities.network.JEResponse;
+import io.je.utilities.beans.JEResponse;
 
 import static io.je.utilities.constants.JEMessages.WORKFLOW_UPDATED_SUCCESS;
 

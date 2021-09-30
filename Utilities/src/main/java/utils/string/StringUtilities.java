@@ -1,20 +1,20 @@
-package io.je.utilities.string;
+package utils.string;
 
 import org.apache.commons.lang3.StringUtils;
 
-public class JEStringUtils {
+public class StringUtilities {
 
     public static String substring(String base, int start, int end) {
-        return StringUtils.substring(base, start, end);
+        return org.apache.commons.lang3.StringUtils.substring(base, start, end);
     }
 
     public static boolean isEmpty(String str) {
-        return StringUtils.isEmpty(str);
+        return org.apache.commons.lang3.StringUtils.isEmpty(str);
     }
     
     public static String capitalize(String str)
     {
-    	return StringUtils.capitalize(str);
+    	return org.apache.commons.lang3.StringUtils.capitalize(str);
     }
 
     public static boolean isStringOnlyAlphabet(String str) {
