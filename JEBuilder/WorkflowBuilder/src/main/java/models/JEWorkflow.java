@@ -28,10 +28,6 @@ public class JEWorkflow extends JEObject {
     public final static String BUILT = "BUILT";
 
     public final static String IDLE = "IDLE";
-    /*
-     * Workflow name
-     */
-    private String workflowName;
 
     /*
      * Workflow start block
@@ -127,20 +123,6 @@ public class JEWorkflow extends JEObject {
 
     public void setIsScript(boolean script) {
         isScript = script;
-    }
-
-    /*
-     * Return workflow name
-     */
-    public String getWorkflowName() {
-        return workflowName;
-    }
-
-    /*
-     * set workflow name
-     */
-    public void setWorkflowName(String workflowName) {
-        this.workflowName = workflowName;
     }
 
     /*
@@ -294,7 +276,7 @@ public class JEWorkflow extends JEObject {
 
     public static WorkflowModel mapJEWorkflowToModel(JEWorkflow wf) {
         WorkflowModel model = new WorkflowModel();
-        model.setName(wf.getWorkflowName());
+        model.setName(wf.getJobEngineElementName());
         model.setOnProjectBoot(wf.isOnProjectBoot());
         model.setModifiedBy(wf.getJeObjectModifiedBy());
         model.setDescription(wf.getDescription());
@@ -313,7 +295,7 @@ public class JEWorkflow extends JEObject {
     public String toString() {
         return "JEWorkflow{" +
                 "id='" + jobEngineElementID + '\'' +
-                "workflowName='" + workflowName + '\'' +
+                "workflowName='" + jobEngineElementName + '\'' +
                 ", workflowStartBlock=" + workflowStartBlock +
                 ", bpmnPath='" + bpmnPath + '\'' +
                 ", status='" + status + '\'' +

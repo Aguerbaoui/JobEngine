@@ -34,7 +34,7 @@ public class AsyncRuleService {
 		 if (!project.ruleExists(ruleId)) {
 			throw new RuleNotFoundException(projectId, ruleId);
 		}
-		JELogger.debug(" [projectId="+ projectId +" ]" + JEMessages.BUILDING_RULE +" : " + project.getRule(ruleId).getRuleName(),
+		JELogger.debug(" [projectId="+ projectId +" ]" + JEMessages.BUILDING_RULE +" : " + project.getRule(ruleId).getJobEngineElementName(),
 				LogCategory.DESIGN_MODE, projectId,
 				LogSubModule.JEBUILDER, ruleId);
 		RuleBuilder.buildRule(project.getRule(ruleId), project.getConfigurationPath());

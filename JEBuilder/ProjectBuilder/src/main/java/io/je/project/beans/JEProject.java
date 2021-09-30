@@ -465,7 +465,7 @@ public class JEProject {
     	if(!workflows.containsKey(workflowId)) {
     		//checking if workflow exists by name
 			for(JEWorkflow wf: workflows.values()) {
-				if(wf.getWorkflowName().equalsIgnoreCase(workflowId)) return wf;
+				if(wf.getJobEngineElementName().equalsIgnoreCase(workflowId)) return wf;
 			}
 		}
         return workflows.get(workflowId);

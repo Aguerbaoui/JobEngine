@@ -73,7 +73,7 @@ public class EventManager {
         JEEvent event = events.get(projectId).get(eventId);
         if(event == null) {
             for(JEEvent ev: events.get(projectId).values()) {
-                if(ev.getName().equalsIgnoreCase(eventId)) {
+                if(ev.getJobEngineElementName().equalsIgnoreCase(eventId)) {
                     event = ev;
                     break;
                 }
@@ -91,13 +91,13 @@ public class EventManager {
             
             //Update Event in WorkflowEngine
             if(event.getType().equals(EventType.MESSAGE_EVENT)) {
-                throwMessageEventInWorkflow(projectId, event.getName());
+                throwMessageEventInWorkflow(projectId, event.getJobEngineElementName());
             }
             else if(event.getType().equals(EventType.SIGNAL_EVENT)) {
-                throwSignalEventInWorkflow(projectId, event.getName());
+                throwSignalEventInWorkflow(projectId, event.getJobEngineElementName());
             }
             else if(event.getType().equals(EventType.START_WORKFLOW)) {
-                startProcessInstanceByMessage(projectId, event.getName());
+                startProcessInstanceByMessage(projectId, event.getJobEngineElementName());
             }
 
             if(event.getTimeout()!=0)
@@ -165,7 +165,7 @@ private static void updateActiveThreads(String projectId, String eventId)
 
         if(event == null) {
             for(JEEvent ev: events.get(projectId).values()) {
-                if(ev.getName().equalsIgnoreCase(eventId)) {
+                if(ev.getJobEngineElementName().equalsIgnoreCase(eventId)) {
                     event = ev;
                     break;
                 }
@@ -187,7 +187,7 @@ private static void updateActiveThreads(String projectId, String eventId)
 
         if(event == null) {
             for(JEEvent ev: events.get(projectId).values()) {
-                if(ev.getName().equalsIgnoreCase(eventId)) {
+                if(ev.getJobEngineElementName().equalsIgnoreCase(eventId)) {
                     event = events.get(projectId).remove(ev.getJobEngineElementID());
                     break;
                 }

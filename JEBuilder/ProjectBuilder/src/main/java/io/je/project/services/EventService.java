@@ -169,7 +169,7 @@ public class EventService {
 		//TODO: add test on response
 		HashMap<String,Object> eventMap = new HashMap<String, Object>();
 		eventMap.put(EventModelMapping.PROJECTID, event.getJobEngineProjectID());
-		eventMap.put(EventModelMapping.EVENTNAME, event.getName());
+		eventMap.put(EventModelMapping.EVENTNAME, event.getJobEngineElementName());
 		eventMap.put(EventModelMapping.EVENTID, event.getJobEngineElementID());
 		eventMap.put(EventModelMapping.EVENTTYPE, event.getType().toString());
 		eventMap.put(EventModelMapping.TIMEOUTUNIT, event.getTimeoutUnit());
@@ -198,7 +198,7 @@ public class EventService {
 		JEEvent event = project.getEvents().get(eventId);
 		if(!project.getEvents().containsKey(eventId)) {
 			for(JEEvent ev: project.getEvents().values()) {
-				if(ev.getName().equalsIgnoreCase(eventId)) {
+				if(ev.getJobEngineElementName().equalsIgnoreCase(eventId)) {
 					event = ev;
 					break;
 				}
@@ -240,7 +240,7 @@ public class EventService {
 		JEEvent event = project.getEvents().get(eventId);
 		if(event == null) {
 			for(JEEvent ev: project.getEvents().values()) {
-				if(ev.getName().equalsIgnoreCase(eventId)) {
+				if(ev.getJobEngineElementName().equalsIgnoreCase(eventId)) {
 					event = ev;
 					break;
 				}

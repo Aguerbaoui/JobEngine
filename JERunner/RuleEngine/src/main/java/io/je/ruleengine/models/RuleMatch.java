@@ -11,8 +11,8 @@ public class RuleMatch extends JEObject{
 	
 	
 	
-	public RuleMatch(String jobEngineElementID, String jobEngineProjectID) {
-		super(jobEngineElementID, jobEngineProjectID);
+	public RuleMatch(String jobEngineElementID, String jobEngineProjectID, String jobEngineElementName) {
+		super(jobEngineElementID, jobEngineProjectID, jobEngineElementName);
 		// TODO Auto-generated constructor stub
 	}
 	private List<JEObject> instancesMatched = new ArrayList<>();

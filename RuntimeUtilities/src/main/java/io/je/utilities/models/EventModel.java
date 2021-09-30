@@ -78,7 +78,7 @@ public class EventModel {
     }
 
 	public EventModel(JEEvent event) {
-		this.name = event.getName();
+		this.name = event.getJobEngineElementName();
         this.eventId = event.getJobEngineElementID();
         this.projectId = event.getJobEngineProjectID();
         this.description = event.getDescription();
