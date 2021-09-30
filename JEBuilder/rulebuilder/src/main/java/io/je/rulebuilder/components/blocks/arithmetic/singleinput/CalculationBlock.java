@@ -6,7 +6,7 @@ import io.je.rulebuilder.models.BlockModel;
 public class CalculationBlock extends SingleInputArithmeticBlock {
 	
 	int operationId= 0;
-	protected String calculatorReference="JECalculator.";
+	protected String calculatorReference="MathUtilities.";
 	String value = null;
 
 	public CalculationBlock(BlockModel blockModel) {

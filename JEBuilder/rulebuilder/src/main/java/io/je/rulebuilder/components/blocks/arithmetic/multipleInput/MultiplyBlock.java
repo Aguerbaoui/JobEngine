@@ -14,7 +14,7 @@ public class MultiplyBlock extends MultipleInputArithmeticBlock {
 
 	@Override
 	protected String getArithmeticFormula(int level,String type) {
-		return "JECalculator.multiply( "  ;
+		return "MathUtilities.multiply( "  ;
 
 	}
 

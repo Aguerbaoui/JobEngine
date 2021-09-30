@@ -16,7 +16,7 @@ public class MaximumBlock extends MultipleInputArithmeticBlock {
 
 	@Override
 	protected String getArithmeticFormula(int level,String type) {
-		return "JECalculator.maximum( "  ;
+		return "MathUtilities.maximum( "  ;
 
 	}
 

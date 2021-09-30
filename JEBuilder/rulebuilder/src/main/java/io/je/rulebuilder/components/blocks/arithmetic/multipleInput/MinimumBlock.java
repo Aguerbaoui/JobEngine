@@ -16,7 +16,7 @@ public class MinimumBlock extends MultipleInputArithmeticBlock {
 
 	@Override
 	protected String getArithmeticFormula(int level,String type) {
-		return "JECalculator.minimum( "  ;
+		return "MathUtilities.minimum( "  ;
 
 	}
 
