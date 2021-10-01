@@ -1,16 +1,18 @@
 package io.je.serviceTasks;
 
 import com.squareup.okhttp.Response;
-
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.ResponseCodes;
-import io.je.utilities.logger.*;
-import io.je.utilities.network.Network;
-import io.je.utilities.string.JEStringSubstitutor;
+import io.je.utilities.log.JELogger;
+
 import org.activiti.engine.delegate.BpmnError;
 import org.activiti.engine.delegate.DelegateExecution;
 
-import java.time.LocalDateTime;
+import utils.log.LogCategory;
+import utils.log.LogSubModule;
+import utils.network.Network;
+import utils.string.StringSub;
+
 import java.util.Arrays;
 
 public class WebApiServiceTask extends ServiceTask{
@@ -24,7 +26,7 @@ public class WebApiServiceTask extends ServiceTask{
         if(task.hasBody()) {
             try {
                 String json = task.getBody();
-                json = JEStringSubstitutor.replace(task.getProjectId(), json);
+                json = StringSub.replace(task.getProjectId(), json);
                 network = new Network.Builder(task.getUrl()).hasBody(task.hasBody())
                         .toClass(task.getResponseClass()).withMethod(task.getHttpMethod()).withBodyType(task.getBodyType())
                         .withBody(json).build();

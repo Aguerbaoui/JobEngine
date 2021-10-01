@@ -4,17 +4,18 @@ package io.je.utilities.apis;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.squareup.okhttp.Response;
 
-import io.je.utilities.config.Utility;
 import io.je.utilities.constants.APIConstants;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.exceptions.JERunnerErrorException;
-import io.je.utilities.logger.JELogger;
-import io.je.utilities.logger.LogCategory;
-import io.je.utilities.logger.LogSubModule;
+import io.je.utilities.log.JELogger;
 import io.je.utilities.models.WorkflowModel;
-import io.je.utilities.network.JEResponse;
-import io.je.utilities.network.Network;
+import io.siothconfig.SIOTHConfigUtility;
+import io.je.utilities.beans.JEResponse;
+import utils.log.LogCategory;
+import utils.log.LogSubModule;
+import utils.network.Network;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -32,7 +33,7 @@ public class JERunnerAPIHandler {
     private JERunnerAPIHandler() {}
 
     
-    private static String runtimeManagerBaseApi = Utility.getSiothConfig().getJobEngine().getJeRunner();
+    private static String runtimeManagerBaseApi = SIOTHConfigUtility.getSiothConfig().getJobEngine().getJeRunner();
   
 	public static void setRuntimeManagerBaseApi(String runtimeUrl) {
 		runtimeManagerBaseApi = runtimeUrl;	
@@ -130,7 +131,7 @@ public class JERunnerAPIHandler {
 
     //run workflow
     public static JEResponse runWorkflow(String projectId, String workflowName) throws JERunnerErrorException, InterruptedException, ExecutionException {
-        String requestUrl = Utility.getSiothConfig().getJobEngine().getJeRunner()+ APIConstants.RUN_WORKFLOW + projectId + "/" + workflowName;
+        String requestUrl = SIOTHConfigUtility.getSiothConfig().getJobEngine().getJeRunner()+ APIConstants.RUN_WORKFLOW + projectId + "/" + workflowName;
         return sendRequest(requestUrl);
 
     }
@@ -209,7 +210,7 @@ public class JERunnerAPIHandler {
     }
 
     public static void addVariable(String projectId, String varId, Object body) throws InterruptedException, JERunnerErrorException, ExecutionException {
-        String url = Utility.getSiothConfig().getJobEngine().getJeRunner()+ APIConstants.ADD_VARIABLE;
+        String url = SIOTHConfigUtility.getSiothConfig().getJobEngine().getJeRunner()+ APIConstants.ADD_VARIABLE;
         JELogger.debug(JEMessages.NETWORK_ADD_VAR+" project id = " + projectId + " variable id = " + varId,  LogCategory.DESIGN_MODE,
                 projectId, LogSubModule.JEBUILDER, varId);
         sendRequestWithBody(url, body);
@@ -217,14 +218,14 @@ public class JERunnerAPIHandler {
     }
 
     public static void removeVariable(String projectId, String varId) throws InterruptedException, JERunnerErrorException, ExecutionException {
-        String url = Utility.getSiothConfig().getJobEngine().getJeRunner()+ DELETE_VARIABLE + "/" + projectId + "/" + varId;
+        String url = SIOTHConfigUtility.getSiothConfig().getJobEngine().getJeRunner()+ DELETE_VARIABLE + "/" + projectId + "/" + varId;
         JELogger.debug(JEMessages.NETWORK_DELETE_VAR+" project id = " + projectId + " var id = " + varId,  LogCategory.DESIGN_MODE,
                 projectId, LogSubModule.JEBUILDER, varId);
         sendDeleteRequest(url);
     }
 
     public static void addJarToRunner(HashMap<String, String> payload) throws InterruptedException, JERunnerErrorException, ExecutionException {
-        String url = Utility.getSiothConfig().getJobEngine().getJeRunner()+ APIConstants.ADD_JAR;
+        String url = SIOTHConfigUtility.getSiothConfig().getJobEngine().getJeRunner()+ APIConstants.ADD_JAR;
         //JELogger.debug(JEMessages.ADDING_JAR_FILE_TO_RUNNER + payload);
         JELogger.debug(JEMessages.ADDING_JAR_FILE_TO_RUNNER + payload,  LogCategory.DESIGN_MODE,
                 null, LogSubModule.JEBUILDER, null);

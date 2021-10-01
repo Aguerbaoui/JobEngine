@@ -1,17 +1,12 @@
 package io.je.utilities.models;
 
-import java.time.format.DateTimeFormatter;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import io.je.utilities.beans.JEEvent;
-import io.je.utilities.config.Utility;
 import io.je.utilities.mapping.EventModelMapping;
-import io.je.utilities.time.JEDate;
+import utils.date.DateUtils;
+
 
 @JsonInclude(Include.NON_NULL)
 public class EventModel {
@@ -82,8 +77,8 @@ public class EventModel {
         this.eventId = event.getJobEngineElementID();
         this.projectId = event.getJobEngineProjectID();
         this.description = event.getDescription();
-        this.createdAt = JEDate.formatDateToSIOTHFormat(event.getJeObjectCreationDate());
-		this.lastModifiedAt = JEDate.formatDateToSIOTHFormat(event.getJeObjectLastUpdate());
+        this.createdAt = DateUtils.formatDateToSIOTHFormat(event.getJeObjectCreationDate());
+		this.lastModifiedAt = DateUtils.formatDateToSIOTHFormat(event.getJeObjectLastUpdate());
         this.triggered = event.isTriggered();
         this.timeout = event.getTimeoutValue();
         this.timeoutUnit = event.getTimeoutUnit();

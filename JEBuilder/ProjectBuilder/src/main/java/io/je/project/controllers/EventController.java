@@ -1,7 +1,5 @@
 package io.je.project.controllers;
 
-import static io.je.utilities.constants.JEMessages.ERROR_DELETING_EVENT;
-
 import java.util.Collection;
 
 import io.je.project.exception.JEExceptionHandler;
@@ -20,12 +18,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.je.project.services.EventService;
 import io.je.project.services.ProjectService;
-import io.je.utilities.beans.JEEvent;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.ResponseCodes;
-import io.je.utilities.logger.JELogger;
 import io.je.utilities.models.EventModel;
-import io.je.utilities.network.JEResponse;
+import io.je.utilities.beans.JEResponse;
 
 /*
  * Project Rest Controller

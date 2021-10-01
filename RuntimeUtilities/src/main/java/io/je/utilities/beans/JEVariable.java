@@ -1,8 +1,8 @@
 package io.je.utilities.beans;
 
-import io.je.utilities.logger.JELogger;
-import io.je.utilities.logger.LogSubModule;
+import io.je.utilities.log.JELogger;
 import io.je.utilities.runtimeobject.JEObject;
+import utils.log.LogSubModule;
 
 import java.time.LocalDateTime;
 

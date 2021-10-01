@@ -1,29 +1,22 @@
 package io.je.project.variables;
 
-import io.je.utilities.beans.ArchiveOption;
-import io.je.utilities.beans.JEBlockMessage;
-import io.je.utilities.beans.JEMessage;
-import io.je.utilities.beans.JEVariable;
-import io.je.utilities.beans.JEVariableMessage;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.je.utilities.beans.*;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.VariableNotFoundException;
-import io.je.utilities.logger.JELogger;
-import io.je.utilities.logger.LogCategory;
-import io.je.utilities.logger.LogSubModule;
+import io.je.utilities.log.JELogger;
 import io.je.utilities.monitoring.JEMonitor;
 import io.je.utilities.monitoring.ObjectType;
+import utils.log.LogCategory;
+import utils.log.LogSubModule;
+import utils.string.StringSub;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
-import io.je.utilities.string.JEStringSubstitutor;
-import io.je.utilities.time.JEDate;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class VariableManager {
 
@@ -54,7 +47,7 @@ public class VariableManager {
             variables.put(variable.getJobEngineProjectID(), new HashMap<>());
         }
         variables.get(variable.getJobEngineProjectID()).put(variable.getJobEngineElementID(),variable);
-			JEStringSubstitutor.addVariable(variable.getJobEngineProjectID(), variable.getJobEngineElementName(), variable.getValue());
+			StringSub.addVariable(variable.getJobEngineProjectID(), variable.getJobEngineElementName(), variable.getValue());
 
     }
 

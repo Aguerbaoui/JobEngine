@@ -12,11 +12,11 @@ import io.je.ruleengine.models.RuleMatch;
 import io.je.utilities.beans.JEBlockMessage;
 import io.je.utilities.beans.JEMessage;
 import io.je.utilities.execution.Executioner;
-import io.je.utilities.logger.JELogger;
-import io.je.utilities.logger.LogCategory;
-import io.je.utilities.logger.LogSubModule;
+import io.je.utilities.log.JELogger;
 import io.je.utilities.ruleutils.RuleIdManager;
 import io.je.utilities.runtimeobject.JEObject;
+import utils.log.LogCategory;
+import utils.log.LogSubModule;
 
 public class RuleListener extends DefaultAgendaEventListener {
 	

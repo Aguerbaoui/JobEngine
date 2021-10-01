@@ -12,12 +12,13 @@ import io.je.classbuilder.models.ModelUpdate;
 import io.je.project.services.ClassService;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.InstanceCreationFailed;
-import io.je.utilities.logger.JELogger;
-import io.je.utilities.logger.LogCategory;
-import io.je.utilities.logger.LogSubModule;
-import io.je.utilities.zmq.ZMQSubscriber;
+import io.je.utilities.log.JELogger;
+import utils.log.LogCategory;
+import utils.log.LogSubModule;
+import utils.zmq.ZMQSubscriber;
 
-public class ClassUpdateListener extends ZMQSubscriber  {
+
+public class ClassUpdateListener extends ZMQSubscriber {
 
 	ClassService classService = new ClassService();
 	

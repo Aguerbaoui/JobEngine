@@ -1,15 +1,10 @@
 package io.je.rulebuilder.models;
 
-import java.time.format.DateTimeFormatter;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import io.je.rulebuilder.components.JERule;
 import io.je.rulebuilder.components.UserDefinedRule;
 import io.je.rulebuilder.config.AttributesMapping;
-import io.je.utilities.config.Utility;
-import io.je.utilities.time.JEDate;
+import utils.date.DateUtils;
 
 
 /*
@@ -70,8 +65,8 @@ public class RuleModel {
 		this.ruleName = rule.getJobEngineElementName();
 		this.description = rule.getDescription();
 		this.isBuilt = String.valueOf(rule.isBuilt());
-		this.createdAt = JEDate.formatDateToSIOTHFormat(rule.getJeObjectCreationDate());
-		this.lastModifiedAt = JEDate.formatDateToSIOTHFormat(rule.getJeObjectLastUpdate());
+		this.createdAt = DateUtils.formatDateToSIOTHFormat(rule.getJeObjectCreationDate());
+		this.lastModifiedAt = DateUtils.formatDateToSIOTHFormat(rule.getJeObjectLastUpdate());
 		this.createdBy = rule.getJeObjectCreatedBy();
 		this.modifiedBy = rule.getJeObjectModifiedBy();
 		if(rule instanceof UserDefinedRule) {

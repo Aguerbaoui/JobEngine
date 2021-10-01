@@ -5,9 +5,6 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 
-import io.je.utilities.config.Utility;
-import io.je.utilities.logger.LogCategory;
-import io.je.utilities.logger.LogSubModule;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import io.je.classbuilder.entity.JEClass;
@@ -20,7 +17,10 @@ import io.je.utilities.exceptions.ConfigException;
 import io.je.utilities.exceptions.DataDefinitionUnreachableException;
 import io.je.utilities.exceptions.JERunnerErrorException;
 import io.je.utilities.exceptions.ProjectNotFoundException;
-import io.je.utilities.logger.JELogger;
+import io.je.utilities.log.JELogger;
+import io.siothconfig.SIOTHConfigUtility;
+import utils.log.LogCategory;
+import utils.log.LogSubModule;
 
 /*
  * class responsible for application configuration
@@ -38,7 +38,7 @@ public class ConfigurationService {
 
 	static boolean runnerStatus = true;
 
-	final int healthCheck = Utility.getSiothConfig().getJobEngine().getCheckHealthEveryMs();
+	final int healthCheck = SIOTHConfigUtility.getSiothConfig().getJobEngine().getCheckHealthEveryMs();
 	
 	
 	

@@ -2,12 +2,11 @@ package blocks;
 
 import builder.ModelBuilder;
 import io.je.utilities.runtimeobject.JEObject;
-import io.je.utilities.string.JEStringUtils;
 import models.JEWorkflow;
 import org.activiti.bpmn.model.SequenceFlow;
+import utils.string.StringUtilities;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -141,7 +140,7 @@ public class WorkflowBlock extends JEObject {
     }
 
     public void setCondition(String condition) {
-        if (JEStringUtils.isEmpty(condition)) return;
+        if (StringUtilities.isEmpty(condition)) return;
         this.condition = condition;
     }
 

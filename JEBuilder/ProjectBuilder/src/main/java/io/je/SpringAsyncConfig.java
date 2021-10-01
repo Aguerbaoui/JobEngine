@@ -3,9 +3,10 @@ package io.je;
 import java.util.concurrent.Executor;
 
 import io.je.utilities.constants.JEMessages;
-import io.je.utilities.logger.JELogger;
-import io.je.utilities.logger.LogCategory;
-import io.je.utilities.logger.LogSubModule;
+import io.je.utilities.log.JELogger;
+import utils.log.LogCategory;
+import utils.log.LogSubModule;
+
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.AsyncConfigurer;
 import org.springframework.scheduling.annotation.EnableAsync;

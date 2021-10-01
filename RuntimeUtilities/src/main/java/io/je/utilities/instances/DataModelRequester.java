@@ -9,16 +9,16 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 
-import io.je.utilities.config.Utility;
 import io.je.utilities.constants.JEMessages;
-import io.je.utilities.logger.JELogger;
-import io.je.utilities.logger.LogCategory;
-import io.je.utilities.logger.LogSubModule;
-import io.je.utilities.zmq.ZMQRequester;
+import io.je.utilities.log.JELogger;
+import io.siothconfig.SIOTHConfigUtility;
+import utils.log.LogCategory;
+import utils.log.LogSubModule;
+import utils.zmq.ZMQRequester;
 
 public class DataModelRequester {
 	
-    private static ZMQRequester requester = new ZMQRequester("tcp://"+Utility.getSiothConfig().getMachineCredentials().getIpAddress(), Utility.getSiothConfig().getDataModelPORTS().getDmService_ReqAddress());
+    private static ZMQRequester requester = new ZMQRequester("tcp://"+SIOTHConfigUtility.getSiothConfig().getMachineCredentials().getIpAddress(), SIOTHConfigUtility.getSiothConfig().getDataModelPORTS().getDmService_ReqAddress());
     public static ObjectMapper objectMapper = new ObjectMapper();
     private static 	TypeFactory typeFactory = objectMapper.getTypeFactory();
     
@@ -83,7 +83,7 @@ public class DataModelRequester {
     	try {
     		
     		
-    		ZMQRequester requester = new ZMQRequester("tcp://"+Utility.getSiothConfig().getMachineCredentials().getIpAddress(), Utility.getSiothConfig().getDataModelPORTS().getDmService_ReqAddress());
+    		ZMQRequester requester = new ZMQRequester("tcp://"+SIOTHConfigUtility.getSiothConfig().getMachineCredentials().getIpAddress(), SIOTHConfigUtility.getSiothConfig().getDataModelPORTS().getDmService_ReqAddress());
     	 	HashMap<String,String> requestMap = new HashMap();
         	requestMap.put("Type", "ReadInstance");
         	requestMap.put("InstanceId", instanceId);

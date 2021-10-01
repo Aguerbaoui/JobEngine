@@ -4,14 +4,15 @@ import blocks.events.TimerEvent;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.Timers;
 import io.je.utilities.constants.WorkflowConstants;
-import io.je.utilities.files.JEFileUtils;
-import io.je.utilities.logger.JELogger;
-import io.je.utilities.logger.LogCategory;
-import io.je.utilities.logger.LogSubModule;
-import io.je.utilities.string.JEStringUtils;
+import io.je.utilities.log.JELogger;
+
 import org.activiti.bpmn.converter.BpmnXMLConverter;
 import org.activiti.bpmn.model.Process;
 import org.activiti.bpmn.model.*;
+import utils.files.FileUtilities;
+import utils.log.LogCategory;
+import utils.log.LogSubModule;
+import utils.string.StringUtilities;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -76,7 +77,7 @@ public class ModelBuilder {
         SequenceFlow flow = new SequenceFlow();
         flow.setSourceRef(from);
         flow.setTargetRef(to);
-        if (!JEStringUtils.isEmpty(conditionExpression)) flow.setConditionExpression(conditionExpression);
+        if (!StringUtilities.isEmpty(conditionExpression)) flow.setConditionExpression(conditionExpression);
         return flow;
     }
 
@@ -344,7 +345,7 @@ public class ModelBuilder {
             JELogger.debug(BPMN + " = \n" +  bpmn20Xml,
                     LogCategory.DESIGN_MODE, null,
                     LogSubModule.WORKFLOW,null);
-            JEFileUtils.copyStringToFile(bpmn20Xml, fileName, "utf-8");
+            FileUtilities.copyStringToFile(bpmn20Xml, fileName, "utf-8");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -352,7 +353,7 @@ public class ModelBuilder {
 
     public static void saveModel(String bpmn, String fileName) {
         try {
-            JEFileUtils.copyStringToFile(bpmn, fileName, "utf-8");
+            FileUtilities.copyStringToFile(bpmn, fileName, "utf-8");
         } catch (Exception e) {
             e.printStackTrace();
         }

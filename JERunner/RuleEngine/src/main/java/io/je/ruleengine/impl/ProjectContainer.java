@@ -7,11 +7,11 @@ import io.je.ruleengine.models.Rule;
 import io.je.utilities.classloader.JEClassLoader;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.*;
-import io.je.utilities.logger.JELogger;
-import io.je.utilities.logger.LogCategory;
-import io.je.utilities.logger.LogSubModule;
+import io.je.utilities.log.JELogger;
 import io.je.utilities.ruleutils.RuleIdManager;
 import io.je.utilities.runtimeobject.JEObject;
+import utils.log.LogCategory;
+import utils.log.LogSubModule;
 
 import org.apache.commons.lang3.StringUtils;
 import org.kie.api.KieBase;

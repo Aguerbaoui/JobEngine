@@ -2,8 +2,8 @@ package io.je.serviceTasks;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.je.utilities.apis.BodyType;
-import io.je.utilities.apis.HttpMethod;
+import utils.network.BodyType;
+import utils.network.HttpMethod;
 
 import java.util.HashMap;
 

@@ -3,7 +3,7 @@ package blocks.basic;
 import blocks.WorkflowBlock;
 import blocks.events.TimerEvent;
 import io.je.utilities.constants.APIConstants;
-import io.je.utilities.string.JEStringUtils;
+import utils.string.StringUtilities;
 
 public class StartBlock extends WorkflowBlock {
 
@@ -16,7 +16,7 @@ public class StartBlock extends WorkflowBlock {
     }
 
     public void setEventId(String eventId) {
-        if (JEStringUtils.isEmpty(eventId)) return;
+        if (StringUtilities.isEmpty(eventId)) return;
         if(eventId.equalsIgnoreCase(APIConstants.DEFAULT))
             this.eventId = null;
         else

@@ -8,9 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
-import io.je.utilities.logger.JELogger;
-import io.je.utilities.logger.LogCategory;
-import io.je.utilities.logger.LogSubModule;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,14 +17,17 @@ import io.je.classbuilder.models.ClassDefinition;
 import io.je.project.listener.ClassUpdateListener;
 import io.je.project.repository.ClassRepository;
 import io.je.utilities.apis.JERunnerAPIHandler;
-import io.je.utilities.config.Utility;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.exceptions.AddClassException;
 import io.je.utilities.exceptions.ClassLoadException;
 import io.je.utilities.exceptions.DataDefinitionUnreachableException;
 import io.je.utilities.exceptions.JERunnerErrorException;
-import io.je.utilities.network.JEResponse;
+import io.je.utilities.log.JELogger;
+import io.siothconfig.SIOTHConfigUtility;
+import utils.log.LogCategory;
+import utils.log.LogSubModule;
+import io.je.utilities.beans.JEResponse;
 
 /*
  * Service class to handle classes
@@ -53,8 +53,8 @@ public class ClassService {
 	 */
 	public void initClassUpdateListener() {
 		// TODO make runnable static
-		ClassUpdateListener runnable = new ClassUpdateListener("tcp://"+Utility.getSiothConfig().getMachineCredentials().getIpAddress(),
-				Utility.getSiothConfig().getDataModelPORTS().getDmRestAPI_ConfigurationPubAddress(), "ModelTopic");
+		ClassUpdateListener runnable = new ClassUpdateListener("tcp://"+SIOTHConfigUtility.getSiothConfig().getMachineCredentials().getIpAddress(),
+				SIOTHConfigUtility.getSiothConfig().getDataModelPORTS().getDmRestAPI_ConfigurationPubAddress(), "ModelTopic");
 		runnable.setListening(true);
 		Thread listener = new Thread(runnable);
 		listener.start();

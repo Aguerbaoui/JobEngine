@@ -12,7 +12,7 @@ import com.mongodb.MongoCredential;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 
-import io.je.utilities.config.Utility;
+import io.siothconfig.SIOTHConfigUtility;
 
 @Configuration
 @EnableMongoRepositories(basePackages = "io.je.project.repository")
@@ -26,7 +26,7 @@ public class MongoConfig extends AbstractMongoClientConfiguration {
 
     @Override
     public MongoClient mongoClient() {
-        final ConnectionString connectionString = new ConnectionString("mongodb://"+Utility.getSiothConfig().getMongoConfiguration().getMongoServerHostName()+":"+Utility.getSiothConfig().getMongoConfiguration().getMongoServerPort() +"/"+getDatabaseName());
+        final ConnectionString connectionString = new ConnectionString("mongodb://"+SIOTHConfigUtility.getSiothConfig().getMongoConfiguration().getMongoServerHostName()+":"+SIOTHConfigUtility.getSiothConfig().getMongoConfiguration().getMongoServerPort() +"/"+getDatabaseName());
        //  MongoCredential credential = MongoCredential.createCredential(SIOTHConfiguration.getMongoUserName(), SIOTHConfiguration.getDataBaseName(), SIOTHConfiguration.getMongoPassword().toCharArray());
         final MongoClientSettings mongoClientSettings = MongoClientSettings.builder()
             .applyConnectionString(connectionString)

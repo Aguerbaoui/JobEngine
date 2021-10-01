@@ -12,12 +12,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.je.utilities.classloader.JEClassLoader;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.InstanceCreationFailed;
-import io.je.utilities.logger.JELogger;
-import io.je.utilities.logger.LogCategory;
-import io.je.utilities.logger.LogSubModule;
+import io.je.utilities.log.JELogger;
 import io.je.utilities.mapping.InstanceModelMapping;
 import io.je.utilities.models.InstanceModel;
 import io.je.utilities.runtimeobject.JEObject;
+import utils.log.LogCategory;
+import utils.log.LogSubModule;
 
 
 /*
