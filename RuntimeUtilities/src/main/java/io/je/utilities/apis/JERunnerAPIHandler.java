@@ -10,6 +10,8 @@ import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.exceptions.JERunnerErrorException;
 import io.je.utilities.logger.JELogger;
+import io.je.utilities.logger.LogCategory;
+import io.je.utilities.logger.LogSubModule;
 import io.je.utilities.models.WorkflowModel;
 import io.je.utilities.network.JEResponse;
 import io.je.utilities.network.Network;
@@ -136,7 +138,8 @@ public class JERunnerAPIHandler {
     //update event type
     public static void updateEventType(String projectId, String eventId, String type) throws JERunnerErrorException, InterruptedException, ExecutionException, IOException {
         String requestUrl = runtimeManagerBaseApi + APIConstants.UPDATE_EVENT + "/" + projectId + "/" + eventId;
-        JELogger.debug(JERunnerAPIHandler.class, JEMessages.NETWORK_UPDATE_EVENT+"project id = " + projectId + "event id = " + eventId);
+        JELogger.debug(JEMessages.NETWORK_UPDATE_EVENT+"project id = " + projectId + "event id = " + eventId,  LogCategory.DESIGN_MODE,
+                projectId, LogSubModule.EVENT, eventId);
         sendRequestWithStringBody(requestUrl, type);
 
     }
@@ -151,8 +154,8 @@ public class JERunnerAPIHandler {
             response = Network.makeGetNetworkCallWithResponse(requestUrl);
             if (response != null) {
                 if (response.code() != ResponseCodes.CODE_OK) {
-                    JELogger.error(JERunnerAPIHandler.class,
-                             JEMessages.NETWORK_CALL_ERROR + requestUrl);
+                    JELogger.error(JEMessages.NETWORK_CALL_ERROR + requestUrl,  LogCategory.DESIGN_MODE,
+                            null, LogSubModule.JEBUILDER, null);
                     throw new JERunnerErrorException(JEMessages.JERUNNER_ERROR + " : " + response.body().string());
                 }
 
@@ -165,8 +168,8 @@ public class JERunnerAPIHandler {
             }
 
         } catch (IOException e) {
-            JELogger.error(JERunnerAPIHandler.class,
-                     JEMessages.NETWORK_CALL_ERROR + requestUrl);
+            JELogger.error(JEMessages.NETWORK_CALL_ERROR + requestUrl,  LogCategory.DESIGN_MODE,
+                    null, LogSubModule.JEBUILDER, null);
             throw new JERunnerErrorException(JEMessages.JERUNNER_UNREACHABLE);
         }
         return false;
@@ -175,21 +178,24 @@ public class JERunnerAPIHandler {
     //delete event from runner
     public static JEResponse deleteEvent(String projectId, String eventId) throws InterruptedException, JERunnerErrorException, ExecutionException {
         String requestUrl = runtimeManagerBaseApi + DELETE_EVENT + "/" + projectId + "/" + eventId;
-        JELogger.debug(JEMessages.NETWORK_DELETE_EVENT+", project id = " + projectId + "event id = " + eventId);
+        JELogger.debug(JEMessages.NETWORK_DELETE_EVENT+", project id = " + projectId + "event id = " + eventId,  LogCategory.DESIGN_MODE,
+                projectId, LogSubModule.JEBUILDER, eventId);
         return sendDeleteRequest(requestUrl);
     }
 
     // clean project data from runner
     public static void cleanProjectDataFromRunner(String projectId) throws InterruptedException, JERunnerErrorException, ExecutionException {
         String requestUrl = runtimeManagerBaseApi + CLEAN_HOUSE + "/" + projectId ;
-        JELogger.debug(JERunnerAPIHandler.class, JEMessages.NETWORK_CLEAN_PROJECT+" project id = " + projectId);
+        JELogger.debug(JEMessages.NETWORK_CLEAN_PROJECT+" project id = " + projectId,  LogCategory.DESIGN_MODE,
+                projectId, LogSubModule.JEBUILDER, null);
         sendRequest(requestUrl);
     }
 
 
 	public static JEResponse updateRunnerSettings(Object requestModel) throws JERunnerErrorException, InterruptedException, ExecutionException {
 	       String requestUrl = runtimeManagerBaseApi + APIConstants.UPDATE_CONFIG ;
-	        JELogger.debug(JEMessages.RUNNER_CONFFIG_UPDATE);
+	       JELogger.debug(JEMessages.RUNNER_CONFFIG_UPDATE,  LogCategory.DESIGN_MODE,
+                null, LogSubModule.JEBUILDER, null);
 	        return sendRequestWithBody(requestUrl, requestModel);
 
 		
@@ -197,26 +203,31 @@ public class JERunnerAPIHandler {
 
     public static void deleteWorkflow(String projectId, String workflowId) throws InterruptedException, JERunnerErrorException, ExecutionException {
         String requestUrl = runtimeManagerBaseApi + DELETE_WORKFLOW + "/" + projectId + "/" + workflowId;
-        JELogger.debug(JEMessages.NETWORK_DELETE_WF+" project id = " + projectId + "workflow id = " + workflowId);
+        JELogger.debug(JEMessages.NETWORK_DELETE_WF+" project id = " + projectId + "workflow id = " + workflowId,  LogCategory.DESIGN_MODE,
+                projectId, LogSubModule.JEBUILDER, workflowId);
          sendDeleteRequest(requestUrl);
     }
 
     public static void addVariable(String projectId, String varId, Object body) throws InterruptedException, JERunnerErrorException, ExecutionException {
         String url = Utility.getSiothConfig().getJobEngine().getJeRunner()+ APIConstants.ADD_VARIABLE;
-        JELogger.debug(JEMessages.NETWORK_ADD_VAR+" project id = " + projectId + " variable id = " + varId);
+        JELogger.debug(JEMessages.NETWORK_ADD_VAR+" project id = " + projectId + " variable id = " + varId,  LogCategory.DESIGN_MODE,
+                projectId, LogSubModule.JEBUILDER, varId);
         sendRequestWithBody(url, body);
         
     }
 
     public static void removeVariable(String projectId, String varId) throws InterruptedException, JERunnerErrorException, ExecutionException {
         String url = Utility.getSiothConfig().getJobEngine().getJeRunner()+ DELETE_VARIABLE + "/" + projectId + "/" + varId;
-        JELogger.debug(JEMessages.NETWORK_DELETE_VAR+" project id = " + projectId + " var id = " + varId);
+        JELogger.debug(JEMessages.NETWORK_DELETE_VAR+" project id = " + projectId + " var id = " + varId,  LogCategory.DESIGN_MODE,
+                projectId, LogSubModule.JEBUILDER, varId);
         sendDeleteRequest(url);
     }
 
     public static void addJarToRunner(HashMap<String, String> payload) throws InterruptedException, JERunnerErrorException, ExecutionException {
         String url = Utility.getSiothConfig().getJobEngine().getJeRunner()+ APIConstants.ADD_JAR;
         //JELogger.debug(JEMessages.ADDING_JAR_FILE_TO_RUNNER + payload);
+        JELogger.debug(JEMessages.ADDING_JAR_FILE_TO_RUNNER + payload,  LogCategory.DESIGN_MODE,
+                null, LogSubModule.JEBUILDER, null);
         sendRequestWithBody(url, payload);
     }
 

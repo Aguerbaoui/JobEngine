@@ -9,8 +9,11 @@ import blocks.control.ParallelGatewayBlock;
 import blocks.events.*;
 import io.je.utilities.config.ConfigurationConstants;
 import io.je.utilities.constants.JEMessages;
+import io.je.utilities.constants.Timers;
 import io.je.utilities.constants.WorkflowConstants;
 import io.je.utilities.logger.JELogger;
+import io.je.utilities.logger.LogCategory;
+import io.je.utilities.logger.LogSubModule;
 import models.JEWorkflow;
 import org.activiti.bpmn.model.*;
 import org.activiti.bpmn.model.Process;
@@ -35,17 +38,17 @@ public class JEToBpmnMapper {
      * */
     public static void createBpmnFromJEWorkflow( JEWorkflow wf) {
 
-        JELogger.trace(" " + BUILDING_BPMN_FROM_JEWORKFLOW + " " + wf.getJobEngineElementID());
+        JELogger.debug(BUILDING_BPMN_FROM_JEWORKFLOW + " " + wf.getJobEngineElementID(),
+                LogCategory.DESIGN_MODE, wf.getJobEngineProjectID(),
+                LogSubModule.WORKFLOW,wf.getJobEngineElementID());
         BpmnModel model = ModelBuilder.createNewBPMNModel();
         model.setTargetNamespace(wf.getJobEngineProjectID());
         Process process = ModelBuilder.createProcess(wf.getWorkflowName().trim());
         process.addFlowElement(
                 ModelBuilder.createStartEvent(wf.getWorkflowStartBlock().getJobEngineElementID(),
                 wf.getWorkflowStartBlock().getEventId(),
-                wf.getWorkflowStartBlock().getTimeDelay(),
-                wf.getWorkflowStartBlock().getTimerDate(),
-                wf.getWorkflowStartBlock().getTimerCycle()));
-        addListeners(process);
+                wf.getWorkflowStartBlock().getTimerEvent()));
+        addListeners(wf, process);
         parseWorkflowBlock(wf, wf.getWorkflowStartBlock(), process, null);
         model.addProcess(process);
         String modelPath = ConfigurationConstants.BPMN_PATH + wf.getWorkflowName().trim() + WorkflowConstants.BPMN_EXTENSION;
@@ -57,8 +60,10 @@ public class JEToBpmnMapper {
     /*
      * Set the start and end execution listeners for the workflow
      * */
-    private static void addListeners(Process process) {
-        JELogger.trace(" " + JEMessages.ADDING_LISTENERS_TO_PROCESS + " id = " + process.getName());
+    private static void addListeners(JEWorkflow workflow, Process process) {
+        JELogger.debug(JEMessages.ADDING_LISTENERS_TO_PROCESS + " id = " + process.getName(),
+                LogCategory.DESIGN_MODE, workflow.getJobEngineProjectID(),
+                LogSubModule.WORKFLOW,workflow.getJobEngineElementID());
         ArrayList<ActivitiListener> listeners = new ArrayList<ActivitiListener>();
         listeners.add(getListener(WorkflowConstants.PROCESS_LISTENER_IMPLEMENTATION, WorkflowConstants.START_PROCESS, ImplementationType.IMPLEMENTATION_TYPE_CLASS));
         listeners.add(getListener(WorkflowConstants.PROCESS_LISTENER_IMPLEMENTATION, WorkflowConstants.END_PROCESS, ImplementationType.IMPLEMENTATION_TYPE_CLASS));
@@ -74,7 +79,10 @@ public class JEToBpmnMapper {
             process.addFlowElement(ModelBuilder.createSequenceFlow(previous.getJobEngineElementID(), startBlock.getJobEngineElementID(), previous.getCondition()));
         }
         if (startBlock.isProcessed()) return;
-        JELogger.trace(" " + JEMessages.PROCESSING_BLOCK_NAME + " = " + startBlock.getName() + " in workflow" + " = " + wf.getWorkflowName());
+        JELogger.debug(JEMessages.PROCESSING_BLOCK_NAME + " = " + startBlock.getName() +
+                        " in workflow" + " = " + wf.getWorkflowName(),
+                LogCategory.DESIGN_MODE, wf.getJobEngineProjectID(),
+                LogSubModule.WORKFLOW,wf.getJobEngineElementID());
         startBlock.setProcessed(true);
         for (String id : startBlock.getOutFlows().values()) {
             WorkflowBlock block = wf.getBlockById(id);
@@ -152,17 +160,25 @@ public class JEToBpmnMapper {
                         block.generateBpmnOutflows(wf)));
             }
 
-            else if (block instanceof DateTimerEvent && !block.isProcessed()) {
-                process.addFlowElement(ModelBuilder.createDateTimerEvent(block.getJobEngineElementID(), block.getName(), ((DateTimerEvent) block).getTimeDate()));
+            else if (block instanceof TimerEvent && !block.isProcessed()) {
+                if(((TimerEvent) block).getTimer() == Timers.DATE_TIME) {
+                    process.addFlowElement(ModelBuilder.createDateTimerEvent(block.getJobEngineElementID(), block.getName(), ((TimerEvent) block).getTimeDate()));
+                }
+                else if(((TimerEvent) block).getTimer() == Timers.CYCLIC) {
+                    process.addFlowElement(ModelBuilder.createCycleTimerEvent(block.getJobEngineElementID(), block.getName(), ((TimerEvent) block).getTimeCycle(), ((TimerEvent) block).getEndDate()));
+                }
+                else {
+                    process.addFlowElement(ModelBuilder.createDurationTimerEvent(block.getJobEngineElementID(), block.getName(), ((TimerEvent) block).getTimeDuration()));
+                }
             }
 
-            else if (block instanceof CycleTimerEvent && !block.isProcessed()) {
+            /*else if (block instanceof CycleTimerEvent && !block.isProcessed()) {
                 process.addFlowElement(ModelBuilder.createCycleTimerEvent(block.getJobEngineElementID(), block.getName(), ((CycleTimerEvent) block).getTimeCycle(), ((CycleTimerEvent) block).getEndDate()));
             }
 
             else if (block instanceof DurationDelayTimerEvent && !block.isProcessed()) {
                 process.addFlowElement(ModelBuilder.createDurationTimerEvent(block.getJobEngineElementID(), block.getName(), ((DurationDelayTimerEvent) block).getTimeDuration()));
-            }
+            }*/
 
             else if (block instanceof WebApiBlock && !block.isProcessed()) {
                 process.addFlowElement(ModelBuilder.createServiceTask(block.getJobEngineElementID(), block.getName(),
@@ -172,6 +188,10 @@ public class JEToBpmnMapper {
             else if (block instanceof InformBlock && !block.isProcessed()) {
                 process.addFlowElement(ModelBuilder.createServiceTask(block.getJobEngineElementID(), block.getName(),
                         WorkflowConstants.INFORM_TASK_IMPLEMENTATION));
+            }
+
+            else if(block instanceof SubProcessBlock && !block.isProcessed()) {
+                process.addFlowElement(ModelBuilder.createCallActivity(block.getJobEngineElementID(), block.getName(), ((SubProcessBlock) block).getSubWorkflowId()));
             }
             parseWorkflowBlock(wf, block, process, startBlock);
         }

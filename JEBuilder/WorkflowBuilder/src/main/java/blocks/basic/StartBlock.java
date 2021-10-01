@@ -1,6 +1,7 @@
 package blocks.basic;
 
 import blocks.WorkflowBlock;
+import blocks.events.TimerEvent;
 import io.je.utilities.constants.APIConstants;
 import io.je.utilities.string.JEStringUtils;
 
@@ -8,11 +9,7 @@ public class StartBlock extends WorkflowBlock {
 
     private String eventId = null;
 
-    private String timeDelay = null;
-
-    private String timerCycle = null;
-
-    private String timerDate = null;
+    private TimerEvent timerEvent = null;
 
     public String getEventId() {
         return eventId;
@@ -26,27 +23,11 @@ public class StartBlock extends WorkflowBlock {
             this.eventId = eventId;
     }
 
-    public String getTimeDelay() {
-        return timeDelay;
+    public TimerEvent getTimerEvent() {
+        return timerEvent;
     }
 
-    public void setTimeDelay(String timeDelay) {
-        this.timeDelay = timeDelay;
-    }
-
-    public String getTimerCycle() {
-        return timerCycle;
-    }
-
-    public void setTimerCycle(String timerCycle) {
-        this.timerCycle = timerCycle;
-    }
-
-    public String getTimerDate() {
-        return timerDate;
-    }
-
-    public void setTimerDate(String timerDate) {
-        this.timerDate = timerDate;
+    public void setTimerEvent(TimerEvent timerEvent) {
+        this.timerEvent = timerEvent;
     }
 }

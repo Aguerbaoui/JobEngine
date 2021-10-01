@@ -7,6 +7,8 @@ import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.EventException;
 import io.je.utilities.exceptions.ProjectNotFoundException;
 import io.je.utilities.logger.JELogger;
+import io.je.utilities.logger.LogCategory;
+import io.je.utilities.logger.LogSubModule;
 import io.je.utilities.models.EventType;
 
 import java.util.HashMap;
@@ -63,7 +65,9 @@ public class EventManager {
     * */
     //TODO update with rule events
     public static void triggerEvent(String projectId, String eventId) throws ProjectNotFoundException, EventException {
-        if(!events.containsKey(projectId)) {
+       
+    	//Retrieve event
+    	if(!events.containsKey(projectId)) {
             throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
         }
         JEEvent event = events.get(projectId).get(eventId);
@@ -75,9 +79,17 @@ public class EventManager {
                 }
             }
         }
+        //When event is found:
         if(event != null) {
-            JELogger.trace(JEMessages.FOUND_EVENT + eventId + JEMessages.TRIGGERING_NOW);
-            RuleEngineHandler.addEvent(event);
+            JELogger.debug(JEMessages.FOUND_EVENT + eventId + JEMessages.TRIGGERING_NOW,
+                    LogCategory.RUNTIME, event.getJobEngineProjectID(),
+                    LogSubModule.EVENT,event.getJobEngineElementID());
+            
+            //trigger event
+            event.trigger();
+
+            
+            //Update Event in WorkflowEngine
             if(event.getType().equals(EventType.MESSAGE_EVENT)) {
                 throwMessageEventInWorkflow(projectId, event.getName());
             }
@@ -87,12 +99,15 @@ public class EventManager {
             else if(event.getType().equals(EventType.START_WORKFLOW)) {
                 startProcessInstanceByMessage(projectId, event.getName());
             }
-            event.trigger();
+
             if(event.getTimeout()!=0)
             {
             	setEventTimeOut(event);
             }
             
+            //update event in workflow engine
+            RuleEngineHandler.addEvent(event);
+
            
         }
         else {
@@ -157,7 +172,9 @@ private static void updateActiveThreads(String projectId, String eventId)
             }
         }
         if(event == null) throw new EventException(JEMessages.EVENT_NOT_FOUND);
-        JELogger.trace(JEMessages.FOUND_EVENT + eventId + JEMessages.UPDATING_EVENT_TYPE);
+        JELogger.debug(JEMessages.FOUND_EVENT + eventId + JEMessages.UPDATING_EVENT_TYPE,
+                LogCategory.RUNTIME, event.getJobEngineProjectID(),
+                LogSubModule.EVENT,event.getJobEngineElementID());
         EventType t = EventType.valueOf(eventType);
         event.setType(t);
     }
@@ -178,7 +195,10 @@ private static void updateActiveThreads(String projectId, String eventId)
             if(event == null) throw new EventException(JEMessages.EVENT_NOT_FOUND);
         }
         else {
-            JELogger.trace(JEMessages.FOUND_EVENT + eventId + JEMessages.REMOVING_EVENT);
+            JELogger.debug(JEMessages.FOUND_EVENT + eventId + JEMessages.REMOVING_EVENT,
+                    LogCategory.RUNTIME, event.getJobEngineProjectID(),
+                    LogSubModule.EVENT,event.getJobEngineElementID());
+
             events.get(projectId).remove(eventId);
         }
         RuleEngineHandler.deleteEvent(projectId, eventId);
@@ -186,7 +206,9 @@ private static void updateActiveThreads(String projectId, String eventId)
     }
 
     public static void deleteProjectEvents(String projectId){
-        JELogger.trace(JEMessages.REMOVING_EVENTS + projectId );
+        JELogger.debug(JEMessages.REMOVING_EVENTS + projectId ,
+                LogCategory.RUNTIME, projectId,
+                LogSubModule.EVENT,null);
         events.remove(projectId);
 
 

@@ -1,5 +1,7 @@
 package io.je.utilities.time;
 
+import io.je.utilities.config.Utility;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -11,7 +13,8 @@ public class JEDate {
 		return LocalDateTime.now();
 	}
 
-	
+	private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern(Utility.getSiothConfig().getDateFormat());
+
 	/*
 	 * returns a String of the current time in the format specified 
 	 */
@@ -54,5 +57,7 @@ public class JEDate {
         return LocalDateTime.parse(timeAsString, formatter);
 	}
 	
-	
+	public static String formatDateToSIOTHFormat(LocalDateTime date) {
+		return date.format(formatter);
+	}
 }

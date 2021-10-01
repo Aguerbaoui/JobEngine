@@ -1,46 +1,47 @@
 package io.je.project.siothconfig;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 
 public class SIOTHConfig {
 
-    public String SIOTHInstallationPath;
+    private String SIOTHInstallationPath;
 
-    public SIOTHConfig() {}
+    private SIOTHConfig() {}
 
     @JsonProperty("MachineCredentials")
-    public MachineCredentials machineCredentials ;
+    private MachineCredentials machineCredentials ;
     
     @JsonProperty("MongoConfiguration")
-    public MongoConfiguration mongoConfiguration ;
+    private MongoConfiguration mongoConfiguration ;
     
     @JsonProperty("InfluxDBConfiguration")
-    public InfluxDBConfiguration influxDBConfiguration ;
+    private InfluxDBConfiguration influxDBConfiguration ;
     
     @JsonProperty("RedisConfiguration")
-    public RedisConfiguration redisConfiguration ;
+    private RedisConfiguration redisConfiguration ;
     
     @JsonProperty("PORTS")
-    public SIOTHPorts siothPorts ;
+    private SIOTHPorts siothPorts ;
     
     @JsonProperty("DateFormat")
-    public String dateFormat;
+    private String dateFormat;
 
     @JsonProperty("DataModelPORTS")
-    public DataModelPORTS dataModelPORTS ;
+    private DataModelPORTS dataModelPORTS ;
     
     @JsonProperty("JobEngine")
-    public JobEngine jobEngine;
+    private JobEngine jobEngine;
     
     @JsonProperty("Connectors")
-    public Connectors connectors ;
+    private Connectors connectors ;
     
     @JsonProperty("isKillProcess")
-    public boolean isKillProcess ;
+    private boolean isKillProcess ;
     
     @JsonProperty("APIS")
-    public APIS apis;
+    private APIS apis;
 
 	public String getSIOTHInstallationPath() {
 		return SIOTHInstallationPath;
@@ -91,7 +92,7 @@ public class SIOTHConfig {
 	}
 
 	public String getDateFormat() {
-		return dateFormat;
+		return dateFormat.replace("f", "S");
 	}
 
 	public void setDateFormat(String dateFormat) {

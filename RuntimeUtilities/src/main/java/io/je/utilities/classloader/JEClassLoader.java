@@ -2,6 +2,8 @@ package io.je.utilities.classloader;
 
 import io.je.utilities.constants.ClassBuilderConfig;
 import io.je.utilities.logger.JELogger;
+import io.je.utilities.logger.LogCategory;
+import io.je.utilities.logger.LogSubModule;
 
 import java.io.DataInputStream;
 import java.io.File;
@@ -23,7 +25,7 @@ public class JEClassLoader extends ClassLoader {
     
     private JEClassLoader(Set<String> customClasses) {
         super(JEClassLoader.class.getClassLoader());
-       this.customClasses=customClasses;
+       JEClassLoader.customClasses =customClasses;
     }
     
     
@@ -77,7 +79,8 @@ public class JEClassLoader extends ClassLoader {
             customClasses.add(name);
 
             try {
-                JELogger.debug("Class Loading by je custom loader Started for " + name);
+                JELogger.trace("Class Loading by je custom loader Started for " + name, LogCategory.RUNTIME,
+                        null, LogSubModule.CLASS, null);
                 Class c = getClass(name);
                 return c;
             }
@@ -102,12 +105,12 @@ public class JEClassLoader extends ClassLoader {
      */
     private Class<?> getClass(String name) throws ClassNotFoundException {
         String file = name.replace('.', File.separatorChar) + ".class";
-        JELogger.debug("Name of File to be loaded in by class loader" + file);
         byte[] byteArr = null;
         try {
             // This loads the byte code data from the file
             byteArr = loadClassData(file);
-            JELogger.debug("Size of byte array for the class "+byteArr.length);
+            JELogger.trace("Size of byte array for the class "+byteArr.length, LogCategory.RUNTIME,
+                    null, LogSubModule.CLASS, null);
             Class<?> c = defineClass(name, byteArr, 0, byteArr.length);
             resolveClass(c);
             return c;

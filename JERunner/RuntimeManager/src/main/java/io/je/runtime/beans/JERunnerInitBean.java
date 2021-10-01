@@ -2,6 +2,8 @@ package io.je.runtime.beans;
 
 import io.je.runtime.config.RunnerProperties;
 import io.je.utilities.logger.JELogger;
+import io.je.utilities.zmq.ZMQSecurity;
+
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -15,7 +17,8 @@ public class JERunnerInitBean implements InitializingBean {
     @Override
     public void afterPropertiesSet() throws Exception {
         try {
-            JELogger.initRunnerLogger(runnerProperties.getJeRunnerLogPath(),runnerProperties.getJeRunnerLogLevel());
+            ZMQSecurity.setSecure(runnerProperties.getUseZmqSecurity());
+            JELogger.initLogger("JERunner", runnerProperties.getJeRunnerLogPath(),runnerProperties.getJeRunnerLogLevel());
         }
         catch (Exception e) {e.printStackTrace();}
     }

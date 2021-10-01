@@ -33,6 +33,8 @@ public class JECalculator {
 		return (double) value;
 	}
 	
+
+	
 	
 	
 	/*
@@ -232,6 +234,28 @@ public class JECalculator {
 		return (double) value;
 	}
 	
+	
+	/*
+	 * power
+	 */
+	public static double bias(Object x, int i)
+	{
+		Object value ;
+		try{
+			value = (double) x+i;
+		}catch(Exception e)
+		{
+			//Tempo fix should revise later
+			try {
+				value = (long) x+i;
+			}
+			catch(Exception ex ) {
+				value = (float) x+i;
+			}
+		}
+		return (double) value;
+	}
+	
 
 	/*
 	 * exp
@@ -255,8 +279,8 @@ public class JECalculator {
 	 */
 	public static double factorial(double x) {
 		Double value = x;
-		return CombinatoricsUtils.factorial(value.intValue());
-
+		double a = CombinatoricsUtils.factorial(value.intValue());
+		return a;
 	}
 	
 	/*

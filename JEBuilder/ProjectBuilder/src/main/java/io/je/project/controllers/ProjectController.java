@@ -2,14 +2,16 @@ package io.je.project.controllers;
 
 import io.je.project.beans.JEProject;
 import io.je.project.exception.JEExceptionHandler;
-import io.je.project.models.ProjectModel;
 import io.je.project.services.ProjectService;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.exceptions.ProjectNotFoundException;
 import io.je.utilities.logger.JELogger;
+import io.je.utilities.logger.LogCategory;
+import io.je.utilities.logger.LogSubModule;
 import io.je.utilities.network.JEResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +19,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import static io.je.utilities.constants.JEMessages.*;
 
-import java.util.Collection;
 import java.util.HashMap;
 
 /*
@@ -35,7 +36,7 @@ public class ProjectController {
 	/*
 	 * Get the list of all projects
 	 */
-	@GetMapping("/getAllProjects")
+	/*@GetMapping("/getAllProjects")
 	public ResponseEntity<?> getAllProjects() {
 		Collection<?> projects = null;
 		try {
@@ -50,7 +51,7 @@ public class ProjectController {
 		}
 		return ResponseEntity.ok(projects);
 
-	}
+	}*/
 
 	/*
 	 * Get project running status
@@ -161,7 +162,7 @@ public class ProjectController {
 	@DeleteMapping(value = "/deleteProject/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> deleteProject(@PathVariable String projectId) {
 		if (!projectService.projectExists(projectId)) {
-			return ResponseEntity.badRequest()
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 					.body(new JEResponse(ResponseCodes.PROJECT_NOT_FOUND, JEMessages.PROJECT_NOT_FOUND));
 		}
 
@@ -208,7 +209,7 @@ public class ProjectController {
 			return JEExceptionHandler.handleException(e);
 
 		}
-		JELogger.trace(ProjectController.class, BUILT_EVERYTHING_SUCCESSFULLY);
+		JELogger.debug(BUILT_EVERYTHING_SUCCESSFULLY, LogCategory.DESIGN_MODE, projectId, LogSubModule.JEBUILDER, null);
 		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, BUILT_EVERYTHING_SUCCESSFULLY));
 	}
 
@@ -257,7 +258,7 @@ public class ProjectController {
 	/*
 	 * remove project from builder and runner
 	 */
-	@GetMapping(value = "/closeProject/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
+	/*@GetMapping(value = "/closeProject/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> closeProject(@PathVariable String projectId) {
 		try {
 
@@ -268,7 +269,7 @@ public class ProjectController {
 		}
 		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, PROJECT_CLOSED));
 
-	}
+	}*/
 	
 	/*
 	 * Add new project
@@ -280,9 +281,12 @@ public class ProjectController {
 		}
 		try {
 			JEProject project = projectService.getProject(projectId);
-			JELogger.debug("[projectId ="+projectId+" ]  " + JEMessages.PROJECT_AUTO_RELOAD + autoReload);
-			project.setAutoReload(autoReload);
-			projectService.saveProject(project).get();
+			if(project != null) {
+				JELogger.debug("[projectId =" + projectId + " ]  " + JEMessages.PROJECT_AUTO_RELOAD + autoReload, LogCategory.DESIGN_MODE,
+						projectId, LogSubModule.JEBUILDER, null);
+				project.setAutoReload(autoReload);
+				projectService.saveProject(project).get();
+			}
 		} catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
 		}

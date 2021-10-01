@@ -2,11 +2,14 @@ package io.je.rulebuilder.models;
 
 import java.time.format.DateTimeFormatter;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.je.rulebuilder.components.JERule;
 import io.je.rulebuilder.components.UserDefinedRule;
 import io.je.rulebuilder.config.AttributesMapping;
+import io.je.utilities.config.Utility;
+import io.je.utilities.time.JEDate;
 
 
 /*
@@ -32,6 +35,7 @@ public class RuleModel {
     @JsonProperty(AttributesMapping.ENABLED)
     String enabled;
 	
+   
     @JsonProperty(AttributesMapping.DATEEFFECTIVE)
     String dateEffective;
 	
@@ -51,13 +55,13 @@ public class RuleModel {
     String isBuilt;
     
     
+    String createdBy;
+    String modifiedBy;
+    
+    
     //temporary 
     @JsonProperty(AttributesMapping.FRONTCONFIG)
     String ruleFrontConfig;
-    
-    
-    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yyyy, h:mm:ss a");
-
 
     
     public RuleModel(JERule rule) {
@@ -66,8 +70,10 @@ public class RuleModel {
 		this.ruleName = rule.getRuleName();
 		this.description = rule.getDescription();
 		this.isBuilt = String.valueOf(rule.isBuilt());
-		this.createdAt = rule.getJeObjectCreationDate().format(formatter);
-		this.lastModifiedAt = rule.getJeObjectLastUpdate().format(formatter);
+		this.createdAt = JEDate.formatDateToSIOTHFormat(rule.getJeObjectCreationDate());
+		this.lastModifiedAt = JEDate.formatDateToSIOTHFormat(rule.getJeObjectLastUpdate());
+		this.createdBy = rule.getJeObjectCreatedBy();
+		this.modifiedBy = rule.getJeObjectModifiedBy();
 		if(rule instanceof UserDefinedRule) {
 			this.salience = ((UserDefinedRule)rule).getRuleParameters().getSalience();
 			this.enabled = ((UserDefinedRule)rule).getRuleParameters().getEnabled();
@@ -75,6 +81,7 @@ public class RuleModel {
 			this.dateExpires = ((UserDefinedRule)rule).getRuleParameters().getDateExpires();
 			this.timer = ((UserDefinedRule)rule).getRuleParameters().getTimer();
 			this.ruleFrontConfig = ((UserDefinedRule)rule).getRuleFrontConfig();
+			
 
 		}
 		
@@ -94,6 +101,34 @@ public class RuleModel {
 
 
 	
+
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
+
+
+
+	public String getModifiedBy() {
+		return modifiedBy;
+	}
+
+
+
+	public void setModifiedBy(String modifiedBy) {
+		this.modifiedBy = modifiedBy;
+	}
+
+
+
+
+
+
 
 	public String getSalience() {
 		return salience;

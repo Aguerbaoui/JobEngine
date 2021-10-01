@@ -227,7 +227,7 @@ public class JEProject {
 
 
 	public String getConfigurationPath() {
-		if(configurationPath==null)
+		if(configurationPath==null || configurationPath.isEmpty())
 		{
 			//TODO: use a default path in sioth config
 			configurationPath =  ConfigurationConstants.PROJECTS_PATH+projectName;
@@ -638,7 +638,13 @@ public class JEProject {
 	public void setBlockNameCounters(Map<String, Integer> blockNameCounters) {
 		this.blockNameCounters = blockNameCounters;
 	}
-	
-	
-	
+
+
+	public JEWorkflow getStartupWorkflow() {
+		for(JEWorkflow wf: workflows.values()) {
+			if(wf.isOnProjectBoot()) return wf;
+		}
+		return null;
+	}
+
 }

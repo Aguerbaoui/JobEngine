@@ -17,8 +17,8 @@ public abstract class PersistableBlock extends ConditionBlock {
 
 	public PersistableBlock(String jobEngineElementID, String jobEngineProjectID, String ruleId, String blockName,
 			String blockDescription, int timePersistenceValue,
-			String timePersistenceUnit) {
-		super(jobEngineElementID, jobEngineProjectID, ruleId, blockName, blockDescription);
+			String timePersistenceUnit,List<String> inputBlockIds, List<String> outputBlocksIds) {
+		super(jobEngineElementID, jobEngineProjectID, ruleId, blockName, blockDescription,inputBlockIds,outputBlocksIds);
 		this.timePersistenceValue = timePersistenceValue;
 		switch(timePersistenceUnit)
 		{

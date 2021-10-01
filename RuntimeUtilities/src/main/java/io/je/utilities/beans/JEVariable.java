@@ -1,5 +1,7 @@
 package io.je.utilities.beans;
 
+import io.je.utilities.logger.JELogger;
+import io.je.utilities.logger.LogSubModule;
 import io.je.utilities.runtimeobject.JEObject;
 
 import java.time.LocalDateTime;
@@ -9,7 +11,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 
 @Document(collection = "JEVariableCollection")
-public class JEVariable extends JEObject {
+public class JEVariable extends JEMonitoredData {
 
     private String name;
 
@@ -21,6 +23,10 @@ public class JEVariable extends JEObject {
     private Object initialValue;
     
     private Object value;
+    
+    private String description;
+    
+   
 
 
 
@@ -30,15 +36,37 @@ public class JEVariable extends JEObject {
 
 	}
 
+    
+    
 
     public JEVariable(String jobEngineElementID, String jobEngineProjectID, String name, String type,
-			String initialValue) {
+			String initialValue,String description,String createdBy,String modifiedby) {
 		super(jobEngineElementID, jobEngineProjectID);
 		this.name = name;
 		this.type = JEType.valueOf(type);
 		this.initialValue = castValue(initialValue);
 		typeClass = getType(this.type);
 		this.value=this.initialValue;
+		this.jeObjectCreatedBy=createdBy;
+		this.jeObjectModifiedBy = modifiedby;
+		this.description=description;
+	}
+
+
+
+
+	public JEVariable(String jobEngineElementID, String jobEngineProjectID, String name, String type,
+			String initialValue,ArchiveOption isArchived,
+			boolean isBroadcasted,String description,String createdBy,String modifiedby) {
+		super(jobEngineElementID, jobEngineProjectID, isArchived, isBroadcasted);
+		this.name = name;
+		this.type = JEType.valueOf(type);
+		this.initialValue = castValue(initialValue);
+		typeClass = getType(this.type);
+		this.value=this.initialValue;
+		this.jeObjectCreatedBy=createdBy;
+		this.jeObjectModifiedBy = modifiedby;
+		this.description=description;
 	}
 
 
@@ -103,6 +131,41 @@ public class JEVariable extends JEObject {
 
 
 
+	public Class<?> getTypeClass() {
+		return typeClass;
+	}
+
+
+
+
+	public void setTypeClass(Class<?> typeClass) {
+		this.typeClass = typeClass;
+	}
+
+
+
+
+	public String getDescription() {
+		return description;
+	}
+
+
+
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+
+
+
+	public void setValue(Object value) {
+		this.value = value;
+	}
+
+
+
+
 	private Object castValue(String value) {
 		switch(type)
 		{
@@ -123,7 +186,7 @@ public class JEVariable extends JEObject {
 		case BOOLEAN:
 			return Boolean.valueOf(value);
 		default:
-			//TOOD: throw error msg
+			JELogger.error("Failed to set variable\""+this.name+"\" value to "+value+": Incompatible Type", null, this.jobEngineProjectID, LogSubModule.VARIABLE, this.jobEngineElementID);
 			return null;
 		
 		}
@@ -181,4 +244,7 @@ public class JEVariable extends JEObject {
         }
         return classType;
     }
+    
+    
+    
 }

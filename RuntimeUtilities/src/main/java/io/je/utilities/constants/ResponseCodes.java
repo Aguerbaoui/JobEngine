@@ -51,6 +51,8 @@ public class ResponseCodes {
 	public static final int CODE_INJECTION_ERROR = 1038;
 	public static final int WORKFLOW_BLOCK_ERROR = 1039;
 	public static final int WORKFLOW_BUILD_ERROR = 1040;
+	public static final int LICENSE_INACTIVE = 1050;
+
 
 
 

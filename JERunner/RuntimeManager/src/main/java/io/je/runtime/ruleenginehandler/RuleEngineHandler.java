@@ -6,19 +6,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.je.utilities.classloader.JEClassLoader;
+import io.je.utilities.logger.LogCategory;
+import io.je.utilities.logger.LogSubModule;
+import io.je.utilities.mapping.InstanceModelMapping;
+import io.je.utilities.models.InstanceModel;
+
 import org.json.JSONObject;
 
 import io.je.ruleengine.impl.RuleEngine;
 import io.je.ruleengine.models.Rule;
-import io.je.runtime.models.InstanceModel;
-import io.je.runtime.models.InstanceModelMapping;
 import io.je.runtime.models.RuleModel;
-import io.je.runtime.objects.InstanceManager;
 import io.je.utilities.beans.JEData;
 import io.je.utilities.beans.JEEvent;
 import io.je.utilities.beans.JEVariable;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.*;
+import io.je.utilities.instances.InstanceManager;
 import io.je.utilities.logger.JELogger;
 import io.je.utilities.runtimeobject.JEObject;
 
@@ -35,7 +38,9 @@ public class RuleEngineHandler {
     
     private static String verifyRuleIsValid(RuleModel ruleModel) throws RuleFormatNotValidException
     {
-    	JELogger.trace(JEMessages.VALIDATING_RULE);
+		JELogger.debug(JEMessages.VALIDATING_RULE ,
+				LogCategory.RUNTIME, ruleModel.getProjectId(),
+				LogSubModule.RULE,ruleModel.getRuleId());
     	String errorMsg = null;
     	if(ruleModel.getRuleId() == null || ruleModel.getRuleId().isEmpty())
     	{
@@ -91,24 +96,16 @@ public class RuleEngineHandler {
     }
 
 
-    public static void injectData(String projectId,JEData data) throws InstanceCreationFailed {
+    public static void injectData(String projectId,JEObject instance) throws InstanceCreationFailed {
     try
     {
-    	JSONObject instanceJson = new JSONObject(data.getData());
-		//JELogger.debug(RuleEngineHandler.class, instanceJson.toString());
-		InstanceModel instanceModel = new InstanceModel();
-		instanceModel.setInstanceId(instanceJson.getString(InstanceModelMapping.INSTANCEID));
-		instanceModel.setModelId(instanceJson.getString(InstanceModelMapping.MODELID));
-		instanceModel.setPayload(instanceJson.getJSONObject(InstanceModelMapping.PAYLOAD));
-		//instanceModel.setInstanceName(instanceJson.getString(InstanceModelMapping.INSTANCENAME));
-
-		JEObject instanceData = (JEObject) InstanceManager.createInstance(instanceModel);
-		instanceData.setJeObjectLastUpdate(LocalDateTime.now());
-		//JELogger.debug("Data : "+ instanceJson );
-        RuleEngine.assertFact(projectId,instanceData);
-    }catch(InstanceCreationFailed e)
+    	
+        RuleEngine.assertFact(projectId,instance);
+    }catch(Exception e)
     {
-    	JELogger.warning(RuleEngineHandler.class, JEMessages.ADD_INSTANCE_FAILED+" ["+data.getData()+"]" + e.getMessage());
+		JELogger.warn(JEMessages.ADD_INSTANCE_FAILED + e.getMessage(),
+				LogCategory.RUNTIME, projectId,
+				LogSubModule.RULE,null);
     	}
     	
         
@@ -151,7 +148,9 @@ public class RuleEngineHandler {
 	}
 
 	public static void deleteProjectRules(String projectId) {
-		JELogger.trace("[project id = " + projectId+"]"+JEMessages.DELETING_RULES);
+		JELogger.debug("[project id = " + projectId+"]"+JEMessages.DELETING_RULES,
+				LogCategory.RUNTIME, projectId,
+				LogSubModule.RULE,null);
 		RuleEngine.deleteProjectRules(projectId);
 	}
 

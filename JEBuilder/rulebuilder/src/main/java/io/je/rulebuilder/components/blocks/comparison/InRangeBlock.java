@@ -58,9 +58,9 @@ public class InRangeBlock extends ComparisonBlock {
 
 		if (includeBounds) {
 			return firstOperand + ">=" + minRange + "," + firstOperand + "<=" + maxRange;
-		} else {
-			return firstOperand + ">" + minRange + "," + firstOperand + "<" + maxRange;
 		}
+			return firstOperand + ">" + minRange + "," + firstOperand + "<" + maxRange;
+		
 
 	}
 

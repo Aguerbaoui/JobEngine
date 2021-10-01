@@ -19,6 +19,12 @@ public class BuilderProperties {
 	
 	@Value("${jobenginebuilder.log.level}")
 	 String jeBuilderLogLevel;
+	
+	@Value("${use.ZMQ.Security}")
+	Boolean useZmqSecurity;
+
+	@Value("${ids4.issuer}")
+	String issuer;
 
 
 	public String getJeBuilderLogPath() {
@@ -33,10 +39,18 @@ public class BuilderProperties {
 	public void setJeBuilderLogLevel(String jeBuilderLogLevel) {
 		this.jeBuilderLogLevel = jeBuilderLogLevel;
 	}
+	public Boolean getUseZmqSecurity() {
+		return useZmqSecurity;
+	}
+	public void setUseZmqSecurity(Boolean useZmqSecurity) {
+		this.useZmqSecurity = useZmqSecurity;
+	}
 
-	
-	
-	
+	public String getIssuer() {
+		return issuer;
+	}
 
-
+	public void setIssuer(String issuer) {
+		this.issuer = issuer;
+	}
 }

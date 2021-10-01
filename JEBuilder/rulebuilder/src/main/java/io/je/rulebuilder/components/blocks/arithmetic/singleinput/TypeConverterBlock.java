@@ -1,5 +1,6 @@
 package io.je.rulebuilder.components.blocks.arithmetic.singleinput;
 
+import io.je.rulebuilder.config.AttributesMapping;
 import io.je.rulebuilder.models.BlockModel;
 
 public class TypeConverterBlock extends SingleInputArithmeticBlock {
@@ -10,8 +11,8 @@ public class TypeConverterBlock extends SingleInputArithmeticBlock {
 	
 	public TypeConverterBlock(BlockModel blockModel) {
 		super(blockModel);
-		typeToConvertTo = blockModel.getBlockConfiguration().getValue();
-		dateFormat = blockModel.getBlockConfiguration().getValue2();
+		typeToConvertTo = (String) blockModel.getBlockConfiguration().get(AttributesMapping.VALUE);
+		dateFormat = (String) blockModel.getBlockConfiguration().get(AttributesMapping.VALUE2);
 
 		updateDefaultValue();
 

@@ -1,9 +1,12 @@
 package io.je.rulebuilder.components.blocks.comparison;
 
 
+import java.util.List;
+
 import io.je.rulebuilder.components.blocks.PersistableBlock;
 import io.je.rulebuilder.components.blocks.arithmetic.singleinput.SingleInputArithmeticBlock;
 import io.je.rulebuilder.components.blocks.getter.AttributeGetterBlock;
+import io.je.rulebuilder.config.AttributesMapping;
 import io.je.rulebuilder.config.Keywords;
 import io.je.rulebuilder.models.BlockModel;
 import io.je.utilities.exceptions.RuleBuildFailedException;
@@ -39,23 +42,38 @@ public  class ComparisonBlock extends PersistableBlock {
 	
 	
 	protected ComparisonBlock(String jobEngineElementID, String jobEngineProjectID, String ruleId, String blockName,
-			String blockDescription, int timePersistenceValue, String timePersistenceUnit) {
+			String blockDescription, int timePersistenceValue, String timePersistenceUnit,List<String> inputBlockIds, List<String> outputBlocksIds) {
 		super(jobEngineElementID, jobEngineProjectID, ruleId, blockName, blockDescription, timePersistenceValue,
-				timePersistenceUnit);
+				timePersistenceUnit,inputBlockIds,outputBlocksIds);
 		// TODO Auto-generated constructor stub
 	}
 	public ComparisonBlock(BlockModel blockModel) {
 		super(blockModel.getBlockId(), blockModel.getProjectId(), blockModel.getRuleId(),blockModel.getBlockName(),
 				blockModel.getDescription() ,
-				blockModel.getTimePersistenceValue(),blockModel.getTimePersistenceUnit());
+				blockModel.getTimePersistenceValue(),blockModel.getTimePersistenceUnit() ,blockModel.getInputBlocksIds(),blockModel.getOutputBlocksIds());
 
 		
 
 		if(blockModel.getBlockConfiguration()!=null )
 		{
-			threshold = blockModel.getBlockConfiguration().getValue();
-			maxRange = blockModel.getBlockConfiguration().getValue2();
-			includeBounds = Boolean.valueOf(blockModel.getBlockConfiguration().getBooleanValue());
+
+			if(blockModel.getBlockConfiguration().containsKey(AttributesMapping.VALUE))
+			{
+				threshold = String.valueOf(blockModel.getBlockConfiguration().get(AttributesMapping.VALUE));
+
+			}
+			if(blockModel.getBlockConfiguration().containsKey(AttributesMapping.VALUE2))
+			{
+				maxRange = (String) blockModel.getBlockConfiguration().get(AttributesMapping.VALUE2);
+
+			}
+			if(blockModel.getBlockConfiguration().containsKey(AttributesMapping.BOOLEANVALUE))
+			{
+				includeBounds = (Boolean)blockModel.getBlockConfiguration().get(AttributesMapping.BOOLEANVALUE);
+
+			}
+			
+		
 		}
 		
 		operator = getOperatorByOperationId(blockModel.getOperationId());

@@ -46,16 +46,16 @@ public class RuleController {
 	 */
 	@GetMapping(value = "{projectId}/getAllRules")
 	@ResponseBody
-	public ResponseEntity<?> getAllRule(@PathVariable("projectId") String projectId) {
+	public ResponseEntity<?> getAllRules(@PathVariable("projectId") String projectId) {
 		Collection<RuleModel> rules = null;
 		try {
 			projectService.getProject(projectId);
 
 			rules = ruleService.getAllRules(projectId);
-			if (rules.isEmpty()) {
+			/*if (rules.isEmpty()) {
 				return ResponseEntity.noContent().build();
 
-			}
+			}*/
 		} catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
 		}
@@ -99,14 +99,12 @@ public class RuleController {
 		try {
 			projectService.getProject(projectId);
 
-			JELogger.info(getClass(), " Adding rule " + ruleModel.getRuleName() + "..");
 			ruleService.addRule(projectId, ruleModel);
 			
 
 		} catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
 		}
-		JELogger.info(getClass(), JEMessages.RULE_ADDED_SUCCESSFULLY);
 		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.RULE_ADDED_SUCCESSFULLY));
 	}
 
@@ -123,7 +121,6 @@ public class RuleController {
 		} catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
 		}
-		JELogger.info(getClass(), JEMessages.RULE_ADDED_SUCCESSFULLY);
 		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.RULE_DELETED));
 	}
 
@@ -263,7 +260,6 @@ public class RuleController {
 			projectService.getProject(projectId);
 
 			ruleService.saveRuleFrontConfig(projectId, ruleId, config);
-			JELogger.info(getClass(), JEMessages.RULE_ADDED_SUCCESSFULLY);
 
 		} catch (Exception e) {
 			return JEExceptionHandler.handleException(e);

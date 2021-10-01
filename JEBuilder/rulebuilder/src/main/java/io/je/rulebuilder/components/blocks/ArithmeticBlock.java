@@ -6,7 +6,7 @@ public abstract class ArithmeticBlock extends ConditionBlock {
 
 	public ArithmeticBlock(BlockModel blockModel) {
 		super(blockModel.getBlockId(), blockModel.getProjectId(), blockModel.getRuleId(), blockModel.getBlockName(),
-				blockModel.getDescription());
+				blockModel.getDescription(),blockModel.getInputBlocksIds(),blockModel.getOutputBlocksIds());
 
 	}
 

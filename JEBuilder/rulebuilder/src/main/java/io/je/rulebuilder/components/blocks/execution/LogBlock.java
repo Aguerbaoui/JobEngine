@@ -2,6 +2,7 @@ package io.je.rulebuilder.components.blocks.execution;
 
 
 import io.je.rulebuilder.components.blocks.ExecutionBlock;
+import io.je.rulebuilder.config.AttributesMapping;
 import io.je.rulebuilder.models.BlockModel;
 
 public class LogBlock extends ExecutionBlock {
@@ -10,9 +11,9 @@ public class LogBlock extends ExecutionBlock {
 
 	public LogBlock(BlockModel blockModel) {
 		super(blockModel);
-		if(blockModel.getBlockConfiguration()!=null && blockModel.getBlockConfiguration().getValue()!=null)
+		if(blockModel.getBlockConfiguration()!=null && blockModel.getBlockConfiguration().get(AttributesMapping.VALUE)!=null)
 		{
-			this.logMessage = blockModel.getBlockConfiguration().getValue();
+			this.logMessage = (String) blockModel.getBlockConfiguration().get(AttributesMapping.VALUE);
 		}
 		
 		this.isProperlyConfigured = this.logMessage!=null && !this.logMessage.isEmpty();

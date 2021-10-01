@@ -42,7 +42,6 @@ public class RuleController {
         try {
             runtimeDispatcher.addRule(ruleModel);
             runtimeDispatcher.addTopics(ruleModel.getProjectId(), ruleModel.getTopics());
-        	JELogger.trace(RULE_ADDED_SUCCESSFULLY);
 
         } catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
@@ -59,10 +58,7 @@ public class RuleController {
     public ResponseEntity<?> updateRule(@RequestBody RuleModel ruleModel) {
 
         try {
-            JELogger.debug(getClass(),UPDATING_RULE + " " + ruleModel.getRuleName());
             runtimeDispatcher.updateRule(ruleModel);
-            JELogger.debug(getClass(), ADDING_TOPICS +  ruleModel.getTopics());
-
             runtimeDispatcher.addTopics(ruleModel.getProjectId(), ruleModel.getTopics());
 
         } catch (Exception e) {

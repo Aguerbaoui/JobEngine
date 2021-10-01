@@ -6,6 +6,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.je.utilities.logger.LogCategory;
+import io.je.utilities.logger.LogSubModule;
 import org.burningwave.core.classes.AnnotationSourceGenerator;
 import org.burningwave.core.classes.ClassSourceGenerator;
 import org.burningwave.core.classes.FunctionSourceGenerator;
@@ -43,7 +45,8 @@ public class ClassBuilder {
 		//check if class format is valid
 		if(classDefinition.getName()==null)
 		{
-			JELogger.error(ClassBuilder.class, JEMessages.CLASS_NAME_NULL);
+			JELogger.error(JEMessages.CLASS_NAME_NULL, LogCategory.DESIGN_MODE, null, LogSubModule.CLASS, classDefinition.getIdClass());
+
 			throw new AddClassException(JEMessages.CLASS_NAME_NULL);
 		}
 		
@@ -86,7 +89,10 @@ public class ClassBuilder {
 		if (imports != null && !imports.isEmpty()) {
 			
 				for (String import_ : imports) {
-					//unitSG.addImport(import_);
+					if(!import_.isEmpty())
+					{
+						unitSG.addImport(import_);
+					}
 				}
 			}
 			
@@ -128,7 +134,7 @@ public class ClassBuilder {
 			// extend class
 			if(inheritedClass != null)
 			{
-				JELogger.error(ClassBuilder.class, JEMessages.INVALID_CLASS_FORMAT );
+				JELogger.error(JEMessages.INVALID_CLASS_FORMAT, LogCategory.DESIGN_MODE, null, LogSubModule.CLASS, classDefinition.getIdClass());
 				throw new ClassLoadException(JEMessages.INVALID_CLASS_FORMAT );
 				
 			}
@@ -258,8 +264,9 @@ public class ClassBuilder {
 				}	//count number of inherited class
 				
 			    if(ClassManager.getClassType(classId) == ClassType.ENUM) {
-					JELogger.error(ClassBuilder.class, JEMessages.INVALID_CLASS_FORMAT + " : " + JEMessages.INHERITED_CLASS_ENUM);
-			    	throw new ClassLoadException(JEMessages.INVALID_CLASS_FORMAT + " : " + JEMessages.INHERITED_CLASS_ENUM); }
+					JELogger.error(JEMessages.INVALID_CLASS_FORMAT + " : " + JEMessages.INHERITED_CLASS_ENUM, LogCategory.DESIGN_MODE, null, LogSubModule.CLASS, classDefinition.getIdClass());
+
+					throw new ClassLoadException(JEMessages.INVALID_CLASS_FORMAT + " : " + JEMessages.INHERITED_CLASS_ENUM); }
 				
 				
 			}
@@ -271,8 +278,9 @@ public class ClassBuilder {
 			}
 			//multiple inheritance not supported
 			else if (inheritedClass.size()>1)
-			{	
-				JELogger.error(ClassBuilder.class, JEMessages.INVALID_CLASS_FORMAT + " : " + JEMessages.MULTIPLE_INHERITANCE);
+			{
+				JELogger.error(JEMessages.INVALID_CLASS_FORMAT + " : " + JEMessages.INHERITED_CLASS_ENUM, LogCategory.DESIGN_MODE, null,
+						LogSubModule.CLASS, classDefinition.getIdClass());
 				throw new ClassLoadException(JEMessages.INVALID_CLASS_FORMAT + " : " + JEMessages.MULTIPLE_INHERITANCE);
 			}
 			//if base types contains class 
@@ -356,7 +364,8 @@ public class ClassBuilder {
 			else
 			{
 				// TODO: throw exception : type not found
-				JELogger.error(ClassBuilder.class, JEMessages.TYPE_UNKNOWN);
+				JELogger.error(JEMessages.TYPE_UNKNOWN , LogCategory.DESIGN_MODE, null,
+						LogSubModule.CLASS, null);
 				throw new ClassLoadException(JEMessages.CLASS_BUILD_FAILED + ":" + JEMessages.UNKNOW_CLASS_TYPE  + type);
 			}
 		}

@@ -40,10 +40,10 @@ public class VariableController {
 			projectService.getProject(projectId);
 
 			variables = variableService.getAllVariables(projectId);
-			if (variables.isEmpty()) {
+			/*if (variables.isEmpty()) {
 				return ResponseEntity.noContent().build();
 
-			}
+			}*/
 		} catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
 

@@ -47,10 +47,12 @@ public class JEMessages {
     public static final String CLASS_NAME_NULL = "Class name cannot be empty";
 
     public static final String CLASS_UNKNOWN = "Class unknown";
+    
+    public static final String CLASS_NOT_LOADED ="Loaded classes list does not recognize this Id :";
 
     public static final String TYPE_UNKNOWN = "Type unknown";
 
-    public static final String BUILDING_CLASS = "Building class�";
+    public static final String BUILDING_CLASS = "Building class ";
 
     public static final String CLASS_BUILD_FAILED = "Failed to build class ";
 
@@ -64,7 +66,7 @@ public class JEMessages {
 
     public static final String MULTIPLE_INHERITANCE = "Multiple inheritance is not supported";
 
-    public static final String CLASS_NOT_FOUND = "No class matching this id was found in DataModelRestApi";
+    public static final String CLASS_NOT_FOUND = "No class matching this Id was found in DataModelRestApi";
 
     public static final String GETTING_CLASS_DEFINITION = "Loading class definition";
 
@@ -74,12 +76,14 @@ public class JEMessages {
 
     public static final String UPDATING_CLASS = "Updating class ";
 
-    public static final String ADDING_CLASS_TO_RUNNER_FROM_BUILDER_WITH_ID = "Adding class to JERunner from JEBuilder with id";
+    public static final String ADDING_CLASS_TO_RUNNER_FROM_BUILDER_WITH_ID = "Adding class to JERunner from JEBuilder with Id";
 
     public static final String ADDING_CLASSES_TO_RUNNER_FROM_BUILDER = "Adding class to JERunner from JEBuilder";
 
 
     public static final String FAILED_TO_LOAD_CLASS = "Failed to load class";
+    
+    public static final String CLASS_ALREADY_EXISTS = "This class has already been added.";
 
     // ****************************************Data Listener**************************************************
 
@@ -165,26 +169,27 @@ public class JEMessages {
 
     public static final String SAVING_BPMN_FILE_TO_PATH = "Saving BPMP file to path";
 
-    public static final String DEPLOYING_IN_RUNNER_WORKFLOW_WITH_ID = "Deploying in JERunner workflow with" +
-            "h id ";
-    public static final String FAILED_TO_DEPLOY_IN_RUNNER_WORKFLOW_WITH_ID = "Failed to deploy in JERunner workflow with id";
+    public static final String DEPLOYING_IN_RUNNER_WORKFLOW_WITH_ID = " Deploying in JERunner workflow with Id ";
+    public static final String FAILED_TO_DEPLOY_IN_RUNNER_WORKFLOW_WITH_ID = " Failed to deploy in JERunner workflow with Id";
 
     public static final String TRANSITIONING_FROM = "Transitioning from";
 
-    public static final String GATEWAY_ID = "Gateway id";
+    public static final String GATEWAY_ID = "Gateway Id";
 
     public static final String JUST_EXECUTED = "just executed";
-    public static final String TASK_ID = "Task id";
+    public static final String TASK_ID = "Task Id";
 
-    public static final String PROCESS_HAS_TO_BE_TRIGGERED_BY_EVENT = "Process has to be triggered by event";
+    public static final String PROCESS_HAS_TO_BE_TRIGGERED_BY_EVENT = " Process has to be triggered by event or following a specific schedule";
 
-    public static final String RUNNING_ALL_WORKFLOWS_IN_PROJECT_ID = "Running all workflows in project id";
+    public static final String PROCESS_EXITED = " Process has ended execution";
+
+    public static final String RUNNING_ALL_WORKFLOWS_IN_PROJECT_ID = "Running all workflows in project Id";
 
     public static final String BUILDING_WORKFLOWS_IN_PROJECT = "Building workflows in project";
 
-    public static final String ERROR_DELETING_A_NON_EXISTING_PROCESS = "Error deleting a non-existing process";
+    public static final String ERROR_DELETING_A_NON_EXISTING_PROCESS = " Error deleting a non-existing process";
 
-    public static final String EXECUTING_WEB_API_TASK = "Executing web api task";
+    public static final String EXECUTING_WEB_API_TASK = " Executing web api task";
 
     public static final String NETWORK_CALL_RESPONSE_IN_WEB_SERVICE_TASK = "Network call response in web service task";
 
@@ -196,7 +201,9 @@ public class JEMessages {
 
     public static final String DB_SERVICE_TASK_RESPONSE = " Database service task response";
 
-    public static final String UPDATING_A_WORKFLOW_BLOCK_WITH_ID = "Updating a workflow block with id ";
+    public static final String DB_API_RESPONSE = " Database Api response";
+
+    public static final String UPDATING_A_WORKFLOW_BLOCK_WITH_ID = " Updating a workflow block with Id ";
 
     public static final String INFORM_FROM_USER = "Inform from user";
 
@@ -239,12 +246,11 @@ public class JEMessages {
 
     public static final String VALIDATING_RULE = "Checking rule validity";
 
-    public static final String ADD_INSTANCE_FAILED = "failed to create instance";
     //events
 
-    public static final String FOUND_EVENT = "Found event with id = ";
+    public static final String FOUND_EVENT = "Found event with Id = ";
 
-    public static final String UPDATING_EVENT = "Found event with id = ";
+    public static final String UPDATING_EVENT = "Found event with Id = ";
 
     public static final String REMOVING_EVENTS = "Updating fact";
 
@@ -286,7 +292,7 @@ public class JEMessages {
 
     public static final String JERUNNER_ERROR = "JERunner error";
 
-    public static final String DATA_DEFINITION_CLASS_NOT_FOUND = "No class with this id was found";
+    public static final String DATA_DEFINITION_CLASS_NOT_FOUND = "No class with this Id was found";
 
     public static final String PROJECT_RUNNING = "Project already running";
 
@@ -300,7 +306,7 @@ public class JEMessages {
 
     public static final String WORKFLOW_NEEDS_BUILD = "Workflow needs build";
 
-    public static final String EVENT_NOT_FOUND = " No event with this id was found ";
+    public static final String EVENT_NOT_FOUND = " No event with this Id was found ";
 
     public static final String ERROR_SETTING_EVENT = " Error while setting event in Runner ";
 
@@ -308,7 +314,7 @@ public class JEMessages {
 
     public static final String WORKFLOW_TRIGGERED_BY_EVENT = " Workflow cannot start manually";
 
-    public static final String EVENT_ALREADY_EXISTS = "An event with this id already exists";
+    public static final String EVENT_ALREADY_EXISTS = "An event with this Id already exists";
 
     public static final String MISSING_CONFIG = "Application configuration is missing. Make sure to properly configure the application before proceeding.";
 
@@ -356,9 +362,11 @@ public class JEMessages {
 
     public static final String DELETING_EVENT = " deleting event";
 
+    public static final String DELETING_EVENTS = " deleting events";
+
     public static final String DELETING_EVENT_FROM_RUNNER = " deleting event from JERunner";
 
-    public static final String UPDATING_EVENT_TYPE_IN_RUNNER = "Updating event type in JERunner";
+    public static final String UPDATING_EVENT_TYPE_IN_RUNNER = " Updating event type in JERunner";
 
 
     // ****************************************rules**************************************************
@@ -397,7 +405,7 @@ public class JEMessages {
 
     public static final String BUILT_EVERYTHING_SUCCESSFULLY = " Built everything successfully";
 
-    public static final String BUILDING_BPMN_FROM_JEWORKFLOW = "Building bpmn from jeworkflow id =";
+    public static final String BUILDING_BPMN_FROM_JEWORKFLOW = "Building bpmn from jeworkflow Id =";
 
 
     public static final String ADDED_WORKFLOW_SUCCESSFULLY = "Added workflow successfully";
@@ -422,30 +430,42 @@ public class JEMessages {
 
     public static final String VAR_DELETED = "Variable was sucessfully deleted ";
 
+    public static final String ADDING_VARIABLE = "Adding variable ";
+
+    public static final String REMOVING_VARIABLE = "Removing variable ";
+
+    public static final String UPDATING_VARIABLE = "Updating variable ";
+
+    public static final String UPDATING_VARIABLE_FAILED = "Failed to update variable. ";
+
+
+
     // ****************************************RuleBuilder**************************************************
 
     // rules
 
-    public static final String RULE_ID_NULL = "Rule identifier can't be empty";
+    public static final String RULE_ID_NULL = "Rule Identifier can't be empty";
 
     public static final String RULE_NAME_NULL = "Rule name can't be empty";
 
-    public static final String PROJECT_ID_NULL = "Project identifier can't be empty";
+    public static final String PROJECT_ID_NULL = "Project Identifier can't be empty";
 
-    public static final String RULE_PROJECT_ID_NULL = "Rule's project id was not found";
+    public static final String RULE_PROJECT_ID_NULL = "Rule's project Id was not found";
 
     public static final String NO_EXECUTION_BLOCK = "Rule must have at least one execution block";
 
-    public static final String RULE_NOT_FOUND = "No rule with this ID was found";
+    public static final String RULE_NOT_FOUND = "No rule with this Id was found";
 
-    public static final String RULE_EXISTS = "a rule with this Id already exists. ";
+    public static final String RULE_EXISTS = "A rule with this Id already exists. ";
 
     // rule blocks
     public static final String ADD_BLOCK_FAIL = "Failed to Add Block";
+    
+    public static final String BLOCK_NAME_EXISTS = "A block with this name already exists.";
 
-    public static final String BLOCK_EXISTS = "A block with this id already exists.";
+    public static final String BLOCK_EXISTS = "A block with this Id already exists.";
 
-    public static final String BLOCK_NOT_FOUND = "No Block with this id was found";
+    public static final String BLOCK_NOT_FOUND = "No Block with this Id was found";
 
     public static final String BLOCK_ID_NULL = "A block must have an Id";
 
@@ -453,9 +473,9 @@ public class JEMessages {
 
     public static final String BLOCK_PROJECT_ID_NULL = "A block must have a project Id";
 
-    public static final String BLOCK_OPERATION_ID_NULL = "A block operation id cannot be empty";
+    public static final String BLOCK_OPERATION_ID_NULL = "A block operation Id cannot be empty";
 
-    public static final String BLOCK_OPERATION_ID_UNKNOWN = "Block operation id is unknown.";
+    public static final String BLOCK_OPERATION_ID_UNKNOWN = "Block operation Id is unknown.";
 
     public static final String BLOCK_NAME_EMPTY = "Block name can't be empty";
 
@@ -463,7 +483,7 @@ public class JEMessages {
 
     public static final String UPDATE_BLOCK_FAILED = "Failed to update block";
 
-    public static final String ID_NOT_FOUND = "Failed to read rule id";
+    public static final String ID_NOT_FOUND = "Failed to read rule Id";
 
     public static final String RULE_CONTAINS_ERRORS = "Rule contains errors";
 
@@ -495,7 +515,7 @@ public class JEMessages {
 
     public static final String STOPPING_PROJECT_CONTAINER_FAILED = "Failed to stop project container";
 
-    public static final String UNEXPECTED_ERROR = "An unexpected error occurred";
+    public static final String UNEXPECTED_ERROR = "An unexpected error occurred\n";
 
     public static final String RULE_ADDED = "Rule added successfully ";
 
@@ -521,7 +541,7 @@ public class JEMessages {
 
     public static final String KIE_INIT = "Initialising knowledge base.";
 
-    public static final String KIE_INIT_FAILED = "failed to initialise knowledge base";
+    public static final String KIE_INIT_FAILED = "Failed to initialise knowledge base";
 
     public static final String FAILED_TO_UPDATE_FACT = "Failed to update fact";
 
@@ -568,7 +588,7 @@ public class JEMessages {
 //******************************************************* updates ****************************************
     
     public static final String ADDING_JAR_TO_PROJECT = "Adding jar to project";
-    public static final String ADDING_JAR_FILE_TO_RUNNER = "Adding jar file to JERunner";
+    public static final String ADDING_JAR_FILE_TO_RUNNER = "Adding jar file to JERunner\n";
     public static final String CLASS_COMPILATION_FAILED = "Class compilation failed ";
     public static final String DATA_MODEL_DATE_FORMAT_MISSING = "DataModel date format is not specified";
     public static final String VARIABLE_NOT_FOUND = "Variable cannot be found";
@@ -577,14 +597,45 @@ public class JEMessages {
 	public static final String LOGGING_SYSTEM_URL_MISSING = "Logging System URL is not configured";
 	public static final String LOGGING_SYSTEM_PORT_MISSING = "Logging System port is not configured";
 	public static final String EMAIL_API_URL_MISSING = "Email API URL is not configured";
-	public static final String LOADING_VARIABLES = "loading variables..";
-    public static final String PROJECT_AUTO_RELOAD = "setting project auto reload to";
+	public static final String LOADING_VARIABLES = "Loading variables..";
+    public static final String PROJECT_AUTO_RELOAD = "Setting project auto reload to";
     public static final String PROJECT_UPDATED = "Project updated successfully";
     public static final String RULE_EXECUTION_ERROR = "RULE EXECUTION ERROR : ";
     public static final String ERROR_DELETING_A_PROCESS = "Error deleting a process";
-
+    public static final String INFORM_BLOCK_ERROR = "Failed to execute Inform Block";
 
     public static final String BLOCK_NAME_CAN_T_BE_UPDATED_BECAUSE_IT_ALREADY_EXISTS = "Block name can't be updated because it already exists";
     public static final String WORKFLOW_BUILD_ERROR = "Error while building the workflow ";
     public static final String WORKFLOW_RUN_ERROR = " Error while running the workflow ";
+    public static final String UPLOADED_JAR_TO_PATH = "Uploaded jar to path ";
+    public static final String SENDING_VARIABLE_TO_RUNNER = "Sending variable to runner";
+    public static final String DELETING_VARIABLE = "Deleting variable ";
+    public static final String ERROR_ADDING_VARIABLE_TO_PROJECT = "Error adding variable to project";
+    public static final String ERROR_DELETING_VARIABLE_TO_PROJECT = "Error deleting variable to project";
+    public static final String ERROR_TRIGGERING_EVENT = "Error triggering event";
+    public static final String ERROR_REMOVING_RULE = "Error removing rule";
+    public static final String ERROR_EXECUTING_DB_QUERY = "Error executing the database query";
+    public static final String ERROR_GETTING_CLASS_UPDATES = "Error getting class updates";
+    public static final String FAILED_TO_SEND_LOG_MESSAGE_TO_THE_LOGGING_SYSTEM = "Failed to send log message to the logging system : \n";
+    public static final String CHECK_DM_FOR_DETAILS = "Check Integration Objects' SIOTH Data Model Service's log for more details. ";
+
+//********************************************************* instances ******************************************************
+    public static final String WRITE_INSTANCE_FAILED = "Failed to update instance value. ";
+    
+    public static final String READ_INSTANCE_FAILED = "Failed to read last values for instance : ";
+    
+    public static final String UPDATING_INSTANCE_VALUE = " Updating instance value..";
+    
+    public static final String INSTANCE_UPDATE_SUCCESS ="Instance was updated successfully";
+
+    public static final String ADD_INSTANCE_FAILED = "Failed to create instance : ";
+
+	public static final String FAILED_TO_INJECT_DATA = "Failed to inject data : ";
+
+	public static final String DATA_LISTENTING_STARTED = "Started listening for data.. ";
+
+    
+    
+    
+    
 }

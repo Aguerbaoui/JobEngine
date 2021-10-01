@@ -3,12 +3,16 @@ package models;
 import blocks.WorkflowBlock;
 import blocks.basic.StartBlock;
 import blocks.events.ErrorBoundaryEvent;
+import io.je.utilities.config.Utility;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.InvalidSequenceFlowException;
 import io.je.utilities.exceptions.WorkflowBlockNotFound;
+import io.je.utilities.models.WorkflowModel;
 import io.je.utilities.runtimeobject.JEObject;
+import io.je.utilities.time.JEDate;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.time.format.DateTimeFormatter;
 import java.util.concurrent.ConcurrentHashMap;
 
 /*
@@ -69,9 +73,14 @@ public class JEWorkflow extends JEObject {
      * */
     private boolean triggeredByEvent;
 
+    /*
+    * True if the workflow starts with project boot
+    * */
+    private boolean onProjectBoot = false;
+
     private String description;
 
-    public String getScript() {
+    private String getScript() {
         return script;
     }
 
@@ -116,7 +125,7 @@ public class JEWorkflow extends JEObject {
         return isScript;
     }
 
-    public void setScript(boolean script) {
+    public void setIsScript(boolean script) {
         isScript = script;
     }
 
@@ -177,13 +186,27 @@ public class JEWorkflow extends JEObject {
     }
 
     /*
+    * True if the workflow starts on project boot
+    * */
+    public boolean isOnProjectBoot() {
+        return onProjectBoot;
+    }
+
+    /*
+     * True if the workflow starts on project boot
+     * */
+    public void setOnProjectBoot(boolean onProjectBoot) {
+        this.onProjectBoot = onProjectBoot;
+    }
+
+    /*
      * Add a block to block list
      */
     public void addBlock(WorkflowBlock block) {
         if (block instanceof StartBlock) {
             workflowStartBlock = (StartBlock) block;
             workflowStartBlock.setProcessed(false);
-            if (((StartBlock) block).getEventId() != null) {
+            if (((StartBlock) block).getEventId() != null || ((StartBlock) block).getTimerEvent() != null ) {
                 this.setTriggeredByEvent(true);
             } else this.setTriggeredByEvent(false);
         }
@@ -267,7 +290,25 @@ public class JEWorkflow extends JEObject {
         workflowStartBlock.setProcessed(false);
         status = IDLE;
     }
+    
 
+    public static WorkflowModel mapJEWorkflowToModel(JEWorkflow wf) {
+        WorkflowModel model = new WorkflowModel();
+        model.setName(wf.getWorkflowName());
+        model.setOnProjectBoot(wf.isOnProjectBoot());
+        model.setModifiedBy(wf.getJeObjectModifiedBy());
+        model.setDescription(wf.getDescription());
+        model.setCreatedBy(wf.getJeObjectCreatedBy());
+        model.setId(wf.getJobEngineElementID());
+        model.setPath(wf.getBpmnPath());
+        model.setProjectId(wf.getJobEngineProjectID());
+        model.setTriggeredByEvent(wf.isTriggeredByEvent());
+        model.setStatus(wf.getStatus());
+        model.setCreatedAt(JEDate.formatDateToSIOTHFormat(wf.getJeObjectCreationDate()));
+        model.setModifiedAt(JEDate.formatDateToSIOTHFormat(wf.getJeObjectLastUpdate()));
+        model.setFrontConfig(wf.getFrontConfig());
+        return model;
+    }
     @Override
     public String toString() {
         return "JEWorkflow{" +

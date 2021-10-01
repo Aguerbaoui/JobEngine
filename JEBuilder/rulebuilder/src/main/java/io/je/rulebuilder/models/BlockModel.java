@@ -6,6 +6,7 @@ import io.je.rulebuilder.config.AttributesMapping;
 import io.je.utilities.logger.JELogger;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.springframework.lang.Nullable;
 
@@ -40,8 +41,11 @@ public class BlockModel {
     @JsonProperty(AttributesMapping.OUTPUTBLOCK)
    	ArrayList<String> outputBlocksIds = new ArrayList<>();
     
+   // @JsonProperty(AttributesMapping.BLOCKCONFIG)
+	//BlockConfigurationModel blockConfiguration;
+    
     @JsonProperty(AttributesMapping.BLOCKCONFIG)
-	BlockConfigurationModel blockConfiguration;
+   	HashMap<String,Object> blockConfiguration;
     
     
 
@@ -141,11 +145,11 @@ public class BlockModel {
 		this.inputBlocksIds = inputBlocksIds;
 	}
 
-	public BlockConfigurationModel getBlockConfiguration() {
+	public HashMap<String,Object> getBlockConfiguration() {
 		return blockConfiguration;
 	}
 
-	public void setBlockConfiguration(BlockConfigurationModel blockConfiguration) {
+	public void setBlockConfiguration(HashMap<String,Object> blockConfiguration) {
 		this.blockConfiguration = blockConfiguration;
 	}
 

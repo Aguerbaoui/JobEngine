@@ -25,7 +25,10 @@ public class JEProcess {
 
     private ProcessInstance processInstance;
 
-
+    /*
+     * True if the workflow starts with project boot
+     * */
+    private boolean onProjectBoot = false;
 
     HashMap<String, ActivitiTask> activitiTasks;
 
@@ -118,6 +121,14 @@ public class JEProcess {
 
     public void addActivitiTask(ActivitiTask activitiTask) {
         this.activitiTasks.put(activitiTask.getTaskId(), activitiTask);
+    }
+
+    public boolean isOnProjectBoot() {
+        return onProjectBoot;
+    }
+
+    public void setOnProjectBoot(boolean onProjectBoot) {
+        this.onProjectBoot = onProjectBoot;
     }
 
     public ProcessInstance getProcessInstance() {

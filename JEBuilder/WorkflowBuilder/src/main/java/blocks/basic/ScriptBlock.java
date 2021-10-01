@@ -8,8 +8,18 @@ public class ScriptBlock extends WorkflowBlock {
 
     String script;
 
+    int timeout;
+
     public String getScript() {
         return script;
+    }
+
+    public int getTimeout() {
+        return timeout;
+    }
+
+    public void setTimeout(int timeout) {
+        this.timeout = timeout;
     }
 
     public void setScript(String script) {

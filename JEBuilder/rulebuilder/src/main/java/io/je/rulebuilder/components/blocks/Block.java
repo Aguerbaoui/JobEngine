@@ -7,6 +7,7 @@ import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import io.je.rulebuilder.components.blocks.getter.AttributeGetterBlock;
+import io.je.rulebuilder.components.blocks.getter.VariableGetterBlock;
 import io.je.utilities.exceptions.RuleBuildFailedException;
 import io.je.utilities.runtimeobject.JEObject;
 
@@ -39,7 +40,7 @@ public abstract class Block extends JEObject {
    
    
 	public Block(String jobEngineElementID, String jobEngineProjectID, String ruleId, String blockName,
-		String blockDescription) {
+		String blockDescription,List<String> inputBlockIds, List<String> outputBlocksIds) {
 	super(jobEngineElementID, jobEngineProjectID);
 	this.ruleId = ruleId;
 	this.blockName = blockName;
@@ -49,6 +50,8 @@ public abstract class Block extends JEObject {
 	{
 		isProperlyConfigured=false;
 	}
+	this.inputBlockIds= inputBlockIds;
+	this.outputBlockIds = outputBlocksIds;
 	
 }
 	
@@ -141,6 +144,9 @@ public abstract class Block extends JEObject {
 		if(inputBlocks.get(index) instanceof AttributeGetterBlock)
 		{//get attribute var name
 			var = (( AttributeGetterBlock )inputBlocks.get(index)).getAttributeVariableName();
+		}else if(inputBlocks.get(index) instanceof VariableGetterBlock)
+		{
+			var = (( VariableGetterBlock )inputBlocks.get(index)).getAttributeVariableName();
 		}
 		else 
 		{//get block name as variable

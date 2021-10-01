@@ -12,8 +12,8 @@ public class AttributesMapping {
     public static final String RULEID = "rule_id";
 	public static final String RULENAME = "rule_name";
 	public static final String DESC = "description";
-	public static final String CREATEDAT = "created_at";
-	public static final String LASTUPDATE = "last_update_at";
+	public static final String CREATEDAT = "createdAt";
+	public static final String LASTUPDATE = "lastModifiedAt";
 	public static final String BUILDSTATUS = "isBuilt";
 
 
@@ -41,6 +41,7 @@ public class AttributesMapping {
 	public static final String CLASSID = "idClass";
 	public static final String ATTRIBUTENAME = "attribute_name";
 	public static final String SPECIFICINSTANCES = "specific_instances";
+	public static final String OBJECTID = "objectId";
 	
     //rule attributes 
 	public static final String SCRIPT = "script";
@@ -54,10 +55,15 @@ public class AttributesMapping {
 	public static final String CLASSES = "classes";
 	public static final String FRONTCONFIG = "ruleFrontConfig";
 	public static final String TYPE = "type";
+	public static final String SOURCE_VALUE_TYPE = "sourceValueType";
+
 	public static final String INSTANCEID = "instanceId";
 	public static final String DATEVALUE = "dateValue";
-
+	public static final String NEWVALUE = "newValue";
 	public static final String BOOLEANVALUE = "includeBounds";
+	public static final String DESTINATION_CLASSID = "destinationClassId";
+	public static final String LINKED_GETTER_NAME = "linkedGetterName";
+	public static final String DESTINATION_ATTRIBUTE_NAME = "destinationAttributeName";
 
   
     

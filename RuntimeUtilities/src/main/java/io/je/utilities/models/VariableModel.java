@@ -1,6 +1,11 @@
 package io.je.utilities.models;
 
+import java.time.format.DateTimeFormatter;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.je.utilities.beans.JEVariable;
+import io.je.utilities.config.Utility;
+import io.je.utilities.time.JEDate;
 
 public class VariableModel {
 
@@ -14,8 +19,20 @@ public class VariableModel {
 
     private String value;
     
+    private String description;
+    
     private String initialValue;
 
+    private String createdAt;
+    
+    private String lastModifiedAt;
+    
+    private String createdBy;
+    
+    private String modifiedBy;
+
+
+    
     public String getId() {
         return id;
     }
@@ -59,7 +76,47 @@ public class VariableModel {
     
     
     
-    public String getInitialValue() {
+    public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public String getModifiedBy() {
+		return modifiedBy;
+	}
+
+	public void setModifiedBy(String modifiedBy) {
+		this.modifiedBy = modifiedBy;
+	}
+
+	public String getCreatedAt() {
+		return createdAt;
+	}
+
+	public void setCreatedAt(String createdAt) {
+		this.createdAt = createdAt;
+	}
+
+	public String getLastModifiedAt() {
+		return lastModifiedAt;
+	}
+
+	public void setLastModifiedAt(String lastModifiedAt) {
+		this.lastModifiedAt = lastModifiedAt;
+	}
+
+	public String getInitialValue() {
 		return initialValue;
 	}
 
@@ -67,23 +124,9 @@ public class VariableModel {
 		this.initialValue = initialValue;
 	}
 
-	public VariableModel() {}
-    public VariableModel(String projectId, String id, String name, String type, String value, String initialValue) {
-        this.projectId = projectId;
-        this.id = id;
-        this.name = name;
-        this.type = type;
-        this.value = value;
-        this.initialValue = initialValue;
-    }
+	private VariableModel() {}
 
-    public VariableModel(String projectId,  String name, String type, String value) {
-        this.projectId = projectId;
-        this.id = name;
-        this.name = name;
-        this.type = type;
-        this.value = value;
-    }
+
 
 	public VariableModel(JEVariable variable) {
 		 this.projectId = variable.getJobEngineProjectID();
@@ -91,6 +134,11 @@ public class VariableModel {
 	        this.name = variable.getName();
 	        this.type = variable.getType().toString();
 	        this.initialValue = String.valueOf(variable.getInitialValue());
+			this.createdAt = JEDate.formatDateToSIOTHFormat(variable.getJeObjectCreationDate());
+			this.lastModifiedAt = JEDate.formatDateToSIOTHFormat(variable.getJeObjectLastUpdate());
 	        this.value = null;
+			this.createdBy = variable.getJeObjectCreatedBy();
+			this.modifiedBy = variable.getJeObjectModifiedBy();
+			this.description = variable.getDescription();
 	}
 }

@@ -5,8 +5,11 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import io.je.rulebuilder.components.blocks.Block;
+import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.RuleBuildFailedException;
 import io.je.utilities.logger.JELogger;
+import io.je.utilities.logger.LogCategory;
+import io.je.utilities.logger.LogSubModule;
 
 public class BlockManager {
 
@@ -21,7 +24,9 @@ public class BlockManager {
 	 * add block
 	 */
 	public void addBlock(Block block)  {
-		JELogger.debug(getClass(), block.toString());
+		JELogger.debug(block.toString(),
+				LogCategory.DESIGN_MODE, block.getJobEngineProjectID(),
+				LogSubModule.RULE,block.getJobEngineElementID());
 		blocks.put(block.getJobEngineElementID(), block);
 		
 
@@ -31,7 +36,9 @@ public class BlockManager {
 	 * update block
 	 */
 	public void updateBlock(Block block)  {
-		JELogger.info(getClass(), block.toString());
+		JELogger.debug(block.toString(),
+				LogCategory.DESIGN_MODE, block.getJobEngineProjectID(),
+				LogSubModule.RULE,block.getJobEngineElementID());
 		blocks.put(block.getJobEngineElementID(), block);
 		
 
@@ -55,7 +62,9 @@ public class BlockManager {
 				}
 				else
 				{
-					JELogger.error("errrrrrrrrrrrrrrror");
+					JELogger.error("Error with block configuration",
+							LogCategory.DESIGN_MODE, block.getJobEngineProjectID(),
+							LogSubModule.RULE,block.getJobEngineElementID());
 					throw new RuleBuildFailedException(block.getBlockName() + " is not configured properly" );
 				}
 			}
