@@ -5,10 +5,10 @@ import java.time.LocalDateTime;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.je.utilities.beans.JEEvent;
-import io.je.utilities.logger.LogLevel;
-import io.je.utilities.logger.LogMessage;
-import io.je.utilities.logger.LogSubModule;
-import io.je.utilities.logger.ZMQLogPublisher;
+import io.je.utilities.log.ZMQLogPublisher;
+import utils.log.LogLevel;
+import utils.log.LogMessage;
+import utils.log.LogSubModule;
 
 public class EventTimeoutRunnable implements Runnable {
 	

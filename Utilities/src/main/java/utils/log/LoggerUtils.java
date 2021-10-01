@@ -1,4 +1,4 @@
-package io.je.utilities.logger;
+package utils.log;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
@@ -8,8 +8,7 @@ import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.config.builder.api.*;
 import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
 
-import io.je.utilities.beans.JEData;
-import io.je.utilities.config.Utility;
+
 import utils.date.DateUtils;
 
 import java.time.LocalDateTime;
@@ -22,10 +21,10 @@ import java.util.Queue;
  * A log request of level p in a logger with level q is enabled if p >= q. 
  * It assumes that levels are ordered. For the standard levels, we have   TRACE < DEBUG < INFO < WARN < ERROR
  */
-public class JELogger {
+public class LoggerUtils {
 
 	private static Queue<LogMessage> queue = new LinkedList<>();
-	private static Logger logger = null;
+	protected static Logger logger = null;
 	private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
 	public static final Level CONTROL = Level.forName("CONTROL", 250);
 
@@ -33,6 +32,8 @@ public class JELogger {
 	 * TO BE DELETED
 	 ****************************************************/
 
+	protected LoggerUtils() {}
+	
 	public static Queue<LogMessage> getQueue() {
 		return queue;
 	}
@@ -43,7 +44,7 @@ public class JELogger {
 	 * check if the message's log level is more specific than the logger's level
 	 */
 
-	private static boolean logLevelIsEnabled(Level lvl) {
+	protected static boolean logLevelIsEnabled(Level lvl) {
 		if (lvl == logger.getLevel() || lvl == Level.ALL || lvl.isMoreSpecificThan(logger.getLevel())) {
 			return true;
 		}
@@ -51,150 +52,69 @@ public class JELogger {
 		return false;
 	}
 
-	/*
-	 * Publish log message to SIOTHTracker
-	 */
-	private static void publishLogMessage(LogMessage logMessage) {
-		// Debug > Inform > control > Error
-		Level lvl = getLogLevel(logMessage.logLevel.toString());
-		if (logLevelIsEnabled(lvl)) {
-			ZMQLogPublisher.publish(logMessage);
-		}
-	}
-
+	
 	/*
 	 * Trace log level
 	 */
-	public static void trace(String message, LogCategory category, String projectId, LogSubModule subModule,
-			String objectId) {
-		// Log in file
+	public static void trace(String message) {
 		logger.trace(message);
 
-		// Log in logging service
-		// LogMessage logMessage = getLogMessage(LogLevel.Control, message, category,
-		// projectId, subModule, objectId);
-		// publishLogMessage(logMessage);
+	
 	}
 
 	/*
 	 * Control log level
 	 */
-	public static void control(String message, LogCategory category, String projectId, LogSubModule subModule,
-							 String objectId) {
-		// Log in file
+	public static void control(String message) {
 		logger.log(CONTROL, message);
 
-		// Log in logging service
-		LogMessage logMessage = getLogMessage(LogLevel.Control, message, category, projectId, subModule, objectId);
-		publishLogMessage(logMessage);
+		
 
 	}
 
 	/*
 	 * Debug log level
 	 */
-	public static void debug(String message, LogCategory category, String projectId, LogSubModule subModule,
-			String objectId) {
-		// Log in file
+	public static void debug(String message) {
 		logger.debug(message);
 
-		// Log in logging service
-		LogMessage logMessage = getLogMessage(LogLevel.Debug, message, category, projectId, subModule, objectId);
-		publishLogMessage(logMessage);
+		
 
 	}
 
-	public static void debugWithoutPublish(String message, LogCategory category, String projectId, LogSubModule subModule,
-			String objectId) {
+	public static void debugWithoutPublish(String message) {
 //Log in file
 		logger.debug(message);
 
-//Log in logging service
-		LogMessage logMessage = getLogMessage(LogLevel.Debug, message, category, projectId, subModule, objectId);
-		//publishLogMessage(logMessage);
-
 	}
 
-	/*
-	 * Debug log level
-	 */
-	public static void debug(String message, LogCategory category, String projectId, LogSubModule subModule,
-			String objectId, String blockName) {
-		// Log in file
-		logger.debug(message);
-
-		// Log in logging service
-		LogMessage logMessage = getLogMessage(LogLevel.Debug, message, category, projectId, subModule, objectId,
-				blockName);
-		// publishLogMessage(logMessage);
-
-	}
 
 	/*
 	 * Inform log level
 	 */
-	public static void info(String message, LogCategory category, String projectId, LogSubModule subModule,
-			String objectId) {
+	public static void info(String message) {
 		// Log in file
 		logger.info(message);
 
-		// Log in logging service
-		LogMessage logMessage = getLogMessage(LogLevel.Inform, message, category, projectId, subModule, objectId);
-		publishLogMessage(logMessage);
-	}
-
-	/*
-	 * Block Inform log
-	 */
-	public static void info(String message, LogCategory category, String projectId, LogSubModule subModule,
-			String objectId, String blockName) {
-		// Log in file
-		logger.info(message);
-
-		// Log in logging service
-		LogMessage logMessage = getLogMessage(LogLevel.Inform, message, category, projectId, subModule, objectId,
-				blockName);
-		publishLogMessage(logMessage);
+		
 	}
 
 	/*
 	 * Error log level
 	 */
-	public static void error(String message, LogCategory category, String projectId, LogSubModule subModule,
-			String objectId) {
+	public static void error(String message) {
 		// Log in file
 		logger.error(message);
 
-		// Log in logging service
-		LogMessage logMessage = getLogMessage(LogLevel.Error, message, category, projectId, subModule, objectId);
-		publishLogMessage(logMessage);
-	}
-
-	/*
-	 * Error log level
-	 */
-	public static void error(String message, LogCategory category, String projectId, LogSubModule subModule,
-			String objectId, String blockName) {
-		// Log in file
-		logger.error(message);
-
-		// Log in logging service
-		LogMessage logMessage = getLogMessage(LogLevel.Error, message, category, projectId, subModule, objectId,
-				blockName);
-		publishLogMessage(logMessage);
 	}
 
 	/*
 	 * Warning log level
 	 */
-	public static void warn(String message, LogCategory category, String projectId, LogSubModule subModule,
-			String objectId) {
+	public static void warn(String message) {
 		// Log in file
 		logger.warn(message);
 
-		// Log in logging service
-		LogMessage logMessage = getLogMessage(LogLevel.Warning, message, category, projectId, subModule, objectId);
-		publishLogMessage(logMessage);
 	}
 
 	// get Log message object for the logging service
@@ -224,7 +144,7 @@ public class JELogger {
 	 * objectIds[i] + " ] "; } } msg += extraInfo; return msg; }
 	 */
 	/***************************************************************************************************************/
-	private static Level getLogLevel(String level) {
+	protected static Level getLogLevel(String level) {
 		// ALL < TRACE < DEBUG < INFO < WARN < ERROR < FATAL < OFF
 		Level lvl = Level.DEBUG;
 		switch (level.toUpperCase()) {

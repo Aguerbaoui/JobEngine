@@ -21,9 +21,7 @@ import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.Timers;
 import io.je.utilities.constants.WorkflowConstants;
 import io.je.utilities.exceptions.*;
-import io.je.utilities.logger.JELogger;
-import io.je.utilities.logger.LogCategory;
-import io.je.utilities.logger.LogSubModule;
+import io.je.utilities.log.JELogger;
 import io.je.utilities.models.EventType;
 import io.je.utilities.models.WorkflowBlockModel;
 import io.je.utilities.models.WorkflowModel;
@@ -31,6 +29,9 @@ import models.JEWorkflow;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+
+import utils.log.LogCategory;
+import utils.log.LogSubModule;
 import utils.string.StringUtilities;
 
 import java.io.IOException;

@@ -1,4 +1,4 @@
-package io.je.project.siothconfig;
+package io.siothconfig;
 
 public class Cred {
 

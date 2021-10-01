@@ -1,22 +1,20 @@
-package io.je.utilities.config;
+package io.siothconfig;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
-import org.json.JSONObject;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.je.project.siothconfig.SIOTHConfig;
 import utils.date.DateUtils;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-public class Utility {
+public class SIOTHConfigUtility {
 
 	private static SIOTHConfig siothConfig;
 
-	private Utility() {
+	private SIOTHConfigUtility() {
 		
 	}
 
@@ -37,7 +35,7 @@ public class Utility {
 	}
 
 	private static String loadSIOTHConfig() {
-		String configPath = ConfigurationConstants.SIOTH_JSON_CONFIG;
+		String configPath = SIOTHConfigurationConstants.SIOTH_JSON_CONFIG;
 		try {
 			String file = configPath;
 			String json = new String(Files.readAllBytes(Paths.get(file)));
@@ -57,7 +55,7 @@ public class Utility {
 	}
 
 	public static void setSiothConfig(SIOTHConfig siothConfig) {
-		Utility.siothConfig = siothConfig;
+		SIOTHConfigUtility.siothConfig = siothConfig;
 	}
 
 	

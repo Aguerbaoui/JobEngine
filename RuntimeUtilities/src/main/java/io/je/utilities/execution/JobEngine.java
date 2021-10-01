@@ -5,13 +5,16 @@ import io.je.utilities.apis.JEBuilderApiHandler;
 import io.je.utilities.apis.JERunnerAPIHandler;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.ResponseCodes;
-import io.je.utilities.logger.*;
+import io.je.utilities.log.JELogger;
 import io.je.utilities.models.VariableModel;
 import io.je.utilities.beans.JEResponse;
+import utils.log.LogCategory;
+import utils.log.LogSubModule;
 import utils.string.StringUtilities;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 public class JobEngine {
 
@@ -138,7 +141,7 @@ public class JobEngine {
     }
 
     //Get variable body from parameters
-    public static HashMap<String, Object> getVariableBody(String varId, String varProjectId, String varName, Object varValue, String type) {
+    public static Map<String, Object> getVariableBody(String varId, String varProjectId, String varName, Object varValue, String type) {
         HashMap<String, Object> body = new HashMap<>();
         body.put("id", varId);
         body.put("projectId", varProjectId);

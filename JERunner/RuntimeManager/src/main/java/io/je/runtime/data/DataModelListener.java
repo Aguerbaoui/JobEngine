@@ -2,13 +2,13 @@ package io.je.runtime.data;
 
 import io.je.runtime.services.RuntimeDispatcher;
 import io.je.utilities.beans.JEData;
-import io.je.utilities.config.Utility;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.InstanceCreationFailed;
 import io.je.utilities.instances.DataModelRequester;
-import io.je.utilities.logger.JELogger;
-import io.je.utilities.logger.LogCategory;
-import io.je.utilities.logger.LogSubModule;
+import io.je.utilities.log.JELogger;
+import io.siothconfig.SIOTHConfigUtility;
+import utils.log.LogCategory;
+import utils.log.LogSubModule;
 
 import java.util.HashMap;
 import java.util.List;
@@ -36,7 +36,7 @@ public class DataModelListener {
 
     private static void createNewZmqAgent(String topic) {
         if(!agents.containsKey(topic)) {
-            ZMQAgent agent = new ZMQAgent("tcp://"+Utility.getSiothConfig().getMachineCredentials().getIpAddress(), Utility.getSiothConfig().getDataModelPORTS().getDmService_PubAddress(), topic);
+            ZMQAgent agent = new ZMQAgent("tcp://"+SIOTHConfigUtility.getSiothConfig().getMachineCredentials().getIpAddress(), SIOTHConfigUtility.getSiothConfig().getDataModelPORTS().getDmService_PubAddress(), topic);
             agents.put(topic, agent);
         }
         else {

@@ -6,13 +6,14 @@ import java.util.concurrent.CompletionException;
 import java.util.concurrent.ExecutionException;
 
 import io.je.utilities.constants.JEMessages;
-import io.je.utilities.logger.LogCategory;
-import io.je.utilities.logger.LogSubModule;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.exceptions.JEException;
-import io.je.utilities.logger.JELogger;
+import io.je.utilities.log.JELogger;
+import utils.log.LogCategory;
+import utils.log.LogSubModule;
 import io.je.utilities.beans.JEResponse;
 
 public class JEExceptionHandler {

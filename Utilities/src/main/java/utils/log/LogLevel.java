@@ -1,4 +1,4 @@
-package io.je.utilities.logger;
+package utils.log;
 
 
 public enum LogLevel

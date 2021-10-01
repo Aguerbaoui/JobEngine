@@ -13,9 +13,6 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 
-import io.je.utilities.logger.JELogger;
-import io.je.utilities.logger.LogCategory;
-import io.je.utilities.logger.LogSubModule;
 import io.je.utilities.models.EventType;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,8 +29,11 @@ import io.je.utilities.exceptions.EventException;
 import io.je.utilities.exceptions.JERunnerErrorException;
 import io.je.utilities.exceptions.LicenseNotActiveException;
 import io.je.utilities.exceptions.ProjectNotFoundException;
+import io.je.utilities.log.JELogger;
 import io.je.utilities.mapping.EventModelMapping;
 import io.je.utilities.models.EventModel;
+import utils.log.LogCategory;
+import utils.log.LogSubModule;
 import utils.string.StringUtilities;
 
 @Service

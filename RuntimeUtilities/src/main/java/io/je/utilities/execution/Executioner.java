@@ -8,10 +8,10 @@ import io.je.utilities.constants.ClassBuilderConfig;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.JavaCodeInjectionError;
 import io.je.utilities.instances.InstanceManager;
-import io.je.utilities.logger.JELogger;
-import io.je.utilities.logger.LogCategory;
-import io.je.utilities.logger.LogSubModule;
+import io.je.utilities.log.JELogger;
 import io.je.utilities.runtimeobject.JEObject;
+import utils.log.LogCategory;
+import utils.log.LogSubModule;
 
 import java.lang.reflect.Method;
 import java.util.concurrent.*;

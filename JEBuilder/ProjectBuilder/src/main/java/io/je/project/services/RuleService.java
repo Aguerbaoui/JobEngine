@@ -14,14 +14,14 @@ import io.je.rulebuilder.models.ScriptRuleModel;
 import io.je.utilities.apis.JERunnerAPIHandler;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.*;
-import io.je.utilities.logger.JELogger;
-import io.je.utilities.logger.LogCategory;
-import io.je.utilities.logger.LogSubModule;
+import io.je.utilities.log.JELogger;
 import io.je.utilities.ruleutils.RuleIdManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import utils.files.FileUtilities;
+import utils.log.LogCategory;
+import utils.log.LogSubModule;
 
 import java.io.IOException;
 import java.time.LocalDateTime;

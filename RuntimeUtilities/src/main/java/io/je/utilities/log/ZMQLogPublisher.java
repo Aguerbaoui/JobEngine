@@ -1,9 +1,9 @@
-package io.je.utilities.logger;
+package io.je.utilities.log;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.je.utilities.config.Utility;
-import io.je.utilities.constants.JEMessages;
+import io.siothconfig.SIOTHConfigUtility;
+import utils.log.*;
 import utils.zmq.ZMQPublisher;
 
 import java.util.Arrays;
@@ -13,7 +13,7 @@ public class ZMQLogPublisher {
 	//TODO: read from config instead of hardcoded msg
 	
 	
-	static ZMQPublisher publisher = new ZMQPublisher("tcp://"+Utility.getSiothConfig().getMachineCredentials().getIpAddress() , Utility.getSiothConfig().getPorts().getTrackerPort());
+	static ZMQPublisher publisher = new ZMQPublisher("tcp://"+SIOTHConfigUtility.getSiothConfig().getMachineCredentials().getIpAddress() , SIOTHConfigUtility.getSiothConfig().getPorts().getTrackerPort());
 	static ObjectMapper objectMapper = new ObjectMapper();
 
 	public static void publish(LogMessage msg) {
@@ -24,7 +24,7 @@ public class ZMQLogPublisher {
 
 		} catch (Exception e) {
 			// TODO : replace with custom exception
-			JELogger.error(JEMessages.FAILED_TO_SEND_LOG_MESSAGE_TO_THE_LOGGING_SYSTEM + Arrays.toString(e.getStackTrace()),
+			JELogger.error("Failed to publish log message. " + Arrays.toString(e.getStackTrace()),
 					LogCategory.RUNTIME, null,
 					LogSubModule.JERUNNER, null);
 		}

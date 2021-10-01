@@ -3,12 +3,13 @@ package models;
 import blocks.WorkflowBlock;
 import blocks.basic.StartBlock;
 import blocks.events.ErrorBoundaryEvent;
-import io.je.utilities.config.Utility;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.InvalidSequenceFlowException;
 import io.je.utilities.exceptions.WorkflowBlockNotFound;
 import io.je.utilities.models.WorkflowModel;
 import io.je.utilities.runtimeobject.JEObject;
+import io.siothconfig.SIOTHConfigUtility;
+
 import org.springframework.data.mongodb.core.mapping.Document;
 import utils.date.DateUtils;
 

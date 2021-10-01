@@ -3,9 +3,10 @@ package io.je.serviceTasks;
 import io.je.utilities.apis.DatabaseApiHandler;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.ResponseCodes;
-import io.je.utilities.logger.JELogger;
-import io.je.utilities.logger.LogCategory;
-import io.je.utilities.logger.LogSubModule;
+import io.je.utilities.log.JELogger;
+import utils.log.LogCategory;
+import utils.log.LogSubModule;
+
 import org.activiti.engine.delegate.BpmnError;
 import org.activiti.engine.delegate.DelegateExecution;
 

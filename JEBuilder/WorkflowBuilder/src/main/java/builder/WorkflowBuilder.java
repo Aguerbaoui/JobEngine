@@ -7,12 +7,12 @@ import io.je.utilities.config.ConfigurationConstants;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.WorkflowConstants;
 import io.je.utilities.exceptions.JERunnerErrorException;
-import io.je.utilities.logger.JELogger;
-import io.je.utilities.logger.LogCategory;
-import io.je.utilities.logger.LogSubModule;
+import io.je.utilities.log.JELogger;
 import io.je.utilities.models.TaskModel;
 import io.je.utilities.models.WorkflowModel;
 import models.JEWorkflow;
+import utils.log.LogCategory;
+import utils.log.LogSubModule;
 
 import java.io.IOException;
 import java.util.ArrayList;

@@ -9,9 +9,8 @@ import io.je.utilities.exceptions.WorkflowAlreadyRunningException;
 import io.je.utilities.exceptions.WorkflowBuildException;
 import io.je.utilities.exceptions.WorkflowNotFoundException;
 import io.je.utilities.exceptions.WorkflwTriggeredByEventException;
-import io.je.utilities.logger.JELogger;
-import io.je.utilities.logger.LogCategory;
-import io.je.utilities.logger.LogSubModule;
+import io.je.utilities.log.JELogger;
+
 import org.activiti.engine.*;
 import org.activiti.engine.delegate.BpmnError;
 import org.activiti.engine.repository.DeploymentBuilder;
@@ -19,6 +18,8 @@ import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import utils.files.FileUtilities;
+import utils.log.LogCategory;
+import utils.log.LogSubModule;
 
 import java.util.*;
 

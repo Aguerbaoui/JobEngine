@@ -6,10 +6,10 @@ import io.je.utilities.beans.JEEvent;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.EventException;
 import io.je.utilities.exceptions.ProjectNotFoundException;
-import io.je.utilities.logger.JELogger;
-import io.je.utilities.logger.LogCategory;
-import io.je.utilities.logger.LogSubModule;
+import io.je.utilities.log.JELogger;
 import io.je.utilities.models.EventType;
+import utils.log.LogCategory;
+import utils.log.LogSubModule;
 
 import java.util.HashMap;
 

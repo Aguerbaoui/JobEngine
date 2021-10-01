@@ -6,8 +6,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.je.utilities.logger.LogCategory;
-import io.je.utilities.logger.LogSubModule;
 import org.burningwave.core.classes.AnnotationSourceGenerator;
 import org.burningwave.core.classes.ClassSourceGenerator;
 import org.burningwave.core.classes.FunctionSourceGenerator;
@@ -20,13 +18,15 @@ import io.je.classbuilder.entity.ClassType;
 import io.je.classbuilder.models.ClassDefinition;
 import io.je.classbuilder.models.FieldModel;
 import io.je.classbuilder.models.MethodModel;
-import io.je.utilities.config.Utility;
 import io.je.utilities.constants.ClassBuilderConfig;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.AddClassException;
 import io.je.utilities.exceptions.ClassLoadException;
-import io.je.utilities.logger.JELogger;
+import io.je.utilities.log.JELogger;
 import io.je.utilities.runtimeobject.JEObject;
+import io.siothconfig.SIOTHConfigUtility;
+import utils.log.LogCategory;
+import utils.log.LogSubModule;
 import utils.string.StringUtilities;
 
 /*
@@ -195,7 +195,7 @@ public class ClassBuilder {
 				{					 
 					newField.addAnnotation(new AnnotationSourceGenerator("JsonDeserialize(using = LocalDateTimeDeserializer.class)"));
 					newField.addAnnotation(new AnnotationSourceGenerator("JsonSerialize(using = LocalDateTimeSerializer.class)"));
-					newField.addAnnotation(new AnnotationSourceGenerator("JsonFormat (shape = JsonFormat.Shape.STRING, pattern = \""+Utility.getSiothConfig().getDateFormat()+"\")"));					
+					newField.addAnnotation(new AnnotationSourceGenerator("JsonFormat (shape = JsonFormat.Shape.STRING, pattern = \""+SIOTHConfigUtility.getSiothConfig().getDateFormat()+"\")"));					
 				}
 				newClass.addField(newField);
 				String attributeName = field.getName();

@@ -44,32 +44,11 @@
 			<artifactId>commons-io</artifactId>
 			<version>2.4</version>
 		</dependency>
-		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-api</artifactId>
-			<version>2.12.1</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-core</artifactId>
-			<version>2.12.1</version>
-		</dependency>
+	
 		<dependency>
 			<groupId>org.springframework.data</groupId>
 			<artifactId>spring-data-mongodb</artifactId>
 			<version>3.1.1</version>
-			<scope>compile</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.zeromq</groupId>
-			<artifactId>jeromq</artifactId>
-			<version>0.5.1</version>
-		</dependency>
-		<dependency>
-			<groupId>org.zeromq</groupId>
-			<artifactId>jeromq</artifactId>
-			<version>0.5.1</version>
 			<scope>compile</scope>
 		</dependency>
 
@@ -94,12 +73,12 @@
 			<artifactId>Utilities</artifactId>
 			<version>0.0.1</version>
 		</dependency>
+        <dependency>
+  <groupId>io.sioth</groupId>
+  <artifactId>AdminUtilities</artifactId>
+  <version>0.0.1</version>
+</dependency>
 
-		<dependency>
-			<groupId>org.burningwave</groupId>
-			<artifactId>core</artifactId>
-			<version>8.12.2</version>
-		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-text</artifactId>

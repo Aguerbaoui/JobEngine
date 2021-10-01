@@ -118,8 +118,16 @@
             <version>0.0.1</version>
             <scope>compile</scope>
         </dependency>
-
-
+      <dependency>
+            <groupId>io.utils</groupId>
+            <artifactId>Utilities</artifactId>
+            <version>0.0.1</version>
+        </dependency>
+<dependency>
+  <groupId>io.sioth</groupId>
+  <artifactId>AdminUtilities</artifactId>
+  <version>0.0.1</version>
+</dependency>
     </dependencies>
     <build>
         <finalName>RuntimeManager</finalName>

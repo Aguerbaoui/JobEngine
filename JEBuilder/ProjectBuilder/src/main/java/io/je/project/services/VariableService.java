@@ -8,12 +8,12 @@ import io.je.utilities.beans.JEEvent;
 import io.je.utilities.beans.JEVariable;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.*;
-import io.je.utilities.logger.JELogger;
-import io.je.utilities.logger.LogCategory;
-import io.je.utilities.logger.LogSubModule;
+import io.je.utilities.log.JELogger;
 import io.je.utilities.models.EventModel;
 import io.je.utilities.models.VariableModel;
 import models.JEWorkflow;
+import utils.log.LogCategory;
+import utils.log.LogSubModule;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

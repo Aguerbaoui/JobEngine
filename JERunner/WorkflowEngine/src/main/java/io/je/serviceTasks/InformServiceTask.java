@@ -1,9 +1,10 @@
 package io.je.serviceTasks;
 
-import io.je.utilities.logger.JELogger;
-import io.je.utilities.logger.LogCategory;
-import io.je.utilities.logger.LogSubModule;
 import org.activiti.engine.delegate.DelegateExecution;
+
+import io.je.utilities.log.JELogger;
+import utils.log.LogCategory;
+import utils.log.LogSubModule;
 
 public class InformServiceTask extends ServiceTask {
     @Override

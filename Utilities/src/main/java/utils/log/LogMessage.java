@@ -1,4 +1,4 @@
-package io.je.utilities.logger;
+package utils.log;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

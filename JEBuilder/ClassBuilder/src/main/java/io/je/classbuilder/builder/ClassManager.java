@@ -13,15 +13,15 @@ import io.je.classbuilder.models.ClassDefinition;
 import io.je.classbuilder.models.GetModelObject;
 import io.je.utilities.classloader.JEClassCompiler;
 import io.je.utilities.config.ConfigurationConstants;
-import io.je.utilities.config.Utility;
 import io.je.utilities.constants.ClassBuilderConfig;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.AddClassException;
 import io.je.utilities.exceptions.ClassLoadException;
 import io.je.utilities.exceptions.DataDefinitionUnreachableException;
-import io.je.utilities.logger.JELogger;
-import io.je.utilities.logger.LogCategory;
-import io.je.utilities.logger.LogSubModule;
+import io.je.utilities.log.JELogger;
+import io.siothconfig.SIOTHConfigUtility;
+import utils.log.LogCategory;
+import utils.log.LogSubModule;
 import utils.zmq.ZMQPublisher;
 import utils.zmq.ZMQRequester;
 
@@ -33,8 +33,8 @@ public class ClassManager {
 
 	static Map<String, JEClass> jeClasses = new ConcurrentHashMap<>(); // key = is, value = jeclass
 	static Map<String, Class<?>> builtClasses = new ConcurrentHashMap<>(); // key = id , value = class
-	static ZMQPublisher publisher = new ZMQPublisher("tcp://"+Utility.getSiothConfig().getMachineCredentials().getIpAddress(),
-			Utility.getSiothConfig().getPorts().getTrackerPort());
+	static ZMQPublisher publisher = new ZMQPublisher("tcp://"+SIOTHConfigUtility.getSiothConfig().getMachineCredentials().getIpAddress(),
+			SIOTHConfigUtility.getSiothConfig().getPorts().getTrackerPort());
 	static ObjectMapper objectMapper = new ObjectMapper();
 
 	// TODO: see with islem if possible to change field type to class id instead of
@@ -157,7 +157,7 @@ public class ClassManager {
 			JELogger.debug(JEMessages.SENDING_REQUEST_TO_DATA_MODEL + " : " + request,
 					LogCategory.DESIGN_MODE, null,
 					LogSubModule.JEBUILDER,null);
-              ZMQRequester requester = new ZMQRequester("tcp://"+Utility.getSiothConfig().getMachineCredentials().getIpAddress(), Utility.getSiothConfig().getDataModelPORTS().getDmRestAPI_ReqAddress());
+              ZMQRequester requester = new ZMQRequester("tcp://"+SIOTHConfigUtility.getSiothConfig().getMachineCredentials().getIpAddress(), SIOTHConfigUtility.getSiothConfig().getDataModelPORTS().getDmRestAPI_ReqAddress());
                response = requester.sendRequest(jsonMsg) ;
               if (response == null ) {
             	  

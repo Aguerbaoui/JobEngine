@@ -3,6 +3,7 @@ package io.licensemanager.LicenseManager;
 import java.net.InetAddress;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import io.licensemanager.common.GeneralKeys;
 import io.licensemanager.common.SIOTHLicenseRequest;
 import io.licensemanager.common.SIOTHLicenseResponse;
