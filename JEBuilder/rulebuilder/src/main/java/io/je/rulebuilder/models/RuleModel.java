@@ -67,7 +67,7 @@ public class RuleModel {
     public RuleModel(JERule rule) {
 		super();
 		this.ruleId = rule.getJobEngineElementID();
-		this.ruleName = rule.getRuleName();
+		this.ruleName = rule.getJobEngineElementName();
 		this.description = rule.getDescription();
 		this.isBuilt = String.valueOf(rule.isBuilt());
 		this.createdAt = JEDate.formatDateToSIOTHFormat(rule.getJeObjectCreationDate());

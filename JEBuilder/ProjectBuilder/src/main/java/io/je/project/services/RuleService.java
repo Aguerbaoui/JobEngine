@@ -76,7 +76,7 @@ public class RuleService {
         UserDefinedRule rule = new UserDefinedRule();
         rule.setJobEngineElementID(ruleModel.getRuleId());
         rule.setJobEngineProjectID(projectId);
-        rule.setRuleName(ruleModel.getRuleName());
+        rule.setJobEngineElementName(ruleModel.getRuleName());
         rule.setDescription(ruleModel.getDescription());
         rule.setJeObjectCreationDate(LocalDateTime.now());
         rule.setJeObjectLastUpdate(LocalDateTime.now());
@@ -143,9 +143,9 @@ public class RuleService {
                 LogCategory.DESIGN_MODE, projectId, LogSubModule.RULE, ruleModel.getRuleId());
         // update rule name
         if (ruleModel.getRuleName() != null && !ruleModel.getRuleName().equals(DEFAULT_DELETE_CONSTANT)) {
-            ruleToUpdate.setRuleName(ruleModel.getRuleName());
+            ruleToUpdate.setJobEngineElementName(ruleModel.getRuleName());
         } else if (ruleModel.getRuleName() != null && ruleModel.getRuleName().equals(DEFAULT_DELETE_CONSTANT)) {
-            ruleToUpdate.setRuleName(null);
+            ruleToUpdate.setJobEngineElementName(null);
 
         }
         

@@ -27,6 +27,7 @@ public class JELogger {
 	private static Queue<LogMessage> queue = new LinkedList<>();
 	private static Logger logger = null;
 	private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+	public static final Level CONTROL = Level.forName("CONTROL", 250);
 
 	/*******************************
 	 * TO BE DELETED
@@ -73,6 +74,20 @@ public class JELogger {
 		// LogMessage logMessage = getLogMessage(LogLevel.Control, message, category,
 		// projectId, subModule, objectId);
 		// publishLogMessage(logMessage);
+	}
+
+	/*
+	 * Control log level
+	 */
+	public static void control(String message, LogCategory category, String projectId, LogSubModule subModule,
+							 String objectId) {
+		// Log in file
+		logger.log(CONTROL, message);
+
+		// Log in logging service
+		LogMessage logMessage = getLogMessage(LogLevel.Control, message, category, projectId, subModule, objectId);
+		publishLogMessage(logMessage);
+
 	}
 
 	/*

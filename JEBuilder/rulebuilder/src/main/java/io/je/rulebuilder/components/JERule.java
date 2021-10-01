@@ -10,12 +10,7 @@ import io.je.utilities.runtimeobject.JEObject;
 @Document(collection="JERuleCollection")
 public abstract class JERule extends JEObject  {
 	
-	
-	/*
-	 * rule name
-	 */
-	String ruleName;
-	
+
 	/*
 	 * buildStatus
 	 */
@@ -34,21 +29,10 @@ public abstract class JERule extends JEObject  {
 	String ruleFrontConfig;
 	
 	public JERule(String jobEngineElementID, String jobEngineProjectID, String ruleName) {
-		super(jobEngineElementID, jobEngineProjectID);
-		this.ruleName = ruleName;
+		super(jobEngineElementID, jobEngineProjectID, ruleName);
 	}
 
 	public JERule() {
-	}
-
-
-	
-	public String getRuleName() {
-		return ruleName;
-	}
-
-	public void setRuleName(String ruleName) {
-		this.ruleName = ruleName;
 	}
 
 	public boolean isBuilt() {

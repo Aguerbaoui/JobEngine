@@ -92,7 +92,7 @@ public class RuleBuilder {
         jeRunnerResp = JERunnerAPIHandler.updateRule(ruleMap);
 
         if (jeRunnerResp == null || jeRunnerResp.getCode() != ResponseCodes.CODE_OK) {
-			JELogger.error("[rule id =" + rule.getRuleName() + " ]" + JEMessages.RULE_BUILD_FAILED + jeRunnerResp.getMessage(),
+			JELogger.error("[rule id =" + rule.getJobEngineElementName() + " ]" + JEMessages.RULE_BUILD_FAILED + jeRunnerResp.getMessage(),
 					LogCategory.DESIGN_MODE, rule.getJobEngineProjectID(),
 					LogSubModule.RULE, rule.getJobEngineElementID());
             throw new RuleBuildFailedException(jeRunnerResp.getMessage());
@@ -114,7 +114,7 @@ public class RuleBuilder {
         Set<Block> rootBlocks = getRootBlocks(uRule);
         String subRulePrefix = RuleIdManager.generateSubRulePrefix(uRule.getJobEngineElementID());
         for (Block root : rootBlocks) {
-            scriptedRuleid = subRulePrefix + uRule.getRuleName() + ++scriptedRulesCounter;
+            scriptedRuleid = subRulePrefix + uRule.getJobEngineElementName() + ++scriptedRulesCounter;
             String condition = "";
             if (root instanceof ConditionBlock) {
                 condition = root.getExpression();
@@ -138,7 +138,7 @@ public class RuleBuilder {
 					LogCategory.DESIGN_MODE, uRule.getJobEngineProjectID(),
 					LogSubModule.RULE, uRule.getJobEngineElementID());
             ScriptedRule rule = new ScriptedRule(uRule.getJobEngineProjectID(), scriptedRuleid, script,
-                    uRule.getRuleName() + scriptedRulesCounter);
+                    uRule.getJobEngineElementName() + scriptedRulesCounter);
             rule.setTopics(uRule.getTopics());
             scriptedRules.add(rule);
             subRules.add(scriptedRuleid);

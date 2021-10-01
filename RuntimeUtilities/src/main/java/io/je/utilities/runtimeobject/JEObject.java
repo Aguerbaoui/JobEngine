@@ -29,13 +29,13 @@ public abstract class JEObject {
 
 
 
-    public JEObject(String jobEngineElementID, String jobEngineProjectID) {
+    public JEObject(String jobEngineElementID, String jobEngineProjectID, String jobEngineElementName) {
         super();
         this.jobEngineElementID = jobEngineElementID;
         this.jobEngineProjectID = jobEngineProjectID;
         this.jeObjectLastUpdate = LocalDateTime.now();
         this.jeObjectCreationDate = LocalDateTime.now();
-
+        this.jobEngineElementName = jobEngineElementName;
         //TODO: add time config (format, timezone, etc ..)
         //set update time
     }

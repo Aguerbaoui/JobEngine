@@ -384,7 +384,7 @@ public class ProjectContainer {
 	private boolean addRuleToKieFileSystem(Rule rule) {
 
 		try {
-			kieFileSystem.write(generateResourceName(ResourceType.DRL, rule.getName()), rule.getContent());
+			kieFileSystem.write(generateResourceName(ResourceType.DRL, rule.getJobEngineElementName()), rule.getContent());
 
 		} catch (Exception e) {
 			return false;
@@ -399,7 +399,7 @@ public class ProjectContainer {
 	private boolean deleteRuleFromKieFileSystem(Rule rule) {
 
 		try {
-			kieFileSystem.delete(generateResourceName(ResourceType.DRL, rule.getName()));
+			kieFileSystem.delete(generateResourceName(ResourceType.DRL, rule.getJobEngineElementName()));
 
 		} catch (Exception e) {
 			return false;
@@ -487,7 +487,7 @@ public class ProjectContainer {
 	public void addRule(Rule rule)
 			throws RuleCompilationException, RuleAlreadyExistsException, JEFileNotFoundException {
 
-		JELogger.debugWithoutPublish("Rule Engine - [projectId ="+projectId+"] " + JEMessages.ADDING_RULE+ " ["+rule.getName()+"]",  LogCategory.RUNTIME,
+		JELogger.debugWithoutPublish("Rule Engine - [projectId ="+projectId+"] " + JEMessages.ADDING_RULE+ " ["+rule.getJobEngineElementName()+"]",  LogCategory.RUNTIME,
 				projectId, LogSubModule.RULE, rule.getJobEngineElementID());
 		// check if rule already exists
 		if (ruleExists(rule)) {
@@ -511,7 +511,7 @@ public class ProjectContainer {
 	 * rule exists => rule will be updates
 	 */
 	public boolean updateRule(Rule rule) throws RuleCompilationException, JEFileNotFoundException {
-		JELogger.debugWithoutPublish("Rule Engine - [projectId ="+projectId+"] " + JEMessages.UPDATING_RULE+ " ["+rule.getName()+"]",  LogCategory.RUNTIME,
+		JELogger.debugWithoutPublish("Rule Engine - [projectId ="+projectId+"] " + JEMessages.UPDATING_RULE+ " ["+rule.getJobEngineElementName()+"]",  LogCategory.RUNTIME,
 				projectId, LogSubModule.RULE, rule.getJobEngineElementID());
 		// compile rule
 		compileRule(rule);
@@ -589,11 +589,11 @@ public class ProjectContainer {
 		// load rule content from rule path
 
 		JELogger.debugWithoutPublish("Rule Engine - [projectId ="+projectId+"]"+
-						JEMessages.COMPILING_RULE+" ["+rule.getName()+"]..",
+						JEMessages.COMPILING_RULE+" ["+rule.getJobEngineElementName()+"]..",
 				LogCategory.DESIGN_MODE, rule.getJobEngineProjectID(),
 				LogSubModule.RULE,rule.getJobEngineElementID());
 		RuleLoader.loadRuleContent(rule);
-		String filename = generateResourceName(ResourceType.DRL, rule.getName());
+		String filename = generateResourceName(ResourceType.DRL, rule.getJobEngineElementName());
 		kfsToCompile.write(filename, rule.getContent());
 		//JEClassLoader loader = new JEClassLoader(ProjectContainer.class.getClassLoader());
 		/*try {

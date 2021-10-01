@@ -13,9 +13,6 @@ import io.je.utilities.runtimeobject.JEObject;
  */
 public class Rule extends JEObject {
 
-
-    //Rule Name
-    String name;
     //Rule Type ( drl, csv ...)
     RuleFormat resourceType;
     //Rule file path
@@ -29,21 +26,12 @@ public class Rule extends JEObject {
 
     public Rule(String jobEngineElementID, String jobEngineProjectID, String name, RuleFormat resourceType,
                 String path) {
-        super(jobEngineElementID, jobEngineProjectID);
-        this.name = name;
+        super(jobEngineElementID, jobEngineProjectID, name);
         this.resourceType = resourceType;
         this.path = path;
 
     }
 
-    public String getName() {
-        return name;
-    }
-
-
-    public void setName(String name) {
-        this.name = name;
-    }
 
 
     public RuleFormat getResourceType() {

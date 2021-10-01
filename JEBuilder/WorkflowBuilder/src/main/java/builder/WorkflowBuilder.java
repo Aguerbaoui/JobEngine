@@ -134,8 +134,8 @@ public class WorkflowBuilder {
             JEToBpmnMapper.createBpmnFromJEWorkflow(workflow);
         }
         WorkflowModel wf = new WorkflowModel();
-        wf.setId(workflow.getWorkflowName().trim());
-        wf.setPath(ConfigurationConstants.BPMN_PATH + workflow.getWorkflowName().trim() + BPMN_EXTENSION);
+        wf.setId(workflow.getJobEngineElementName().trim());
+        wf.setPath(ConfigurationConstants.BPMN_PATH + workflow.getJobEngineElementName().trim() + BPMN_EXTENSION);
         wf.setProjectId(workflow.getJobEngineProjectID());
         wf.setTriggeredByEvent(workflow.isTriggeredByEvent());
         wf.setTriggerMessage(workflow.getWorkflowStartBlock().getEventId());
@@ -143,37 +143,37 @@ public class WorkflowBuilder {
         ArrayList<TaskModel> tasks = new ArrayList<>();
         for (WorkflowBlock block : workflow.getAllBlocks().values()) {
             if (block instanceof WebApiBlock) {
-                TaskModel t = getTaskModel(block.getJobEngineElementID(), block.getName(), block.getDescription(), WorkflowConstants.WEBSERVICETASK_TYPE);
+                TaskModel t = getTaskModel(block.getJobEngineElementID(), block.getJobEngineElementName(), block.getDescription(), WorkflowConstants.WEBSERVICETASK_TYPE);
                 t.setAttributes(getWebApiAttributesMap((WebApiBlock) block));
                 tasks.add(t);
             }
             if (block instanceof ScriptBlock) {
-                TaskModel t = getTaskModel(block.getJobEngineElementID(), block.getName(), block.getDescription(), WorkflowConstants.SCRIPTTASK_TYPE);
+                TaskModel t = getTaskModel(block.getJobEngineElementID(), block.getJobEngineElementName(), block.getDescription(), WorkflowConstants.SCRIPTTASK_TYPE);
                 t.setAttributes(getScriptAttributesMap((ScriptBlock) block));
                 tasks.add(t);
             }
             if (block instanceof InformBlock) {
-                TaskModel t = getTaskModel(block.getJobEngineElementID(), block.getName(), block.getDescription(), WorkflowConstants.INFORMSERVICETASK_TYPE);
+                TaskModel t = getTaskModel(block.getJobEngineElementID(), block.getJobEngineElementName(), block.getDescription(), WorkflowConstants.INFORMSERVICETASK_TYPE);
                 t.setAttributes(getInformAttributesMap((InformBlock) block));
                 tasks.add(t);
             }
             if(block instanceof DBReadBlock) {
-                TaskModel t = getTaskModel(block.getJobEngineElementID(), block.getName(), block.getDescription(), WorkflowConstants.DBREADSERVICETASK_TYPE);
+                TaskModel t = getTaskModel(block.getJobEngineElementID(), block.getJobEngineElementName(), block.getDescription(), WorkflowConstants.DBREADSERVICETASK_TYPE);
                 t.setAttributes(getDBReadTaskAttributesMap((DBReadBlock) block));
                 tasks.add(t);
             }
             if(block instanceof DBWriteBlock) {
-                TaskModel t = getTaskModel(block.getJobEngineElementID(), block.getName(), block.getDescription(), WorkflowConstants.DBWRITESERVICETASK_TYPE);
+                TaskModel t = getTaskModel(block.getJobEngineElementID(), block.getJobEngineElementName(), block.getDescription(), WorkflowConstants.DBWRITESERVICETASK_TYPE);
                 t.setAttributes(getDBWriteTaskAttributesMap((DBWriteBlock) block));
                 tasks.add(t);
             }
             if(block instanceof DBEditBlock) {
-                TaskModel t = getTaskModel(block.getJobEngineElementID(), block.getName(), block.getDescription(), WorkflowConstants.DBEDITSERVICETASK_TYPE);
+                TaskModel t = getTaskModel(block.getJobEngineElementID(), block.getJobEngineElementName(), block.getDescription(), WorkflowConstants.DBEDITSERVICETASK_TYPE);
                 t.setAttributes(getDBEditTaskAttributesMap((DBEditBlock) block));
                 tasks.add(t);
             }
             if (block instanceof MailBlock) {
-                TaskModel t = getTaskModel(block.getJobEngineElementID(), block.getName(), block.getDescription(), WorkflowConstants.MAILSERVICETASK_TYPE);
+                TaskModel t = getTaskModel(block.getJobEngineElementID(), block.getJobEngineElementName(), block.getDescription(), WorkflowConstants.MAILSERVICETASK_TYPE);
                 t.setAttributes(getEmailTaskAttributesMap((MailBlock) block));
                 tasks.add(t);
             }

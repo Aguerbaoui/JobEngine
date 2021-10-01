@@ -31,11 +31,6 @@ public class WorkflowBlock extends JEObject {
      * */
     private String condition;
 
-    /*
-     * Block Name
-     * */
-    private String name;
-
     /*Block description*/
     private String description;
 
@@ -94,20 +89,6 @@ public class WorkflowBlock extends JEObject {
         this.outFlows = outFlows;
     }
 
-    /*
-     * Returns block name
-     * */
-    public String getName() {
-        return name;
-    }
-
-    /*
-     * Sets block name
-     * */
-    public void setName(String name) {
-        if (JEStringUtils.isEmpty(name)) return;
-        this.name = name;
-    }
 
     /*
      * Returns generated bmpn incoming flows

@@ -131,7 +131,7 @@ public class VariableModel {
 	public VariableModel(JEVariable variable) {
 		 this.projectId = variable.getJobEngineProjectID();
 	        this.id = variable.getJobEngineElementID();
-	        this.name = variable.getName();
+	        this.name = variable.getJobEngineElementName();
 	        this.type = variable.getType().toString();
 	        this.initialValue = String.valueOf(variable.getInitialValue());
 			this.createdAt = JEDate.formatDateToSIOTHFormat(variable.getJeObjectCreationDate());
