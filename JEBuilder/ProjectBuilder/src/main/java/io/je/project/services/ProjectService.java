@@ -156,8 +156,8 @@ public class ProjectService {
     /*
      * run project => send request to jeRunner to run project
      */
-    public void runAll(String projectId) throws ProjectNotFoundException, JERunnerErrorException, ProjectRunException,
-            IOException, InterruptedException, ExecutionException, ConfigException {
+    public void runAll(String projectId) throws ProjectNotFoundException, ProjectRunException,
+            InterruptedException, ExecutionException {
 		
         if (loadedProjects.containsKey(projectId)) {
             JEProject project = loadedProjects.get(projectId);
@@ -165,7 +165,12 @@ public class ProjectService {
                 if (!project.isRunning()) {
                     JELogger.info( "[projectId= "+project.getProjectId()+"]"+  JEMessages.RUNNING_PROJECT,
                             LogCategory.DESIGN_MODE, projectId, LogSubModule.JEBUILDER, null);
-                    JERunnerAPIHandler.runProject(projectId);
+                    try {
+                        JERunnerAPIHandler.runProject(projectId);
+                    }
+                    catch(JERunnerErrorException e) {
+                        throw new ProjectRunException(JEMessages.ERROR_RUNNING_PROJECT);
+                    }
                     project.setRunning(true);
                     saveProject(projectId).get();
                 } else {
@@ -183,8 +188,8 @@ public class ProjectService {
     /*
      * Stop a running project
      */
-    public void stopProject(String projectId) throws ProjectNotFoundException, JERunnerErrorException,
-            ProjectStatusException, IOException, InterruptedException, ExecutionException {
+    public void stopProject(String projectId) throws ProjectNotFoundException,
+            ProjectStatusException, InterruptedException, ExecutionException, ProjectStopException {
 		
         if (!loadedProjects.containsKey(projectId)) {
             throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
@@ -194,7 +199,12 @@ public class ProjectService {
             JELogger.info( "[projectId= "+project.getProjectId()+"]"+  JEMessages.STOPPING_PROJECT,
                     LogCategory.DESIGN_MODE, projectId, LogSubModule.JEBUILDER, null);
 
-            JERunnerAPIHandler.stopProject(projectId);
+            try {
+                JERunnerAPIHandler.stopProject(projectId);
+            }
+            catch (JERunnerErrorException e) {
+                throw new ProjectStopException(JEMessages.ERROR_STOPPING_PROJECT);
+            }
             project.setRunning(false);
             saveProject(projectId).get();
 
@@ -211,7 +221,7 @@ public class ProjectService {
      */
     
     public JEProject getProject(String projectId) throws ProjectNotFoundException,
-            JERunnerErrorException, IOException, InterruptedException, ExecutionException, ConfigException, LicenseNotActiveException {
+            JERunnerErrorException, IOException, InterruptedException, ExecutionException, LicenseNotActiveException, ProjectLoadException {
     	
     	JEProject project = null;
         JELogger.debug( "[projectId= "+projectId+"]"+  JEMessages.LOADING_PROJECT,
@@ -227,11 +237,22 @@ public class ProjectService {
                 project.setBuilt(false);
                 loadedProjects.put(projectId, project);
                 for (JEEvent event : project.getEvents().values()) {
-                    eventService.registerEvent(event);
+                    try {
+                        eventService.registerEvent(event);
+                    }
+                    catch(EventException e) {
+                        throw new ProjectLoadException(JEMessages.PROJECT_LOAD_ERROR);
+                    }
                 }
                 for(JEVariable variable : project.getVariables().values())
                 {
-               	 variableService.addVariableToRunner(variable);
+                    try {
+                        variableService.addVariableToRunner(variable);
+                    }
+                    catch(JERunnerErrorException e) {
+                        throw new ProjectLoadException(JEMessages.PROJECT_LOAD_ERROR);
+                    }
+
                 }
             }else {
             	throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
@@ -323,7 +344,7 @@ public class ProjectService {
 
     @Async
     public CompletableFuture<Void> loadAllProjects() throws ProjectNotFoundException, JERunnerErrorException,
-            IOException, InterruptedException, ExecutionException, ConfigException, LicenseNotActiveException {
+            IOException, InterruptedException, ExecutionException, LicenseNotActiveException, ProjectLoadException {
     	
         //loadedProjects = new ConcurrentHashMap<String, JEProject>();
         JELogger.info( JEMessages.LOADING_PROJECTS,
@@ -340,11 +361,21 @@ public class ProjectService {
                 //project.setBuilt(false);
                 loadedProjects.put(project.getProjectId(), project);
                 for (JEEvent event : project.getEvents().values()) {
-                    eventService.registerEvent(event);
+                    try {
+                        eventService.registerEvent(event);
+                    }
+                    catch(EventException e) {
+                        throw new ProjectLoadException(JEMessages.PROJECT_LOAD_ERROR);
+                    }
                 }
                 for(JEVariable variable : project.getVariables().values())
                 {
-               	 variableService.addVariableToRunner(variable);
+                    try {
+                        variableService.addVariableToRunner(variable);
+                    }
+                    catch(JERunnerErrorException e) {
+                        throw new ProjectLoadException(JEMessages.PROJECT_LOAD_ERROR);
+                    }
                 }
                 if(!project.isAutoReload())       		 
                 {
@@ -362,29 +393,35 @@ public class ProjectService {
 
     }
 
-    public void addJarToProject(MultipartFile file) throws IOException, InterruptedException, JERunnerErrorException, ExecutionException {
+    public void addJarToProject(MultipartFile file) throws LibraryException {
         JELogger.info( JEMessages.ADDING_JAR_TO_PROJECT,
                 LogCategory.DESIGN_MODE, null, LogSubModule.JEBUILDER, null);
-        if(!file.isEmpty()) {
-            String uploadsDir = "/uploads/";
-            //TODO change to the path set by the user for classes in sioth
-            String realPathtoUploads =  request.getServletContext().getRealPath(uploadsDir);
-            if(! new File(realPathtoUploads).exists())
-            {
-                new File(realPathtoUploads).mkdir();
-            }
+        try {
+            if (!file.isEmpty()) {
+                String uploadsDir = "../uploads/";
+                //TODO change to the path set by the user for classes in sioth
+                String realPathtoUploads = request.getServletContext().getRealPath(uploadsDir);
+                if (!new File(realPathtoUploads).exists()) {
+                    new File(realPathtoUploads).mkdir();
+                }
 
-            String orgName = file.getOriginalFilename();
-            String filePath = realPathtoUploads + orgName;
-            File dest = new File(filePath);
-            file.transferTo(dest);
-            JELogger.debug( JEMessages.UPLOADED_JAR_TO_PATH + dest,
-                    LogCategory.DESIGN_MODE, null, LogSubModule.JEBUILDER, null);
-            HashMap<String, String> payload = new HashMap<>();
-            payload.put("name", file.getOriginalFilename());
-            payload.put("path", dest.getAbsolutePath());
-            JERunnerAPIHandler.addJarToRunner(payload);
+                String orgName = file.getOriginalFilename();
+                String filePath = realPathtoUploads + orgName;
+                File dest = new File(filePath);
+                file.transferTo(dest);
+                JELogger.debug(JEMessages.UPLOADED_JAR_TO_PATH + dest,
+                        LogCategory.DESIGN_MODE, null, LogSubModule.JEBUILDER, null);
+                HashMap<String, String> payload = new HashMap<>();
+                payload.put("name", file.getOriginalFilename());
+                payload.put("path", dest.getAbsolutePath());
+
+                JERunnerAPIHandler.addJarToRunner(payload);
+            }
+        }
+            catch(JERunnerErrorException | IOException e ) {
+                throw new LibraryException(JEMessages.ERROR_IMPORTING_FILE);
+            }
         }
 
-    }
+
 }

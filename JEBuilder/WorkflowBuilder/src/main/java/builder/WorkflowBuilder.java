@@ -7,6 +7,7 @@ import io.je.utilities.config.ConfigurationConstants;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.WorkflowConstants;
 import io.je.utilities.exceptions.JERunnerErrorException;
+import io.je.utilities.exceptions.WorkflowRunException;
 import io.je.utilities.log.JELogger;
 import io.je.utilities.models.TaskModel;
 import io.je.utilities.models.WorkflowModel;
@@ -202,8 +203,14 @@ public class WorkflowBuilder {
     /*
      * Run workflow in runtime engine
      * */
-    public static void runWorkflow(String projectId, String key) throws InterruptedException, ExecutionException, JERunnerErrorException {
-        JERunnerAPIHandler.runWorkflow(projectId, key);
+    public static void runWorkflow(String projectId, String key) throws InterruptedException, ExecutionException, WorkflowRunException {
+        try {
+            JERunnerAPIHandler.runWorkflow(projectId, key);
+        }
+        catch(JERunnerErrorException e) {
+            throw new WorkflowRunException(JEMessages.WORKFLOW_RUN_ERROR);
+        }
+
 
     }
 

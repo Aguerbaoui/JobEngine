@@ -68,7 +68,7 @@ public class RuleBuilder {
     /*
      * send rule to JERunner
      */
-    public static void sendDRLToJeRunner(JERule rule, String path) throws JERunnerErrorException, RuleBuildFailedException, IOException, InterruptedException, ExecutionException {
+    public static void sendDRLToJeRunner(JERule rule, String path) throws RuleBuildFailedException, IOException, InterruptedException, ExecutionException {
 
 
         // compile rule
@@ -90,8 +90,12 @@ public class RuleBuilder {
                 LogCategory.DESIGN_MODE, rule.getJobEngineProjectID(),
                 LogSubModule.RULE, rule.getJobEngineElementID());
         JEResponse jeRunnerResp = null;
-        jeRunnerResp = JERunnerAPIHandler.updateRule(ruleMap);
-
+        try {
+            jeRunnerResp = JERunnerAPIHandler.updateRule(ruleMap);
+        }
+        catch(JERunnerErrorException e) {
+            throw new RuleBuildFailedException(JEMessages.RULE_BUILD_FAILED);
+        }
         if (jeRunnerResp == null || jeRunnerResp.getCode() != ResponseCodes.CODE_OK) {
 			JELogger.error("[rule id =" + rule.getJobEngineElementName() + " ]" + JEMessages.RULE_BUILD_FAILED + jeRunnerResp.getMessage(),
 					LogCategory.DESIGN_MODE, rule.getJobEngineProjectID(),

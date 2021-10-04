@@ -58,6 +58,8 @@ public class JEMessages {
 
     public static final String CLASS_LOAD_FAILED = "Class load failed ";
 
+    public static final String CLASS_LOAD_IN_RUNNER_FAILED = "Class load failed in runner";
+
     public static final String INVALID_CLASS_FORMAT = "Class format is not valid, interface cannot inherit from class ";
 
     public static final String UNKNOW_CLASS_TYPE = "Class type cannot be determined. [Class types : Class/Interface/Enum ] ";
@@ -260,6 +262,8 @@ public class JEMessages {
 
     public static final String ERROR_DELETING_EVENT = "Error deleting event";
 
+    public static final String FAILED_TO_ADD_EVENT = "Failed to add event";
+
 
     // ****************************************ResponseMessages**************************************************
 
@@ -275,6 +279,8 @@ public class JEMessages {
     public static final String WORKFLOW_BLOCK_NOT_FOUND = "Workflow block not found";
 
     public static final String PROJECT_NOT_FOUND = "Project not found";
+
+    public static final String PROJECT_LOAD_ERROR = "Error loading project files";
 
     public static final String UKNOWN_ERROR = "Unknown error";
 
@@ -611,13 +617,16 @@ public class JEMessages {
     public static final String SENDING_VARIABLE_TO_RUNNER = "Sending variable to runner";
     public static final String DELETING_VARIABLE = "Deleting variable ";
     public static final String ERROR_ADDING_VARIABLE_TO_PROJECT = "Error adding variable to project";
-    public static final String ERROR_DELETING_VARIABLE_TO_PROJECT = "Error deleting variable to project";
+    public static final String ERROR_WRITING_VALUE_TO_VARIABLE = "Error writing value to variable";
+    public static final String ERROR_DELETING_VARIABLE_FROM_PROJECT = "Error deleting variable from project";
     public static final String ERROR_TRIGGERING_EVENT = "Error triggering event";
     public static final String ERROR_REMOVING_RULE = "Error removing rule";
     public static final String ERROR_EXECUTING_DB_QUERY = "Error executing the database query";
     public static final String ERROR_GETTING_CLASS_UPDATES = "Error getting class updates";
     public static final String FAILED_TO_SEND_LOG_MESSAGE_TO_THE_LOGGING_SYSTEM = "Failed to send log message to the logging system : \n";
     public static final String CHECK_DM_FOR_DETAILS = "Check Integration Objects' SIOTH Data Model Service's log for more details. ";
+    public static final String ERROR_RUNNING_PROJECT = "Error running project, check your configurations";
+    public static final String ERROR_STOPPING_PROJECT = "Error stopping project, check your configurations";
 
 //********************************************************* instances ******************************************************
     public static final String WRITE_INSTANCE_FAILED = "Failed to update instance value. ";
@@ -633,6 +642,8 @@ public class JEMessages {
 	public static final String FAILED_TO_INJECT_DATA = "Failed to inject data : ";
 
 	public static final String DATA_LISTENTING_STARTED = "Started listening for data.. ";
+
+	public static final String ERROR_IMPORTING_FILE = "Error importing file ";
 
     
     
