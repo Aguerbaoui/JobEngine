@@ -88,6 +88,8 @@ public class BlockGenerator {
 			return new TypeConverterBlock(blockModel);
 		case 1032:
 			return new MaximumBlock(blockModel);
+		case 1033:
+			return new AverageBlock(blockModel);
 
 	
 
