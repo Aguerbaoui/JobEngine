@@ -48,7 +48,7 @@ public class EventService {
 	 * Retrieve list of all events that exist in a project.
 	 */
 	
-	public Collection<EventModel> getAllEvents(String projectId) throws ProjectNotFoundException, LicenseNotActiveException {
+	public Collection<EventModel> getAllEvents(String projectId) throws LicenseNotActiveException {
     	LicenseProperties.checkLicenseIsActive();
 
 		List<JEEvent> events = eventRepository.findByJobEngineProjectID(projectId);
@@ -63,7 +63,7 @@ public class EventService {
 		return eventModels;
 	}
 	
-	public ConcurrentHashMap<String, JEEvent> getAllJEEvents(String projectId) throws ProjectNotFoundException, LicenseNotActiveException {
+	public ConcurrentHashMap<String, JEEvent> getAllJEEvents(String projectId) throws LicenseNotActiveException {
     	LicenseProperties.checkLicenseIsActive();
 
 		List<JEEvent> events = eventRepository.findByJobEngineProjectID(projectId);
@@ -79,7 +79,7 @@ public class EventService {
 	 * retrieve event from project by id
 	 */
 	
-	public EventModel getEvent(String projectId, String eventId) throws EventException, ProjectNotFoundException, LicenseNotActiveException {
+	public EventModel getEvent(String projectId, String eventId) throws LicenseNotActiveException {
     	LicenseProperties.checkLicenseIsActive();
 
 		Optional<JEEvent> event = eventRepository.findById(eventId);
@@ -93,7 +93,7 @@ public class EventService {
 	/*
 	 * add new event
 	 */
-	public void addEvent(String projectId, EventModel eventModel) throws ProjectNotFoundException, JERunnerErrorException, IOException, InterruptedException, ExecutionException, EventException, ConfigException, LicenseNotActiveException {
+	public void addEvent(String projectId, EventModel eventModel) throws ProjectNotFoundException,  EventException, LicenseNotActiveException {
     	LicenseProperties.checkLicenseIsActive();
 
 		JELogger.debug(JEMessages.ADDING_EVENT+ "[ id="+eventModel.getEventId()+"] in project id = " + projectId,
@@ -128,7 +128,7 @@ public class EventService {
 	/*
 	 * update new event
 	 */
-	public void updateEvent(String projectId, EventModel eventModel) throws ProjectNotFoundException, JERunnerErrorException, IOException, InterruptedException, ExecutionException, EventException, ConfigException, LicenseNotActiveException {
+	public void updateEvent(String projectId, EventModel eventModel) throws ProjectNotFoundException, EventException, LicenseNotActiveException {
     	LicenseProperties.checkLicenseIsActive();
 
 		JELogger.debug(UPDATING_EVENT + " [ id="+eventModel.getEventId()+"] in project id = " + projectId,
@@ -158,7 +158,7 @@ public class EventService {
 	 * register event in runner
 	 */
 	
-	public void registerEvent( JEEvent event ) throws ProjectNotFoundException, JERunnerErrorException, IOException, InterruptedException, ExecutionException, ConfigException, LicenseNotActiveException {
+	public void registerEvent( JEEvent event ) throws ProjectNotFoundException, LicenseNotActiveException, EventException {
     	LicenseProperties.checkLicenseIsActive();
 
 		JEProject project = ProjectService.getProjectById(event.getJobEngineProjectID());
@@ -177,7 +177,12 @@ public class EventService {
 		JELogger.debug(JEMessages.REGISTERING_EVENT,
 				LogCategory.DESIGN_MODE, event.getJobEngineProjectID(),
 				LogSubModule.EVENT,event.getJobEngineElementID());
-		JERunnerAPIHandler.addEvent(eventMap);
+		try {
+			JERunnerAPIHandler.addEvent(eventMap);
+		}
+		catch(JERunnerErrorException e) {
+			throw new EventException(JEMessages.FAILED_TO_ADD_EVENT);
+		}
 		project.addEvent(event);
 	
 
@@ -226,7 +231,7 @@ public class EventService {
 	 * delete event
 	 */
 	
-	public void deleteEvent(String projectId, String eventId) throws EventException, ProjectNotFoundException, InterruptedException, JERunnerErrorException, ExecutionException, LicenseNotActiveException {
+	public void deleteEvent(String projectId, String eventId) throws EventException, ProjectNotFoundException, LicenseNotActiveException {
     	LicenseProperties.checkLicenseIsActive();
 
 		JELogger.debug(JEMessages.DELETING_EVENT+"[ id="+eventId+"] in project id = " + projectId,
@@ -253,7 +258,12 @@ public class EventService {
 		JELogger.debug(JEMessages.DELETING_EVENT_FROM_RUNNER,
 				LogCategory.DESIGN_MODE, projectId,
 				LogSubModule.EVENT,eventId);
-		JERunnerAPIHandler.deleteEvent(projectId, eventId);
+		try {
+			JERunnerAPIHandler.deleteEvent(projectId, eventId);
+		}
+		catch(JERunnerErrorException e) {
+			throw new EventException(JEMessages.ERROR_DELETING_EVENT);
+		}
 		project.getEvents().remove(event.getJobEngineElementID());
 		eventRepository.deleteById(eventId);
 		

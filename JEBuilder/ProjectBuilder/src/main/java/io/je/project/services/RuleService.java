@@ -93,7 +93,7 @@ public class RuleService {
      * delete rule from a project
      */
 
-    public void deleteRule(String projectId, String ruleId) throws ProjectNotFoundException, RuleNotFoundException, JERunnerErrorException, IOException, InterruptedException, ExecutionException, ConfigException, LicenseNotActiveException {
+    public void deleteRule(String projectId, String ruleId) throws ProjectNotFoundException, RuleNotFoundException, JERunnerErrorException, InterruptedException, ExecutionException, LicenseNotActiveException {
     	LicenseProperties.checkLicenseIsActive();  
     	JEProject project = ProjectService.getProjectById(projectId);
         if (project == null) {

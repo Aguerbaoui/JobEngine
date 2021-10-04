@@ -112,7 +112,7 @@ public class WorkflowService {
      * Remove a workflow from a project
      * */
 
-    public void removeWorkflow(String projectId, String workflowId) throws ProjectNotFoundException, WorkflowNotFoundException, ConfigException, InterruptedException, JERunnerErrorException, ExecutionException, LicenseNotActiveException {
+    public void removeWorkflow(String projectId, String workflowId) throws ProjectNotFoundException, WorkflowNotFoundException, ExecutionException, LicenseNotActiveException, WorkflowException {
         LicenseProperties.checkLicenseIsActive();
 
 
@@ -133,9 +133,14 @@ public class WorkflowService {
         while (blockIds.hasMoreElements()) {
             project.removeBlockName(blockIds.nextElement());
         }
-        project.removeWorkflow(workflowId);
-        JERunnerAPIHandler.deleteWorkflow(projectId, wfName);
+        try {
+            JERunnerAPIHandler.deleteWorkflow(projectId, wfName);
+        }
+        catch(JERunnerErrorException e) {
+            throw new WorkflowException(JEMessages.DELETE_WORKFLOW_FAILED);
+        }
         workflowRepository.deleteById(workflowId);
+        project.removeWorkflow(workflowId);
     }
 
     /*
@@ -479,7 +484,7 @@ public class WorkflowService {
     /*
      * Run a workflow
      * */
-    public void runWorkflow(String projectId, String workflowId) throws WorkflowNotFoundException, ProjectNotFoundException, IOException, WorkflowAlreadyRunningException, InterruptedException, ExecutionException, JERunnerErrorException, LicenseNotActiveException {
+    public void runWorkflow(String projectId, String workflowId) throws WorkflowNotFoundException, ProjectNotFoundException, WorkflowAlreadyRunningException, InterruptedException, ExecutionException, JERunnerErrorException, LicenseNotActiveException, WorkflowRunException {
         LicenseProperties.checkLicenseIsActive();
 
         JEProject project = ProjectService.getProjectById(projectId);
@@ -907,7 +912,7 @@ public class WorkflowService {
         }
     }
 
-    public void stopWorkflow(String projectId, String workflowId) throws ProjectNotFoundException, WorkflowNotFoundException, InterruptedException, JERunnerErrorException, ExecutionException, LicenseNotActiveException {
+    public void stopWorkflow(String projectId, String workflowId) throws ProjectNotFoundException, WorkflowNotFoundException, JERunnerErrorException, LicenseNotActiveException {
         LicenseProperties.checkLicenseIsActive();
 
         JEProject project = ProjectService.getProjectById(projectId);
@@ -919,7 +924,10 @@ public class WorkflowService {
         JELogger.debug("[projectId =" + projectId + " ][workflowId = " + workflowId + "]" + JEMessages.STOPPING_WF,
                 LogCategory.DESIGN_MODE, projectId,
                 LogSubModule.WORKFLOW, workflowId);
-        JERunnerAPIHandler.deleteWorkflow(projectId, project.getWorkflowByIdOrName(workflowId).getJobEngineElementName());
+        try {
+            JERunnerAPIHandler.deleteWorkflow(projectId, project.getWorkflowByIdOrName(workflowId).getJobEngineElementName());
+        }
+        catch(JERunnerErrorException e) {}
         project.getWorkflowByIdOrName(workflowId).setStatus(JEWorkflow.IDLE);
         workflowRepository.save(project.getWorkflowByIdOrName(workflowId));
 

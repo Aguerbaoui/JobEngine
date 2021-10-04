@@ -21,7 +21,7 @@ public class Request {
      * POST with json
      * */
     static JEResponse sendRequestWithBody(String requestUrl, Object requestBody)
-            throws JERunnerErrorException, InterruptedException, ExecutionException {
+            throws JERunnerErrorException {
         Response response = null;
         try {
             response = Network.makeNetworkCallWithJsonBodyWithResponse(requestBody, requestUrl);
@@ -36,7 +36,7 @@ public class Request {
             String respBody = response.body().string();
             ObjectMapper objectMapper = new ObjectMapper();
             return objectMapper.readValue(respBody, JEResponse.class);
-        } catch (IOException e) {
+        } catch (IOException | InterruptedException | ExecutionException e) {
             JELogger.error(JEMessages.NETWORK_CALL_ERROR + requestUrl, LogCategory.RUNTIME, null,
                     LogSubModule.JEBUILDER, null);
             throw new JERunnerErrorException(JEMessages.JERUNNER_UNREACHABLE + " Or " + JEMessages.JEBUILDER_UNREACHABLE);
@@ -47,7 +47,7 @@ public class Request {
      * DELETE with no json
      * */
     static JEResponse sendDeleteRequest(String requestUrl)
-            throws JERunnerErrorException, InterruptedException, ExecutionException {
+            throws JERunnerErrorException {
         Response response = null;
         try {
             response = Network.makeDeleteNetworkCallWithResponse(requestUrl);
@@ -62,7 +62,7 @@ public class Request {
             String respBody = response.body().string();
             ObjectMapper objectMapper = new ObjectMapper();
             return objectMapper.readValue(respBody, JEResponse.class);
-        } catch (IOException e) {
+        } catch (IOException | InterruptedException | ExecutionException e) {
             JELogger.error(JEMessages.NETWORK_CALL_ERROR + requestUrl, LogCategory.RUNTIME, null,
                     LogSubModule.JEBUILDER, null);
             throw new JERunnerErrorException(JEMessages.JERUNNER_UNREACHABLE + " Or " + JEMessages.JEBUILDER_UNREACHABLE);
@@ -73,7 +73,7 @@ public class Request {
      * GET with no body
      * */
     static JEResponse sendRequest(String requestUrl)
-            throws JERunnerErrorException, InterruptedException, ExecutionException {
+            throws JERunnerErrorException {
         Response response = null;
         try {
             response = Network.makeGetNetworkCallWithResponse(requestUrl);
@@ -88,7 +88,7 @@ public class Request {
             String respBody = response.body().string();
             ObjectMapper objectMapper = new ObjectMapper();
             return objectMapper.readValue(respBody, JEResponse.class);
-        } catch (IOException e) {
+        } catch (IOException | InterruptedException | ExecutionException e) {
             JELogger.error(JEMessages.NETWORK_CALL_ERROR + requestUrl, LogCategory.RUNTIME, null,
                     LogSubModule.JEBUILDER, null);
             throw new JERunnerErrorException(JEMessages.JERUNNER_UNREACHABLE + " Or " + JEMessages.JEBUILDER_UNREACHABLE);
@@ -99,7 +99,7 @@ public class Request {
      * POST with string body
      * */
     static JEResponse sendRequestWithStringBody(String requestUrl, String requestBody)
-            throws JERunnerErrorException, IOException, InterruptedException, ExecutionException {
+            throws JERunnerErrorException {
         Response response = null;
         try {
             //JELogger.debug(JERunnerAPIHandler.class, " url = " + requestUrl);
@@ -114,7 +114,7 @@ public class Request {
             String respBody = response.body().string();
             ObjectMapper objectMapper = new ObjectMapper();
             return objectMapper.readValue(respBody, JEResponse.class);
-        } catch (IOException e) {
+        } catch (IOException | InterruptedException | ExecutionException e) {
             JELogger.error(JEMessages.NETWORK_CALL_ERROR + requestUrl, LogCategory.RUNTIME, null,
                     LogSubModule.JEBUILDER, null);
             throw new JERunnerErrorException(JEMessages.JERUNNER_UNREACHABLE + " Or " + JEMessages.JEBUILDER_UNREACHABLE);

@@ -61,7 +61,7 @@ public class APIConstants {
 
 	public static final String ACTUATOR_HEALTH = "/actuator/health";
 
-	public static final String PROJECT_UPDATE_RUNNER = "/config/updateRunner";
+	public static final String PROJECT_UPDATE_RUNNER = "/jeproject/updateRunner";
 
 	public static final String EVENT_ADD_EVENT = "/event/addEvent";
 

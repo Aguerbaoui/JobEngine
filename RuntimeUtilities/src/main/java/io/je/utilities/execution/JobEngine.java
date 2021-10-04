@@ -160,7 +160,7 @@ public class JobEngine {
             return response.getCode();
         }  catch (Exception e) {
             //JELogger.error("Error adding the variable");
-            JELogger.error(JEMessages.ERROR_DELETING_VARIABLE_TO_PROJECT,  LogCategory.RUNTIME,
+            JELogger.error(JEMessages.ERROR_DELETING_VARIABLE_FROM_PROJECT,  LogCategory.RUNTIME,
                     projectId, LogSubModule.VARIABLE, variableName);
             return ResponseCodes.UNKNOWN_ERROR;
         }

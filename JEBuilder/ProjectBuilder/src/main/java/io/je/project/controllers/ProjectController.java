@@ -2,6 +2,7 @@ package io.je.project.controllers;
 
 import io.je.project.beans.JEProject;
 import io.je.project.exception.JEExceptionHandler;
+import io.je.project.services.ConfigurationService;
 import io.je.project.services.ProjectService;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.ResponseCodes;
@@ -32,6 +33,8 @@ public class ProjectController {
 	@Autowired
 	ProjectService projectService;
 
+	@Autowired
+	ConfigurationService configService;
 //########################################### **PROJECT** ################################################################
 	/*
 	 * Get the list of all projects
@@ -305,5 +308,17 @@ public class ProjectController {
 
 		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.PROJECT_UPDATED));
 	}
+
+	@GetMapping(value = "/updateRunner", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> updateRunner() {
+
+		try {
+			configService.updateRunner();
+		} catch (Exception e) {
+			return JEExceptionHandler.handleException(e);
+		}
+		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, "Updated"));
+	}
+
 
 }

@@ -39,7 +39,7 @@ public class LicenseStatusWatcher implements Runnable {
 
             int count = 0;
             try {
-				Thread.sleep(20000);
+				Thread.sleep(1000);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
