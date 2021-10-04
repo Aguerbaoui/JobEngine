@@ -385,7 +385,22 @@ public class MathUtilities {
         return (long) sum;
     }
 
-
+    /*
+     * average
+     */
+    public static long average(double... numbers) {
+        double sum = 0;
+        int count = 0;
+        for (double number : numbers) {
+            sum+=number;
+            count++;
+        }
+        if (count<=0)
+        {
+        	return 0;
+        }
+        return (long) sum/count;
+    }
     /*
      * multiply
      */
