@@ -65,8 +65,8 @@ public class RuleModel {
 		this.ruleName = rule.getJobEngineElementName();
 		this.description = rule.getDescription();
 		this.isBuilt = String.valueOf(rule.isBuilt());
-		this.createdAt = rule.getJeObjectCreationDate();
-		this.lastModifiedAt = rule.getJeObjectLastUpdate();
+		this.createdAt = DateUtils.formatDateToSIOTHFormat(rule.getJeObjectCreationDate());
+		this.lastModifiedAt = DateUtils.formatDateToSIOTHFormat(rule.getJeObjectLastUpdate());
 		this.createdBy = rule.getJeObjectCreatedBy();
 		this.modifiedBy = rule.getJeObjectModifiedBy();
 		if(rule instanceof UserDefinedRule) {

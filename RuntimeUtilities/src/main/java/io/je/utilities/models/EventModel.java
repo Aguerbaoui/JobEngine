@@ -77,8 +77,8 @@ public class EventModel {
         this.eventId = event.getJobEngineElementID();
         this.projectId = event.getJobEngineProjectID();
         this.description = event.getDescription();
-        this.createdAt = event.getJeObjectCreationDate();
-		this.lastModifiedAt = event.getJeObjectLastUpdate();
+        this.createdAt = DateUtils.formatDateToSIOTHFormat(event.getJeObjectCreationDate());
+		this.lastModifiedAt = DateUtils.formatDateToSIOTHFormat(event.getJeObjectLastUpdate());
         this.triggered = event.isTriggered();
         this.timeout = event.getTimeoutValue();
         this.timeoutUnit = event.getTimeoutUnit();

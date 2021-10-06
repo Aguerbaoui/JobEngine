@@ -2,7 +2,6 @@ package io.je.utilities.runtimeobject;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-import utils.date.DateUtils;
 
 import java.time.LocalDateTime;
 
@@ -19,9 +18,9 @@ public abstract class JEObject {
     
     protected String jobEngineElementName;
 
-    protected String jeObjectLastUpdate;
+    protected LocalDateTime jeObjectLastUpdate;
     
-    protected String jeObjectCreationDate;
+    protected LocalDateTime jeObjectCreationDate;
     
     protected String jeObjectCreatedBy;
 
@@ -34,8 +33,8 @@ public abstract class JEObject {
         super();
         this.jobEngineElementID = jobEngineElementID;
         this.jobEngineProjectID = jobEngineProjectID;
-        this.jeObjectLastUpdate = DateUtils.formatDateToSIOTHFormat(LocalDateTime.now());
-        this.jeObjectCreationDate = DateUtils.formatDateToSIOTHFormat(LocalDateTime.now());
+        this.jeObjectLastUpdate = LocalDateTime.now();
+        this.jeObjectCreationDate = LocalDateTime.now();
         this.jobEngineElementName = jobEngineElementName;
         //TODO: add time config (format, timezone, etc ..)
         //set update time
@@ -44,8 +43,8 @@ public abstract class JEObject {
 
     //TODO: to be deleted. Only constructor with fields needs to be kept.
     protected JEObject() {
-        this.jeObjectLastUpdate = DateUtils.formatDateToSIOTHFormat(LocalDateTime.now());
-        this.jeObjectCreationDate = DateUtils.formatDateToSIOTHFormat(LocalDateTime.now());
+        this.jeObjectLastUpdate = LocalDateTime.now();
+        this.jeObjectCreationDate = LocalDateTime.now();
     }
 
     public String getJobEngineElementID() {
@@ -65,12 +64,12 @@ public abstract class JEObject {
         this.jobEngineProjectID = jobEngineProjectID;
     }
 
-    public String getJeObjectLastUpdate() {
+    public LocalDateTime getJeObjectLastUpdate() {
         return jeObjectLastUpdate;
     }
 
     public void setJeObjectLastUpdate(LocalDateTime jeObjectLastUpdate) {
-        this.jeObjectLastUpdate = DateUtils.formatDateToSIOTHFormat(jeObjectLastUpdate);
+        this.jeObjectLastUpdate = jeObjectLastUpdate;
     }
 
     // Overriding equals() to compare two JEObjects
@@ -106,13 +105,13 @@ public abstract class JEObject {
     }
 
 
-	public String getJeObjectCreationDate() {
+	public LocalDateTime getJeObjectCreationDate() {
 		return jeObjectCreationDate;
 	}
 
 
 	public void setJeObjectCreationDate(LocalDateTime jeObjectCreationDate) {
-		this.jeObjectCreationDate = DateUtils.formatDateToSIOTHFormat(jeObjectCreationDate);
+		this.jeObjectCreationDate = jeObjectCreationDate;
 	}
 
 

@@ -203,7 +203,7 @@ public class WorkflowBuilder {
     /*
      * Run workflow in runtime engine
      * */
-    public static void runWorkflow(String projectId, String key) throws InterruptedException, ExecutionException, WorkflowRunException {
+    public static void runWorkflow(String projectId, String key) throws WorkflowRunException {
         try {
             JERunnerAPIHandler.runWorkflow(projectId, key);
         }

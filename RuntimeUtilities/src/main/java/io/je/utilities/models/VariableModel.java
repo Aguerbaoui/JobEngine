@@ -131,8 +131,8 @@ public class VariableModel {
 	        this.name = variable.getJobEngineElementName();
 	        this.type = variable.getType().toString();
 	        this.initialValue = String.valueOf(variable.getInitialValue());
-			this.createdAt = variable.getJeObjectCreationDate();
-			this.lastModifiedAt = variable.getJeObjectLastUpdate();
+			this.createdAt = DateUtils.formatDateToSIOTHFormat(variable.getJeObjectCreationDate());
+			this.lastModifiedAt = DateUtils.formatDateToSIOTHFormat(variable.getJeObjectLastUpdate());
 	        this.value = null;
 			this.createdBy = variable.getJeObjectCreatedBy();
 			this.modifiedBy = variable.getJeObjectModifiedBy();

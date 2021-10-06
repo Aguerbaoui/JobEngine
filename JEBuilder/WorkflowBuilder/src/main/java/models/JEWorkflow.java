@@ -297,8 +297,8 @@ public class JEWorkflow extends JEObject {
         model.setProjectId(wf.getJobEngineProjectID());
         model.setTriggeredByEvent(wf.isTriggeredByEvent());
         model.setStatus(wf.getStatus());
-        model.setCreatedAt(wf.getJeObjectCreationDate());
-        model.setModifiedAt(wf.getJeObjectLastUpdate());
+        model.setCreatedAt(DateUtils.formatDateToSIOTHFormat(wf.getJeObjectCreationDate()));
+        model.setModifiedAt(DateUtils.formatDateToSIOTHFormat(wf.getJeObjectLastUpdate()));
         model.setFrontConfig(wf.getFrontConfig());
         model.setEnabled(wf.isEnabled);
         return model;
