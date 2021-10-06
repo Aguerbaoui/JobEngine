@@ -40,7 +40,7 @@ public class WorkflowModel {
 
     private String frontConfig;
 
-
+    private boolean enabled;
 
     public WorkflowModel(String projectId, String id, String path, String name, ArrayList<EventModel> events,
                          ArrayList<TaskModel> tasks) {
@@ -187,6 +187,13 @@ public class WorkflowModel {
         this.frontConfig = frontConfig;
     }
 
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
 
     @Override
     public String toString() {

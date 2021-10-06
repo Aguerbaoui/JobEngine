@@ -128,8 +128,8 @@ public class WorkflowBuilder {
     /*
      * Build pbpmn and Deploy it in engine
      * */
-    public static boolean buildWorkflow(JEWorkflow workflow) throws IOException, InterruptedException, ExecutionException {
-        if (workflow.getWorkflowStartBlock() == null || workflow.getAllBlocks() == null || workflow.getAllBlocks().size() == 0)
+    public static boolean buildWorkflow(JEWorkflow workflow) {
+        if (workflow.getWorkflowStartBlock() == null || workflow.getAllBlocks() == null || workflow.getAllBlocks().size() == 0 || workflow.isHasErrors())
             return false;
         if (!workflow.isScript()) {
             JEToBpmnMapper.createBpmnFromJEWorkflow(workflow);
@@ -203,7 +203,7 @@ public class WorkflowBuilder {
     /*
      * Run workflow in runtime engine
      * */
-    public static void runWorkflow(String projectId, String key) throws InterruptedException, ExecutionException, WorkflowRunException {
+    public static void runWorkflow(String projectId, String key) throws WorkflowRunException {
         try {
             JERunnerAPIHandler.runWorkflow(projectId, key);
         }

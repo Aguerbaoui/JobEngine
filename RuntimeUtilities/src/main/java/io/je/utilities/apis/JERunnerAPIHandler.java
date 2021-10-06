@@ -193,7 +193,7 @@ public class JERunnerAPIHandler {
     }
 
 
-	public static JEResponse updateRunnerSettings(Object requestModel) throws JERunnerErrorException, InterruptedException, ExecutionException {
+	public static JEResponse updateRunnerSettings(Object requestModel) throws JERunnerErrorException {
 	       String requestUrl = runtimeManagerBaseApi + APIConstants.UPDATE_CONFIG ;
 	       JELogger.debug(JEMessages.RUNNER_CONFFIG_UPDATE,  LogCategory.DESIGN_MODE,
                 null, LogSubModule.JEBUILDER, null);

@@ -1,6 +1,7 @@
 package io.je.project.beans;
 
 import blocks.WorkflowBlock;
+import blocks.basic.SubProcessBlock;
 import io.je.rulebuilder.components.JERule;
 import io.je.rulebuilder.components.UserDefinedRule;
 import io.je.rulebuilder.components.blocks.Block;
@@ -470,6 +471,10 @@ public class JEProject {
 		}
         return workflows.get(workflowId);
     }
+
+    public boolean isWorkflowEnabled(String id) {
+    	return getWorkflowByIdOrName(id).isEnabled();
+	}
     
 
 
@@ -645,6 +650,27 @@ public class JEProject {
 			if(wf.isOnProjectBoot()) return wf;
 		}
 		return null;
+	}
+
+	public boolean workflowHasError(JEWorkflow wf) {
+
+    	if(wf.getWorkflowStartBlock() == null || wf.getAllBlocks().isEmpty()) {
+    		wf.setHasErrors(true);
+    		return true;
+		}
+
+    	for(WorkflowBlock b: wf.getAllBlocks().values()) {
+    		if(b instanceof SubProcessBlock) {
+    			for(JEWorkflow workflow: workflows.values()) {
+    				if(workflow.getJobEngineElementName().equals(((SubProcessBlock) b).getSubWorkflowId()) && !workflow.isEnabled()) {
+						wf.setHasErrors(true);
+						return true;
+					}
+				}
+			}
+		}
+    	wf.setHasErrors(false);
+    	return false;
 	}
 
 }
