@@ -128,7 +128,7 @@ public class WorkflowBuilder {
     /*
      * Build pbpmn and Deploy it in engine
      * */
-    public static boolean buildWorkflow(JEWorkflow workflow) throws IOException, InterruptedException, ExecutionException {
+    public static boolean buildWorkflow(JEWorkflow workflow) {
         if (workflow.getWorkflowStartBlock() == null || workflow.getAllBlocks() == null || workflow.getAllBlocks().size() == 0)
             return false;
         if (!workflow.isScript()) {

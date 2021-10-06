@@ -470,6 +470,10 @@ public class JEProject {
 		}
         return workflows.get(workflowId);
     }
+
+    public boolean isWorkflowEnabled(String id) {
+    	return getWorkflowByIdOrName(id).isEnabled();
+	}
     
 
 

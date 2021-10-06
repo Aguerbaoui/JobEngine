@@ -75,7 +75,15 @@ public class JEWorkflow extends JEObject {
     * */
     private boolean onProjectBoot = false;
 
+    /*
+    * Workflow description
+    * */
     private String description;
+
+    /*
+    * True if workflow is enabled for execution
+    * */
+    private boolean isEnabled;
 
     private String getScript() {
         return script;
@@ -287,11 +295,25 @@ public class JEWorkflow extends JEObject {
         model.setProjectId(wf.getJobEngineProjectID());
         model.setTriggeredByEvent(wf.isTriggeredByEvent());
         model.setStatus(wf.getStatus());
-        model.setCreatedAt(DateUtils.formatDateToSIOTHFormat(wf.getJeObjectCreationDate()));
-        model.setModifiedAt(DateUtils.formatDateToSIOTHFormat(wf.getJeObjectLastUpdate()));
+        model.setCreatedAt(wf.getJeObjectCreationDate());
+        model.setModifiedAt(wf.getJeObjectLastUpdate());
         model.setFrontConfig(wf.getFrontConfig());
+        model.setEnabled(wf.isEnabled);
         return model;
     }
+
+    public void setScript(boolean script) {
+        isScript = script;
+    }
+
+    public boolean isEnabled() {
+        return isEnabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        isEnabled = enabled;
+    }
+
     @Override
     public String toString() {
         return "JEWorkflow{" +
