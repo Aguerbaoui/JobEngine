@@ -440,7 +440,7 @@ public class WorkflowService {
     /*
      * Build a workflow
      * */
-    public void buildWorkflow(String projectId, String workflowId) throws WorkflowNotFoundException, ProjectNotFoundException, IOException, InterruptedException, ExecutionException, ConfigException, WorkflowBuildException, LicenseNotActiveException, WorkflowException {
+    public void buildWorkflow(String projectId, String workflowId) throws WorkflowNotFoundException, ProjectNotFoundException,  WorkflowBuildException, LicenseNotActiveException, WorkflowException {
         LicenseProperties.checkLicenseIsActive();
 
         JEProject project = ProjectService.getProjectById(projectId);
@@ -457,8 +457,8 @@ public class WorkflowService {
                 LogCategory.DESIGN_MODE, projectId,
                 LogSubModule.WORKFLOW, workflowId);
 
-        if (!WorkflowBuilder.buildWorkflow(workflow)) {
-            throw new WorkflowBuildException(JEMessages.WORKFLOW_BUILD_ERROR);
+        if (project.workflowHasError(workflow) || !WorkflowBuilder.buildWorkflow(workflow)) {
+            throw new WorkflowBuildException(JEMessages.WORKFLOW_BUILD_ERROR + " " + workflow.getJobEngineElementName());
         }
     }
 
@@ -477,9 +477,10 @@ public class WorkflowService {
                 LogCategory.DESIGN_MODE, projectId,
                 LogSubModule.WORKFLOW, null);
         for (JEWorkflow wf : project.getWorkflows().values()) {
-            if (wf.isEnabled() && !WorkflowBuilder.buildWorkflow(wf)) {
+            if (!wf.isEnabled() || project.workflowHasError(wf) || !WorkflowBuilder.buildWorkflow(wf)) {
                 //TODO return exact build errors in the future
-                throw new WorkflowBuildException(JEMessages.WORKFLOW_BUILD_ERROR);
+                wf.setHasErrors(true);
+                throw new WorkflowBuildException(JEMessages.WORKFLOW_BUILD_ERROR + " " + wf.getJobEngineElementName());
             }
         }
         return CompletableFuture.completedFuture(null);
@@ -786,9 +787,9 @@ public class WorkflowService {
                 project.addBlockToWorkflow(b);
             }
             else {
-                wf.setEnabled(false);
+                wf.setHasErrors(true);
                 workflowRepository.save(wf);
-                throw new WorkflowBlockException(JEMessages.ERROR_WHILE_REFERENCING_A_DISABLED_WORKFLOW);
+                throw new WorkflowBlockException(JEMessages.ERROR_WHILE_REFERENCING_A_DISABLED_WORKFLOW + project.getWorkflowByIdOrName((String) block.getAttributes().get(SUBWORKFLOWID)).getJobEngineElementName());
             }
         } else if (block.getType().equalsIgnoreCase(BOUNDARYEVENT_TYPE)) {
             ErrorBoundaryEvent b = (ErrorBoundaryEvent) wf.getAllBlocks().get(block.getId());

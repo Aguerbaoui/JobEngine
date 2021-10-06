@@ -85,6 +85,8 @@ public class JEWorkflow extends JEObject {
     * */
     private boolean isEnabled;
 
+    private boolean hasErrors = false;
+
     private String getScript() {
         return script;
     }
@@ -312,6 +314,14 @@ public class JEWorkflow extends JEObject {
 
     public void setEnabled(boolean enabled) {
         isEnabled = enabled;
+    }
+
+    public boolean isHasErrors() {
+        return hasErrors;
+    }
+
+    public void setHasErrors(boolean hasErrors) {
+        this.hasErrors = hasErrors;
     }
 
     @Override

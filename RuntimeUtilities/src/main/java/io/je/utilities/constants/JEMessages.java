@@ -627,7 +627,7 @@ public class JEMessages {
     public static final String CHECK_DM_FOR_DETAILS = "Check Integration Objects' SIOTH Data Model Service's log for more details. ";
     public static final String ERROR_RUNNING_PROJECT = "Error running project, check your configurations";
     public static final String ERROR_STOPPING_PROJECT = "Error stopping project, check your configurations";
-    public static final String ERROR_WHILE_REFERENCING_A_DISABLED_WORKFLOW = "Error while referencing a disabled workflow";
+    public static final String ERROR_WHILE_REFERENCING_A_DISABLED_WORKFLOW = "Error while referencing a disabled workflow: ";
     public static final String WORKFLOW_IS_DISABLED = "The workflow is disabled, check your configuration";
 
 
