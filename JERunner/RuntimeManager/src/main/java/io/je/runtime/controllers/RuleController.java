@@ -14,9 +14,6 @@ import io.je.runtime.services.RuntimeDispatcher;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.beans.JEResponse;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
 
 
 /*
@@ -105,6 +102,32 @@ public class RuleController {
 		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.RULE_DELETED));
 	}
 
+    /*
+     * Runs only rules
+     * */
+    @GetMapping(value = "/runAllRules/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> runProjectRules(@PathVariable String projectId) {
+        try {
+        	runtimeDispatcher.runProjectRules(projectId);
+        } catch (Exception e) {
+			return JEExceptionHandler.handleException(e);
+		}
+        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.EXECUTING_PROJECT));
 
+    }
+
+    /*
+     * Runs only rules
+     * */
+    @GetMapping(value = "/shutDownRuleEngine/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> stopRuleEngine(@PathVariable String projectId) {
+        try {
+        	runtimeDispatcher.shutDownRuleEngine(projectId);
+        } catch (Exception e) {
+			return JEExceptionHandler.handleException(e);
+		}
+        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.EXECUTING_PROJECT));
+
+    }
 
 }

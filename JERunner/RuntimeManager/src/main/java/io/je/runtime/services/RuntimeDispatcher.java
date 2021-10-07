@@ -46,7 +46,9 @@ public class RuntimeDispatcher {
 
 	//
 	static Map<String, Set<String>> projectsByTopic = new HashMap<>(); // key : topic, value: list of projects // of
-																		// projects
+							
+	
+	// projects
 	static Map<String, Boolean> projectStatus = new HashMap<>(); // key: projectId , value : true if project is running,
 																	// false if not
 	public static ObjectMapper objectMapper = new ObjectMapper();
@@ -156,6 +158,17 @@ public class RuntimeDispatcher {
 			throws RuleCompilationException, JEFileNotFoundException, RuleFormatNotValidException {
 		JELogger.debug(JEMessages.UPDATING_RULE + " : " + ruleModel.getRuleId(), LogCategory.RUNTIME,
 				ruleModel.getProjectId(), LogSubModule.RULE, ruleModel.getRuleId());
+		ArrayList<String> topics = new ArrayList<>();
+		// get topics :
+		for (Entry<String, Set<String>> entry : projectsByTopic.entrySet()) {
+			if (entry.getValue().contains(ruleModel.getProjectId())) {
+				topics.add(entry.getKey());
+			}
+
+		}
+
+			// start listening to datasources
+			DataModelListener.startListening(topics);
 		RuleEngineHandler.updateRule(ruleModel);
 
 	}
@@ -427,4 +440,38 @@ public class RuntimeDispatcher {
 		}
 	}
 
+	public void runProjectRules(String projectId) throws RulesNotFiredException, RuleBuildFailedException, ProjectAlreadyRunningException {
+		
+		ArrayList<String> topics = new ArrayList<>();
+		// get topics :
+		for (Entry<String, Set<String>> entry : projectsByTopic.entrySet()) {
+			if (entry.getValue().contains(projectId)) {
+				topics.add(entry.getKey());
+			}
+
+		}
+
+			// start listening to datasources
+			DataModelListener.startListening(topics);
+		RuleEngineHandler.runRuleEngineProject(projectId);
+		
+	}
+
+	
+	public void shutDownRuleEngine(String projectId) {
+		ArrayList<String> topics = new ArrayList<>();
+		// get topics :
+		for (Entry<String, Set<String>> entry : projectsByTopic.entrySet()) {
+			// if more than 1 active project is listening on that topic we dont stop the
+			// thread
+			if (entry.getValue().contains(projectId) && numberOfActiveProjectsByTopic(entry.getKey()) == 1) {
+				topics.add(entry.getKey());
+			}
+
+		}
+		DataModelListener.stopListening(topics);
+		RuleEngineHandler.stopRuleEngineProjectExecution(projectId);
+		
+	}
+	
 }

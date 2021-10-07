@@ -96,7 +96,7 @@ public class RuleEngineHandler {
     }
 
 
-    public static void injectData(String projectId,JEObject instance) throws InstanceCreationFailed {
+    public static void injectData(String projectId,JEObject instance)  {
     try
     {
     	

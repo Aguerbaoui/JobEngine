@@ -49,16 +49,19 @@ public class DataModelListener {
                 null, LogSubModule.JERUNNER, null);
     	for (String id : topics)
     	{
-    		readInitialValues(id);
-    		ZMQAgent agent = agents.get(id);
+    		if(!activeThreads.containsKey(id))
     		{
-    			if (agent!=null && !agent.isListening())
-    			{
-    				agent.setListening(true);
-    	    		Thread thread = new Thread(agent);
-    	    		activeThreads.put(id, thread);
-    	    		thread.start();
-    			}
+    			readInitialValues(id);
+        		ZMQAgent agent = agents.get(id);
+        		{
+        			if (agent!=null && !agent.isListening())
+        			{
+        				agent.setListening(true);
+        	    		Thread thread = new Thread(agent);
+        	    		activeThreads.put(id, thread);
+        	    		thread.start();
+        			}
+        		}
     		}
     	}
     

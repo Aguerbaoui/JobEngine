@@ -21,7 +21,10 @@ public abstract class JERule extends JEObject  {
 	 */
 	boolean isAdded =  false;
 	
-
+	boolean isRunning = false;
+	
+	boolean enabled = true;
+	
 	private Map<String,Integer> topics = new HashMap<>();
 	
 	String description ;
@@ -110,6 +113,22 @@ public abstract class JERule extends JEObject  {
 
 	public void setTopics(Map<String, Integer> topics) {
 		this.topics = topics;
+	}
+
+	public boolean isEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
+	}
+
+	public boolean isRunning() {
+		return isRunning;
+	}
+
+	public void setRunning(boolean isRunning) {
+		this.isRunning = isRunning;
 	}
 
 

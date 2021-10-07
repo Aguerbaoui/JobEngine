@@ -27,9 +27,9 @@ public class AsyncRuleService {
 	 * build rule : create drl + check for compilation errors
 	 */
 	@Async
-	public CompletableFuture<Void> buildRule(String projectId, String ruleId)
-			throws RuleNotFoundException, RuleBuildFailedException, JERunnerErrorException,
-			IOException, InterruptedException, ExecutionException {
+	public CompletableFuture<Void> compileRule(String projectId, String ruleId, boolean compileOnly)
+			throws RuleNotFoundException, RuleBuildFailedException, JERunnerErrorException
+			 {
 		JEProject project = ProjectService.getProjectById(projectId);
 		 if (!project.ruleExists(ruleId)) {
 			throw new RuleNotFoundException(projectId, ruleId);
@@ -37,9 +37,12 @@ public class AsyncRuleService {
 		JELogger.debug(" [projectId="+ projectId +" ]" + JEMessages.BUILDING_RULE +" : " + project.getRule(ruleId).getJobEngineElementName(),
 				LogCategory.DESIGN_MODE, projectId,
 				LogSubModule.JEBUILDER, ruleId);
-		RuleBuilder.buildRule(project.getRule(ruleId), project.getConfigurationPath());
-		project.getRules().get(ruleId).setBuilt(true);
-		project.getRules().get(ruleId).setAdded(true);
+		RuleBuilder.buildRule(project.getRule(ruleId), project.getConfigurationPath(),compileOnly);
+		if(!compileOnly)
+		{
+			project.getRules().get(ruleId).setBuilt(true);
+			project.getRules().get(ruleId).setAdded(true);
+		}
 		return CompletableFuture.completedFuture(null);
 
 	}

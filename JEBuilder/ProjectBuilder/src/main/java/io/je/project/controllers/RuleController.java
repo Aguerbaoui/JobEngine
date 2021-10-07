@@ -98,7 +98,7 @@ public class RuleController {
 		try {
 			projectService.getProject(projectId);
 
-			ruleService.addRule(projectId, ruleModel);
+			ruleService.createRule(projectId, ruleModel);
 			
 
 		} catch (Exception e) {
@@ -238,7 +238,7 @@ public class RuleController {
 		try {
 			projectService.getProject(projectId);
 
-			ruleService.buildRule(projectId, ruleId);
+			ruleService.compileRule(projectId, ruleId);
 			projectService.saveProject(projectId);
 
 		} catch (Exception e) {
@@ -248,6 +248,50 @@ public class RuleController {
 		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.RULE_WAS_BUILT_SUCCESSFULLY));
 	}
 
+
+
+	
+	/*
+	 * run rule
+	 */
+	@PostMapping(value = "/{projectId}/runRule/{ruleId}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> runRule(@PathVariable("projectId") String projectId,
+			@PathVariable("ruleId") String ruleId) {
+
+		try {
+			projectService.getProject(projectId);
+
+			ruleService.runRule(projectId, ruleId);
+			projectService.saveProject(projectId);
+
+		} catch (Exception e) {
+			return JEExceptionHandler.handleException(e);
+		}
+
+		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, "Rule fired"));
+	}
+	
+	
+	/*
+	 * run rule
+	 */
+	@PostMapping(value = "/{projectId}/stopRule/{ruleId}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> stopRule(@PathVariable("projectId") String projectId,
+			@PathVariable("ruleId") String ruleId) {
+
+		try {
+			projectService.getProject(projectId);
+			ruleService.stopRule(projectId, ruleId);
+			projectService.saveProject(projectId);
+
+		} catch (Exception e) {
+			return JEExceptionHandler.handleException(e);
+		}
+
+		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.RULE_COMPILED));
+	}
+	
+	
 	/*
 	 * temporary function until autosave is implemented
 	 */

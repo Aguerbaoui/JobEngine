@@ -28,7 +28,7 @@ public class RuleModel {
     String salience;
 
     @JsonProperty(AttributesMapping.ENABLED)
-    String enabled;
+    boolean enabled;
 	
    
     @JsonProperty(AttributesMapping.DATEEFFECTIVE)
@@ -71,7 +71,7 @@ public class RuleModel {
 		this.modifiedBy = rule.getJeObjectModifiedBy();
 		if(rule instanceof UserDefinedRule) {
 			this.salience = ((UserDefinedRule)rule).getRuleParameters().getSalience();
-			this.enabled = ((UserDefinedRule)rule).getRuleParameters().getEnabled();
+			this.enabled = Boolean.valueOf(((UserDefinedRule)rule).getRuleParameters().getEnabled());
 			this.dateEffective = ((UserDefinedRule)rule).getRuleParameters().getDateEffective();
 			this.dateExpires = ((UserDefinedRule)rule).getRuleParameters().getDateExpires();
 			this.timer = ((UserDefinedRule)rule).getRuleParameters().getTimer();
@@ -131,10 +131,10 @@ public class RuleModel {
 	public void setSalience(String salience) {
 		this.salience = salience;
 	}
-	public String getEnabled() {
+	public boolean getEnabled() {
 		return enabled;
 	}
-	public void setEnabled(String enabled) {
+	public void setEnabled(boolean enabled) {
 		this.enabled = enabled;
 	}
 	public String getDateEffective() {

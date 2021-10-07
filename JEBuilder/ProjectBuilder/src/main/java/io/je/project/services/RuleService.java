@@ -51,7 +51,7 @@ public class RuleService {
     /*
      * Add a rule to a project
      */
-    public void addRule(String projectId, RuleModel ruleModel)
+    public void createRule(String projectId, RuleModel ruleModel)
             throws ProjectNotFoundException, RuleAlreadyExistsException, RuleNotAddedException, LicenseNotActiveException {
     	LicenseProperties.checkLicenseIsActive();  
         JEProject project = ProjectService.getProjectById(projectId);
@@ -67,7 +67,7 @@ public class RuleService {
             throw new RuleNotAddedException(JEMessages.RULE_NAME_NULL);
         }
 
-        JELogger.debug(" Adding rule " + ruleModel.getRuleName() + "..",  LogCategory.RUNTIME,
+        JELogger.debug(" Creating rule " + ruleModel.getRuleName() + "..",  LogCategory.RUNTIME,
                 projectId, LogSubModule.RULE, ruleModel.getRuleId());
         UserDefinedRule rule = new UserDefinedRule();
         rule.setJobEngineElementID(ruleModel.getRuleId());
@@ -81,7 +81,7 @@ public class RuleService {
         rule.setJeObjectModifiedBy(ruleModel.getModifiedBy());
         ruleParameters.setSalience(ruleModel.getSalience());
         ruleParameters.setTimer(ruleModel.getTimer());
-        ruleParameters.setEnabled(ruleModel.getEnabled());
+        ruleParameters.setEnabled(String.valueOf(ruleModel.getEnabled()));
         ruleParameters.setDateEffective(ruleModel.getDateEffective());
         ruleParameters.setDateExpires(ruleModel.getDateExpires());
         rule.setRuleParameters(ruleParameters);
@@ -93,23 +93,18 @@ public class RuleService {
      * delete rule from a project
      */
 
-    public void deleteRule(String projectId, String ruleId) throws ProjectNotFoundException, RuleNotFoundException, JERunnerErrorException, InterruptedException, ExecutionException, LicenseNotActiveException {
+    public void deleteRule(String projectId, String ruleId) throws ProjectNotFoundException, RuleNotFoundException, JERunnerErrorException, LicenseNotActiveException {
     	LicenseProperties.checkLicenseIsActive();  
-    	JEProject project = ProjectService.getProjectById(projectId);
-        if (project == null) {
-            throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
-        }
-
-        JELogger.debug( "[projectId = " + projectId + "] [ruleId = " + ruleId + "]"
-                        + JEMessages.DELETING_RULE,
-                LogCategory.DESIGN_MODE, projectId, LogSubModule.RULE, ruleId);
+    	 JEProject project = getProject(projectId);        
         if (project.getRule(ruleId) instanceof UserDefinedRule) {
-            UserDefinedRule rule = (UserDefinedRule) project.getRule(ruleId);
+            UserDefinedRule rule = getRule(project,ruleId);
             if (rule.getSubRules() != null) {
                 for (String subRuleId : rule.getSubRules()) {
 
                     JERunnerAPIHandler.deleteRule(projectId, subRuleId);
-
+                    JELogger.debug( "[project = " + project.getProjectName() + "] [rule = " + rule.getJobEngineElementName() + "]"
+                            + JEMessages.DELETING_RULE,
+                    LogCategory.DESIGN_MODE, projectId, LogSubModule.RULE, ruleId);
                 }
             }
             removeAllRuleBlockNames(projectId,ruleId);
@@ -118,6 +113,7 @@ public class RuleService {
 
         }
         project.deleteRule(ruleId);
+        project.getRuleEngine().remove(ruleId);
         ruleRepository.deleteById(ruleId);
     }
 
@@ -126,16 +122,13 @@ public class RuleService {
      */
 
     public void updateRule(String projectId, RuleModel ruleModel)
-            throws ProjectNotFoundException, ConfigException, LicenseNotActiveException {
+            throws ProjectNotFoundException, LicenseNotActiveException {
     	LicenseProperties.checkLicenseIsActive();  
-    	JEProject project = ProjectService.getProjectById(projectId);
-        if (project == null) {
-            throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
-        }
+    	JEProject project = getProject(projectId);   
         UserDefinedRule ruleToUpdate = (UserDefinedRule) project.getRule(ruleModel.getRuleId());
         ruleToUpdate.setJeObjectLastUpdate(LocalDateTime.now());
 
-        JELogger.debug( "[projectId = " + projectId + "] [ruleId = " + ruleModel.getRuleId() + "]" + JEMessages.UPDATING_RULE,
+        JELogger.debug( "[project = " + project.getProjectName() + "] [rule = " + project.getRules().get(ruleModel.getRuleId()).getJobEngineElementName() + "]" + JEMessages.UPDATING_RULE,
                 LogCategory.DESIGN_MODE, projectId, LogSubModule.RULE, ruleModel.getRuleId());
         // update rule name
         if (ruleModel.getRuleName() != null && !ruleModel.getRuleName().equals(DEFAULT_DELETE_CONSTANT)) {
@@ -194,13 +187,9 @@ public class RuleService {
 
         }
 
-        // update Enabled
-        if (ruleModel.getEnabled() != null && !ruleModel.getEnabled().equals(DEFAULT_DELETE_CONSTANT)) {
-            ruleToUpdate.getRuleParameters().setEnabled(ruleModel.getEnabled());
-        } else if (ruleModel.getEnabled() != null && ruleModel.getEnabled().equals(DEFAULT_DELETE_CONSTANT)) {
-            ruleToUpdate.getRuleParameters().setEnabled(null);
-
-        }
+       
+    
+        
 
         // update Timer
         if (ruleModel.getTimer() != null && !ruleModel.getTimer().equals(DEFAULT_DELETE_CONSTANT)) {
@@ -209,6 +198,21 @@ public class RuleService {
             ruleToUpdate.getRuleParameters().setTimer(null);
 
         }
+        
+        
+        // update Enabled
+        ruleToUpdate.setEnabled(ruleModel.getEnabled());
+        if(ruleToUpdate.isEnabled())
+        {
+        	ruleToUpdate.getRuleParameters().setEnabled(String.valueOf(ruleModel.getEnabled()));
+        	
+        }else {
+        	ruleToUpdate.getRuleParameters().setEnabled(null);
+        }
+     
+    	
+        
+        
         ruleToUpdate.setBuilt(false);
         project.setBuilt(false);
         ruleRepository.save(ruleToUpdate);
@@ -219,7 +223,7 @@ public class RuleService {
      */
     public String addBlockToRule(BlockModel blockModel) throws AddRuleBlockException, ProjectNotFoundException,
             RuleNotFoundException, DataDefinitionUnreachableException, JERunnerErrorException, AddClassException,
-            ClassLoadException, IOException, InterruptedException, ExecutionException, ConfigException, LicenseNotActiveException {
+            ClassLoadException, IOException, InterruptedException, ExecutionException, LicenseNotActiveException {
     	LicenseProperties.checkLicenseIsActive();
         if (blockModel.getProjectId() == null) {
             throw new AddRuleBlockException(JEMessages.BLOCK_PROJECT_ID_NULL);
@@ -290,7 +294,7 @@ public class RuleService {
      */
     public void updateBlockInRule(BlockModel blockModel) throws AddRuleBlockException, ProjectNotFoundException,
             RuleNotFoundException, DataDefinitionUnreachableException, JERunnerErrorException, AddClassException,
-            ClassLoadException, IOException, InterruptedException, ExecutionException, ConfigException, RuleBlockNotFoundException, LicenseNotActiveException {
+            ClassLoadException, IOException, InterruptedException, ExecutionException, RuleBlockNotFoundException, LicenseNotActiveException {
     	
     	LicenseProperties.checkLicenseIsActive();
     	//check project id is not null
@@ -304,13 +308,9 @@ public class RuleService {
             throw new AddRuleBlockException(JEMessages.BLOCK_RULE_ID_NULL);
         }
 
-        JEProject project = ProjectService.getProjectById(blockModel.getProjectId());
-       
-        //check project exists
-        if (project == null) {
-            throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
+        JEProject project = getProject(blockModel.getProjectId()); 
         //check rule exists    
-        } else if (!project.ruleExists(blockModel.getRuleId())) {
+         if (!project.ruleExists(blockModel.getRuleId())) {
             JELogger.error( JEMessages.RULE_NOT_FOUND + " [ " + blockModel.getRuleId() + "]",
                     LogCategory.DESIGN_MODE, blockModel.getProjectId(), LogSubModule.RULE, blockModel.getRuleId());
             throw new RuleNotFoundException(blockModel.getProjectId(), blockModel.getRuleId());        }
@@ -382,42 +382,40 @@ public class RuleService {
     public void deleteBlock(String projectId, String ruleId, String blockId) throws ProjectNotFoundException,
             RuleNotFoundException, RuleBlockNotFoundException, ConfigException, LicenseNotActiveException {
     	LicenseProperties.checkLicenseIsActive();
-        JEProject project = ProjectService.getProjectById(projectId);
-        if (project == null) {
-            throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
-        } else if (!project.ruleExists(ruleId)) {
+    	 JEProject project = getProject(projectId); 
+    	if (!project.ruleExists(ruleId)) {
         	throw new RuleNotFoundException(projectId, ruleId);
         	}
-        JELogger.debug( JEMessages.DELETING_BLOCK + blockId + " in rule [id : " + ruleId + "] in project id = " + projectId,
-                LogCategory.DESIGN_MODE, projectId, LogSubModule.RULE, blockId);
+        JELogger.debug( JEMessages.DELETING_BLOCK + blockId + " in rule [" + project.getRule(ruleId).getJobEngineElementName() + "] in project  = " + project.getProjectName(),
+                LogCategory.DESIGN_MODE, projectId, LogSubModule.RULE, ruleId);
         project.deleteRuleBlock(ruleId, blockId);
         project.removeBlockName(blockId);
         ruleRepository.save(project.getRule(ruleId));
     }
 
     @Async
-    public CompletableFuture<Void> buildRules(String projectId)
+    public CompletableFuture<Void> compileRules(String projectId)
             throws ProjectNotFoundException, RuleBuildFailedException, JERunnerErrorException, IOException,
-            RuleNotFoundException, InterruptedException, ExecutionException, ConfigException {
-        JEProject project = ProjectService.getProjectById(projectId);
-        if (project == null) {
-            throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
-        }
-        JELogger.debug( "[projectId = " + projectId + "]" + JEMessages.BUILDING_RULES,
+            RuleNotFoundException, InterruptedException, ExecutionException {
+    	JEProject project = getProject(projectId); 
+        JELogger.debug( "[project = " + project.getProjectName() + "]" + JEMessages.BUILDING_RULES,
                 LogCategory.DESIGN_MODE, projectId, LogSubModule.RULE, null);
         cleanUpRules(project);
         ArrayList<CompletableFuture<?>> ruleFuture = new ArrayList<>();
 
         for (Entry<String, JERule> entry : project.getRules().entrySet()) {
             String ruleId = entry.getKey();
-            ruleFuture.add(asyncRuleService.buildRule(projectId, ruleId));
+           if(entry.getValue().isEnabled())
+           {
+        	   ruleFuture.add(asyncRuleService.compileRule(projectId, ruleId,true));
+           }
         }
 
         ruleFuture.forEach(CompletableFuture::join);
         return CompletableFuture.completedFuture(null);
     }
 
-    private void cleanUpRules(JEProject project) throws JERunnerErrorException, IOException, InterruptedException, ExecutionException {
+    private void cleanUpRules(JEProject project) throws JERunnerErrorException{
 
         for (JERule rule : project.getRules().values()) {
             cleanUpRule(project, rule.getJobEngineElementID());
@@ -425,7 +423,36 @@ public class RuleService {
 
     }
 
-    private void cleanUpRule(JEProject project, String ruleId) throws JERunnerErrorException, IOException, InterruptedException, ExecutionException {
+    
+    @Async
+    /*
+     * Add Rule To Rule engine 
+     */
+    public CompletableFuture<Void> buildRules(String projectId)
+            throws ProjectNotFoundException, RuleBuildFailedException, JERunnerErrorException, 
+            RuleNotFoundException{
+    	JEProject project = getProject(projectId); 
+        JELogger.debug( "[project = " + project.getProjectName() + "]" + JEMessages.BUILDING_RULES,
+                LogCategory.DESIGN_MODE, projectId, LogSubModule.RULE, null);
+        cleanUpRules(project);
+        ArrayList<CompletableFuture<?>> ruleFuture = new ArrayList<>();
+
+        for (Entry<String, JERule> entry : project.getRules().entrySet()) {
+            String ruleId = entry.getKey();
+            if(entry.getValue().isEnabled() && !entry.getValue().isRunning())
+            {
+            	ruleFuture.add(asyncRuleService.compileRule(projectId, ruleId,false));
+            }
+        }
+
+        ruleFuture.forEach(CompletableFuture::join);
+        return CompletableFuture.completedFuture(null);
+    }
+
+  
+    
+    
+    private void cleanUpRule(JEProject project, String ruleId) throws JERunnerErrorException {
 
         String rulePrefix = RuleIdManager.generateSubRulePrefix(ruleId);
         FileUtilities.deleteFilesInPathByPrefix(project.getConfigurationPath(), rulePrefix);
@@ -451,13 +478,10 @@ public class RuleService {
 
     public Collection<RuleModel> getAllRules(String projectId) throws ProjectNotFoundException, LicenseNotActiveException {
     	LicenseProperties.checkLicenseIsActive();
-        JEProject project = ProjectService.getProjectById(projectId);
-        if (project == null) {
-            throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
-        }
+    	 JEProject project = getProject(projectId); 
 
         List<RuleModel> rules = new ArrayList<>();
-        JELogger.debug( "[projectId = " + projectId + "]" + JEMessages.LOADING_RULES,
+        JELogger.debug( "[project = " + project.getProjectName() + "]" + JEMessages.LOADING_RULES,
                 LogCategory.DESIGN_MODE, project.getProjectId(), LogSubModule.RULE, null);
         for (JERule rule :  ruleRepository.findByJobEngineProjectID(projectId)) {
 
@@ -469,13 +493,11 @@ public class RuleService {
 
     public RuleModel getRule(String projectId, String ruleId) throws ProjectNotFoundException, RuleNotFoundException, LicenseNotActiveException {
     	LicenseProperties.checkLicenseIsActive();
-    	JEProject project = ProjectService.getProjectById(projectId);
-        if (project == null) {
-            throw new ProjectNotFoundException("["+ projectId + "] "+JEMessages.PROJECT_NOT_FOUND );
-
-        } else if (!project.ruleExists(ruleId)) {
+    	
+    	 JEProject project = getProject(projectId); 
+    	if (!project.ruleExists(ruleId)) {
         	throw new RuleNotFoundException(projectId, ruleId);        }
-        JELogger.debug( "[projectId = " + projectId + "] [ruleId = " + ruleId + "]" + JEMessages.LOADING_RULE,
+        JELogger.debug( "[project = " + project.getProjectName() + "] [rule = " + project.getRules().get(ruleId).getJobEngineElementName() + "]" + JEMessages.LOADING_RULE,
                 LogCategory.DESIGN_MODE, project.getProjectId(), LogSubModule.RULE, ruleId);
         return new RuleModel(ruleRepository.findById(ruleId).get());
     }
@@ -524,12 +546,10 @@ public class RuleService {
             throws ProjectNotFoundException, RuleNotFoundException, LicenseNotActiveException {
     	LicenseProperties.checkLicenseIsActive();
 
-    	JEProject project = ProjectService.getProjectById(projectId);
-        if (project == null) {
-            throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
-        } else if (!project.ruleExists(ruleId)) {
+    	JEProject project = getProject(projectId); 
+    	if (!project.ruleExists(ruleId)) {
         	throw new RuleNotFoundException(projectId, ruleId);        }
-        JELogger.debug( "[projectId = " + projectId + "] [ruleId = " + ruleId + "]"+JEMessages.FRONT_CONFIG,
+        JELogger.debug( "[project = " +project.getProjectName() + "] [rule = " + project.getRules().get(ruleId).getJobEngineElementName() + "]"+JEMessages.FRONT_CONFIG,
                 LogCategory.DESIGN_MODE, projectId, LogSubModule.RULE, ruleId);
         project.getRule(ruleId).setRuleFrontConfig(config);
         ruleRepository.save(project.getRule(ruleId));
@@ -561,18 +581,15 @@ public class RuleService {
      * returns nothing if rules were deleted successfully
      * if some rules were not deleted, throws exception with map [ key: rule that was not deleted , value : cause of the deletion failure ]
      */
-    public void deleteRules(String projectId, List<String> ruleIds) throws ProjectNotFoundException, RuleDeletionException, ConfigException, LicenseNotActiveException {
+    public void deleteRules(String projectId, List<String> ruleIds) throws ProjectNotFoundException, RuleDeletionException, LicenseNotActiveException {
     	LicenseProperties.checkLicenseIsActive();
 
-        JEProject project = ProjectService.getProjectById(projectId);
-        if (project == null) {
-            throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
-        }
-        HashMap<String, String> undeletedRules = new HashMap<String, String>();
+    	JEProject project = getProject(projectId); 
+        HashMap<String, String> undeletedRules = new HashMap();
         for (String ruleId : ruleIds) {
             if (project.ruleExists(ruleId)) {
                 try {
-                    JELogger.debug( "[projectId = " + projectId + "] [ruleId = " + ruleId + "]"+JEMessages.DELETING_RULE,
+                    JELogger.debug( "[projectId = " +project.getProjectName() + "] [rule = " + project.getRules().get(ruleId).getJobEngineElementName() + "]"+JEMessages.DELETING_RULE,
                             LogCategory.DESIGN_MODE, projectId, LogSubModule.RULE, ruleId);
                     if (project.getRule(ruleId) instanceof UserDefinedRule) {
                         UserDefinedRule rule = (UserDefinedRule) project.getRule(ruleId);
@@ -609,8 +626,8 @@ public class RuleService {
     /*
      * build rule : create drl + check for compilation errors
      */
-    public void buildRule(String projectId, String ruleId) throws ProjectNotFoundException, RuleNotFoundException,
-            RuleBuildFailedException, JERunnerErrorException, IOException, InterruptedException, ExecutionException, ConfigException, LicenseNotActiveException {
+    public void compileRule(String projectId, String ruleId) throws ProjectNotFoundException, RuleNotFoundException,
+            RuleBuildFailedException, JERunnerErrorException, LicenseNotActiveException {
     	LicenseProperties.checkLicenseIsActive();
 
         JEProject project = ProjectService.getProjectById(projectId);
@@ -622,7 +639,8 @@ public class RuleService {
         JELogger.debug( "[projectId = " + projectId + "] [ruleId = " + ruleId + "]"+JEMessages.BUILDING_RULE,
                 LogCategory.DESIGN_MODE, projectId, LogSubModule.RULE, ruleId);
         cleanUpRule(project, ruleId);
-        RuleBuilder.buildRule(project.getRule(ruleId), project.getConfigurationPath());
+        RuleBuilder.buildRule(project.getRule(ruleId), project.getConfigurationPath(),true);
+
         
     }
     
@@ -642,10 +660,10 @@ public class RuleService {
 		
 	}
 
-	public ConcurrentHashMap<String, JERule> getAllJERules(String projectId) throws ProjectNotFoundException, LicenseNotActiveException {
+	public ConcurrentHashMap<String, JERule> getAllJERules(String projectId) throws LicenseNotActiveException {
     	LicenseProperties.checkLicenseIsActive();
 		List<JERule> rules = ruleRepository.findByJobEngineProjectID(projectId);
-		ConcurrentHashMap<String, JERule> map = new ConcurrentHashMap<String, JERule>();
+		ConcurrentHashMap<String, JERule> map = new ConcurrentHashMap<>();
 		for(JERule rule : rules )
 		{
 			map.put(rule.getJobEngineElementID(), rule);
@@ -653,5 +671,112 @@ public class RuleService {
 		return map;
 	}
 
+/*
+ * run a specific rule. 
+ */
+	public void runRule(String projectId, String ruleId) throws LicenseNotActiveException, ProjectNotFoundException, RuleNotFoundException, RuleBuildFailedException, JERunnerErrorException {
+		LicenseProperties.checkLicenseIsActive();
 
+		JEProject project = getProject(projectId);        
+         if (!project.ruleExists(ruleId)) {
+        	throw new RuleNotFoundException(projectId, ruleId);
+        }
+        if( !project.getRules().get(ruleId).isEnabled())
+        {
+        	throw new RuleBuildFailedException("Rule ["+ project.getRules().get(ruleId).getJobEngineElementName() +"] is currently not enabled. Make sure to enable rule before attempting to run it.");
+        }
+        RuleBuilder.buildRule(project.getRules().get(ruleId), project.getConfigurationPath(),false);
+        project.getRules().get(ruleId).setBuilt(true);
+		project.getRules().get(ruleId).setAdded(true);
+		project.getRules().get(ruleId).setRunning(true);
+		project.getRuleEngine().add(ruleId);
+		if(!project.getRuleEngine().isRunning()) {
+			  JERunnerAPIHandler.runProjectRules(projectId);
+			  project.getRuleEngine().add(ruleId);
+			  	project.getRuleEngine().setRunning(true);
+
+		}
+	}
+
+	public void stopRule(String projectId, String ruleId) throws ProjectNotFoundException, RuleNotFoundException, JERunnerErrorException, RuleNotAddedException {
+
+        JEProject project = getProject(projectId);        
+        UserDefinedRule rule = getRule(project,ruleId);
+       if(rule.isRunning())
+       {
+    	   if (rule.getSubRules() != null) {
+               for (String subRuleId : rule.getSubRules()) {
+
+                   try {
+   					JERunnerAPIHandler.deleteRule(projectId, subRuleId);
+   					project.getRule(ruleId).setAdded(false);
+   					project.getRule(ruleId).setBuilt(false);
+   					project.getRules().get(ruleId).setRunning(false);
+   					project.getRuleEngine().remove(ruleId);
+
+   					if(project.getRuleEngine().getBuiltRules().isEmpty())
+   					{
+   						JERunnerAPIHandler.shutDownRuleEngine(projectId);
+   						project.getRuleEngine().setRunning(false);
+   					}
+   					else if(project.getRuleEngine().getBuiltRules().size()==1)
+   					{
+   						JERunnerAPIHandler.shutDownRuleEngine(projectId);
+   					    JERunnerAPIHandler.runProjectRules(projectId);
+
+   					}
+
+   				} catch (JERunnerErrorException e) {
+   					JELogger.error("Failed to stop rule : "+project.getRules().get(ruleId).getJobEngineElementName() ,  LogCategory.RUNTIME,
+   							projectId, LogSubModule.RULE, null);
+   					throw new JERunnerErrorException("Failed to stop rule : " +e.getMessage());
+   				}
+
+               }
+           }
+       }else
+       {
+    		JELogger.error("Rule already stopped : "+project.getRules().get(ruleId).getJobEngineElementName() ,  LogCategory.RUNTIME,
+						projectId, LogSubModule.RULE, null);
+    	   throw new RuleNotAddedException("Rule Already stopped");
+       }
+       
+		
+	}
+
+
+	private JEProject getProject(String projectId) throws ProjectNotFoundException
+	{
+		JEProject project = ProjectService.getProjectById(projectId);
+        if (project == null) {
+            throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
+        }
+        return project;
+	}
+	
+	private UserDefinedRule getRule(JEProject project, String ruleId) throws RuleNotFoundException
+	{
+		if (!project.ruleExists(ruleId)) {
+        	throw new RuleNotFoundException(project.getProjectId(), ruleId);
+        }
+        return  (UserDefinedRule) project.getRule(ruleId);
+	}
+
+	public void updateRulesStatus(String projectId, boolean setRunning) throws ProjectNotFoundException {
+		 JEProject project = getProject(projectId);        
+		 for (Entry<String,JERule> rule : project.getRules().entrySet())
+		 {
+			 rule.getValue().setRunning(setRunning);
+			 if(setRunning)
+			 {
+				 project.getRuleEngine().add(rule.getKey());
+			 }else {
+				 project.getRuleEngine().remove(rule.getKey());
+			 }
+		 }
+		
+	}
+
+	
+	
 }
