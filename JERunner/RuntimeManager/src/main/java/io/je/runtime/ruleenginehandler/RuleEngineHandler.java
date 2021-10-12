@@ -180,6 +180,16 @@ public class RuleEngineHandler {
 		
 	}
 
+
+	public static void clearRuleTopics(String projectId, String ruleId) {
+		Rule rule = RuleEngine.getRule(projectId,ruleId);
+		if(rule!=null)
+		{
+			rule.getTopics().clear();
+		}
+		
+	}
+
    /* public static void setClassLoader(JEClassLoader loader) {
 		RuleEngine.setClassLoader(loader);
     }*/

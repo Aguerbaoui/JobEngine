@@ -232,23 +232,27 @@ public class ProjectContainer {
 		//destroySession=false;
 		try {
 
-			kieSession.halt();
-			status = Status.STOPPED;
-			if(destroySession)
+			if(kieSession!=null)
 			{
-				kieSession.dispose();
-				kieSession.destroy();
-				kieSession=null;
-				facts.clear();
-			}
-			if(removeAllRules)
-			{
-				allRules.clear();
-				deleteAllRulesFromKieFileSystem();
-			}
+				kieSession.halt();
+				status = Status.STOPPED;
+				if(destroySession)
+				{
+					kieSession.dispose();
+					kieSession.destroy();
+					kieSession=null;
+					facts.clear();
+				}
+				if(removeAllRules)
+				{
+					allRules.clear();
+					deleteAllRulesFromKieFileSystem();
+				}
 
+			}
 			
 		} catch (Exception e) {
+			e.printStackTrace();
 			JELogger.error(JEMessages.STOPPING_PROJECT_CONTAINER_FAILED,  LogCategory.RUNTIME,
 					projectId, LogSubModule.RULE, null);
 			return false;
@@ -568,7 +572,7 @@ public class ProjectContainer {
 				projectId, LogSubModule.RULE, ruleId);
 		// check that rule exists
 		if (!ruleExists(ruleId)) {
-			JELogger.debugWithoutPublish("rule not deleted cos it doesn't exist ",  LogCategory.RUNTIME,
+			JELogger.debugWithoutPublish("Failed to delete rule: Id not found. ",  LogCategory.RUNTIME,
 					projectId, LogSubModule.RULE, ruleId);
 			return;
 		}

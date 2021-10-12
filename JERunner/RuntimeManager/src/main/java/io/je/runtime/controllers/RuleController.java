@@ -36,8 +36,8 @@ public class RuleController {
     public ResponseEntity<?> addRule(@RequestBody RuleModel ruleModel) {
 
         try {
+            runtimeDispatcher.addTopics(ruleModel.getProjectId(), ruleModel.getRuleId(),"rule",ruleModel.getTopics());
             runtimeDispatcher.addRule(ruleModel);
-            runtimeDispatcher.addTopics(ruleModel.getProjectId(), ruleModel.getTopics());
 
         } catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
@@ -54,8 +54,9 @@ public class RuleController {
     public ResponseEntity<?> updateRule(@RequestBody RuleModel ruleModel) {
 
         try {
+            runtimeDispatcher.removeRuleTopics(ruleModel.getProjectId(), ruleModel.getRuleId());
+            runtimeDispatcher.addTopics(ruleModel.getProjectId(), ruleModel.getRuleId(),"rule",ruleModel.getTopics());
             runtimeDispatcher.updateRule(ruleModel);
-            runtimeDispatcher.addTopics(ruleModel.getProjectId(), ruleModel.getTopics());
 
         } catch (Exception e) {
 			return JEExceptionHandler.handleException(e);

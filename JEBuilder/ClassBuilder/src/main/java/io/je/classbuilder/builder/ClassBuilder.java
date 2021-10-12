@@ -78,7 +78,7 @@ public class ClassBuilder {
 		unitSG.addImport("com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer");
 		unitSG.addImport("com.fasterxml.jackson.databind.annotation.JsonSerialize");
 		unitSG.addImport("com.fasterxml.jackson.databind.annotation.JsonDeserialize");
-		unitSG.addImport("io.je.utilities.logger.JELogger");
+		unitSG.addImport("io.je.utilities.log.JELogger");
 		unitSG.addImport("java.lang.*");
 		unitSG.addImport("java.util.*");
 		unitSG.addImport("java.sql.*");

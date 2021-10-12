@@ -229,17 +229,9 @@ public class RuleService {
 			throw new AddRuleBlockException(JEMessages.BLOCK_RULE_ID_NULL);
 		}
 
-		JEProject project = ProjectService.getProjectById(blockModel.getProjectId());
-		if (project == null) {
-			throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
-		} else if (!project.ruleExists(blockModel.getRuleId())) {
-			JELogger.error(JEMessages.RULE_NOT_FOUND + " [ " + blockModel.getRuleId() + "]", CATEGORY,
-					blockModel.getProjectId(), RULE, blockModel.getRuleId());
-			throw new RuleNotFoundException(blockModel.getProjectId(), blockModel.getRuleId());
-		}
+		JEProject project = getProject(blockModel.getProjectId());
+		UserDefinedRule rule = getRule(project, blockModel.getRuleId());
 		verifyBlockFormatIsValid(blockModel);
-
-		UserDefinedRule rule = (UserDefinedRule) project.getRule(blockModel.getRuleId());
 
 		// check if block already exists
 		boolean blockExists = rule.containsBlock(blockModel.getBlockId());
@@ -299,15 +291,7 @@ public class RuleService {
 		}
 
 		JEProject project = getProject(blockModel.getProjectId());
-		// check rule exists
-		if (!project.ruleExists(blockModel.getRuleId())) {
-			JELogger.error(JEMessages.RULE_NOT_FOUND + " [ " + blockModel.getRuleId() + "]", CATEGORY,
-					blockModel.getProjectId(), RULE, blockModel.getRuleId());
-			throw new RuleNotFoundException(blockModel.getProjectId(), blockModel.getRuleId());
-		}
-
-		// check block exists
-		UserDefinedRule rule = (UserDefinedRule) project.getRule(blockModel.getRuleId());
+		UserDefinedRule rule = getRule(project, blockModel.getRuleId());
 		boolean blockExists = rule.containsBlock(blockModel.getBlockId());
 
 		if (!blockExists) {
@@ -481,7 +465,7 @@ public class RuleService {
 	 */
 
 	public void addScriptedRule(String projectId, ScriptRuleModel ruleModel)
-			throws ProjectNotFoundException, RuleAlreadyExistsException, ConfigException, LicenseNotActiveException {
+			throws ProjectNotFoundException, RuleAlreadyExistsException, LicenseNotActiveException {
 		LicenseProperties.checkLicenseIsActive();
 
 		ScriptedRule rule = new ScriptedRule(projectId, ruleModel.getRuleId(), ruleModel.getScript(),
@@ -502,7 +486,7 @@ public class RuleService {
 	 */
 
 	public void updateScriptedRule(String projectId, ScriptRuleModel ruleModel)
-			throws ProjectNotFoundException, RuleNotFoundException, ConfigException {
+			throws ProjectNotFoundException, RuleNotFoundException {
 
 		ScriptedRule rule = new ScriptedRule(projectId, ruleModel.getRuleId(), ruleModel.getScript(),
 				ruleModel.getRuleName());
@@ -564,7 +548,7 @@ public class RuleService {
 		LicenseProperties.checkLicenseIsActive();
 
 		JEProject project = getProject(projectId);
-		HashMap<String, String> undeletedRules = new HashMap();
+		HashMap<String, String> undeletedRules = new HashMap<>();
 		for (String ruleId : ruleIds) {
 			if (project.ruleExists(ruleId)) {
 				try {
@@ -669,14 +653,14 @@ public class RuleService {
 		project.getRuleEngine().add(ruleId);
 		if (!project.getRuleEngine().isRunning()) {
 			JERunnerAPIHandler.runProjectRules(projectId);
-			project.getRuleEngine().add(ruleId);
 			project.getRuleEngine().setRunning(true);
 
 		}
 	}
 
 	public void stopRule(String projectId, String ruleId)
-			throws ProjectNotFoundException, RuleNotFoundException, JERunnerErrorException, RuleNotAddedException {
+			throws ProjectNotFoundException, RuleNotFoundException, JERunnerErrorException, RuleNotAddedException, LicenseNotActiveException {
+		LicenseProperties.checkLicenseIsActive();
 
 		JEProject project = getProject(projectId);
 		UserDefinedRule rule = getRule(project, ruleId);
@@ -709,12 +693,12 @@ public class RuleService {
 
 				}
 			}
-		} else {
+		} /*else {
 			JELogger.error("Rule already stopped : " + project.getRules().get(ruleId).getJobEngineElementName(),
 					CATEGORY, projectId, RULE, null);
 			throw new RuleNotAddedException("Rule Already stopped");
 		}
-
+*/
 	}
 
 	private JEProject getProject(String projectId) throws ProjectNotFoundException {
@@ -744,5 +728,29 @@ public class RuleService {
 		}
 
 	}
+
+	public void runRules(String projectId, List<String> ruleIds) throws LicenseNotActiveException, ProjectNotFoundException, RuleNotFoundException, RuleBuildFailedException, JERunnerErrorException {
+		LicenseProperties.checkLicenseIsActive();
+
+		for(String ruleId : ruleIds)
+		{
+			//TODO: add build multiple rule to JERunner
+
+			runRule(projectId,ruleId);
+		}
+		
+	}
+
+	public void stopRules(String projectId, List<String> ruleIds)
+			throws ProjectNotFoundException, RuleNotFoundException, JERunnerErrorException, RuleNotAddedException, LicenseNotActiveException {
+		LicenseProperties.checkLicenseIsActive();
+
+		for(String ruleId : ruleIds) {
+			stopRule(projectId,ruleId);
+			
+		}
+
+	}
+
 
 }
