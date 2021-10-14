@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import io.je.utilities.ruleutils.RuleStatus;
 import io.je.utilities.runtimeobject.JEObject;
 
 @Document(collection="JERuleCollection")
@@ -21,7 +22,12 @@ public abstract class JERule extends JEObject  {
 	 */
 	boolean isAdded =  false;
 	
-
+	boolean isRunning = false;
+	
+	boolean enabled = true;
+	
+	RuleStatus status = RuleStatus.NOT_BUILT;
+	
 	private Map<String,Integer> topics = new HashMap<>();
 	
 	String description ;
@@ -110,6 +116,30 @@ public abstract class JERule extends JEObject  {
 
 	public void setTopics(Map<String, Integer> topics) {
 		this.topics = topics;
+	}
+
+	public boolean isEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
+	}
+
+	public boolean isRunning() {
+		return isRunning;
+	}
+
+	public void setRunning(boolean isRunning) {
+		this.isRunning = isRunning;
+	}
+
+	public RuleStatus getStatus() {
+		return status;
+	}
+
+	public void setStatus(RuleStatus status) {
+		this.status = status;
 	}
 
 

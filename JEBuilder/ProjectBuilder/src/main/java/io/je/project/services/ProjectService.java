@@ -10,6 +10,7 @@ import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.*;
 import io.je.utilities.log.JELogger;
 import io.je.utilities.models.LibModel;
+import io.je.utilities.ruleutils.OperationStatusDetails;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
 
@@ -147,7 +148,7 @@ public class ProjectService {
             JERunnerErrorException, InterruptedException, ExecutionException, RuleNotFoundException, ConfigException, WorkflowBuildException, LicenseNotActiveException {
         JELogger.info( "[projectId= "+projectId+"]"+  JEMessages.BUILDING_PROJECT,
                 LogCategory.DESIGN_MODE, projectId, LogSubModule.JEBUILDER, null);
-        CompletableFuture<?> buildRules = ruleService.buildRules(projectId);
+        CompletableFuture<?> buildRules = ruleService.compileALLRules(projectId);
         CompletableFuture<?> buildWorkflows = workflowService.buildWorkflows(projectId);
         CompletableFuture.allOf(buildRules, buildWorkflows).join();
         loadedProjects.get(projectId).setBuilt(true);
@@ -159,7 +160,7 @@ public class ProjectService {
      * run project => send request to jeRunner to run project
      */
     public void runAll(String projectId) throws ProjectNotFoundException, ProjectRunException,
-            InterruptedException, ExecutionException {
+            InterruptedException, ExecutionException, RuleBuildFailedException, RuleNotFoundException, IOException {
 		
         if (loadedProjects.containsKey(projectId)) {
             JEProject project = loadedProjects.get(projectId);
@@ -168,7 +169,11 @@ public class ProjectService {
                     JELogger.info( "[projectId= "+project.getProjectId()+"]"+  JEMessages.RUNNING_PROJECT,
                             LogCategory.DESIGN_MODE, projectId, LogSubModule.JEBUILDER, null);
                     try {
+                        ruleService.buildRules(projectId);                        
                         JERunnerAPIHandler.runProject(projectId);
+                        ruleService.updateRulesStatus(projectId,true);
+          			  	project.getRuleEngine().setRunning(true);
+
                     }
                     catch(JERunnerErrorException e) {
                         throw new ProjectRunException(JEMessages.ERROR_RUNNING_PROJECT);
@@ -197,24 +202,21 @@ public class ProjectService {
             throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
         }
         JEProject project = loadedProjects.get(projectId);
-        if (project.isRunning()) {
+        //if (project.isRunning()) {
             JELogger.info( "[projectId= "+project.getProjectId()+"]"+  JEMessages.STOPPING_PROJECT,
                     LogCategory.DESIGN_MODE, projectId, LogSubModule.JEBUILDER, null);
 
             try {
                 JERunnerAPIHandler.stopProject(projectId);
+                project.getRuleEngine().setRunning(false);
+                ruleService.updateRulesStatus(projectId,false);
+
             }
             catch (JERunnerErrorException e) {
                 throw new ProjectStopException(JEMessages.ERROR_STOPPING_PROJECT);
             }
             project.setRunning(false);
             saveProject(projectId).get();
-
-        } else {
-            JELogger.error( JEMessages.PROJECT_ALREADY_STOPPED +" " + projectId,
-                    LogCategory.DESIGN_MODE, projectId, LogSubModule.JEBUILDER, null);
-            throw new ProjectStatusException(JEMessages.PROJECT_ALREADY_STOPPED);
-        }
 
     }
 
@@ -265,19 +267,6 @@ public class ProjectService {
                 LogCategory.DESIGN_MODE, projectId, LogSubModule.JEBUILDER, null);
         return loadedProjects.get(projectId);
     }
-
-  /*  public CompletableFuture<Collection<?>> getAllProjects() {
-        JELogger.debug( JEMessages.LOADING_PROJECTS,
-                LogCategory.DESIGN_MODE, null, LogSubModule.JEBUILDER, null);
-        List<JEProject> projects = projectRepository.findAll();
-        for (JEProject project : projects) {
-            if (!loadedProjects.containsKey(project.getProjectId())) {
-                project.setBuilt(false);
-                loadedProjects.put(project.getProjectId(), project);
-            }
-        }
-        return CompletableFuture.completedFuture(projects);
-    }*/
 
     @Async
     public CompletableFuture<Void> saveProject(String projectId) {

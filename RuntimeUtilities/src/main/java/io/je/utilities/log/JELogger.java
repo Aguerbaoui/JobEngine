@@ -70,7 +70,7 @@ public class JELogger extends LoggerUtils {
 
 //Log in logging service
 		LogMessage logMessage = getLogMessage(LogLevel.Debug, message, category, projectId, subModule, objectId);
-		//publishLogMessage(logMessage);
+		publishLogMessage(logMessage);
 
 	}
 

@@ -70,7 +70,7 @@ public class JERunnerAPIHandler {
     }
 
     // compile rule
-    public static JEResponse compileRule(HashMap<String, String> requestModel)
+    public static JEResponse compileRule(Object requestModel)
             throws JERunnerErrorException {
         String requestUrl = runtimeManagerBaseApi + APIConstants.COMPILERULE;
         return sendRequestWithBody(requestUrl, requestModel);
@@ -242,6 +242,22 @@ public class JERunnerAPIHandler {
 	public static JEResponse writeVariableValue(String projectId,String variableId, Object value) throws JERunnerErrorException {
 		 String requestUrl = runtimeManagerBaseApi + WRITE_TO_VARIABLE + projectId + "/" + variableId;
 	       return  sendRequestWithStringBody(requestUrl,String.valueOf(value));
+		
+	}
+
+	public static  JEResponse  runProjectRules(String projectId) 
+		   throws JERunnerErrorException{
+		        String requestUrl = runtimeManagerBaseApi + APIConstants.RUN_PROJECT_RULES + projectId;
+		        return sendRequest(requestUrl);
+		
+	}
+
+	public static JEResponse shutDownRuleEngine(String projectId) 
+			   throws JERunnerErrorException{
+        String requestUrl = runtimeManagerBaseApi + APIConstants.SHUT_DOWN_RULE_ENGINE + projectId;
+        return sendRequest(requestUrl);
+
+
 		
 	}
 

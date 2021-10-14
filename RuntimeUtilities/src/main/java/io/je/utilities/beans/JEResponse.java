@@ -2,12 +2,12 @@ package io.je.utilities.beans;
 
 public class JEResponse {
 
-    private String message;
-    private int code;
+    protected String message;
+    protected int code;
     
     
 
-    private JEResponse() {
+    protected JEResponse() {
 	}
 
 	public String getMessage() {
