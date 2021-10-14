@@ -1,4 +1,4 @@
-package io.je.project.config;
+/*package io.je.project.config;
 
 import com.auth0.jwk.GuavaCachedJwkProvider;
 import com.auth0.jwk.Jwk;
@@ -84,3 +84,4 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
         return arr[1];
     }
 }
+*/

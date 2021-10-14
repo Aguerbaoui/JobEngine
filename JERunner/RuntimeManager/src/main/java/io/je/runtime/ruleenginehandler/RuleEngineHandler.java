@@ -96,7 +96,7 @@ public class RuleEngineHandler {
     }
 
 
-    public static void injectData(String projectId,JEObject instance) throws InstanceCreationFailed {
+    public static void injectData(String projectId,JEObject instance)  {
     try
     {
     	
@@ -177,6 +177,16 @@ public class RuleEngineHandler {
 	
 	public static void deleteEvent(String projectId, String id) {
 		RuleEngine.deleteFact(projectId,id);
+		
+	}
+
+
+	public static void clearRuleTopics(String projectId, String ruleId) {
+		Rule rule = RuleEngine.getRule(projectId,ruleId);
+		if(rule!=null)
+		{
+			rule.getTopics().clear();
+		}
 		
 	}
 
