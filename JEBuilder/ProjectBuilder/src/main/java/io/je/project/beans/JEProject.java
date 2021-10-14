@@ -283,7 +283,10 @@ public class JEProject {
 	* */
 	public void setRules(ConcurrentHashMap<String, JERule> rules) {
 		isBuilt=false;	
-		this.rules = rules;
+		if(rules!=null)
+		{
+			this.rules = rules;
+		}
 	}
 
 	
