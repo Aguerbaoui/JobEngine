@@ -2,6 +2,7 @@ package io.je.utilities.ruleutils;
 
 public class OperationStatusDetails {
 		
+	String itemId;
 	String itemName;
 	boolean operationSucceeded;
 	String operationError;
@@ -9,9 +10,23 @@ public class OperationStatusDetails {
 	
 	
 	
-	public OperationStatusDetails(String itemName) {
+	public OperationStatusDetails(String itemId) {
 		super();
-		this.itemName = itemName;
+		this.itemId = itemId;
+	}
+
+
+
+
+	public String getItemId() {
+		return itemId;
+	}
+
+
+
+
+	public void setItemId(String itemId) {
+		this.itemId = itemId;
 	}
 
 

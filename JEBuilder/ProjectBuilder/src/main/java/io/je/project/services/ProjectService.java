@@ -216,12 +216,6 @@ public class ProjectService {
             project.setRunning(false);
             saveProject(projectId).get();
 
-       /* } else {
-            JELogger.error( JEMessages.PROJECT_ALREADY_STOPPED +" " + projectId,
-                    LogCategory.DESIGN_MODE, projectId, LogSubModule.JEBUILDER, null);
-            throw new ProjectStatusException(JEMessages.PROJECT_ALREADY_STOPPED);
-        }*/
-
     }
 
     /*
@@ -271,19 +265,6 @@ public class ProjectService {
                 LogCategory.DESIGN_MODE, projectId, LogSubModule.JEBUILDER, null);
         return loadedProjects.get(projectId);
     }
-
-  /*  public CompletableFuture<Collection<?>> getAllProjects() {
-        JELogger.debug( JEMessages.LOADING_PROJECTS,
-                LogCategory.DESIGN_MODE, null, LogSubModule.JEBUILDER, null);
-        List<JEProject> projects = projectRepository.findAll();
-        for (JEProject project : projects) {
-            if (!loadedProjects.containsKey(project.getProjectId())) {
-                project.setBuilt(false);
-                loadedProjects.put(project.getProjectId(), project);
-            }
-        }
-        return CompletableFuture.completedFuture(projects);
-    }*/
 
     @Async
     public CompletableFuture<Void> saveProject(String projectId) {
