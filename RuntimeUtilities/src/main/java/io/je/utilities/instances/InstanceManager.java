@@ -31,10 +31,13 @@ public class InstanceManager {
 	static ConcurrentHashMap<String, JEObject> instancesLastValue = new ConcurrentHashMap<>();
 	
 	private static InstanceModel getInstanceModel(String dataReceived ) {
+		
 		JSONObject instanceJson = new JSONObject(dataReceived);
    		InstanceModel instanceModel = new InstanceModel();
    		instanceModel.setInstanceId(instanceJson.getString(InstanceModelMapping.INSTANCEID));
    		instanceModel.setModelId(instanceJson.getString(InstanceModelMapping.MODELID));
+   		instanceModel.setModelName(instanceJson.getString(InstanceModelMapping.MODELNAME));
+
    		instanceModel.setPayload(instanceJson.getJSONObject(InstanceModelMapping.PAYLOAD));
    		return instanceModel;
 	}
@@ -50,7 +53,8 @@ public class InstanceManager {
 		 objectMapper.setTypeFactory(objectMapper.getTypeFactory().withClassLoader(JEClassLoader.getInstance()));
 		
 		InstanceModel instanceModel = getInstanceModel(dataReceived);
-		
+		JELogger.control("Listening for data from class "+instanceModel.getModelName(), null, "", LogSubModule.JERUNNER, "123");
+
 		
 		//Retrieve Instance Class
 		Class<?> instanceClass = ClassRepository.getClassById(instanceModel.getModelId());

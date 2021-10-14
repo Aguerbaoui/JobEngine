@@ -43,7 +43,8 @@ public class JEProject {
     @Field("description")
     private String description;
 
-
+    @Transient
+    private RuleEngineSummary ruleEngine; //true -> rule engine running , false -> rule engine stopped TODO: switch to enum
 
     /*
     * Configuration path
@@ -106,7 +107,8 @@ public class JEProject {
     * Constructor
     * */
     public JEProject(String projectId) {
-        rules = new ConcurrentHashMap<>();
+        ruleEngine = new RuleEngineSummary();
+    	rules = new ConcurrentHashMap<>();
         workflows = new ConcurrentHashMap<>();
         events = new ConcurrentHashMap<>();
         variables= new ConcurrentHashMap<>();
@@ -123,7 +125,7 @@ public class JEProject {
 
 
 	 private JEProject() {
-
+		 ruleEngine = new RuleEngineSummary();
 	}
 
 
@@ -367,6 +369,7 @@ public class JEProject {
 				throw new RuleNotFoundException(projectId, ruleId);			}
 			//TODO: delete file
 			rules.remove(ruleId);
+			ruleEngine.remove(ruleId);
 			isBuilt=false;
 
 			
@@ -624,6 +627,30 @@ public class JEProject {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+	public RuleEngineSummary getRuleEngine() {
+		return ruleEngine;
+	}
+
+
+
+
+
+
+	public void setRuleEngine(RuleEngineSummary ruleEngine) {
+		this.ruleEngine = ruleEngine;
 	}
 
 

@@ -22,7 +22,7 @@ public class SIOTHPorts {
 	@JsonProperty("SIOTHLicensePort")
 	public int siothLicensePort ;
 	
-	@JsonProperty("TrackerPort")
+	@JsonProperty("TrackingPort")
 	public int trackerPort ;
 	
 	private SIOTHPorts() {

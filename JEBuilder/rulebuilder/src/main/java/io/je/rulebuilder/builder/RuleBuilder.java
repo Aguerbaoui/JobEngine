@@ -43,8 +43,8 @@ public class RuleBuilder {
     /*
      * generate drl file from rules and saves them to the provided path
      */
-    public static void buildRule(JERule jeRule, String buildPath)
-            throws RuleBuildFailedException, JERunnerErrorException, IOException, InterruptedException, ExecutionException {
+    public static void buildRule(JERule jeRule, String buildPath, boolean compileOnly)
+            throws RuleBuildFailedException, JERunnerErrorException {
         String rulePath = "";
         JELogger.debug(JEMessages.BUILDING_RULE + " : id = " + jeRule.getJobEngineElementID(),
                 LogCategory.DESIGN_MODE, jeRule.getJobEngineProjectID(),
@@ -54,12 +54,12 @@ public class RuleBuilder {
             for (ScriptedRule rule : unitRules) {
                 // generate drl
                 rulePath = rule.generateDRL(buildPath);
-                sendDRLToJeRunner(rule, rulePath);
+                sendDRLToJeRunner(rule, rulePath,compileOnly);
             }
         }
         if (jeRule instanceof ScriptedRule) {
             rulePath = ((ScriptedRule) jeRule).generateDRL(buildPath);
-            sendDRLToJeRunner(jeRule, rulePath);
+            sendDRLToJeRunner(jeRule, rulePath,compileOnly);
         }
 
     }
@@ -68,7 +68,7 @@ public class RuleBuilder {
     /*
      * send rule to JERunner
      */
-    public static void sendDRLToJeRunner(JERule rule, String path) throws RuleBuildFailedException, IOException, InterruptedException, ExecutionException {
+    public static void sendDRLToJeRunner(JERule rule, String path,boolean compileOnly) throws RuleBuildFailedException, JERunnerErrorException {
 
 
         // compile rule
@@ -82,7 +82,7 @@ public class RuleBuilder {
         ruleMap.put(JERunnerRuleMapping.FORMAT, "DRL");
         ruleMap.put(JERunnerRuleMapping.TOPICS, rule.getTopics().keySet());
 
-        JELogger.debug(" [ project id = " + rule.getJobEngineProjectID() + " ] [rule id = " + rule.getJobEngineElementID() + "]"
+        JELogger.debug(" [ project id = " + rule.getJobEngineProjectID() + " ] [rule = " + rule.getJobEngineElementName() + "]"
                         + JEMessages.SENDNG_RULE_TO_RUNNER,
                 LogCategory.DESIGN_MODE, rule.getJobEngineProjectID(),
                 LogSubModule.RULE, rule.getJobEngineElementID());
@@ -90,12 +90,24 @@ public class RuleBuilder {
                 LogCategory.DESIGN_MODE, rule.getJobEngineProjectID(),
                 LogSubModule.RULE, rule.getJobEngineElementID());
         JEResponse jeRunnerResp = null;
-        try {
-            jeRunnerResp = JERunnerAPIHandler.updateRule(ruleMap);
+     
+        if(compileOnly) {
+        	
+			jeRunnerResp = JERunnerAPIHandler.compileRule(ruleMap);
+
+        	  
+        }else
+        {
+        	 try {
+                 jeRunnerResp = JERunnerAPIHandler.updateRule(ruleMap);
+             }
+             catch(JERunnerErrorException e) {
+                 throw new RuleBuildFailedException(JEMessages.RULE_BUILD_FAILED+": "+e.getMessage());
+             }
         }
-        catch(JERunnerErrorException e) {
-            throw new RuleBuildFailedException(JEMessages.RULE_BUILD_FAILED);
-        }
+        
+        
+        
         if (jeRunnerResp == null || jeRunnerResp.getCode() != ResponseCodes.CODE_OK) {
 			JELogger.error("[rule id =" + rule.getJobEngineElementName() + " ]" + JEMessages.RULE_BUILD_FAILED + jeRunnerResp.getMessage(),
 					LogCategory.DESIGN_MODE, rule.getJobEngineProjectID(),
@@ -111,7 +123,7 @@ public class RuleBuilder {
      */
     public static List<ScriptedRule> scriptRule(UserDefinedRule uRule) throws RuleBuildFailedException {
         uRule.getBlocks().init();
-        List<String> subRules = new ArrayList<String>();
+        List<String> subRules = new ArrayList<>();
         String duration = null;
         int scriptedRulesCounter = 0;
         String scriptedRuleid = "";
@@ -221,5 +233,12 @@ public class RuleBuilder {
 
         return roots;
     }
+
+
+
+	public static void buildAndRun(JERule jeRule, String configurationPath) {
+		// TODO Auto-generated method stub
+		
+	}
 
 }

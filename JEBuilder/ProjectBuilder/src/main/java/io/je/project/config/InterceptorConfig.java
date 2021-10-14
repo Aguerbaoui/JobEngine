@@ -1,4 +1,4 @@
-package io.je.project.config;
+/*package io.je.project.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,3 +17,4 @@ public class InterceptorConfig implements WebMvcConfigurer {
         return new AuthenticationInterceptor();
     }
 }
+*/

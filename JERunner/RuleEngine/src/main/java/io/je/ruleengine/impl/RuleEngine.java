@@ -52,7 +52,7 @@ public class RuleEngine {
 	public static boolean stopRuleExecution(String projectId) {
 
 		ProjectContainer project = projectManager.getProjectContainer(projectId);
-		return project.stopRuleExecution(true);
+		return project.stopRuleExecution(true,true);
 	}
 
 	public static boolean fireRules(String projectId, List<Rule> rules, boolean removePreviouslyAddedRules) {

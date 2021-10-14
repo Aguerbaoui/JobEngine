@@ -17,7 +17,7 @@ public abstract class ZMQSubscriber implements Runnable {
 
     protected String topic;
 
-    protected int subscribers = 0;
+    //protected int subscribers = 0;
 
     protected boolean listening = false;
 
@@ -26,15 +26,18 @@ public abstract class ZMQSubscriber implements Runnable {
         this.subPort = subPort;
         this.topic = topic;
         this.context = new ZContext();
-        subscribers += 1;
+       // subscribers += 1;
     }
 
     
     public void closeSocket()
     {
-    	this.subSocket.close();
-		this.context.destroySocket(subSocket);
-		this.subSocket=null;
+    	if(this.subSocket!=null)
+    	{
+    		this.subSocket.close();
+    		this.context.destroySocket(subSocket);
+    		this.subSocket=null;
+    	}
     }
     
     public ZMQ.Socket getSubSocket() {
@@ -59,7 +62,7 @@ public abstract class ZMQSubscriber implements Runnable {
         return subSocket;
     }
 
-    public void incrementSubscriptionCount() {
+   /* public void incrementSubscriptionCount() {
         subscribers += 1;
     }
 
@@ -73,7 +76,7 @@ public abstract class ZMQSubscriber implements Runnable {
     public void setSubscribers(int subscribers) {
         this.subscribers = subscribers;
     }
-
+*/
     /*public static void main(String[] args) {
             ZMQAgent agent = new ZMQAgent("tcp://192.168.0.128", 5554, 6638, "");
             while(true) {

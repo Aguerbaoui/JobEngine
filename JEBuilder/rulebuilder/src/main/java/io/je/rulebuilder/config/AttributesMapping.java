@@ -14,7 +14,7 @@ public class AttributesMapping {
 	public static final String DESC = "description";
 	public static final String CREATEDAT = "createdAt";
 	public static final String LASTUPDATE = "lastModifiedAt";
-	public static final String BUILDSTATUS = "isBuilt";
+	public static final String STATUS = "status";
 
 
 
