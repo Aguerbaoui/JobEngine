@@ -6,12 +6,9 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.burningwave.core.classes.AnnotationSourceGenerator;
-import org.burningwave.core.classes.ClassSourceGenerator;
-import org.burningwave.core.classes.FunctionSourceGenerator;
-import org.burningwave.core.classes.TypeDeclarationSourceGenerator;
-import org.burningwave.core.classes.UnitSourceGenerator;
-import org.burningwave.core.classes.VariableSourceGenerator;
+import org.burningwave.core.assembler.ComponentContainer;
+import org.burningwave.core.assembler.ComponentSupplier;
+import org.burningwave.core.classes.*;
 
 
 import io.je.classbuilder.entity.ClassType;
@@ -45,7 +42,7 @@ public class ClassBuilder {
 		//check if class format is valid
 		if(classDefinition.getName()==null)
 		{
-			JELogger.error(JEMessages.CLASS_NAME_NULL, LogCategory.DESIGN_MODE, null, LogSubModule.CLASS, classDefinition.getIdClass());
+			JELogger.error(JEMessages.CLASS_NAME_NULL, LogCategory.DESIGN_MODE, null, LogSubModule.CLASS, classDefinition.getClassId());
 
 			throw new AddClassException(JEMessages.CLASS_NAME_NULL);
 		}
@@ -78,9 +75,11 @@ public class ClassBuilder {
 		unitSG.addImport("com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer");
 		unitSG.addImport("com.fasterxml.jackson.databind.annotation.JsonSerialize");
 		unitSG.addImport("com.fasterxml.jackson.databind.annotation.JsonDeserialize");
-		unitSG.addImport("io.je.utilities.logger.JELogger");
+		unitSG.addImport("io.je.utilities.log.JELogger");
+		unitSG.addImport("io.je.utilities.execution.*");
 		unitSG.addImport("java.lang.*");
 		unitSG.addImport("java.util.*");
+		unitSG.addImport("jeclasses.*;");
 		unitSG.addImport("java.sql.*");
 		unitSG.addImport("javax.sql.*");
 		unitSG.addImport("io.je.utilities.execution.*");
@@ -134,7 +133,7 @@ public class ClassBuilder {
 			// extend class
 			if(inheritedClass != null)
 			{
-				JELogger.error(JEMessages.INVALID_CLASS_FORMAT, LogCategory.DESIGN_MODE, null, LogSubModule.CLASS, classDefinition.getIdClass());
+				JELogger.error(JEMessages.INVALID_CLASS_FORMAT, LogCategory.DESIGN_MODE, null, LogSubModule.CLASS, classDefinition.getClassId());
 				throw new ClassLoadException(JEMessages.INVALID_CLASS_FORMAT );
 				
 			}
@@ -264,7 +263,7 @@ public class ClassBuilder {
 				}	//count number of inherited class
 				
 			    if(ClassManager.getClassType(classId) == ClassType.ENUM) {
-					JELogger.error(JEMessages.INVALID_CLASS_FORMAT + " : " + JEMessages.INHERITED_CLASS_ENUM, LogCategory.DESIGN_MODE, null, LogSubModule.CLASS, classDefinition.getIdClass());
+					JELogger.error(JEMessages.INVALID_CLASS_FORMAT + " : " + JEMessages.INHERITED_CLASS_ENUM, LogCategory.DESIGN_MODE, null, LogSubModule.CLASS, classDefinition.getClassId());
 
 					throw new ClassLoadException(JEMessages.INVALID_CLASS_FORMAT + " : " + JEMessages.INHERITED_CLASS_ENUM); }
 				
@@ -280,7 +279,7 @@ public class ClassBuilder {
 			else if (inheritedClass.size()>1)
 			{
 				JELogger.error(JEMessages.INVALID_CLASS_FORMAT + " : " + JEMessages.INHERITED_CLASS_ENUM, LogCategory.DESIGN_MODE, null,
-						LogSubModule.CLASS, classDefinition.getIdClass());
+						LogSubModule.CLASS, classDefinition.getClassId());
 				throw new ClassLoadException(JEMessages.INVALID_CLASS_FORMAT + " : " + JEMessages.MULTIPLE_INHERITANCE);
 			}
 			//if base types contains class 
@@ -298,6 +297,11 @@ public class ClassBuilder {
 
 		// store class
 		unitSG.addClass(newClass);
+		ComponentSupplier componentSupplier = ComponentContainer.getInstance();
+		ClassFactory classFactory = componentSupplier.getClassFactory();
+		ClassFactory.ClassRetriever classRetriever = classFactory.loadOrBuildAndDefine(
+				unitSG
+		);
 		String filePath= generationPath + "\\" + ClassBuilderConfig.generationPackageName  + "\\" + className +".java" ;
 		File file = new File(generationPath);
 		file.delete();
@@ -312,6 +316,7 @@ public class ClassBuilder {
 	 */
 	private static Class<?> getType(String type) throws ClassLoadException {
 		Class<?> classType = null;
+		type = type.toUpperCase();
 		switch (type) {
 		case "BYTE" :
 			classType =  byte.class;

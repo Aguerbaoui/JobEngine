@@ -1,7 +1,12 @@
 package io.je.classbuilder.entity;
 
+import io.je.utilities.beans.JEMethod;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 @Document(collection="JEClass")
 public class JEClass  {
@@ -10,7 +15,7 @@ public class JEClass  {
 	String classId; // class id defined in data model
 	String workspaceId;
 	String className;
-	
+	HashMap<String, JEMethod>  methods = new HashMap<>();
 	/*
 	 * path where .java file is saved
 	 */
@@ -21,7 +26,8 @@ public class JEClass  {
 	 */
 	ClassType classType;
 	
-	private JEClass() {
+	public JEClass() {
+		methods = new HashMap<>();
 	}
 
 
@@ -32,7 +38,7 @@ public class JEClass  {
 		this.classPath = classPath;
 		this.classId = classId;
 		this.classType = classType;
-		
+		methods = new HashMap<>();
 	}
 
 	
@@ -89,9 +95,12 @@ public class JEClass  {
 		this.workspaceId = workspaceId;
 	}
 
-	
 
+	public HashMap<String, JEMethod> getMethods() {
+		return methods;
+	}
 
-	
-
+	public void setMethods(HashMap<String, JEMethod> methods) {
+		this.methods = methods;
+	}
 }

@@ -18,6 +18,7 @@ import io.je.utilities.config.ConfigurationConstants;
 import io.je.utilities.constants.ClassBuilderConfig;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.*;
+import io.je.utilities.execution.JobEngine;
 import io.je.utilities.instances.ClassRepository;
 import io.je.utilities.instances.InstanceManager;
 import io.je.utilities.log.JELogger;
@@ -31,9 +32,11 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 import static io.je.utilities.constants.JEMessages.ADDING_JAR_FILE_TO_RUNNER;
@@ -58,7 +61,6 @@ public class RuntimeDispatcher {
 				LogSubModule.JERUNNER, null);
 		RuleEngineHandler.buildProject(projectId);
 		WorkflowEngineHandler.buildProject(projectId);
-
 	}
 
 	// run project
@@ -233,8 +235,8 @@ public class RuntimeDispatcher {
 	// add class
 	public void addClass(ClassModel classModel) throws ClassLoadException {
 		JELogger.debug(JEMessages.ADDING_CLASS, LogCategory.RUNTIME, null, LogSubModule.CLASS, null);
-		if (!ClassRepository.containsClass(classModel.getClassId())) {
-			JEClassCompiler.compileClass(classModel.getClassPath(), ConfigurationConstants.runnerClassLoadPath);
+		//if (!ClassRepository.containsClass(classModel.getClassId())) {
+			JEClassCompiler.compileClass(classModel.getClassPath(), ConfigurationConstants.RUNNER_CLASS_LOAD_PATH);
 			try {
 
 				ClassRepository.addClass(classModel.getClassId(), JEClassLoader.getInstance()
@@ -245,11 +247,11 @@ public class RuntimeDispatcher {
 				throw new ClassLoadException(
 						"[class :" + classModel.getClassName() + " ]" + JEMessages.CLASS_LOAD_FAILED);
 			}
-		}else {
+		/*}else {
 			JELogger.warn(JEMessages.FAILED_TO_LOAD_CLASS +" : "+ JEMessages.CLASS_ALREADY_EXISTS,
 	                LogCategory.RUNTIME, null,
 	                LogSubModule.CLASS, null);
-		}
+		}*/
 
 	}
 
@@ -422,8 +424,26 @@ public class RuntimeDispatcher {
 		// TODO finish this once the ui specs are decided
 		try {
 			JarFile j = new JarFile(payload.get("path"));
-		} catch (IOException e) {
+			JobEngine.addJarFile(payload.get("name"), j);
+
+			//JELogger.debug("hello There, your uploaded file is " + JobEngine.getJarFile("org.eclipse.jdt.core-3.7.1.jar").getName());
+			JELogger.debug("Jar file uploaded successfully", LogCategory.RUNTIME, "", LogSubModule.CLASS, "");
+		} catch (Exception e) {
 			e.printStackTrace();
+		}
+	}
+
+	public static void main(String[] args) throws IOException {
+		JarFile jar = new JarFile("D:\\myproject2\\mssql-jdbc-8.4.1.jre8.jar");
+		for (Enumeration<JarEntry> it = jar.entries(); it.hasMoreElements();)
+		{
+			JarEntry entry = it.nextElement();
+
+			if (!entry.getName().contains(".class"))
+				continue;
+
+			InputStream in = jar.getInputStream(entry);
+			System.out.println(entry.getName());
 		}
 	}
 

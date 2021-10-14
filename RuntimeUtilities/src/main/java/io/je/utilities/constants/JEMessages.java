@@ -617,6 +617,8 @@ public class JEMessages {
     public static final String SENDING_VARIABLE_TO_RUNNER = "Sending variable to runner";
     public static final String DELETING_VARIABLE = "Deleting variable ";
     public static final String ERROR_ADDING_VARIABLE_TO_PROJECT = "Error adding variable to project";
+    public static final String ERROR_REMOVING_LIBRARY = "Error while removing the library";
+    public static final String ERROR_REMOVING_METHOD = "Error while removing the procedure";
     public static final String ERROR_WRITING_VALUE_TO_VARIABLE = "Error writing value to variable";
     public static final String ERROR_DELETING_VARIABLE_FROM_PROJECT = "Error deleting variable from project";
     public static final String ERROR_TRIGGERING_EVENT = "Error triggering event";
@@ -629,6 +631,9 @@ public class JEMessages {
     public static final String ERROR_STOPPING_PROJECT = "Error stopping project, check your configurations";
     public static final String ERROR_WHILE_REFERENCING_A_DISABLED_WORKFLOW = "Error while referencing a disabled workflow: ";
     public static final String WORKFLOW_IS_DISABLED = "The workflow is disabled, check your configuration";
+    public static final String PROCEDURE_DELETED_SUCCESSFULLY = "The procedure was deleted successfully";
+    public static final String LIBRARY_DELETED_SUCCESSFULLY = "The library was deleted successfully";
+    public static final String LIBRARY_EXISTS = "The library already exists in the system";
 
 
 //********************************************************* instances ******************************************************
@@ -648,8 +653,9 @@ public class JEMessages {
 
 	public static final String ERROR_IMPORTING_FILE = "Error importing file ";
 
-    
-    
-    
-    
+    public static final String PROCEDURE_ADDED_SUCCESSFULLY = "Procedure added successfully";
+
+    public static final String METHOD_EXISTS = "Procedure with the same name already exists";
+
+    public static final String METHOD_MISSING = "Procedure with this name doesn't exist";
 }

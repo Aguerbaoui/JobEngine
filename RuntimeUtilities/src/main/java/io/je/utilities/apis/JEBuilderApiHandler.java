@@ -32,7 +32,7 @@ public class JEBuilderApiHandler {
 	}
 
     // request update from builder
-    public static JEResponse requestUpdateFromBuilder() throws InterruptedException, JERunnerErrorException, ExecutionException {
+    public static JEResponse requestUpdateFromBuilder() throws JERunnerErrorException {
 
         String requestUrl = SIOTHConfigUtility.getSiothConfig().getJobEngine().getJeBuilder() + PROJECT_UPDATE_RUNNER;
         return sendRequest(requestUrl);
