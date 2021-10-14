@@ -8,6 +8,7 @@ import io.je.utilities.beans.JEVariable;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.*;
 import io.je.utilities.log.JELogger;
+import io.je.utilities.ruleutils.OperationStatusDetails;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
 
@@ -145,7 +146,7 @@ public class ProjectService {
             JERunnerErrorException, InterruptedException, ExecutionException, RuleNotFoundException, ConfigException, WorkflowBuildException, LicenseNotActiveException {
         JELogger.info( "[projectId= "+projectId+"]"+  JEMessages.BUILDING_PROJECT,
                 LogCategory.DESIGN_MODE, projectId, LogSubModule.JEBUILDER, null);
-        CompletableFuture<?> buildRules = ruleService.compileRules(projectId);
+        CompletableFuture<?> buildRules = ruleService.compileALLRules(projectId);
         CompletableFuture<?> buildWorkflows = workflowService.buildWorkflows(projectId);
         CompletableFuture.allOf(buildRules, buildWorkflows).join();
         loadedProjects.get(projectId).setBuilt(true);
@@ -166,8 +167,7 @@ public class ProjectService {
                     JELogger.info( "[projectId= "+project.getProjectId()+"]"+  JEMessages.RUNNING_PROJECT,
                             LogCategory.DESIGN_MODE, projectId, LogSubModule.JEBUILDER, null);
                     try {
-                        CompletableFuture<?> buildRules = ruleService.buildRules(projectId);
-                        buildRules.get();
+                        ruleService.buildRules(projectId);                        
                         JERunnerAPIHandler.runProject(projectId);
                         ruleService.updateRulesStatus(projectId,true);
           			  	project.getRuleEngine().setRunning(true);

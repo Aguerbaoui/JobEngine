@@ -23,6 +23,7 @@ import io.je.utilities.instances.ClassRepository;
 import io.je.utilities.instances.InstanceManager;
 import io.je.utilities.log.JELogger;
 import io.je.utilities.models.*;
+import io.je.utilities.ruleutils.OperationStatusDetails;
 import io.je.utilities.runtimeobject.JEObject;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
@@ -394,6 +395,34 @@ public class RuntimeDispatcher {
 		RuleEngineHandler.stopRuleEngineProjectExecution(projectId);
 		projectStatus.put(projectId, false);
 
+	}
+
+	public List<OperationStatusDetails> updateRules(List<RuleModel> ruleModels)  {
+		
+		List<OperationStatusDetails> updateResult = new ArrayList<>();
+		for (RuleModel ruleModel : ruleModels)
+		{
+			OperationStatusDetails details = new OperationStatusDetails(ruleModel.getRuleId());
+			 removeRuleTopics(ruleModel.getProjectId(), ruleModel.getRuleId());
+	         addTopics(ruleModel.getProjectId(), ruleModel.getRuleId(),"rule",ruleModel.getTopics());
+	         try {
+				updateRule(ruleModel);
+				details.setOperationSucceeded(true);
+			} catch (RuleCompilationException | JEFileNotFoundException | RuleFormatNotValidException e) {
+				details.setOperationSucceeded(false);
+				details.setOperationError(e.getMessage());
+			}
+		}
+		return updateResult;
+		
+	}
+
+	public void compileRules(List<RuleModel> ruleModels) throws RuleFormatNotValidException, RuleCompilationException, JEFileNotFoundException {
+		for (RuleModel ruleModel : ruleModels)
+		{
+	         compileRule(ruleModel);
+		}
+		
 	}
 
 }

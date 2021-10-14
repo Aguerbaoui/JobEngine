@@ -3,6 +3,9 @@ package io.je.runtime.controllers;
 
 import static io.je.utilities.constants.JEMessages.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +16,9 @@ import io.je.runtime.models.RuleModel;
 import io.je.runtime.services.RuntimeDispatcher;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.ResponseCodes;
+import io.je.utilities.ruleutils.OperationStatusDetails;
 import io.je.utilities.beans.JEResponse;
+import io.je.utilities.beans.JECustomResponse;
 
 
 /*
@@ -65,7 +70,41 @@ public class RuleController {
 
         return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.RULE_UPDATED));
     }
+    
+    /*
+     * update a  Rule
+     */
+    @PostMapping(value = "/updateRules", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> updateRules(@RequestBody List<RuleModel> ruleModels) {
 
+    	List<OperationStatusDetails> results = new ArrayList<OperationStatusDetails>();
+        try {
+           
+        	 results =runtimeDispatcher.updateRules(ruleModels);
+
+        } catch (Exception e) {
+			return JEExceptionHandler.handleException(e);
+		}
+
+
+        return ResponseEntity.ok(new JECustomResponse(ResponseCodes.CODE_OK, JEMessages.RULE_UPDATED,results));
+    }
+    /*
+     * compile  a  Rule
+     */
+    @PostMapping(value = "/compileRules", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> compileRules(@RequestBody List<RuleModel> ruleModels) {
+
+        try {
+            runtimeDispatcher.compileRules(ruleModels);
+        } catch (Exception e) {
+			return JEExceptionHandler.handleException(e);
+		}
+
+
+        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.RULE_UPDATED));
+    }
+    
 
     /*
      * compile  a  Rule
