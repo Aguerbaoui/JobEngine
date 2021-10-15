@@ -57,6 +57,7 @@ public class ResponseCodes {
 	public static final int WORKFLOW_RUN_ERROR = 1044;
 	public static final int WORKFLOW_DELETION_ERROR = 1045;
 	public static final int ERROR_IMPORTING_FILE = 1046;
+	public static final int METHOD_EXCEPTION = 1047;
 
 
 

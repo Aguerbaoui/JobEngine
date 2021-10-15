@@ -2,8 +2,6 @@ package io.je.utilities.classloader;
 
 
 import java.io.File;
-import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.*;
 import javax.tools.*;
 
@@ -19,15 +17,16 @@ import utils.log.LogSubModule;
  */
 public class JEClassCompiler {
 
-	static String loadPath =  ConfigurationConstants.runnerClassLoadPath;
-	static String generationPath = ConfigurationConstants.classGenerationPath;
+	static String loadPath =  ConfigurationConstants.RUNNER_CLASS_LOAD_PATH;
+	static String generationPath = ConfigurationConstants.JAVA_GENERATION_PATH;
 
 	
 	/*
 	 * generate .class file from an input file located at filePath in the loadPath
 	 */
 	public static void compileClass(String filePath, String loadPath) throws ClassLoadException {
-		
+		//ClassLoadException exception = null;
+		String message = "";
 		try {
 			JELogger.debug(" loadPath = " + loadPath, LogCategory.RUNTIME,
 					null, LogSubModule.JERUNNER, null);
@@ -57,20 +56,34 @@ public class JEClassCompiler {
 			// Compile the file
 			Iterable<? extends JavaFileObject> compilationUnit
 					= fileManager.getJavaFileObjectsFromFiles(Arrays.asList(sourceFile));
-			JavaCompiler.CompilationTask task = compiler.getTask(null, fileManager, null, null, null,
+			DiagnosticCollector<JavaFileObject> diagnosticsCollector = new DiagnosticCollector<>();
+			JavaCompiler.CompilationTask task = compiler.getTask(null, fileManager, diagnosticsCollector, null, null,
 					compilationUnit);
 			if(task.call()) {
 				JELogger.debug("Compilation in JEClassLoader succeeded", LogCategory.RUNTIME,
 						null, LogSubModule.JERUNNER, null);
 			}
-			else throw new ClassLoadException(JEMessages.CLASS_COMPILATION_FAILED);
+			else {
+
+				List<Diagnostic<? extends JavaFileObject>> diagnostics = diagnosticsCollector.getDiagnostics();
+				for (Diagnostic<? extends JavaFileObject> diagnostic : diagnostics) {
+					// read error dertails from the diagnostic object
+					message = diagnostic.getMessage(null) ;
+
+				}
+			}
 			fileManager.close();
 		}catch (Exception e) {
-			//TODO: move msg to error clas
-			//e.printStackTrace();
 			JELogger.error(JEMessages.UNEXPECTED_ERROR + Arrays.toString(e.getStackTrace()), LogCategory.RUNTIME,
 					null, LogSubModule.JERUNNER, null);
-			throw new ClassLoadException(JEMessages.CLASS_LOAD_FAILED);
+			//ClassLoadException exception = new ClassLoadException(JEMessages.CLASS_LOAD_FAILED);
+			//exception.setCompilationErrorMessage(message);
+			//throw exception;
+		}
+		if(!message.isEmpty()) {
+			ClassLoadException exception = new ClassLoadException(JEMessages.CLASS_LOAD_FAILED);
+			exception.setCompilationErrorMessage(message);
+			throw exception;
 		}
 
 	}

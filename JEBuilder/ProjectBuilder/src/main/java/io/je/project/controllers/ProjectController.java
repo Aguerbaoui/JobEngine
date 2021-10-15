@@ -296,7 +296,7 @@ public class ProjectController {
 		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.PROJECT_UPDATED));
 	}
 
-	@PostMapping("/uploadJar")
+	/*@PostMapping("/uploadJar")
 	public ResponseEntity<?> uploadJar(@RequestParam("jarFile") MultipartFile jarFile) {
 
 		try {
@@ -307,7 +307,7 @@ public class ProjectController {
 		}
 
 		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.PROJECT_UPDATED));
-	}
+	}*/
 
 	@GetMapping(value = "/updateRunner", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> updateRunner() {

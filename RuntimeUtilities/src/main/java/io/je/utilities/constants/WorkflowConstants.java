@@ -65,5 +65,24 @@ public class WorkflowConstants {
     public static final  String WEB_TASK_IMPLEMENTATION = "io.je.serviceTasks.WebApiServiceTask";
     public static final String SCRIPT_TASK_IMPLEMENTATION = "io.je.serviceTasks.ScriptServiceTask";
     public static final String INFORM_TASK_IMPLEMENTATION = "io.je.serviceTasks.InformServiceTask";
+    public static final String PUBLIC = "PUBLIC";
+    public static final String PRIVATE = "PRIVATE";
+    public static final String PROTECTED = "PROTECTED";
+    public static final String ABSTRACT = "ABSTRACT";
+    public static final String STATIC = "STATIC";
+    public static final String VOID = "VOID";
+    public static final String DATETIME = "DATETIME";
+    public static final String STRING = "STRING";
+    public static final String OBJECT = "OBJECT";
+    public static final String BOOL = "BOOL";
+    public static final String CHAR = "CHAR";
+    public static final String DOUBLE = "DOUBLE";
+    public static final String FLOAT = "FLOAT";
+    public static final String LONG = "LONG";
+    public static final String SHORT = "SHORT";
+    public static final String INT = "INT";
+    public static final String SBYTE = "SBYTE";
+    public static final String BYTE = "BYTE";
+    public static final String JEPROCEDURES = "SIOTHProcedures";
 
 }

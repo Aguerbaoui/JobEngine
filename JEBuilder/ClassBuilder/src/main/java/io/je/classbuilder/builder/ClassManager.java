@@ -1,29 +1,37 @@
 package io.je.classbuilder.builder;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.je.classbuilder.entity.ClassType;
 import io.je.classbuilder.entity.JEClass;
 import io.je.classbuilder.models.ClassDefinition;
+import io.je.classbuilder.models.FieldModel;
 import io.je.classbuilder.models.GetModelObject;
+import io.je.classbuilder.models.MethodModel;
+import io.je.utilities.beans.JEField;
+import io.je.utilities.beans.JELib;
+import io.je.utilities.beans.JEMethod;
 import io.je.utilities.classloader.JEClassCompiler;
 import io.je.utilities.config.ConfigurationConstants;
 import io.je.utilities.constants.ClassBuilderConfig;
 import io.je.utilities.constants.JEMessages;
+import io.je.utilities.constants.WorkflowConstants;
 import io.je.utilities.exceptions.AddClassException;
 import io.je.utilities.exceptions.ClassLoadException;
-import io.je.utilities.exceptions.DataDefinitionUnreachableException;
 import io.je.utilities.log.JELogger;
+import io.je.utilities.models.LibModel;
 import io.siothconfig.SIOTHConfigUtility;
+import utils.date.DateUtils;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
 import utils.zmq.ZMQPublisher;
 import utils.zmq.ZMQRequester;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 
 /*
@@ -41,14 +49,14 @@ public class ClassManager {
 	// name
 	static Map<String, String> classNames = new ConcurrentHashMap<>(); // key = name, value = classid
 	static ClassLoader classLoader = ClassManager.class.getClassLoader();
-	static String loadPath = ConfigurationConstants.builderClassLoadPath;
-	static String generationPath = ConfigurationConstants.classGenerationPath;
+	static String loadPath = ConfigurationConstants.BUILDER_CLASS_LOAD_PATH;
+	static String generationPath = ConfigurationConstants.JAVA_GENERATION_PATH;
 
 	/*
 	 * build class (generate .java then load Class )
 	 */
 	public static List<JEClass> buildClass(ClassDefinition classDefinition)
-			throws AddClassException, DataDefinitionUnreachableException, IOException, ClassLoadException {
+			throws AddClassException,   ClassLoadException {
 
 		JELogger.debug(JEMessages.BUILDING_CLASS + "[className = " + classDefinition.getName() + "]",
 				LogCategory.DESIGN_MODE, null,
@@ -65,10 +73,19 @@ public class ClassManager {
 		// build inherited classes
 		if (classDefinition.getBaseTypes() != null && !classDefinition.getBaseTypes().isEmpty()) {
 			for (String baseTypeId : classDefinition.getBaseTypes()) {
-				ClassDefinition inheritedClassModel = loadClassDefinition(classDefinition.getWorkspaceId(), baseTypeId);
-				// load inherited class
-				for (JEClass _class : ClassManager.buildClass(inheritedClassModel)) {
-					classes.add(_class);
+				try {
+					ClassDefinition inheritedClassModel = loadClassDefinition(classDefinition.getWorkspaceId(), baseTypeId);
+					// load inherited class
+					for (JEClass _class : ClassManager.buildClass(inheritedClassModel)) {
+						classes.add(_class);
+					}
+				}
+				catch(Exception e) {
+					JELogger.debug(JEMessages.CLASS_LOAD_FAILED + "[" + classDefinition.getName() + "]", LogCategory.RUNTIME,  "", LogSubModule.CLASS,
+							baseTypeId);
+					throw new ClassLoadException(
+							JEMessages.CLASS_LOAD_FAILED + "[" + classDefinition.getName() + "]" + e.getMessage());
+
 				}
 			}
 
@@ -77,9 +94,18 @@ public class ClassManager {
 		// build dependent classes
 		if (classDefinition.getDependentEntities() != null && !classDefinition.getDependentEntities().isEmpty()) {
 			for (String baseTypeId : classDefinition.getDependentEntities()) {
-				ClassDefinition dependentClass = loadClassDefinition(classDefinition.getWorkspaceId(), baseTypeId);
-				for (JEClass _class : ClassManager.buildClass(dependentClass)) {
-					classes.add(_class);
+				try {
+					ClassDefinition dependentClass = loadClassDefinition(classDefinition.getWorkspaceId(), baseTypeId);
+					for (JEClass _class : ClassManager.buildClass(dependentClass)) {
+						classes.add(_class);
+					}
+				}
+				catch(Exception e)  {
+					JELogger.debug(JEMessages.CLASS_LOAD_FAILED + "[" + classDefinition.getName() + "]", LogCategory.RUNTIME,  "", LogSubModule.CLASS,
+							baseTypeId);
+					throw new ClassLoadException(
+							JEMessages.CLASS_LOAD_FAILED + "[" + classDefinition.getName() + "]" + e.getMessage());
+
 				}
 			}
 		}
@@ -100,11 +126,17 @@ public class ClassManager {
 			throw new ClassLoadException(
 					JEMessages.CLASS_LOAD_FAILED + "[" + classDefinition.getName() + "]" + e.getMessage());
 		}
-		builtClasses.put(classDefinition.getIdClass(), loadedClass);
-		classNames.put(classDefinition.getName(), classDefinition.getIdClass());
-		JEClass jeClass = new JEClass(classDefinition.getWorkspaceId(), classDefinition.getIdClass(),
+		builtClasses.put(classDefinition.getClassId(), loadedClass);
+		classNames.put(classDefinition.getName(), classDefinition.getClassId());
+		JEClass jeClass = new JEClass(classDefinition.getWorkspaceId(), classDefinition.getClassId(),
 				classDefinition.getName(), filePath, classType);
-		jeClasses.put(classDefinition.getIdClass(), jeClass);
+		if(classDefinition.getMethods()!=null)
+		{
+			for(MethodModel m: classDefinition.getMethods()) {
+				jeClass.getMethods().put(m.getId(), getMethodFromModel(m));
+			}
+		}
+		jeClasses.put(classDefinition.getClassId(), jeClass);
 		classes.add(jeClass);
 		// }
 
@@ -112,11 +144,39 @@ public class ClassManager {
 
 	}
 
+	public static JEMethod getMethodFromModel(MethodModel m) {
+		JEMethod method = new JEMethod();
+		method.setCode(m.getCode());
+		method.setReturnType(m.getReturnType());
+		method.setJobEngineElementID(m.getId());
+		method.setJobEngineElementName(m.getMethodName());
+		method.setJeObjectCreatedBy(m.getCreatedBy());
+		method.setJeObjectModifiedBy(m.getModifiedBy());
+		method.setJeObjectLastUpdate(LocalDateTime.now());
+		method.setJeObjectCreationDate(LocalDateTime.now());
+		method.setInputs(new ArrayList<>());
+		if(m.getInputs() != null) {
+			for (FieldModel f : m.getInputs()) {
+				method.getInputs().add(getFieldFromModel(f));
+			}
+		}
+		method.setImports(m.getImports());
+		return method;
+	}
+	public static JEField getFieldFromModel(FieldModel f) {
+		JEField field = new JEField();
+		field.setComment("");
+		field.setVisibility(f.getFieldVisibility());
+		field.setType(f.getType());
+		field.setName(f.getName());
+		return field;
+	}
+
 	/*
 	 * load class definition from data definition API
 	 */
 	public static ClassDefinition loadClassDefinition(String workspaceId, String classId)
-			throws IOException, DataDefinitionUnreachableException, ClassLoadException {
+			throws ClassLoadException {
 	
 		ClassDefinition jeClass=null;
 
@@ -240,4 +300,79 @@ public class ClassManager {
 		return builtClasses.get(id);
 	}
 
+	/*
+	* Get Method model from JEMethod bean
+	* */
+	public static MethodModel getMethodModel(JEMethod method) {
+		MethodModel m = new MethodModel();
+		m.setMethodVisibility(WorkflowConstants.PUBLIC);
+		m.setReturnType(method.getReturnType());
+		m.setCode(method.getCode());
+		m.setMethodName(method.getJobEngineElementName());
+		m.setMethodScope(WorkflowConstants.STATIC);
+		m.setId(method.getJobEngineElementID());
+		m.setModifiedAt(DateUtils.formatDateToSIOTHFormat(method.getJeObjectLastUpdate()));
+		m.setCreatedBy(method.getJeObjectCreatedBy());
+		m.setCreatedAt(DateUtils.formatDateToSIOTHFormat(method.getJeObjectCreationDate()));
+		m.setModifiedBy(method.getJeObjectModifiedBy());
+		List<FieldModel> fieldModels = new ArrayList<>();
+		for(JEField f: method.getInputs()) {
+			fieldModels.add(getFieldModel(f));
+		}
+		m.setInputs(fieldModels);
+		m.setImports(method.getImports());
+		return m;
+	}
+
+	/*
+	 * Get Field model from JEField bean
+	 * */
+	public static FieldModel getFieldModel(JEField f) {
+		FieldModel fieldModel = new FieldModel();
+		fieldModel.setFieldVisibility(WorkflowConstants.PUBLIC);
+		fieldModel.setName(f.getName());
+		fieldModel.setType(f.getType());
+		return fieldModel;
+	}
+
+	/*
+	 * Get ClassDefinition model from JEClass bean
+	 * */
+	public static ClassDefinition getClassModel(JEClass clazz) {
+		ClassDefinition c = new ClassDefinition();
+		c.setClass(true);
+		c.setClassId(clazz.getClassId());
+		c.setName(clazz.getClassName());
+		c.setClassVisibility("public");
+		List<MethodModel> methodModels = new ArrayList<>();
+		for(JEMethod method: clazz.getMethods().values()) {
+			methodModels.add(getMethodModel(method));
+		}
+		c.setMethods(methodModels);
+        /*MethodModel m = new MethodModel();
+        m.setMethodName("executeScript");
+        m.setReturnType("VOID");
+        m.setMethodScope("STATIC");
+        m.setCode(script);
+        m.setMethodVisibility("PUBLIC");
+        List<MethodModel> methodModels = new ArrayList<>();
+        methodModels.add(m);
+        c.setMethods(methodModels);*/
+
+		//Compile class first
+		return c;
+	}
+
+	/*
+	 * Get LibModel model from JELib bean
+	 * */
+	public static LibModel getLibModel(JELib lib) {
+		LibModel model = new LibModel();
+		model.setFileName(lib.getJobEngineElementName());
+		model.setCreatedBy(lib.getJeObjectCreatedBy());
+		model.setFilePath(lib.getFilePath());
+		model.setCreatedAt(DateUtils.formatDateToSIOTHFormat(lib.getJeObjectCreationDate()));
+		model.setId(lib.getJobEngineElementID());
+		return model;
+	}
 }

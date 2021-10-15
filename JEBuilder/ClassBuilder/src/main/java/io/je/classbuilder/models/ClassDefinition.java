@@ -8,7 +8,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class ClassDefinition {
 	
     @JsonProperty(ClassModelAttributeMapping.CLASSID)
-	String idClass;
+	String classId;
     
     @JsonProperty(ClassModelAttributeMapping.WORKSPACEID)
 	String workspaceId;
@@ -61,11 +61,11 @@ public class ClassDefinition {
 	
 	
 	
-	public String getIdClass() {
-		return idClass;
+	public String getClassId() {
+		return classId;
 	}
-	public void setIdClass(String idClass) {
-		this.idClass = idClass;
+	public void setClassId(String classId) {
+		this.classId = classId;
 	}
 	public String getWorkspaceId() {
 		return workspaceId;
@@ -143,7 +143,7 @@ public class ClassDefinition {
 	}
 	@Override
 	public String toString() {
-		return "ClassModel [idClass=" + idClass + ", workspaceId=" + workspaceId + ", name=" + name + ", attributes="
+		return "ClassModel [idClass=" + classId + ", workspaceId=" + workspaceId + ", name=" + name + ", attributes="
 				+ attributes + ", baseTypes=" + baseTypes + ", methods=" + methods + ", isClass=" + isClass
 				+ ", isInterface=" + isInterface + ", isStruct=" + isStruct + ", isEnum=" + isEnum
 				+ ", classVisibility=" + classVisibility + ", dependentEntities=" + dependentEntities

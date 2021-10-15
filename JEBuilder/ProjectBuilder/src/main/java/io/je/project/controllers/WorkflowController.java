@@ -9,6 +9,7 @@ import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.models.WorkflowModel;
 import io.je.utilities.beans.JEResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -162,7 +163,7 @@ public class WorkflowController {
         if (w != null) {
             return ResponseEntity.ok(w);
         }
-        return ResponseEntity.ok(new JEResponse(ResponseCodes.WORKFLOW_NOT_FOUND, JEMessages.WORKFLOW_NOT_FOUND));
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new JEResponse(ResponseCodes.WORKFLOW_NOT_FOUND, JEMessages.WORKFLOW_NOT_FOUND));
     }
 
     /*
@@ -276,7 +277,7 @@ public class WorkflowController {
         return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, FRONT_CONFIG));
     }
 
-    @DeleteMapping(value = "/deleteWorkflows/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/deleteWorkflows/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> deleteWorkflows(@PathVariable("projectId") String projectId, @RequestBody List<String> ids) {
         try {
 			projectService.getProject(projectId);

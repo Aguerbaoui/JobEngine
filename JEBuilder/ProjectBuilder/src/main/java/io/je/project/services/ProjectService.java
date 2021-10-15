@@ -5,9 +5,11 @@ import io.je.project.repository.ProjectRepository;
 import io.je.utilities.apis.JERunnerAPIHandler;
 import io.je.utilities.beans.JEEvent;
 import io.je.utilities.beans.JEVariable;
+import io.je.utilities.config.ConfigurationConstants;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.*;
 import io.je.utilities.log.JELogger;
+import io.je.utilities.models.LibModel;
 import io.je.utilities.ruleutils.OperationStatusDetails;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
@@ -382,12 +384,12 @@ public class ProjectService {
 
     }
 
-    public void addJarToProject(MultipartFile file) throws LibraryException {
+    /*public void addJarToProject(MultipartFile file) throws LibraryException {
         JELogger.info( JEMessages.ADDING_JAR_TO_PROJECT,
                 LogCategory.DESIGN_MODE, null, LogSubModule.JEBUILDER, null);
         try {
             if (!file.isEmpty()) {
-                String uploadsDir = "../uploads/";
+                String uploadsDir = ConfigurationConstants.EXTERNAL_LIB_PATH;
                 //TODO change to the path set by the user for classes in sioth
                 String realPathtoUploads = request.getServletContext().getRealPath(uploadsDir);
                 if (!new File(realPathtoUploads).exists()) {
@@ -404,13 +406,13 @@ public class ProjectService {
                 payload.put("name", file.getOriginalFilename());
                 payload.put("path", dest.getAbsolutePath());
 
-                JERunnerAPIHandler.addJarToRunner(payload);
+                JERunnerAPIHandler.addJarToRunner(new LibModel());
             }
         }
             catch(JERunnerErrorException | IOException e ) {
                 throw new LibraryException(JEMessages.ERROR_IMPORTING_FILE);
             }
-        }
+        }*/
 
 
 }

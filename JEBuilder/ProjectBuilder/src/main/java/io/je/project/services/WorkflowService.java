@@ -480,6 +480,9 @@ public class WorkflowService {
             if (!wf.isEnabled() || project.workflowHasError(wf) || !WorkflowBuilder.buildWorkflow(wf)) {
                 //TODO return exact build errors in the future
                 wf.setHasErrors(true);
+                JELogger.debug("[projectId =" + projectId + " ]" + JEMessages.WORKFLOW_BUILD_ERROR + " " + wf.getJobEngineElementName(),
+                        LogCategory.DESIGN_MODE, projectId,
+                        LogSubModule.WORKFLOW, null);
                 throw new WorkflowBuildException(JEMessages.WORKFLOW_BUILD_ERROR + " " + wf.getJobEngineElementName());
             }
         }
@@ -667,7 +670,7 @@ public class WorkflowService {
             ArrayList<String> imports = (ArrayList) block.getAttributes().get(IMPORTS);
             b.setScript((String) block.getAttributes().get(SCRIPT));
             b.setTimeout((Integer) block.getAttributes().get(TIMEOUT));
-            ClassDefinition c = getClassModel(b.getJobEngineElementID(), project.getWorkflowByIdOrName(block.getWorkflowId()).getJobEngineElementName() + b.getJobEngineElementName(), b.getScript());
+            ClassDefinition c = classService.getScriptTaskClassModel(b.getJobEngineElementID(), project.getWorkflowByIdOrName(block.getWorkflowId()).getJobEngineElementName() + b.getJobEngineElementName(), b.getScript());
             c.setImports(imports);
             //True to send directly to JERunner
             classService.addClass(c, true, true);
@@ -789,6 +792,10 @@ public class WorkflowService {
             else {
                 wf.setHasErrors(true);
                 workflowRepository.save(wf);
+                JELogger.debug( JEMessages.ERROR_WHILE_REFERENCING_A_DISABLED_WORKFLOW +
+                                project.getWorkflowByIdOrName((String) block.getAttributes().get(SUBWORKFLOWID)).getJobEngineElementName(),
+                        LogCategory.DESIGN_MODE, wf.getJobEngineProjectID(),
+                        LogSubModule.WORKFLOW, wf.getJobEngineElementID());
                 throw new WorkflowBlockException(JEMessages.ERROR_WHILE_REFERENCING_A_DISABLED_WORKFLOW + project.getWorkflowByIdOrName((String) block.getAttributes().get(SUBWORKFLOWID)).getJobEngineElementName());
             }
         } else if (block.getType().equalsIgnoreCase(BOUNDARYEVENT_TYPE)) {
@@ -807,25 +814,7 @@ public class WorkflowService {
 
     }
 
-    private ClassDefinition getClassModel(String id, String name, String script) throws LicenseNotActiveException {
-        LicenseProperties.checkLicenseIsActive();
 
-        ClassDefinition c = new ClassDefinition();
-        c.setClass(true);
-        c.setIdClass(id);
-        c.setName(name);
-        c.setClassVisibility("public");
-        MethodModel m = new MethodModel();
-        m.setMethodName("executeScript");
-        m.setReturnType("VOID");
-        m.setMethodScope("STATIC");
-        m.setCode(script);
-        m.setMethodVisibility("PUBLIC");
-        List<MethodModel> methodModels = new ArrayList<>();
-        methodModels.add(m);
-        c.setMethods(methodModels);
-        return c;
-    }
 
     public void addBpmn(String projectId, String workflowId, String bpmn) throws ProjectNotFoundException, LicenseNotActiveException {
         LicenseProperties.checkLicenseIsActive();

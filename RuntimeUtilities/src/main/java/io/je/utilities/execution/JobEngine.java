@@ -15,8 +15,23 @@ import utils.string.StringUtilities;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.jar.JarFile;
 
 public class JobEngine {
+
+    private static HashMap<String, JarFile> libraries;
+
+    public static void addJarFile(String name, JarFile file) {
+        if(libraries == null) {
+            libraries = new HashMap<>();
+        }
+        libraries.put(name, file);
+        //JELogger.debug("helloThere" + JobEngine.getJarFile("org.eclipse.jdt.core-3.7.1.jar").getName());
+    }
+
+    public static JarFile getJarFile(String name) {
+        return libraries.get(name);
+    }
 
     /*
     * Run a workflow from script task
