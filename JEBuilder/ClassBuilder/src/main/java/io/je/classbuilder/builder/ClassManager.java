@@ -130,8 +130,11 @@ public class ClassManager {
 		classNames.put(classDefinition.getName(), classDefinition.getClassId());
 		JEClass jeClass = new JEClass(classDefinition.getWorkspaceId(), classDefinition.getClassId(),
 				classDefinition.getName(), filePath, classType);
-		for(MethodModel m: classDefinition.getMethods()) {
-			jeClass.getMethods().put(m.getId(), getMethodFromModel(m));
+		if(classDefinition.getMethods()!=null)
+		{
+			for(MethodModel m: classDefinition.getMethods()) {
+				jeClass.getMethods().put(m.getId(), getMethodFromModel(m));
+			}
 		}
 		jeClasses.put(classDefinition.getClassId(), jeClass);
 		classes.add(jeClass);
