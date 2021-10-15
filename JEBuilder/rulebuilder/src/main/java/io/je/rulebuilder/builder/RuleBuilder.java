@@ -46,7 +46,7 @@ public class RuleBuilder {
     public static void buildRule(JERule jeRule, String buildPath, boolean compileOnly)
             throws RuleBuildFailedException, JERunnerErrorException {
         String rulePath = "";
-        JELogger.debug(JEMessages.BUILDING_RULE + " : id = " + jeRule.getJobEngineElementID(),
+        JELogger.control(JEMessages.BUILDING_RULE + " : " + jeRule.getJobEngineElementName(),
                 LogCategory.DESIGN_MODE, jeRule.getJobEngineProjectID(),
                 LogSubModule.RULE, jeRule.getJobEngineElementID());
         if (jeRule instanceof UserDefinedRule) {
@@ -82,7 +82,7 @@ public class RuleBuilder {
         ruleMap.put(JERunnerRuleMapping.FORMAT, "DRL");
         ruleMap.put(JERunnerRuleMapping.TOPICS, rule.getTopics().keySet());
 
-        JELogger.debug(" [ project id = " + rule.getJobEngineProjectID() + " ] [rule = " + rule.getJobEngineElementName() + "]"
+        JELogger.debug(" [ project = " + rule.getJobEngineProjectName() + " ] [rule = " + rule.getJobEngineElementName() + "]"
                         + JEMessages.SENDNG_RULE_TO_RUNNER,
                 LogCategory.DESIGN_MODE, rule.getJobEngineProjectID(),
                 LogSubModule.RULE, rule.getJobEngineElementID());
@@ -102,7 +102,11 @@ public class RuleBuilder {
                  jeRunnerResp = JERunnerAPIHandler.updateRule(ruleMap);
              }
              catch(JERunnerErrorException e) {
-                 throw new RuleBuildFailedException(JEMessages.RULE_BUILD_FAILED+": "+e.getMessage());
+            	  JELogger.error(" [ project = " + rule.getJobEngineProjectName() + " ] [rule = " + rule.getJobEngineElementName() + "]"
+                          + JEMessages.RULE_BUILD_FAILED,
+                  LogCategory.DESIGN_MODE, rule.getJobEngineProjectID(),
+                  LogSubModule.RULE, rule.getJobEngineElementID());
+            	 throw new RuleBuildFailedException(JEMessages.RULE_BUILD_FAILED+": "+e.getMessage());
              }
         }
         

@@ -34,7 +34,7 @@ public class JEBuilderInitializingBean implements InitializingBean {
     public void afterPropertiesSet() {
         try {
             JELogger.initLogger("JEBuilder", builderProperties.getJeBuilderLogPath(),builderProperties.getJeBuilderLogLevel());
-            JELogger.debug(JEMessages.LOGGER_INITIALIZED,
+            JELogger.control(JEMessages.LOGGER_INITIALIZED,
                     LogCategory.DESIGN_MODE, null,
                     LogSubModule.JEBUILDER, null);
            // AuthenticationInterceptor.init(builderProperties.getIssuer());
@@ -57,7 +57,7 @@ public class JEBuilderInitializingBean implements InitializingBean {
             
             ZMQSecurity.setSecure(builderProperties.getUseZmqSecurity());
 			configService.init();
-            JELogger.debug(JEMessages.BUILDER_STARTED,  LogCategory.DESIGN_MODE,
+            JELogger.control(JEMessages.BUILDER_STARTED,  LogCategory.DESIGN_MODE,
                     null, LogSubModule.JEBUILDER, null);
 
         } catch (  Exception   e) {

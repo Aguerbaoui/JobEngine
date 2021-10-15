@@ -75,12 +75,13 @@ public class RuleService {
 			throw new RuleNotAddedException(JEMessages.RULE_NAME_NULL);
 		}
 
-		JELogger.debug(" Creating rule " + ruleModel.getRuleName() + "..", CATEGORY, projectId, RULE,
+		JELogger.control(JEMessages.ADDING_RULE + ruleModel.getRuleName() + "..", CATEGORY, projectId, RULE,
 				ruleModel.getRuleId());
 		UserDefinedRule rule = new UserDefinedRule();
 		rule.setJobEngineElementID(ruleModel.getRuleId());
 		rule.setJobEngineProjectID(projectId);
 		rule.setJobEngineElementName(ruleModel.getRuleName());
+		rule.setJobEngineProjectName(project.getProjectName());
 		rule.setDescription(ruleModel.getDescription());
 		rule.setJeObjectCreationDate(LocalDateTime.now());
 		rule.setJeObjectLastUpdate(LocalDateTime.now());
@@ -111,7 +112,7 @@ public class RuleService {
 				for (String subRuleId : rule.getSubRules()) {
 
 					JERunnerAPIHandler.deleteRule(projectId, subRuleId);
-					JELogger.debug("[project = " + project.getProjectName() + "] [rule = "
+					JELogger.control("[project = " + project.getProjectName() + "] [rule = "
 							+ rule.getJobEngineElementName() + "]" + JEMessages.DELETING_RULE, CATEGORY, projectId,
 							RULE, ruleId);
 				}

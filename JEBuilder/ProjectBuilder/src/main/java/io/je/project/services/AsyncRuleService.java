@@ -57,12 +57,7 @@ public class AsyncRuleService {
 		result.setItemName(rule.getJobEngineElementName());
 
 		try {
-			JELogger.debug(
-					" [projectId=" + projectId + " ]" + JEMessages.BUILDING_RULE + " : "
-							+ rule.getJobEngineElementName(),
-					LogCategory.DESIGN_MODE, projectId, LogSubModule.JEBUILDER, ruleId);
 			RuleBuilder.buildRule(rule, getProject(projectId).getConfigurationPath(), compileOnly);
-
 			// update rule status
 			// rule built
 			if (!compileOnly) {
