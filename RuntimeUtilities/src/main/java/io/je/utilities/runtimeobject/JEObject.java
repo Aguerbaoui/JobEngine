@@ -39,6 +39,18 @@ public abstract class JEObject {
         //TODO: add time config (format, timezone, etc ..)
         //set update time
     }
+    
+    public JEObject(String jobEngineElementID, String jobEngineProjectID, String jobEngineElementName,String jobEngineProjectName) {
+        super();
+        this.jobEngineElementID = jobEngineElementID;
+        this.jobEngineProjectID = jobEngineProjectID;
+        this.jeObjectLastUpdate = LocalDateTime.now();
+        this.jeObjectCreationDate = LocalDateTime.now();
+        this.jobEngineElementName = jobEngineElementName;
+        this.jobEngineProjectName = jobEngineProjectName;
+        //TODO: add time config (format, timezone, etc ..)
+        //set update time
+    }
 
 
     //TODO: to be deleted. Only constructor with fields needs to be kept.

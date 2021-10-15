@@ -37,6 +37,11 @@ public abstract class JERule extends JEObject  {
 	public JERule(String jobEngineElementID, String jobEngineProjectID, String ruleName) {
 		super(jobEngineElementID, jobEngineProjectID, ruleName);
 	}
+	
+	public JERule(String jobEngineElementID, String jobEngineProjectID, String ruleName,String projectName) {
+		super(jobEngineElementID, jobEngineProjectID, ruleName,projectName);
+	}
+
 
 	public JERule() {
 	}
