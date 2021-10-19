@@ -629,11 +629,13 @@ public class JEMessages {
     public static final String CHECK_DM_FOR_DETAILS = "Check Integration Objects' SIOTH Data Model Service's log for more details. ";
     public static final String ERROR_RUNNING_PROJECT = "Error running project, check your configurations";
     public static final String ERROR_STOPPING_PROJECT = "Error stopping project, check your configurations";
+    public static final String ERROR_STOPPING_WORKFLOW = "Error stopping workflow, check your configurations";
     public static final String ERROR_WHILE_REFERENCING_A_DISABLED_WORKFLOW = "Error while referencing a disabled workflow: ";
     public static final String WORKFLOW_IS_DISABLED = "The workflow is disabled, check your configuration";
     public static final String PROCEDURE_DELETED_SUCCESSFULLY = "The procedure was deleted successfully";
     public static final String LIBRARY_DELETED_SUCCESSFULLY = "The library was deleted successfully";
     public static final String LIBRARY_EXISTS = "The library already exists in the system";
+    public static final String THREAD_INTERRUPTED_WHILE_EXECUTING = "Thread execution interrupted";
 
 
 //********************************************************* instances ******************************************************
@@ -658,4 +660,5 @@ public class JEMessages {
     public static final String METHOD_EXISTS = "Procedure with the same name already exists";
 
     public static final String METHOD_MISSING = "Procedure with this name doesn't exist";
+    public static final String ERROR_DURING_BUILD = "Error occured while building project";
 }

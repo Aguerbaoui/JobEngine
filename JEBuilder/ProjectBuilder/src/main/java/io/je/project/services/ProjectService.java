@@ -22,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
@@ -29,6 +30,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutionException;
+
+import static io.je.utilities.constants.JEMessages.BUILT_EVERYTHING_SUCCESSFULLY;
 /*
  * Service class to handle business logic for projects
  * */
@@ -144,23 +147,35 @@ public class ProjectService {
      * Builds all the rules and workflows
      */
 
-    public void buildAll(String projectId) throws ProjectNotFoundException, IOException, RuleBuildFailedException,
-            JERunnerErrorException, InterruptedException, ExecutionException, RuleNotFoundException, ConfigException, WorkflowBuildException, LicenseNotActiveException {
+    public List<OperationStatusDetails> buildAll(String projectId) throws ProjectNotFoundException,
+            InterruptedException, ExecutionException, LicenseNotActiveException, WorkflowNotFoundException, WorkflowException {
         JELogger.info( "[projectId= "+projectId+"]"+  JEMessages.BUILDING_PROJECT,
                 LogCategory.DESIGN_MODE, projectId, LogSubModule.JEBUILDER, null);
-        CompletableFuture<?> buildRules = ruleService.compileALLRules(projectId);
-        CompletableFuture<?> buildWorkflows = workflowService.buildWorkflows(projectId);
-        CompletableFuture.allOf(buildRules, buildWorkflows).join();
+        //CompletableFuture<?> buildRules = ruleService.compileALLRules(projectId);
+        CompletableFuture<List<OperationStatusDetails>> buildWorkflows1 = workflowService.buildWorkflows(projectId, null);
+        CompletableFuture<List<OperationStatusDetails>> buildWorkflows2 = workflowService.buildWorkflows(projectId, null);
+        List<OperationStatusDetails> results = new ArrayList<>();
+        buildWorkflows1.thenApply(operationStatusDetails -> {
+            results.addAll(operationStatusDetails);
+            return results;
+
+        }).get();
+        buildWorkflows2.thenApply(operationStatusDetails -> {
+            results.addAll(operationStatusDetails);
+            return results;
+
+        }).get();
         loadedProjects.get(projectId).setBuilt(true);
         saveProject(projectId).get();
-
+        JELogger.debug(BUILT_EVERYTHING_SUCCESSFULLY, LogCategory.DESIGN_MODE, projectId, LogSubModule.JEBUILDER, null);
+        return results;
     }
 
     /*
      * run project => send request to jeRunner to run project
      */
     public void runAll(String projectId) throws ProjectNotFoundException, ProjectRunException,
-            InterruptedException, ExecutionException, RuleBuildFailedException, RuleNotFoundException, IOException {
+            InterruptedException, ExecutionException{
 		
         if (loadedProjects.containsKey(projectId)) {
             JEProject project = loadedProjects.get(projectId);

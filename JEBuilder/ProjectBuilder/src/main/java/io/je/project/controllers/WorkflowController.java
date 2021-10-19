@@ -1,6 +1,7 @@
 package io.je.project.controllers;
 
 import io.je.project.exception.JEExceptionHandler;
+import io.je.utilities.beans.JECustomResponse;
 import io.je.utilities.models.WorkflowBlockModel;
 import io.je.project.services.ProjectService;
 import io.je.project.services.WorkflowService;
@@ -8,6 +9,7 @@ import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.models.WorkflowModel;
 import io.je.utilities.beans.JEResponse;
+import io.je.utilities.ruleutils.OperationStatusDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -54,14 +56,19 @@ public class WorkflowController {
 
         try {
 			projectService.getProject(projectId);
+            OperationStatusDetails result = workflowService.buildWorkflow(projectId, key).get();
+            if(result.isOperationSucceeded()) {
+                return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, WORKFLOW_BUILT_SUCCESSFULLY));
+            }
 
-            workflowService.buildWorkflow(projectId, key);
+            else {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new JEResponse(ResponseCodes.WORKFLOW_BUILD_ERROR, result.getOperationError()));
+            }
         }catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
 
         }
 
-        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, WORKFLOW_BUILT_SUCCESSFULLY));
     }
 
     /*
@@ -71,13 +78,19 @@ public class WorkflowController {
     public ResponseEntity<?> runWorkflow(@PathVariable String projectId, @PathVariable String key) {
         try {
 			projectService.getProject(projectId);
-            workflowService.runWorkflow(projectId, key);
+            OperationStatusDetails result = workflowService.runWorkflow(projectId, key).get();
+            if(result.isOperationSucceeded()) {
+                return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, EXECUTING_WORKFLOW));
+            }
+
+            else {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new JEResponse(ResponseCodes.WORKFLOW_RUN_ERROR, result.getOperationError()));
+            }
         }catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
 
 		}
 
-        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, EXECUTING_WORKFLOW));
     }
 
     /*
@@ -89,12 +102,18 @@ public class WorkflowController {
 			projectService.getProject(projectId);
 
             workflowService.stopWorkflow(projectId, key);
+            OperationStatusDetails result = workflowService.stopWorkflow(projectId, key).get();
+            if(result.isOperationSucceeded()) {
+                return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ERROR_STOPPING_WORKFLOW));
+            }
+
+            else {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new JEResponse(ResponseCodes.WORKFLOW_DELETION_ERROR, result.getOperationError()));
+            }
         }catch (Exception e) {
             return JEExceptionHandler.handleException(e);
 
         }
-
-        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, EXECUTING_WORKFLOW));
     }
 
     /*
@@ -141,7 +160,7 @@ public class WorkflowController {
         try {
 			projectService.getProject(projectId);
 
-            return ResponseEntity.ok(workflowService.getAllWorkflows(projectId));
+            return ResponseEntity.ok(workflowService.getAllWorkflows(projectId).get());
         } catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
 
@@ -155,15 +174,12 @@ public class WorkflowController {
         try {
 			projectService.getProject(projectId);
 
-            w = workflowService.getWorkflow( key);
+            w = workflowService.getWorkflow( key).get();
+            return ResponseEntity.ok(w);
         }catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
 
 		}
-        if (w != null) {
-            return ResponseEntity.ok(w);
-        }
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new JEResponse(ResponseCodes.WORKFLOW_NOT_FOUND, JEMessages.WORKFLOW_NOT_FOUND));
     }
 
     /*
@@ -278,7 +294,7 @@ public class WorkflowController {
     }
 
     @PostMapping(value = "/deleteWorkflows/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> deleteWorkflows(@PathVariable("projectId") String projectId, @RequestBody List<String> ids) {
+    public ResponseEntity<?> deleteWorkflows(@PathVariable("projectId") String projectId, @RequestBody(required = false) List<String> ids) {
         try {
 			projectService.getProject(projectId);
 
@@ -289,5 +305,57 @@ public class WorkflowController {
         return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, WORKFLOW_DELETED_SUCCESSFULLY));
     }
 
- 
+    /*
+     * Build workflow
+     */
+    @PostMapping(value = "/buildWorkflows/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> buildWorkflows(@PathVariable String projectId, @RequestBody(required = false) List<String> ids) {
+
+        try {
+            projectService.getProject(projectId);
+
+            List<OperationStatusDetails> results = workflowService.buildWorkflows(projectId, ids).get();
+            return ResponseEntity.ok(new JECustomResponse(ResponseCodes.CODE_OK, "Build completed.",results));
+        }catch (Exception e) {
+            return JEExceptionHandler.handleException(e);
+
+        }
+
+
+    }
+
+    /*
+     * Run Workflow
+     */
+    @PostMapping(value = "/runWorkflows/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> runWorkflows(@PathVariable String projectId, @RequestBody(required = false) List<String> ids) {
+        try {
+            projectService.getProject(projectId);
+            List<OperationStatusDetails> results = workflowService.runWorkflows(projectId, ids).get();
+            return ResponseEntity.ok(new JECustomResponse(ResponseCodes.CODE_OK, "Run completed.",results));
+        }catch (Exception e) {
+            return JEExceptionHandler.handleException(e);
+
+        }
+
+
+    }
+
+
+    /*
+     * Stop Workflow
+     */
+    @PostMapping(value = "/stopWorkflows/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> stopWorkflow(@PathVariable String projectId, @RequestBody(required = false) List<String> ids) {
+        try {
+            projectService.getProject(projectId);
+            List<OperationStatusDetails> results = workflowService.stopWorkflows(projectId, ids).get();
+            return ResponseEntity.ok(new JECustomResponse(ResponseCodes.CODE_OK, "Stop completed.",results));
+        }catch (Exception e) {
+            return JEExceptionHandler.handleException(e);
+
+        }
+
+
+    }
 }

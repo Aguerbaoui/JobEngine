@@ -84,5 +84,18 @@ public class WorkflowConstants {
     public static final String SBYTE = "SBYTE";
     public static final String BYTE = "BYTE";
     public static final String JEPROCEDURES = "SIOTHProcedures";
+    public static final String NAME = "name";
+    public static final String SUBWORKFLOWID = "subworkflowId";
+    public static final String DURATION = "duration";
+    public static final String ENDDATE = "enddate";
+    public static final String TIMECYCLE = "timecycle";
+    public static final String NBOCCURENCES = "occurrences";
+    public static final String TIMEDATE = "timedate";
+    public static final String EVENT_ID = "eventId";
+    public static final String SOURCE_REF = "sourceRef";
+    public static final String TARGET_REF = "targetRef";
+    public static final String CONDITION = "condition";
+    public static final String IMPORTS = "imports";
+
 
 }

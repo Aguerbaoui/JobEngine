@@ -4,10 +4,12 @@ import io.je.project.beans.JEProject;
 import io.je.project.exception.JEExceptionHandler;
 import io.je.project.services.ConfigurationService;
 import io.je.project.services.ProjectService;
+import io.je.utilities.beans.JECustomResponse;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.exceptions.ProjectNotFoundException;
 import io.je.utilities.log.JELogger;
+import io.je.utilities.ruleutils.OperationStatusDetails;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
 import io.je.utilities.beans.JEResponse;
@@ -21,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 import static io.je.utilities.constants.JEMessages.*;
 
 import java.util.HashMap;
+import java.util.List;
 
 /*
  * Project Rest Controller
@@ -207,13 +210,14 @@ public class ProjectController {
 	@PostMapping(value = "/buildProject/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> buildProject(@PathVariable String projectId) {
 		try {
-			projectService.buildAll(projectId);
+			List<OperationStatusDetails> results = projectService.buildAll(projectId);
+			return ResponseEntity.ok(new JECustomResponse(ResponseCodes.CODE_OK, BUILT_EVERYTHING_SUCCESSFULLY,results));
 		} catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
 
 		}
-		JELogger.debug(BUILT_EVERYTHING_SUCCESSFULLY, LogCategory.DESIGN_MODE, projectId, LogSubModule.JEBUILDER, null);
-		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, BUILT_EVERYTHING_SUCCESSFULLY));
+
+		//return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, BUILT_EVERYTHING_SUCCESSFULLY));
 	}
 
 	/* Run project */

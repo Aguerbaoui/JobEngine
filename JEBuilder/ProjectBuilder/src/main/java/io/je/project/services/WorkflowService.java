@@ -11,7 +11,6 @@ import blocks.events.SignalEvent;
 import blocks.events.TimerEvent;
 import builder.WorkflowBuilder;
 import io.je.classbuilder.models.ClassDefinition;
-import io.je.classbuilder.models.MethodModel;
 import io.je.project.beans.JEProject;
 import io.je.project.config.LicenseProperties;
 import io.je.project.repository.WorkflowRepository;
@@ -25,16 +24,15 @@ import io.je.utilities.log.JELogger;
 import io.je.utilities.models.EventType;
 import io.je.utilities.models.WorkflowBlockModel;
 import io.je.utilities.models.WorkflowModel;
+import io.je.utilities.ruleutils.OperationStatusDetails;
 import models.JEWorkflow;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
 import utils.string.StringUtilities;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -42,26 +40,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutionException;
 
+import static io.je.utilities.constants.JEMessages.THREAD_INTERRUPTED_WHILE_EXECUTING;
 import static io.je.utilities.constants.WorkflowConstants.*;
 
 @Service
 public class WorkflowService {
 
-    public static final String NAME = "name";
-    public static final String SUBWORKFLOWID = "subworkflowId";
-    public static final String DURATION = "duration";
-    public static final String ENDDATE = "enddate";
-    public static final String TIMECYCLE = "timecycle";
-    public static final String NBOCCURENCES = "occurrences";
-    public static final String TIMEDATE = "timedate";
-    public static final String EVENT_ID = "eventId";
-    public static final String SOURCE_REF = "sourceRef";
-    public static final String TARGET_REF = "targetRef";
-    public static final String CONDITION = "condition";
-    public static final String BODY = "body";
-    public static final String IMPORTS = "imports";
 
 
     @Autowired
@@ -76,6 +61,7 @@ public class WorkflowService {
     /*
      * Add a workflow to a project
      * */
+    @Async
     public void addWorkflow(io.je.utilities.models.WorkflowModel m) throws ProjectNotFoundException, LicenseNotActiveException {
         LicenseProperties.checkLicenseIsActive();
 
@@ -113,7 +99,7 @@ public class WorkflowService {
      * Remove a workflow from a project
      * */
 
-    public void removeWorkflow(String projectId, String workflowId) throws ProjectNotFoundException, WorkflowNotFoundException, ExecutionException, LicenseNotActiveException, WorkflowException {
+    public void removeWorkflow(String projectId, String workflowId) throws ProjectNotFoundException, WorkflowNotFoundException, LicenseNotActiveException, WorkflowException {
         LicenseProperties.checkLicenseIsActive();
 
 
@@ -419,6 +405,7 @@ public class WorkflowService {
     /*
      * Add a Sequence flow
      * */
+    @Async
     public void addSequenceFlow(String projectId, String workflowId, String sourceRef, String targetRef, String condition) throws ProjectNotFoundException, WorkflowNotFoundException, WorkflowBlockNotFound, InvalidSequenceFlowException, ConfigException, LicenseNotActiveException {
         LicenseProperties.checkLicenseIsActive();
 
@@ -440,33 +427,46 @@ public class WorkflowService {
     /*
      * Build a workflow
      * */
-    public void buildWorkflow(String projectId, String workflowId) throws WorkflowNotFoundException, ProjectNotFoundException,  WorkflowBuildException, LicenseNotActiveException, WorkflowException {
+     @Async
+    public CompletableFuture<OperationStatusDetails> buildWorkflow(String projectId, String workflowId) throws ProjectNotFoundException, LicenseNotActiveException{
         LicenseProperties.checkLicenseIsActive();
 
         JEProject project = ProjectService.getProjectById(projectId);
+        OperationStatusDetails result = new OperationStatusDetails(workflowId);
         if (project == null) {
             throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
-        } else if (!project.workflowExists(workflowId)) {
-            throw new WorkflowNotFoundException(JEMessages.WORKFLOW_NOT_FOUND);
         }
+        if(!project.workflowExists(workflowId)) {
+            result.setOperationSucceeded(false);
+            result.setOperationError(JEMessages.WORKFLOW_NOT_FOUND);
+            return CompletableFuture.completedFuture(result);
+        }
+
         JEWorkflow workflow = project.getWorkflowByIdOrName(workflowId);
         if(!workflow.isEnabled()) {
-            throw new WorkflowException(JEMessages.WORKFLOW_IS_DISABLED);
+            result.setOperationSucceeded(false);
+            result.setOperationError(JEMessages.WORKFLOW_IS_DISABLED);
+            return CompletableFuture.completedFuture(result);
         }
         JELogger.info("[projectId =" + projectId + " ][workflowId = " + workflowId + "]" + JEMessages.BUILDING_WF,
                 LogCategory.DESIGN_MODE, projectId,
                 LogSubModule.WORKFLOW, workflowId);
 
         if (project.workflowHasError(workflow) || !WorkflowBuilder.buildWorkflow(workflow)) {
-            throw new WorkflowBuildException(JEMessages.WORKFLOW_BUILD_ERROR + " " + workflow.getJobEngineElementName());
+            result.setOperationSucceeded(false);
+            result.setOperationError(JEMessages.WORKFLOW_BUILD_ERROR + " " + workflow.getJobEngineElementName());
+            //throw new WorkflowBuildException(JEMessages.WORKFLOW_BUILD_ERROR + " " + workflow.getJobEngineElementName());
         }
+        result.setItemName(workflow.getJobEngineElementName());
+        result.setItemId(workflowId);
+        return CompletableFuture.completedFuture(result);
     }
 
     /*
      * Build all workflow
      * */
     @Async
-    public CompletableFuture<Void> buildWorkflows(String projectId) throws ProjectNotFoundException, IOException, InterruptedException, ExecutionException, ConfigException, WorkflowBuildException, LicenseNotActiveException {
+    public CompletableFuture<List<OperationStatusDetails>> buildWorkflows(String projectId, List<String> ids) throws ProjectNotFoundException,  LicenseNotActiveException, WorkflowNotFoundException, WorkflowException {
         LicenseProperties.checkLicenseIsActive();
 
         JEProject project = ProjectService.getProjectById(projectId);
@@ -476,47 +476,84 @@ public class WorkflowService {
         JELogger.debug("[projectId =" + projectId + " ]" + JEMessages.BUILDING_WFS,
                 LogCategory.DESIGN_MODE, projectId,
                 LogSubModule.WORKFLOW, null);
-        for (JEWorkflow wf : project.getWorkflows().values()) {
-            if (!wf.isEnabled() || project.workflowHasError(wf) || !WorkflowBuilder.buildWorkflow(wf)) {
-                //TODO return exact build errors in the future
-                wf.setHasErrors(true);
-                JELogger.debug("[projectId =" + projectId + " ]" + JEMessages.WORKFLOW_BUILD_ERROR + " " + wf.getJobEngineElementName(),
-                        LogCategory.DESIGN_MODE, projectId,
-                        LogSubModule.WORKFLOW, null);
-                throw new WorkflowBuildException(JEMessages.WORKFLOW_BUILD_ERROR + " " + wf.getJobEngineElementName());
+
+        List<OperationStatusDetails> results = new ArrayList<>();
+            if (ids == null) {
+                for (JEWorkflow wf : project.getWorkflows().values()) {
+                    try {
+                        results.add(buildWorkflow(projectId, wf.getJobEngineElementID()).get());
+                    }
+                    catch (Exception e) {
+                        results.add(OperationStatusDetails.getResultDetails(wf.getJobEngineElementID(), false, THREAD_INTERRUPTED_WHILE_EXECUTING,
+                                wf.getJobEngineElementName()));
+                    }
+                }
+            } else {
+                for (String id : ids) {
+                    try {
+                        results.add(buildWorkflow(projectId, id).get());
+                    }
+                    catch (Exception e) {
+                        results.add(OperationStatusDetails.getResultDetails(id, false, THREAD_INTERRUPTED_WHILE_EXECUTING,
+                                project.getWorkflowByIdOrName(id).getJobEngineElementName()));
+                    }
+                }
             }
-        }
-        return CompletableFuture.completedFuture(null);
+
+
+        return CompletableFuture.completedFuture(results);
 
     }
 
     /*
      * Run a workflow
      * */
-    public void runWorkflow(String projectId, String workflowId) throws WorkflowNotFoundException, ProjectNotFoundException, WorkflowAlreadyRunningException, InterruptedException, ExecutionException, JERunnerErrorException, LicenseNotActiveException, WorkflowRunException {
+    @Async
+    public CompletableFuture<OperationStatusDetails> runWorkflow(String projectId, String workflowId) throws ProjectNotFoundException, LicenseNotActiveException {
         LicenseProperties.checkLicenseIsActive();
 
         JEProject project = ProjectService.getProjectById(projectId);
+        OperationStatusDetails result = new OperationStatusDetails(workflowId);
         if (project == null) {
             throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
         } else if (!project.workflowExists(workflowId)) {
-            throw new WorkflowNotFoundException(JEMessages.WORKFLOW_NOT_FOUND);
+            result.setOperationSucceeded(false);
+            result.setOperationError(JEMessages.WORKFLOW_NOT_FOUND);
+
+            return CompletableFuture.completedFuture(result);
         }
 
-        if (!project.getWorkflowByIdOrName(workflowId).getStatus().equals(JEWorkflow.BUILT) || project.getWorkflowByIdOrName(workflowId).getStatus().equals(JEWorkflow.RUNNING)) {
-            throw new WorkflowAlreadyRunningException(JEMessages.WORKFLOW_NEEDS_BUILD);
+        JEWorkflow wf = project.getWorkflowByIdOrName(workflowId);
+        result.setItemName(wf.getJobEngineElementName());
+
+        if (wf.getStatus().equals(JEWorkflow.BUILT)) {
+            result.setOperationSucceeded(false);
+            result.setOperationError(JEMessages.WORKFLOW_NEEDS_BUILD);
+            return CompletableFuture.completedFuture(result);
         }
-        //set statuse
-        if (!project.getWorkflowByIdOrName(workflowId).getStatus().equals(JEWorkflow.RUNNING)) {
-            JELogger.info("[projectId =" + projectId + " ][workflowId = " +
-                            workflowId + "]" + JEMessages.RUNNING_WF,
-                    LogCategory.DESIGN_MODE, projectId,
-                    LogSubModule.WORKFLOW, workflowId);
+
+        if (wf.getStatus().equals(JEWorkflow.RUNNING)) {
+            result.setOperationSucceeded(false);
+            result.setOperationError(JEMessages.WORKFLOW_ALREADY_RUNNING);
+            return CompletableFuture.completedFuture(result);
+        }
+
+        JELogger.info("[projectId =" + projectId + " ][workflowId = " +
+                        workflowId + "]" + JEMessages.RUNNING_WF,
+                LogCategory.DESIGN_MODE, projectId,
+                LogSubModule.WORKFLOW, workflowId);
+        try {
             WorkflowBuilder.runWorkflow(projectId, project.getWorkflowByIdOrName(workflowId).getJobEngineElementName().trim());
-            project.getWorkflowByIdOrName(workflowId).setStatus(JEWorkflow.RUNNING);
-        } else {
-            throw new WorkflowAlreadyRunningException(JEMessages.WORKFLOW_ALREADY_RUNNING);
+            wf.setStatus(JEWorkflow.RUNNING);
+            result.setItemName(wf.getJobEngineElementName());
+            result.setItemId(workflowId);
         }
+        catch (WorkflowRunException e) {
+            result.setOperationSucceeded(false);
+            result.setOperationError(e.getMessage());
+        }
+
+        return CompletableFuture.completedFuture(result);
     }
 
 
@@ -524,7 +561,7 @@ public class WorkflowService {
      *
      * Update workflow block
      * */
-    public void updateWorkflowBlock(WorkflowBlockModel block) throws WorkflowBlockNotFound, WorkflowNotFoundException, ProjectNotFoundException, IOException, InterruptedException, ExecutionException, EventException, ConfigException, WorkflowBlockException, ClassLoadException, JERunnerErrorException, AddClassException, DataDefinitionUnreachableException, AddRuleBlockException, LicenseNotActiveException {
+    public void updateWorkflowBlock(WorkflowBlockModel block) throws WorkflowBlockNotFound, WorkflowNotFoundException, ProjectNotFoundException,    EventException, ConfigException, WorkflowBlockException, ClassLoadException,  AddClassException,   LicenseNotActiveException {
         LicenseProperties.checkLicenseIsActive();
 
         JEProject project = ProjectService.getProjectById(block.getProjectId());
@@ -815,7 +852,9 @@ public class WorkflowService {
     }
 
 
-
+    /*
+    * Add a scripted xml file to activiti engine
+    * */
     public void addBpmn(String projectId, String workflowId, String bpmn) throws ProjectNotFoundException, LicenseNotActiveException {
         LicenseProperties.checkLicenseIsActive();
 
@@ -896,7 +935,6 @@ public class WorkflowService {
 
     }
 
-
     public void removeWorkflows(String projectId, List<String> ids) throws ProjectNotFoundException, LicenseNotActiveException {
         LicenseProperties.checkLicenseIsActive();
 
@@ -911,7 +949,6 @@ public class WorkflowService {
         for (String id : ids) {
             try {
                 removeWorkflow(projectId, id);
-                workflowRepository.deleteById(id);
             } catch (Exception e) {
                 JELogger.error(JEMessages.DELETE_WORKFLOW_FAILED + " id = " + id + " " + e.getMessage(),
                         LogCategory.DESIGN_MODE, projectId,
@@ -920,43 +957,61 @@ public class WorkflowService {
         }
     }
 
-    public void stopWorkflow(String projectId, String workflowId) throws ProjectNotFoundException, WorkflowNotFoundException, LicenseNotActiveException {
+    @Async
+    public CompletableFuture<OperationStatusDetails> stopWorkflow(String projectId, String workflowId) throws ProjectNotFoundException, LicenseNotActiveException {
         LicenseProperties.checkLicenseIsActive();
 
         JEProject project = ProjectService.getProjectById(projectId);
+        OperationStatusDetails result = new OperationStatusDetails(workflowId);
         if (project == null) {
             throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
         } else if (!project.workflowExists(workflowId)) {
-            throw new WorkflowNotFoundException(JEMessages.WORKFLOW_NOT_FOUND);
+            result.setOperationSucceeded(false);
+            result.setOperationError(JEMessages.WORKFLOW_NOT_FOUND);
+            return CompletableFuture.completedFuture(result);
         }
+        JEWorkflow wf = project.getWorkflowByIdOrName(workflowId);
         JELogger.debug("[projectId =" + projectId + " ][workflowId = " + workflowId + "]" + JEMessages.STOPPING_WF,
                 LogCategory.DESIGN_MODE, projectId,
                 LogSubModule.WORKFLOW, workflowId);
         try {
-            JERunnerAPIHandler.deleteWorkflow(projectId, project.getWorkflowByIdOrName(workflowId).getJobEngineElementName());
+            result.setItemName(wf.getJobEngineElementName());
+            result.setItemId(workflowId);
+            JERunnerAPIHandler.deleteWorkflow(projectId, wf.getJobEngineElementName());
+            wf.setStatus(JEWorkflow.IDLE);
+
         }
-        catch(JERunnerErrorException e) {}
+        catch(JERunnerErrorException e) {
+            JELogger.debug("[projectId =" + projectId + " ][workflowId = " + workflowId + "]" + JEMessages.STOPPING_WF + e.getMessage(),
+                    LogCategory.DESIGN_MODE, projectId,
+                    LogSubModule.WORKFLOW, workflowId);
+            result.setOperationSucceeded(false);
+            result.setOperationError(JEMessages.ERROR_STOPPING_WORKFLOW);
+        }
         project.getWorkflowByIdOrName(workflowId).setStatus(JEWorkflow.IDLE);
         workflowRepository.save(project.getWorkflowByIdOrName(workflowId));
-
+        return CompletableFuture.completedFuture(result);
     }
 
-    public List<WorkflowModel> getAllWorkflows(String projectId) throws LicenseNotActiveException {
+
+    @Async
+    public CompletableFuture<List<WorkflowModel>> getAllWorkflows(String projectId) throws LicenseNotActiveException {
         LicenseProperties.checkLicenseIsActive();
         List<JEWorkflow> wfs = workflowRepository.findByJobEngineProjectID(projectId);
         List<WorkflowModel> modelList = new ArrayList<>();
         for (JEWorkflow wf : wfs) {
             modelList.add(JEWorkflow.mapJEWorkflowToModel(wf));
         }
-        return modelList;
+        return CompletableFuture.completedFuture(modelList);
 
     }
 
-    public WorkflowModel getWorkflow(String workflowId) throws LicenseNotActiveException, WorkflowNotFoundException {
+    @Async
+    public CompletableFuture<WorkflowModel> getWorkflow(String workflowId) throws LicenseNotActiveException, WorkflowNotFoundException {
         LicenseProperties.checkLicenseIsActive();
         try {
             JEWorkflow wf = workflowRepository.findById(workflowId).get();
-            return JEWorkflow.mapJEWorkflowToModel(wf);
+            return CompletableFuture.completedFuture(JEWorkflow.mapJEWorkflowToModel(wf));
         } catch (Exception e) {
             throw new WorkflowNotFoundException(JEMessages.WORKFLOW_NOT_FOUND);
         }
@@ -964,6 +1019,7 @@ public class WorkflowService {
 
     }
 
+    @Async
     public void deleteAll(String projectId) {
         workflowRepository.deleteByJobEngineProjectID(projectId);
 
@@ -979,4 +1035,78 @@ public class WorkflowService {
         }
         return map;
     }
+
+    @Async
+    public CompletableFuture<List<OperationStatusDetails>> runWorkflows(String projectId, List<String> ids) throws LicenseNotActiveException, ProjectNotFoundException {
+
+        LicenseProperties.checkLicenseIsActive();
+
+        JEProject project = ProjectService.getProjectById(projectId);
+        if (project == null) {
+            throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
+        }
+
+        List<OperationStatusDetails> results = new ArrayList<>();
+        if(ids == null) {
+            for (JEWorkflow wf : project.getWorkflows().values()) {
+                try {
+                    results.add(runWorkflow(projectId, wf.getJobEngineElementID()).get());
+                }
+                catch (Exception e) {
+                    results.add(OperationStatusDetails.getResultDetails(wf.getJobEngineElementID(), false, THREAD_INTERRUPTED_WHILE_EXECUTING,
+                            wf.getJobEngineElementName()));
+                }
+            }
+        }
+
+        else {
+            for(String id: ids) {
+                try {
+                    results.add(runWorkflow(projectId, id).get());
+                }
+                catch (Exception e) {
+                    results.add(OperationStatusDetails.getResultDetails(id, false, THREAD_INTERRUPTED_WHILE_EXECUTING,
+                            project.getWorkflowByIdOrName(id).getJobEngineElementName()));
+                }
+            }
+        }
+        return CompletableFuture.completedFuture(results);
+    }
+
+    @Async
+    public CompletableFuture<List<OperationStatusDetails>> stopWorkflows(String projectId, List<String> ids) throws LicenseNotActiveException, ProjectNotFoundException {
+        LicenseProperties.checkLicenseIsActive();
+        JEProject project = ProjectService.getProjectById(projectId);
+        if (project == null) {
+            throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
+        }
+
+        List<OperationStatusDetails> results = new ArrayList<>();
+        if(ids == null) {
+            for (JEWorkflow wf : project.getWorkflows().values()) {
+                try {
+                    results.add(stopWorkflow(projectId, wf.getJobEngineElementID()).get());
+                }
+                catch (Exception e) {
+                    results.add(OperationStatusDetails.getResultDetails(wf.getJobEngineElementID(), false, THREAD_INTERRUPTED_WHILE_EXECUTING,
+                            wf.getJobEngineElementName()));
+                }
+            }
+        }
+
+        else {
+            for(String id: ids) {
+                try {
+                    results.add(stopWorkflow(projectId, id).get());
+                }
+                catch (Exception e) {
+
+                    results.add(OperationStatusDetails.getResultDetails(id, false, THREAD_INTERRUPTED_WHILE_EXECUTING,
+                            project.getWorkflowByIdOrName(id).getJobEngineElementName()));
+                }
+            }
+        }
+        return CompletableFuture.completedFuture(results);
+    }
+
 }

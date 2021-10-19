@@ -266,6 +266,7 @@ public class ClassService {
         c.setName(name);
         c.setClassVisibility("public");
         MethodModel m = new MethodModel();
+        m.setId(name);
         m.setMethodName("executeScript");
         m.setReturnType("VOID");
         m.setMethodScope("STATIC");
