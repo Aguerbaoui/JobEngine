@@ -6,7 +6,7 @@ import io.je.runtime.beans.DMListener;
 import io.je.runtime.data.DataModelListener;
 import io.je.runtime.events.EventManager;
 import io.je.runtime.models.ClassModel;
-import io.je.runtime.models.RuleModel;
+import io.je.runtime.models.RunnerRuleModel;
 import io.je.runtime.ruleenginehandler.RuleEngineHandler;
 import io.je.runtime.workflow.WorkflowEngineHandler;
 import io.je.serviceTasks.*;
@@ -124,33 +124,33 @@ public class RuntimeDispatcher {
 	// ***********************************RULES********************************************************
 
 	// add rule
-	public void addRule(RuleModel ruleModel) throws RuleAlreadyExistsException, RuleCompilationException,
+	public void addRule(RunnerRuleModel runnerRuleModel) throws RuleAlreadyExistsException, RuleCompilationException,
 			RuleNotAddedException, JEFileNotFoundException, RuleFormatNotValidException {
 
-		JELogger.debug(JEMessages.ADDING_RULE + " : " + ruleModel.getRuleName(), LogCategory.RUNTIME,
-				ruleModel.getProjectId(), LogSubModule.RULE, ruleModel.getRuleId());
-		RuleEngineHandler.addRule(ruleModel);
+		JELogger.debug(JEMessages.ADDING_RULE + " : " + runnerRuleModel.getRuleName(), LogCategory.RUNTIME,
+				runnerRuleModel.getProjectId(), LogSubModule.RULE, runnerRuleModel.getRuleId());
+		RuleEngineHandler.addRule(runnerRuleModel);
 	}
 
 	// update rule
-	public void updateRule(RuleModel ruleModel)
+	public void updateRule(RunnerRuleModel runnerRuleModel)
 			throws RuleCompilationException, JEFileNotFoundException, RuleFormatNotValidException {
-		JELogger.debug(JEMessages.UPDATING_RULE + " : " + ruleModel.getRuleId(), LogCategory.RUNTIME,
-				ruleModel.getProjectId(), LogSubModule.RULE, ruleModel.getRuleId());
-		List<String> topics = DataModelListener.getRuleTopicsByProjectId(ruleModel.getProjectId());
+		JELogger.debug(JEMessages.UPDATING_RULE + " : " + runnerRuleModel.getRuleId(), LogCategory.RUNTIME,
+				runnerRuleModel.getProjectId(), LogSubModule.RULE, runnerRuleModel.getRuleId());
+		List<String> topics = DataModelListener.getRuleTopicsByProjectId(runnerRuleModel.getProjectId());
 
 		// start listening to datasources
 		DataModelListener.startListening(topics);
-		RuleEngineHandler.updateRule(ruleModel);
+		RuleEngineHandler.updateRule(runnerRuleModel);
 
 	}
 
 	// compile rule
-	public void compileRule(RuleModel ruleModel)
+	public void compileRule(RunnerRuleModel runnerRuleModel)
 			throws RuleFormatNotValidException, RuleCompilationException, JEFileNotFoundException {
-		JELogger.debug(JEMessages.COMPILING_RULE + " : " + ruleModel.getRuleId(), LogCategory.RUNTIME,
-				ruleModel.getProjectId(), LogSubModule.RULE, ruleModel.getRuleId());
-		RuleEngineHandler.compileRule(ruleModel);
+		JELogger.debug(JEMessages.COMPILING_RULE + " : " + runnerRuleModel.getRuleName(), LogCategory.RUNTIME,
+				runnerRuleModel.getProjectId(), LogSubModule.RULE, runnerRuleModel.getRuleId());
+		RuleEngineHandler.compileRule(runnerRuleModel);
 	}
 
 	// delete rule
@@ -216,7 +216,7 @@ public class RuntimeDispatcher {
 	///////////////////////////// Classes
 	// add class
 	public void addClass(ClassModel classModel) throws ClassLoadException {
-		JELogger.debug(JEMessages.ADDING_CLASS, LogCategory.RUNTIME, null, LogSubModule.CLASS, null);
+		JELogger.debug(JEMessages.ADDING_CLASS+": "+classModel.getClassName(), LogCategory.RUNTIME, null, LogSubModule.CLASS, null);
 		//if (!ClassRepository.containsClass(classModel.getClassId())) {
 			JEClassCompiler.compileClass(classModel.getClassPath(), ConfigurationConstants.RUNNER_CLASS_LOAD_PATH);
 			try {
@@ -405,16 +405,16 @@ public class RuntimeDispatcher {
 
 	}
 
-	public List<OperationStatusDetails> updateRules(List<RuleModel> ruleModels)  {
+	public List<OperationStatusDetails> updateRules(List<RunnerRuleModel> runnerRuleModels)  {
 		
 		List<OperationStatusDetails> updateResult = new ArrayList<>();
-		for (RuleModel ruleModel : ruleModels)
+		for (RunnerRuleModel runnerRuleModel : runnerRuleModels)
 		{
-			OperationStatusDetails details = new OperationStatusDetails(ruleModel.getRuleId());
-			 removeRuleTopics(ruleModel.getProjectId(), ruleModel.getRuleId());
-	         addTopics(ruleModel.getProjectId(), ruleModel.getRuleId(),"rule",ruleModel.getTopics());
+			OperationStatusDetails details = new OperationStatusDetails(runnerRuleModel.getRuleId());
+			 removeRuleTopics(runnerRuleModel.getProjectId(), runnerRuleModel.getRuleId());
+	         addTopics(runnerRuleModel.getProjectId(), runnerRuleModel.getRuleId(),"rule",runnerRuleModel.getTopics());
 	         try {
-				updateRule(ruleModel);
+				updateRule(runnerRuleModel);
 				details.setOperationSucceeded(true);
 			} catch (RuleCompilationException | JEFileNotFoundException | RuleFormatNotValidException e) {
 				details.setOperationSucceeded(false);
@@ -425,10 +425,10 @@ public class RuntimeDispatcher {
 		
 	}
 
-	public void compileRules(List<RuleModel> ruleModels) throws RuleFormatNotValidException, RuleCompilationException, JEFileNotFoundException {
-		for (RuleModel ruleModel : ruleModels)
+	public void compileRules(List<RunnerRuleModel> runnerRuleModels) throws RuleFormatNotValidException, RuleCompilationException, JEFileNotFoundException {
+		for (RunnerRuleModel runnerRuleModel : runnerRuleModels)
 		{
-	         compileRule(ruleModel);
+	         compileRule(runnerRuleModel);
 		}
 		
 	}

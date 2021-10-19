@@ -23,10 +23,10 @@ public class AttachedSetterBlock extends ExecutionBlock {
 	Object value;
 	
 	//variable
-	String variableId;
+	String sourceVariableId;
 	
 	//DM
-	String instanceId ; 
+	String sourceInstanceId ; 
 	String sourceAttributeName;
 	
 	//DESTINATION
@@ -47,8 +47,8 @@ public class AttachedSetterBlock extends ExecutionBlock {
 			newValueType = ValueType.valueOf((String)blockModel.getBlockConfiguration().get(AttributesMapping.SOURCE_VALUE_TYPE));
 			destinationAttributeName = (String) blockModel.getBlockConfiguration().get(AttributesMapping.DESTINATION_ATTRIBUTE_NAME);
 			sourceAttributeName = (String) blockModel.getBlockConfiguration().get(AttributesMapping.ATTRIBUTENAME);
-			instanceId = (String) blockModel.getBlockConfiguration().get(AttributesMapping.OBJECTID);
-			variableId = (String) blockModel.getBlockConfiguration().get(AttributesMapping.OBJECTID);
+			sourceInstanceId = (String) blockModel.getBlockConfiguration().get("sourceInstance");
+			sourceVariableId = (String) blockModel.getBlockConfiguration().get("sourceVariable");
 			getterName =  (String) blockModel.getBlockConfiguration().get(AttributesMapping.LINKED_GETTER_NAME);
 			
 			
@@ -78,9 +78,9 @@ public class AttachedSetterBlock extends ExecutionBlock {
 	   case STATIC :		   
 		   return executionerMethod+getterInstanceId+",\" "+destinationAttributeName +"\", "+value+");";
 	   case VARIABLE:
-		   return executionerMethod+getterInstanceId+", \""+destinationAttributeName +"\", VariableManager.getVariable("+variableId+"));";
+		   return executionerMethod+getterInstanceId+", \""+destinationAttributeName +"\", VariableManager.getVariable("+sourceVariableId+"));";
 	   case ATTRIBUTE :
-		   return executionerMethod+getterInstanceId+", \""+destinationAttributeName +"\", InstanceManager.getInstance(\""+instanceId+"\").get"+ StringUtils.capitalize(sourceAttributeName)+ "());";
+		   return executionerMethod+getterInstanceId+", \""+destinationAttributeName +"\", InstanceManager.getInstance(\""+sourceInstanceId+"\").get"+ StringUtils.capitalize(sourceAttributeName)+ "());";
 	  default:
 		  throw new RuleBuildFailedException("INVALID CONFIGURATION");
 

@@ -283,6 +283,8 @@ public class RuleController {
 			@PathVariable("ruleId") String ruleId) {
 
 		try {
+			
+
 			projectService.getProject(projectId);
 
 			ruleService.runRule(projectId, ruleId);
@@ -302,18 +304,18 @@ public class RuleController {
 	@PostMapping(value = "/{projectId}/runRules", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> runRules(@PathVariable("projectId") String projectId,
 			 @RequestBody List<String> ruleIds  ) {
-
+		List<OperationStatusDetails> results;
 		try {
 			projectService.getProject(projectId);
 
-			ruleService.runRules(projectId, ruleIds);
+			results =ruleService.runRules(projectId, ruleIds);
 			projectService.saveProject(projectId);
 
 		} catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
 		}
 
-		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, "Rule fired"));
+		return ResponseEntity.ok(new JECustomResponse(ResponseCodes.CODE_OK, "Run completed.",results));
 	}
 	
 	
@@ -343,18 +345,19 @@ public class RuleController {
 	@PostMapping(value = "/{projectId}/stopRules", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> stopRules(@PathVariable("projectId") String projectId,
 			 @RequestBody List<String> ruleIds  ) {
+		List<OperationStatusDetails> results;
 
 		try {
 			projectService.getProject(projectId);
 
-			ruleService.stopRules(projectId, ruleIds);
+			results =ruleService.stopRules(projectId, ruleIds);
 			projectService.saveProject(projectId);
 
 		} catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
 		}
 
-		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, "Rule fired"));
+		return ResponseEntity.ok(new JECustomResponse(ResponseCodes.CODE_OK, "Stopping rules completed.",results));
 	}
 	
 	

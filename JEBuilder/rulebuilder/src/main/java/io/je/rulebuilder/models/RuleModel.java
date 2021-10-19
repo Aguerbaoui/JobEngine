@@ -69,7 +69,7 @@ public class RuleModel {
 		this.lastModifiedAt = DateUtils.formatDateToSIOTHFormat(rule.getJeObjectLastUpdate());
 		this.createdBy = rule.getJeObjectCreatedBy();
 		this.modifiedBy = rule.getJeObjectModifiedBy();
-		this.status=rule.getStatus().name();
+		this.status=rule.getStatus().toString();
 		if(rule instanceof UserDefinedRule) {
 			this.salience = ((UserDefinedRule)rule).getRuleParameters().getSalience();
 			this.enabled = Boolean.valueOf(((UserDefinedRule)rule).getRuleParameters().getEnabled());

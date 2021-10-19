@@ -278,7 +278,7 @@ public class JEMessages {
 
     public static final String WORKFLOW_BLOCK_NOT_FOUND = "Workflow block not found";
 
-    public static final String PROJECT_NOT_FOUND = "Project not found";
+    public static final String PROJECT_NOT_FOUND = "No project with this Id was found.";
 
     public static final String PROJECT_LOAD_ERROR = "Error loading project files";
 
@@ -322,7 +322,6 @@ public class JEMessages {
 
     public static final String EVENT_ALREADY_EXISTS = "An event with this Id already exists";
 
-    public static final String MISSING_CONFIG = "Application configuration is missing. Make sure to properly configure the application before proceeding.";
 
     public static final String JEBUILDER_UNREACHABLE = "JEBuilder unreachable";
 
@@ -539,7 +538,7 @@ public class JEMessages {
 
     public static final String FIRING_ALL_RULES = "Firing all rules.";
 
-    public static final String NO_RULES = "NO_RULES_WERE_FOUND";
+    public static final String NO_RULES = "No rules were found.";
 
     public static final String BUILDING_KIE = "Building knowledge base.";
 
@@ -597,7 +596,7 @@ public class JEMessages {
     public static final String ADDING_JAR_FILE_TO_RUNNER = "Adding jar file to JERunner\n";
     public static final String CLASS_COMPILATION_FAILED = "Class compilation failed ";
     public static final String DATA_MODEL_DATE_FORMAT_MISSING = "DataModel date format is not specified";
-    public static final String VARIABLE_NOT_FOUND = "Variable cannot be found";
+    public static final String VARIABLE_NOT_FOUND = "No variable with this Id is found : ";
     public static final String VARIABLE_EXISTS = "Variable already exists";
     public static final String STOPPING_WF = "Stopping workflow";
 	public static final String LOGGING_SYSTEM_URL_MISSING = "Logging System URL is not configured";
@@ -658,4 +657,8 @@ public class JEMessages {
     public static final String METHOD_EXISTS = "Procedure with the same name already exists";
 
     public static final String METHOD_MISSING = "Procedure with this name doesn't exist";
+
+	public static final String INVALID_CONFIG = "Invalid configuration";
+
+	public static final String GENERATED_RULE = "generated DRL : \n";
 }
