@@ -2,12 +2,16 @@ package io.je.utilities.mapping;
 
 public class JERunnerRuleMapping {
 
-	public static final String RULE_ID = "rule-Id";
-	public static final String RULE_NAME = "rule-name";
-	public static final String PROJECT_ID = "project-Id";
-	public static final String PATH = "rule-path";
-	public static final String FORMAT = "rule-format";
-	public static final String TOPICS = "rule-topics";
+	private JERunnerRuleMapping() {
 
+	}
+
+	public static final String RULE_ID = "ruleId";
+	public static final String RULE_NAME = "ruleName";
+	public static final String PROJECT_ID = "projectId";
+	public static final String PATH = "rulePath";
+	public static final String FORMAT = "ruleFormat";
+	public static final String TOPICS = "ruleTopics";
+	public static final String PROJECT_NAME = "projectName";
 
 }

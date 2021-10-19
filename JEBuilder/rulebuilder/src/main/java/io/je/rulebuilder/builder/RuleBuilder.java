@@ -75,6 +75,7 @@ public class RuleBuilder {
 
         HashMap<String, Object> ruleMap = new HashMap<>();
         ruleMap.put(JERunnerRuleMapping.PROJECT_ID, rule.getJobEngineProjectID());
+        ruleMap.put(JERunnerRuleMapping.PROJECT_NAME, rule.getJobEngineElementName());
         ruleMap.put(JERunnerRuleMapping.PATH, path);
         ruleMap.put(JERunnerRuleMapping.RULE_ID, rule.getJobEngineElementID());
 
@@ -113,7 +114,7 @@ public class RuleBuilder {
         
         
         if (jeRunnerResp == null || jeRunnerResp.getCode() != ResponseCodes.CODE_OK) {
-			JELogger.error("[rule id =" + rule.getJobEngineElementName() + " ]" + JEMessages.RULE_BUILD_FAILED + jeRunnerResp.getMessage(),
+			JELogger.error("[project = "+rule.getJobEngineProjectName()+"][rule =" + rule.getJobEngineElementName() + " ]" + JEMessages.RULE_BUILD_FAILED + jeRunnerResp.getMessage(),
 					LogCategory.DESIGN_MODE, rule.getJobEngineProjectID(),
 					LogSubModule.RULE, rule.getJobEngineElementID());
             throw new RuleBuildFailedException(jeRunnerResp.getMessage());
@@ -155,7 +156,7 @@ public class RuleBuilder {
             // add time persistence
 
             String script = generateScript(uRule.getRuleParameters(), scriptedRuleid, duration, condition, consequences);
-			JELogger.debug("generated DRL : \n" + script,
+			JELogger.debug(JEMessages.GENERATED_RULE + script,
 					LogCategory.DESIGN_MODE, uRule.getJobEngineProjectID(),
 					LogSubModule.RULE, uRule.getJobEngineElementID());
             ScriptedRule rule = new ScriptedRule(uRule.getJobEngineProjectID(), scriptedRuleid, script,
@@ -229,7 +230,7 @@ public class RuleBuilder {
         }
         // if this rule has no execution block, then it is not valid.
         if (executionBlockCounter == 0) {
-			JELogger.error(JEMessages.NO_EXECUTION_BLOCK,
+			JELogger.error("[project = "+uRule.getJobEngineProjectName()+"][rule = "+uRule.getJobEngineElementName()+"] "+JEMessages.NO_EXECUTION_BLOCK,
 					LogCategory.DESIGN_MODE, uRule.getJobEngineProjectID(),
 					LogSubModule.RULE, uRule.getJobEngineElementID());
             throw new RuleBuildFailedException(JEMessages.NO_EXECUTION_BLOCK);

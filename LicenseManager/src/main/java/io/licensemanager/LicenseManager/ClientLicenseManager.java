@@ -10,6 +10,7 @@ import io.licensemanager.common.enums.SIOTHLicenseStatus;
 import io.licensemanager.eventlistener.LicenseStatusChangeHandler;
 import io.licensemanager.eventlistener.LicenseStatusListener;
 import io.licensemanager.utilities.InitResponse;
+import io.licensemanager.utilities.LicenseMessages;
 import io.licensemanager.utilities.LicenseUtilities;
 import utils.zmq.ZMQRequester;
 
@@ -98,26 +99,26 @@ public class ClientLicenseManager {
 							}
 
 						} else {
-							strError = "Error occurred while receiving data.";
+							strError = LicenseMessages.ERROR_RECEIVING_DATA;
 						}
 					} else {
-						strError = "The License Manager is not reachable. License Manager Address: "+licenseManagerUrl+".";
+						strError = LicenseMessages.licenseManagerUnreachable(licenseManagerUrl);
 					}
 
 				} else {
-					strError = "Error occurred while sending request.";
+					strError = LicenseMessages.ERROR_SENDING_REQUEST ;
 				}
 
 			} else {
 
-				strError = "Error occurred while initialize ZMQ Request. Error: " + strError;
+				strError = LicenseMessages.initZMQError(strError);
 			}
 
 			return new InitResponse(false, strError,siothlicenseStatus );
 
 
 		} catch (Exception ex) {
-			strError = "Exception occurred while initializing license. Exception: " + ex.getMessage();
+			strError = LicenseMessages.initLicenseError( ex.getMessage());
 			return new InitResponse(false, strError,siothlicenseStatus );
 
 		}
