@@ -1,6 +1,27 @@
 package io.je.utilities.ruleutils;
 
 public enum RuleStatus {
-	ERROR,RUNNING,STOPPED,NOT_BUILT,RUNNING_NOT_UP_TO_DATE
+	ERROR("Error"),
+	RUNNING("Running"),
+	STOPPED("Stopped"),
+	NOT_BUILT("New"),
+	RUNNING_NOT_UP_TO_DATE("Not Updated");
+	
+
+    private final String name;       
+
+    private RuleStatus(String s) {
+        name = s;
+    }
+
+    public boolean equalsName(String otherName) {
+        return name.equals(otherName);
+    }
+
+    public String toString() {
+       return this.name;
+    }
+	
+	
 
 }

@@ -54,7 +54,6 @@ public class AsyncRuleService {
 		OperationStatusDetails result = new OperationStatusDetails(ruleId);
 
 		JERule rule = null;
-
 		// check rule exists
 		try {
 			rule = getRule(projectId, ruleId);
@@ -132,11 +131,12 @@ public class AsyncRuleService {
 			}
 			project.getRules().get(ruleId).setRunning(true);
 			project.getRules().get(ruleId).setStatus(RuleStatus.RUNNING);
+			result.setOperationSucceeded(true);
 		} catch (RuleBuildFailedException | ProjectNotFoundException | JERunnerErrorException e) {
 			result.setOperationSucceeded(false);
 			result.setOperationError(e.getMessage());
 		}
-
+		
 		return CompletableFuture.completedFuture(result);
 
 	}
@@ -181,7 +181,6 @@ public class AsyncRuleService {
 					}
 
 					project.getRules().get(ruleId).setStatus(RuleStatus.STOPPED);
-					result.setOperationSucceeded(true);
 				} catch (JERunnerErrorException e) {
 					JELogger.error("Failed to stop rule : " + project.getRules().get(ruleId).getJobEngineElementName(),
 							CATEGORY, projectId, RULE, null);
@@ -201,6 +200,9 @@ public class AsyncRuleService {
 	private JEProject getProject(String projectId) throws ProjectNotFoundException {
 		JEProject project = ProjectService.getProjectById(projectId);
 		if (project == null) {
+			JELogger.error(
+					"[projectId = " + projectId + "] " + JEMessages.PROJECT_NOT_FOUND,
+					CATEGORY, projectId, RULE, projectId);
 			throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
 		}
 		return project;
@@ -212,6 +214,10 @@ public class AsyncRuleService {
 
 		JEProject project = getProject(projectId);
 		if (!project.ruleExists(ruleId)) {
+			JELogger.error(
+					"[project = " + project.getProjectName() + "] [rule = "
+							+ project.getRules().get(ruleId).getJobEngineElementName() + "]" + JEMessages.RULE_NOT_FOUND,
+					CATEGORY, project.getProjectId(), RULE, ruleId);
 			throw new RuleNotFoundException(projectId, ruleId);
 		}
 		JELogger.debug(

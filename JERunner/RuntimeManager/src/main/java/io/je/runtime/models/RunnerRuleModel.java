@@ -10,11 +10,15 @@ import java.util.List;
 /*
  * Rule Model
  */
-public class RuleModel {
+public class RunnerRuleModel {
 
     //The project this rule belongs to
     @JsonProperty(JERunnerRuleMapping.PROJECT_ID)
     String projectId;
+    
+    
+    @JsonProperty(JERunnerRuleMapping.PROJECT_NAME)
+    String projectName;
 
     //rule identifier
     @JsonProperty(JERunnerRuleMapping.RULE_NAME)
@@ -86,6 +90,14 @@ public class RuleModel {
 
 	public void setTopics(List<String> topics) {
 		this.topics = topics;
+	}
+
+	public String getProjectName() {
+		return projectName;
+	}
+
+	public void setProjectName(String projectName) {
+		this.projectName = projectName;
 	}
 
    

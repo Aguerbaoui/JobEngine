@@ -4,7 +4,7 @@ public class OperationStatusDetails {
 		
 	String itemId;
 	String itemName;
-	boolean operationSucceeded;
+	boolean operationSucceeded=true;
 	String operationError;
 	
 	

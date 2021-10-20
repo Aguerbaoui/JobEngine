@@ -8,6 +8,7 @@ import io.je.rulebuilder.components.blocks.ExecutionBlock;
 import io.je.rulebuilder.config.AttributesMapping;
 import io.je.rulebuilder.models.BlockModel;
 import io.je.rulebuilder.models.ValueType;
+import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.RuleBuildFailedException;
 
 /*
@@ -60,10 +61,10 @@ public class SetterBlock extends ExecutionBlock {
 			//if source data model
 			sourceClassName =(String) blockModel.getBlockConfiguration().get("class_name");
 			sourceAttributeName = (String) blockModel.getBlockConfiguration().get("attribute_name");
-			sourceInstanceId = (String) blockModel.getBlockConfiguration().get("objectId");
+			sourceInstanceId = (String) blockModel.getBlockConfiguration().get("sourceInstance");
 			
 			//if source variable
-			sourceVariableId = (String) blockModel.getBlockConfiguration().get("objectId");
+			sourceVariableId = (String) blockModel.getBlockConfiguration().get("sourceVariable");
 
 			value = blockModel.getBlockConfiguration().get("newValue");
 		//destination configuration 
@@ -137,7 +138,7 @@ public class SetterBlock extends ExecutionBlock {
 							  +"\"" + this.destinationAttributeName  +"\""
 							  +");\r\n");
 					expression.append("\n");
-					
+					return expression.toString();
 				}
 			  
 			  		
@@ -171,7 +172,7 @@ public class SetterBlock extends ExecutionBlock {
 				  +");\r\n";
 			  		
 		  default:
-			  throw new RuleBuildFailedException("INVALID CONFIGURATION");
+			  throw new RuleBuildFailedException(JEMessages.INVALID_CONFIG);
 
 		   }
 		  

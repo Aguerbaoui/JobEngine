@@ -2,6 +2,7 @@ package io.je.project.services;
 
 import io.je.project.beans.JEProject;
 import io.je.project.repository.ProjectRepository;
+import io.je.rulebuilder.components.JERule;
 import io.je.utilities.apis.JERunnerAPIHandler;
 import io.je.utilities.beans.JEEvent;
 import io.je.utilities.beans.JEVariable;
@@ -9,6 +10,7 @@ import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.*;
 import io.je.utilities.log.JELogger;
 import io.je.utilities.ruleutils.OperationStatusDetails;
+import io.je.utilities.ruleutils.RuleStatus;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
 

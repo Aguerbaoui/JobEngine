@@ -20,6 +20,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 
@@ -32,13 +33,14 @@ public class VariableService {
 	public Collection<VariableModel> getAllVariables(String projectId) throws ProjectNotFoundException, LicenseNotActiveException {
     	LicenseProperties.checkLicenseIsActive();
 
-		JELogger.debug("[project id = " + projectId + "] " + JEMessages.LOADING_VARIABLES,
-                LogCategory.DESIGN_MODE, projectId,
-                LogSubModule.VARIABLE,null);
+
 		JEProject project = ProjectService.getProjectById(projectId);
 		if (project == null) {
 			throw new ProjectNotFoundException( JEMessages.PROJECT_NOT_FOUND);
 		}
+		JELogger.debug("[project  = " + project.getProjectName() + "] " + JEMessages.LOADING_VARIABLES,
+                LogCategory.DESIGN_MODE, projectId,
+                LogSubModule.VARIABLE,null);
 		ArrayList<VariableModel> variableModels = new ArrayList<>();
 		for(JEVariable variable: variableRepository.findByJobEngineProjectID(projectId))
 		{
@@ -57,18 +59,23 @@ public class VariableService {
 	public JEVariable getVariable(String projectId, String variableId) throws  ProjectNotFoundException, VariableNotFoundException, LicenseNotActiveException {
     	LicenseProperties.checkLicenseIsActive();
 
-		JELogger.debug(JEMessages.LOADING_VARIABLES +" [ id="+variableId+"] in project id =  " + projectId,
-                LogCategory.DESIGN_MODE, projectId,
-                LogSubModule.VARIABLE,variableId);
+		
 		JEProject project = ProjectService.getProjectById(projectId);
 		if (project == null) {
-			throw new ProjectNotFoundException( JEMessages.PROJECT_NOT_FOUND);
+			throw new ProjectNotFoundException("[projectId = " + projectId +"]"+JEMessages.PROJECT_NOT_FOUND);
 		}
-		return variableRepository.findById(variableId).get();
+		Optional<JEVariable> var=variableRepository.findById(variableId);
+		if(var.isEmpty())
+		{	String strError = JEMessages.VARIABLE_NOT_FOUND+ variableId; 
+			JELogger.error(strError,LogCategory.DESIGN_MODE, projectId,LogSubModule.VARIABLE,variableId);
+			throw new VariableNotFoundException(strError);
+		}
+		return var.get();
+		
 	}
 	
 	
-	public void addVariableToRunner(JEVariable variable) throws JERunnerErrorException, InterruptedException, ExecutionException, LicenseNotActiveException
+	public void addVariableToRunner(JEVariable variable) throws JERunnerErrorException, LicenseNotActiveException
 	{
     	LicenseProperties.checkLicenseIsActive();
 
@@ -99,7 +106,7 @@ public class VariableService {
         }
 
         JEVariable var = new JEVariable(variableModel.getId(),variableModel.getProjectId(),variableModel.getName(),variableModel.getType(),variableModel.getInitialValue(),variableModel.getDescription(),variableModel.getCreatedBy(),variableModel.getModifiedBy());
-
+        var.setJobEngineProjectName(project.getProjectName());
         try {
 			JERunnerAPIHandler.addVariable(variableModel.getProjectId(), variableModel.getId(), variableModel);
 		}
@@ -155,6 +162,7 @@ public class VariableService {
             throw new VariableNotFoundException(JEMessages.VARIABLE_NOT_FOUND);
         }
         JEVariable var = new JEVariable(variableModel.getId(),variableModel.getProjectId(),variableModel.getName(),variableModel.getType(), variableModel.getInitialValue(),variableModel.getDescription(),variableModel.getCreatedBy(),variableModel.getModifiedBy());
+        var.setJobEngineProjectName(project.getProjectName());
         var.setJeObjectCreationDate(LocalDateTime.now());
         var.setJeObjectLastUpdate(LocalDateTime.now());
 		try {
@@ -189,7 +197,7 @@ public class VariableService {
 		
 	}
 	
-	   public ConcurrentHashMap<String, JEVariable> getAllJEVariables(String projectId) throws ProjectNotFoundException, LicenseNotActiveException {
+	   public ConcurrentHashMap<String, JEVariable> getAllJEVariables(String projectId) throws  LicenseNotActiveException {
 	    	LicenseProperties.checkLicenseIsActive();
 
 		   List<JEVariable> variables = variableRepository.findByJobEngineProjectID(projectId);
