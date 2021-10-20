@@ -391,7 +391,10 @@ public class ProjectService {
              	   saveProject(project);
              	  for(JERule rule : project.getRules().values())
                   {
-                     rule.setStatus(RuleStatus.STOPPED);
+                     if(rule.getStatus()!=RuleStatus.ERROR)
+                     {
+                    	 rule.setStatus(RuleStatus.STOPPED);
+                     }
                   }
              	  
                 }
