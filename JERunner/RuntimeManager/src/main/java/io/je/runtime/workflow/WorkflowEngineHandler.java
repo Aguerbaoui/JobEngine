@@ -51,7 +51,7 @@ public class WorkflowEngineHandler {
      * Launch process without variables
      * */
     public static void launchProcessWithoutVariables(String projectId, String processId, boolean runProject) throws WorkflowNotFoundException, WorkflowAlreadyRunningException, WorkflwTriggeredByEventException, WorkflowBuildException {
-        JELogger.debug("[projectId = " + projectId +"][workflow = "+processId+"]"+JEMessages.REMOVING_WF,
+        JELogger.debug("[workflow = "+processId+"]"+JEMessages.REMOVING_WF,
                 LogCategory.RUNTIME, projectId,
                 LogSubModule.WORKFLOW,processId);
         processManagerHashMap.get(projectId).launchProcessByKeyWithoutVariables(processId, runProject);
@@ -114,9 +114,9 @@ public class WorkflowEngineHandler {
     public static void stopProjectWorfklows(String projectId) {
     	if(processManagerHashMap.containsKey(projectId))
     	{
-            JELogger.debug("[projectId = " + projectId +"]"+JEMessages.STOPPING_WORKFLOW,
+            /*JELogger.debug("[projectId = " + projectId +"]"+JEMessages.STOPPING_WORKFLOW,
                     LogCategory.RUNTIME, projectId,
-                    LogSubModule.WORKFLOW,null);
+                    LogSubModule.WORKFLOW,null);*/
             processManagerHashMap.get(projectId).stopProjectWorkflows();
 
     	}
@@ -134,9 +134,9 @@ public class WorkflowEngineHandler {
     }
 
     public static void deleteProjectProcesses(String projectId) {
-        JELogger.debug("[projectId = " + projectId +"]"+JEMessages.REMOVING_WFS,
+      /*  JELogger.debug("[projectId = " + projectId +"]"+JEMessages.REMOVING_WFS,
                 LogCategory.RUNTIME, projectId,
-                LogSubModule.WORKFLOW,null);
+                LogSubModule.WORKFLOW,null);*/
         if(processManagerHashMap.containsKey(projectId)) {
             stopProjectWorfklows(projectId);
             processManagerHashMap.remove(projectId);
@@ -153,9 +153,9 @@ public class WorkflowEngineHandler {
     }
 
     public static ActivitiTask parseTask(String projectId, String workflowId, TaskModel task) {
-        JELogger.debug("Parsing activiti task",
+        /*JELogger.debug("Parsing activiti task",
                 LogCategory.RUNTIME, projectId,
-                LogSubModule.WORKFLOW,workflowId);
+                LogSubModule.WORKFLOW,workflowId);*/
         if(task.getType().equals(WorkflowConstants.WEBSERVICETASK_TYPE)) {
             WebApiTask webApiTask = new WebApiTask();
             webApiTask.setBodyType(BodyType.JSON);

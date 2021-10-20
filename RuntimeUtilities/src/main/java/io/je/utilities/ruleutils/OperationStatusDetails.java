@@ -13,6 +13,7 @@ public class OperationStatusDetails {
 	public OperationStatusDetails(String itemId) {
 		super();
 		this.itemId = itemId;
+		operationSucceeded = true;
 	}
 
 
@@ -70,9 +71,15 @@ public class OperationStatusDetails {
 	public void setOperationError(String operationError) {
 		this.operationError = operationError;
 	}
-	
 
-	
+
+	public static OperationStatusDetails getResultDetails(String id, boolean success, String msg, String itemName) {
+		OperationStatusDetails res = new OperationStatusDetails(id);
+		res.setOperationError(msg);
+		res.setOperationSucceeded(success);
+		res.setItemName(itemName);
+		return res;
+	}
 	
 	
 

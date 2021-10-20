@@ -15,10 +15,8 @@ import models.JEWorkflow;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.concurrent.ExecutionException;
 
 import static io.je.utilities.constants.WorkflowConstants.*;
 
@@ -208,7 +206,7 @@ public class WorkflowBuilder {
             JERunnerAPIHandler.runWorkflow(projectId, key);
         }
         catch(JERunnerErrorException e) {
-            throw new WorkflowRunException(JEMessages.WORKFLOW_RUN_ERROR);
+            throw new WorkflowRunException(JEMessages.WORKFLOW_RUN_ERROR + e.getMessage());
         }
 
 

@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 import io.je.project.exception.JEExceptionHandler;
 import io.je.project.services.ProjectService;
@@ -262,7 +265,8 @@ public class RuleController {
 		try {
 			projectService.getProject(projectId);
 
-			results = ruleService.compileRules(projectId, ruleIds);
+			results = ruleService.compileRules(projectId, ruleIds).get();
+
 			projectService.saveProject(projectId);
 
 		} catch (Exception e) {

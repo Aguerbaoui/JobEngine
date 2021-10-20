@@ -1,5 +1,6 @@
 package io.je.project.services;
 
+import java.time.LocalDateTime;
 import java.util.concurrent.CompletableFuture;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +43,14 @@ public class AsyncRuleService {
 	public CompletableFuture<OperationStatusDetails> compileRule(String projectId, String ruleId, boolean compileOnly)
 
 	{
+		System.out.println(">>>> Compiling rule : "+ LocalDateTime.now() );
+
+		try {
+			Thread.sleep(2000);
+		} catch (InterruptedException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		OperationStatusDetails result = new OperationStatusDetails(ruleId);
 
 		JERule rule = null;
@@ -56,20 +65,23 @@ public class AsyncRuleService {
 		result.setItemName(rule.getJobEngineElementName());
 
 		try {
-			RuleBuilder.buildRule(rule, getProject(projectId).getConfigurationPath(), compileOnly);
-			// update rule status
-			// rule built
-			if (!compileOnly) {
-				rule.setBuilt(true);
-				rule.setAdded(true);
-				if (rule.isRunning()) {
-					rule.setStatus(RuleStatus.RUNNING);
-				} else {
-					rule.setStatus(RuleStatus.STOPPED);
+			if(rule.isEnabled())
+			{
+				RuleBuilder.buildRule(rule, getProject(projectId).getConfigurationPath(), compileOnly);
+				// update rule status
+				// rule built
+				if (!compileOnly) {
+					rule.setBuilt(true);
+					rule.setAdded(true);
+					if (rule.isRunning()) {
+						rule.setStatus(RuleStatus.RUNNING);
+					} else {
+						rule.setStatus(RuleStatus.STOPPED);
+					}
 				}
+				ruleRepository.save(rule);
+				result.setOperationSucceeded(true);
 			}
-			ruleRepository.save(rule);
-			result.setOperationSucceeded(true);
 		} catch (RuleBuildFailedException | JERunnerErrorException | ProjectNotFoundException e) {
 			rule.setStatus(RuleStatus.ERROR);
 			result.setOperationSucceeded(false);

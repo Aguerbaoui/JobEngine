@@ -1,6 +1,7 @@
 package io.je.project.beans;
 
 //import io.je.project.config.AuthenticationInterceptor;
+import io.je.project.config.AuthenticationInterceptor;
 import io.je.project.config.BuilderProperties;
 import io.je.project.config.LicenseProperties;
 import io.je.project.services.ConfigurationService;
@@ -37,7 +38,7 @@ public class JEBuilderInitializingBean implements InitializingBean {
             JELogger.control(JEMessages.LOGGER_INITIALIZED,
                     LogCategory.DESIGN_MODE, null,
                     LogSubModule.JEBUILDER, null);
-           // AuthenticationInterceptor.init(builderProperties.getIssuer());
+            AuthenticationInterceptor.init(builderProperties.getIssuer());
             LicenseProperties.init();
         	while(!LicenseProperties.licenseIsActive())
         	{

@@ -13,7 +13,11 @@ import io.je.utilities.runtimeobject.JEObject;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
 
+import java.io.File;
 import java.lang.reflect.Method;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.sql.*;
 import java.util.concurrent.*;
 
 
@@ -326,8 +330,14 @@ public class Executioner {
             task.cancel(true);
             throw new JavaCodeInjectionError(msg);
         }
-
-
+        //JobEngine.informUser("hello everyone, your uploaded file is " + JobEngine.getJarFile("org.eclipse.jdt.core-3.7.1.jar").getName(), "testId");
+        catch(Exception e) {
+            msg = "Script task in workflow with id = " + processId + " in project with id = " + projectId + " was interrupted during the execution";
+            JELogger.error(msg, LogCategory.RUNTIME, projectId,
+                    LogSubModule.JERUNNER, processId);
+            task.cancel(true);
+            throw new JavaCodeInjectionError(msg);
+        }
        /* ExecutorService executorService = Executors.newFixedThreadPool(1);
         Callable c = () -> {
             JEClassLoader.overrideInstance();
@@ -412,5 +422,66 @@ public class Executioner {
 
      * 
      */
+    public static void main(String[] args) {
 
+        Connection conn = null;
+
+        try {
+
+            String dbURL = "jdbc:sqlserver://YRIAHI-PC\\SQLEXPRESS:1433;databaseName=SIOTHDB;user=sa;password=io.123";
+            String user = "sa";
+            String pass = "io.123";
+            File jarPath = new File("D:\\jars\\mssql-jdbc-8.4.1.jre8.jar");
+
+            try {
+
+                URLClassLoader child = new URLClassLoader(
+                        new URL[] {jarPath.toURI().toURL()}
+
+                );
+
+                Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver", true, child);
+                ClassLoader loader = JobEngine.class.getClassLoader();
+                child.loadClass("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+                Driver driver = (Driver) Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver", true, child).newInstance();
+                conn = driver.connect(dbURL, null);
+
+                if (conn != null) {
+
+                    // if you only need a few columns, specify them by name instead of using "*"
+                    String query = "SELECT * FROM Eqpt";
+
+                    // create the java statement
+                    Statement st = conn.createStatement();
+
+                    // execute the query, and get a java resultset
+                    ResultSet rs = st.executeQuery(query);
+
+                    // iterate through the java resultset
+                    while (rs.next())
+                    {
+                        int equipmentid = rs.getInt("equipmentid");
+                        String equipmentname = rs.getString("equipmentname");
+
+
+                        // print the results
+                        System.out.print("The equipment number  ");
+                        System.out.format("%s,%s,%s\n", equipmentid,"is",equipmentname);
+                    }
+
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        } finally {
+            try {
+                if (conn != null && !conn.isClosed()) {
+                    conn.close();
+                }
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
 }

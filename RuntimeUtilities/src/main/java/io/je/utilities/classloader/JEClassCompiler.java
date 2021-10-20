@@ -82,6 +82,7 @@ public class JEClassCompiler {
 		}
 		if(!message.isEmpty()) {
 			ClassLoadException exception = new ClassLoadException(JEMessages.CLASS_LOAD_FAILED);
+			JELogger.debug(message);
 			exception.setCompilationErrorMessage(message);
 			throw exception;
 		}

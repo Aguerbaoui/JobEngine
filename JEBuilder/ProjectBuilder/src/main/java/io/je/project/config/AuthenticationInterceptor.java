@@ -1,4 +1,4 @@
-/*package io.je.project.config;
+package io.je.project.config;
 
 import com.auth0.jwk.GuavaCachedJwkProvider;
 import com.auth0.jwk.Jwk;
@@ -20,6 +20,7 @@ import java.io.PrintWriter;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.security.interfaces.RSAPublicKey;
+
 
 public class AuthenticationInterceptor implements HandlerInterceptor {
 
@@ -43,7 +44,8 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
         String originToken = request.getHeader("Authorization");
         String uri = request.getRequestURI();
         if(uri.contains("/jeproject/updateRunner")) return true;
-        if (originToken == null || originToken.isEmpty()) {
+        return true;
+        /*if (originToken == null || originToken.isEmpty()) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return false;
         }
@@ -66,7 +68,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return false;
         }
-        return true;
+        return true;*/
     }
 
     @Override
@@ -84,4 +86,3 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
         return arr[1];
     }
 }
-*/

@@ -103,7 +103,7 @@ public class ClassService {
         if (!loadedClasses.containsKey(classId) && classDefinition != null) {
             classDefinition.setWorkspaceId(workspaceId);
             addClass(classDefinition, sendToRunner, false);
-            JELogger.info("Class " + classDefinition.getName() + " loaded successfully.", null, null, null, classDefinition.getClassId());
+            JELogger.info("Class " + classDefinition.getName() + " loaded successfully.", null, null, null, classDefinition.getName());
         }
 
 
@@ -266,6 +266,7 @@ public class ClassService {
         c.setName(name);
         c.setClassVisibility("public");
         MethodModel m = new MethodModel();
+        m.setId(name);
         m.setMethodName("executeScript");
         m.setReturnType("VOID");
         m.setMethodScope("STATIC");
@@ -369,7 +370,7 @@ public class ClassService {
 
     public void addJarToProject(LibModel libModel) throws LibraryException {
         JELogger.info(JEMessages.ADDING_JAR_TO_PROJECT,
-                LogCategory.DESIGN_MODE, null, LogSubModule.JEBUILDER, null);
+                LogCategory.DESIGN_MODE, null, LogSubModule.JEBUILDER, libModel.getFileName());
         try {
             MultipartFile file = libModel.getFile();
             if (!file.isEmpty()) {
