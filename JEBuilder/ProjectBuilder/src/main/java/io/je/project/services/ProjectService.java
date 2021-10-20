@@ -67,7 +67,7 @@ public class ProjectService {
 	 */
 	@Async
 	public CompletableFuture<Void> saveProject(JEProject project) {
-		JELogger.debug("[projectId= " + project.getProjectId() + "]" + JEMessages.CREATING_PROJECT,
+		JELogger.debug("[projectId= " + project.getProjectName() + "]" + JEMessages.CREATING_PROJECT,
 				LogCategory.DESIGN_MODE, project.getProjectId(), LogSubModule.JEBUILDER, null);
 		synchronized (projectRepository) {
 			projectRepository.save(project);
@@ -92,7 +92,7 @@ public class ProjectService {
 			stopProject(id);
 		} catch (Exception e) {
 		}
-		JELogger.info("[projectId= " + id + "]" + JEMessages.DELETING_PROJECT, LogCategory.DESIGN_MODE, id,
+		JELogger.info("[projectId= " + loadedProjects.get(id).getProjectName() + "]" + JEMessages.DELETING_PROJECT, LogCategory.DESIGN_MODE, id,
 				LogSubModule.JEBUILDER, null);
 		JERunnerAPIHandler.cleanProjectDataFromRunner(id);
 		/*
@@ -142,7 +142,7 @@ public class ProjectService {
 	public List<OperationStatusDetails> buildAll(String projectId)
 			throws ProjectNotFoundException, InterruptedException, ExecutionException, LicenseNotActiveException,
 			WorkflowNotFoundException, WorkflowException {
-		JELogger.info("[projectId= " + projectId + "]" + JEMessages.BUILDING_PROJECT, LogCategory.DESIGN_MODE,
+		JELogger.info("[projectId= " + loadedProjects.get(projectId).getProjectName() + "]" + JEMessages.BUILDING_PROJECT, LogCategory.DESIGN_MODE,
 				projectId, LogSubModule.JEBUILDER, null);
 //CompletableFuture<?> buildRules = ruleService.compileALLRules(projectId);
 		CompletableFuture<List<OperationStatusDetails>> buildWorkflows = workflowService.buildWorkflows(projectId,
@@ -176,7 +176,7 @@ public class ProjectService {
 			JEProject project = loadedProjects.get(projectId);
 			if (project.isBuilt()) {
 				if (!project.isRunning()) {
-					JELogger.info("[projectId= " + project.getProjectId() + "]" + JEMessages.RUNNING_PROJECT,
+					JELogger.info("[projectId= " + project.getProjectName() + "]" + JEMessages.RUNNING_PROJECT,
 							LogCategory.DESIGN_MODE, projectId, LogSubModule.JEBUILDER, null);
 					try {
 						ruleService.buildRules(projectId);
@@ -212,7 +212,7 @@ public class ProjectService {
 		}
 		JEProject project = loadedProjects.get(projectId);
 		// if (project.isRunning()) {
-		JELogger.info("[projectId= " + project.getProjectId() + "]" + JEMessages.STOPPING_PROJECT,
+		JELogger.info("[projectId= " + project.getProjectName() + "]" + JEMessages.STOPPING_PROJECT,
 				LogCategory.DESIGN_MODE, projectId, LogSubModule.JEBUILDER, null);
 
 		try {
@@ -268,7 +268,7 @@ public class ProjectService {
 			}
 			saveProject(project);
 		}
-		JELogger.debug("[projectId= " + projectId + "]" + JEMessages.PROJECT_FOUND, LogCategory.DESIGN_MODE, projectId,
+		JELogger.debug("[projectId= " + project.getProjectName() + "]" + JEMessages.PROJECT_FOUND, LogCategory.DESIGN_MODE, projectId,
 				LogSubModule.JEBUILDER, null);
 		return loadedProjects.get(projectId);
 	}

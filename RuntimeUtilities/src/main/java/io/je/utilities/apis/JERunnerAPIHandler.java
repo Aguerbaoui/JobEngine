@@ -140,8 +140,8 @@ public class JERunnerAPIHandler {
     //update event type
     public static void updateEventType(String projectId, String eventId, String type) throws JERunnerErrorException {
         String requestUrl = runtimeManagerBaseApi + APIConstants.UPDATE_EVENT + "/" + projectId + "/" + eventId;
-        JELogger.debug(JEMessages.NETWORK_UPDATE_EVENT+"project id = " + projectId + "event id = " + eventId,  LogCategory.DESIGN_MODE,
-                projectId, LogSubModule.EVENT, eventId);
+        /*JELogger.debug(JEMessages.NETWORK_UPDATE_EVENT+"project id = " + projectId + "event id = " + eventId,  LogCategory.DESIGN_MODE,
+                projectId, LogSubModule.EVENT, eventId);*/
         sendRequestWithStringBody(requestUrl, type);
 
     }
@@ -180,16 +180,16 @@ public class JERunnerAPIHandler {
     //delete event from runner
     public static JEResponse deleteEvent(String projectId, String eventId) throws JERunnerErrorException {
         String requestUrl = runtimeManagerBaseApi + DELETE_EVENT + "/" + projectId + "/" + eventId;
-        JELogger.debug(JEMessages.NETWORK_DELETE_EVENT+", project id = " + projectId + "event id = " + eventId,  LogCategory.DESIGN_MODE,
-                projectId, LogSubModule.JEBUILDER, eventId);
+        /*JELogger.debug(JEMessages.NETWORK_DELETE_EVENT+", project id = " + projectId + "event id = " + eventId,  LogCategory.DESIGN_MODE,
+                projectId, LogSubModule.JEBUILDER, eventId);*/
         return sendDeleteRequest(requestUrl);
     }
 
     // clean project data from runner
     public static void cleanProjectDataFromRunner(String projectId) throws JERunnerErrorException {
         String requestUrl = runtimeManagerBaseApi + CLEAN_HOUSE + "/" + projectId ;
-        JELogger.debug(JEMessages.NETWORK_CLEAN_PROJECT+" project id = " + projectId,  LogCategory.DESIGN_MODE,
-                projectId, LogSubModule.JEBUILDER, null);
+        /*JELogger.debug(JEMessages.NETWORK_CLEAN_PROJECT+" project id = " + projectId,  LogCategory.DESIGN_MODE,
+                projectId, LogSubModule.JEBUILDER, null);*/
         sendRequest(requestUrl);
     }
 
@@ -205,23 +205,23 @@ public class JERunnerAPIHandler {
 
     public static void deleteWorkflow(String projectId, String workflowId) throws JERunnerErrorException {
         String requestUrl = runtimeManagerBaseApi + DELETE_WORKFLOW + "/" + projectId + "/" + workflowId;
-        JELogger.debug(JEMessages.NETWORK_DELETE_WF+" project id = " + projectId + "workflow id = " + workflowId,  LogCategory.DESIGN_MODE,
-                projectId, LogSubModule.JEBUILDER, workflowId);
+        /*JELogger.debug(JEMessages.NETWORK_DELETE_WF+" project id = " + projectId + "workflow id = " + workflowId,  LogCategory.DESIGN_MODE,
+                projectId, LogSubModule.JEBUILDER, workflowId);*/
          sendDeleteRequest(requestUrl);
     }
 
     public static void addVariable(String projectId, String varId, Object body) throws JERunnerErrorException{
         String url = SIOTHConfigUtility.getSiothConfig().getJobEngine().getJeRunner()+ APIConstants.ADD_VARIABLE;
-        JELogger.debug(JEMessages.NETWORK_ADD_VAR+" project id = " + projectId + " variable id = " + varId,  LogCategory.DESIGN_MODE,
-                projectId, LogSubModule.JEBUILDER, varId);
+        /*JELogger.debug(JEMessages.NETWORK_ADD_VAR+" project id = " + projectId + " variable id = " + varId,  LogCategory.DESIGN_MODE,
+                projectId, LogSubModule.JEBUILDER, varId);*/
         sendRequestWithBody(url, body);
         
     }
 
     public static void removeVariable(String projectId, String varId) throws  JERunnerErrorException{
         String url = SIOTHConfigUtility.getSiothConfig().getJobEngine().getJeRunner()+ DELETE_VARIABLE + "/" + projectId + "/" + varId;
-        JELogger.debug(JEMessages.NETWORK_DELETE_VAR+" project id = " + projectId + " var id = " + varId,  LogCategory.DESIGN_MODE,
-                projectId, LogSubModule.JEBUILDER, varId);
+        /*JELogger.debug(JEMessages.NETWORK_DELETE_VAR+" project id = " + projectId + " var id = " + varId,  LogCategory.DESIGN_MODE,
+                projectId, LogSubModule.JEBUILDER, varId);*/
         sendDeleteRequest(url);
     }
 

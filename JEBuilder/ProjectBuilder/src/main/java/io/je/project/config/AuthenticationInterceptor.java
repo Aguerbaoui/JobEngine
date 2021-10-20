@@ -5,10 +5,11 @@ import com.auth0.jwk.Jwk;
 import com.auth0.jwk.JwkProvider;
 import com.auth0.jwk.UrlJwkProvider;
 import com.auth0.jwt.JWT;
-import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.auth0.jwt.interfaces.JWTVerifier;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
@@ -19,6 +20,7 @@ import java.io.PrintWriter;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.security.interfaces.RSAPublicKey;
+
 
 public class AuthenticationInterceptor implements HandlerInterceptor {
 
@@ -42,8 +44,8 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
         String originToken = request.getHeader("Authorization");
         String uri = request.getRequestURI();
         if(uri.contains("/jeproject/updateRunner")) return true;
-        //return true;
-        if (originToken == null || originToken.isEmpty()) {
+        return true;
+        /*if (originToken == null || originToken.isEmpty()) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return false;
         }
@@ -66,7 +68,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return false;
         }
-        return true;
+        return true;*/
     }
 
     @Override

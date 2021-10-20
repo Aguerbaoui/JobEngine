@@ -448,7 +448,7 @@ public class WorkflowService {
             result.setOperationError(JEMessages.WORKFLOW_IS_DISABLED);
             return CompletableFuture.completedFuture(result);
         }
-        JELogger.info("[projectId =" + projectId + " ][workflowId = " + workflowId + "]" + JEMessages.BUILDING_WF,
+        JELogger.info("[projectId =" + project.getProjectName() + " ][workflowId = " + workflow.getJobEngineElementName() + "]" + JEMessages.BUILDING_WF,
                 LogCategory.DESIGN_MODE, projectId,
                 LogSubModule.WORKFLOW, workflowId);
 
@@ -539,8 +539,8 @@ public class WorkflowService {
             return CompletableFuture.completedFuture(result);
         }
 
-        JELogger.info("[projectId =" + projectId + " ][workflowId = " +
-                        workflowId + "]" + JEMessages.RUNNING_WF,
+        JELogger.info("[projectId =" + project.getProjectName() + " ][workflowId = " +
+                        wf.getJobEngineElementID() + "]" + JEMessages.RUNNING_WF,
                 LogCategory.DESIGN_MODE, projectId,
                 LogSubModule.WORKFLOW, workflowId);
         try {

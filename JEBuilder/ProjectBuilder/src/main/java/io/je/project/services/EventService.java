@@ -96,7 +96,7 @@ public class EventService {
 	public void addEvent(String projectId, EventModel eventModel) throws ProjectNotFoundException,  EventException, LicenseNotActiveException {
     	LicenseProperties.checkLicenseIsActive();
 
-		JELogger.debug(JEMessages.ADDING_EVENT+ "[ id="+eventModel.getEventId()+"] in project id = " + projectId,
+		JELogger.debug(JEMessages.ADDING_EVENT+ "[ id="+eventModel.getName()+"] in project id = " + projectId,
 				LogCategory.DESIGN_MODE, projectId,
 				LogSubModule.EVENT, eventModel.getEventId());
 		JEProject project = ProjectService.getProjectById(projectId);
@@ -131,7 +131,7 @@ public class EventService {
 	public void updateEvent(String projectId, EventModel eventModel) throws ProjectNotFoundException, EventException, LicenseNotActiveException {
     	LicenseProperties.checkLicenseIsActive();
 
-		JELogger.debug(UPDATING_EVENT + " [ id="+eventModel.getEventId()+"] in project id = " + projectId,
+		JELogger.debug(UPDATING_EVENT + " [ id="+eventModel.getName()+"] in project id = " + projectId,
 				LogCategory.DESIGN_MODE, projectId,
 				LogSubModule.EVENT, eventModel.getEventId());
 		JEProject project = ProjectService.getProjectById(projectId);
@@ -192,15 +192,16 @@ public class EventService {
 	public void updateEventType(String projectId, String eventId, String eventType) throws ProjectNotFoundException, EventException, ConfigException, LicenseNotActiveException {
     	LicenseProperties.checkLicenseIsActive();
 
-		JELogger.debug(JEMessages.UPDATING_EVENT_TYPE + eventType + " for event id = " + eventId + " in project id = " + projectId,
-				LogCategory.DESIGN_MODE, projectId,
-				LogSubModule.EVENT,eventId);
+
 		JEProject project = ProjectService.getProjectById(projectId);
 		if (project == null) {
 			throw new ProjectNotFoundException( JEMessages.PROJECT_NOT_FOUND); //cdc47cf6-28e9-ff1d-996f-b6b1732771a2 -> {JEEvent@10436}
 		}
 
 		JEEvent event = project.getEvents().get(eventId);
+		JELogger.debug(JEMessages.UPDATING_EVENT_TYPE + eventType + " for event id = " + event.getJobEngineElementName() + " in project id = " + projectId,
+				LogCategory.DESIGN_MODE, projectId,
+				LogSubModule.EVENT,eventId);
 		if(!project.getEvents().containsKey(eventId)) {
 			for(JEEvent ev: project.getEvents().values()) {
 				if(ev.getJobEngineElementName().equalsIgnoreCase(eventId)) {

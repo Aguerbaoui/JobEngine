@@ -13,8 +13,8 @@ public class GatewaysListener implements ExecutionListener {
     public void notify(DelegateExecution execution) {
         String id =  execution.getCurrentActivityId();
         if(execution.getEventName().equalsIgnoreCase("start")) {
-            JELogger.debug(JEMessages.GATEWAY_ID + " = " + id + " " + JEMessages.JUST_EXECUTED,  LogCategory.RUNTIME,
-                    null, LogSubModule.WORKFLOW, id);
+            /*JELogger.debug(JEMessages.GATEWAY_ID + " = " + id + " " + JEMessages.JUST_EXECUTED,  LogCategory.RUNTIME,
+                    null, LogSubModule.WORKFLOW, id);*/
         }
 
     }

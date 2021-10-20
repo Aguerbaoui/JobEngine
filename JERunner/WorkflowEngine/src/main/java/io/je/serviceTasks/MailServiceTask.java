@@ -54,7 +54,7 @@ public class MailServiceTask extends ServiceTask {
                     .withMethod(HttpMethod.POST).withBodyType(BodyType.JSON)
                     .withBody(json).build();
             Response response = network.call();
-            JELogger.info(JEMessages.MAIL_SERVICE_TASK_RESPONSE + " = " + response.body().string(),  LogCategory.RUNTIME,
+            JELogger.debug(JEMessages.MAIL_SERVICE_TASK_RESPONSE + " = " + response.body().string(),  LogCategory.RUNTIME,
                     task.getProjectId(), LogSubModule.WORKFLOW, null);
             if(response.code() != 200 || response.code() != 204 ) {
                 throw new BpmnError("Error");
