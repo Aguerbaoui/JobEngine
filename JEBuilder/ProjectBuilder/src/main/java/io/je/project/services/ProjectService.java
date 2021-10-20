@@ -265,13 +265,14 @@ public class ProjectService {
 					}
 
 				}
+				JELogger.debug("[project= " + project.getProjectName() + "]" + JEMessages.PROJECT_FOUND, LogCategory.DESIGN_MODE, projectId,
+						LogSubModule.JEBUILDER, null);
 			} else {
 				throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
 			}
 			saveProject(project);
 		}
-		JELogger.debug("[projectId= " + project.getProjectName() + "]" + JEMessages.PROJECT_FOUND, LogCategory.DESIGN_MODE, projectId,
-				LogSubModule.JEBUILDER, null);
+		
 		return loadedProjects.get(projectId);
 	}
 
