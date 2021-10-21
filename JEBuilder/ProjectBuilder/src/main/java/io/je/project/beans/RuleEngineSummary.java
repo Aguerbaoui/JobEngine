@@ -27,7 +27,13 @@ public class RuleEngineSummary{
 		this.builtRules = builtRules;
 	}
 	public void remove(String ruleId) {
-		builtRules.remove(ruleId);
+		if(builtRules.contains(ruleId))
+		{
+			builtRules.remove(ruleId);
+		}else
+		{
+			System.out.println("!!!!!!!!!!!!! logic error");
+		}
 		
 	}
 	

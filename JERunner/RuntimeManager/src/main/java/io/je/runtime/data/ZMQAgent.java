@@ -19,7 +19,7 @@ public class ZMQAgent extends ZMQSubscriber {
 
 	@Override
 	public void run() {
-		JELogger.info("[topic = " + topic + "]" + JEMessages.DATA_LISTENTING_STARTED, LogCategory.RUNTIME, null,
+		JELogger.control("[topic = " + topic + "]" + JEMessages.DATA_LISTENTING_STARTED, LogCategory.RUNTIME, null,
 				LogSubModule.JERUNNER, null);
 		while (listening) {
 			String data = null;

@@ -666,4 +666,9 @@ public class JEMessages {
 
 	public static final String GENERATED_RULE = "generated DRL : \n";
 
+	public static final String RULE_NOT_BUILT = "Rule is not built.";
+	public static final String FAILED_TO_STOP_RULE = "Failed to stop rule : ";
+	public static final String  STATUS_UPDATE_FAILED = " Failed to update status. ";
+
+	public static final String FAILED_TO_DELETE_RULE = "Failed to delete rule";
 }
