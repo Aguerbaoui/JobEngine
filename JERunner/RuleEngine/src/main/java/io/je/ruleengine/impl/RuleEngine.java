@@ -52,7 +52,7 @@ public class RuleEngine {
 	public static boolean stopRuleExecution(String projectId) {
 
 		ProjectContainer project = projectManager.getProjectContainer(projectId);
-		return project.stopRuleExecution(true,true);
+		return project.stopRuleExecution(true,false);
 	}
 
 	public static boolean fireRules(String projectId, List<Rule> rules, boolean removePreviouslyAddedRules) {
@@ -73,7 +73,7 @@ public class RuleEngine {
 */
 
 	public boolean addRules(List<Rule> rules) throws RuleAlreadyExistsException, RuleCompilationException,
-			JEFileNotFoundException, RuleNotAddedException {
+			JEFileNotFoundException {
 
 		// TODO: try/catch errors and return list of the rules that were not added
 		for (Rule rule : rules) {

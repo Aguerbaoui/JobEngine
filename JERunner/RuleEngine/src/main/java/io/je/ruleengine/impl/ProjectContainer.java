@@ -405,7 +405,7 @@ public class ProjectContainer {
 
 		try {
 			String ruleName = generateResourceName(ResourceType.DRL, rule.getJobEngineElementName());
-			JELogger.trace(">>> deleting "+ruleName ,  LogCategory.RUNTIME,
+			JELogger.trace("deleting "+ruleName ,  LogCategory.RUNTIME,
 					projectId, LogSubModule.RULE, null);	
 			
 
@@ -416,7 +416,7 @@ public class ProjectContainer {
 
 		} catch (Exception e) {
 			
-			JELogger.error("failed to delete rule ",  LogCategory.RUNTIME,
+			JELogger.error(JEMessages.FAILED_TO_DELETE_RULE,  LogCategory.RUNTIME,
 					projectId, LogSubModule.RULE, null);
 			return false;
 		}
@@ -449,7 +449,7 @@ public class ProjectContainer {
 	public boolean updateContainer() {
 		try {
 			releaseId = kieServices.newReleaseId("io.je", "ruleengine", getReleaseVer());
-			JELogger.control("release Id = "+releaseId,  LogCategory.RUNTIME,
+			JELogger.debug("release Id = "+releaseId,  LogCategory.RUNTIME,
 					projectId, LogSubModule.RULE, null);
 			kieFileSystem.generateAndWritePomXML(releaseId);
 			kieServices.newKieBuilder(kieFileSystem, JEClassLoader.getInstance()).buildAll();
@@ -572,9 +572,7 @@ public class ProjectContainer {
 				projectId, LogSubModule.RULE, ruleId);
 		// check that rule exists
 		if (!ruleExists(ruleId)) {
-			JELogger.debugWithoutPublish("Failed to delete rule: Id not found. ",  LogCategory.RUNTIME,
-					projectId, LogSubModule.RULE, ruleId);
-			return;
+				return;
 		}
 		// if project is running, update container without interrupting project
 			try {
