@@ -40,6 +40,8 @@ public class JEMessages {
 
     public static final String RUNNER_IS_DOWN_CHECKING_AGAIN_IN_5_SECONDS = "Runner is down, rechecking in 5 seconds";
 
+    public static final String DATABASE_IS_DOWN_CHECKING_AGAIN = "Database is down, rechecking";
+
     public static final String RUNNER_IS_UP_UPDATING_NOW = "Runner is up, updating now";
 
     // ****************************************ClassBuilder**************************************************

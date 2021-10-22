@@ -191,6 +191,17 @@ public class ClassService {
         JELogger.debug(JEMessages.LOADING_ALL_CLASSES_FROM_DB,
                 LogCategory.DESIGN_MODE, null,
                 LogSubModule.CLASS, null);
+        JEClass jeClass = getNewJEProcedureClass();
+        try {
+
+            loadProcedures(jeClass);
+            ClassDefinition c = getClassModel(jeClass);
+            addClass(c, true, true);
+
+        } catch (Exception e) {
+            JELogger.error(JEMessages.FAILED_TO_LOAD_CLASS + " " + jeClass.getClassId(), LogCategory.DESIGN_MODE,
+                    null, LogSubModule.CLASS, null);
+        }
         for (JEClass clazz : classes) {
             try {
                 if (clazz.getWorkspaceId() != null) {
@@ -205,17 +216,7 @@ public class ClassService {
                         null, LogSubModule.CLASS, null);
             }
         }
-        JEClass jeClass = getNewJEProcedureClass();
-        try {
 
-            loadProcedures(jeClass);
-            ClassDefinition c = getClassModel(jeClass);
-            addClass(c, true, true);
-
-        } catch (Exception e) {
-            JELogger.error(JEMessages.FAILED_TO_LOAD_CLASS + " " + jeClass.getClassId(), LogCategory.DESIGN_MODE,
-                    null, LogSubModule.CLASS, null);
-        }
 
     }
 

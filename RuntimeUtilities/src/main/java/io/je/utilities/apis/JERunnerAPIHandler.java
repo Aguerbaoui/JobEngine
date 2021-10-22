@@ -160,13 +160,14 @@ public class JERunnerAPIHandler {
                             null, LogSubModule.JEBUILDER, null);
                     throw new JERunnerErrorException(JEMessages.JERUNNER_ERROR + " : " + response.body().string());
                 }
-
-                String respBody = response.body().string();
+                response.body().close();
+                return true;
+               /* String respBody = response.body().string();
                 ObjectMapper objectMapper = new ObjectMapper();
                 HashMap<String, String> v = objectMapper.readValue(respBody, HashMap.class);
                 if (v.containsKey("status") && v.get("status").equalsIgnoreCase("up")) {
                     return true;
-                }
+                }*/
             }
 
         } catch (IOException e) {

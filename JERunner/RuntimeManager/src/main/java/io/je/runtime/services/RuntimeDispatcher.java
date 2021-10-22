@@ -57,8 +57,8 @@ public class RuntimeDispatcher {
 	///////////////////////////////// PROJECT
 	// build project
 	public void buildProject(String projectId) throws RuleBuildFailedException, WorkflowBuildException {
-		JELogger.debug("[projectId  = " + projectId + "]" + JEMessages.BUILDING_PROJECT, LogCategory.RUNTIME, projectId,
-				LogSubModule.JERUNNER, null);
+		/*JELogger.debug("[projectId  = " + projectId + "]" + JEMessages.BUILDING_PROJECT, LogCategory.RUNTIME, projectId,
+				LogSubModule.JERUNNER, null);*/
 		RuleEngineHandler.buildProject(projectId);
 		WorkflowEngineHandler.buildProject(projectId);
 	}

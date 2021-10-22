@@ -54,8 +54,7 @@ public class JEClassCompiler {
 			// Specify where to put the generated .class files
 			fileManager.setLocation(StandardLocation.CLASS_OUTPUT, Arrays.asList(new File(loadPath)));
 			// Compile the file
-			Iterable<? extends JavaFileObject> compilationUnit
-					= fileManager.getJavaFileObjectsFromFiles(Arrays.asList(sourceFile));
+			Iterable<? extends JavaFileObject> compilationUnit = fileManager.getJavaFileObjectsFromFiles(Arrays.asList(sourceFile));
 			DiagnosticCollector<JavaFileObject> diagnosticsCollector = new DiagnosticCollector<>();
 			JavaCompiler.CompilationTask task = compiler.getTask(null, fileManager, diagnosticsCollector, null, null,
 					compilationUnit);
