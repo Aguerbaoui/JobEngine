@@ -63,6 +63,7 @@ public class ModelBuilder {
         serviceTask.setName(name);
         serviceTask.setId(id);
         serviceTask.setImplementation(implementation);
+        //serviceTask.setAsynchronous(true);
         serviceTask.setImplementationType(ImplementationType.IMPLEMENTATION_TYPE_CLASS);
         ArrayList<ActivitiListener> listeners = new ArrayList<ActivitiListener>();
         listeners.add(getListener(WorkflowConstants.TASKS_LISTENER_IMPLEMENTATION, WorkflowConstants.START_PROCESS, ImplementationType.IMPLEMENTATION_TYPE_CLASS));

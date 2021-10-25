@@ -193,6 +193,8 @@ public class JEMessages {
 
     public static final String ERROR_DELETING_A_NON_EXISTING_PROCESS = " Error deleting a non-existing process";
 
+    public static final String STOPPING_WORKFLOW_FORCED = "Stopping workflow with stop command";
+
     public static final String EXECUTING_WEB_API_TASK = " Executing web api task";
 
     public static final String NETWORK_CALL_RESPONSE_IN_WEB_SERVICE_TASK = "Network call response in web service task";
@@ -668,4 +670,5 @@ public class JEMessages {
 
 	public static final String GENERATED_RULE = "generated DRL : \n";
 
+    public static final String FAILED_TO_STOP_THE_WORKFLOW_BECAUSE_IT_ALREADY_IS_STOPPED = "Failed to stop the workflow because it already is stopped";
 }

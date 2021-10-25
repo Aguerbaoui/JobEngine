@@ -143,7 +143,7 @@ public class WorkflowEngineHandler {
     }
 
     //remove/stop workflow from runner
-    public static void deleteProcess(String projectId, String workflowId) {
+    public static void deleteProcess(String projectId, String workflowId) throws WorkflowRunException {
         if(processManagerHashMap.containsKey(projectId)) {
             processManagerHashMap.get(projectId).removeProcess(workflowId);
         }

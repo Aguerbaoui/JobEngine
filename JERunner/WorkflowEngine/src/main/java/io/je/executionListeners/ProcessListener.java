@@ -13,12 +13,13 @@ public class ProcessListener implements ExecutionListener {
         String processInstanceId = execution.getProcessInstanceId();// "4"
         id = id.replace(id.substring(id.indexOf(':'), id.length()), "");
         if(execution.getEventName().equalsIgnoreCase("start")) {
+            ProcessManager.setRunning(id, true, processInstanceId);
             //JELogger.debug("Started process in activity engine " + id);
             //ProcessManager.setRunning(execution.getProcessDefinitionId(), true, processInstanceId);
         }
        if(execution.getEventName().equalsIgnoreCase("end")) {
            //JELogger.debug("Done with process in activity engine " + id);
-            //ProcessManager.setRunning(execution.getProcessDefinitionId(), false, processInstanceId);
+            ProcessManager.setRunning(id, false, processInstanceId);
         }
     }
 

@@ -329,7 +329,7 @@ public class RuntimeDispatcher {
 	}
 
 	// remove/stop workflow from runner
-	public void removeWorkflow(String projectId, String workflowId) {
+	public void removeWorkflow(String projectId, String workflowId) throws WorkflowRunException {
 		JELogger.debug("[projectId = " + projectId + "] [workflow = " + workflowId + "]" + JEMessages.REMOVING_WF,
 				LogCategory.RUNTIME, projectId, LogSubModule.WORKFLOW, workflowId);
 		WorkflowEngineHandler.deleteProcess(projectId, workflowId);

@@ -199,9 +199,7 @@ public class EventService {
 		}
 
 		JEEvent event = project.getEvents().get(eventId);
-		JELogger.debug(JEMessages.UPDATING_EVENT_TYPE + eventType + " for event id = " + event.getJobEngineElementName() + " in project id = " + projectId,
-				LogCategory.DESIGN_MODE, projectId,
-				LogSubModule.EVENT,eventId);
+
 		if(!project.getEvents().containsKey(eventId)) {
 			for(JEEvent ev: project.getEvents().values()) {
 				if(ev.getJobEngineElementName().equalsIgnoreCase(eventId)) {
@@ -214,7 +212,9 @@ public class EventService {
 		if(event == null)  {
 			throw new EventException(JEMessages.EVENT_NOT_FOUND);
 		}
-
+		JELogger.debug(JEMessages.UPDATING_EVENT_TYPE + eventType + " for event id = " + event.getJobEngineElementName() + " in project id = " + projectId,
+				LogCategory.DESIGN_MODE, projectId,
+				LogSubModule.EVENT,eventId);
 		EventType t = EventType.valueOf(eventType);
 		try {
 			JELogger.debug(JEMessages.UPDATING_EVENT_TYPE_IN_RUNNER,
