@@ -16,6 +16,11 @@ public class RuleIdManager {
 		return StringUtils.substringBetween(subRuleName, "_", "_");
 	}
 
+	public static String retrieveNameFromSubRuleName(String subRuleName)
+	{
+		return StringUtils.substringAfterLast(subRuleName, "_");
+	}
+	
 
 	public static String getRuleIdFromErrorMsg(String message) {
 		// TODO Auto-generated method stub

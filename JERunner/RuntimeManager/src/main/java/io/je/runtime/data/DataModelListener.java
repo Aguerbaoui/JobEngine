@@ -51,7 +51,13 @@ public class DataModelListener {
 		{
 			if(topic.getProjects().contains(projectId) )
 			{
-				topics.add(topic.getId());
+				for(DMListener subscriber : topic.getListeners().values())
+				{
+					if(subscriber.getType().equals("rule"))
+					{
+						topics.add(topic.getId());
+					}
+				}
 			}
 		}
 		return topics;
@@ -76,7 +82,7 @@ public class DataModelListener {
     }
 
     public static void startListening(List<String> topics) {
-        JELogger.debug(JEMessages.LISTENING_ON_TOPICS + topics,  LogCategory.RUNTIME,
+        JELogger.control(JEMessages.LISTENING_ON_TOPICS + topics,  LogCategory.RUNTIME,
                 null, LogSubModule.JERUNNER, null);
     	for (String id : topics)
     	{

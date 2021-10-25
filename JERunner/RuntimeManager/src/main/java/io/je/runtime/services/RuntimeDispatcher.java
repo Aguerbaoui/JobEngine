@@ -106,7 +106,6 @@ public class RuntimeDispatcher {
 		JELogger.debug("[projectId  = " + projectId + "]" + JEMessages.STOPPING_PROJECT, LogCategory.RUNTIME, projectId,
 				LogSubModule.JERUNNER, null);
 		WorkflowEngineHandler.stopProjectWorfklows(projectId);
-		RuleEngineHandler.stopRuleEngineProjectExecution(projectId);
 		List<String> topics = DataModelListener.getTopicsByProjectId(projectId);
 		DataModelListener.stopListening(topics);
 		projectStatus.put(projectId, false);
