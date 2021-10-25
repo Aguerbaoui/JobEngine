@@ -186,8 +186,8 @@ public class RuntimeDispatcher {
 	 * Launch a workflow without variables
 	 */
 	public void launchProcessWithoutVariables(String projectId, String key, boolean runProject)
-			throws WorkflowNotFoundException, WorkflwTriggeredByEventException, WorkflowAlreadyRunningException,
-			WorkflowBuildException {
+			throws WorkflowNotFoundException,  WorkflowAlreadyRunningException,
+			WorkflowBuildException, WorkflowRunException {
 		JELogger.debug("[projectId = " + projectId + "] [workflow = " + key + "]" + JEMessages.RUNNING_WF,
 				LogCategory.RUNTIME, projectId, LogSubModule.WORKFLOW, key);
 		buildWorkflow(projectId, key);

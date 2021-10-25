@@ -5,10 +5,7 @@ import io.je.processes.ProcessManager;
 import io.je.serviceTasks.*;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.WorkflowConstants;
-import io.je.utilities.exceptions.WorkflowAlreadyRunningException;
-import io.je.utilities.exceptions.WorkflowBuildException;
-import io.je.utilities.exceptions.WorkflowNotFoundException;
-import io.je.utilities.exceptions.WorkflwTriggeredByEventException;
+import io.je.utilities.exceptions.*;
 import io.je.utilities.log.JELogger;
 import io.je.utilities.models.TaskModel;
 import utils.log.LogCategory;
@@ -50,7 +47,7 @@ public class WorkflowEngineHandler {
     /*
      * Launch process without variables
      * */
-    public static void launchProcessWithoutVariables(String projectId, String processId, boolean runProject) throws WorkflowNotFoundException, WorkflowAlreadyRunningException, WorkflwTriggeredByEventException, WorkflowBuildException {
+    public static void launchProcessWithoutVariables(String projectId, String processId, boolean runProject) throws WorkflowNotFoundException, WorkflowAlreadyRunningException, WorkflowBuildException, WorkflowRunException {
         JELogger.debug("[workflow = "+processId+"]"+JEMessages.REMOVING_WF,
                 LogCategory.RUNTIME, projectId,
                 LogSubModule.WORKFLOW,processId);

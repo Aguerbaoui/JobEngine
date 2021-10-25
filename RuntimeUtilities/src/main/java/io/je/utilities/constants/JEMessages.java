@@ -183,7 +183,7 @@ public class JEMessages {
     public static final String JUST_EXECUTED = "just executed";
     public static final String TASK_ID = "Task Id";
 
-    public static final String PROCESS_HAS_TO_BE_TRIGGERED_BY_EVENT = " Process has to be triggered by event or following a specific schedule";
+    public static final String PROCESS_HAS_TO_BE_TRIGGERED_BY_EVENT = " Workflow has to be triggered by event or following a specific schedule";
 
     public static final String PROCESS_EXITED = " Process has ended execution";
 

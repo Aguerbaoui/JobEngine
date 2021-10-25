@@ -5,10 +5,7 @@ import io.je.callbacks.OnExecuteOperation;
 import io.je.serviceTasks.ActivitiTask;
 import io.je.serviceTasks.InformTask;
 import io.je.utilities.constants.JEMessages;
-import io.je.utilities.exceptions.WorkflowAlreadyRunningException;
-import io.je.utilities.exceptions.WorkflowBuildException;
-import io.je.utilities.exceptions.WorkflowNotFoundException;
-import io.je.utilities.exceptions.WorkflwTriggeredByEventException;
+import io.je.utilities.exceptions.*;
 import io.je.utilities.log.JELogger;
 
 import org.activiti.engine.*;
@@ -141,7 +138,7 @@ public class ProcessManager {
     /*
      * Launch process by key without variables
      * */
-    public void launchProcessByKeyWithoutVariables(String id, boolean runProject) throws WorkflowNotFoundException, WorkflowAlreadyRunningException, WorkflwTriggeredByEventException, WorkflowBuildException {
+    public void launchProcessByKeyWithoutVariables(String id, boolean runProject) throws WorkflowNotFoundException, WorkflowAlreadyRunningException,  WorkflowBuildException, WorkflowRunException {
         if (processes.get(id) == null) {
             throw new WorkflowNotFoundException(JEMessages.WORKFLOW_NOT_FOUND);
         }
@@ -170,7 +167,7 @@ public class ProcessManager {
                         LogCategory.RUNTIME, processes.get(id).getProjectId(),
                         LogSubModule.WORKFLOW, id);
                 //TODO blocking exception to be removed forget not
-                throw new WorkflwTriggeredByEventException(WORKFLOW_EVENT_TRIGGER,JEMessages.PROCESS_HAS_TO_BE_TRIGGERED_BY_EVENT);
+                throw new WorkflowRunException(JEMessages.PROCESS_HAS_TO_BE_TRIGGERED_BY_EVENT);
             }
         }
 
@@ -386,7 +383,7 @@ public class ProcessManager {
                     JELogger.error(JEMessages.WORKFLOW_ALREADY_RUNNING + process.getKey(),
                             LogCategory.RUNTIME, projectId,
                             LogSubModule.WORKFLOW, process.getKey());
-                } catch (WorkflwTriggeredByEventException e) {
+                } catch (WorkflowRunException e) {
                     JELogger.error(JEMessages.PROCESS_HAS_TO_BE_TRIGGERED_BY_EVENT + process.getKey(),
                             LogCategory.RUNTIME, projectId,
                             LogSubModule.WORKFLOW, process.getKey());
