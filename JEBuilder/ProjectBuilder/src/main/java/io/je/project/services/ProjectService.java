@@ -1,6 +1,7 @@
 package io.je.project.services;
 
 import io.je.project.beans.JEProject;
+import io.je.project.config.LicenseProperties;
 import io.je.project.repository.ProjectRepository;
 import io.je.rulebuilder.components.JERule;
 import io.je.utilities.apis.JERunnerAPIHandler;
@@ -17,19 +18,14 @@ import utils.log.LogSubModule;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutionException;
-import java.util.stream.Collectors;
-
 import static io.je.utilities.constants.JEMessages.BUILT_EVERYTHING_SUCCESSFULLY;
 /*
  * Service class to handle business logic for projects
@@ -53,12 +49,6 @@ public class ProjectService {
 	@Autowired
 	VariableService variableService;
 
-	/*
-	 * @Autowired ClassService classService;
-	 */
-
-	@Autowired
-	private HttpServletRequest request;
 
 	/* project management */
 
@@ -69,7 +59,7 @@ public class ProjectService {
 	 */
 	@Async
 	public CompletableFuture<Void> saveProject(JEProject project) {
-		JELogger.debug("[projectId= " + project.getProjectName() + "]" + JEMessages.CREATING_PROJECT,
+		JELogger.debug("[project = " + project.getProjectName() + "]" + JEMessages.CREATING_PROJECT,
 				LogCategory.DESIGN_MODE, project.getProjectId(), LogSubModule.JEBUILDER, null);
 		synchronized (projectRepository) {
 			projectRepository.save(project);
@@ -94,7 +84,7 @@ public class ProjectService {
 			stopProject(id);
 		} catch (Exception e) {
 		}
-		JELogger.info("[projectId= " + loadedProjects.get(id).getProjectName() + "]" + JEMessages.DELETING_PROJECT, LogCategory.DESIGN_MODE, id,
+		JELogger.info("[project = " + loadedProjects.get(id).getProjectName() + "]" + JEMessages.DELETING_PROJECT, LogCategory.DESIGN_MODE, id,
 				LogSubModule.JEBUILDER, null);
 		JERunnerAPIHandler.cleanProjectDataFromRunner(id);
 		/*
@@ -144,7 +134,7 @@ public class ProjectService {
 	public List<OperationStatusDetails> buildAll(String projectId)
 			throws ProjectNotFoundException, InterruptedException, ExecutionException, LicenseNotActiveException,
 			WorkflowNotFoundException, WorkflowException {
-		JELogger.info("[projectId= " + loadedProjects.get(projectId).getProjectName() + "]" + JEMessages.BUILDING_PROJECT, LogCategory.DESIGN_MODE,
+		JELogger.info("[project= " + loadedProjects.get(projectId).getProjectName() + "]" + JEMessages.BUILDING_PROJECT, LogCategory.DESIGN_MODE,
 				projectId, LogSubModule.JEBUILDER, null);
 //CompletableFuture<?> buildRules = ruleService.compileALLRules(projectId);
 		CompletableFuture<List<OperationStatusDetails>> buildWorkflows = workflowService.buildWorkflows(projectId,
@@ -178,7 +168,7 @@ public class ProjectService {
 			JEProject project = loadedProjects.get(projectId);
 			if (project.isBuilt()) {
 				if (!project.isRunning()) {
-					JELogger.info("[projectId= " + project.getProjectName() + "]" + JEMessages.RUNNING_PROJECT,
+					JELogger.info("[project = " + project.getProjectName() + "]" + JEMessages.RUNNING_PROJECT,
 							LogCategory.DESIGN_MODE, projectId, LogSubModule.JEBUILDER, null);
 					try {
 						ruleService.buildRules(projectId);
@@ -206,21 +196,21 @@ public class ProjectService {
 	/*
 	 * Stop a running project
 	 */
-	public void stopProject(String projectId) throws ProjectNotFoundException, ProjectStatusException,
-			InterruptedException, ExecutionException, ProjectStopException {
+	public void stopProject(String projectId) throws ProjectNotFoundException,
+			InterruptedException, ExecutionException, ProjectStopException, LicenseNotActiveException {
+		LicenseProperties.checkLicenseIsActive();
 
 		if (!loadedProjects.containsKey(projectId)) {
 			throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
 		}
 		JEProject project = loadedProjects.get(projectId);
 		// if (project.isRunning()) {
-		JELogger.info("[projectId= " + project.getProjectName() + "]" + JEMessages.STOPPING_PROJECT,
+		JELogger.info("[project = " + project.getProjectName() + "]" + JEMessages.STOPPING_PROJECT,
 				LogCategory.DESIGN_MODE, projectId, LogSubModule.JEBUILDER, null);
 
 		try {
 			JERunnerAPIHandler.stopProject(projectId);
-			project.getRuleEngine().setRunning(false);
-			ruleService.updateRulesStatus(projectId, false);
+			ruleService.stopRules(projectId, null);
 
 		} catch (JERunnerErrorException e) {
 			throw new ProjectStopException(JEMessages.ERROR_STOPPING_PROJECT);
@@ -234,8 +224,7 @@ public class ProjectService {
 	 * Return project by id
 	 */
 
-	public JEProject getProject(String projectId) throws ProjectNotFoundException, JERunnerErrorException, IOException,
-			InterruptedException, ExecutionException, LicenseNotActiveException, ProjectLoadException {
+	public JEProject getProject(String projectId) throws ProjectNotFoundException, JERunnerErrorException, LicenseNotActiveException, ProjectLoadException {
 
 		JEProject project = null;
 		JELogger.debug("[projectId= " + projectId + "]" + JEMessages.LOADING_PROJECT, LogCategory.DESIGN_MODE,
@@ -337,7 +326,7 @@ public class ProjectService {
 
 	@Async
 	public CompletableFuture<Void> loadAllProjects() throws ProjectNotFoundException, JERunnerErrorException,
-			IOException, InterruptedException, ExecutionException, LicenseNotActiveException, ProjectLoadException {
+			IOException, InterruptedException, ExecutionException, LicenseNotActiveException, ProjectLoadException, RuleNotFoundException {
 
 		// loadedProjects = new ConcurrentHashMap<String, JEProject>();
 		JELogger.info(JEMessages.LOADING_PROJECTS, LogCategory.DESIGN_MODE, null, LogSubModule.JEBUILDER, null);
@@ -366,9 +355,19 @@ public class ProjectService {
 						throw new ProjectLoadException(JEMessages.PROJECT_LOAD_ERROR);
 					}
 				}
+				
+				
+				
 				if (!project.isAutoReload()) {
 					project.setBuilt(false);
 					project.setRunning(false);
+					for(JERule rule : project.getRules().values())
+					{
+						rule.setRunning(false);
+						rule.setBuilt(false);
+						RuleService.updateRuleStatus(rule);
+						ruleService.saveRule(rule);
+					}
 					saveProject(project);
 
 				}

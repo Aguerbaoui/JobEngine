@@ -2,6 +2,7 @@ package io.je.project.services;
 
 import java.time.LocalDateTime;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
@@ -43,20 +44,13 @@ public class AsyncRuleService {
 	public CompletableFuture<OperationStatusDetails> compileRule(String projectId, String ruleId, boolean compileOnly)
 
 	{
-		System.out.println(">>>> Compiling rule : "+ LocalDateTime.now() );
-
-		try {
-			Thread.sleep(2000);
-		} catch (InterruptedException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
 		OperationStatusDetails result = new OperationStatusDetails(ruleId);
-
+		JEProject project = null;
 		JERule rule = null;
 		// check rule exists
 		try {
-			rule = getRule(projectId, ruleId);
+			 project = getProject(projectId);
+				rule = project.getRule(ruleId);
 		} catch (Exception e) {
 			result.setOperationSucceeded(false);
 			result.setOperationError(e.getMessage());
@@ -70,24 +64,26 @@ public class AsyncRuleService {
 				RuleBuilder.buildRule(rule, getProject(projectId).getConfigurationPath(), compileOnly);
 				// update rule status
 				// rule built
+				rule.setBuilt(true);
 				if (!compileOnly) {
-					rule.setBuilt(true);
 					rule.setAdded(true);
-					if (rule.isRunning()) {
-						rule.setStatus(RuleStatus.RUNNING);
-					} else {
-						rule.setStatus(RuleStatus.STOPPED);
-					}
+					project.getRuleEngine().add(ruleId);
 				}
-				ruleRepository.save(rule);
 				result.setOperationSucceeded(true);
 			}
 		} catch (RuleBuildFailedException | JERunnerErrorException | ProjectNotFoundException e) {
-			rule.setStatus(RuleStatus.ERROR);
+			rule.setBuilt(false);
 			result.setOperationSucceeded(false);
 			result.setOperationError(e.getMessage());
 		}
-		ruleRepository.save(rule);
+		try {
+			RuleService.updateRuleStatus(rule);
+			ruleRepository.save(rule);
+		} catch (Exception e) {
+			JELogger.error("[rule = "+rule.getJobEngineElementName() +"]"+JEMessages.STATUS_UPDATE_FAILED ,
+					CATEGORY, projectId, RULE, null);
+
+		}
 		return CompletableFuture.completedFuture(result);
 
 	}
@@ -107,95 +103,55 @@ public class AsyncRuleService {
 		LicenseProperties.checkLicenseIsActive();
 		OperationStatusDetails result = new OperationStatusDetails(ruleId);
 
+		JEProject project = null;
 		JERule rule = null;
 
 		// check rule exists
 		try {
-			rule = getRule(projectId, ruleId);
+		    project = getProject(projectId);
+			rule = project.getRule(ruleId);
 		} catch (Exception e) {
 			result.setOperationSucceeded(false);
 			result.setOperationError(e.getMessage());
 			return CompletableFuture.completedFuture(result);
 		}
 		result.setItemName(rule.getJobEngineElementName());
+		if(!rule.isBuilt())
+		{
+			result.setOperationSucceeded(false);
+			result.setOperationError(JEMessages.RULE_NOT_BUILT);
+			return CompletableFuture.completedFuture(result);
+			
+		}
 		try {
-			JEProject project = getProject(projectId);
-			RuleBuilder.buildRule(project.getRules().get(ruleId), project.getConfigurationPath(), false);
-			project.getRules().get(ruleId).setBuilt(true);
-			project.getRules().get(ruleId).setAdded(true);
-			project.getRuleEngine().add(ruleId);
+			buildRule(projectId,ruleId).get();
 			if (!project.getRuleEngine().isRunning()) {
 				JERunnerAPIHandler.runProjectRules(projectId);
 				project.getRuleEngine().setRunning(true);
-
 			}
-			project.getRules().get(ruleId).setRunning(true);
-			project.getRules().get(ruleId).setStatus(RuleStatus.RUNNING);
+			project.getRule(ruleId).setRunning(false);
+			rule.setRunning(true);
 			result.setOperationSucceeded(true);
-		} catch (RuleBuildFailedException | ProjectNotFoundException | JERunnerErrorException e) {
+		} catch (  JERunnerErrorException | InterruptedException e) {
 			result.setOperationSucceeded(false);
 			result.setOperationError(e.getMessage());
+		} catch (ExecutionException e) {
+			result.setOperationSucceeded(false);
+			result.setOperationError(e.getCause().getMessage());
 		}
-		
-		return CompletableFuture.completedFuture(result);
-
-	}
-
-	@Async
-	public CompletableFuture<OperationStatusDetails> stopRule(String projectId, String ruleId)
-			throws ProjectNotFoundException, RuleNotFoundException, JERunnerErrorException, LicenseNotActiveException {
-		LicenseProperties.checkLicenseIsActive();
-
-		JEProject project = getProject(projectId);
-		OperationStatusDetails result = new OperationStatusDetails(ruleId);
-
-		UserDefinedRule rule = null;
-
-		// check rule exists
 		try {
-			rule = (UserDefinedRule) getRule(projectId, ruleId);
+			RuleService.updateRuleStatus(rule);
+			ruleRepository.save(rule);
 		} catch (Exception e) {
-			result.setOperationSucceeded(false);
-			result.setOperationError(e.getMessage());
-			return CompletableFuture.completedFuture(result);
+			JELogger.error("[rule = "+rule.getJobEngineElementName() +"]"+JEMessages.STATUS_UPDATE_FAILED ,
+					CATEGORY, projectId, RULE, null);
+
 		}
-		result.setItemName(rule.getJobEngineElementName());
-
-		if (rule.isRunning() && rule.getSubRules() != null) {
-			for (String subRuleId : rule.getSubRules()) {
-
-				try {
-					JERunnerAPIHandler.deleteRule(projectId, subRuleId);
-					project.getRule(ruleId).setAdded(false);
-					project.getRule(ruleId).setBuilt(false);
-					project.getRules().get(ruleId).setRunning(false);
-					project.getRuleEngine().remove(ruleId);
-
-					if (project.getRuleEngine().getBuiltRules().isEmpty()) {
-						JERunnerAPIHandler.shutDownRuleEngine(projectId);
-						project.getRuleEngine().setRunning(false);
-					} else if (project.getRuleEngine().getBuiltRules().size() == 1) {
-						JERunnerAPIHandler.shutDownRuleEngine(projectId);
-						JERunnerAPIHandler.runProjectRules(projectId);
-
-					}
-
-					project.getRules().get(ruleId).setStatus(RuleStatus.STOPPED);
-				} catch (JERunnerErrorException e) {
-					JELogger.error("Failed to stop rule : " + project.getRules().get(ruleId).getJobEngineElementName(),
-							CATEGORY, projectId, RULE, null);
-
-					result.setOperationSucceeded(false);
-					result.setOperationError("Failed to stop rule : " + e.getMessage());
-
-				}
-
-			}
-		}
-
 		return CompletableFuture.completedFuture(result);
 
 	}
+
+
 
 	private JEProject getProject(String projectId) throws ProjectNotFoundException {
 		JEProject project = ProjectService.getProjectById(projectId);
