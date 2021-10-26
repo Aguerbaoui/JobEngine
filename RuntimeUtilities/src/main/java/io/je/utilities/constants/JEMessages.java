@@ -42,6 +42,8 @@ public class JEMessages {
 
     public static final String DATABASE_IS_DOWN_CHECKING_AGAIN = "Database is down, rechecking";
 
+    public static final String DATABASE_IS_DOWN = "Database is down, please check the database service";
+
     public static final String RUNNER_IS_UP_UPDATING_NOW = "Runner is up, updating now";
 
     // ****************************************ClassBuilder**************************************************
@@ -674,4 +676,5 @@ public class JEMessages {
 
 	public static final String FAILED_TO_DELETE_RULE = "Failed to delete rule";
     public static final String FAILED_TO_STOP_THE_WORKFLOW_BECAUSE_IT_ALREADY_IS_STOPPED = "Failed to stop the workflow because it already is stopped";
+    public static final String STOPPING_WORKFLOW_FORCED = "User stopped workflow execution";
 }

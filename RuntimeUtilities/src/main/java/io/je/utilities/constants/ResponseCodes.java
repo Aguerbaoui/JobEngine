@@ -7,6 +7,7 @@ public class ResponseCodes {
 	public static final int CODE_OK = 200;
 	public static final int UNKNOWN_ERROR = 9999;
 	public static final int NETWORK_ERROR = 9998;
+	public static final int DATABASE_ERROR = 9997;
 
 	
 	//exceptions
