@@ -12,7 +12,7 @@ import utils.log.LogSubModule;
 
 public class LicenseProperties {
 
-	private static String licenseManagerUrl =  "tcp://" + SIOTHConfigUtility.getSiothConfig().getMachineCredentials().getIpAddress()
+	private static String licenseManagerUrl =  "tcp://" + SIOTHConfigUtility.getSiothConfig().getNodes().getSiothMasterNode()
 			+ ":" + SIOTHConfigUtility.getSiothConfig().getPorts().getSiothLicensePort();
 	static SIOTHLicenseStatus licenseStatus = null;
 	private static int jobEngineFeatureCode = 4920;

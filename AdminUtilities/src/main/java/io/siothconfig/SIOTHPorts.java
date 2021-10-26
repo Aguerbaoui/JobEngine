@@ -23,7 +23,7 @@ public class SIOTHPorts {
 	public int siothLicensePort ;
 	
 	@JsonProperty("TrackingPort")
-	public int trackerPort ;
+	public int trackingPort;
 	
 	private SIOTHPorts() {
 		// TODO Auto-generated constructor stub
@@ -64,11 +64,11 @@ public class SIOTHPorts {
 	public void setSiothLicensePort(int siothLicensePort) {
 		this.siothLicensePort = siothLicensePort;
 	}
-	public int getTrackerPort() {
-		return trackerPort;
+	public int getTrackingPort() {
+		return trackingPort;
 	}
-	public void setTrackerPort(int trackerPort) {
-		this.trackerPort = trackerPort;
+	public void setTrackingPort(int trackingPort) {
+		this.trackingPort = trackingPort;
 	}
 
 

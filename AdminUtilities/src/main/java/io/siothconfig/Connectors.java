@@ -10,10 +10,10 @@ public class Connectors {
 	@JsonProperty("Protocols")
     public List<String> protocols ;
 	
-	@JsonProperty("Databases")
+	@JsonProperty("Data Stores")
 	public List<String> databases ;
     
-	@JsonProperty("NetworkWatchers")
+	@JsonProperty("Network Watchers")
 	public List<String> networkWatchers ;
     
 	@JsonProperty("Brokers")

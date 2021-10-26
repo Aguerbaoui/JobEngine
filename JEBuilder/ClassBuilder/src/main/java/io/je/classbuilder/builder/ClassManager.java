@@ -28,7 +28,6 @@ import utils.zmq.ZMQRequester;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -41,8 +40,8 @@ public class ClassManager {
 
 	static Map<String, JEClass> jeClasses = new ConcurrentHashMap<>(); // key = is, value = jeclass
 	static Map<String, Class<?>> builtClasses = new ConcurrentHashMap<>(); // key = id , value = class
-	static ZMQPublisher publisher = new ZMQPublisher("tcp://"+SIOTHConfigUtility.getSiothConfig().getMachineCredentials().getIpAddress(),
-			SIOTHConfigUtility.getSiothConfig().getPorts().getTrackerPort());
+	static ZMQPublisher publisher = new ZMQPublisher("tcp://"+SIOTHConfigUtility.getSiothConfig().getNodes().getSiothMasterNode(),
+			SIOTHConfigUtility.getSiothConfig().getPorts().getTrackingPort());
 	static ObjectMapper objectMapper = new ObjectMapper();
 
 	// TODO: see with islem if possible to change field type to class id instead of
@@ -217,7 +216,7 @@ public class ClassManager {
 			JELogger.debug(JEMessages.SENDING_REQUEST_TO_DATA_MODEL + " : " + request,
 					LogCategory.DESIGN_MODE, null,
 					LogSubModule.JEBUILDER,null);
-              ZMQRequester requester = new ZMQRequester("tcp://"+SIOTHConfigUtility.getSiothConfig().getMachineCredentials().getIpAddress(), SIOTHConfigUtility.getSiothConfig().getDataModelPORTS().getDmRestAPI_ReqAddress());
+              ZMQRequester requester = new ZMQRequester("tcp://"+SIOTHConfigUtility.getSiothConfig().getNodes().getSiothMasterNode(), SIOTHConfigUtility.getSiothConfig().getDataModelPORTS().getDmRestAPI_ReqAddress());
                response = requester.sendRequest(jsonMsg) ;
               if (response == null ) {
             	  

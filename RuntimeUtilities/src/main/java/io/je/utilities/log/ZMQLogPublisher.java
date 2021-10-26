@@ -13,7 +13,7 @@ public class ZMQLogPublisher {
 	//TODO: read from config instead of hardcoded msg
 	
 	
-	static ZMQPublisher publisher = new ZMQPublisher("tcp://"+SIOTHConfigUtility.getSiothConfig().getMachineCredentials().getIpAddress() , SIOTHConfigUtility.getSiothConfig().getPorts().getTrackerPort());
+	static ZMQPublisher publisher = new ZMQPublisher("tcp://"+SIOTHConfigUtility.getSiothConfig().getNodes().getSiothMasterNode() , SIOTHConfigUtility.getSiothConfig().getPorts().getTrackingPort());
 	static ObjectMapper objectMapper = new ObjectMapper();
 
 	public static void publish(LogMessage msg) {
