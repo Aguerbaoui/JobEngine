@@ -10,9 +10,12 @@ public class SIOTHConfig {
 
     private SIOTHConfig() {}
 
-    @JsonProperty("MachineCredentials")
-    private MachineCredentials machineCredentials ;
-    
+	@JsonProperty("Nodes")
+	private Nodes nodes ;
+
+	@JsonProperty("NodeManager")
+    private String nodeManager ;
+
     @JsonProperty("MongoConfiguration")
     private MongoConfiguration mongoConfiguration ;
     
@@ -21,7 +24,10 @@ public class SIOTHConfig {
     
     @JsonProperty("RedisConfiguration")
     private RedisConfiguration redisConfiguration ;
-    
+
+	@JsonProperty("UAServerAddressSpaceSeparator")
+	private String uAServerAddressSpaceSeparator;
+
     @JsonProperty("PORTS")
     private SIOTHPorts siothPorts ;
     
@@ -43,6 +49,9 @@ public class SIOTHConfig {
     @JsonProperty("APIS")
     private APIS apis;
 
+	@JsonProperty("waitForKill")
+	private int waitForKill;
+
 	public String getSIOTHInstallationPath() {
 		return SIOTHInstallationPath;
 	}
@@ -51,13 +60,6 @@ public class SIOTHConfig {
 		SIOTHInstallationPath = sIOTHInstallationPath;
 	}
 
-	public MachineCredentials getMachineCredentials() {
-		return machineCredentials;
-	}
-
-	public void setMachineCredentials(MachineCredentials machineCredentials) {
-		this.machineCredentials = machineCredentials;
-	}
 
 	public MongoConfiguration getMongoConfiguration() {
 		return mongoConfiguration;
@@ -139,12 +141,48 @@ public class SIOTHConfig {
 		this.apis = apis;
 	}
 
-    
-    
-    
+	public String getNodeManager() {
+		return nodeManager;
+	}
+
+	public void setNodeManager(String nodeManager) {
+		this.nodeManager = nodeManager;
+	}
+
+	public String getuAServerAddressSpaceSeparator() {
+		return uAServerAddressSpaceSeparator;
+	}
+
+	public void setuAServerAddressSpaceSeparator(String uAServerAddressSpaceSeparator) {
+		this.uAServerAddressSpaceSeparator = uAServerAddressSpaceSeparator;
+	}
+
+	public SIOTHPorts getSiothPorts() {
+		return siothPorts;
+	}
+
+	public void setSiothPorts(SIOTHPorts siothPorts) {
+		this.siothPorts = siothPorts;
+	}
+
+	public int getWaitForKill() {
+		return waitForKill;
+	}
+
+	public void setWaitForKill(int waitForKill) {
+		this.waitForKill = waitForKill;
+	}
+
+	public Nodes getNodes() {
+		return nodes;
+	}
+
+	public void setNodes(Nodes nodes) {
+		this.nodes = nodes;
+	}
 
 
-   /* public String LoadConfigAsString();
+    /* public String LoadConfigAsString();
     public void loadSIOTHConfigPath();
     public void LoadSIOTHConfiguration(out String StrError);
     public void SaveConfiguration(String Content);

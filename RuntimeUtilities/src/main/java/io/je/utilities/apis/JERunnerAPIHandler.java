@@ -160,13 +160,14 @@ public class JERunnerAPIHandler {
                             null, LogSubModule.JEBUILDER, null);
                     throw new JERunnerErrorException(JEMessages.JERUNNER_ERROR + " : " + response.body().string());
                 }
-
-                String respBody = response.body().string();
+                response.body().close();
+                return true;
+               /* String respBody = response.body().string();
                 ObjectMapper objectMapper = new ObjectMapper();
                 HashMap<String, String> v = objectMapper.readValue(respBody, HashMap.class);
                 if (v.containsKey("status") && v.get("status").equalsIgnoreCase("up")) {
                     return true;
-                }
+                }*/
             }
 
         } catch (IOException e) {
@@ -225,12 +226,12 @@ public class JERunnerAPIHandler {
         sendDeleteRequest(url);
     }
 
-    public static void addJarToRunner(HashMap<String, String> payload) throws JERunnerErrorException{
+    public static JEResponse addJarToRunner(HashMap<String, String> payload) throws JERunnerErrorException{
         String url = SIOTHConfigUtility.getSiothConfig().getJobEngine().getJeRunner()+ APIConstants.ADD_JAR;
         //JELogger.debug(JEMessages.ADDING_JAR_FILE_TO_RUNNER + payload);
         JELogger.debug(JEMessages.ADDING_JAR_FILE_TO_RUNNER + payload,  LogCategory.DESIGN_MODE,
                 null, LogSubModule.JEBUILDER, null);
-        sendRequestWithBody(url, payload);
+        return sendRequestWithBody(url, payload);
     }
 
 

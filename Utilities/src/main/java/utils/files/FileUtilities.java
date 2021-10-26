@@ -1,12 +1,14 @@
 package utils.files;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.Locale;
 
 public class FileUtilities {
 
@@ -45,8 +47,14 @@ public class FileUtilities {
 		} 
 		}
 		}
-
-
 		
+	}
+
+	public static String getFileExtension(String fileName) {
+		return FilenameUtils.getExtension(fileName);
+	}
+
+	public static boolean fileIsJar(String fileName) {
+		return getFileExtension(fileName).equals("jar");
 	}
 }

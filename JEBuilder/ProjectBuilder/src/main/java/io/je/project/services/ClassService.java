@@ -23,6 +23,7 @@ import io.siothconfig.SIOTHConfigUtility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import utils.files.FileUtilities;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
 
@@ -66,7 +67,7 @@ public class ClassService {
      */
     public void initClassUpdateListener() {
         // TODO make runnable static
-        ClassUpdateListener runnable = new ClassUpdateListener("tcp://" + SIOTHConfigUtility.getSiothConfig().getMachineCredentials().getIpAddress(),
+        ClassUpdateListener runnable = new ClassUpdateListener("tcp://" + SIOTHConfigUtility.getSiothConfig().getNodes().getSiothMasterNode(),
                 SIOTHConfigUtility.getSiothConfig().getDataModelPORTS().getDmRestAPI_ConfigurationPubAddress(), "ModelTopic");
         runnable.setListening(true);
         Thread listener = new Thread(runnable);
@@ -191,6 +192,17 @@ public class ClassService {
         JELogger.debug(JEMessages.LOADING_ALL_CLASSES_FROM_DB,
                 LogCategory.DESIGN_MODE, null,
                 LogSubModule.CLASS, null);
+        JEClass jeClass = getNewJEProcedureClass();
+        try {
+
+            loadProcedures(jeClass);
+            ClassDefinition c = getClassModel(jeClass);
+            addClass(c, true, true);
+
+        } catch (Exception e) {
+            JELogger.error(JEMessages.FAILED_TO_LOAD_CLASS + " " + jeClass.getClassId(), LogCategory.DESIGN_MODE,
+                    null, LogSubModule.CLASS, null);
+        }
         for (JEClass clazz : classes) {
             try {
                 if (clazz.getWorkspaceId() != null) {
@@ -205,17 +217,7 @@ public class ClassService {
                         null, LogSubModule.CLASS, null);
             }
         }
-        JEClass jeClass = getNewJEProcedureClass();
-        try {
 
-            loadProcedures(jeClass);
-            ClassDefinition c = getClassModel(jeClass);
-            addClass(c, true, true);
-
-        } catch (Exception e) {
-            JELogger.error(JEMessages.FAILED_TO_LOAD_CLASS + " " + jeClass.getClassId(), LogCategory.DESIGN_MODE,
-                    null, LogSubModule.CLASS, null);
-        }
 
     }
 
@@ -373,7 +375,11 @@ public class ClassService {
                 LogCategory.DESIGN_MODE, null, LogSubModule.JEBUILDER, libModel.getFileName());
         try {
             MultipartFile file = libModel.getFile();
+            String orgName = file.getOriginalFilename();
             if (!file.isEmpty()) {
+                if(!FileUtilities.fileIsJar(orgName)) {
+                    throw new LibraryException(JEMessages.JOB_ENGINE_ACCEPTS_JAR_FILES_ONLY);
+                }
                 String uploadsDir = ConfigurationConstants.EXTERNAL_LIB_PATH;
                 //TODO change to the path set by the user for classes in sioth
                 String realPathtoUploads = request.getServletContext().getRealPath(uploadsDir);
@@ -381,7 +387,7 @@ public class ClassService {
                     new File(realPathtoUploads).mkdir();
                 }
 
-                String orgName = file.getOriginalFilename();
+
                 String filePath = uploadsDir + orgName;
                 File dest = new File(filePath);
                 if (dest.exists()) {

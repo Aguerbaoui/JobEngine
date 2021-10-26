@@ -57,8 +57,8 @@ public class RuntimeDispatcher {
 	///////////////////////////////// PROJECT
 	// build project
 	public void buildProject(String projectId) throws RuleBuildFailedException, WorkflowBuildException {
-		JELogger.debug("[projectId  = " + projectId + "]" + JEMessages.BUILDING_PROJECT, LogCategory.RUNTIME, projectId,
-				LogSubModule.JERUNNER, null);
+		/*JELogger.debug("[projectId  = " + projectId + "]" + JEMessages.BUILDING_PROJECT, LogCategory.RUNTIME, projectId,
+				LogSubModule.JERUNNER, null);*/
 		RuleEngineHandler.buildProject(projectId);
 		WorkflowEngineHandler.buildProject(projectId);
 	}
@@ -185,8 +185,8 @@ public class RuntimeDispatcher {
 	 * Launch a workflow without variables
 	 */
 	public void launchProcessWithoutVariables(String projectId, String key, boolean runProject)
-			throws WorkflowNotFoundException, WorkflwTriggeredByEventException, WorkflowAlreadyRunningException,
-			WorkflowBuildException {
+			throws WorkflowNotFoundException,  WorkflowAlreadyRunningException,
+			WorkflowBuildException, WorkflowRunException {
 		JELogger.debug("[projectId = " + projectId + "] [workflow = " + key + "]" + JEMessages.RUNNING_WF,
 				LogCategory.RUNTIME, projectId, LogSubModule.WORKFLOW, key);
 		buildWorkflow(projectId, key);
@@ -328,7 +328,7 @@ public class RuntimeDispatcher {
 	}
 
 	// remove/stop workflow from runner
-	public void removeWorkflow(String projectId, String workflowId) {
+	public void removeWorkflow(String projectId, String workflowId) throws WorkflowRunException {
 		JELogger.debug("[projectId = " + projectId + "] [workflow = " + workflowId + "]" + JEMessages.REMOVING_WF,
 				LogCategory.RUNTIME, projectId, LogSubModule.WORKFLOW, workflowId);
 		WorkflowEngineHandler.deleteProcess(projectId, workflowId);

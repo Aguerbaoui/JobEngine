@@ -70,6 +70,8 @@ public class ConfigurationService {
 	public void updateRunner(){
 		new Thread(() -> {
 			try {
+
+
 				boolean serverUp = false;
 				while (!serverUp) {
 					JELogger.debug(JEMessages.RUNNER_IS_DOWN_CHECKING_AGAIN_IN_5_SECONDS,
@@ -81,8 +83,21 @@ public class ConfigurationService {
 				JELogger.debug(JEMessages.RUNNER_IS_UP_UPDATING_NOW,
 						LogCategory.DESIGN_MODE, null,
 						LogSubModule.JEBUILDER,null);
-				classService.loadAllClasses();
-				projectService.loadAllProjects();
+				boolean loadedFiles = false;
+				while(!loadedFiles) {
+					try {
+						classService.loadAllClasses();
+						projectService.loadAllProjects();
+						loadedFiles = true;
+					}
+					catch (Exception e) {
+						loadedFiles = false;
+						JELogger.debug(JEMessages.DATABASE_IS_DOWN_CHECKING_AGAIN,
+								LogCategory.DESIGN_MODE, null,
+								LogSubModule.JEBUILDER,null);
+					}
+				}
+
 			} catch (Exception e) {
 				JEExceptionHandler.handleException(e);
 			}

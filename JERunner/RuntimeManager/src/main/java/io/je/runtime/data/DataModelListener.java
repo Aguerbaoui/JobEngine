@@ -74,7 +74,7 @@ public class DataModelListener {
        
             if(!agents.containsKey(topic))
             {
-            	ZMQAgent agent = new ZMQAgent("tcp://"+SIOTHConfigUtility.getSiothConfig().getMachineCredentials().getIpAddress(), SIOTHConfigUtility.getSiothConfig().getDataModelPORTS().getDmService_PubAddress(), topic);
+            	ZMQAgent agent = new ZMQAgent("tcp://"+SIOTHConfigUtility.getSiothConfig().getNodes().getSiothMasterNode(), SIOTHConfigUtility.getSiothConfig().getDataModelPORTS().getDmService_PubAddress(), topic);
                 agents.put(topic, agent);
             }
         

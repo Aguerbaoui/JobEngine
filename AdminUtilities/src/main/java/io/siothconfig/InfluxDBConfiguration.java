@@ -24,6 +24,10 @@ public class InfluxDBConfiguration {
 
     @JsonProperty("DataModelMeasurementName")
     public String dataModelMeasurementName ;
+
+	@JsonProperty("InfluxRetentionDuration")
+	public String influxRetentionDuration ;
+
 	private InfluxDBConfiguration() {
 		// TODO Auto-generated constructor stub
 	}
@@ -69,8 +73,12 @@ public class InfluxDBConfiguration {
 	public void setDataModelMeasurementName(String dataModelMeasurementName) {
 		this.dataModelMeasurementName = dataModelMeasurementName;
 	}
-	
-	
-     
-     
+
+	public String getInfluxRetentionDuration() {
+		return influxRetentionDuration;
+	}
+
+	public void setInfluxRetentionDuration(String influxRetentionDuration) {
+		this.influxRetentionDuration = influxRetentionDuration;
+	}
 }

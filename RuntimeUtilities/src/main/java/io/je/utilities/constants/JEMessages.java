@@ -9,7 +9,7 @@ public class JEMessages {
 
     public static final String RUNNER_STARTED = "Runner started successfully";
 
-    public static final String RUNNER_SHUTTING_DOWN = "Runner is shutting down";
+    public static final String RUNNER_SHUTTING_DOWN = " Runner is shutting down";
 
     public static final String RUNNER_CONFFIG_UPDATE = "updating JERunner configuration";
 
@@ -39,6 +39,10 @@ public class JEMessages {
     public static final String UPDATING_RUNNER_CONFIGURATION_CONFIG = "Updating JERunner configuration";
 
     public static final String RUNNER_IS_DOWN_CHECKING_AGAIN_IN_5_SECONDS = "Runner is down, rechecking in 5 seconds";
+
+    public static final String DATABASE_IS_DOWN_CHECKING_AGAIN = "Database is down, rechecking";
+
+    public static final String DATABASE_IS_DOWN = "Database is down, please check the database service";
 
     public static final String RUNNER_IS_UP_UPDATING_NOW = "Runner is up, updating now";
 
@@ -89,11 +93,11 @@ public class JEMessages {
 
     // ****************************************Data Listener**************************************************
 
-    public static final String LISTENING_ON_TOPICS = "Listening to topics: ";
+    public static final String LISTENING_ON_TOPICS = " Listening to topics: ";
 
     public static final String ADDING_TOPICS = "Adding topics: ";
 
-    public static final String STOPPED_LISTENING_ON_TOPICS = "Stopping listening to topics: ";
+    public static final String STOPPED_LISTENING_ON_TOPICS = " Stopping listening to topics: ";
 
     public static final String INTERRUPT_TOPIC_ERROR = "Error interrupting thread for topic: ";
 
@@ -133,7 +137,7 @@ public class JEMessages {
     public static final String RESETTING_PROJECTS = "Resetting projects after updating JERunner";
 
     //WF
-    public static final String LOADING_WFS = "Getting all workflows";
+    public static final String LOADING_WFS = " Getting all workflows";
 
     public static final String LOADING_WF = "Getting workflow";
 
@@ -163,7 +167,7 @@ public class JEMessages {
 
     public static final String UPDATING_WF = "Updating workflow";
 
-    public static final String ADDING_BPMN_SCRIPT = "Adding a BPMN script";
+    public static final String ADDING_BPMN_SCRIPT = " Adding a BPMN script";
 
     public static final String ADDING_LISTENERS_TO_PROCESS = "Adding listeners to process";
 
@@ -171,8 +175,8 @@ public class JEMessages {
 
     public static final String SAVING_BPMN_FILE_TO_PATH = "Saving BPMP file to path";
 
-    public static final String DEPLOYING_IN_RUNNER_WORKFLOW_WITH_ID = "Deploying in JERunner workflow with Id ";
-    public static final String FAILED_TO_DEPLOY_IN_RUNNER_WORKFLOW_WITH_ID = "Failed to deploy in JERunner workflow with Id";
+    public static final String DEPLOYING_IN_RUNNER_WORKFLOW_WITH_ID = " Deploying in JERunner workflow with Id ";
+    public static final String FAILED_TO_DEPLOY_IN_RUNNER_WORKFLOW_WITH_ID = " Failed to deploy in JERunner workflow with Id";
 
     public static final String TRANSITIONING_FROM = "Transitioning from";
 
@@ -181,17 +185,17 @@ public class JEMessages {
     public static final String JUST_EXECUTED = "just executed";
     public static final String TASK_ID = "Task Id";
 
-    public static final String PROCESS_HAS_TO_BE_TRIGGERED_BY_EVENT = "Process has to be triggered by event or following a specific schedule";
+    public static final String PROCESS_HAS_TO_BE_TRIGGERED_BY_EVENT = " Workflow has to be triggered by event or following a specific schedule";
 
-    public static final String PROCESS_EXITED = "Process has ended execution";
+    public static final String PROCESS_EXITED = " Process has ended execution";
 
     public static final String RUNNING_ALL_WORKFLOWS_IN_PROJECT_ID = "Running all workflows in project Id";
 
     public static final String BUILDING_WORKFLOWS_IN_PROJECT = "Building workflows in project";
 
-    public static final String ERROR_DELETING_A_NON_EXISTING_PROCESS = "Error deleting a non-existing process";
+    public static final String ERROR_DELETING_A_NON_EXISTING_PROCESS = " Error deleting a non-existing process";
 
-    public static final String EXECUTING_WEB_API_TASK = "Executing web api task";
+    public static final String EXECUTING_WEB_API_TASK = " Executing web api task";
 
     public static final String NETWORK_CALL_RESPONSE_IN_WEB_SERVICE_TASK = "Network call response in web service task";
 
@@ -201,11 +205,11 @@ public class JEMessages {
 
     public static final String MAIL_SERVICE_TASK_RESPONSE = "Mail service task response";
 
-    public static final String DB_SERVICE_TASK_RESPONSE = "Database service task response";
+    public static final String DB_SERVICE_TASK_RESPONSE = " Database service task response";
 
-    public static final String DB_API_RESPONSE = "Database Api response";
+    public static final String DB_API_RESPONSE = " Database Api response";
 
-    public static final String UPDATING_A_WORKFLOW_BLOCK_WITH_ID = "Updating a workflow block with Id ";
+    public static final String UPDATING_A_WORKFLOW_BLOCK_WITH_ID = " Updating a workflow block with Id ";
 
     public static final String INFORM_FROM_USER = "Inform from user";
 
@@ -214,7 +218,7 @@ public class JEMessages {
 
     public static final String UPDATING_SCRIPTED_RULE = "Updating new scripted rule";
 
-    public static final String LOADING_RULES = "Getting all rules";
+    public static final String LOADING_RULES = " Getting all rules";
 
     public static final String ADDING_RULE = "Adding rule";
 
@@ -256,7 +260,7 @@ public class JEMessages {
 
     public static final String REMOVING_EVENTS = "Updating fact";
 
-    public static final String TRIGGERING_NOW = "Triggering now";
+    public static final String TRIGGERING_NOW = " Triggering now";
 
     public static final String REMOVING_EVENT = "Removing now";
 
@@ -312,13 +316,13 @@ public class JEMessages {
 
     public static final String WORKFLOW_NEEDS_BUILD = "Workflow needs build";
 
-    public static final String EVENT_NOT_FOUND = "No event with this Id was found ";
+    public static final String EVENT_NOT_FOUND = " No event with this Id was found ";
 
-    public static final String ERROR_SETTING_EVENT = "Error while setting event in Runner ";
+    public static final String ERROR_SETTING_EVENT = " Error while setting event in Runner ";
 
     public static final String NOT_ALPHABETICAL = "Must only contain alphabetical characters ";
 
-    public static final String WORKFLOW_TRIGGERED_BY_EVENT = "Workflow cannot start manually";
+    public static final String WORKFLOW_TRIGGERED_BY_EVENT = " Workflow cannot start manually";
 
     public static final String EVENT_ALREADY_EXISTS = "An event with this Id already exists";
 
@@ -365,13 +369,13 @@ public class JEMessages {
 
     public static final String UPDATING_EVENT_TYPE_FAILED = "Failed to set event type in JERunner";
 
-    public static final String DELETING_EVENT = "deleting event";
+    public static final String DELETING_EVENT = " deleting event";
 
-    public static final String DELETING_EVENTS = "deleting events";
+    public static final String DELETING_EVENTS = " deleting events";
 
-    public static final String DELETING_EVENT_FROM_RUNNER = "deleting event from JERunner";
+    public static final String DELETING_EVENT_FROM_RUNNER = " deleting event from JERunner";
 
-    public static final String UPDATING_EVENT_TYPE_IN_RUNNER = "Updating event type in JERunner";
+    public static final String UPDATING_EVENT_TYPE_IN_RUNNER = " Updating event type in JERunner";
 
 
     // ****************************************rules**************************************************
@@ -380,7 +384,7 @@ public class JEMessages {
 
     public static final String RULE_BUILD_ERROR = "Error while building a rule";
 
-    public static final String RULE_ADDED_SUCCESSFULLY = "Rule added successfully.";
+    public static final String RULE_ADDED_SUCCESSFULLY = " Rule added successfully.";
 
     public static final String FAILED_TO_ADD_RULE = "Failed to add rule.";
 
@@ -408,7 +412,7 @@ public class JEMessages {
     // ****************************************WORKFLOW**************************************************
     public static final String CREATED_PROJECT_SUCCESSFULLY = "Created project successfully";
 
-    public static final String BUILT_EVERYTHING_SUCCESSFULLY = "Built everything successfully";
+    public static final String BUILT_EVERYTHING_SUCCESSFULLY = " Built everything successfully";
 
     public static final String BUILDING_BPMN_FROM_JEWORKFLOW = "Building bpmn from jeworkflow Id =";
 
@@ -431,7 +435,7 @@ public class JEMessages {
 
     // ****************************************Variables**************************************************
 
-    public static final String VAR_ADDED_SUCCESSFULLY = "Variable added successfully.";
+    public static final String VAR_ADDED_SUCCESSFULLY = " Variable added successfully.";
 
     public static final String VAR_DELETED = "Variable was sucessfully deleted ";
 
@@ -496,7 +500,7 @@ public class JEMessages {
 
     public static final String INPUT_CONNECTION1 = "Comparison block cannot have ";
 
-    public static final String INPUT_CONNECTION2 = "input connexions.";
+    public static final String INPUT_CONNECTION2 = " input connexions.";
 
 
     // ****************************************RuleEngine**************************************************
@@ -555,11 +559,11 @@ public class JEMessages {
 
     // ****************************************NETWORKMSGS**************************************************
 
-    public static final String NETWORK_GET = "Making Get network call to url = ";
+    public static final String NETWORK_GET = " Making Get network call to url = ";
 
-    public static final String NETWORK_DELETE = "Making Delete network call to url = ";
+    public static final String NETWORK_DELETE = " Making Delete network call to url = ";
 
-    public static final String NETWORK_POST = "Making POST network call to url = ";
+    public static final String NETWORK_POST = " Making POST network call to url = ";
 
     public static final String NETWORK_CALL_ERROR = "Error making network call for url = ";
 
@@ -577,7 +581,7 @@ public class JEMessages {
 
 
     // ****************************************UTILS**************************************************
-    public static final String READING_FILE = "Reading file";
+    public static final String READING_FILE = " Reading file";
 
     public static final String DELETE_FILE_FAILED = "Failed deleting file ";
 
@@ -611,7 +615,7 @@ public class JEMessages {
 
     public static final String BLOCK_NAME_CAN_T_BE_UPDATED_BECAUSE_IT_ALREADY_EXISTS = "Block name can't be updated because it already exists";
     public static final String WORKFLOW_BUILD_ERROR = "Error while building the workflow ";
-    public static final String WORKFLOW_RUN_ERROR = "Error while running the workflow ";
+    public static final String WORKFLOW_RUN_ERROR = " Error while running the workflow ";
     public static final String UPLOADED_JAR_TO_PATH = "Uploaded jar to path ";
     public static final String SENDING_VARIABLE_TO_RUNNER = "Sending variable to runner";
     public static final String DELETING_VARIABLE = "Deleting variable ";
@@ -642,7 +646,7 @@ public class JEMessages {
     
     public static final String READ_INSTANCE_FAILED = "Failed to read last values for instance : ";
     
-    public static final String UPDATING_INSTANCE_VALUE = "Updating instance value..";
+    public static final String UPDATING_INSTANCE_VALUE = " Updating instance value..";
     
     public static final String INSTANCE_UPDATE_SUCCESS ="Instance was updated successfully";
 
@@ -671,4 +675,7 @@ public class JEMessages {
 	public static final String  STATUS_UPDATE_FAILED = "Failed to update status. ";
 
 	public static final String FAILED_TO_DELETE_RULE = "Failed to delete rule";
+    public static final String FAILED_TO_STOP_THE_WORKFLOW_BECAUSE_IT_ALREADY_IS_STOPPED = "Failed to stop the workflow because it already is stopped";
+    public static final String STOPPING_WORKFLOW_FORCED = "User stopped workflow execution";
+    public static final String JOB_ENGINE_ACCEPTS_JAR_FILES_ONLY = "Job engine accepts jar files only";
 }

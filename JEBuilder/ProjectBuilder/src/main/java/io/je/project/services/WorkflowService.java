@@ -527,7 +527,7 @@ public class WorkflowService {
         JEWorkflow wf = project.getWorkflowByIdOrName(workflowId);
         result.setItemName(wf.getJobEngineElementName());
 
-        if (wf.getStatus().equals(JEWorkflow.BUILT)) {
+        if (!wf.getStatus().equals(JEWorkflow.BUILT)) {
             result.setOperationSucceeded(false);
             result.setOperationError(JEMessages.WORKFLOW_NEEDS_BUILD);
             return CompletableFuture.completedFuture(result);

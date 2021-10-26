@@ -62,7 +62,7 @@ public class JEToBpmnMapper {
      * Set the start and end execution listeners for the workflow
      * */
     private static void addListeners(JEWorkflow workflow, Process process) {
-        JELogger.debug(JEMessages.ADDING_LISTENERS_TO_PROCESS + " id = " + process.getName(),
+        JELogger.debug(JEMessages.ADDING_LISTENERS_TO_PROCESS + " id = " + process.getId(),
                 LogCategory.DESIGN_MODE, workflow.getJobEngineProjectID(),
                 LogSubModule.WORKFLOW,workflow.getJobEngineElementID());
         ArrayList<ActivitiListener> listeners = new ArrayList<ActivitiListener>();
