@@ -127,13 +127,20 @@ public class SetterBlock extends ExecutionBlock {
 				return expression.toString();
 		
 		   case VARIABLE:
-			   return "Executioner.updateInstanceAttributeValueFromVariable( "
-				  +"\"" + this.jobEngineProjectID  +"\","
-				  +"\"" + this.ruleId  +"\","
-				  +"\"" + this.sourceInstanceId  +"\","
-				  +"\"" + this.sourceAttributeName  +"\","
-				  +"\"" + this.sourceVariableId  +"\""
-				  +");\r\n";
+			   expression = new StringBuilder();
+				for(String instanceId : destinationInstancesId)
+				{
+					expression.append("Executioner.updateInstanceAttributeValueFromVariable( "
+							  +"\"" + this.jobEngineProjectID  +"\","
+							  +"\"" + this.ruleId  +"\","
+							  +"\"" + instanceId  +"\","
+							  +"\"" + this.destinationAttributeName  +"\","
+							  +"\"" + this.sourceVariableId  +"\""
+							  +");\r\n");
+					expression.append("\n");
+				}
+				return expression.toString();
+		
 		   case ATTRIBUTE :
 			    expression = new StringBuilder();
 				for(String instanceId : destinationInstancesId)
