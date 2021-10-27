@@ -73,8 +73,7 @@ public class Executioner {
                 try{
                     //TODO: add blockName
                     InstanceManager.writeToDataModelInstance(instanceId,attributeName,value);
-                    JELogger.debug(JEMessages.INSTANCE_UPDATE_SUCCESS ,  LogCategory.RUNTIME,
-                            projectId, LogSubModule.RULE, ruleId,blockName);
+
                 }catch(Exception e)
                 {
                     JELogger.error(JEMessages.WRITE_INSTANCE_FAILED + e.getMessage(),  LogCategory.RUNTIME,

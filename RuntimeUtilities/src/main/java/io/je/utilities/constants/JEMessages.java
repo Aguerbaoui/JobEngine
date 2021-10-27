@@ -679,5 +679,7 @@ public class JEMessages {
     public static final String STOPPING_WORKFLOW_FORCED = "User stopped workflow execution";
     public static final String JOB_ENGINE_ACCEPTS_JAR_FILES_ONLY = "Job engine accepts jar files only";
     public static final String FILE_TOO_LARGE = "Jar file size is too large";
+    public static final String FAILED_INIT_DATAMODEL = "Failed to read initial values from Data Model. Topic = ";
+    public static final String RULE_DISABLED = "Rule is disabled.";
 
 }

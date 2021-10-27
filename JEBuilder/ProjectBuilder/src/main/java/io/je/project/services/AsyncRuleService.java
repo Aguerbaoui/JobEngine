@@ -116,6 +116,15 @@ public class AsyncRuleService {
 			return CompletableFuture.completedFuture(result);
 		}
 		result.setItemName(rule.getJobEngineElementName());
+		
+		if(!rule.isEnabled())
+		{
+			result.setOperationSucceeded(false);
+			result.setOperationError(JEMessages.RULE_DISABLED);
+			return CompletableFuture.completedFuture(result);
+		}
+		
+		
 		if(!rule.isBuilt())
 		{
 			result.setOperationSucceeded(false);
