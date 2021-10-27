@@ -20,7 +20,7 @@ public class DataModelRequester {
 	
     //private static ZMQRequester requester = new ZMQRequester("tcp://"+SIOTHConfigUtility.getSiothConfig().getMachineCredentials().getIpAddress(), SIOTHConfigUtility.getSiothConfig().getDataModelPORTS().getDmService_ReqAddress());
     private static ZMQRequester requester = new ZMQRequester("tcp://192.168.4.169"/*+SIOTHConfigUtility.getSiothConfig().getMachineCredentials().getIpAddress()*/, SIOTHConfigUtility.getSiothConfig().getDataModelPORTS().getDmService_ReqAddress());
-    public static ObjectMapper objectMapper = new ObjectMapper();
+    public static final ObjectMapper objectMapper = new ObjectMapper();
     private static 	TypeFactory typeFactory = objectMapper.getTypeFactory();
     
   
@@ -58,7 +58,7 @@ public class DataModelRequester {
 		List<Object> values = new ArrayList<Object>();
 
     	try {
-    	 	HashMap<String,String> requestMap = new HashMap();
+    	 	HashMap<String,String> requestMap = new HashMap<>();
         	requestMap.put("Type", "ReadInitialValues");
         	requestMap.put("ModelId", topic);
 			String data = requester.sendRequest(objectMapper.writeValueAsString(requestMap));
@@ -70,7 +70,7 @@ public class DataModelRequester {
 					
 				}
 		} catch ( IOException e) {
-			JELogger.error("Failed to read last values for topic : " + topic , null, "", LogSubModule.JERUNNER, topic);
+			JELogger.error(JEMessages.FAILED_INIT_DATAMODEL + topic , null, "", LogSubModule.JERUNNER, topic);
 		}
 		return values;
 
@@ -85,7 +85,7 @@ public class DataModelRequester {
     		
     		
     		//ZMQRequester requester = new ZMQRequester("tcp://192.168.4.169"/*+SIOTHConfigUtility.getSiothConfig().getMachineCredentials().getIpAddress()*/, SIOTHConfigUtility.getSiothConfig().getDataModelPORTS().getDmService_ReqAddress());
-    	 	HashMap<String,String> requestMap = new HashMap();
+    	 	HashMap<String,String> requestMap = new HashMap<>();
         	requestMap.put("Type", "ReadInstance");
         	requestMap.put("InstanceId", instanceId);
 			String data = requester.sendRequest(objectMapper.writeValueAsString(requestMap));
@@ -97,7 +97,7 @@ public class DataModelRequester {
 					
 				}
 		} catch (JsonProcessingException e) {
-			JELogger.error("Failed to get last values for instance : " + instanceId , null, "", LogSubModule.JERUNNER, instanceId);
+			JELogger.error(JEMessages.FAILED_INIT_DATAMODEL  + instanceId , null, "", LogSubModule.JERUNNER, instanceId);
 		}
     	return null;
     }

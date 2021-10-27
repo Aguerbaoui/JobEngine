@@ -167,7 +167,7 @@ public class InstanceManager {
 				JELogger.trace(JEMessages.INSTANCE_UPDATE_SUCCESS,  LogCategory.RUNTIME,
 	                    null, LogSubModule.RULE, null);
 			}else {
-				JELogger.error(JEMessages.WRITE_INSTANCE_FAILED +response.getJSONObject("Fail")+" ."+JEMessages.CHECK_DM_FOR_DETAILS, LogCategory.RUNTIME, "", LogSubModule.JERUNNER, instanceId);
+				JELogger.error(JEMessages.WRITE_INSTANCE_FAILED +response.getJSONObject("Fail")+". "+JEMessages.CHECK_DM_FOR_DETAILS, LogCategory.RUNTIME, "", LogSubModule.JERUNNER, instanceId);
 			}
 
 	
