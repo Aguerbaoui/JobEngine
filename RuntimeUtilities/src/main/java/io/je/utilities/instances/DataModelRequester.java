@@ -19,7 +19,7 @@ import utils.zmq.ZMQRequester;
 public class DataModelRequester {
 	
     //private static ZMQRequester requester = new ZMQRequester("tcp://"+SIOTHConfigUtility.getSiothConfig().getMachineCredentials().getIpAddress(), SIOTHConfigUtility.getSiothConfig().getDataModelPORTS().getDmService_ReqAddress());
-    private static ZMQRequester requester = new ZMQRequester("tcp://192.168.4.169"/*+SIOTHConfigUtility.getSiothConfig().getMachineCredentials().getIpAddress()*/, SIOTHConfigUtility.getSiothConfig().getDataModelPORTS().getDmService_ReqAddress());
+    private static ZMQRequester requester = new ZMQRequester("tcp://" +SIOTHConfigUtility.getSiothConfig().getNodes().getSiothMasterNode(), SIOTHConfigUtility.getSiothConfig().getDataModelPORTS().getDmService_ReqAddress());
     public static ObjectMapper objectMapper = new ObjectMapper();
     private static 	TypeFactory typeFactory = objectMapper.getTypeFactory();
     

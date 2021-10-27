@@ -678,4 +678,6 @@ public class JEMessages {
     public static final String FAILED_TO_STOP_THE_WORKFLOW_BECAUSE_IT_ALREADY_IS_STOPPED = "Failed to stop the workflow because it already is stopped";
     public static final String STOPPING_WORKFLOW_FORCED = "User stopped workflow execution";
     public static final String JOB_ENGINE_ACCEPTS_JAR_FILES_ONLY = "Job engine accepts jar files only";
+    public static final String FILE_TOO_LARGE = "Jar file size is too large";
+
 }
