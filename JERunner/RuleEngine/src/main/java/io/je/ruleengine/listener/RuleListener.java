@@ -75,10 +75,10 @@ public class RuleListener extends DefaultAgendaEventListener {
     	//get declared variables 
     	for(String declaredVariableName : event.getMatch().getDeclarationIds())
     	{
-    		if(event.getMatch().getDeclarationValue(declaredVariableName) instanceof JEObject)
+    		/*if(event.getMatch().getDeclarationValue(declaredVariableName) instanceof JEObject)
     		{
     			
-    		}
+    		}*/
     		ruleMessage.addBlockMessage(new JEBlockMessage(declaredVariableName,event.getMatch().getDeclarationValue(declaredVariableName).toString()));
     	}
     	

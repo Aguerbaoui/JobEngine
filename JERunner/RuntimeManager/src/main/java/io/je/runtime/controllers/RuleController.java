@@ -42,6 +42,7 @@ public class RuleController {
 
         try {
             runtimeDispatcher.addTopics(runnerRuleModel.getProjectId(), runnerRuleModel.getRuleId(),"rule",runnerRuleModel.getTopics());
+            System.out.println("****>>>>>Rule Topics : "+runnerRuleModel.getTopics());
             runtimeDispatcher.addRule(runnerRuleModel);
 
         } catch (Exception e) {
@@ -61,6 +62,7 @@ public class RuleController {
         try {
             runtimeDispatcher.removeRuleTopics(runnerRuleModel.getProjectId(), runnerRuleModel.getRuleId());
             runtimeDispatcher.addTopics(runnerRuleModel.getProjectId(), runnerRuleModel.getRuleId(),"rule",runnerRuleModel.getTopics());
+
             runtimeDispatcher.updateRule(runnerRuleModel);
 
         } catch (Exception e) {

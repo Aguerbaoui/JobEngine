@@ -11,6 +11,7 @@ import io.je.utilities.beans.JEField;
 import io.je.utilities.beans.JELib;
 import io.je.utilities.beans.JEMethod;
 import io.je.utilities.classloader.JEClassCompiler;
+import io.je.utilities.classloader.JEClassLoader;
 import io.je.utilities.config.ConfigurationConstants;
 import io.je.utilities.constants.ClassBuilderConfig;
 import io.je.utilities.constants.JEMessages;
@@ -47,7 +48,7 @@ public class ClassManager {
 	// TODO: see with islem if possible to change field type to class id instead of
 	// name
 	static Map<String, String> classNames = new ConcurrentHashMap<>(); // key = name, value = classid
-	static ClassLoader classLoader = ClassManager.class.getClassLoader();
+	//static ClassLoader classLoader =   //ClassManager.class.getClassLoader();
 	static String loadPath = ConfigurationConstants.BUILDER_CLASS_LOAD_PATH;
 	static String generationPath = ConfigurationConstants.JAVA_GENERATION_PATH;
 
@@ -118,7 +119,7 @@ public class ClassManager {
 		// Load the target class using its binary name
 		Class<?> loadedClass;
 		try {
-			loadedClass = classLoader
+			loadedClass = JEClassLoader.getInstance()
 					.loadClass(ClassBuilderConfig.generationPackageName + "." + classDefinition.getName());
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();

@@ -34,7 +34,7 @@ public class JEClassLoader extends ClassLoader {
     {
     	if(instance==null)
     	{
-    		instance = new JEClassLoader( new HashSet<String>());
+    		instance = new JEClassLoader( new HashSet<>());
     		
     	}
     	return instance;
@@ -45,7 +45,7 @@ public class JEClassLoader extends ClassLoader {
     {
     	if(customClasses==null)
     	{
-    		customClasses=new HashSet<String>();
+    		customClasses=new HashSet<>();
     	}
     	instance = new JEClassLoader(customClasses);
     	return instance;

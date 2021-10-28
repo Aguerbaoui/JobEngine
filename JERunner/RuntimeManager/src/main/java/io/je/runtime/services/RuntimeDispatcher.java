@@ -397,8 +397,7 @@ public class RuntimeDispatcher {
 
 	public void shutDownRuleEngine(String projectId) {
 
-		List<String> topics = DataModelListener.getRuleTopicsByProjectId(projectId);
-		DataModelListener.stopListening(topics);
+
 		RuleEngineHandler.stopRuleEngineProjectExecution(projectId);
 		projectStatus.put(projectId, false);
 
