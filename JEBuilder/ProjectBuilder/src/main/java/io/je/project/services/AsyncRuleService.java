@@ -57,7 +57,9 @@ public class AsyncRuleService {
 			return CompletableFuture.completedFuture(result);
 		}
 		result.setItemName(rule.getJobEngineElementName());
-
+		//set rule topics
+		rule.loadTopics();
+		
 		try {
 			if(rule.isEnabled())
 			{
@@ -133,9 +135,7 @@ public class AsyncRuleService {
 			
 		}
 		try {
-			//set rule topics
-			rule.loadTopics();
-			
+		
 			buildRule(projectId,ruleId).get();
 			if (!project.getRuleEngine().isRunning()) {
 				JERunnerAPIHandler.runProjectRules(projectId);
