@@ -273,7 +273,7 @@ public class RuleService {
 			String classId = (String) blockModel.getBlockConfiguration().get(AttributesMapping.CLASSID);
 			String workspaceId = (String) blockModel.getBlockConfiguration().get(AttributesMapping.WORKSPACEID);
 
-			rule.addTopic(classId);
+			//rule.addTopic(classId);
 
 			classService.addClass(workspaceId, classId, true);
 		}
@@ -353,7 +353,7 @@ public class RuleService {
 			String classId = (String) blockModel.getBlockConfiguration().get(AttributesMapping.CLASSID);
 			String workspaceId = (String) blockModel.getBlockConfiguration().get(AttributesMapping.WORKSPACEID);
 
-			rule.updateTopic(((AttributeGetterBlock) oldblock).getClassId(), classId);
+			//rule.updateTopic(((AttributeGetterBlock) oldblock).getClassId(), classId);
 
 			classService.addClass(workspaceId, classId, true);
 		}

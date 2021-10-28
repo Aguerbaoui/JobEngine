@@ -147,6 +147,11 @@ public abstract class JERule extends JEObject  {
 		this.status = status;
 	}
 
+	public void loadTopics() {
+		// TODO Auto-generated method stub
+		
+	}
+
 
 	
 		
