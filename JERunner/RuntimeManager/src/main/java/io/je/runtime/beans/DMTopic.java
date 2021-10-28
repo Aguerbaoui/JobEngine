@@ -60,17 +60,21 @@ public class DMTopic {
 	{
 		if(!dMListeners.containsKey(dMListener.id)) {
 			dMListeners.put(dMListener.id, dMListener);
+			
 			}
-			projects.add(dMListener.projectId);
+		projects.add(dMListener.projectId);
+
 		
 	}
 	
 	public void removeListener(String listenerId)
 	{
 		if(dMListeners.containsKey(listenerId)) {
+			projects.remove(dMListeners.get(listenerId).projectId);
 			dMListeners.remove(listenerId);
+
 			}
-		projects.remove(listenerId);
+
 
 	}
 	
