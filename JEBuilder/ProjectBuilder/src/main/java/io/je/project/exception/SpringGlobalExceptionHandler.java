@@ -30,7 +30,7 @@ public class SpringGlobalExceptionHandler {
     public ResponseEntity<?> handleError2(MaxUploadSizeExceededException e, RedirectAttributes redirectAttributes, HttpServletRequest request,
                                           HttpServletResponse response) {
 
-        return  ResponseEntity.ok(new JEResponse(ResponseCodes.FILE_TOO_LARGE_EXCEPTION, JEMessages.FILE_TOO_LARGE));
+        return  ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new JEResponse(ResponseCodes.FILE_TOO_LARGE_EXCEPTION, JEMessages.FILE_TOO_LARGE));
 
     }
 }
