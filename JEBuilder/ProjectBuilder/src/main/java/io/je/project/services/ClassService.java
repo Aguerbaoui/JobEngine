@@ -376,6 +376,10 @@ public class ClassService {
         try {
             MultipartFile file = libModel.getFile();
             String orgName = file.getOriginalFilename();
+            if(file.getSize() > SIOTHConfigUtility.getSiothConfig().getJobEngine().getLibraryMaxFileSize()) {
+                JELogger.debug("File size = " + file.getSize());
+                throw new LibraryException(JEMessages.FILE_TOO_LARGE);
+            }
             if (!file.isEmpty()) {
                 if(!FileUtilities.fileIsJar(orgName)) {
                     throw new LibraryException(JEMessages.JOB_ENGINE_ACCEPTS_JAR_FILES_ONLY);

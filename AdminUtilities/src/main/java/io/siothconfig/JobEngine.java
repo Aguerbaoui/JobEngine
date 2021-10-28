@@ -12,6 +12,9 @@ public class JobEngine {
 
 	@JsonProperty("CheckHealth")
 	public int checkHealthEveryMs;
+
+	@JsonProperty("LibraryMaxFileSize")
+	public String libraryMaxFileSize;
 	
 	
 	
@@ -49,5 +52,14 @@ public class JobEngine {
 
 	public void setCheckHealthEveryMs(int checkHealthEveryMs) {
 		this.checkHealthEveryMs = checkHealthEveryMs;
+	}
+
+	public int getLibraryMaxFileSize() {
+		int size = Integer.valueOf(libraryMaxFileSize.substring(0, libraryMaxFileSize.indexOf("MB")));
+		return size * 1048576;
+	}
+
+	public void setLibraryMaxFileSize(String libraryMaxFileSize) {
+		this.libraryMaxFileSize = libraryMaxFileSize;
 	}
 }
