@@ -6,6 +6,7 @@ import io.je.rulebuilder.components.blocks.ExecutionBlock;
 import io.je.rulebuilder.config.AttributesMapping;
 import io.je.rulebuilder.models.BlockModel;
 import io.je.rulebuilder.models.ValueType;
+import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.RuleBuildFailedException;
 
 /*
@@ -17,7 +18,7 @@ import io.je.utilities.exceptions.RuleBuildFailedException;
 public class AttachedSetterBlock extends ExecutionBlock {
 		
 	//SOURCE
-	ValueType newValueType; //Static , Dynamic
+	ValueType sourceType; //Static , Dynamic
 	
 	//static
 	Object value;
@@ -44,7 +45,7 @@ public class AttachedSetterBlock extends ExecutionBlock {
 		{
 		
 			value = blockModel.getBlockConfiguration().get(AttributesMapping.NEWVALUE);
-			newValueType = ValueType.valueOf((String)blockModel.getBlockConfiguration().get(AttributesMapping.SOURCE_VALUE_TYPE));
+			sourceType = ValueType.valueOf((String)blockModel.getBlockConfiguration().get(AttributesMapping.SOURCE_VALUE_TYPE));
 			destinationAttributeName = (String) blockModel.getBlockConfiguration().get(AttributesMapping.DESTINATION_ATTRIBUTE_NAME);
 			sourceAttributeName = (String) blockModel.getBlockConfiguration().get(AttributesMapping.ATTRIBUTENAME);
 			sourceInstanceId = (String) blockModel.getBlockConfiguration().get("sourceInstance");
@@ -73,19 +74,52 @@ public class AttachedSetterBlock extends ExecutionBlock {
 	public String getExpression() throws RuleBuildFailedException {		
 		
 		String getterInstanceId = getterName.replaceAll("\\s+", "")+ ".getJobEngineElementID()";
-	   switch(newValueType)
-	   {
-	   case STATIC :		   
-		   return executionerMethod+getterInstanceId+",\" "+destinationAttributeName +"\", "+value+");";
-	   case VARIABLE:
-		   return executionerMethod+getterInstanceId+", \""+destinationAttributeName +"\", VariableManager.getVariable("+sourceVariableId+"));";
-	   case ATTRIBUTE :
-		   return executionerMethod+getterInstanceId+", \""+destinationAttributeName +"\", InstanceManager.getInstance(\""+sourceInstanceId+"\").get"+ StringUtils.capitalize(sourceAttributeName)+ "());";
-	  default:
-		  throw new RuleBuildFailedException("INVALID CONFIGURATION");
+		 StringBuilder expression ;  
+		switch(sourceType)
+		   {
+		   case STATIC :	
+			    expression = new StringBuilder();
+			 expression.append("Executioner.updateInstanceAttributeValueFromStaticValue( "
+						   	  +"\"" + this.jobEngineProjectID  +"\","
+							  +"\"" + this.ruleId  +"\","
+							  +"\"" + this.blockName  +"\","				  
+							  + getterInstanceId  +","
+							  +"\"" + this.destinationAttributeName  +"\","
+							  +"\"" + this.value  +"\""
+							  +");\r\n");
+					expression.append("\n");
+			
+				return expression.toString();
+		
+		   case VARIABLE:
+			   return "Executioner.updateInstanceAttributeValueFromVariable( "
+				  +"\"" + this.jobEngineProjectID  +"\","
+				  +"\"" + this.ruleId  +"\","
+				  + getterInstanceId  +","
+				  +"\"" + this.destinationAttributeName  +"\","
+				  +"\"" + this.sourceVariableId  +"\""
+				  +");\r\n";
+		   case ATTRIBUTE :
+			    expression = new StringBuilder();
+				
+					expression.append("Executioner.updateInstanceAttributeValueFromAnotherInstance( "
+							  +"\"" + this.jobEngineProjectID  +"\","
+							  +"\"" + this.ruleId  +"\","
+							  +"\"" + this.sourceInstanceId  +"\","
+							  +"\"" + this.sourceAttributeName  +"\","
+							  + getterInstanceId  +","
+							  +"\"" + this.destinationAttributeName  +"\""
+							  +");\r\n");
+					expression.append("\n");
+				
+				return expression.toString();
+			  
+			  		
+		  default:
+			  throw new RuleBuildFailedException(JEMessages.INVALID_CONFIG);
 
-	   }
-	   
+		   }
+
 	  
 	}
 
