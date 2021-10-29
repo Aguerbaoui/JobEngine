@@ -1,13 +1,8 @@
 package io.je.project.controllers;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
-import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
-
 import io.je.project.exception.JEExceptionHandler;
 import io.je.project.services.ProjectService;
 
@@ -298,7 +293,7 @@ public class RuleController {
 			return JEExceptionHandler.handleException(e);
 		}
 
-		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, "Rule fired"));
+		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, "Rule is running."));
 	}
 	
 	
@@ -361,7 +356,7 @@ public class RuleController {
 			return JEExceptionHandler.handleException(e);
 		}
 
-		return ResponseEntity.ok(new JECustomResponse(ResponseCodes.CODE_OK, "Stopping rules completed.",results));
+		return ResponseEntity.ok(new JECustomResponse(ResponseCodes.CODE_OK, JEMessages.RULE_STOPPED,results));
 	}
 	
 	

@@ -26,6 +26,7 @@ public class ZMQAgent extends ZMQSubscriber {
 			try {
 				data = this.getSubSocket().recvStr();
 			} catch (Exception e) {
+				closeSocket();
 				e.printStackTrace();
 				continue;
 			}

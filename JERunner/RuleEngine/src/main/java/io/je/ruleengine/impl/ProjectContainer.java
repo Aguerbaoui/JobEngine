@@ -469,7 +469,7 @@ public class ProjectContainer {
 
 		} catch (Exception e) {
 			e.printStackTrace();
-			JELogger.error(JEMessages.UNEXPECTED_ERROR + "\n" + Arrays.toString(e.getStackTrace()),  LogCategory.RUNTIME,
+			JELogger.error(JEMessages.UNEXPECTED_ERROR + "\n" + e.getMessage(),  LogCategory.RUNTIME,
 					projectId, LogSubModule.RULE, null);
 			//JELogger.error(ProjectContainer.class, RuleEngineErrors.FailedToUpdateContainer + e.getMessage());
 		}
