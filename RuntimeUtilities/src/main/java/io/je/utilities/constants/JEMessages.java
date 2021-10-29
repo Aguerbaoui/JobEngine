@@ -682,4 +682,9 @@ public class JEMessages {
     public static final String FAILED_INIT_DATAMODEL = "Failed to read initial values from Data Model. Topic = ";
     public static final String RULE_DISABLED = "Rule is disabled.";
 
+	public static final String RULE_ALREADY_STOPPED = "Rule already stopped.";
+	public static final String RULE_STOPPED = "Rule is stopped.";
+
+	public static final String RULE_ALREADY_RUNNING = "Rule is already running";
+
 }

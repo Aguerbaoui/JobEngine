@@ -40,6 +40,8 @@ public abstract class ZMQSubscriber implements Runnable {
     	}
     }
     
+    
+    
     public ZMQ.Socket getSubSocket() {
         if(subSocket == null) {
             try {
