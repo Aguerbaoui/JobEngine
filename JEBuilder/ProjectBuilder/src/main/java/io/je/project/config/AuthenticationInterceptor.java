@@ -44,8 +44,8 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
         String originToken = request.getHeader("Authorization");
         String uri = request.getRequestURI();
         if(uri.contains("/jeproject/updateRunner")) return true;
-        return true;
-        /*if (originToken == null || originToken.isEmpty()) {
+        //return true;
+        if (originToken == null || originToken.isEmpty()) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return false;
         }
@@ -68,7 +68,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return false;
         }
-        return true;*/
+        return true;
     }
 
     @Override

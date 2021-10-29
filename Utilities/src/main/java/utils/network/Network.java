@@ -34,7 +34,7 @@ public class Network {
             executor.setCorePoolSize(3);
             executor.setMaxPoolSize(10);
             executor.setQueueCapacity(10);
-            executor.setThreadNamePrefix("NetworkAsynchThread-");
+            executor.setThreadNamePrefix("NetworkAsyncThread-");
             executor.initialize();
         }
         return executor;

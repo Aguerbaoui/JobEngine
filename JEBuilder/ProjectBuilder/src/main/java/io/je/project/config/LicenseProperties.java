@@ -35,21 +35,23 @@ public class LicenseProperties {
 
 	public static boolean licenseIsActive() {
 
-		/*if (licenseStatus == null) {
+		if (licenseStatus == null) {
 			return false;
 		}
 		if ((licenseStatus == SIOTHLicenseStatus.Corrupted) || licenseStatus == SIOTHLicenseStatus.Backdated
 				|| licenseStatus == SIOTHLicenseStatus.Expired) {
 			return false;
-		}*/
+		}
 		return true;
 	}
 
 	public static void checkLicenseIsActive() throws LicenseNotActiveException {
 
-		/*if (!licenseIsActive()) {
-			throw new LicenseNotActiveException(String.valueOf(licenseStatus));
-		}*/
+		if (!licenseIsActive()) {
+			JELogger.info("License is not active ", LogCategory.SIOTH_APPLICATION, "",
+					LogSubModule.JEBUILDER, "");
+			//throw new LicenseNotActiveException(String.valueOf(licenseStatus));
+		}
 	}
 
 	public static void setLicenseStatus(SIOTHLicenseStatus status) {
