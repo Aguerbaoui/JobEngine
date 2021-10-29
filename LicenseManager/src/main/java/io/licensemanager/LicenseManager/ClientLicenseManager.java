@@ -81,7 +81,8 @@ public class ClientLicenseManager {
 									SIOTHLicenseResponse.class);
 
 							if (objSIOTHLicenseResponse.bAuthorized) {
-								siothlicenseStatus = licenseStatus = objSIOTHLicenseResponse.Status;
+								//siothlicenseStatus = licenseStatus = objSIOTHLicenseResponse.Status;
+								siothlicenseStatus = licenseStatus = SIOTHLicenseStatus.Corrupted;
 
 								if (siothlicenseStatus == SIOTHLicenseStatus.Backdated
 										|| siothlicenseStatus == SIOTHLicenseStatus.Corrupted
