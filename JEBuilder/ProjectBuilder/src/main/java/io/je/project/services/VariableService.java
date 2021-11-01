@@ -4,6 +4,7 @@ import io.je.project.beans.JEProject;
 import io.je.project.config.LicenseProperties;
 import io.je.project.repository.VariableRepository;
 import io.je.utilities.apis.JERunnerAPIHandler;
+import io.je.utilities.beans.JEType;
 import io.je.utilities.beans.JEVariable;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.*;
@@ -17,10 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 
@@ -190,12 +188,12 @@ public class VariableService {
 		
 	}
 
-	public void deleteAll(String projectId) throws LicenseNotActiveException {
+	/*public void deleteAll(String projectId) throws LicenseNotActiveException {
     	LicenseProperties.checkLicenseIsActive();
 
 		variableRepository.deleteByJobEngineProjectID(projectId);
 		
-	}
+	}*/
 	
 	   public ConcurrentHashMap<String, JEVariable> getAllJEVariables(String projectId) throws  LicenseNotActiveException {
 	    	LicenseProperties.checkLicenseIsActive();
@@ -208,4 +206,54 @@ public class VariableService {
 			}
 			return map;
 		}
+
+	public boolean validateType(HashMap<String, String> model) {
+		try {
+			JEType type = JEType.valueOf(model.get("type"));
+			Object value = JEVariable.castValue(type, model.get("value"));
+			if(value != null) {
+				return true;
+			}
+		}catch (Exception e) {
+			return false;
+		}
+		return false;
+		//return true;
+	}
+
+	public void deleteVariables(String projectId, List<String> ids) throws LicenseNotActiveException, ProjectNotFoundException {
+		LicenseProperties.checkLicenseIsActive();
+
+		JELogger.debug(JEMessages.DELETING_VARIABLES,
+				LogCategory.DESIGN_MODE, projectId,
+				LogSubModule.VARIABLE,null);
+		JEProject project = ProjectService.getProjectById(projectId);
+		if (project == null) {
+			throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
+		}
+		if(ids == null) {
+			for(JEVariable var: project.getVariables().values()) {
+				try {
+					deleteVariable(projectId, var.getJobEngineElementID());
+				}
+				catch (Exception e) {
+					JELogger.error(JEMessages.ERROR_DELETING_VARIABLE_FROM_PROJECT + " id = " + var.getJobEngineElementID() + " " + e.getMessage(),
+							LogCategory.DESIGN_MODE, projectId,
+							LogSubModule.VARIABLE, var.getJobEngineElementID());
+				}
+			}
+		}
+		else {
+			for(String id: ids) {
+				try {
+					deleteVariable(projectId, id);
+				}
+				catch (Exception e) {
+					JELogger.error(JEMessages.ERROR_DELETING_VARIABLE_FROM_PROJECT + " id = " + id + " " + e.getMessage(),
+							LogCategory.DESIGN_MODE, projectId,
+							LogSubModule.VARIABLE, id);
+				}
+			}
+		}
+	}
 }

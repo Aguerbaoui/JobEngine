@@ -355,6 +355,8 @@ public class JEMessages {
 
     public static final String EVENT_DELETED = "Event was successfully deleted ";
 
+    public static final String EVENTS_DELETED = "Event were successfully deleted ";
+
     public static final String EVENT_UPDATED = "Event was successfully updated ";
 
     public static final String LOADING_EVENTS = "Loading events .. ";
@@ -437,7 +439,8 @@ public class JEMessages {
 
     public static final String VAR_ADDED_SUCCESSFULLY = " Variable added successfully.";
 
-    public static final String VAR_DELETED = "Variable was sucessfully deleted ";
+    public static final String VAR_DELETED = "Variable was successfully deleted ";
+    public static final String VARS_DELETED = "Variables were successfully deleted ";
 
     public static final String ADDING_VARIABLE = "Adding variable ";
 
@@ -618,7 +621,8 @@ public class JEMessages {
     public static final String WORKFLOW_RUN_ERROR = " Error while running the workflow ";
     public static final String UPLOADED_JAR_TO_PATH = "Uploaded jar to path ";
     public static final String SENDING_VARIABLE_TO_RUNNER = "Sending variable to runner";
-    public static final String DELETING_VARIABLE = "Deleting variable ";
+    public static final String DELETING_VARIABLE = "Deleting variables ";
+    public static final String DELETING_VARIABLES = "Deleting variable ";
     public static final String ERROR_ADDING_VARIABLE_TO_PROJECT = "Error adding variable to project";
     public static final String ERROR_REMOVING_LIBRARY = "Error while removing the library";
     public static final String ERROR_REMOVING_METHOD = "Error while removing the procedure";

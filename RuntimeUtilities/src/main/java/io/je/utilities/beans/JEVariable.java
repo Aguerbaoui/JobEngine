@@ -41,7 +41,7 @@ public class JEVariable extends JEMonitoredData {
 			String initialValue,String description,String createdBy,String modifiedby) {
 		super(jobEngineElementID, jobEngineProjectID, name);
 		this.type = JEType.valueOf(type);
-		this.initialValue = castValue(initialValue);
+		this.initialValue = castValue(this.type, initialValue);
 		typeClass = getType(this.type);
 		this.value=this.initialValue;
 		this.jeObjectCreatedBy=createdBy;
@@ -57,7 +57,7 @@ public class JEVariable extends JEMonitoredData {
 			boolean isBroadcasted,String description,String createdBy,String modifiedby) {
 		super(jobEngineElementID, jobEngineProjectID, name, isArchived, isBroadcasted);
 		this.type = JEType.valueOf(type);
-		this.initialValue = castValue(initialValue);
+		this.initialValue = castValue(this.type, initialValue);
 		typeClass = getType(this.type);
 		this.value=this.initialValue;
 		this.jeObjectCreatedBy=createdBy;
@@ -107,7 +107,7 @@ public class JEVariable extends JEMonitoredData {
 
 
 	public void setValue(String value) {
-		this.value = castValue(value);
+		this.value = castValue(type, value);
 	}
 
 
@@ -150,7 +150,7 @@ public class JEVariable extends JEMonitoredData {
 
 
 
-	private Object castValue(String value) {
+	public static Object castValue(JEType type, String value) {
 		switch(type)
 		{
 		case BYTE:
@@ -170,7 +170,7 @@ public class JEVariable extends JEMonitoredData {
 		case BOOLEAN:
 			return Boolean.valueOf(value);
 		default:
-			JELogger.error("Failed to set variable\""+this.jobEngineElementName+"\" value to "+value+": Incompatible Type", null, this.jobEngineProjectID, LogSubModule.VARIABLE, this.jobEngineElementID);
+			//JELogger.error("Failed to set variable\""+this.jobEngineElementName+"\" value to "+value+": Incompatible Type", null, this.jobEngineProjectID, LogSubModule.VARIABLE, this.jobEngineElementID);
 			return null;
 		
 		}

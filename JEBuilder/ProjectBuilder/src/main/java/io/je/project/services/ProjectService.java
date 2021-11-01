@@ -73,8 +73,8 @@ public class ProjectService {
 	 * delete project
 	 */
 	@Async
-	public CompletableFuture<Void> removeProject(String id) throws ProjectNotFoundException, InterruptedException,
-			JERunnerErrorException, ExecutionException, LicenseNotActiveException {
+	public CompletableFuture<Void> removeProject(String id) throws ProjectNotFoundException,
+			JERunnerErrorException, LicenseNotActiveException {
 
 		if (!loadedProjects.containsKey(id)) {
 			throw new ProjectNotFoundException("[projectId= " + id + "]" + JEMessages.PROJECT_NOT_FOUND);
@@ -93,8 +93,8 @@ public class ProjectService {
 		loadedProjects.remove(id);
 		ruleService.deleteAll(id);
 		workflowService.deleteAll(id);
-		eventService.deleteAll(id);
-		variableService.deleteAll(id);
+		eventService.deleteEvents(id, null);
+		variableService.deleteVariables(id, null);
 		projectRepository.deleteById(id);
 
 		return CompletableFuture.completedFuture(null);

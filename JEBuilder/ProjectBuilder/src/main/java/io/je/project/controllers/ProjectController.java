@@ -168,8 +168,7 @@ public class ProjectController {
 	@DeleteMapping(value = "/deleteProject/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> deleteProject(@PathVariable String projectId) {
 		if (!projectService.projectExists(projectId)) {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-					.body(new JEResponse(ResponseCodes.PROJECT_NOT_FOUND, JEMessages.PROJECT_NOT_FOUND));
+			return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, PROJECT_DELETED));
 		}
 
 		try {
