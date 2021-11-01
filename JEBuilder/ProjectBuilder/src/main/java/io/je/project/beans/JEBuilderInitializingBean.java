@@ -40,7 +40,7 @@ public class JEBuilderInitializingBean implements InitializingBean {
                     LogSubModule.JEBUILDER, null);
             AuthenticationInterceptor.init(builderProperties.getIssuer());
             LicenseProperties.init();
-        	while(!LicenseProperties.licenseIsActive())
+        	/*while(!LicenseProperties.licenseIsActive())
         	{
         		try {
         			Thread.sleep(5000);
@@ -52,7 +52,7 @@ public class JEBuilderInitializingBean implements InitializingBean {
     				// TODO Auto-generated catch block
     				e.printStackTrace();
     			}
-        	}
+        	}*/
         	
             
             
