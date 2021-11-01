@@ -97,7 +97,7 @@ public class ClassService {
 
 
     public void addClass(String workspaceId, String classId, boolean sendToRunner)
-            throws DataDefinitionUnreachableException, ClassLoadException, IOException, AddClassException {
+            throws ClassLoadException, AddClassException {
         ClassDefinition classDefinition = ClassManager.loadClassDefinition(workspaceId, classId);
 
 
