@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.je.classbuilder.models.DataModelAction;
 import io.je.classbuilder.models.ModelUpdate;
 import io.je.project.services.ClassService;
+import io.je.utilities.classloader.JEClassLoader;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.InstanceCreationFailed;
 import io.je.utilities.log.JELogger;
@@ -63,6 +64,7 @@ public class ClassUpdateListener extends ZMQSubscriber {
                     {
                     	 if(update.getAction()==DataModelAction.UPDATE)
                          {
+                    		 JEClassLoader.overrideInstance();
                         	 classService.addClass(update.getModel(), true,true);
                          }
                     }

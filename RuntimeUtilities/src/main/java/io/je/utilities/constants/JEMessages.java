@@ -686,5 +686,9 @@ public class JEMessages {
 	public static final String RULE_STOPPED = "Rule is stopped.";
 
 	public static final String RULE_ALREADY_RUNNING = "Rule is already running";
+	public static final String DATAMODELAPI_UNREACHABLE = "Data Model RESTAPI unreachable";
+	public static final String DMAPI_RESPONSE = "Data Model definition returned : ";
+
+	public static final String CUSTOM_COMPILATION_SUCCESS = "Compilation in JEClassLoader succeeded.";
 
 }

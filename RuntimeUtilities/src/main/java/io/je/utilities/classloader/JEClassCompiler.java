@@ -40,7 +40,7 @@ public class JEClassCompiler {
 			List<String> options = new ArrayList<String>();
 			options.add("-classpath");
 			StringBuilder sb = new StringBuilder();
-			URLClassLoader urlClassLoader = (URLClassLoader) Thread.currentThread().getContextClassLoader();
+		/*	URLClassLoader urlClassLoader = (URLClassLoader) Thread.currentThread().getContextClassLoader();
 			for (URL url : urlClassLoader.getURLs()){
 				//JELogger.info(JEClassLoader.class, url.getFile().substring(1));
 				sb.append(url.getFile().substring(1).replace("%20", " ")).append(File.pathSeparator);
@@ -58,10 +58,10 @@ public class JEClassCompiler {
 			// Compile the file
 			Iterable<? extends JavaFileObject> compilationUnit = fileManager.getJavaFileObjectsFromFiles(Arrays.asList(sourceFile));
 			DiagnosticCollector<JavaFileObject> diagnosticsCollector = new DiagnosticCollector<>();
-			JavaCompiler.CompilationTask task = compiler.getTask(null, fileManager, diagnosticsCollector, options, null,
+			JavaCompiler.CompilationTask task = compiler.getTask(null, fileManager, diagnosticsCollector, null, null,
 					compilationUnit);
 			if(task.call()) {
-				JELogger.debug("Compilation in JEClassLoader succeeded", LogCategory.RUNTIME,
+				JELogger.debug(JEMessages.CUSTOM_COMPILATION_SUCCESS, LogCategory.RUNTIME,
 						null, LogSubModule.JERUNNER, null);
 			}
 			else {
