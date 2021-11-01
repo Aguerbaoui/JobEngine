@@ -36,14 +36,13 @@ public class VariableController {
 
 
     /*
-     * delete event
+     * delete variable
      */
     @DeleteMapping(value = "/deleteVariable/{projectId}/{varId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> deleteVariable(@PathVariable("projectId") String projectId,
                                          @PathVariable("varId") String varId) {
 
-        try {
-            runtimeDispatcher.deleteVariable(projectId, varId);
+        try {runtimeDispatcher.deleteVariable(projectId, varId);
 
         } catch (Exception e) {
             return JEExceptionHandler.handleException(e);

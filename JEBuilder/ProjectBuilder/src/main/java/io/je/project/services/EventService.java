@@ -11,8 +11,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutionException;
-
 import io.je.utilities.models.EventType;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -304,7 +302,7 @@ public class EventService {
 
 	}*/
 
-	public void deleteAll(String projectId) throws LicenseNotActiveException {
+	/*public void deleteAll(String projectId) throws LicenseNotActiveException {
     	LicenseProperties.checkLicenseIsActive();
 
 		JELogger.debug(JEMessages.DELETING_EVENTS,
@@ -312,5 +310,41 @@ public class EventService {
 				LogSubModule.EVENT,null);
 		eventRepository.deleteByJobEngineProjectID(projectId);
 		
+	}*/
+
+	public void deleteEvents(String projectId, List<String> ids) throws LicenseNotActiveException, ProjectNotFoundException {
+		LicenseProperties.checkLicenseIsActive();
+
+		JELogger.debug(JEMessages.DELETING_EVENTS,
+				LogCategory.DESIGN_MODE, projectId,
+				LogSubModule.EVENT,null);
+		JEProject project = ProjectService.getProjectById(projectId);
+		if (project == null) {
+			throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
+		}
+		if(ids == null) {
+			for(JEEvent event: project.getEvents().values()) {
+				try {
+					deleteEvent(projectId, event.getJobEngineElementID());
+				}
+				catch (Exception e) {
+					JELogger.error(JEMessages.ERROR_DELETING_EVENT + " id = " + event.getJobEngineElementID() + " " + e.getMessage(),
+							LogCategory.DESIGN_MODE, projectId,
+							LogSubModule.EVENT, event.getJobEngineElementID());
+				}
+			}
+		}
+		else {
+			for(String id: ids) {
+				try {
+					deleteEvent(projectId, id);
+				}
+				catch (Exception e) {
+					JELogger.error(JEMessages.ERROR_DELETING_EVENT + " id = " + id + " " + e.getMessage(),
+							LogCategory.DESIGN_MODE, projectId,
+							LogSubModule.EVENT, id);
+				}
+			}
+		}
 	}
 }

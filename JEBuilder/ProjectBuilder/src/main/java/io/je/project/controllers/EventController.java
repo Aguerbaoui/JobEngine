@@ -1,6 +1,7 @@
 package io.je.project.controllers;
 
 import java.util.Collection;
+import java.util.List;
 
 import io.je.project.exception.JEExceptionHandler;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -147,6 +148,21 @@ public class EventController {
 			
 		}
 		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.EVENT_DELETED));
+	}
+
+	/*
+	 * delete multiple events
+	 */
+	@PostMapping(value = "/deleteEvents/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> deleteEvents(@PathVariable("projectId") String projectId, @RequestBody(required = false) List<String> ids) {
+
+		try {
+			projectService.getProject(projectId);
+			eventService.deleteEvents(projectId, ids);
+		} catch (Exception e) {
+			return JEExceptionHandler.handleException(e);
+		}
+		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.EVENTS_DELETED));
 	}
 	
 	
