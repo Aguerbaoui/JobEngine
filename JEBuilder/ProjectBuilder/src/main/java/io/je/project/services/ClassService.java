@@ -86,13 +86,10 @@ public class ClassService {
      */
     public List<JEClass> addClass(ClassDefinition classDefinition, boolean sendToRunner, boolean reloadClassDefinition)
             throws AddClassException, ClassLoadException {
-       
-    	if(reloadClassDefinition)
-        {
-        	JEClassLoader.overrideInstance();
+        if(reloadClassDefinition) {
+            JEClassLoader.overrideInstance();
         }
-    	List<JEClass> builtClasses = ClassManager.buildClass(classDefinition);
-        
+        List<JEClass> builtClasses = ClassManager.buildClass(classDefinition);
         for (JEClass _class : builtClasses) {
             if (sendToRunner) {
                 addClassToJeRunner(_class, reloadClassDefinition);
@@ -105,7 +102,7 @@ public class ClassService {
 
 
     public void addClass(String workspaceId, String classId, boolean sendToRunner)
-            throws DataDefinitionUnreachableException, ClassLoadException, IOException, AddClassException {
+            throws ClassLoadException, AddClassException {
         ClassDefinition classDefinition = ClassManager.loadClassDefinition(workspaceId, classId);
 
 
@@ -123,7 +120,7 @@ public class ClassService {
      * Add Class from Class definition
      */
     public List<JEClass> updateClass(ClassDefinition classDefinition, boolean sendToRunner)
-            throws AddClassException, DataDefinitionUnreachableException, ClassLoadException, IOException {
+            throws AddClassException, ClassLoadException {
         List<JEClass> builtClasses = ClassManager.buildClass(classDefinition);
         for (JEClass _class : builtClasses) {
             if (sendToRunner) {
