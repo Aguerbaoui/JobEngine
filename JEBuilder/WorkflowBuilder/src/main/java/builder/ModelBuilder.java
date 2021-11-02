@@ -89,8 +89,8 @@ public class ModelBuilder {
         StartEvent startEvent = new StartEvent();
         startEvent.setId(id);
         if(reference != null) {
-            MessageEventDefinition eventDefinition = new MessageEventDefinition();
-            eventDefinition.setMessageRef(reference);
+            SignalEventDefinition eventDefinition = new SignalEventDefinition();
+            eventDefinition.setSignalRef(reference);
             startEvent.addEventDefinition(eventDefinition);
         }
 
