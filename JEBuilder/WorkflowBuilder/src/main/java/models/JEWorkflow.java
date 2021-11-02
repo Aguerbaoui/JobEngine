@@ -225,7 +225,9 @@ public class JEWorkflow extends JEObject {
         if(allBlocks.get(to) instanceof ErrorBoundaryEvent) {
             ((ErrorBoundaryEvent) allBlocks.get(to)).setAttachedToRef(from);
         }
-        workflowStartBlock = (StartBlock) allBlocks.get(workflowStartBlock.getJobEngineElementID());
+        if(workflowStartBlock != null) {
+            workflowStartBlock = (StartBlock) allBlocks.get(workflowStartBlock.getJobEngineElementID());
+        }
         status = IDLE;
     }
 

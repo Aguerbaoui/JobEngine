@@ -61,7 +61,7 @@ public class WorkflowService {
     /*
      * Add a workflow to a project
      * */
-    @Async
+    //@Async
     public void addWorkflow(io.je.utilities.models.WorkflowModel m) throws ProjectNotFoundException, LicenseNotActiveException {
         LicenseProperties.checkLicenseIsActive();
 
@@ -995,7 +995,7 @@ public class WorkflowService {
     }
 
 
-    @Async
+    //@Async
     public CompletableFuture<List<WorkflowModel>> getAllWorkflows(String projectId) throws LicenseNotActiveException {
         LicenseProperties.checkLicenseIsActive();
         List<JEWorkflow> wfs = workflowRepository.findByJobEngineProjectID(projectId);

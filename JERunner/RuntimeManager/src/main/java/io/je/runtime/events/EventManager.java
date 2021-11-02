@@ -40,6 +40,17 @@ public class EventManager {
     }
 
     /*
+     * Start workflow by message
+     * */
+    public static void startProcessInstanceBySignal(String projectId, String messageEvent) {
+        Thread thread = new Thread(() ->   {
+            WorkflowEngineHandler.throwSignalEventInWorkflow(projectId, messageEvent);
+        });
+
+        thread.start();
+    }
+
+    /*
     * Throw message event in workflow
     * */
     public static void throwMessageEventInWorkflow(String projectId, String event) {
@@ -97,7 +108,7 @@ public class EventManager {
                 throwSignalEventInWorkflow(projectId, event.getJobEngineElementName());
             }
             else if(event.getType().equals(EventType.START_WORKFLOW)) {
-                startProcessInstanceByMessage(projectId, event.getJobEngineElementName());
+                startProcessInstanceBySignal(projectId, event.getJobEngineElementName());
             }
 
             if(event.getTimeout()!=0)
