@@ -193,6 +193,12 @@ public class RuleEngineHandler {
 		
 	}
 
+
+	public static void reloadContainers() {
+		RuleEngine.reloadContainers();
+		
+	}
+
    /* public static void setClassLoader(JEClassLoader loader) {
 		RuleEngine.setClassLoader(loader);
     }*/

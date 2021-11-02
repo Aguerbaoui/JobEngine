@@ -11,9 +11,12 @@ import io.je.runtime.models.ClassModel;
 import io.je.runtime.services.RuntimeDispatcher;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.ResponseCodes;
+import io.je.utilities.log.JELogger;
 import io.je.utilities.beans.JEResponse;
 import java.util.HashMap;
 import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
 
 
 /*
@@ -51,11 +54,14 @@ public class ClassController {
 	 * update class
 	 */
 	@PostMapping(value = "/updateClass", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> updateClass( @RequestBody ClassModel classModel) {
+	public ResponseEntity<?> updateClass( @RequestBody ClassModel classModel, HttpServletRequest request) {
 		
 	
 			try {
-				runtimeDispatcher.updateClass(classModel);
+				JELogger.debug(request.getRemoteAddr().toString());
+				synchronized (runtimeDispatcher) {
+					runtimeDispatcher.updateClass(classModel);	
+				}
 			} catch (Exception e) {
 				return JEExceptionHandler.handleException(e);
 			}

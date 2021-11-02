@@ -239,6 +239,7 @@ public class RuntimeDispatcher {
 	public void updateClass(ClassModel classModel) throws ClassLoadException {
 		JEClassLoader.overrideInstance();
 		addClass(classModel);
+		RuleEngineHandler.reloadContainers();
 	}
 
 	public void updateClasses(List<ClassModel> classes) throws ClassLoadException {

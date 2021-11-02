@@ -64,7 +64,6 @@ public class ClassUpdateListener extends ZMQSubscriber {
                     {
                     	 if(update.getAction()==DataModelAction.UPDATE)
                          {
-                    		 JEClassLoader.overrideInstance();
                         	 classService.addClass(update.getModel(), true,true);
                          }
                     }
