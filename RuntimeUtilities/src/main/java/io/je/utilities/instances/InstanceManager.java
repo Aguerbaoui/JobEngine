@@ -53,7 +53,7 @@ public class InstanceManager {
 		 objectMapper.setTypeFactory(objectMapper.getTypeFactory().withClassLoader(JEClassLoader.getInstance()));
 		
 		InstanceModel instanceModel = getInstanceModel(dataReceived);
-		JELogger.control("Listening for data from class "+instanceModel.getModelName(), null, "", LogSubModule.JERUNNER, "123");
+		//JELogger.control("Listening for data from class "+instanceModel.getModelName(), null, "", LogSubModule.JERUNNER, "123");
 
 		
 		//Retrieve Instance Class

@@ -27,9 +27,9 @@ public class LicenseProperties {
 					LogCategory.SIOTH_APPLICATION, "", LogSubModule.JEBUILDER, "");
 
 		}
-		setLicenseStatus(response.getStatus());
-		ClientLicenseManager.initListeners(jobEngineFeatureCode);
-		ClientLicenseManager.register(new JELicenseStatusListener());
+	//	setLicenseStatus(response.getStatus());
+	//	ClientLicenseManager.initListeners(jobEngineFeatureCode);
+	//	ClientLicenseManager.register(new JELicenseStatusListener());
 
 	}
 
@@ -48,8 +48,8 @@ public class LicenseProperties {
 	public static void checkLicenseIsActive() throws LicenseNotActiveException {
 
 		if (!licenseIsActive()) {
-			JELogger.info("License is not active ", LogCategory.SIOTH_APPLICATION, "",
-					LogSubModule.JEBUILDER, "");
+		//	JELogger.info("License is not active ", LogCategory.SIOTH_APPLICATION, "",
+			//		LogSubModule.JEBUILDER, "");
 			//throw new LicenseNotActiveException(String.valueOf(licenseStatus));
 		}
 	}

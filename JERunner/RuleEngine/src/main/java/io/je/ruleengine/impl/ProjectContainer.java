@@ -113,6 +113,21 @@ public class ProjectContainer {
 		createKModule();
 
 	}
+	
+	
+	public void resetContainer()
+	{
+		try {
+			releaseId = kieServices.newReleaseId("io.je", "ruleengine", getReleaseVer());
+			kieContainer = kieServices.newKieContainer(releaseId, JEClassLoader.getInstance());
+			kScanner = kieServices.newKieScanner(kieContainer);
+			kieBase = kieContainer.getKieBase("kie-base");
+			Thread.currentThread().setContextClassLoader(JEClassLoader.getInstance());
+		}catch (Exception e) {
+			// TODO: handle exception
+		}
+
+	}
 
 	/*--------------------------------------------------------PROJECT METHODS ---------------------------------------------------------------*/
 
@@ -220,7 +235,7 @@ public class ProjectContainer {
 	}
 	
 	
-
+	
 
 
 	/*
@@ -328,7 +343,7 @@ public class ProjectContainer {
 			} else {
 				return false;
 			}
-			isInitialised = true;
+			//isInitialised = true;
 			return true;
 		} else {
 			return true;

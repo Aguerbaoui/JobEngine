@@ -178,6 +178,17 @@ public class RuleEngine {
 		
 	}
 
+	public static void reloadContainers() {
+		for(ProjectContainer project : ProjectContainerRepository.getAllProjects().values())
+		{
+			if(project.getStatus()==Status.STOPPED)
+			{
+				project.resetContainer();
+			}
+		}
+		
+	}
+
 
 
 }

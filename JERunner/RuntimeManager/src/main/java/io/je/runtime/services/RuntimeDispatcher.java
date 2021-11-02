@@ -239,6 +239,7 @@ public class RuntimeDispatcher {
 	public void updateClass(ClassModel classModel) throws ClassLoadException {
 		JEClassLoader.overrideInstance();
 		addClass(classModel);
+		RuleEngineHandler.reloadContainers();
 	}
 
 	public void updateClasses(List<ClassModel> classes) throws ClassLoadException {
@@ -397,6 +398,7 @@ public class RuntimeDispatcher {
 
 		List<String> topics = DataModelListener.getRuleTopicsByProjectId(projectId);
 		DataModelListener.startListening(topics);
+		//RuleEngineHandler.buildProject(projectId);
 		RuleEngineHandler.runRuleEngineProject(projectId);
 		projectStatus.put(projectId, true);
 
