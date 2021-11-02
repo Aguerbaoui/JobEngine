@@ -12,6 +12,7 @@ import io.je.project.repository.LibraryRepository;
 import io.je.project.repository.MethodRepository;
 import io.je.utilities.apis.JERunnerAPIHandler;
 import io.je.utilities.beans.*;
+import io.je.utilities.classloader.JEClassLoader;
 import io.je.utilities.config.ConfigurationConstants;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.ResponseCodes;
@@ -84,6 +85,9 @@ public class ClassService {
      */
     public List<JEClass> addClass(ClassDefinition classDefinition, boolean sendToRunner, boolean reloadClassDefinition)
             throws AddClassException, ClassLoadException {
+        if(reloadClassDefinition) {
+            JEClassLoader.overrideInstance();
+        }
         List<JEClass> builtClasses = ClassManager.buildClass(classDefinition);
         for (JEClass _class : builtClasses) {
             if (sendToRunner) {
@@ -115,7 +119,7 @@ public class ClassService {
      * Add Class from Class definition
      */
     public List<JEClass> updateClass(ClassDefinition classDefinition, boolean sendToRunner)
-            throws AddClassException, DataDefinitionUnreachableException, ClassLoadException, IOException {
+            throws AddClassException, ClassLoadException {
         List<JEClass> builtClasses = ClassManager.buildClass(classDefinition);
         for (JEClass _class : builtClasses) {
             if (sendToRunner) {
