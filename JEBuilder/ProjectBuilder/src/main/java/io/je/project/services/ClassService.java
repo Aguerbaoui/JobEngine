@@ -87,10 +87,7 @@ public class ClassService {
     public List<JEClass> addClass(ClassDefinition classDefinition, boolean sendToRunner, boolean reloadClassDefinition)
             throws AddClassException, ClassLoadException {
        
-    	/*if(reloadClassDefinition)
-        {
-        	JEClassLoader.overrideInstance();
-        }*/
+    
     	List<JEClass> builtClasses = ClassManager.buildClass(classDefinition);
         
         for (JEClass _class : builtClasses) {
