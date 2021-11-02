@@ -397,6 +397,7 @@ public class RuntimeDispatcher {
 
 		List<String> topics = DataModelListener.getRuleTopicsByProjectId(projectId);
 		DataModelListener.startListening(topics);
+		//RuleEngineHandler.buildProject(projectId);
 		RuleEngineHandler.runRuleEngineProject(projectId);
 		projectStatus.put(projectId, true);
 

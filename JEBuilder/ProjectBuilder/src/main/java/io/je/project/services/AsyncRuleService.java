@@ -135,13 +135,13 @@ public class AsyncRuleService {
 			
 		}
 		
-		if(rule.getStatus()==RuleStatus.RUNNING)
+		/*if(rule.getStatus()==RuleStatus.RUNNING)
 		{
 			result.setOperationSucceeded(false);
 			result.setOperationError(JEMessages.RULE_ALREADY_RUNNING);
 			return CompletableFuture.completedFuture(result);
 			
-		}
+		}*/
 		try {
 		
 			buildRule(projectId,ruleId).get();

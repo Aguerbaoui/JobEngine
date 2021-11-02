@@ -163,9 +163,9 @@ public class ProjectContainer {
 		}
 		
 		// build project if not already built
-		if (buildStatus == BuildStatus.UNBUILT) {
+		//if (buildStatus == BuildStatus.UNBUILT) {
 			buildProject();
-		}
+		//}
 
 		// check that project is not already running
 		if (status == Status.RUNNING) {
@@ -313,12 +313,19 @@ public class ProjectContainer {
 
 				// create container
 				try {
-					kieContainer = kieServices.newKieContainer(releaseId, JEClassLoader.getInstance());
+					
+					if(kieContainer==null)
+					{kieContainer = kieServices.newKieContainer(releaseId, JEClassLoader.getInstance());
 					kScanner = kieServices.newKieScanner(kieContainer);
 					kieBase = kieContainer.getKieBase("kie-base");
 					Thread.currentThread().setContextClassLoader(JEClassLoader.getInstance());
-
-
+					}else
+					{
+						updateContainer();
+						kieBase = kieContainer.getKieBase("kie-base");
+						Thread.currentThread().setContextClassLoader(JEClassLoader.getInstance());
+					}
+					
 				} catch (Exception e) {
 					JELogger.error("Error creating kieBase \n " + Arrays.toString(e.getStackTrace()),  LogCategory.RUNTIME,
 							projectId, LogSubModule.RULE, null);
@@ -328,7 +335,7 @@ public class ProjectContainer {
 			} else {
 				return false;
 			}
-			isInitialised = true;
+			//isInitialised = true;
 			return true;
 		} else {
 			return true;
@@ -350,6 +357,7 @@ public class ProjectContainer {
 			KieBaseModel kieBaseModel1 = kproj.newKieBaseModel("kie-base").setDefault(true)
 					.setEqualsBehavior(EqualityBehaviorOption.IDENTITY)
 					.setEventProcessingMode(EventProcessingOption.STREAM);
+			
 
 			// add kie session model
 			kieBaseModel1.newKieSessionModel("kie-session").setDefault(true)
@@ -453,18 +461,12 @@ public class ProjectContainer {
 					projectId, LogSubModule.RULE, null);
 			kieFileSystem.generateAndWritePomXML(releaseId);
 			kieServices.newKieBuilder(kieFileSystem, JEClassLoader.getInstance()).buildAll();
-			if(kieContainer==null)
-			{
-				kieContainer = kieServices.newKieContainer(releaseId, JEClassLoader.getInstance());
-			}
+			kieContainer = kieServices.newKieContainer(releaseId, JEClassLoader.getInstance());
+			
 			//Thread.currentThread().setContextClassLoader(JEClassLoader.getInstance());
 
 			kieContainer.updateToVersion(releaseId);
-
-			if(kScanner==null)
-			{
-				 kScanner = kieServices.newKieScanner(kieContainer);
-			}
+			 kScanner = kieServices.newKieScanner(kieContainer);			
 			kScanner.scanNow();
 
 		} catch (Exception e) {
@@ -718,6 +720,7 @@ public class ProjectContainer {
 					//ClassLoader test = fact.getClass().getClassLoader(); //io.je.utilities.classloader.JEClassLoader@41ee5f60
 					JELogger.trace(JEClassLoader.getInstance().toString(), LogCategory.RUNTIME, projectId, LogSubModule.RULE, fact.getJobEngineElementID());
 					JELogger.trace(fact.getClass().getClassLoader().toString(), LogCategory.RUNTIME, projectId, LogSubModule.RULE, fact.getJobEngineElementID());
+					JELogger.trace(kieContainer.getClassLoader().toString(), LogCategory.RUNTIME, projectId, LogSubModule.RULE, fact.getJobEngineElementID());
 
 					synchronized(facts)
 					{

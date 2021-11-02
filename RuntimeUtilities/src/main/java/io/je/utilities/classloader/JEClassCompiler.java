@@ -40,7 +40,7 @@ public class JEClassCompiler {
 			List<String> options = new ArrayList<String>();
 			options.add("-classpath");
 			StringBuilder sb = new StringBuilder();
-		/*	URLClassLoader urlClassLoader = (URLClassLoader) Thread.currentThread().getContextClassLoader();
+			/*URLClassLoader urlClassLoader = (URLClassLoader) Thread.currentThread().getContextClassLoader();
 			for (URL url : urlClassLoader.getURLs()){
 				//JELogger.info(JEClassLoader.class, url.getFile().substring(1));
 				sb.append(url.getFile().substring(1).replace("%20", " ")).append(File.pathSeparator);
