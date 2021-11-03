@@ -118,14 +118,13 @@ public class Executioner {
     {
     	try {
             new Thread(() -> {
-                JEObject sourceInstance = InstanceManager.getInstance(sourceInstanceId);
-                if(sourceInstance==null)
+                Object attribueValue = InstanceManager.getAttributeValue(sourceInstanceId, sourceAttributeName);
+            	if(attribueValue==null)
                 {
                     JELogger.error("Failed to read instance value", null, projectId, LogSubModule.RULE, sourceInstanceId);
                     return;
                 }
 
-                Object attribueValue = InstanceManager.getAttributeValue(sourceInstanceId, sourceAttributeName);
                 InstanceManager.writeToDataModelInstance(destinationInstanceId,destinationAttributeName,attribueValue);
 
 
