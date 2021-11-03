@@ -58,7 +58,7 @@ public class ClassController {
 		
 	
 			try {
-				JELogger.debug(request.getRemoteAddr().toString());
+
 				synchronized (runtimeDispatcher) {
 					runtimeDispatcher.updateClass(classModel);	
 				}
