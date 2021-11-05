@@ -66,11 +66,13 @@ public class AsyncRuleService {
 				RuleBuilder.buildRule(rule, getProject(projectId).getConfigurationPath(), compileOnly);
 				// update rule status
 				// rule built
-				rule.setBuilt(true);
+				
 				if (!compileOnly) {
 					rule.setAdded(true);
+					rule.setBuilt(true);
 					project.getRuleEngine().add(ruleId);
 				}
+				rule.setCompiled(true);
 				result.setOperationSucceeded(true);
 			}
 		} catch (RuleBuildFailedException | JERunnerErrorException | ProjectNotFoundException e) {
@@ -127,7 +129,7 @@ public class AsyncRuleService {
 		}
 		
 		
-		if(!rule.isBuilt())
+		if(!rule.isCompiled())
 		{
 			result.setOperationSucceeded(false);
 			result.setOperationError(JEMessages.RULE_NOT_BUILT);

@@ -17,6 +17,9 @@ public abstract class JERule extends JEObject  {
 	 */
 	boolean isBuilt = false;
 	
+	
+	boolean isCompiled = false;
+	
 	/*
 	 * check if rule was added to JERunner or not
 	 */
@@ -50,6 +53,7 @@ public abstract class JERule extends JEObject  {
 		return isBuilt;
 	}
 
+
 	
 	
 	public boolean isAdded() {
@@ -62,10 +66,23 @@ public abstract class JERule extends JEObject  {
 		this.isAdded = isAdded;
 	}
 
+	
 
+	public boolean isCompiled() {
+		return isCompiled;
+	}
+
+	public void setCompiled(boolean isCompiled) {
+		this.isCompiled = isCompiled;
+	}
 
 	public void setBuilt(boolean isBuilt) {
+		if(!isBuilt)
+		{
+			this.isCompiled = false;
+		}
 		this.isBuilt = isBuilt;
+		
 	}
 
 	public String getRuleFrontConfig() {

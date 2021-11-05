@@ -868,21 +868,22 @@ public class RuleService {
 	}
 
 	public static void updateRuleStatus(JERule rule) {
-		if (rule.isRunning()) {
+		if (rule.isRunning() || rule.getStatus()==RuleStatus.RUNNING_NOT_UP_TO_DATE) {
 			if (rule.isBuilt()) {
 				rule.setStatus(RuleStatus.RUNNING);
 			} else {
 				rule.setStatus(RuleStatus.RUNNING_NOT_UP_TO_DATE);
 			}
 		} else {
-
-			if (rule.isBuilt()) {
+			
+			if(rule.isCompiled()) {
 				rule.setStatus(RuleStatus.STOPPED);
-			} else {
+			}else {
 				rule.setStatus(RuleStatus.NOT_BUILT);
 			}
-
+			
 		}
+		
 	}
 
 	public static JERule getJERule(String projectId, String ruleId)
