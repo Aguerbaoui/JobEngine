@@ -39,6 +39,12 @@ public class JEProject {
     
     @Field("ModifiedAt")
     private String modifiedAt;
+
+	@Field("createdBy")
+	private String createdBy;
+
+	@Field("state")
+	private String state;
     
     @Field("description")
     private String description;
@@ -703,4 +709,19 @@ public class JEProject {
     	return false;
 	}
 
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public String getState() {
+		return state;
+	}
+
+	public void setState(String state) {
+		this.state = state;
+	}
 }
