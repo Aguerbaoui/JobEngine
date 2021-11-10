@@ -1,6 +1,5 @@
 package io.je.project.services;
 
-import java.time.LocalDateTime;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
@@ -13,18 +12,16 @@ import io.je.project.config.LicenseProperties;
 import io.je.project.repository.RuleRepository;
 import io.je.rulebuilder.builder.RuleBuilder;
 import io.je.rulebuilder.components.JERule;
-import io.je.rulebuilder.components.UserDefinedRule;
 import io.je.utilities.apis.JERunnerAPIHandler;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.JERunnerErrorException;
 import io.je.utilities.exceptions.LicenseNotActiveException;
 import io.je.utilities.exceptions.ProjectNotFoundException;
 import io.je.utilities.exceptions.RuleBuildFailedException;
-import io.je.utilities.exceptions.RuleNotAddedException;
 import io.je.utilities.exceptions.RuleNotFoundException;
 import io.je.utilities.log.JELogger;
-import io.je.utilities.ruleutils.RuleStatus;
 import io.je.utilities.ruleutils.OperationStatusDetails;
+import io.je.utilities.ruleutils.RuleStatus;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
 
@@ -120,6 +117,14 @@ public class AsyncRuleService {
 			return CompletableFuture.completedFuture(result);
 		}
 		result.setItemName(rule.getJobEngineElementName());
+		
+		if(rule.getStatus()==RuleStatus.RUNNING)
+		{
+			result.setOperationSucceeded(false);
+			result.setOperationError(JEMessages.RULE_ALREADY_RUNNING);
+			return CompletableFuture.completedFuture(result);
+		}
+		
 		
 		if(!rule.isEnabled())
 		{

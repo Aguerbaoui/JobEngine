@@ -1,6 +1,5 @@
 package io.je.ruleengine.impl;
 
-import io.je.ruleengine.kie.KieSessionManagerInterface;
 import io.je.ruleengine.listener.RuleListener;
 import io.je.ruleengine.loader.RuleLoader;
 import io.je.ruleengine.models.Rule;

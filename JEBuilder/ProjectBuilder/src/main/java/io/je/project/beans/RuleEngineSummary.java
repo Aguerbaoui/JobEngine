@@ -30,9 +30,6 @@ public class RuleEngineSummary{
 		if(builtRules.contains(ruleId))
 		{
 			builtRules.remove(ruleId);
-		}else
-		{
-			System.out.println("!!!!!!!!!!!!! logic error");
 		}
 		
 	}
