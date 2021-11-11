@@ -15,6 +15,7 @@ import io.je.project.beans.JEProject;
 import io.je.project.config.LicenseProperties;
 import io.je.project.repository.WorkflowRepository;
 import io.je.utilities.apis.JERunnerAPIHandler;
+import io.je.utilities.beans.Status;
 import io.je.utilities.config.ConfigurationConstants;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.Timers;
@@ -146,7 +147,7 @@ public class WorkflowService {
                         " id = " + block.getId(),
                 LogCategory.DESIGN_MODE, block.getProjectId(),
                 LogSubModule.WORKFLOW, block.getWorkflowId());
-        project.getWorkflowByIdOrName(block.getWorkflowId()).setStatus(JEWorkflow.IDLE);
+        project.getWorkflowByIdOrName(block.getWorkflowId()).setStatus(Status.NOT_BUILT);
         String generatedBlockName = "";
         if (!block.getType().equalsIgnoreCase(SEQ_FLOW_TYPE)) {
             generatedBlockName = project.generateUniqueBlockName((String) block.getAttributes().get(NAME));
@@ -527,13 +528,13 @@ public class WorkflowService {
         JEWorkflow wf = project.getWorkflowByIdOrName(workflowId);
         result.setItemName(wf.getJobEngineElementName());
 
-        if (!wf.getStatus().equals(JEWorkflow.BUILT)) {
+        if (wf.getStatus().equals(Status.NOT_BUILT)) {
             result.setOperationSucceeded(false);
             result.setOperationError(JEMessages.WORKFLOW_NEEDS_BUILD);
             return CompletableFuture.completedFuture(result);
         }
 
-        if (wf.getStatus().equals(JEWorkflow.RUNNING)) {
+        if (wf.getStatus().equals(Status.RUNNING)) {
             result.setOperationSucceeded(false);
             result.setOperationError(JEMessages.WORKFLOW_ALREADY_RUNNING);
             return CompletableFuture.completedFuture(result);
@@ -545,7 +546,7 @@ public class WorkflowService {
                 LogSubModule.WORKFLOW, workflowId);
         try {
             WorkflowBuilder.runWorkflow(projectId, project.getWorkflowByIdOrName(workflowId).getJobEngineElementName().trim());
-            wf.setStatus(JEWorkflow.RUNNING);
+            //wf.setStatus(Status.RUNNING);
             result.setItemName(wf.getJobEngineElementName());
             result.setItemId(workflowId);
         }
@@ -592,7 +593,7 @@ public class WorkflowService {
                 LogCategory.DESIGN_MODE, block.getProjectId(),
                 LogSubModule.WORKFLOW, block.getWorkflowId());
 
-        wf.setStatus(JEWorkflow.IDLE);
+        wf.setStatus(Status.NOT_BUILT);
         if (block.getType().equalsIgnoreCase(WorkflowConstants.START_TYPE)) {
             StartBlock b = (StartBlock) wf.getAllBlocks().get(block.getId());
             b.setJobEngineElementName((String) block.getAttributes().get(NAME));
@@ -979,7 +980,7 @@ public class WorkflowService {
             result.setItemName(wf.getJobEngineElementName());
             result.setItemId(workflowId);
             JERunnerAPIHandler.deleteWorkflow(projectId, wf.getJobEngineElementName());
-            wf.setStatus(JEWorkflow.IDLE);
+            wf.setStatus(Status.STOPPING);
 
         }
         catch(JERunnerErrorException e) {
@@ -989,7 +990,7 @@ public class WorkflowService {
             result.setOperationSucceeded(false);
             result.setOperationError(JEMessages.ERROR_STOPPING_WORKFLOW);
         }
-        project.getWorkflowByIdOrName(workflowId).setStatus(JEWorkflow.IDLE);
+        project.getWorkflowByIdOrName(workflowId).setStatus(Status.STOPPING);
         workflowRepository.save(project.getWorkflowByIdOrName(workflowId));
         return CompletableFuture.completedFuture(result);
     }

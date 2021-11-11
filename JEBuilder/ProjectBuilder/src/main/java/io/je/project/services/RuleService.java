@@ -5,7 +5,6 @@ import io.je.project.config.LicenseProperties;
 import io.je.project.repository.RuleRepository;
 import io.je.rulebuilder.components.*;
 import io.je.rulebuilder.components.blocks.Block;
-import io.je.rulebuilder.components.blocks.getter.AttributeGetterBlock;
 import io.je.rulebuilder.config.AttributesMapping;
 import io.je.rulebuilder.models.BlockModel;
 import io.je.rulebuilder.models.RuleModel;
@@ -17,11 +16,10 @@ import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.exceptions.*;
 import io.je.utilities.log.JELogger;
 import io.je.utilities.ruleutils.RuleIdManager;
-import io.je.utilities.ruleutils.RuleStatus;
+import io.je.utilities.beans.Status;
 import io.je.utilities.ruleutils.OperationStatusDetails;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import utils.files.FileUtilities;
 import utils.log.LogCategory;
@@ -95,7 +93,7 @@ public class RuleService {
 		ruleParameters.setDateEffective(ruleModel.getDateEffective());
 		ruleParameters.setDateExpires(ruleModel.getDateExpires());
 		rule.setRuleParameters(ruleParameters);
-		rule.setStatus(RuleStatus.NOT_BUILT);
+		rule.setStatus(Status.NOT_BUILT);
 		project.addRule(rule);
 		ruleRepository.save(rule);
 	}
@@ -140,10 +138,10 @@ public class RuleService {
 		UserDefinedRule ruleToUpdate = (UserDefinedRule) project.getRule(ruleModel.getRuleId());
 		ruleToUpdate.setJeObjectLastUpdate(LocalDateTime.now());
 		if (ruleToUpdate.isRunning()) {
-			ruleToUpdate.setStatus(RuleStatus.RUNNING_NOT_UP_TO_DATE);
+			ruleToUpdate.setStatus(Status.RUNNING_NOT_UP_TO_DATE);
 
 		} else {
-			ruleToUpdate.setStatus(RuleStatus.NOT_BUILT);
+			ruleToUpdate.setStatus(Status.NOT_BUILT);
 
 		}
 		JELogger.debug("[project = " + project.getProjectName() + "] [rule = "
@@ -281,10 +279,10 @@ public class RuleService {
 		project.addBlockName(blockModel.getBlockId(), generatedBlockName);
 		project.setBuilt(false);
 		if (rule.isRunning()) {
-			rule.setStatus(RuleStatus.RUNNING_NOT_UP_TO_DATE);
+			rule.setStatus(Status.RUNNING_NOT_UP_TO_DATE);
 
 		} else {
-			rule.setStatus(RuleStatus.NOT_BUILT);
+			rule.setStatus(Status.NOT_BUILT);
 
 		}
 		ruleRepository.save(rule);
@@ -358,10 +356,10 @@ public class RuleService {
 		}
 		project.setBuilt(false);
 		if (rule.isRunning()) {
-			rule.setStatus(RuleStatus.RUNNING_NOT_UP_TO_DATE);
+			rule.setStatus(Status.RUNNING_NOT_UP_TO_DATE);
 
 		} else {
-			rule.setStatus(RuleStatus.NOT_BUILT);
+			rule.setStatus(Status.NOT_BUILT);
 
 		}
 		ruleRepository.save(rule);
@@ -385,10 +383,10 @@ public class RuleService {
 		project.deleteRuleBlock(ruleId, blockId);
 		project.removeBlockName(blockId);
 		if (project.getRule(ruleId).isRunning()) {
-			project.getRule(ruleId).setStatus(RuleStatus.RUNNING_NOT_UP_TO_DATE);
+			project.getRule(ruleId).setStatus(Status.RUNNING_NOT_UP_TO_DATE);
 
 		} else {
-			project.getRule(ruleId).setStatus(RuleStatus.NOT_BUILT);
+			project.getRule(ruleId).setStatus(Status.NOT_BUILT);
 
 		}
 		ruleRepository.save(project.getRule(ruleId));
@@ -746,8 +744,8 @@ public class RuleService {
 		}
 		result.setItemName(rule.getJobEngineElementName());
 
-		if (rule.getStatus() != RuleStatus.STOPPED && rule.getStatus() != RuleStatus.STOPPING && rule.getStatus()!=RuleStatus.NOT_BUILT ) {
-			rule.setStatus(RuleStatus.STOPPING);
+		if (rule.getStatus() != Status.STOPPED && rule.getStatus() != Status.STOPPING && rule.getStatus()!= Status.NOT_BUILT ) {
+			rule.setStatus(Status.STOPPING);
 			boolean allSubRulesStopped = true;
 			if (rule.isRunning() && rule.getSubRules() != null) {
 				for (String subRuleId : rule.getSubRules()) {
@@ -868,18 +866,18 @@ public class RuleService {
 	}
 
 	public static void updateRuleStatus(JERule rule) {
-		if (rule.isRunning() || rule.getStatus()==RuleStatus.RUNNING_NOT_UP_TO_DATE) {
+		if (rule.isRunning() || rule.getStatus()== Status.RUNNING_NOT_UP_TO_DATE) {
 			if (rule.isBuilt()) {
-				rule.setStatus(RuleStatus.RUNNING);
+				rule.setStatus(Status.RUNNING);
 			} else {
-				rule.setStatus(RuleStatus.RUNNING_NOT_UP_TO_DATE);
+				rule.setStatus(Status.RUNNING_NOT_UP_TO_DATE);
 			}
 		} else {
 			
 			if(rule.isCompiled()) {
-				rule.setStatus(RuleStatus.STOPPED);
+				rule.setStatus(Status.STOPPED);
 			}else {
-				rule.setStatus(RuleStatus.NOT_BUILT);
+				rule.setStatus(Status.NOT_BUILT);
 			}
 			
 		}

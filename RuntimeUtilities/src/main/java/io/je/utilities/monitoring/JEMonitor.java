@@ -9,26 +9,30 @@ import io.je.utilities.beans.ArchiveOption;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.log.JELogger;
 import io.siothconfig.SIOTHConfigUtility;
+import org.zeromq.ZMQ;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
 import utils.zmq.ZMQPublisher;
 
 public class JEMonitor  {
-	
-	static ZMQPublisher publisher = new ZMQPublisher("tcp://"+SIOTHConfigUtility.getSiothConfig().getNodes().getSiothMasterNode() , SIOTHConfigUtility.getSiothConfig().getPorts().getTrackingPort());
-	static ObjectMapper objectMapper = new ObjectMapper();
 
-	public static void publish(LocalDateTime timestamp, String objectId, ObjectType objectType, String objectProjectId,
-			Object objectValue, ArchiveOption isArchived, boolean isBroadcasted) {
+	static ObjectMapper objectMapper = new ObjectMapper();
+	static ZMQ.Context  mContext  = ZMQ.context(1);
+	static ZMQ.Socket publisher = mContext.socket(ZMQ.PUB);
+	static boolean init = false;
+	public static void publish(MonitoringMessage msg) {
+		if(!init) {
+			publisher.bind("tcp://*:15020");
+			init = true;
+		}
+
 		try {
-			MonitoringMessage msg = new MonitoringMessage(timestamp, objectId, objectType, objectProjectId, objectValue, isArchived, isBroadcasted);
 			String jsonMsg = objectMapper.writeValueAsString(msg);
-			publisher.publish(jsonMsg, "MonitoringTopic");
-			//System.out.println(jsonMsg);
+			String update = "JEMonitorTopic:" + jsonMsg;
+			publisher.send(update, 0);
 
 		} catch (Exception e) {
-			// TODO : replace with custom exception
-			JELogger.error(JEMessages.FAILED_TO_SEND_LOG_MESSAGE_TO_THE_LOGGING_SYSTEM + Arrays.toString(e.getStackTrace()),
+			JELogger.error(JEMessages.FAILED_TO_SEND_MONITORING_MESSAGE_TO_THE_LOGGING_SYSTEM,
 					LogCategory.RUNTIME, null,
 					LogSubModule.JERUNNER, null);
 		}

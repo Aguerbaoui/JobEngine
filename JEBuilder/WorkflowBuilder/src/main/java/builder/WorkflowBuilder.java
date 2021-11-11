@@ -3,6 +3,7 @@ package builder;
 import blocks.WorkflowBlock;
 import blocks.basic.*;
 import io.je.utilities.apis.JERunnerAPIHandler;
+import io.je.utilities.beans.Status;
 import io.je.utilities.config.ConfigurationConstants;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.WorkflowConstants;
@@ -179,7 +180,7 @@ public class WorkflowBuilder {
 
         }
         wf.setTasks(tasks);
-        workflow.setStatus(JEWorkflow.BUILDING);
+        workflow.setStatus(Status.BUILDING);
         JELogger.debug( JEMessages.DEPLOYING_IN_RUNNER_WORKFLOW_WITH_ID + " = " + workflow.getJobEngineElementID(),
                 LogCategory.DESIGN_MODE, workflow.getJobEngineProjectID(),
                 LogSubModule.WORKFLOW, workflow.getJobEngineElementID());
@@ -189,10 +190,10 @@ public class WorkflowBuilder {
             JELogger.error( JEMessages.FAILED_TO_DEPLOY_IN_RUNNER_WORKFLOW_WITH_ID + " = " + workflow.getJobEngineElementID(),
                     LogCategory.DESIGN_MODE, workflow.getJobEngineProjectID(),
                     LogSubModule.WORKFLOW, workflow.getJobEngineElementID());
-            workflow.setStatus(JEWorkflow.IDLE);
+            workflow.setStatus(Status.NOT_BUILT);
             return false;
         }
-        workflow.setStatus(JEWorkflow.BUILT);
+        workflow.setStatus(Status.STOPPED);
         return true;
 
     }

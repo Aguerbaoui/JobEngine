@@ -9,6 +9,8 @@ public class JEMessages {
 
     public static final String RUNNER_STARTED = "Runner started successfully";
 
+    public static final String MONITOR_STARTED = "Monitor started successfully";
+
     public static final String RUNNER_SHUTTING_DOWN = "Runner is shutting down";
 
     public static final String RUNNER_CONFFIG_UPDATE = "Updating JERunner configuration";
@@ -634,6 +636,7 @@ public class JEMessages {
     public static final String ERROR_EXECUTING_DB_QUERY = "Error while executing the database query";
     public static final String ERROR_GETTING_CLASS_UPDATES = "Error while getting class updates";
     public static final String FAILED_TO_SEND_LOG_MESSAGE_TO_THE_LOGGING_SYSTEM = "Failed to send log message to the Tracker module: ";
+    public static final String FAILED_TO_SEND_MONITORING_MESSAGE_TO_THE_LOGGING_SYSTEM = "Failed to send monitoring data to the JEMonitor module: ";
     public static final String CHECK_DM_FOR_DETAILS = "Check Integration Objects' SIOTH Data Model service's log file for more details. ";
     public static final String ERROR_RUNNING_PROJECT = "Error while running project, check your configuration";
     public static final String ERROR_STOPPING_PROJECT = "Error while stopping project, check your configuration";
@@ -695,4 +698,6 @@ public class JEMessages {
     public static final String DMAPI_RESPONSE = "Data Model definition returned : ";
 
     public static final String CUSTOM_COMPILATION_SUCCESS = "Compilation in JEClassLoader succeeded.";
+    public static final String SENDING_WORKFLOW_MONITORING_DATA_TO_JEMONITOR = "Sending workflow Monitoring data to JEMonitor: ";
+    public static final String STARTED_LISTENING_FOR_MONITORING_DATA_FROM_THE_JOB_ENGINE = "Started listening for monitoring data from the JobEngine";
 }

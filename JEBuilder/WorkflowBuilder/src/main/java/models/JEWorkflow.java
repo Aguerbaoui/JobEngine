@@ -3,15 +3,25 @@ package models;
 import blocks.WorkflowBlock;
 import blocks.basic.StartBlock;
 import blocks.events.ErrorBoundaryEvent;
+import io.je.utilities.beans.Status;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.InvalidSequenceFlowException;
 import io.je.utilities.exceptions.WorkflowBlockNotFound;
+import io.je.utilities.log.JELogger;
 import io.je.utilities.models.WorkflowModel;
+import io.je.utilities.monitoring.JEMonitor;
+import io.je.utilities.monitoring.MonitoringMessage;
+import io.je.utilities.monitoring.ObjectType;
 import io.je.utilities.runtimeobject.JEObject;
 import org.springframework.data.mongodb.core.mapping.Document;
 import utils.date.DateUtils;
+import utils.log.LogCategory;
+import utils.log.LogSubModule;
 
+import java.time.LocalDateTime;
 import java.util.concurrent.ConcurrentHashMap;
+
+import static io.je.utilities.constants.JEMessages.SENDING_WORKFLOW_MONITORING_DATA_TO_JEMONITOR;
 
 /*
  * Model class for a workflow
@@ -19,13 +29,13 @@ import java.util.concurrent.ConcurrentHashMap;
 @Document(collection = "JEWorkflowCollection")
 public class JEWorkflow extends JEObject {
 
-    public final static String RUNNING = "RUNNING";
+    /*public final static String RUNNING = "RUNNING";
 
     public final static String BUILDING = "BUILDING";
 
     public final static String BUILT = "BUILT";
 
-    public final static String IDLE = "IDLE";
+    public final static String IDLE = "IDLE";*/
 
     /*
      * Workflow start block
@@ -40,7 +50,7 @@ public class JEWorkflow extends JEObject {
     /*
      * Current workflow status ( running, building, nothing)
      * */
-    private String status;
+    private Status status;
 
     /*
      * List of all workflow blocks
@@ -98,7 +108,7 @@ public class JEWorkflow extends JEObject {
     public JEWorkflow() {
         super();
         allBlocks = new ConcurrentHashMap<String, WorkflowBlock>();
-        status = IDLE;
+        status = Status.NOT_BUILT;
     }
 
     public boolean isTriggeredByEvent() {
@@ -109,11 +119,11 @@ public class JEWorkflow extends JEObject {
         this.triggeredByEvent = triggeredByEvent;
     }
 
-    public String getStatus() {
+    public Status getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(Status status) {
         this.status = status;
     }
 
@@ -201,7 +211,7 @@ public class JEWorkflow extends JEObject {
             } else this.setTriggeredByEvent(false);
         }
         allBlocks.put(block.getJobEngineElementID(), block);
-        status = IDLE;
+        status = Status.NOT_BUILT;
     }
 
     public String getDescription() {
@@ -228,7 +238,7 @@ public class JEWorkflow extends JEObject {
         if(workflowStartBlock != null) {
             workflowStartBlock = (StartBlock) allBlocks.get(workflowStartBlock.getJobEngineElementID());
         }
-        status = IDLE;
+        status = Status.NOT_BUILT;
     }
 
     /*
@@ -240,7 +250,7 @@ public class JEWorkflow extends JEObject {
         }
         allBlocks.get(sourceRef).getOutFlows().remove(targetRef);
         allBlocks.get(targetRef).getInflows().remove(sourceRef);
-        status = IDLE;
+        status = Status.NOT_BUILT;
     }
 
     /*
@@ -263,7 +273,7 @@ public class JEWorkflow extends JEObject {
         allBlocks.remove(id);
         if (allBlocks.size() == 0) workflowStartBlock = null;
         b = null;
-        status = IDLE;
+        status = Status.NOT_BUILT;
 
     }
 
@@ -280,7 +290,7 @@ public class JEWorkflow extends JEObject {
             block.setProcessed(false);
         }
         workflowStartBlock.setProcessed(false);
-        status = IDLE;
+        status = Status.NOT_BUILT;
     }
     
 
@@ -295,7 +305,7 @@ public class JEWorkflow extends JEObject {
         model.setPath(wf.getBpmnPath());
         model.setProjectId(wf.getJobEngineProjectID());
         model.setTriggeredByEvent(wf.isTriggeredByEvent());
-        model.setStatus(wf.getStatus());
+        model.setStatus(wf.getStatus().toString());
         model.setCreatedAt(DateUtils.formatDateToSIOTHFormat(wf.getJeObjectCreationDate()));
         model.setModifiedAt(DateUtils.formatDateToSIOTHFormat(wf.getJeObjectLastUpdate()));
         model.setFrontConfig(wf.getFrontConfig());
