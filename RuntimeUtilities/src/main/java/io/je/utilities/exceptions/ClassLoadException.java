@@ -4,10 +4,19 @@ import io.je.utilities.constants.ResponseCodes;
 
 public class ClassLoadException extends JEException {
 
-    public ClassLoadException( String message) {
+    private String compilationErrorMessage = null;
+
+    public String getCompilationErrorMessage() {
+        return compilationErrorMessage;
+    }
+
+    public void setCompilationErrorMessage(String compilationErrorMessage) {
+        this.compilationErrorMessage = compilationErrorMessage;
+    }
+
+    public ClassLoadException(String message) {
 		super(ResponseCodes.CLASS_LOAD_EXCEPTION,message);
 
     }
-
 
 }

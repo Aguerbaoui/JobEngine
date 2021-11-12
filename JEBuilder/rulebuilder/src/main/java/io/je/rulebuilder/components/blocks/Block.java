@@ -41,7 +41,7 @@ public abstract class Block extends JEObject {
    
 	public Block(String jobEngineElementID, String jobEngineProjectID, String ruleId, String blockName,
 		String blockDescription,List<String> inputBlockIds, List<String> outputBlocksIds) {
-	super(jobEngineElementID, jobEngineProjectID);
+	super(jobEngineElementID, jobEngineProjectID, blockName);
 	this.ruleId = ruleId;
 	this.blockName = blockName;
 	this.blockDescription = blockDescription;

@@ -14,7 +14,7 @@ public class SumBlock extends MultipleInputArithmeticBlock {
 
 	@Override
 	protected String getArithmeticFormula(int level,String type) {
-		return "JECalculator.sum( "  ;
+		return "MathUtilities.sum( "  ;
 
 	}
 

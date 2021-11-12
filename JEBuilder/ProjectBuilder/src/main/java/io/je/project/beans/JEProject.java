@@ -1,6 +1,7 @@
 package io.je.project.beans;
 
 import blocks.WorkflowBlock;
+import blocks.basic.SubProcessBlock;
 import io.je.rulebuilder.components.JERule;
 import io.je.rulebuilder.components.UserDefinedRule;
 import io.je.rulebuilder.components.blocks.Block;
@@ -38,11 +39,18 @@ public class JEProject {
     
     @Field("ModifiedAt")
     private String modifiedAt;
+
+	@Field("createdBy")
+	private String createdBy;
+
+	@Field("state")
+	private String state;
     
     @Field("description")
     private String description;
 
-
+    @Transient
+    private RuleEngineSummary ruleEngine; //true -> rule engine running , false -> rule engine stopped TODO: switch to enum
 
     /*
     * Configuration path
@@ -105,7 +113,8 @@ public class JEProject {
     * Constructor
     * */
     public JEProject(String projectId) {
-        rules = new ConcurrentHashMap<>();
+        ruleEngine = new RuleEngineSummary();
+    	rules = new ConcurrentHashMap<>();
         workflows = new ConcurrentHashMap<>();
         events = new ConcurrentHashMap<>();
         variables= new ConcurrentHashMap<>();
@@ -122,7 +131,7 @@ public class JEProject {
 
 
 	 private JEProject() {
-
+		 ruleEngine = new RuleEngineSummary();
 	}
 
 
@@ -280,7 +289,10 @@ public class JEProject {
 	* */
 	public void setRules(ConcurrentHashMap<String, JERule> rules) {
 		isBuilt=false;	
-		this.rules = rules;
+		if(rules!=null)
+		{
+			this.rules = rules;
+		}
 	}
 
 	
@@ -366,6 +378,7 @@ public class JEProject {
 				throw new RuleNotFoundException(projectId, ruleId);			}
 			//TODO: delete file
 			rules.remove(ruleId);
+			ruleEngine.remove(ruleId);
 			isBuilt=false;
 
 			
@@ -465,11 +478,15 @@ public class JEProject {
     	if(!workflows.containsKey(workflowId)) {
     		//checking if workflow exists by name
 			for(JEWorkflow wf: workflows.values()) {
-				if(wf.getWorkflowName().equalsIgnoreCase(workflowId)) return wf;
+				if(wf.getJobEngineElementName().equalsIgnoreCase(workflowId)) return wf;
 			}
 		}
         return workflows.get(workflowId);
     }
+
+    public boolean isWorkflowEnabled(String id) {
+    	return getWorkflowByIdOrName(id).isEnabled();
+	}
     
 
 
@@ -626,6 +643,30 @@ public class JEProject {
 
 
 
+
+
+
+
+
+
+	public RuleEngineSummary getRuleEngine() {
+		return ruleEngine;
+	}
+
+
+
+
+
+
+	public void setRuleEngine(RuleEngineSummary ruleEngine) {
+		this.ruleEngine = ruleEngine;
+	}
+
+
+
+
+
+
 	public Map<String, Integer> getBlockNameCounters() {
 		return blockNameCounters;
 	}
@@ -647,4 +688,40 @@ public class JEProject {
 		return null;
 	}
 
+	public boolean workflowHasError(JEWorkflow wf) {
+
+    	if(wf.getWorkflowStartBlock() == null || wf.getAllBlocks().isEmpty()) {
+    		wf.setHasErrors(true);
+    		return true;
+		}
+
+    	for(WorkflowBlock b: wf.getAllBlocks().values()) {
+    		if(b instanceof SubProcessBlock) {
+    			for(JEWorkflow workflow: workflows.values()) {
+    				if(workflow.getJobEngineElementName().equals(((SubProcessBlock) b).getSubWorkflowId()) && !workflow.isEnabled()) {
+						wf.setHasErrors(true);
+						return true;
+					}
+				}
+			}
+		}
+    	wf.setHasErrors(false);
+    	return false;
+	}
+
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public String getState() {
+		return state;
+	}
+
+	public void setState(String state) {
+		this.state = state;
+	}
 }

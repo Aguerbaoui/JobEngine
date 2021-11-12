@@ -5,14 +5,9 @@ import io.je.callbacks.OnExecuteOperation;
 import io.je.serviceTasks.ActivitiTask;
 import io.je.serviceTasks.InformTask;
 import io.je.utilities.constants.JEMessages;
-import io.je.utilities.exceptions.WorkflowAlreadyRunningException;
-import io.je.utilities.exceptions.WorkflowBuildException;
-import io.je.utilities.exceptions.WorkflowNotFoundException;
-import io.je.utilities.exceptions.WorkflwTriggeredByEventException;
-import io.je.utilities.files.JEFileUtils;
-import io.je.utilities.logger.JELogger;
-import io.je.utilities.logger.LogCategory;
-import io.je.utilities.logger.LogSubModule;
+import io.je.utilities.exceptions.*;
+import io.je.utilities.log.JELogger;
+
 import org.activiti.engine.*;
 import org.activiti.engine.delegate.BpmnError;
 import org.activiti.engine.repository.Deployment;
@@ -20,10 +15,12 @@ import org.activiti.engine.repository.DeploymentBuilder;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
+import utils.files.FileUtilities;
+import utils.log.LogCategory;
+import utils.log.LogSubModule;
 
 import java.util.*;
 
-import static io.je.utilities.constants.JEMessages.ADDING_JAR_FILE_TO_RUNNER;
 import static io.je.utilities.constants.ResponseCodes.WORKFLOW_EVENT_TRIGGER;
 
 
@@ -75,7 +72,6 @@ public class ProcessManager {
      * */
     private HashMap<String, OnExecuteOperation> allCallbacks = new HashMap<String, OnExecuteOperation>();
 
-
     /*
      * Initialize the workflow engine
      * */
@@ -126,13 +122,13 @@ public class ProcessManager {
             JELogger.debug(JEMessages.DEPLOYING_IN_RUNNER_WORKFLOW_WITH_ID + " = " + key,
                     LogCategory.RUNTIME, processes.get(key).getProjectId(),
                     LogSubModule.WORKFLOW, key);
-            String processXml = JEFileUtils.getStringFromFile(processes.get(key).getBpmnPath());
+            String processXml = FileUtilities.getStringFromFile(processes.get(key).getBpmnPath());
             DeploymentBuilder deploymentBuilder = processEngine.getRepositoryService().createDeployment().name(key);
             deploymentBuilder.addString(key + ".bpmn", processXml);
-            //Deployment dep = deploymentBuilder.deploy(); to debug it if needed
-            deploymentBuilder.deploy();
+            Deployment dep = deploymentBuilder.deploy(); //to debug it if needed
+            //String id = deploymentBuilder.deploy().getId();
             processes.get(key).setDeployed(true);
-            JEFileUtils.deleteFileFromPath(processes.get(key).getBpmnPath());
+            FileUtilities.deleteFileFromPath(processes.get(key).getBpmnPath());
         }
         catch (Exception e) {
             throw new WorkflowBuildException(JEMessages.WORKFLOW_BUILD_ERROR + " with id = " + key);
@@ -142,36 +138,31 @@ public class ProcessManager {
     /*
      * Launch process by key without variables
      * */
-    public void launchProcessByKeyWithoutVariables(String id, boolean runProject) throws WorkflowNotFoundException, WorkflowAlreadyRunningException, WorkflwTriggeredByEventException, WorkflowBuildException {
-        if (processes.get(id) == null) {
+    public void launchProcessByKeyWithoutVariables(String id, boolean runProject) throws WorkflowNotFoundException, WorkflowAlreadyRunningException,  WorkflowBuildException, WorkflowRunException {
+        JEProcess process = processes.get(id);
+        if (process == null) {
             throw new WorkflowNotFoundException(JEMessages.WORKFLOW_NOT_FOUND);
         }
-        if (processes.get(id).getActivitiTasks().size() > 0) {
+        if (process.getActivitiTasks().size() > 0) {
             launchProcessByKeyWithVariables(id, runProject);
         } else {
-            if (processes.get(id).isRunning()) {
+            if (process.isRunning()) {
                 throw new WorkflowAlreadyRunningException(JEMessages.WORKFLOW_ALREADY_RUNNING);
             }
             //TODO add support for scheduled workflows
-            if (!processes.get(id).isTriggeredByEvent() && (processes.get(id).isOnProjectBoot() || !runProject)) {
-                processes.get(id).setRunning(true);
-                if(processes.get(id).getProcessInstance() != null) {
-                    removeProcess(id);
-                }
-                ProcessInstance p = runtimeService.startProcessInstanceByKey(id);
-                processes.get(id).setProcessInstance(p);
-                new Thread(() -> {
-                    while(p != null && !p.isEnded()) {
-                    }
-                    processes.get(id).setRunning(false);
-                    processes.get(id).setProcessInstance(null);
-                }).start();
+            if (!process.isTriggeredByEvent() && (process.isOnProjectBoot() || !runProject)) {
+
+                process.setActiveThread(new Thread(() -> {
+                    ProcessInstance p = runtimeService.startProcessInstanceByKey(id);
+                    process.setRunning(true);
+                }));
+                process.getActiveThread().start();
             } else {
                 JELogger.error(JEMessages.PROCESS_HAS_TO_BE_TRIGGERED_BY_EVENT,
                         LogCategory.RUNTIME, processes.get(id).getProjectId(),
                         LogSubModule.WORKFLOW, id);
                 //TODO blocking exception to be removed forget not
-                throw new WorkflwTriggeredByEventException(WORKFLOW_EVENT_TRIGGER,JEMessages.PROCESS_HAS_TO_BE_TRIGGERED_BY_EVENT);
+                throw new WorkflowRunException(JEMessages.PROCESS_HAS_TO_BE_TRIGGERED_BY_EVENT);
             }
         }
 
@@ -181,29 +172,25 @@ public class ProcessManager {
      * Launch process by key wit variables
      * */
     public void launchProcessByKeyWithVariables(String id, boolean runProject) throws WorkflowAlreadyRunningException, WorkflowBuildException {
-        if(processes.get(id).isRunning()) {
+        JEProcess process = processes.get(id);
+        if(process.isRunning()) {
             throw new WorkflowAlreadyRunningException(JEMessages.WORKFLOW_ALREADY_RUNNING);
         }
-        if (!processes.get(id).isTriggeredByEvent() && (processes.get(id).isOnProjectBoot() || !runProject)) {
+        if (!process.isTriggeredByEvent() && (process.isOnProjectBoot() || !runProject)) {
             Map<String, Object> variables = new HashMap<>();
             for (ActivitiTask task : processes.get(id).getActivitiTasks().values()) {
                 if (task instanceof InformTask) {
                     variables.put(task.getTaskId(), ((InformTask) task).getMessage());
                 }
             }
-            processes.get(id).setRunning(true);
+
             try {
-                if(processes.get(id).getProcessInstance() != null) {
-                    removeProcess(id);
-                }
-                ProcessInstance p = runtimeService.startProcessInstanceByKey(id, variables);
-                processes.get(id).setProcessInstance(p);
-                new Thread(() -> {
-                    while(p != null && !p.isEnded()) {
-                    }
-                    processes.get(id).setRunning(false);
-                    processes.get(id).setProcessInstance(null);
-                }).start();
+                process.setActiveThread(new Thread(() -> {
+                    ProcessInstance p = runtimeService.startProcessInstanceByKey(id, variables);
+
+                    process.setRunning(true);
+                }));
+                process.getActiveThread().start();
             }
             catch(BpmnError e) {
                 JELogger.error("Error to be removed after dev = " + Arrays.toString(e.getStackTrace()),
@@ -237,17 +224,14 @@ public class ProcessManager {
                             variables.put(task.getTaskId(), ((InformTask) task).getMessage());
                         }
                     }
-                    ProcessInstance p = runtimeService.startProcessInstanceByMessage(messageId, variables);
-                    new Thread(() -> {
-                        while(p != null && !p.isEnded()) {
-                        }
-                        process.setRunning(false);
-                    }).start();
-                    process.setRunning(true);
+                    process.setActiveThread(new Thread(() -> {
+                        ProcessInstance p = runtimeService.startProcessInstanceByMessage(messageId, variables);
+                        process.setRunning(true);
+                    }));
+                    process.getActiveThread().start();
                     break;
                 }
             }
-            //runtimeService.startProcessInstanceByMessage(messageId);
         } catch (ActivitiObjectNotFoundException e) {
             if(workflow != null) {
                 JELogger.error(JEMessages.PROCESS_EXITED,
@@ -260,6 +244,105 @@ public class ProcessManager {
                     LogCategory.RUNTIME, workflow.getProjectId(),
                     LogSubModule.WORKFLOW, workflow.getKey());
         }
+    }
+
+    /*
+     * Run all workflows ( in case runProject == false we run all kinds of workflows( scheduled or not ) )
+     * */
+    public void runAll(String projectId, boolean runProject) throws WorkflowNotFoundException, WorkflowBuildException {
+        JELogger.debug(JEMessages.RUNNING_ALL_WORKFLOWS_IN_PROJECT_ID + " = " + projectId,
+                LogCategory.RUNTIME, projectId,
+                LogSubModule.WORKFLOW, null);
+        for (JEProcess process : processes.values()) {
+            if (process.getProjectId().equals(projectId) && process.isDeployed() && !process.isRunning()) {
+                try {
+                    launchProcessByKeyWithoutVariables(process.getKey(), runProject);
+                } catch (WorkflowAlreadyRunningException e) {
+                    JELogger.error(JEMessages.WORKFLOW_ALREADY_RUNNING + process.getKey(),
+                            LogCategory.RUNTIME, projectId,
+                            LogSubModule.WORKFLOW, process.getKey());
+                } catch (WorkflowRunException e) {
+                    JELogger.error(JEMessages.PROCESS_HAS_TO_BE_TRIGGERED_BY_EVENT + process.getKey(),
+                            LogCategory.RUNTIME, projectId,
+                            LogSubModule.WORKFLOW, process.getKey());
+                } catch (WorkflowBuildException e) {
+                    JELogger.error(JEMessages.WORKFLOW_RUN_ERROR + process.getKey(),
+                            LogCategory.RUNTIME, projectId,
+                            LogSubModule.WORKFLOW, process.getKey());
+                }
+            }
+        }
+    }
+
+    public void buildProjectWorkflows(String projectId) throws WorkflowBuildException{
+        JELogger.debug(JEMessages.BUILDING_WORKFLOWS_IN_PROJECT + " id = " + projectId,
+                LogCategory.RUNTIME, projectId,
+                LogSubModule.WORKFLOW, null);
+        for (JEProcess process : processes.values()) {
+            if (process.getProjectId().equals(projectId) && !process.isDeployed()) {
+                deployProcess(process.getKey());
+            }
+        }
+    }
+
+    public void stopProcess(String key) {
+        if (processes.get(key).isRunning()) {
+            try {
+                runtimeService.deleteProcessInstance(processes.get(key).getProcessInstance().getProcessInstanceId(), "User Stopped the execution");
+                processes.get(key).setRunning(false);
+            } catch (ActivitiObjectNotFoundException e) {
+                JELogger.error(JEMessages.ERROR_DELETING_A_NON_EXISTING_PROCESS,
+                        LogCategory.RUNTIME, processes.get(key).getProjectId(),
+                        LogSubModule.WORKFLOW, key);
+            }
+        }
+    }
+
+    public void stopProjectWorkflows() {
+
+        for (JEProcess process : processes.values()) {
+            try {
+                removeProcess(process.getKey());
+            }
+            catch (WorkflowRunException e) {
+                JELogger.debug(JEMessages.FAILED_TO_STOP_THE_WORKFLOW_BECAUSE_IT_ALREADY_IS_STOPPED, LogCategory.RUNTIME, process.getProjectId(), LogSubModule.WORKFLOW, process.getKey());
+            }
+        }
+    }
+
+    public static void setRunning(String id, boolean b, String processInstanceId) {
+        processes.get(id).setRunning(b);
+        if(!processes.get(id).isRunning()) {
+            processes.get(id).setProcessInstance(null);
+        }
+    }
+
+
+    //Stopr/remove workflow
+    public void removeProcess(String workflowId) throws WorkflowRunException{
+        JEProcess process = processes.get(workflowId);
+        if(process != null && !process.isRunning()) {
+            throw new WorkflowRunException("Workflow already stopped");
+        }
+        try {
+
+            if(process != null) {
+                process.getActiveThread().interrupt();
+                JELogger.debug(JEMessages.STOPPING_WORKFLOW_FORCED,
+                        LogCategory.RUNTIME, process.getProjectId(),
+                        LogSubModule.WORKFLOW, workflowId);
+            }
+
+        } catch (ActivitiObjectNotFoundException e) {
+            JELogger.error(JEMessages.ERROR_DELETING_A_NON_EXISTING_PROCESS,
+                    LogCategory.RUNTIME, processes.get(workflowId).getProjectId(),
+                    LogSubModule.WORKFLOW, workflowId);
+        } catch (Exception e) {
+            JELogger.error(JEMessages.ERROR_DELETING_A_PROCESS + "\n" + Arrays.toString(e.getStackTrace()),
+                    LogCategory.RUNTIME, processes.get(workflowId).getProjectId(),
+                    LogSubModule.WORKFLOW, workflowId);
+        }
+
     }
 
     /*
@@ -372,93 +455,5 @@ public class ProcessManager {
     }
 
 
-    /*
-    * Run all workflows ( in case runProject == false we run all kinds of workflows( scheduled or not ) )
-    * */
-    public void runAll(String projectId, boolean runProject) throws WorkflowNotFoundException, WorkflowBuildException {
-        JELogger.debug(JEMessages.RUNNING_ALL_WORKFLOWS_IN_PROJECT_ID + " = " + projectId,
-                LogCategory.RUNTIME, projectId,
-                LogSubModule.WORKFLOW, null);
-        for (JEProcess process : processes.values()) {
-            if (process.getProjectId().equals(projectId) && process.isDeployed() && !process.isRunning()) {
-                try {
-                    launchProcessByKeyWithoutVariables(process.getKey(), runProject);
-                } catch (WorkflowAlreadyRunningException e) {
-                    JELogger.error(JEMessages.WORKFLOW_ALREADY_RUNNING + process.getKey(),
-                            LogCategory.RUNTIME, projectId,
-                            LogSubModule.WORKFLOW, process.getKey());
-                } catch (WorkflwTriggeredByEventException e) {
-                    JELogger.error(JEMessages.PROCESS_HAS_TO_BE_TRIGGERED_BY_EVENT + process.getKey(),
-                            LogCategory.RUNTIME, projectId,
-                            LogSubModule.WORKFLOW, process.getKey());
-                } catch (WorkflowBuildException e) {
-                    JELogger.error(JEMessages.WORKFLOW_RUN_ERROR + process.getKey(),
-                            LogCategory.RUNTIME, projectId,
-                            LogSubModule.WORKFLOW, process.getKey());
-                }
-            }
-        }
-    }
 
-    public void buildProjectWorkflows(String projectId) throws WorkflowBuildException{
-        JELogger.debug(JEMessages.BUILDING_WORKFLOWS_IN_PROJECT + " id = " + projectId,
-                LogCategory.RUNTIME, projectId,
-                LogSubModule.WORKFLOW, null);
-        for (JEProcess process : processes.values()) {
-            if (process.getProjectId().equals(projectId) && !process.isDeployed()) {
-                deployProcess(process.getKey());
-            }
-        }
-    }
-
-    public void stopProcess(String key) {
-        if (processes.get(key).isRunning()) {
-            try {
-                runtimeService.deleteProcessInstance(processes.get(key).getProcessInstance().getProcessInstanceId(), "User Stopped the execution");
-                processes.get(key).setRunning(false);
-            } catch (ActivitiObjectNotFoundException e) {
-                JELogger.error(JEMessages.ERROR_DELETING_A_NON_EXISTING_PROCESS,
-                        LogCategory.RUNTIME, processes.get(key).getProjectId(),
-                        LogSubModule.WORKFLOW, key);
-            }
-        }
-    }
-
-    public void stopProjectWorkflows() {
-
-        for (JEProcess process : processes.values()) {
-            removeProcess(process.getKey());
-        }
-    }
-
-    public static void setRunning(String id, boolean b, String processInstanceId) {
-       /* String key = id.substring(id.indexOf(':'), id.length());
-        processes.get(id.replace(key, "")).setRunning(b);
-        if(processes.get(id.replace(key, "")).isRunning()) {
-
-        }
-        processes.get(id.replace(key, "")).setActivitiKey(processInstanceId);*/
-    }
-
-
-    //Stopr/remove workflow
-    public void removeProcess(String workflowId) {
-        try {
-
-            JEProcess p = processes.get(workflowId);
-            if(p != null && p.getProcessInstance() != null) {
-                runtimeService.deleteProcessInstance(p.getProcessInstance().getProcessInstanceId(), "User Deleted the process");
-            }
-
-        } catch (ActivitiObjectNotFoundException e) {
-            JELogger.error(JEMessages.ERROR_DELETING_A_NON_EXISTING_PROCESS,
-                    LogCategory.RUNTIME, processes.get(workflowId).getProjectId(),
-                    LogSubModule.WORKFLOW, workflowId);
-        } catch (Exception e) {
-            JELogger.error(JEMessages.ERROR_DELETING_A_PROCESS + "\n" + Arrays.toString(e.getStackTrace()),
-                    LogCategory.RUNTIME, processes.get(workflowId).getProjectId(),
-                    LogSubModule.WORKFLOW, workflowId);
-        }
-
-    }
 }

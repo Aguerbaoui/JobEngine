@@ -12,11 +12,11 @@ import io.je.ruleengine.models.RuleMatch;
 import io.je.utilities.beans.JEBlockMessage;
 import io.je.utilities.beans.JEMessage;
 import io.je.utilities.execution.Executioner;
-import io.je.utilities.logger.JELogger;
-import io.je.utilities.logger.LogCategory;
-import io.je.utilities.logger.LogSubModule;
+import io.je.utilities.log.JELogger;
 import io.je.utilities.ruleutils.RuleIdManager;
 import io.je.utilities.runtimeobject.JEObject;
+import utils.log.LogCategory;
+import utils.log.LogSubModule;
 
 public class RuleListener extends DefaultAgendaEventListener {
 	
@@ -75,14 +75,14 @@ public class RuleListener extends DefaultAgendaEventListener {
     	//get declared variables 
     	for(String declaredVariableName : event.getMatch().getDeclarationIds())
     	{
-    		if(event.getMatch().getDeclarationValue(declaredVariableName) instanceof JEObject)
+    		/*if(event.getMatch().getDeclarationValue(declaredVariableName) instanceof JEObject)
     		{
     			
-    		}
+    		}*/
     		ruleMessage.addBlockMessage(new JEBlockMessage(declaredVariableName,event.getMatch().getDeclarationValue(declaredVariableName).toString()));
     	}
     	
-    	JELogger.debug("Rule["+ruleId+"] was fired",LogCategory.NOT_ASSIGNED , ruleId, LogSubModule.RULE, ruleId);
+    	JELogger.debug("Rule["+RuleIdManager.retrieveNameFromSubRuleName(event.getMatch().getRule().getName())+"] was fired",LogCategory.NOT_ASSIGNED , ruleId, LogSubModule.RULE, ruleId);
     	//Executioner.informRuleBlock( projectId,  ruleId, "Rule was fired",LocalDateTime.now().toString(), "APP");
 
     	

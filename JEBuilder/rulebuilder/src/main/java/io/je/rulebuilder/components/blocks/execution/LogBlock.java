@@ -1,6 +1,10 @@
 package io.je.rulebuilder.components.blocks.execution;
 
 
+import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import io.je.rulebuilder.components.blocks.ExecutionBlock;
 import io.je.rulebuilder.config.AttributesMapping;
 import io.je.rulebuilder.models.BlockModel;
@@ -32,13 +36,13 @@ public class LogBlock extends ExecutionBlock {
 				+ "message.addBlockMessage(blockMsg);\r\n"
 				+ "message.setType(\"BlockMessage\");\r\n"
 				+ "message.setExecutionTime(LocalDateTime.now().toString());\r\n"
-				+ */"Executioner.informRuleBlock(\"" +this.jobEngineProjectID +"\",\"" + this.ruleId +"\",\" "+this.logMessage+ "\",LocalDateTime.now().toString(),\""+this.blockName +" \" );"; 
+				+ */"Executioner.informRuleBlock(\"" +this.jobEngineProjectID +"\",\"" + this.ruleId +"\",\" "+formatMessage()+ "\",LocalDateTime.now().toString(),\""+this.blockName +" \" );"; 
 	}
 
 
 
 	//TODO: to be deleted ! temporary function for testing 
-	/*public String formatMessage()
+	public String formatMessage()
 	{
 		String msg = logMessage;
 		Pattern pattern = Pattern.compile("\\$\\w+");
@@ -51,11 +55,12 @@ public class LogBlock extends ExecutionBlock {
 		}
 		for(String word : wordsToBeReplaced)
 		{
-			msg=msg.replace(word, "\"+"+word+"+\"");
+			String tword=word.replace("$", "");
+			msg=msg.replace(word, "\"+"+tword+"+\"");
 		}
 		return msg;
 	}
 
-*/
+
 
 }

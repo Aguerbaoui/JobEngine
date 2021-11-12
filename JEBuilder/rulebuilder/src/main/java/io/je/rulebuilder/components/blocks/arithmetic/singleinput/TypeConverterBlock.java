@@ -44,7 +44,7 @@ public class TypeConverterBlock extends SingleInputArithmeticBlock {
 			return "String.valueOf("+getInputRefName(0)+")";
 		}else if(typeToConvertTo.equalsIgnoreCase("date"))
 		{
-			return "JEConverter.convertTypeDate(\""+dateFormat+"\","+getInputRefName(0)+")";
+			return "ConversionUtilities.convertTypeDate(\""+dateFormat+"\","+getInputRefName(0)+")";
 		}
 		else
 		{

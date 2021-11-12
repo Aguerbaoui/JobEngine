@@ -6,10 +6,10 @@ import io.je.utilities.beans.JEEvent;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.EventException;
 import io.je.utilities.exceptions.ProjectNotFoundException;
-import io.je.utilities.logger.JELogger;
-import io.je.utilities.logger.LogCategory;
-import io.je.utilities.logger.LogSubModule;
+import io.je.utilities.log.JELogger;
 import io.je.utilities.models.EventType;
+import utils.log.LogCategory;
+import utils.log.LogSubModule;
 
 import java.util.HashMap;
 
@@ -34,6 +34,17 @@ public class EventManager {
     public static void startProcessInstanceByMessage(String projectId, String messageEvent) {
         Thread thread = new Thread(() ->   {
             WorkflowEngineHandler.startProcessInstanceByMessage(projectId, messageEvent);
+        });
+
+        thread.start();
+    }
+
+    /*
+     * Start workflow by message
+     * */
+    public static void startProcessInstanceBySignal(String projectId, String messageEvent) {
+        Thread thread = new Thread(() ->   {
+            WorkflowEngineHandler.throwSignalEventInWorkflow(projectId, messageEvent);
         });
 
         thread.start();
@@ -73,7 +84,7 @@ public class EventManager {
         JEEvent event = events.get(projectId).get(eventId);
         if(event == null) {
             for(JEEvent ev: events.get(projectId).values()) {
-                if(ev.getName().equalsIgnoreCase(eventId)) {
+                if(ev.getJobEngineElementName().equalsIgnoreCase(eventId)) {
                     event = ev;
                     break;
                 }
@@ -91,13 +102,13 @@ public class EventManager {
             
             //Update Event in WorkflowEngine
             if(event.getType().equals(EventType.MESSAGE_EVENT)) {
-                throwMessageEventInWorkflow(projectId, event.getName());
+                throwMessageEventInWorkflow(projectId, event.getJobEngineElementName());
             }
             else if(event.getType().equals(EventType.SIGNAL_EVENT)) {
-                throwSignalEventInWorkflow(projectId, event.getName());
+                throwSignalEventInWorkflow(projectId, event.getJobEngineElementName());
             }
             else if(event.getType().equals(EventType.START_WORKFLOW)) {
-                startProcessInstanceByMessage(projectId, event.getName());
+                startProcessInstanceBySignal(projectId, event.getJobEngineElementName());
             }
 
             if(event.getTimeout()!=0)
@@ -165,7 +176,7 @@ private static void updateActiveThreads(String projectId, String eventId)
 
         if(event == null) {
             for(JEEvent ev: events.get(projectId).values()) {
-                if(ev.getName().equalsIgnoreCase(eventId)) {
+                if(ev.getJobEngineElementName().equalsIgnoreCase(eventId)) {
                     event = ev;
                     break;
                 }
@@ -187,7 +198,7 @@ private static void updateActiveThreads(String projectId, String eventId)
 
         if(event == null) {
             for(JEEvent ev: events.get(projectId).values()) {
-                if(ev.getName().equalsIgnoreCase(eventId)) {
+                if(ev.getJobEngineElementName().equalsIgnoreCase(eventId)) {
                     event = events.get(projectId).remove(ev.getJobEngineElementID());
                     break;
                 }

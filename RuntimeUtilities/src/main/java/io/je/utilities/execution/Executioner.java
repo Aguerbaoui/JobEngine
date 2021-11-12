@@ -1,34 +1,24 @@
 package io.je.utilities.execution;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import io.je.project.variables.VariableManager;
-import io.je.utilities.apis.JEBuilderApiHandler;
 import io.je.utilities.apis.JERunnerAPIHandler;
-import io.je.utilities.beans.JEVariable;
 import io.je.utilities.classloader.JEClassLoader;
-import io.je.utilities.config.Utility;
 import io.je.utilities.constants.ClassBuilderConfig;
 import io.je.utilities.constants.JEMessages;
-import io.je.utilities.constants.ResponseCodes;
-import io.je.utilities.exceptions.JERunnerErrorException;
 import io.je.utilities.exceptions.JavaCodeInjectionError;
-import io.je.utilities.instances.DataModelRequester;
 import io.je.utilities.instances.InstanceManager;
-import io.je.utilities.logger.*;
-import io.je.utilities.monitoring.MessageModel;
+import io.je.utilities.log.JELogger;
 import io.je.utilities.runtimeobject.JEObject;
-import io.je.utilities.zmq.ZMQRequester;
+import utils.log.LogCategory;
+import utils.log.LogSubModule;
 
-import java.io.IOException;
+import java.io.File;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.concurrent.*;
-
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.sql.*;
 
 
 public class Executioner {
@@ -78,23 +68,18 @@ public class Executioner {
         //Rework to use a callable for exception handling
 
         try {
-            new Thread(new Runnable() {
+            new Thread(() -> {
 
-                @Override
-                public void run() {
-                   
-                	try{
-                		//TODO: add blockName
-                		InstanceManager.writeToDataModelInstance(instanceId,attributeName,value);
-                		JELogger.debug(JEMessages.INSTANCE_UPDATE_SUCCESS ,  LogCategory.RUNTIME,
-                                projectId, LogSubModule.RULE, ruleId,blockName);
-                	}catch(Exception e)
-                	{
-                		JELogger.error(JEMessages.WRITE_INSTANCE_FAILED + e.getMessage(),  LogCategory.RUNTIME,
-                				projectId, LogSubModule.RULE, ruleId,blockName);
-                	}
+                try{
+                    //TODO: add blockName
+                    InstanceManager.writeToDataModelInstance(instanceId,attributeName,value);
 
+                }catch(Exception e)
+                {
+                    JELogger.error(JEMessages.WRITE_INSTANCE_FAILED + e.getMessage(),  LogCategory.RUNTIME,
+                            projectId, LogSubModule.RULE, ruleId,blockName);
                 }
+
             }).start();
         } catch (Exception e) {
         	JELogger.error(JEMessages.WRITE_INSTANCE_FAILED ,  LogCategory.RUNTIME,
@@ -110,23 +95,18 @@ public class Executioner {
     public static void updateInstanceAttributeValueFromVariable(String projectId,String instanceId,String attributeName ,String variableId) {
 
         try {
-            new Thread(new Runnable() {
+            new Thread(() -> {
 
+                try {
 
-                @Override
-                public void run() {
-
-                    try {
-                         
-                         Object attribueValue = VariableManager.getVariableValue(projectId, variableId);
-                         InstanceManager.writeToDataModelInstance(instanceId,attributeName,attribueValue);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-
-                    }
-
+                     Object attribueValue = VariableManager.getVariableValue(projectId, variableId);
+                     InstanceManager.writeToDataModelInstance(instanceId,attributeName,attribueValue);
+                } catch (Exception e) {
+                    e.printStackTrace();
 
                 }
+
+
             }).start();
         } catch (Exception e) {
             // TODO: handle exception
@@ -137,24 +117,19 @@ public class Executioner {
     public static void updateInstanceAttributeValueFromAnotherInstance(String projectId,String ruleId, String sourceInstanceId,String sourceAttributeName,String destinationInstanceId, String destinationAttributeName)
     {
     	try {
-            new Thread(new Runnable() {
-
-                @Override
-                public void run() {
-                    JEObject sourceInstance = InstanceManager.getInstance(sourceInstanceId);
-                    if(sourceInstance==null)
-                    {
-                        JELogger.error("Failed to read instance value", null, projectId, LogSubModule.RULE, sourceInstanceId);
-                    	return;
-                    }
-                    
-                    Object attribueValue = InstanceManager.getAttributeValue(sourceInstanceId, sourceAttributeName);
-                    InstanceManager.writeToDataModelInstance(destinationInstanceId,destinationAttributeName,attribueValue);
-
-
-
-
+            new Thread(() -> {
+                Object attribueValue = InstanceManager.getAttributeValue(sourceInstanceId, sourceAttributeName);
+            	if(attribueValue==null)
+                {
+                    JELogger.error("Failed to read instance value", null, projectId, LogSubModule.RULE, sourceInstanceId);
+                    return;
                 }
+
+                InstanceManager.writeToDataModelInstance(destinationInstanceId,destinationAttributeName,attribueValue);
+
+
+
+
             }).start();
         } catch (Exception e) {
            JELogger.error("Failed to set instance value", null, projectId, LogSubModule.RULE, ruleId);
@@ -169,21 +144,16 @@ public class Executioner {
     public static void updateVariableValue(String projectId,String variableId, Object value) {
 
         try {
-            new Thread(new Runnable() {
+            new Thread(() -> {
 
-
-                @Override
-                public void run() {
-
-                    try {
-                       JERunnerAPIHandler.writeVariableValue(projectId, variableId, value);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-
-                    }
-
+                try {
+                   JERunnerAPIHandler.writeVariableValue(projectId, variableId, value);
+                } catch (Exception e) {
+                    e.printStackTrace();
 
                 }
+
+
             }).start();
         } catch (Exception e) {
             // TODO: handle exception
@@ -198,21 +168,16 @@ public class Executioner {
     public static void updateVariableValueFromAnotherVariable(String projectId,String sourceVariableId, String destinationVariableId) {
 
         try {
-            new Thread(new Runnable() {
+            new Thread(() -> {
 
-
-                @Override
-                public void run() {
-
-                    try {
-                    	JERunnerAPIHandler.writeVariableValue(projectId, destinationVariableId, VariableManager.getVariableValue(projectId, sourceVariableId));
-                    } catch (Exception e) {
-                        e.printStackTrace();
-
-                    }
-
+                try {
+                    JERunnerAPIHandler.writeVariableValue(projectId, destinationVariableId, VariableManager.getVariableValue(projectId, sourceVariableId));
+                } catch (Exception e) {
+                    e.printStackTrace();
 
                 }
+
+
             }).start();
         } catch (Exception e) {
             // TODO: handle exception
@@ -228,23 +193,18 @@ public class Executioner {
     public static void updateVariableValueFromDataModel(String projectId,String destinationVariableId, String sourceInstanceId, String sourceAttributeName) {
 
         try {
-            new Thread(new Runnable() {
+            new Thread(() -> {
 
+                try {
+                    Object attribueValue = InstanceManager.getAttributeValue(sourceInstanceId, sourceAttributeName);
+                    JERunnerAPIHandler.writeVariableValue(projectId, destinationVariableId, attribueValue);
 
-                @Override
-                public void run() {
-
-                    try {
-                        Object attribueValue = InstanceManager.getAttributeValue(sourceInstanceId, sourceAttributeName);
-                        JERunnerAPIHandler.writeVariableValue(projectId, destinationVariableId, attribueValue);
-                  
-                    } catch (Exception e) {
-                        e.printStackTrace();
-
-                    }
-
+                } catch (Exception e) {
+                    e.printStackTrace();
 
                 }
+
+
             }).start();
         } catch (Exception e) {
             // TODO: handle exception
@@ -265,22 +225,17 @@ public class Executioner {
     public static void triggerEvent(String projectId, String eventId, String eventName, String ruleId, String triggerSource) {
 
         try {
-            new Thread(new Runnable() {
+            new Thread(() -> {
 
+                try {
+                    JERunnerAPIHandler.triggerEvent(eventId, projectId);
 
-                @Override
-                public void run() {
-
-                    try {
-                        JERunnerAPIHandler.triggerEvent(eventId, projectId);
-                  
-                    } catch (Exception e) {
-                        e.printStackTrace();
-
-                    }
-
+                } catch (Exception e) {
+                    e.printStackTrace();
 
                 }
+
+
             }).start();
         } catch (Exception e) {
             // TODO: handle exception
@@ -301,7 +256,17 @@ public class Executioner {
         executeScript("test", "", "");
     }*/
     public static void executeScript(String name, String processId, String projectId, int timeout) throws JavaCodeInjectionError {
-        ExecutorService executor = Executors.newFixedThreadPool(1);
+        JEClassLoader.overrideInstance();
+        Class<?> loadClass = null;
+        try {
+            loadClass = JEClassLoader.getInstance().loadClass(ClassBuilderConfig.generationPackageName +"." + name);
+            Method method = loadClass.getDeclaredMethods()[0];
+            method.invoke(null);
+        } catch (ClassNotFoundException | InvocationTargetException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
+
+        /*ExecutorService executor = Executors.newFixedThreadPool(1);
 
         //Task to be executed in a separate thread
         Future<Void> task = executor.submit(() -> {
@@ -340,8 +305,14 @@ public class Executioner {
             task.cancel(true);
             throw new JavaCodeInjectionError(msg);
         }
-
-
+        //JobEngine.informUser("hello everyone, your uploaded file is " + JobEngine.getJarFile("org.eclipse.jdt.core-3.7.1.jar").getName(), "testId");
+        catch(Exception e) {
+            msg = "Script task in workflow with id = " + processId + " in project with id = " + projectId + " was interrupted during the execution";
+            JELogger.error(msg, LogCategory.RUNTIME, projectId,
+                    LogSubModule.JERUNNER, processId);
+            task.cancel(true);
+            throw new JavaCodeInjectionError(msg);
+        }*/
        /* ExecutorService executorService = Executors.newFixedThreadPool(1);
         Callable c = () -> {
             JEClassLoader.overrideInstance();
@@ -426,5 +397,66 @@ public class Executioner {
 
      * 
      */
+    public static void main(String[] args) {
 
+        Connection conn = null;
+
+        try {
+
+            String dbURL = "jdbc:sqlserver://YRIAHI-PC\\SQLEXPRESS:1433;databaseName=SIOTHDB;user=sa;password=io.123";
+            String user = "sa";
+            String pass = "io.123";
+            File jarPath = new File("D:\\jars\\mssql-jdbc-8.4.1.jre8.jar");
+
+            try {
+
+                URLClassLoader child = new URLClassLoader(
+                        new URL[] {jarPath.toURI().toURL()}
+
+                );
+
+                Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver", true, child);
+                ClassLoader loader = JobEngine.class.getClassLoader();
+                child.loadClass("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+                Driver driver = (Driver) Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver", true, child).newInstance();
+                conn = driver.connect(dbURL, null);
+
+                if (conn != null) {
+
+                    // if you only need a few columns, specify them by name instead of using "*"
+                    String query = "SELECT * FROM Eqpt";
+
+                    // create the java statement
+                    Statement st = conn.createStatement();
+
+                    // execute the query, and get a java resultset
+                    ResultSet rs = st.executeQuery(query);
+
+                    // iterate through the java resultset
+                    while (rs.next())
+                    {
+                        int equipmentid = rs.getInt("equipmentid");
+                        String equipmentname = rs.getString("equipmentname");
+
+
+                        // print the results
+                        System.out.print("The equipment number  ");
+                        System.out.format("%s,%s,%s\n", equipmentid,"is",equipmentname);
+                    }
+
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        } finally {
+            try {
+                if (conn != null && !conn.isClosed()) {
+                    conn.close();
+                }
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
 }

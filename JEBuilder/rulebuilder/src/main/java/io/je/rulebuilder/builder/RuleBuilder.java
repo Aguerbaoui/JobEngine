@@ -9,19 +9,20 @@ import io.je.rulebuilder.components.blocks.ConditionBlock;
 import io.je.rulebuilder.components.blocks.ExecutionBlock;
 import io.je.rulebuilder.components.blocks.PersistableBlock;
 import io.je.utilities.apis.JERunnerAPIHandler;
-import io.je.utilities.config.Utility;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.exceptions.JERunnerErrorException;
 import io.je.utilities.exceptions.RuleBuildFailedException;
-import io.je.utilities.logger.JELogger;
-import io.je.utilities.logger.LogCategory;
-import io.je.utilities.logger.LogSubModule;
+import io.je.utilities.log.JELogger;
 import io.je.utilities.mapping.JERunnerRuleMapping;
-import io.je.utilities.network.JEResponse;
+import io.je.utilities.beans.JEResponse;
 import io.je.utilities.ruleutils.RuleIdManager;
-import io.je.utilities.time.JEDate;
+import io.siothconfig.SIOTHConfigUtility;
+
 import org.drools.template.ObjectDataCompiler;
+import utils.date.DateUtils;
+import utils.log.LogCategory;
+import utils.log.LogSubModule;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -42,10 +43,10 @@ public class RuleBuilder {
     /*
      * generate drl file from rules and saves them to the provided path
      */
-    public static void buildRule(JERule jeRule, String buildPath)
-            throws RuleBuildFailedException, JERunnerErrorException, IOException, InterruptedException, ExecutionException {
+    public static void buildRule(JERule jeRule, String buildPath, boolean compileOnly)
+            throws RuleBuildFailedException, JERunnerErrorException {
         String rulePath = "";
-        JELogger.debug(JEMessages.BUILDING_RULE + " : id = " + jeRule.getJobEngineElementID(),
+        JELogger.control(JEMessages.BUILDING_RULE + " : " + jeRule.getJobEngineElementName(),
                 LogCategory.DESIGN_MODE, jeRule.getJobEngineProjectID(),
                 LogSubModule.RULE, jeRule.getJobEngineElementID());
         if (jeRule instanceof UserDefinedRule) {
@@ -53,12 +54,12 @@ public class RuleBuilder {
             for (ScriptedRule rule : unitRules) {
                 // generate drl
                 rulePath = rule.generateDRL(buildPath);
-                sendDRLToJeRunner(rule, rulePath);
+                sendDRLToJeRunner(rule, rulePath,compileOnly);
             }
         }
         if (jeRule instanceof ScriptedRule) {
             rulePath = ((ScriptedRule) jeRule).generateDRL(buildPath);
-            sendDRLToJeRunner(jeRule, rulePath);
+            sendDRLToJeRunner(jeRule, rulePath,compileOnly);
         }
 
     }
@@ -67,13 +68,14 @@ public class RuleBuilder {
     /*
      * send rule to JERunner
      */
-    public static void sendDRLToJeRunner(JERule rule, String path) throws JERunnerErrorException, RuleBuildFailedException, IOException, InterruptedException, ExecutionException {
+    public static void sendDRLToJeRunner(JERule rule, String path,boolean compileOnly) throws RuleBuildFailedException, JERunnerErrorException {
 
 
         // compile rule
 
         HashMap<String, Object> ruleMap = new HashMap<>();
         ruleMap.put(JERunnerRuleMapping.PROJECT_ID, rule.getJobEngineProjectID());
+        ruleMap.put(JERunnerRuleMapping.PROJECT_NAME, rule.getJobEngineElementName());
         ruleMap.put(JERunnerRuleMapping.PATH, path);
         ruleMap.put(JERunnerRuleMapping.RULE_ID, rule.getJobEngineElementID());
 
@@ -81,7 +83,7 @@ public class RuleBuilder {
         ruleMap.put(JERunnerRuleMapping.FORMAT, "DRL");
         ruleMap.put(JERunnerRuleMapping.TOPICS, rule.getTopics().keySet());
 
-        JELogger.debug(" [ project id = " + rule.getJobEngineProjectID() + " ] [rule id = " + rule.getJobEngineElementID() + "]"
+        JELogger.debug(" [ project = " + rule.getJobEngineProjectName() + " ] [rule = " + rule.getJobEngineElementName() + "]"
                         + JEMessages.SENDNG_RULE_TO_RUNNER,
                 LogCategory.DESIGN_MODE, rule.getJobEngineProjectID(),
                 LogSubModule.RULE, rule.getJobEngineElementID());
@@ -89,10 +91,30 @@ public class RuleBuilder {
                 LogCategory.DESIGN_MODE, rule.getJobEngineProjectID(),
                 LogSubModule.RULE, rule.getJobEngineElementID());
         JEResponse jeRunnerResp = null;
-        jeRunnerResp = JERunnerAPIHandler.updateRule(ruleMap);
+     
+        if(compileOnly) {
+        	
+			jeRunnerResp = JERunnerAPIHandler.compileRule(ruleMap);
 
+        	  
+        }else
+        {
+        	 try {
+                 jeRunnerResp = JERunnerAPIHandler.updateRule(ruleMap);
+             }
+             catch(JERunnerErrorException e) {
+            	  JELogger.error(" [ project = " + rule.getJobEngineProjectName() + " ] [rule = " + rule.getJobEngineElementName() + "]"
+                          + JEMessages.RULE_BUILD_FAILED,
+                  LogCategory.DESIGN_MODE, rule.getJobEngineProjectID(),
+                  LogSubModule.RULE, rule.getJobEngineElementID());
+            	 throw new RuleBuildFailedException(JEMessages.RULE_BUILD_FAILED+": "+e.getMessage());
+             }
+        }
+        
+        
+        
         if (jeRunnerResp == null || jeRunnerResp.getCode() != ResponseCodes.CODE_OK) {
-			JELogger.error("[rule id =" + rule.getRuleName() + " ]" + JEMessages.RULE_BUILD_FAILED + jeRunnerResp.getMessage(),
+			JELogger.error("[project = "+rule.getJobEngineProjectName()+"][rule =" + rule.getJobEngineElementName() + " ]" + JEMessages.RULE_BUILD_FAILED + jeRunnerResp.getMessage(),
 					LogCategory.DESIGN_MODE, rule.getJobEngineProjectID(),
 					LogSubModule.RULE, rule.getJobEngineElementID());
             throw new RuleBuildFailedException(jeRunnerResp.getMessage());
@@ -106,7 +128,7 @@ public class RuleBuilder {
      */
     public static List<ScriptedRule> scriptRule(UserDefinedRule uRule) throws RuleBuildFailedException {
         uRule.getBlocks().init();
-        List<String> subRules = new ArrayList<String>();
+        List<String> subRules = new ArrayList<>();
         String duration = null;
         int scriptedRulesCounter = 0;
         String scriptedRuleid = "";
@@ -114,7 +136,7 @@ public class RuleBuilder {
         Set<Block> rootBlocks = getRootBlocks(uRule);
         String subRulePrefix = RuleIdManager.generateSubRulePrefix(uRule.getJobEngineElementID());
         for (Block root : rootBlocks) {
-            scriptedRuleid = subRulePrefix + uRule.getRuleName() + ++scriptedRulesCounter;
+            scriptedRuleid = subRulePrefix + uRule.getJobEngineElementName() + ++scriptedRulesCounter;
             String condition = "";
             if (root instanceof ConditionBlock) {
                 condition = root.getExpression();
@@ -134,11 +156,11 @@ public class RuleBuilder {
             // add time persistence
 
             String script = generateScript(uRule.getRuleParameters(), scriptedRuleid, duration, condition, consequences);
-			JELogger.debug("generated DRL : \n" + script,
+			JELogger.debug(JEMessages.GENERATED_RULE + script,
 					LogCategory.DESIGN_MODE, uRule.getJobEngineProjectID(),
 					LogSubModule.RULE, uRule.getJobEngineElementID());
             ScriptedRule rule = new ScriptedRule(uRule.getJobEngineProjectID(), scriptedRuleid, script,
-                    uRule.getRuleName() + scriptedRulesCounter);
+                    uRule.getJobEngineElementName() + scriptedRulesCounter);
             rule.setTopics(uRule.getTopics());
             scriptedRules.add(rule);
             subRules.add(scriptedRuleid);
@@ -164,11 +186,11 @@ public class RuleBuilder {
         if (ruleParameters.getDateEffective() != null && !ruleParameters.getDateEffective().isEmpty()) {
             LocalDateTime date = LocalDateTime.parse(ruleParameters.getDateEffective(), DateTimeFormatter.ISO_DATE_TIME);
 
-            ruleTemplateAttributes.put("dateEffective", "\"" + JEDate.formatDate(date, Utility.getSiothConfig().getDateFormat()) + "\"");
+            ruleTemplateAttributes.put("dateEffective", "\"" + DateUtils.formatDate(date, SIOTHConfigUtility.getSiothConfig().getDateFormat()) + "\"");
         }
         if (ruleParameters.getDateExpires() != null && !ruleParameters.getDateExpires().isEmpty()) {
             LocalDateTime date = LocalDateTime.parse(ruleParameters.getDateEffective(), DateTimeFormatter.ISO_DATE_TIME);
-            ruleTemplateAttributes.put("dateExpires", "\"" + JEDate.formatDate(date, Utility.getSiothConfig().getDateFormat()) + "\"");
+            ruleTemplateAttributes.put("dateExpires", "\"" + DateUtils.formatDate(date, SIOTHConfigUtility.getSiothConfig().getDateFormat()) + "\"");
         }
 
         ObjectDataCompiler objectDataCompiler = new ObjectDataCompiler();
@@ -208,7 +230,7 @@ public class RuleBuilder {
         }
         // if this rule has no execution block, then it is not valid.
         if (executionBlockCounter == 0) {
-			JELogger.error(JEMessages.NO_EXECUTION_BLOCK,
+			JELogger.error("[project = "+uRule.getJobEngineProjectName()+"][rule = "+uRule.getJobEngineElementName()+"] "+JEMessages.NO_EXECUTION_BLOCK,
 					LogCategory.DESIGN_MODE, uRule.getJobEngineProjectID(),
 					LogSubModule.RULE, uRule.getJobEngineElementID());
             throw new RuleBuildFailedException(JEMessages.NO_EXECUTION_BLOCK);
@@ -216,5 +238,12 @@ public class RuleBuilder {
 
         return roots;
     }
+
+
+
+	public static void buildAndRun(JERule jeRule, String configurationPath) {
+		// TODO Auto-generated method stub
+		
+	}
 
 }

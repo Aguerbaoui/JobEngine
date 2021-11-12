@@ -3,9 +3,10 @@ package io.je;
 import java.util.concurrent.Executor;
 
 import io.je.utilities.constants.JEMessages;
-import io.je.utilities.logger.JELogger;
-import io.je.utilities.logger.LogCategory;
-import io.je.utilities.logger.LogSubModule;
+import io.je.utilities.log.JELogger;
+import utils.log.LogCategory;
+import utils.log.LogSubModule;
+
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.AsyncConfigurer;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -22,8 +23,8 @@ public class SpringAsyncConfig implements AsyncConfigurer {
 				LogSubModule.JERUNNER, null);
 		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
 		executor.setCorePoolSize(3);
-		executor.setMaxPoolSize(10);
-		executor.setQueueCapacity(100);
+		executor.setMaxPoolSize(20);
+		executor.setQueueCapacity(1000);
 		executor.setThreadNamePrefix("AsynchThread-");
 		executor.initialize();
 		return executor;

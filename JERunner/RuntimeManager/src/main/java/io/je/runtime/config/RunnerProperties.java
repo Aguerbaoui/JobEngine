@@ -5,13 +5,13 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
-import io.je.utilities.config.ConfigurationConstants;
+import io.siothconfig.*;
 
 
 
 @ConfigurationProperties
 @Configuration("RunnerProperties")
-@PropertySource(ConfigurationConstants.APPLICATION_PROPERTIES_PATH)
+@PropertySource(SIOTHConfigurationConstants.APPLICATION_PROPERTIES_PATH)
 public class RunnerProperties {
 	
 

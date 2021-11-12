@@ -10,8 +10,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "JEEventCollection")
 public class JEEvent extends JEMonitoredData {
 
-	private String name;
-
 	private String triggeredById;
 
 	private EventType type;
@@ -28,14 +26,6 @@ public class JEEvent extends JEMonitoredData {
 	private String timeoutUnit;
 
 	private int timeout; // milliseconds
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
 
 	public String getTriggeredById() {
 		return triggeredById;
@@ -78,8 +68,7 @@ public class JEEvent extends JEMonitoredData {
 	public JEEvent(String jobEngineElementID, String jobEngineProjectID, String name, EventType type,
 			String description, int timeoutValue, String timeoutUnit,ArchiveOption isArchived,
 			boolean isBroadcasted,String createdBy, String modifiedBy ) {
-		super(jobEngineElementID, jobEngineProjectID);
-		this.name = name;
+		super(jobEngineElementID, jobEngineProjectID, name);
 		this.type = type;
 		this.triggeredById = jobEngineElementID;
 		this.description = description;
@@ -95,8 +84,7 @@ public class JEEvent extends JEMonitoredData {
 	
 	public JEEvent(String jobEngineElementID, String jobEngineProjectID, String name, EventType type,
 			String description, int timeoutValue, String timeoutUnit,String createdBy, String modifiedBy) {
-		super(jobEngineElementID, jobEngineProjectID);
-		this.name = name;
+		super(jobEngineElementID, jobEngineProjectID, name);
 		this.type = type;
 		this.triggeredById = jobEngineElementID;
 		this.description = description;

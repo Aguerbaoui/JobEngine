@@ -2,7 +2,6 @@ package blocks.events;
 
 import blocks.WorkflowBlock;
 import io.je.utilities.constants.Timers;
-import io.je.utilities.string.JEStringUtils;
 
 public class TimerEvent extends WorkflowBlock {
 

@@ -3,18 +3,15 @@ package io.je.runtime.workflow;
 import io.je.JEProcess;
 import io.je.processes.ProcessManager;
 import io.je.serviceTasks.*;
-import io.je.utilities.apis.BodyType;
-import io.je.utilities.apis.HttpMethod;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.WorkflowConstants;
-import io.je.utilities.exceptions.WorkflowAlreadyRunningException;
-import io.je.utilities.exceptions.WorkflowBuildException;
-import io.je.utilities.exceptions.WorkflowNotFoundException;
-import io.je.utilities.exceptions.WorkflwTriggeredByEventException;
-import io.je.utilities.logger.JELogger;
-import io.je.utilities.logger.LogCategory;
-import io.je.utilities.logger.LogSubModule;
+import io.je.utilities.exceptions.*;
+import io.je.utilities.log.JELogger;
 import io.je.utilities.models.TaskModel;
+import utils.log.LogCategory;
+import utils.log.LogSubModule;
+import utils.network.BodyType;
+import utils.network.HttpMethod;
 
 import java.util.HashMap;
 import java.util.List;
@@ -50,8 +47,8 @@ public class WorkflowEngineHandler {
     /*
      * Launch process without variables
      * */
-    public static void launchProcessWithoutVariables(String projectId, String processId, boolean runProject) throws WorkflowNotFoundException, WorkflowAlreadyRunningException, WorkflwTriggeredByEventException, WorkflowBuildException {
-        JELogger.debug("[projectId = " + projectId +"][workflow = "+processId+"]"+JEMessages.REMOVING_WF,
+    public static void launchProcessWithoutVariables(String projectId, String processId, boolean runProject) throws WorkflowNotFoundException, WorkflowAlreadyRunningException, WorkflowBuildException, WorkflowRunException {
+        JELogger.debug("[workflow = "+processId+"]"+JEMessages.REMOVING_WF,
                 LogCategory.RUNTIME, projectId,
                 LogSubModule.WORKFLOW,processId);
         processManagerHashMap.get(projectId).launchProcessByKeyWithoutVariables(processId, runProject);
@@ -114,9 +111,9 @@ public class WorkflowEngineHandler {
     public static void stopProjectWorfklows(String projectId) {
     	if(processManagerHashMap.containsKey(projectId))
     	{
-            JELogger.debug("[projectId = " + projectId +"]"+JEMessages.STOPPING_WORKFLOW,
+            /*JELogger.debug("[projectId = " + projectId +"]"+JEMessages.STOPPING_WORKFLOW,
                     LogCategory.RUNTIME, projectId,
-                    LogSubModule.WORKFLOW,null);
+                    LogSubModule.WORKFLOW,null);*/
             processManagerHashMap.get(projectId).stopProjectWorkflows();
 
     	}
@@ -134,9 +131,9 @@ public class WorkflowEngineHandler {
     }
 
     public static void deleteProjectProcesses(String projectId) {
-        JELogger.debug("[projectId = " + projectId +"]"+JEMessages.REMOVING_WFS,
+      /*  JELogger.debug("[projectId = " + projectId +"]"+JEMessages.REMOVING_WFS,
                 LogCategory.RUNTIME, projectId,
-                LogSubModule.WORKFLOW,null);
+                LogSubModule.WORKFLOW,null);*/
         if(processManagerHashMap.containsKey(projectId)) {
             stopProjectWorfklows(projectId);
             processManagerHashMap.remove(projectId);
@@ -146,16 +143,16 @@ public class WorkflowEngineHandler {
     }
 
     //remove/stop workflow from runner
-    public static void deleteProcess(String projectId, String workflowId) {
+    public static void deleteProcess(String projectId, String workflowId) throws WorkflowRunException {
         if(processManagerHashMap.containsKey(projectId)) {
             processManagerHashMap.get(projectId).removeProcess(workflowId);
         }
     }
 
     public static ActivitiTask parseTask(String projectId, String workflowId, TaskModel task) {
-        JELogger.debug("Parsing activiti task",
+        /*JELogger.debug("Parsing activiti task",
                 LogCategory.RUNTIME, projectId,
-                LogSubModule.WORKFLOW,workflowId);
+                LogSubModule.WORKFLOW,workflowId);*/
         if(task.getType().equals(WorkflowConstants.WEBSERVICETASK_TYPE)) {
             WebApiTask webApiTask = new WebApiTask();
             webApiTask.setBodyType(BodyType.JSON);

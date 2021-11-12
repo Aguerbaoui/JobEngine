@@ -1,8 +1,7 @@
 package io.je.project.controllers;
 
-import static io.je.utilities.constants.JEMessages.ERROR_DELETING_EVENT;
-
 import java.util.Collection;
+import java.util.List;
 
 import io.je.project.exception.JEExceptionHandler;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,12 +19,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.je.project.services.EventService;
 import io.je.project.services.ProjectService;
-import io.je.utilities.beans.JEEvent;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.ResponseCodes;
-import io.je.utilities.logger.JELogger;
 import io.je.utilities.models.EventModel;
-import io.je.utilities.network.JEResponse;
+import io.je.utilities.beans.JEResponse;
 
 /*
  * Project Rest Controller
@@ -151,6 +148,21 @@ public class EventController {
 			
 		}
 		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.EVENT_DELETED));
+	}
+
+	/*
+	 * delete multiple events
+	 */
+	@PostMapping(value = "/deleteEvents/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> deleteEvents(@PathVariable("projectId") String projectId, @RequestBody(required = false) List<String> ids) {
+
+		try {
+			projectService.getProject(projectId);
+			eventService.deleteEvents(projectId, ids);
+		} catch (Exception e) {
+			return JEExceptionHandler.handleException(e);
+		}
+		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.EVENTS_DELETED));
 	}
 	
 	

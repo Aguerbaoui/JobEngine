@@ -2,12 +2,11 @@ package blocks;
 
 import builder.ModelBuilder;
 import io.je.utilities.runtimeobject.JEObject;
-import io.je.utilities.string.JEStringUtils;
 import models.JEWorkflow;
 import org.activiti.bpmn.model.SequenceFlow;
+import utils.string.StringUtilities;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -30,11 +29,6 @@ public class WorkflowBlock extends JEObject {
      * Condition to reach the block
      * */
     private String condition;
-
-    /*
-     * Block Name
-     * */
-    private String name;
 
     /*Block description*/
     private String description;
@@ -94,20 +88,6 @@ public class WorkflowBlock extends JEObject {
         this.outFlows = outFlows;
     }
 
-    /*
-     * Returns block name
-     * */
-    public String getName() {
-        return name;
-    }
-
-    /*
-     * Sets block name
-     * */
-    public void setName(String name) {
-        if (JEStringUtils.isEmpty(name)) return;
-        this.name = name;
-    }
 
     /*
      * Returns generated bmpn incoming flows
@@ -160,7 +140,7 @@ public class WorkflowBlock extends JEObject {
     }
 
     public void setCondition(String condition) {
-        if (JEStringUtils.isEmpty(condition)) return;
+        if (StringUtilities.isEmpty(condition)) return;
         this.condition = condition;
     }
 

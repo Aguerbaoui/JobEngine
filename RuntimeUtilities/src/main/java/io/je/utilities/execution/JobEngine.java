@@ -5,16 +5,33 @@ import io.je.utilities.apis.JEBuilderApiHandler;
 import io.je.utilities.apis.JERunnerAPIHandler;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.ResponseCodes;
-import io.je.utilities.logger.*;
+import io.je.utilities.log.JELogger;
 import io.je.utilities.models.VariableModel;
-import io.je.utilities.network.JEResponse;
-import io.je.utilities.string.JEStringUtils;
+import io.je.utilities.beans.JEResponse;
+import utils.log.LogCategory;
+import utils.log.LogSubModule;
+import utils.string.StringUtilities;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.jar.JarFile;
 
 public class JobEngine {
+
+    private static HashMap<String, JarFile> libraries;
+
+    public static void addJarFile(String name, JarFile file) {
+        if(libraries == null) {
+            libraries = new HashMap<>();
+        }
+        libraries.put(name, file);
+        //JELogger.debug("helloThere" + JobEngine.getJarFile("org.eclipse.jdt.core-3.7.1.jar").getName());
+    }
+
+    public static JarFile getJarFile(String name) {
+        return libraries.get(name);
+    }
 
     /*
     * Run a workflow from script task
@@ -139,7 +156,7 @@ public class JobEngine {
     }
 
     //Get variable body from parameters
-    public static HashMap<String, Object> getVariableBody(String varId, String varProjectId, String varName, Object varValue, String type) {
+    public static Map<String, Object> getVariableBody(String varId, String varProjectId, String varName, Object varValue, String type) {
         HashMap<String, Object> body = new HashMap<>();
         body.put("id", varId);
         body.put("projectId", varProjectId);
@@ -158,7 +175,7 @@ public class JobEngine {
             return response.getCode();
         }  catch (Exception e) {
             //JELogger.error("Error adding the variable");
-            JELogger.error(JEMessages.ERROR_DELETING_VARIABLE_TO_PROJECT,  LogCategory.RUNTIME,
+            JELogger.error(JEMessages.ERROR_DELETING_VARIABLE_FROM_PROJECT,  LogCategory.RUNTIME,
                     projectId, LogSubModule.VARIABLE, variableName);
             return ResponseCodes.UNKNOWN_ERROR;
         }
@@ -169,7 +186,7 @@ public class JobEngine {
     * Send user message
     * */
     public static int informUser(String message, String projectId) {
-        if(!JEStringUtils.isEmpty(message)) {
+        if(!StringUtilities.isEmpty(message)) {
             JELogger.info( message,  LogCategory.RUNTIME,  projectId,
                     LogSubModule.WORKFLOW, null);
         }
@@ -181,7 +198,7 @@ public class JobEngine {
      * Send user message
      * */
     public static int informUser(String level, String message, String projectId, String processId, String taskName) {
-        if(!JEStringUtils.isEmpty(message)) {
+        if(!StringUtilities.isEmpty(message)) {
             JELogger.info( message,  LogCategory.RUNTIME,  projectId,
                     LogSubModule.WORKFLOW, processId);
             //send to monitoring when its ready

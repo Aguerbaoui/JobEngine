@@ -3,6 +3,8 @@ package io.je.rulebuilder.components;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+
 import io.je.rulebuilder.components.blocks.Block;
 import io.je.rulebuilder.components.blocks.getter.AttributeGetterBlock;
 
@@ -52,15 +54,30 @@ public class UserDefinedRule extends JERule {
 		isBuilt = false;
 
 	}
+	
+	@Override
+	public void loadTopics()
+	{
+		this.setTopics(new ConcurrentHashMap());
+		for(Block block : blocks.getAll())
+		{
+			if(block instanceof AttributeGetterBlock)
+			{
+				addTopic(((AttributeGetterBlock)block).getClassId());
+			}
+		}
+	}
+	
+	
 
 	/*
 	 * delete a block in this user defined rule
 	 */
 	public void deleteBlock(String blockId) {
-		if (blocks.getBlock(blockId) instanceof AttributeGetterBlock) {
+		/*if (blocks.getBlock(blockId) instanceof AttributeGetterBlock) {
 			AttributeGetterBlock getter = (AttributeGetterBlock) blocks.getBlock(blockId);
 			removeTopic(getter.getClassId());
-		}
+		}*/
 		blocks.deleteBlock(blockId);
 		isBuilt = false;
 

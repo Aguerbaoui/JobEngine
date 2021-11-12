@@ -13,13 +13,13 @@ public abstract class JEMonitoredData extends JEObject{
 		   
 	   }
 	   
-		protected JEMonitoredData(String jobEngineElementID, String jobEngineProjectID) {
-			super(jobEngineElementID, jobEngineProjectID);
+		protected JEMonitoredData(String jobEngineElementID, String jobEngineProjectID, String jobEngineElementName) {
+			super(jobEngineElementID, jobEngineProjectID, jobEngineElementName);
 		}
 	 
-	protected JEMonitoredData(String jobEngineElementID, String jobEngineProjectID, ArchiveOption isArchived,
+	protected JEMonitoredData(String jobEngineElementID, String jobEngineProjectID, String jobEngineElementName, ArchiveOption isArchived,
 			boolean isBroadcasted) {
-		super(jobEngineElementID, jobEngineProjectID);
+		super(jobEngineElementID, jobEngineProjectID, jobEngineElementName);
 		this.isArchived = isArchived;
 		this.isBroadcasted = isBroadcasted;
 		if(isArchived==ArchiveOption.asInstance)

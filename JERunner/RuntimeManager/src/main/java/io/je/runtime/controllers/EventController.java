@@ -1,7 +1,6 @@
 package io.je.runtime.controllers;
 
 import io.je.project.exception.JEExceptionHandler;
-import io.je.utilities.logger.JELogger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -11,7 +10,7 @@ import io.je.runtime.services.RuntimeDispatcher;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.models.EventModel;
-import io.je.utilities.network.JEResponse;
+import io.je.utilities.beans.JEResponse;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;

@@ -20,11 +20,20 @@
 			<artifactId>core</artifactId>
 			<version>8.12.2</version>
 		</dependency>
-
+		<dependency>
+			<groupId>io.utils</groupId>
+			<artifactId>Utilities</artifactId>
+			<version>0.0.1</version>
+		</dependency>
 		<dependency>
 			<groupId>io.je</groupId>
 			<artifactId>RuntimeUtilities</artifactId>
 			<version>0.0.1</version>
 		</dependency>
+		        <dependency>
+  <groupId>io.sioth</groupId>
+  <artifactId>AdminUtilities</artifactId>
+  <version>0.0.1</version>
+</dependency>
 	</dependencies>
 </project>

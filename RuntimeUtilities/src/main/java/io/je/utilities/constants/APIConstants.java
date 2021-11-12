@@ -59,9 +59,9 @@ public class APIConstants {
 
 	public static final String DELETERULE = "/rule/deleteRule";
 
-	public static final String ACTUATOR_HEALTH = "/actuator/health";
+	public static final String ACTUATOR_HEALTH = "/actuator";
 
-	public static final String PROJECT_UPDATE_RUNNER = "/config/updateRunner";
+	public static final String PROJECT_UPDATE_RUNNER = "/jeproject/updateRunner";
 
 	public static final String EVENT_ADD_EVENT = "/event/addEvent";
 
@@ -70,7 +70,11 @@ public class APIConstants {
 	public static final String EVENT_UNTRIGGER_EVENT = "/event/untriggerEvent/";
 	
 	public static final String WRITE_TO_VARIABLE = "/variable/writeVariableValue/";
-	
+
+	public static final String RUN_PROJECT_RULES = "/rule/runAllRules/";
+
+	public static final String SHUT_DOWN_RULE_ENGINE = "/rule/shutDownRuleEngine/";
+
 
 
 	public static final String UPDATE_CONFIG = "/updateConfig";

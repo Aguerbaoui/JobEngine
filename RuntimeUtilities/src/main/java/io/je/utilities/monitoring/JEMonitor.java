@@ -6,16 +6,16 @@ import java.util.Arrays;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.je.utilities.beans.ArchiveOption;
-import io.je.utilities.config.Utility;
 import io.je.utilities.constants.JEMessages;
-import io.je.utilities.logger.JELogger;
-import io.je.utilities.logger.LogCategory;
-import io.je.utilities.logger.LogSubModule;
-import io.je.utilities.zmq.ZMQPublisher;
+import io.je.utilities.log.JELogger;
+import io.siothconfig.SIOTHConfigUtility;
+import utils.log.LogCategory;
+import utils.log.LogSubModule;
+import utils.zmq.ZMQPublisher;
 
 public class JEMonitor  {
 	
-	static ZMQPublisher publisher = new ZMQPublisher("tcp://"+Utility.getSiothConfig().getMachineCredentials().getIpAddress() , Utility.getSiothConfig().getPorts().getTrackerPort());
+	static ZMQPublisher publisher = new ZMQPublisher("tcp://"+SIOTHConfigUtility.getSiothConfig().getNodes().getSiothMasterNode() , SIOTHConfigUtility.getSiothConfig().getPorts().getTrackingPort());
 	static ObjectMapper objectMapper = new ObjectMapper();
 
 	public static void publish(LocalDateTime timestamp, String objectId, ObjectType objectType, String objectProjectId,

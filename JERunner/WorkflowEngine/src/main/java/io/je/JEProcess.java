@@ -32,6 +32,8 @@ public class JEProcess {
 
     HashMap<String, ActivitiTask> activitiTasks;
 
+    private Thread activeThread = null;
+
     public JEProcess() {
         activitiTasks = new HashMap<>();
     }
@@ -137,5 +139,13 @@ public class JEProcess {
 
     public void setProcessInstance(ProcessInstance processInstance) {
         this.processInstance = processInstance;
+    }
+
+    public Thread getActiveThread() {
+        return activeThread;
+    }
+
+    public void setActiveThread(Thread activeThread) {
+        this.activeThread = activeThread;
     }
 }

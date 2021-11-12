@@ -1,15 +1,10 @@
 package io.je.rulebuilder.models;
 
-import java.time.format.DateTimeFormatter;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import io.je.rulebuilder.components.JERule;
 import io.je.rulebuilder.components.UserDefinedRule;
 import io.je.rulebuilder.config.AttributesMapping;
-import io.je.utilities.config.Utility;
-import io.je.utilities.time.JEDate;
+import utils.date.DateUtils;
 
 
 /*
@@ -33,7 +28,7 @@ public class RuleModel {
     String salience;
 
     @JsonProperty(AttributesMapping.ENABLED)
-    String enabled;
+    boolean enabled;
 	
    
     @JsonProperty(AttributesMapping.DATEEFFECTIVE)
@@ -51,8 +46,8 @@ public class RuleModel {
     @JsonProperty(AttributesMapping.LASTUPDATE)
     String lastModifiedAt;
     
-    @JsonProperty(AttributesMapping.BUILDSTATUS)
-    String isBuilt;
+    @JsonProperty(AttributesMapping.STATUS)
+    String status;
     
     
     String createdBy;
@@ -67,16 +62,17 @@ public class RuleModel {
     public RuleModel(JERule rule) {
 		super();
 		this.ruleId = rule.getJobEngineElementID();
-		this.ruleName = rule.getRuleName();
+		this.ruleName = rule.getJobEngineElementName();
 		this.description = rule.getDescription();
-		this.isBuilt = String.valueOf(rule.isBuilt());
-		this.createdAt = JEDate.formatDateToSIOTHFormat(rule.getJeObjectCreationDate());
-		this.lastModifiedAt = JEDate.formatDateToSIOTHFormat(rule.getJeObjectLastUpdate());
+		this.status = String.valueOf(rule.isBuilt());
+		this.createdAt = DateUtils.formatDateToSIOTHFormat(rule.getJeObjectCreationDate());
+		this.lastModifiedAt = DateUtils.formatDateToSIOTHFormat(rule.getJeObjectLastUpdate());
 		this.createdBy = rule.getJeObjectCreatedBy();
 		this.modifiedBy = rule.getJeObjectModifiedBy();
+		this.status=rule.getStatus().toString();
 		if(rule instanceof UserDefinedRule) {
 			this.salience = ((UserDefinedRule)rule).getRuleParameters().getSalience();
-			this.enabled = ((UserDefinedRule)rule).getRuleParameters().getEnabled();
+			this.enabled = Boolean.valueOf(((UserDefinedRule)rule).getRuleParameters().getEnabled());
 			this.dateEffective = ((UserDefinedRule)rule).getRuleParameters().getDateEffective();
 			this.dateExpires = ((UserDefinedRule)rule).getRuleParameters().getDateExpires();
 			this.timer = ((UserDefinedRule)rule).getRuleParameters().getTimer();
@@ -136,10 +132,10 @@ public class RuleModel {
 	public void setSalience(String salience) {
 		this.salience = salience;
 	}
-	public String getEnabled() {
+	public boolean getEnabled() {
 		return enabled;
 	}
-	public void setEnabled(String enabled) {
+	public void setEnabled(boolean enabled) {
 		this.enabled = enabled;
 	}
 	public String getDateEffective() {
@@ -200,14 +196,17 @@ public class RuleModel {
 
 
 
-	public String getIsBuilt() {
-		return isBuilt;
+
+
+
+	public String getStatus() {
+		return status;
 	}
 
 
 
-	public void setIsBuilt(String isBuilt) {
-		this.isBuilt = isBuilt;
+	public void setStatus(String status) {
+		this.status = status;
 	}
 
 

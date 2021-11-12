@@ -9,9 +9,9 @@ public class JEMessages {
 
     public static final String RUNNER_STARTED = "Runner started successfully";
 
-    public static final String RUNNER_SHUTTING_DOWN = " Runner is shutting down";
+    public static final String RUNNER_SHUTTING_DOWN = "Runner is shutting down";
 
-    public static final String RUNNER_CONFFIG_UPDATE = "updating JERunner configuration";
+    public static final String RUNNER_CONFFIG_UPDATE = "Updating JERunner configuration";
 
     public static final String SETTING_ASYNC_EXECUTOR = "Setting async executor parameters";
 
@@ -32,13 +32,17 @@ public class JEMessages {
 
     public static final String DATA_MODEL_REQ_PORT_MISSING = "Request port is missing";
 
-    public static final String DROOLS_DATE_FORMAT_MISSING = "The rule engine' date format is not specified";
+    public static final String DROOLS_DATE_FORMAT_MISSING = "The job engine's timedate format is not specified";
 
     public static final String UPDATING_BUILDER_AND_RUNNER_CONFIGURATION = "Updating JEBuilder and JERunner configuration";
 
     public static final String UPDATING_RUNNER_CONFIGURATION_CONFIG = "Updating JERunner configuration";
 
-    public static final String RUNNER_IS_DOWN_CHECKING_AGAIN_IN_5_SECONDS = "Runner is down, rechecking in 5 seconds";
+    public static final String RUNNER_IS_DOWN_CHECKING_AGAIN_IN_5_SECONDS = "Runner is down, rechecking in 5  seconds";
+
+    public static final String DATABASE_IS_DOWN_CHECKING_AGAIN = "Database is down, rechecking";
+
+    public static final String DATABASE_IS_DOWN = "Database is down, please check the database service";
 
     public static final String RUNNER_IS_UP_UPDATING_NOW = "Runner is up, updating now";
 
@@ -47,8 +51,8 @@ public class JEMessages {
     public static final String CLASS_NAME_NULL = "Class name cannot be empty";
 
     public static final String CLASS_UNKNOWN = "Class unknown";
-    
-    public static final String CLASS_NOT_LOADED ="Loaded classes list does not recognize this Id :";
+
+    public static final String CLASS_NOT_LOADED ="Loaded classes list does not recognize this Id: ";
 
     public static final String TYPE_UNKNOWN = "Type unknown";
 
@@ -58,9 +62,11 @@ public class JEMessages {
 
     public static final String CLASS_LOAD_FAILED = "Class load failed ";
 
+    public static final String CLASS_LOAD_IN_RUNNER_FAILED = "Class load failed in runner";
+
     public static final String INVALID_CLASS_FORMAT = "Class format is not valid, interface cannot inherit from class ";
 
-    public static final String UNKNOW_CLASS_TYPE = "Class type cannot be determined. [Class types : Class/Interface/Enum ] ";
+    public static final String UNKNOW_CLASS_TYPE = "Class type cannot be determined. [Class types:  Class/Interface/Enum ] ";
 
     public static final String INHERITED_CLASS_ENUM = "Class cannot inherit from an enumeration";
 
@@ -70,7 +76,7 @@ public class JEMessages {
 
     public static final String GETTING_CLASS_DEFINITION = "Loading class definition";
 
-    public static final String LOADING_ALL_CLASSES_FROM_DB = "Loading all classes from db to memory";
+    public static final String LOADING_ALL_CLASSES_FROM_DB = "Loading all classes from database to memory";
 
     public static final String ADDING_CLASS = "Adding class ";
 
@@ -82,16 +88,16 @@ public class JEMessages {
 
 
     public static final String FAILED_TO_LOAD_CLASS = "Failed to load class";
-    
-    public static final String CLASS_ALREADY_EXISTS = "This class has already been added.";
+
+    public static final String CLASS_ALREADY_EXISTS = "This class already exists.";
 
     // ****************************************Data Listener**************************************************
 
-    public static final String LISTENING_ON_TOPICS = " Listening to topics: ";
+    public static final String LISTENING_ON_TOPICS = "Listening to topics: ";
 
     public static final String ADDING_TOPICS = "Adding topics: ";
 
-    public static final String STOPPED_LISTENING_ON_TOPICS = " Stopping listening to topics: ";
+    public static final String STOPPED_LISTENING_ON_TOPICS = "Stopping listening to topics: ";
 
     public static final String INTERRUPT_TOPIC_ERROR = "Error interrupting thread for topic: ";
 
@@ -131,7 +137,7 @@ public class JEMessages {
     public static final String RESETTING_PROJECTS = "Resetting projects after updating JERunner";
 
     //WF
-    public static final String LOADING_WFS = " Getting all workflows";
+    public static final String LOADING_WFS = "Getting all workflows";
 
     public static final String LOADING_WF = "Getting workflow";
 
@@ -150,7 +156,7 @@ public class JEMessages {
     public static final String DELETING_SEQUENCE_FLOW = "Deleting a sequence flow";
 
     public static final String BUILDING_WF = "Building workflow";
-    
+
     public static final String BUILDING_WFS = "Building workflows";
 
     public static final String RUNNING_WF = "Running workflow";
@@ -161,7 +167,7 @@ public class JEMessages {
 
     public static final String UPDATING_WF = "Updating workflow";
 
-    public static final String ADDING_BPMN_SCRIPT = " Adding a BPMN script";
+    public static final String ADDING_BPMN_SCRIPT = "Adding a JE  script";
 
     public static final String ADDING_LISTENERS_TO_PROCESS = "Adding listeners to process";
 
@@ -169,8 +175,8 @@ public class JEMessages {
 
     public static final String SAVING_BPMN_FILE_TO_PATH = "Saving BPMP file to path";
 
-    public static final String DEPLOYING_IN_RUNNER_WORKFLOW_WITH_ID = " Deploying in JERunner workflow with Id ";
-    public static final String FAILED_TO_DEPLOY_IN_RUNNER_WORKFLOW_WITH_ID = " Failed to deploy in JERunner workflow with Id";
+    public static final String DEPLOYING_IN_RUNNER_WORKFLOW_WITH_ID = "Deploying the workflow with Id in JERunner ";
+    public static final String FAILED_TO_DEPLOY_IN_RUNNER_WORKFLOW_WITH_ID = "Failed to deploy the workflow with Id in JERunner ";
 
     public static final String TRANSITIONING_FROM = "Transitioning from";
 
@@ -179,31 +185,31 @@ public class JEMessages {
     public static final String JUST_EXECUTED = "just executed";
     public static final String TASK_ID = "Task Id";
 
-    public static final String PROCESS_HAS_TO_BE_TRIGGERED_BY_EVENT = " Process has to be triggered by event or following a specific schedule";
+    public static final String PROCESS_HAS_TO_BE_TRIGGERED_BY_EVENT = "Process has to be triggered by event or following a specific schedule";
 
-    public static final String PROCESS_EXITED = " Process has ended execution";
+    public static final String PROCESS_EXITED = "Process has ended its execution";
 
     public static final String RUNNING_ALL_WORKFLOWS_IN_PROJECT_ID = "Running all workflows in project Id";
 
     public static final String BUILDING_WORKFLOWS_IN_PROJECT = "Building workflows in project";
 
-    public static final String ERROR_DELETING_A_NON_EXISTING_PROCESS = " Error deleting a non-existing process";
+    public static final String ERROR_DELETING_A_NON_EXISTING_PROCESS = "Error deleting a non-existing process";
 
-    public static final String EXECUTING_WEB_API_TASK = " Executing web api task";
+    public static final String EXECUTING_WEB_API_TASK = "Executing web API task";
 
-    public static final String NETWORK_CALL_RESPONSE_IN_WEB_SERVICE_TASK = "Network call response in web service task";
+    public static final String NETWORK_CALL_RESPONSE_IN_WEB_SERVICE_TASK = "Network call response in web API task";
 
     public static final String DEPLOYING_WF = "Deploying workflow";
 
     public static final String DB_TASK = "Executing database operation in task = ";
 
-    public static final String MAIL_SERVICE_TASK_RESPONSE = "Mail service task response";
+    public static final String MAIL_SERVICE_TASK_RESPONSE = "Email service task response";
 
-    public static final String DB_SERVICE_TASK_RESPONSE = " Database service task response";
+    public static final String DB_SERVICE_TASK_RESPONSE = "Database service task response";
 
-    public static final String DB_API_RESPONSE = " Database Api response";
+    public static final String DB_API_RESPONSE = "Database API response";
 
-    public static final String UPDATING_A_WORKFLOW_BLOCK_WITH_ID = " Updating a workflow block with Id ";
+    public static final String UPDATING_A_WORKFLOW_BLOCK_WITH_ID = "Updating a workflow block with Id ";
 
     public static final String INFORM_FROM_USER = "Inform from user";
 
@@ -212,7 +218,7 @@ public class JEMessages {
 
     public static final String UPDATING_SCRIPTED_RULE = "Updating new scripted rule";
 
-    public static final String LOADING_RULES = " Getting all rules";
+    public static final String LOADING_RULES = "Getting all rules";
 
     public static final String ADDING_RULE = "Adding rule";
 
@@ -254,11 +260,13 @@ public class JEMessages {
 
     public static final String REMOVING_EVENTS = "Updating fact";
 
-    public static final String TRIGGERING_NOW = " Triggering now";
+    public static final String TRIGGERING_NOW = "Triggering event  now";
 
-    public static final String REMOVING_EVENT = "Removing now";
+    public static final String REMOVING_EVENT = "Removing event now";
 
     public static final String ERROR_DELETING_EVENT = "Error deleting event";
+
+    public static final String FAILED_TO_ADD_EVENT = "Failed to add event";
 
 
     // ****************************************ResponseMessages**************************************************
@@ -274,13 +282,15 @@ public class JEMessages {
 
     public static final String WORKFLOW_BLOCK_NOT_FOUND = "Workflow block not found";
 
-    public static final String PROJECT_NOT_FOUND = "Project not found";
+    public static final String PROJECT_NOT_FOUND = "No project with this Id was found.";
+
+    public static final String PROJECT_LOAD_ERROR = "Error loading project files";
 
     public static final String UKNOWN_ERROR = "Unknown error";
 
     public static final String INVALID_SEQUENCE_FLOW = "Invalid sequence flow";
 
-    public static final String NETWORK_ERROR = "Error connecting to runtime manager api";
+    public static final String NETWORK_ERROR = "Error connecting to runtime manager API";
 
     public static final String DATA_LISTENER_NOT_FOUND = "Data listener not found";
 
@@ -298,25 +308,24 @@ public class JEMessages {
 
     public static final String PROJECT_BUILT = "Project already built";
 
-    public static final String PROJECT_NOT_BUILT = "Project needs build";
+    public static final String PROJECT_NOT_BUILT = "Project needs to be built";
 
     public static final String PROJECT_ALREADY_STOPPED = "Project already stopped";
 
     public static final String WORKFLOW_ALREADY_RUNNING = "Workflow already running";
 
-    public static final String WORKFLOW_NEEDS_BUILD = "Workflow needs build";
+    public static final String WORKFLOW_NEEDS_BUILD = "Workflow needs to be built";
 
-    public static final String EVENT_NOT_FOUND = " No event with this Id was found ";
+    public static final String EVENT_NOT_FOUND = "No event with this Id was found ";
 
-    public static final String ERROR_SETTING_EVENT = " Error while setting event in Runner ";
+    public static final String ERROR_SETTING_EVENT = "Error while setting event in Runner  ";
 
-    public static final String NOT_ALPHABETICAL = "Must only contain alphabetical characters ";
+    public static final String NOT_ALPHABETICAL = "Must contain alphabetical characters only ";
 
-    public static final String WORKFLOW_TRIGGERED_BY_EVENT = " Workflow cannot start manually";
+    public static final String WORKFLOW_TRIGGERED_BY_EVENT = "Workflow cannot be started manually";
 
     public static final String EVENT_ALREADY_EXISTS = "An event with this Id already exists";
 
-    public static final String MISSING_CONFIG = "Application configuration is missing. Make sure to properly configure the application before proceeding.";
 
     public static final String JEBUILDER_UNREACHABLE = "JEBuilder unreachable";
 
@@ -346,9 +355,11 @@ public class JEMessages {
 
     public static final String EVENT_DELETED = "Event was successfully deleted ";
 
+    public static final String EVENTS_DELETED = "Event were successfully deleted ";
+
     public static final String EVENT_UPDATED = "Event was successfully updated ";
 
-    public static final String LOADING_EVENTS = "Loading events .. ";
+    public static final String LOADING_EVENTS = "Loading events ... ";
 
     public static final String LOADING_EVENT = "Loading event ";
 
@@ -360,13 +371,13 @@ public class JEMessages {
 
     public static final String UPDATING_EVENT_TYPE_FAILED = "Failed to set event type in JERunner";
 
-    public static final String DELETING_EVENT = " deleting event";
+    public static final String DELETING_EVENT = "deleting event";
 
-    public static final String DELETING_EVENTS = " deleting events";
+    public static final String DELETING_EVENTS = "deleting events";
 
-    public static final String DELETING_EVENT_FROM_RUNNER = " deleting event from JERunner";
+    public static final String DELETING_EVENT_FROM_RUNNER = "deleting event from JERunner";
 
-    public static final String UPDATING_EVENT_TYPE_IN_RUNNER = " Updating event type in JERunner";
+    public static final String UPDATING_EVENT_TYPE_IN_RUNNER = "Updating event type in JERunner";
 
 
     // ****************************************rules**************************************************
@@ -375,7 +386,7 @@ public class JEMessages {
 
     public static final String RULE_BUILD_ERROR = "Error while building a rule";
 
-    public static final String RULE_ADDED_SUCCESSFULLY = " Rule added successfully.";
+    public static final String RULE_ADDED_SUCCESSFULLY = "Rule added successfully.";
 
     public static final String FAILED_TO_ADD_RULE = "Failed to add rule.";
 
@@ -385,7 +396,7 @@ public class JEMessages {
 
     public static final String FAILED_TO_DELETE_ALL_RULES = "Failed to delete all rules ";
 
-    public static final String FAILED_TO_DELETE_SOME_RULES = "Failed to delete the following rules : ";
+    public static final String FAILED_TO_DELETE_SOME_RULES = "Failed to delete the following rules:  ";
 
 
     public static final String WORKFLOW_DELETED_SUCCESSFULLY = "Workflow deleted successfully";
@@ -403,18 +414,18 @@ public class JEMessages {
     // ****************************************WORKFLOW**************************************************
     public static final String CREATED_PROJECT_SUCCESSFULLY = "Created project successfully";
 
-    public static final String BUILT_EVERYTHING_SUCCESSFULLY = " Built everything successfully";
+    public static final String BUILT_EVERYTHING_SUCCESSFULLY = "Built everything successfully";
 
-    public static final String BUILDING_BPMN_FROM_JEWORKFLOW = "Building bpmn from jeworkflow Id =";
+    public static final String BUILDING_BPMN_FROM_JEWORKFLOW = "Building BPMN from JE workflow Id =";
 
 
-    public static final String ADDED_WORKFLOW_SUCCESSFULLY = "Added workflow successfully";
+    public static final String ADDED_WORKFLOW_SUCCESSFULLY = "Workflow added successfully";
 
     public static final String WORKFLOW_BUILT_SUCCESSFULLY = "Workflow built successfully";
 
     public static final String EXECUTING_WORKFLOW = "Executing workflow";
 
-    public static final String WORKFLOW_DEPLOYED = "Workflow deployed to engine";
+    public static final String WORKFLOW_DEPLOYED = "Workflow deployed to engine ";
 
     public static final String ADDED_WORKFLOW_COMPONENT_SUCCESSFULLY = "Added workflow component successfully";
 
@@ -422,13 +433,15 @@ public class JEMessages {
 
     public static final String BLOCK_DELETED_SUCCESSFULLY = "Block deleted successfully";
 
-    public static final String FRONT_CONFIG = "Saved front config";
+    public static final String FRONT_CONFIG = "Saved front configuration";
 
     // ****************************************Variables**************************************************
 
-    public static final String VAR_ADDED_SUCCESSFULLY = " Variable added successfully.";
+    public static final String VAR_ADDED_SUCCESSFULLY = "Variable added successfully.";
 
-    public static final String VAR_DELETED = "Variable was sucessfully deleted ";
+    public static final String VAR_DELETED = "Variable was deleted successfully  ";
+
+    public static final String VARS_DELETED = "Variables were successfully deleted ";
 
     public static final String ADDING_VARIABLE = "Adding variable ";
 
@@ -444,28 +457,28 @@ public class JEMessages {
 
     // rules
 
-    public static final String RULE_ID_NULL = "Rule Identifier can't be empty";
+    public static final String RULE_ID_NULL = "Rule Identifier cannot be empty";
 
-    public static final String RULE_NAME_NULL = "Rule name can't be empty";
+    public static final String RULE_NAME_NULL = "Rule name cannot be empty";
 
-    public static final String PROJECT_ID_NULL = "Project Identifier can't be empty";
+    public static final String PROJECT_ID_NULL = "Project Identifier cannot be empty";
 
     public static final String RULE_PROJECT_ID_NULL = "Rule's project Id was not found";
 
-    public static final String NO_EXECUTION_BLOCK = "Rule must have at least one execution block";
+    public static final String NO_EXECUTION_BLOCK = "Rule must have at least one function block";
 
     public static final String RULE_NOT_FOUND = "No rule with this Id was found";
 
     public static final String RULE_EXISTS = "A rule with this Id already exists. ";
 
     // rule blocks
-    public static final String ADD_BLOCK_FAIL = "Failed to Add Block";
-    
+    public static final String ADD_BLOCK_FAIL = "Failed to add block";
+
     public static final String BLOCK_NAME_EXISTS = "A block with this name already exists.";
 
     public static final String BLOCK_EXISTS = "A block with this Id already exists.";
 
-    public static final String BLOCK_NOT_FOUND = "No Block with this Id was found";
+    public static final String BLOCK_NOT_FOUND = "No block with this Id was found";
 
     public static final String BLOCK_ID_NULL = "A block must have an Id";
 
@@ -477,7 +490,7 @@ public class JEMessages {
 
     public static final String BLOCK_OPERATION_ID_UNKNOWN = "Block operation Id is unknown.";
 
-    public static final String BLOCK_NAME_EMPTY = "Block name can't be empty";
+    public static final String BLOCK_NAME_EMPTY = "Block name cannot be empty";
 
     public static final String RULE_BUILD_FAILED = "Failed to build rule";
 
@@ -491,7 +504,7 @@ public class JEMessages {
 
     public static final String INPUT_CONNECTION1 = "Comparison block cannot have ";
 
-    public static final String INPUT_CONNECTION2 = " input connexions.";
+    public static final String INPUT_CONNECTION2 = "input connections.";
 
 
     // ****************************************RuleEngine**************************************************
@@ -515,7 +528,7 @@ public class JEMessages {
 
     public static final String STOPPING_PROJECT_CONTAINER_FAILED = "Failed to stop project container";
 
-    public static final String UNEXPECTED_ERROR = "An unexpected error occurred\n";
+    public static final String UNEXPECTED_ERROR = "An unexpected error occurred ";
 
     public static final String RULE_ADDED = "Rule added successfully ";
 
@@ -533,15 +546,15 @@ public class JEMessages {
 
     public static final String FIRING_ALL_RULES = "Firing all rules.";
 
-    public static final String NO_RULES = "NO_RULES_WERE_FOUND";
+    public static final String NO_RULES = "No rule was found.";
 
     public static final String BUILDING_KIE = "Building knowledge base.";
 
-    public static final String KIE_BUILT = "knowledge base built successfully.";
+    public static final String KIE_BUILT = "Knowledge base built successfully.";
 
-    public static final String KIE_INIT = "Initialising knowledge base.";
+    public static final String KIE_INIT = "Initializing knowledge base.";
 
-    public static final String KIE_INIT_FAILED = "Failed to initialise knowledge base";
+    public static final String KIE_INIT_FAILED = "Failed to initialize knowledge base";
 
     public static final String FAILED_TO_UPDATE_FACT = "Failed to update fact";
 
@@ -550,17 +563,17 @@ public class JEMessages {
 
     // ****************************************NETWORKMSGS**************************************************
 
-    public static final String NETWORK_GET = " Making Get network call to url = ";
+    public static final String NETWORK_GET = "Making Get network call to URL = ";
 
-    public static final String NETWORK_DELETE = " Making Delete network call to url = ";
+    public static final String NETWORK_DELETE = "Making Delete network call to URL = ";
 
-    public static final String NETWORK_POST = " Making POST network call to url = ";
+    public static final String NETWORK_POST = "Making POST network call to url = ";
 
-    public static final String NETWORK_CALL_ERROR = "Error making network call for url = ";
+    public static final String NETWORK_CALL_ERROR = "Error making network call for URL = ";
 
     public static final String NETWORK_DELETE_EVENT = "Sending delete event request to JERunner,";
 
-    public static final String NETWORK_CLEAN_PROJECT = "Sending clean project request";
+    public static final String NETWORK_CLEAN_PROJECT = "Sending clean project request ";
 
     public static final String NETWORK_DELETE_WF = "Sending delete workflow request to JERunner,";
 
@@ -572,70 +585,114 @@ public class JEMessages {
 
 
     // ****************************************UTILS**************************************************
-    public static final String READING_FILE = " Reading file";
+    public static final String READING_FILE = "Reading file";
 
-    public static final String DELETE_FILE_FAILED = "Failed deleting file ";
+    public static final String DELETE_FILE_FAILED = "Failed to delete file ";
 
-    public static final String SETTING_DATA_DEFINITION_URL_FROM_CONTROLLER = "Setting data definition url from controller";
+    public static final String SETTING_DATA_DEFINITION_URL_FROM_CONTROLLER = "Setting data definition URL from controller";
 
     public static final String SENDING_REQUEST_TO_DATA_MODEL = "Sending request to Data Model";
 
-    public static final String NO_RESPONSE_FROM_DATA_MODEL = "No Response from Data Model";
+    public static final String NO_RESPONSE_FROM_DATA_MODEL = "No response from Data Model";
 
     public static final String UPDATING_CONFIGURATION = "Updating configuration";
 
 
 //******************************************************* updates ****************************************
-    
+
     public static final String ADDING_JAR_TO_PROJECT = "Adding jar to project";
-    public static final String ADDING_JAR_FILE_TO_RUNNER = "Adding jar file to JERunner\n";
+    public static final String ADDING_JAR_FILE_TO_RUNNER = "Adding jar file to JERunner ";
     public static final String CLASS_COMPILATION_FAILED = "Class compilation failed ";
-    public static final String DATA_MODEL_DATE_FORMAT_MISSING = "DataModel date format is not specified";
-    public static final String VARIABLE_NOT_FOUND = "Variable cannot be found";
+    public static final String DATA_MODEL_DATE_FORMAT_MISSING = "Data Model timedate format is not specified";
+    public static final String VARIABLE_NOT_FOUND = "No variable with this Id was found: ";
     public static final String VARIABLE_EXISTS = "Variable already exists";
     public static final String STOPPING_WF = "Stopping workflow";
-	public static final String LOGGING_SYSTEM_URL_MISSING = "Logging System URL is not configured";
-	public static final String LOGGING_SYSTEM_PORT_MISSING = "Logging System port is not configured";
-	public static final String EMAIL_API_URL_MISSING = "Email API URL is not configured";
-	public static final String LOADING_VARIABLES = "Loading variables..";
+    public static final String LOGGING_SYSTEM_URL_MISSING = "Tracker URL is not configured";
+    public static final String LOGGING_SYSTEM_PORT_MISSING = "Tracker port is not configured";
+    public static final String EMAIL_API_URL_MISSING = "Email API URL is not configured";
+    public static final String LOADING_VARIABLES = "Loading variables...";
     public static final String PROJECT_AUTO_RELOAD = "Setting project auto reload to";
     public static final String PROJECT_UPDATED = "Project updated successfully";
-    public static final String RULE_EXECUTION_ERROR = "RULE EXECUTION ERROR : ";
+    public static final String RULE_EXECUTION_ERROR = "Rule execution error: ";
     public static final String ERROR_DELETING_A_PROCESS = "Error deleting a process";
-    public static final String INFORM_BLOCK_ERROR = "Failed to execute Inform Block";
+    public static final String INFORM_BLOCK_ERROR = "Failed to execute Inform block";
 
-    public static final String BLOCK_NAME_CAN_T_BE_UPDATED_BECAUSE_IT_ALREADY_EXISTS = "Block name can't be updated because it already exists";
+    public static final String BLOCK_NAME_CAN_T_BE_UPDATED_BECAUSE_IT_ALREADY_EXISTS = "Block name cannot be updated because its name already exists";
     public static final String WORKFLOW_BUILD_ERROR = "Error while building the workflow ";
-    public static final String WORKFLOW_RUN_ERROR = " Error while running the workflow ";
+    public static final String WORKFLOW_RUN_ERROR = "Error while running the workflow ";
     public static final String UPLOADED_JAR_TO_PATH = "Uploaded jar to path ";
-    public static final String SENDING_VARIABLE_TO_RUNNER = "Sending variable to runner";
+    public static final String SENDING_VARIABLE_TO_RUNNER = "Sending variable to JERunner";
     public static final String DELETING_VARIABLE = "Deleting variable ";
-    public static final String ERROR_ADDING_VARIABLE_TO_PROJECT = "Error adding variable to project";
-    public static final String ERROR_DELETING_VARIABLE_TO_PROJECT = "Error deleting variable to project";
-    public static final String ERROR_TRIGGERING_EVENT = "Error triggering event";
-    public static final String ERROR_REMOVING_RULE = "Error removing rule";
-    public static final String ERROR_EXECUTING_DB_QUERY = "Error executing the database query";
-    public static final String ERROR_GETTING_CLASS_UPDATES = "Error getting class updates";
-    public static final String FAILED_TO_SEND_LOG_MESSAGE_TO_THE_LOGGING_SYSTEM = "Failed to send log message to the logging system : \n";
-    public static final String CHECK_DM_FOR_DETAILS = "Check Integration Objects' SIOTH Data Model Service's log for more details. ";
+    public static final String ERROR_ADDING_VARIABLE_TO_PROJECT = "Error while adding variable to project";
+    public static final String DELETING_VARIABLES = "Deleting variables ";
+    public static final String ERROR_REMOVING_LIBRARY = "Error while removing the library";
+    public static final String ERROR_REMOVING_METHOD = "Error while removing the procedure";
+    public static final String ERROR_WRITING_VALUE_TO_VARIABLE = "Error while writing value to variable";
+    public static final String ERROR_DELETING_VARIABLE_FROM_PROJECT = "Error while deleting variable from project";
+    public static final String ERROR_TRIGGERING_EVENT = "Error while triggering event";
+    public static final String ERROR_REMOVING_RULE = "Error while removing rule";
+    public static final String ERROR_EXECUTING_DB_QUERY = "Error while executing the database query";
+    public static final String ERROR_GETTING_CLASS_UPDATES = "Error while getting class updates";
+    public static final String FAILED_TO_SEND_LOG_MESSAGE_TO_THE_LOGGING_SYSTEM = "Failed to send log message to the Tracker module: ";
+    public static final String CHECK_DM_FOR_DETAILS = "Check Integration Objects' SIOTH Data Model service's log file for more details. ";
+    public static final String ERROR_RUNNING_PROJECT = "Error while running project, check your configuration";
+    public static final String ERROR_STOPPING_PROJECT = "Error while stopping project, check your configuration";
+    public static final String ERROR_STOPPING_WORKFLOW = "Error while stopping workflow, check your configuration";
+    public static final String ERROR_WHILE_REFERENCING_A_DISABLED_WORKFLOW = "Error while referencing a disabled workflow: ";
+    public static final String WORKFLOW_IS_DISABLED = "The workflow is disabled, check your configuration";
+    public static final String PROCEDURE_DELETED_SUCCESSFULLY = "The procedure was deleted successfully";
+    public static final String LIBRARY_DELETED_SUCCESSFULLY = "The library was deleted successfully";
+    public static final String LIBRARY_EXISTS = "The library already exists in the system";
+    public static final String THREAD_INTERRUPTED_WHILE_EXECUTING = "Thread execution interrupted";
 
-//********************************************************* instances ******************************************************
+
+    //********************************************************* instances ******************************************************
     public static final String WRITE_INSTANCE_FAILED = "Failed to update instance value. ";
-    
-    public static final String READ_INSTANCE_FAILED = "Failed to read last values for instance : ";
-    
-    public static final String UPDATING_INSTANCE_VALUE = " Updating instance value..";
-    
+
+    public static final String READ_INSTANCE_FAILED = "Failed to read last values for instance: ";
+
+    public static final String UPDATING_INSTANCE_VALUE = "Updating instance value...";
+
     public static final String INSTANCE_UPDATE_SUCCESS ="Instance was updated successfully";
 
-    public static final String ADD_INSTANCE_FAILED = "Failed to create instance : ";
+    public static final String ADD_INSTANCE_FAILED = "Failed to create instance: ";
 
-	public static final String FAILED_TO_INJECT_DATA = "Failed to inject data : ";
+    public static final String FAILED_TO_INJECT_DATA = "Failed to inject data: ";
 
-	public static final String DATA_LISTENTING_STARTED = "Started listening for data.. ";
+    public static final String DATA_LISTENTING_STARTED = "Started listening for data... ";
 
-    
-    
-    
-    
+    public static final String ERROR_IMPORTING_FILE = "Error while importing file ";
+
+    public static final String PROCEDURE_ADDED_SUCCESSFULLY = "Procedure was added successfully";
+
+    public static final String METHOD_EXISTS = "Procedure with the same name already exists";
+
+    public static final String METHOD_MISSING = "Procedure with this name does not exist";
+
+    public static final String ERROR_DURING_BUILD = "Error occurred while building project";
+
+    public static final String INVALID_CONFIG = "Invalid configuration";
+
+    public static final String GENERATED_RULE = "Generated DRL: ";
+
+    public static final String RULE_NOT_BUILT = "Rule is not built.";
+    public static final String FAILED_TO_STOP_RULE = "Failed to stop rule: ";
+    public static final String  STATUS_UPDATE_FAILED = "Failed to update status. ";
+
+    public static final String FAILED_TO_DELETE_RULE = "Failed to delete rule";
+    public static final String FAILED_TO_STOP_THE_WORKFLOW_BECAUSE_IT_ALREADY_IS_STOPPED = "Failed to stop the workflow because it already is stopped";
+    public static final String STOPPING_WORKFLOW_FORCED = "User stopped workflow execution";
+    public static final String JOB_ENGINE_ACCEPTS_JAR_FILES_ONLY = "Job engine accepts jar files only";
+    public static final String FILE_TOO_LARGE = "Jar file size is too large";
+    public static final String FAILED_INIT_DATAMODEL = "Failed to read initial values from Data Model. Topic = ";
+    public static final String RULE_DISABLED = "Rule is disabled.";
+
+    public static final String RULE_ALREADY_STOPPED = "Rule already stopped.";
+    public static final String RULE_STOPPED = "Rule is stopped.";
+
+    public static final String RULE_ALREADY_RUNNING = "Rule is already running";
+    public static final String DATAMODELAPI_UNREACHABLE = "Data Model RESTAPI unreachable";
+    public static final String DMAPI_RESPONSE = "Data Model definition returned : ";
+
+    public static final String CUSTOM_COMPILATION_SUCCESS = "Compilation in JEClassLoader succeeded.";
 }

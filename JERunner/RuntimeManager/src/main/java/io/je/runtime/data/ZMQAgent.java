@@ -3,11 +3,10 @@ package io.je.runtime.data;
 import io.je.runtime.services.RuntimeDispatcher;
 import io.je.utilities.beans.JEData;
 import io.je.utilities.constants.JEMessages;
-import io.je.utilities.logger.JELogger;
-import io.je.utilities.logger.LogCategory;
-import io.je.utilities.logger.LogSubModule;
-import io.je.utilities.zmq.ZMQRequester;
-import io.je.utilities.zmq.ZMQSubscriber;
+import io.je.utilities.log.JELogger;
+import utils.log.LogCategory;
+import utils.log.LogSubModule;
+import utils.zmq.ZMQSubscriber;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -20,13 +19,14 @@ public class ZMQAgent extends ZMQSubscriber {
 
 	@Override
 	public void run() {
-		JELogger.info("[topic = " + topic + "]" + JEMessages.DATA_LISTENTING_STARTED, LogCategory.RUNTIME, null,
+		JELogger.control("[topic = " + topic + "]" + JEMessages.DATA_LISTENTING_STARTED, LogCategory.RUNTIME, null,
 				LogSubModule.JERUNNER, null);
 		while (listening) {
 			String data = null;
 			try {
 				data = this.getSubSocket().recvStr();
 			} catch (Exception e) {
+				closeSocket();
 				e.printStackTrace();
 				continue;
 			}

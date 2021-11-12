@@ -3,21 +3,22 @@ package io.je.runtime.controllers;
 
 import static io.je.utilities.constants.JEMessages.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import io.je.project.exception.JEExceptionHandler;
-import io.je.runtime.models.RuleModel;
+import io.je.runtime.models.RunnerRuleModel;
 import io.je.runtime.services.RuntimeDispatcher;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.ResponseCodes;
-import io.je.utilities.logger.JELogger;
-import io.je.utilities.network.JEResponse;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import io.je.utilities.ruleutils.OperationStatusDetails;
+import io.je.utilities.beans.JEResponse;
+import io.je.utilities.beans.JECustomResponse;
 
 
 /*
@@ -37,11 +38,12 @@ public class RuleController {
      * add a new Rule
      */
     @PostMapping(value = "/addRule", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> addRule(@RequestBody RuleModel ruleModel) {
+    public ResponseEntity<?> addRule(@RequestBody RunnerRuleModel runnerRuleModel) {
 
         try {
-            runtimeDispatcher.addRule(ruleModel);
-            runtimeDispatcher.addTopics(ruleModel.getProjectId(), ruleModel.getTopics());
+            runtimeDispatcher.addTopics(runnerRuleModel.getProjectId(), runnerRuleModel.getRuleId(),"rule",runnerRuleModel.getTopics());
+            System.out.println("****>>>>>Rule Topics : "+runnerRuleModel.getTopics());
+            runtimeDispatcher.addRule(runnerRuleModel);
 
         } catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
@@ -55,11 +57,13 @@ public class RuleController {
      * update a  Rule
      */
     @PostMapping(value = "/updateRule", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> updateRule(@RequestBody RuleModel ruleModel) {
+    public ResponseEntity<?> updateRule(@RequestBody RunnerRuleModel runnerRuleModel) {
 
         try {
-            runtimeDispatcher.updateRule(ruleModel);
-            runtimeDispatcher.addTopics(ruleModel.getProjectId(), ruleModel.getTopics());
+            runtimeDispatcher.removeRuleTopics(runnerRuleModel.getProjectId(), runnerRuleModel.getRuleId());
+            runtimeDispatcher.addTopics(runnerRuleModel.getProjectId(), runnerRuleModel.getRuleId(),"rule",runnerRuleModel.getTopics());
+
+            runtimeDispatcher.updateRule(runnerRuleModel);
 
         } catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
@@ -68,16 +72,50 @@ public class RuleController {
 
         return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.RULE_UPDATED));
     }
+    
+    /*
+     * update a  Rule
+     */
+    @PostMapping(value = "/updateRules", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> updateRules(@RequestBody List<RunnerRuleModel> runnerRuleModels) {
 
+    	List<OperationStatusDetails> results = new ArrayList<OperationStatusDetails>();
+        try {
+           
+        	 results =runtimeDispatcher.updateRules(runnerRuleModels);
+
+        } catch (Exception e) {
+			return JEExceptionHandler.handleException(e);
+		}
+
+
+        return ResponseEntity.ok(new JECustomResponse(ResponseCodes.CODE_OK, JEMessages.RULE_UPDATED,results));
+    }
+    /*
+     * compile  a  Rule
+     */
+    @PostMapping(value = "/compileRules", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> compileRules(@RequestBody List<RunnerRuleModel> runnerRuleModels) {
+
+        try {
+            runtimeDispatcher.compileRules(runnerRuleModels);
+        } catch (Exception e) {
+			return JEExceptionHandler.handleException(e);
+		}
+
+
+        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.RULE_UPDATED));
+    }
+    
 
     /*
      * compile  a  Rule
      */
     @PostMapping(value = "/compileRule", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> compileRule(@RequestBody RuleModel ruleModel) {
+    public ResponseEntity<?> compileRule(@RequestBody RunnerRuleModel runnerRuleModel) {
 
         try {
-            runtimeDispatcher.compileRule(ruleModel);
+            runtimeDispatcher.compileRule(runnerRuleModel);
         } catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
 		}
@@ -106,6 +144,32 @@ public class RuleController {
 		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.RULE_DELETED));
 	}
 
+    /*
+     * Runs only rules
+     * */
+    @GetMapping(value = "/runAllRules/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> runProjectRules(@PathVariable String projectId) {
+        try {
+        	runtimeDispatcher.runProjectRules(projectId);
+        } catch (Exception e) {
+			return JEExceptionHandler.handleException(e);
+		}
+        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.EXECUTING_PROJECT));
 
+    }
+
+    /*
+     * Runs only rules
+     * */
+    @GetMapping(value = "/shutDownRuleEngine/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> stopRuleEngine(@PathVariable String projectId) {
+        try {
+        	runtimeDispatcher.shutDownRuleEngine(projectId);
+        } catch (Exception e) {
+			return JEExceptionHandler.handleException(e);
+		}
+        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.EXECUTING_PROJECT));
+
+    }
 
 }

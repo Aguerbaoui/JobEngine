@@ -6,8 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.je.utilities.classloader.JEClassLoader;
-import io.je.utilities.logger.LogCategory;
-import io.je.utilities.logger.LogSubModule;
 import io.je.utilities.mapping.InstanceModelMapping;
 import io.je.utilities.models.InstanceModel;
 
@@ -15,15 +13,17 @@ import org.json.JSONObject;
 
 import io.je.ruleengine.impl.RuleEngine;
 import io.je.ruleengine.models.Rule;
-import io.je.runtime.models.RuleModel;
+import io.je.runtime.models.RunnerRuleModel;
 import io.je.utilities.beans.JEData;
 import io.je.utilities.beans.JEEvent;
 import io.je.utilities.beans.JEVariable;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.*;
 import io.je.utilities.instances.InstanceManager;
-import io.je.utilities.logger.JELogger;
+import io.je.utilities.log.JELogger;
 import io.je.utilities.runtimeobject.JEObject;
+import utils.log.LogCategory;
+import utils.log.LogSubModule;
 
 /*
  * class responsible for Rule Engine calls
@@ -36,24 +36,24 @@ public class RuleEngineHandler {
     }
 
     
-    private static String verifyRuleIsValid(RuleModel ruleModel) throws RuleFormatNotValidException
+    private static String verifyRuleIsValid(RunnerRuleModel runnerRuleModel) throws RuleFormatNotValidException
     {
 		JELogger.debug(JEMessages.VALIDATING_RULE ,
-				LogCategory.RUNTIME, ruleModel.getProjectId(),
-				LogSubModule.RULE,ruleModel.getRuleId());
+				LogCategory.RUNTIME, runnerRuleModel.getProjectId(),
+				LogSubModule.RULE,runnerRuleModel.getRuleId());
     	String errorMsg = null;
-    	if(ruleModel.getRuleId() == null || ruleModel.getRuleId().isEmpty())
+    	if(runnerRuleModel.getRuleId() == null || runnerRuleModel.getRuleId().isEmpty())
     	{
     		
     		errorMsg = JEMessages.ID_NOT_FOUND;
     		throw new RuleFormatNotValidException(errorMsg);
     	}
-    	if(ruleModel.getRulePath() == null || ruleModel.getRulePath().isEmpty())
+    	if(runnerRuleModel.getRulePath() == null || runnerRuleModel.getRulePath().isEmpty())
     	{
     		errorMsg = JEMessages.RULE_FILE_NOT_FOUND;
     		throw new RuleFormatNotValidException(errorMsg);
     	}
-    	if(ruleModel.getProjectId() == null || ruleModel.getProjectId().isEmpty())
+    	if(runnerRuleModel.getProjectId() == null || runnerRuleModel.getProjectId().isEmpty())
     	{
     		errorMsg = JEMessages.RULE_PROJECT_ID_NULL;
     		throw new RuleFormatNotValidException(errorMsg);
@@ -66,9 +66,10 @@ public class RuleEngineHandler {
      * add rule to rule engine
      */
 
-    public static void addRule(RuleModel ruleModel) throws RuleAlreadyExistsException, RuleCompilationException, RuleNotAddedException, JEFileNotFoundException, RuleFormatNotValidException {
-    	verifyRuleIsValid(ruleModel);       
-        Rule rule = new Rule(ruleModel.getRuleId(), ruleModel.getProjectId(), ruleModel.getRuleId(), ruleModel.getFormat(), ruleModel.getRulePath());
+    public static void addRule(RunnerRuleModel runnerRuleModel) throws RuleAlreadyExistsException, RuleCompilationException, RuleNotAddedException, JEFileNotFoundException, RuleFormatNotValidException {
+    	verifyRuleIsValid(runnerRuleModel);       
+        Rule rule = new Rule(runnerRuleModel.getRuleId(), runnerRuleModel.getProjectId(), runnerRuleModel.getRuleName(), runnerRuleModel.getFormat(), runnerRuleModel.getRulePath());
+        rule.setJobEngineProjectName(runnerRuleModel.getProjectName());
         RuleEngine.addRule(rule);  
       
 
@@ -78,11 +79,12 @@ public class RuleEngineHandler {
     /*
      * update rule in rule engine
      */
-    public static void updateRule(RuleModel ruleModel) throws RuleCompilationException, JEFileNotFoundException, RuleFormatNotValidException {
+    public static void updateRule(RunnerRuleModel runnerRuleModel) throws RuleCompilationException, JEFileNotFoundException, RuleFormatNotValidException {
 
-    	verifyRuleIsValid(ruleModel); 
-        Rule rule = new Rule(ruleModel.getRuleId(), ruleModel.getProjectId(), ruleModel.getRuleId(), ruleModel.getFormat(), ruleModel.getRulePath());
-        rule.setTopics(ruleModel.getTopics());
+    	verifyRuleIsValid(runnerRuleModel); 
+        Rule rule = new Rule(runnerRuleModel.getRuleId(), runnerRuleModel.getProjectId(), runnerRuleModel.getRuleId(), runnerRuleModel.getFormat(), runnerRuleModel.getRulePath());
+        rule.setJobEngineProjectName(runnerRuleModel.getProjectName());
+        rule.setTopics(runnerRuleModel.getTopics());
         RuleEngine.updateRule(rule);
 
     }
@@ -96,7 +98,7 @@ public class RuleEngineHandler {
     }
 
 
-    public static void injectData(String projectId,JEObject instance) throws InstanceCreationFailed {
+    public static void injectData(String projectId,JEObject instance)  {
     try
     {
     	
@@ -129,9 +131,10 @@ public class RuleEngineHandler {
 	/*
 	 * compile rule 
 	 */
-	public static void compileRule(RuleModel ruleModel) throws RuleFormatNotValidException, RuleCompilationException, JEFileNotFoundException {
-		verifyRuleIsValid(ruleModel); 
-        Rule rule = new Rule(ruleModel.getRuleId(), ruleModel.getProjectId(), ruleModel.getRuleId(), ruleModel.getFormat(), ruleModel.getRulePath());
+	public static void compileRule(RunnerRuleModel runnerRuleModel) throws RuleFormatNotValidException, RuleCompilationException, JEFileNotFoundException {
+		verifyRuleIsValid(runnerRuleModel); 
+        Rule rule = new Rule(runnerRuleModel.getRuleId(), runnerRuleModel.getProjectId(), runnerRuleModel.getRuleName(), runnerRuleModel.getFormat(), runnerRuleModel.getRulePath());
+        rule.setJobEngineProjectName(runnerRuleModel.getProjectName());
         RuleEngine.compileRule(rule);
        
 		
@@ -177,6 +180,22 @@ public class RuleEngineHandler {
 	
 	public static void deleteEvent(String projectId, String id) {
 		RuleEngine.deleteFact(projectId,id);
+		
+	}
+
+
+	public static void clearRuleTopics(String projectId, String ruleId) {
+		Rule rule = RuleEngine.getRule(projectId,ruleId);
+		if(rule!=null)
+		{
+			rule.getTopics().clear();
+		}
+		
+	}
+
+
+	public static void reloadContainers() {
+		RuleEngine.reloadContainers();
 		
 	}
 

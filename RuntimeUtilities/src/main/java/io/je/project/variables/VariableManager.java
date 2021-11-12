@@ -1,29 +1,22 @@
 package io.je.project.variables;
 
-import io.je.utilities.beans.ArchiveOption;
-import io.je.utilities.beans.JEBlockMessage;
-import io.je.utilities.beans.JEMessage;
-import io.je.utilities.beans.JEVariable;
-import io.je.utilities.beans.JEVariableMessage;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.je.utilities.beans.*;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.VariableNotFoundException;
-import io.je.utilities.logger.JELogger;
-import io.je.utilities.logger.LogCategory;
-import io.je.utilities.logger.LogSubModule;
+import io.je.utilities.log.JELogger;
 import io.je.utilities.monitoring.JEMonitor;
 import io.je.utilities.monitoring.ObjectType;
+import utils.log.LogCategory;
+import utils.log.LogSubModule;
+import utils.string.StringSub;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
-import io.je.utilities.string.JEStringSubstitutor;
-import io.je.utilities.time.JEDate;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class VariableManager {
 
@@ -54,7 +47,7 @@ public class VariableManager {
             variables.put(variable.getJobEngineProjectID(), new HashMap<>());
         }
         variables.get(variable.getJobEngineProjectID()).put(variable.getJobEngineElementID(),variable);
-			JEStringSubstitutor.addVariable(variable.getJobEngineProjectID(), variable.getName(), variable.getValue());
+			StringSub.addVariable(variable.getJobEngineProjectID(), variable.getJobEngineElementName(), variable.getValue());
 
     }
 
@@ -88,13 +81,13 @@ public class VariableManager {
 		       JEMessage message = new JEMessage();
 		       message.setExecutionTime(LocalDateTime.now().toString());
 		       message.setType("Variable");
-		       JEVariableMessage varMessage = new JEVariableMessage(variable.getName(), variable.getValue().toString());
+		       JEVariableMessage varMessage = new JEVariableMessage(variable.getJobEngineElementName(), variable.getValue().toString());
 		       //to be removed
-		       JEBlockMessage blockMessage = new JEBlockMessage(variable.getName(), variable.getValue().toString());
+		       JEBlockMessage blockMessage = new JEBlockMessage(variable.getJobEngineElementName(), variable.getValue().toString());
 		       message.getBlocks().add(blockMessage);
 		       message.getVariables().add(varMessage);
 	           try {
-	   			JELogger.debug("Variable ["+variable.getName() + "] = " +variable.getValue(), LogCategory.RUNTIME, projectId, LogSubModule.VARIABLE, variableId);
+	   			JELogger.debug("Variable ["+variable.getJobEngineElementName() + "] = " +variable.getValue(), LogCategory.RUNTIME, projectId, LogSubModule.VARIABLE, variableId);
 	   			JEMonitor.publish(LocalDateTime.now(), variable.getJobEngineElementID(), ObjectType.JEVARIABLE, variable.getJobEngineProjectID(), variable.getValue(), ArchiveOption.asSourceData, false);
 				JELogger.debugWithoutPublish(objectMapper.writeValueAsString(message), LogCategory.RUNTIME, projectId, LogSubModule.VARIABLE, variableId);
 			} catch (JsonProcessingException e) {

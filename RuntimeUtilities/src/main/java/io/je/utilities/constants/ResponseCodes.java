@@ -7,6 +7,7 @@ public class ResponseCodes {
 	public static final int CODE_OK = 200;
 	public static final int UNKNOWN_ERROR = 9999;
 	public static final int NETWORK_ERROR = 9998;
+	public static final int DATABASE_ERROR = 9997;
 
 	
 	//exceptions
@@ -51,7 +52,15 @@ public class ResponseCodes {
 	public static final int CODE_INJECTION_ERROR = 1038;
 	public static final int WORKFLOW_BLOCK_ERROR = 1039;
 	public static final int WORKFLOW_BUILD_ERROR = 1040;
-	public static final int LICENSE_INACTIVE = 1050;
+	public static final int LICENSE_INACTIVE = 1041;
+	public static final int PROJECT_STOP_FAILED = 1042;
+	public static final int PROJECT_LOAD_ERROR = 1043;
+	public static final int WORKFLOW_RUN_ERROR = 1044;
+	public static final int WORKFLOW_DELETION_ERROR = 1045;
+	public static final int ERROR_IMPORTING_FILE = 1046;
+	public static final int METHOD_EXCEPTION = 1047;
+	public static final int FILE_TOO_LARGE_EXCEPTION = 1048;
+
 
 
 

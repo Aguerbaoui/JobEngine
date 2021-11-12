@@ -1,19 +1,19 @@
 package io.je.project.config;
 
 import io.je.project.listener.JELicenseStatusListener;
-import io.je.utilities.config.Utility;
 import io.je.utilities.exceptions.LicenseNotActiveException;
-import io.je.utilities.logger.JELogger;
-import io.je.utilities.logger.LogCategory;
-import io.je.utilities.logger.LogSubModule;
+import io.je.utilities.log.JELogger;
 import io.licensemanager.LicenseManager.ClientLicenseManager;
 import io.licensemanager.common.enums.SIOTHLicenseStatus;
 import io.licensemanager.utilities.InitResponse;
+import io.siothconfig.SIOTHConfigUtility;
+import utils.log.LogCategory;
+import utils.log.LogSubModule;
 
 public class LicenseProperties {
 
-	private static String licenseManagerUrl =  "tcp://" + Utility.getSiothConfig().getMachineCredentials().getIpAddress()
-			+ ":" + Utility.getSiothConfig().getPorts().getSiothLicensePort();
+	private static String licenseManagerUrl =  "tcp://" + SIOTHConfigUtility.getSiothConfig().getNodes().getSiothMasterNode()
+			+ ":" + SIOTHConfigUtility.getSiothConfig().getPorts().getSiothLicensePort();
 	static SIOTHLicenseStatus licenseStatus = null;
 	private static int jobEngineFeatureCode = 4920;
 
@@ -27,9 +27,9 @@ public class LicenseProperties {
 					LogCategory.SIOTH_APPLICATION, "", LogSubModule.JEBUILDER, "");
 
 		}
-		setLicenseStatus(response.getStatus());
-		ClientLicenseManager.initListeners(jobEngineFeatureCode);
-		ClientLicenseManager.register(new JELicenseStatusListener());
+	//	setLicenseStatus(response.getStatus());
+	//	ClientLicenseManager.initListeners(jobEngineFeatureCode);
+	//	ClientLicenseManager.register(new JELicenseStatusListener());
 
 	}
 
@@ -48,7 +48,9 @@ public class LicenseProperties {
 	public static void checkLicenseIsActive() throws LicenseNotActiveException {
 
 		if (!licenseIsActive()) {
-			throw new LicenseNotActiveException(String.valueOf(licenseStatus));
+		//	JELogger.info("License is not active ", LogCategory.SIOTH_APPLICATION, "",
+			//		LogSubModule.JEBUILDER, "");
+			//throw new LicenseNotActiveException(String.valueOf(licenseStatus));
 		}
 	}
 

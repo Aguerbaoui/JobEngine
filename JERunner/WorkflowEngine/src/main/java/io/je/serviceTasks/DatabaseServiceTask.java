@@ -1,16 +1,15 @@
 package io.je.serviceTasks;
 
-import com.squareup.okhttp.Response;
 import io.je.utilities.apis.DatabaseApiHandler;
-import io.je.utilities.apis.HttpMethod;
-import io.je.utilities.config.Utility;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.ResponseCodes;
-import io.je.utilities.logger.*;
-import io.je.utilities.network.Network;
+import io.je.utilities.log.JELogger;
+import utils.log.LogCategory;
+import utils.log.LogSubModule;
+
 import org.activiti.engine.delegate.BpmnError;
 import org.activiti.engine.delegate.DelegateExecution;
-import java.time.LocalDateTime;
+
 import java.util.Arrays;
 
 public class DatabaseServiceTask extends ServiceTask {

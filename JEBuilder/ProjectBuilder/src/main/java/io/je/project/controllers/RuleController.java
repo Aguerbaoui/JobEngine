@@ -3,7 +3,6 @@ package io.je.project.controllers;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
-
 import io.je.project.exception.JEExceptionHandler;
 import io.je.project.services.ProjectService;
 
@@ -19,8 +18,9 @@ import io.je.rulebuilder.models.RuleModel;
 import io.je.rulebuilder.models.ScriptRuleModel;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.ResponseCodes;
-import io.je.utilities.logger.JELogger;
-import io.je.utilities.network.JEResponse;
+import io.je.utilities.ruleutils.OperationStatusDetails;
+import io.je.utilities.beans.JECustomResponse;
+import io.je.utilities.beans.JEResponse;
 
 /*
  * Rule Builder Rest Controller
@@ -99,7 +99,7 @@ public class RuleController {
 		try {
 			projectService.getProject(projectId);
 
-			ruleService.addRule(projectId, ruleModel);
+			ruleService.createRule(projectId, ruleModel);
 			
 
 		} catch (Exception e) {
@@ -239,7 +239,7 @@ public class RuleController {
 		try {
 			projectService.getProject(projectId);
 
-			ruleService.buildRule(projectId, ruleId);
+			ruleService.compileRule(projectId, ruleId);
 			projectService.saveProject(projectId);
 
 		} catch (Exception e) {
@@ -249,6 +249,119 @@ public class RuleController {
 		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.RULE_WAS_BUILT_SUCCESSFULLY));
 	}
 
+	/*
+	 * run rule
+	 */
+	@PostMapping(value = "/{projectId}/buildRules", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> buildRules(@PathVariable("projectId") String projectId,
+			 @RequestBody List<String> ruleIds  ) {
+
+		List<OperationStatusDetails> results;
+		try {
+			projectService.getProject(projectId);
+
+			results = ruleService.compileRules(projectId, ruleIds).get();
+
+			projectService.saveProject(projectId);
+
+		} catch (Exception e) {
+			return JEExceptionHandler.handleException(e);
+		}
+		
+		return ResponseEntity.ok(new JECustomResponse(ResponseCodes.CODE_OK, "Build completed.",results));
+	}
+
+
+
+	
+	/*
+	 * run rule
+	 */
+	@PostMapping(value = "/{projectId}/runRule/{ruleId}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> runRule(@PathVariable("projectId") String projectId,
+			@PathVariable("ruleId") String ruleId) {
+
+		try {
+			
+
+			projectService.getProject(projectId);
+
+			ruleService.runRule(projectId, ruleId);
+			projectService.saveProject(projectId);
+
+		} catch (Exception e) {
+			return JEExceptionHandler.handleException(e);
+		}
+
+		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, "Rule is running."));
+	}
+	
+	
+	/*
+	 * run rule
+	 */
+	@PostMapping(value = "/{projectId}/runRules", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> runRules(@PathVariable("projectId") String projectId,
+			 @RequestBody List<String> ruleIds  ) {
+		List<OperationStatusDetails> results;
+		try {
+			projectService.getProject(projectId);
+
+			results =ruleService.runRules(projectId, ruleIds);
+			projectService.saveProject(projectId);
+
+		} catch (Exception e) {
+			return JEExceptionHandler.handleException(e);
+		}
+
+		return ResponseEntity.ok(new JECustomResponse(ResponseCodes.CODE_OK, "Run completed.",results));
+	}
+	
+	
+	/*
+	 * stop rule
+	 */
+	@PostMapping(value = "/{projectId}/stopRule/{ruleId}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> stopRule(@PathVariable("projectId") String projectId,
+			@PathVariable("ruleId") String ruleId) {
+
+		try {
+			projectService.getProject(projectId);
+			ruleService.stopRule(projectId, ruleId);
+			projectService.saveProject(projectId);
+
+		} catch (Exception e) {
+			return JEExceptionHandler.handleException(e);
+		}
+
+		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.RULE_COMPILED));
+	}
+	
+	
+	/*
+	 * stop rule
+	 */
+	@PostMapping(value = "/{projectId}/stopRules", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> stopRules(@PathVariable("projectId") String projectId,
+			 @RequestBody List<String> ruleIds  ) {
+		List<OperationStatusDetails> results;
+
+		try {
+			projectService.getProject(projectId);
+
+			results =ruleService.stopRules(projectId, ruleIds);
+			projectService.saveProject(projectId);
+
+		} catch (Exception e) {
+			return JEExceptionHandler.handleException(e);
+		}
+
+		return ResponseEntity.ok(new JECustomResponse(ResponseCodes.CODE_OK, JEMessages.RULE_STOPPED,results));
+	}
+	
+	
+	
+	
 	/*
 	 * temporary function until autosave is implemented
 	 */

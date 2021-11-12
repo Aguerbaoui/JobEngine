@@ -6,7 +6,7 @@ import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.exceptions.WorkflowBuildException;
 import io.je.utilities.models.WorkflowModel;
-import io.je.utilities.network.JEResponse;
+import io.je.utilities.beans.JEResponse;
 
 import static io.je.utilities.constants.JEMessages.*;
 
@@ -86,7 +86,12 @@ public class WorkflowController {
     @DeleteMapping(value = "/deleteWorkflow/{projectId}/{workflowId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> deleteWorkflow(@PathVariable("projectId") String projectId,
                                             @PathVariable("workflowId") String workflowId) {
-        dispatcher.removeWorkflow(projectId, workflowId);
+        try {
+            dispatcher.removeWorkflow(projectId, workflowId);
+        } catch (Exception e) {
+            return JEExceptionHandler.handleException(e);
+        }
+
         return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.WORKFLOW_DELETED_SUCCESSFULLY));
     }
 

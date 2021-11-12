@@ -1,8 +1,8 @@
 package io.je.utilities.beans;
 
-import io.je.utilities.logger.JELogger;
-import io.je.utilities.logger.LogSubModule;
+import io.je.utilities.log.JELogger;
 import io.je.utilities.runtimeobject.JEObject;
+import utils.log.LogSubModule;
 
 import java.time.LocalDateTime;
 
@@ -12,8 +12,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "JEVariableCollection")
 public class JEVariable extends JEMonitoredData {
-
-    private String name;
 
     private JEType type;
 
@@ -41,10 +39,9 @@ public class JEVariable extends JEMonitoredData {
 
     public JEVariable(String jobEngineElementID, String jobEngineProjectID, String name, String type,
 			String initialValue,String description,String createdBy,String modifiedby) {
-		super(jobEngineElementID, jobEngineProjectID);
-		this.name = name;
+		super(jobEngineElementID, jobEngineProjectID, name);
 		this.type = JEType.valueOf(type);
-		this.initialValue = castValue(initialValue);
+		this.initialValue = castValue(this.type, initialValue);
 		typeClass = getType(this.type);
 		this.value=this.initialValue;
 		this.jeObjectCreatedBy=createdBy;
@@ -58,10 +55,9 @@ public class JEVariable extends JEMonitoredData {
 	public JEVariable(String jobEngineElementID, String jobEngineProjectID, String name, String type,
 			String initialValue,ArchiveOption isArchived,
 			boolean isBroadcasted,String description,String createdBy,String modifiedby) {
-		super(jobEngineElementID, jobEngineProjectID, isArchived, isBroadcasted);
-		this.name = name;
+		super(jobEngineElementID, jobEngineProjectID, name, isArchived, isBroadcasted);
 		this.type = JEType.valueOf(type);
-		this.initialValue = castValue(initialValue);
+		this.initialValue = castValue(this.type, initialValue);
 		typeClass = getType(this.type);
 		this.value=this.initialValue;
 		this.jeObjectCreatedBy=createdBy;
@@ -70,18 +66,6 @@ public class JEVariable extends JEMonitoredData {
 	}
 
 
-
-
-	public String getName() {
-		return name;
-	}
-
-
-
-
-	public void setName(String name) {
-		this.name = name;
-	}
 
 
 
@@ -123,7 +107,7 @@ public class JEVariable extends JEMonitoredData {
 
 
 	public void setValue(String value) {
-		this.value = castValue(value);
+		this.value = castValue(type, value);
 	}
 
 
@@ -166,7 +150,7 @@ public class JEVariable extends JEMonitoredData {
 
 
 
-	private Object castValue(String value) {
+	public static Object castValue(JEType type, String value) {
 		switch(type)
 		{
 		case BYTE:
@@ -186,7 +170,7 @@ public class JEVariable extends JEMonitoredData {
 		case BOOLEAN:
 			return Boolean.valueOf(value);
 		default:
-			JELogger.error("Failed to set variable\""+this.name+"\" value to "+value+": Incompatible Type", null, this.jobEngineProjectID, LogSubModule.VARIABLE, this.jobEngineElementID);
+			//JELogger.error("Failed to set variable\""+this.jobEngineElementName+"\" value to "+value+": Incompatible Type", null, this.jobEngineProjectID, LogSubModule.VARIABLE, this.jobEngineElementID);
 			return null;
 		
 		}

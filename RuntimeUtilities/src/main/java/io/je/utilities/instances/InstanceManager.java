@@ -12,12 +12,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.je.utilities.classloader.JEClassLoader;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.InstanceCreationFailed;
-import io.je.utilities.logger.JELogger;
-import io.je.utilities.logger.LogCategory;
-import io.je.utilities.logger.LogSubModule;
+import io.je.utilities.log.JELogger;
 import io.je.utilities.mapping.InstanceModelMapping;
 import io.je.utilities.models.InstanceModel;
 import io.je.utilities.runtimeobject.JEObject;
+import utils.log.LogCategory;
+import utils.log.LogSubModule;
 
 
 /*
@@ -31,10 +31,13 @@ public class InstanceManager {
 	static ConcurrentHashMap<String, JEObject> instancesLastValue = new ConcurrentHashMap<>();
 	
 	private static InstanceModel getInstanceModel(String dataReceived ) {
+		
 		JSONObject instanceJson = new JSONObject(dataReceived);
    		InstanceModel instanceModel = new InstanceModel();
    		instanceModel.setInstanceId(instanceJson.getString(InstanceModelMapping.INSTANCEID));
    		instanceModel.setModelId(instanceJson.getString(InstanceModelMapping.MODELID));
+   		instanceModel.setModelName(instanceJson.getString(InstanceModelMapping.MODELNAME));
+
    		instanceModel.setPayload(instanceJson.getJSONObject(InstanceModelMapping.PAYLOAD));
    		return instanceModel;
 	}
@@ -50,7 +53,8 @@ public class InstanceManager {
 		 objectMapper.setTypeFactory(objectMapper.getTypeFactory().withClassLoader(JEClassLoader.getInstance()));
 		
 		InstanceModel instanceModel = getInstanceModel(dataReceived);
-		
+		//JELogger.control("Listening for data from class "+instanceModel.getModelName(), null, "", LogSubModule.JERUNNER, "123");
+
 		
 		//Retrieve Instance Class
 		Class<?> instanceClass = ClassRepository.getClassById(instanceModel.getModelId());
@@ -163,7 +167,7 @@ public class InstanceManager {
 				JELogger.trace(JEMessages.INSTANCE_UPDATE_SUCCESS,  LogCategory.RUNTIME,
 	                    null, LogSubModule.RULE, null);
 			}else {
-				JELogger.error(JEMessages.WRITE_INSTANCE_FAILED +response.getJSONObject("Fail")+" ."+JEMessages.CHECK_DM_FOR_DETAILS, LogCategory.RUNTIME, "", LogSubModule.JERUNNER, instanceId);
+				JELogger.error(JEMessages.WRITE_INSTANCE_FAILED +response.getJSONObject("Fail")+". "+JEMessages.CHECK_DM_FOR_DETAILS, LogCategory.RUNTIME, "", LogSubModule.JERUNNER, instanceId);
 			}
 
 	

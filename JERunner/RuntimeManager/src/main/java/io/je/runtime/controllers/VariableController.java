@@ -5,7 +5,7 @@ import io.je.runtime.services.RuntimeDispatcher;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.models.VariableModel;
-import io.je.utilities.network.JEResponse;
+import io.je.utilities.beans.JEResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -36,14 +36,13 @@ public class VariableController {
 
 
     /*
-     * delete event
+     * delete variable
      */
     @DeleteMapping(value = "/deleteVariable/{projectId}/{varId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> deleteVariable(@PathVariable("projectId") String projectId,
                                          @PathVariable("varId") String varId) {
 
-        try {
-            runtimeDispatcher.deleteVariable(projectId, varId);
+        try {runtimeDispatcher.deleteVariable(projectId, varId);
 
         } catch (Exception e) {
             return JEExceptionHandler.handleException(e);

@@ -2,14 +2,17 @@ package io.je.project.controllers;
 
 import io.je.project.beans.JEProject;
 import io.je.project.exception.JEExceptionHandler;
+import io.je.project.services.ConfigurationService;
 import io.je.project.services.ProjectService;
+import io.je.utilities.beans.JECustomResponse;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.exceptions.ProjectNotFoundException;
-import io.je.utilities.logger.JELogger;
-import io.je.utilities.logger.LogCategory;
-import io.je.utilities.logger.LogSubModule;
-import io.je.utilities.network.JEResponse;
+import io.je.utilities.log.JELogger;
+import io.je.utilities.ruleutils.OperationStatusDetails;
+import utils.log.LogCategory;
+import utils.log.LogSubModule;
+import io.je.utilities.beans.JEResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -20,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 import static io.je.utilities.constants.JEMessages.*;
 
 import java.util.HashMap;
+import java.util.List;
 
 /*
  * Project Rest Controller
@@ -32,6 +36,8 @@ public class ProjectController {
 	@Autowired
 	ProjectService projectService;
 
+	@Autowired
+	ConfigurationService configService;
 //########################################### **PROJECT** ################################################################
 	/*
 	 * Get the list of all projects
@@ -162,8 +168,7 @@ public class ProjectController {
 	@DeleteMapping(value = "/deleteProject/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> deleteProject(@PathVariable String projectId) {
 		if (!projectService.projectExists(projectId)) {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-					.body(new JEResponse(ResponseCodes.PROJECT_NOT_FOUND, JEMessages.PROJECT_NOT_FOUND));
+			return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, PROJECT_DELETED));
 		}
 
 		try {
@@ -204,13 +209,14 @@ public class ProjectController {
 	@PostMapping(value = "/buildProject/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> buildProject(@PathVariable String projectId) {
 		try {
-			projectService.buildAll(projectId);
+			List<OperationStatusDetails> results = projectService.buildAll(projectId);
+			return ResponseEntity.ok(new JECustomResponse(ResponseCodes.CODE_OK, BUILT_EVERYTHING_SUCCESSFULLY,results));
 		} catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
 
 		}
-		JELogger.debug(BUILT_EVERYTHING_SUCCESSFULLY, LogCategory.DESIGN_MODE, projectId, LogSubModule.JEBUILDER, null);
-		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, BUILT_EVERYTHING_SUCCESSFULLY));
+
+		//return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, BUILT_EVERYTHING_SUCCESSFULLY));
 	}
 
 	/* Run project */
@@ -282,7 +288,7 @@ public class ProjectController {
 		try {
 			JEProject project = projectService.getProject(projectId);
 			if(project != null) {
-				JELogger.debug("[projectId =" + projectId + " ]  " + JEMessages.PROJECT_AUTO_RELOAD + autoReload, LogCategory.DESIGN_MODE,
+				JELogger.debug("[projectId =" + project.getProjectName() + " ]  " + JEMessages.PROJECT_AUTO_RELOAD + autoReload, LogCategory.DESIGN_MODE,
 						projectId, LogSubModule.JEBUILDER, null);
 				project.setAutoReload(autoReload);
 				projectService.saveProject(project).get();
@@ -293,7 +299,7 @@ public class ProjectController {
 		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.PROJECT_UPDATED));
 	}
 
-	@PostMapping("/uploadJar")
+	/*@PostMapping("/uploadJar")
 	public ResponseEntity<?> uploadJar(@RequestParam("jarFile") MultipartFile jarFile) {
 
 		try {
@@ -304,6 +310,18 @@ public class ProjectController {
 		}
 
 		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.PROJECT_UPDATED));
+	}*/
+
+	@GetMapping(value = "/updateRunner", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> updateRunner() {
+
+		try {
+			configService.updateRunner();
+		} catch (Exception e) {
+			return JEExceptionHandler.handleException(e);
+		}
+		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, "Updated"));
 	}
+
 
 }

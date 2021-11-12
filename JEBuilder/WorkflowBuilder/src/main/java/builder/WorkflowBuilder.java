@@ -7,17 +7,16 @@ import io.je.utilities.config.ConfigurationConstants;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.WorkflowConstants;
 import io.je.utilities.exceptions.JERunnerErrorException;
-import io.je.utilities.logger.JELogger;
-import io.je.utilities.logger.LogCategory;
-import io.je.utilities.logger.LogSubModule;
+import io.je.utilities.exceptions.WorkflowRunException;
+import io.je.utilities.log.JELogger;
 import io.je.utilities.models.TaskModel;
 import io.je.utilities.models.WorkflowModel;
 import models.JEWorkflow;
+import utils.log.LogCategory;
+import utils.log.LogSubModule;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.concurrent.ExecutionException;
 
 import static io.je.utilities.constants.WorkflowConstants.*;
 
@@ -127,15 +126,15 @@ public class WorkflowBuilder {
     /*
      * Build pbpmn and Deploy it in engine
      * */
-    public static boolean buildWorkflow(JEWorkflow workflow) throws IOException, InterruptedException, ExecutionException {
-        if (workflow.getWorkflowStartBlock() == null || workflow.getAllBlocks() == null || workflow.getAllBlocks().size() == 0)
+    public static boolean buildWorkflow(JEWorkflow workflow) {
+        if (workflow.getWorkflowStartBlock() == null || workflow.getAllBlocks() == null || workflow.getAllBlocks().size() == 0 || workflow.isHasErrors())
             return false;
         if (!workflow.isScript()) {
             JEToBpmnMapper.createBpmnFromJEWorkflow(workflow);
         }
         WorkflowModel wf = new WorkflowModel();
-        wf.setId(workflow.getWorkflowName().trim());
-        wf.setPath(ConfigurationConstants.BPMN_PATH + workflow.getWorkflowName().trim() + BPMN_EXTENSION);
+        wf.setId(workflow.getJobEngineElementName().trim());
+        wf.setPath(ConfigurationConstants.BPMN_PATH + workflow.getJobEngineElementName().trim() + BPMN_EXTENSION);
         wf.setProjectId(workflow.getJobEngineProjectID());
         wf.setTriggeredByEvent(workflow.isTriggeredByEvent());
         wf.setTriggerMessage(workflow.getWorkflowStartBlock().getEventId());
@@ -143,37 +142,37 @@ public class WorkflowBuilder {
         ArrayList<TaskModel> tasks = new ArrayList<>();
         for (WorkflowBlock block : workflow.getAllBlocks().values()) {
             if (block instanceof WebApiBlock) {
-                TaskModel t = getTaskModel(block.getJobEngineElementID(), block.getName(), block.getDescription(), WorkflowConstants.WEBSERVICETASK_TYPE);
+                TaskModel t = getTaskModel(block.getJobEngineElementID(), block.getJobEngineElementName(), block.getDescription(), WorkflowConstants.WEBSERVICETASK_TYPE);
                 t.setAttributes(getWebApiAttributesMap((WebApiBlock) block));
                 tasks.add(t);
             }
             if (block instanceof ScriptBlock) {
-                TaskModel t = getTaskModel(block.getJobEngineElementID(), block.getName(), block.getDescription(), WorkflowConstants.SCRIPTTASK_TYPE);
+                TaskModel t = getTaskModel(block.getJobEngineElementID(), block.getJobEngineElementName(), block.getDescription(), WorkflowConstants.SCRIPTTASK_TYPE);
                 t.setAttributes(getScriptAttributesMap((ScriptBlock) block));
                 tasks.add(t);
             }
             if (block instanceof InformBlock) {
-                TaskModel t = getTaskModel(block.getJobEngineElementID(), block.getName(), block.getDescription(), WorkflowConstants.INFORMSERVICETASK_TYPE);
+                TaskModel t = getTaskModel(block.getJobEngineElementID(), block.getJobEngineElementName(), block.getDescription(), WorkflowConstants.INFORMSERVICETASK_TYPE);
                 t.setAttributes(getInformAttributesMap((InformBlock) block));
                 tasks.add(t);
             }
             if(block instanceof DBReadBlock) {
-                TaskModel t = getTaskModel(block.getJobEngineElementID(), block.getName(), block.getDescription(), WorkflowConstants.DBREADSERVICETASK_TYPE);
+                TaskModel t = getTaskModel(block.getJobEngineElementID(), block.getJobEngineElementName(), block.getDescription(), WorkflowConstants.DBREADSERVICETASK_TYPE);
                 t.setAttributes(getDBReadTaskAttributesMap((DBReadBlock) block));
                 tasks.add(t);
             }
             if(block instanceof DBWriteBlock) {
-                TaskModel t = getTaskModel(block.getJobEngineElementID(), block.getName(), block.getDescription(), WorkflowConstants.DBWRITESERVICETASK_TYPE);
+                TaskModel t = getTaskModel(block.getJobEngineElementID(), block.getJobEngineElementName(), block.getDescription(), WorkflowConstants.DBWRITESERVICETASK_TYPE);
                 t.setAttributes(getDBWriteTaskAttributesMap((DBWriteBlock) block));
                 tasks.add(t);
             }
             if(block instanceof DBEditBlock) {
-                TaskModel t = getTaskModel(block.getJobEngineElementID(), block.getName(), block.getDescription(), WorkflowConstants.DBEDITSERVICETASK_TYPE);
+                TaskModel t = getTaskModel(block.getJobEngineElementID(), block.getJobEngineElementName(), block.getDescription(), WorkflowConstants.DBEDITSERVICETASK_TYPE);
                 t.setAttributes(getDBEditTaskAttributesMap((DBEditBlock) block));
                 tasks.add(t);
             }
             if (block instanceof MailBlock) {
-                TaskModel t = getTaskModel(block.getJobEngineElementID(), block.getName(), block.getDescription(), WorkflowConstants.MAILSERVICETASK_TYPE);
+                TaskModel t = getTaskModel(block.getJobEngineElementID(), block.getJobEngineElementName(), block.getDescription(), WorkflowConstants.MAILSERVICETASK_TYPE);
                 t.setAttributes(getEmailTaskAttributesMap((MailBlock) block));
                 tasks.add(t);
             }
@@ -202,8 +201,14 @@ public class WorkflowBuilder {
     /*
      * Run workflow in runtime engine
      * */
-    public static void runWorkflow(String projectId, String key) throws InterruptedException, ExecutionException, JERunnerErrorException {
-        JERunnerAPIHandler.runWorkflow(projectId, key);
+    public static void runWorkflow(String projectId, String key) throws WorkflowRunException {
+        try {
+            JERunnerAPIHandler.runWorkflow(projectId, key);
+        }
+        catch(JERunnerErrorException e) {
+            throw new WorkflowRunException(JEMessages.WORKFLOW_RUN_ERROR + e.getMessage());
+        }
+
 
     }
 

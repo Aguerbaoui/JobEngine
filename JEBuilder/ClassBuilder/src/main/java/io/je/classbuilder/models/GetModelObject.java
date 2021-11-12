@@ -31,6 +31,10 @@ public class GetModelObject {
 	public void setWorkspaceId(String workspaceId) {
 		this.workspaceId = workspaceId;
 	}
+	@Override
+	public String toString() {
+		return "GetModelObject [type=" + type + ", modelId=" + modelId + ", workspaceId=" + workspaceId + "]";
+	}
 	
 	
 

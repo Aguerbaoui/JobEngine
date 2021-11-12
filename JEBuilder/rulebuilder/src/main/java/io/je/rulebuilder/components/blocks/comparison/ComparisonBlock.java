@@ -10,6 +10,9 @@ import io.je.rulebuilder.config.AttributesMapping;
 import io.je.rulebuilder.config.Keywords;
 import io.je.rulebuilder.models.BlockModel;
 import io.je.utilities.exceptions.RuleBuildFailedException;
+import io.je.utilities.log.JELogger;
+import utils.log.LogCategory;
+import utils.log.LogSubModule;
 
 /*
  * Comparison Block is a class that represents the comparison elements in a rule.
@@ -45,7 +48,6 @@ public  class ComparisonBlock extends PersistableBlock {
 			String blockDescription, int timePersistenceValue, String timePersistenceUnit,List<String> inputBlockIds, List<String> outputBlocksIds) {
 		super(jobEngineElementID, jobEngineProjectID, ruleId, blockName, blockDescription, timePersistenceValue,
 				timePersistenceUnit,inputBlockIds,outputBlocksIds);
-		// TODO Auto-generated constructor stub
 	}
 	public ComparisonBlock(BlockModel blockModel) {
 		super(blockModel.getBlockId(), blockModel.getProjectId(), blockModel.getRuleId(),blockModel.getBlockName(),
@@ -54,33 +56,38 @@ public  class ComparisonBlock extends PersistableBlock {
 
 		
 
-		if(blockModel.getBlockConfiguration()!=null )
-		{
-
-			if(blockModel.getBlockConfiguration().containsKey(AttributesMapping.VALUE))
+		try {
+			if(blockModel.getBlockConfiguration()!=null )
 			{
-				threshold = String.valueOf(blockModel.getBlockConfiguration().get(AttributesMapping.VALUE));
 
-			}
-			if(blockModel.getBlockConfiguration().containsKey(AttributesMapping.VALUE2))
-			{
-				maxRange = (String) blockModel.getBlockConfiguration().get(AttributesMapping.VALUE2);
+				if(blockModel.getBlockConfiguration().containsKey(AttributesMapping.VALUE))
+				{
+					threshold = String.valueOf(blockModel.getBlockConfiguration().get(AttributesMapping.VALUE));
 
-			}
-			if(blockModel.getBlockConfiguration().containsKey(AttributesMapping.BOOLEANVALUE))
-			{
-				includeBounds = (Boolean)blockModel.getBlockConfiguration().get(AttributesMapping.BOOLEANVALUE);
+				}
+				if(blockModel.getBlockConfiguration().containsKey(AttributesMapping.VALUE2))
+				{
+					maxRange = String.valueOf(blockModel.getBlockConfiguration().get(AttributesMapping.VALUE2));
 
+				}
+				if(blockModel.getBlockConfiguration().containsKey(AttributesMapping.BOOLEANVALUE))
+				{
+					includeBounds = (Boolean)blockModel.getBlockConfiguration().get(AttributesMapping.BOOLEANVALUE);
+
+				}
+				
+			
 			}
 			
-		
-		}
-		
-		operator = getOperatorByOperationId(blockModel.getOperationId());
-		formatToString = (blockModel.getOperationId()>=2007 && blockModel.getOperationId()<=2015);
-		isProperlyConfigured=true;
-		if(threshold==null && inputBlockIds.size() < 2)
-		{
+			operator = getOperatorByOperationId(blockModel.getOperationId());
+			formatToString = (blockModel.getOperationId()>=2007 && blockModel.getOperationId()<=2015);
+			isProperlyConfigured=true;
+			if(threshold==null && inputBlockIds.size() < 2)
+			{
+				isProperlyConfigured=false;
+			}
+		}catch (Exception e) {
+			JELogger.error("Failed to build block : "+jobEngineElementName+": "+e.getMessage(), LogCategory.DESIGN_MODE, jobEngineProjectID, LogSubModule.RULE, ruleId);
 			isProperlyConfigured=false;
 		}
 		

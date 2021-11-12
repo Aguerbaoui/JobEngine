@@ -1,9 +1,9 @@
 package io.je.utilities.classloader;
 
 import io.je.utilities.constants.ClassBuilderConfig;
-import io.je.utilities.logger.JELogger;
-import io.je.utilities.logger.LogCategory;
-import io.je.utilities.logger.LogSubModule;
+import io.je.utilities.log.JELogger;
+import utils.log.LogCategory;
+import utils.log.LogSubModule;
 
 import java.io.DataInputStream;
 import java.io.File;
@@ -34,7 +34,7 @@ public class JEClassLoader extends ClassLoader {
     {
     	if(instance==null)
     	{
-    		instance = new JEClassLoader( new HashSet<String>());
+    		instance = new JEClassLoader( new HashSet<>());
     		
     	}
     	return instance;
@@ -45,7 +45,7 @@ public class JEClassLoader extends ClassLoader {
     {
     	if(customClasses==null)
     	{
-    		customClasses=new HashSet<String>();
+    		customClasses=new HashSet<>();
     	}
     	instance = new JEClassLoader(customClasses);
     	return instance;

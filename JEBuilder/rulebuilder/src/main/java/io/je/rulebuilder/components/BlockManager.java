@@ -7,9 +7,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import io.je.rulebuilder.components.blocks.Block;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.RuleBuildFailedException;
-import io.je.utilities.logger.JELogger;
-import io.je.utilities.logger.LogCategory;
-import io.je.utilities.logger.LogSubModule;
+import io.je.utilities.log.JELogger;
+import utils.log.LogCategory;
+import utils.log.LogSubModule;
 
 public class BlockManager {
 

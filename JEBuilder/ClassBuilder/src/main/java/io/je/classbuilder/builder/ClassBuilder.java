@@ -6,28 +6,25 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.je.utilities.logger.LogCategory;
-import io.je.utilities.logger.LogSubModule;
-import org.burningwave.core.classes.AnnotationSourceGenerator;
-import org.burningwave.core.classes.ClassSourceGenerator;
-import org.burningwave.core.classes.FunctionSourceGenerator;
-import org.burningwave.core.classes.TypeDeclarationSourceGenerator;
-import org.burningwave.core.classes.UnitSourceGenerator;
-import org.burningwave.core.classes.VariableSourceGenerator;
+import org.burningwave.core.assembler.ComponentContainer;
+import org.burningwave.core.assembler.ComponentSupplier;
+import org.burningwave.core.classes.*;
 
 
 import io.je.classbuilder.entity.ClassType;
 import io.je.classbuilder.models.ClassDefinition;
 import io.je.classbuilder.models.FieldModel;
 import io.je.classbuilder.models.MethodModel;
-import io.je.utilities.config.Utility;
 import io.je.utilities.constants.ClassBuilderConfig;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.AddClassException;
 import io.je.utilities.exceptions.ClassLoadException;
-import io.je.utilities.logger.JELogger;
+import io.je.utilities.log.JELogger;
 import io.je.utilities.runtimeobject.JEObject;
-import io.je.utilities.string.JEStringUtils;
+import io.siothconfig.SIOTHConfigUtility;
+import utils.log.LogCategory;
+import utils.log.LogSubModule;
+import utils.string.StringUtilities;
 
 /*
  * build class from class definition
@@ -45,7 +42,7 @@ public class ClassBuilder {
 		//check if class format is valid
 		if(classDefinition.getName()==null)
 		{
-			JELogger.error(JEMessages.CLASS_NAME_NULL, LogCategory.DESIGN_MODE, null, LogSubModule.CLASS, classDefinition.getIdClass());
+			JELogger.error(JEMessages.CLASS_NAME_NULL, LogCategory.DESIGN_MODE, null, LogSubModule.CLASS, classDefinition.getClassId());
 
 			throw new AddClassException(JEMessages.CLASS_NAME_NULL);
 		}
@@ -78,9 +75,11 @@ public class ClassBuilder {
 		unitSG.addImport("com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer");
 		unitSG.addImport("com.fasterxml.jackson.databind.annotation.JsonSerialize");
 		unitSG.addImport("com.fasterxml.jackson.databind.annotation.JsonDeserialize");
-		unitSG.addImport("io.je.utilities.logger.JELogger");
+		unitSG.addImport("io.je.utilities.log.JELogger");
+		unitSG.addImport("io.je.utilities.execution.*");
 		unitSG.addImport("java.lang.*");
 		unitSG.addImport("java.util.*");
+		unitSG.addImport("jeclasses.*;");
 		unitSG.addImport("java.sql.*");
 		unitSG.addImport("javax.sql.*");
 		unitSG.addImport("io.je.utilities.execution.*");
@@ -134,7 +133,7 @@ public class ClassBuilder {
 			// extend class
 			if(inheritedClass != null)
 			{
-				JELogger.error(JEMessages.INVALID_CLASS_FORMAT, LogCategory.DESIGN_MODE, null, LogSubModule.CLASS, classDefinition.getIdClass());
+				JELogger.error(JEMessages.INVALID_CLASS_FORMAT, LogCategory.DESIGN_MODE, null, LogSubModule.CLASS, classDefinition.getClassId());
 				throw new ClassLoadException(JEMessages.INVALID_CLASS_FORMAT );
 				
 			}
@@ -195,11 +194,11 @@ public class ClassBuilder {
 				{					 
 					newField.addAnnotation(new AnnotationSourceGenerator("JsonDeserialize(using = LocalDateTimeDeserializer.class)"));
 					newField.addAnnotation(new AnnotationSourceGenerator("JsonSerialize(using = LocalDateTimeSerializer.class)"));
-					newField.addAnnotation(new AnnotationSourceGenerator("JsonFormat (shape = JsonFormat.Shape.STRING, pattern = \""+Utility.getSiothConfig().getDateFormat()+"\")"));					
+					newField.addAnnotation(new AnnotationSourceGenerator("JsonFormat (shape = JsonFormat.Shape.STRING, pattern = \""+SIOTHConfigUtility.getSiothConfig().getDateFormat()+"\")"));					
 				}
 				newClass.addField(newField);
 				String attributeName = field.getName();
-				String capitalizedAttributeName = JEStringUtils.capitalize(attributeName);
+				String capitalizedAttributeName = StringUtilities.capitalize(attributeName);
 				Class<?> attributeType = getType(field.getType());
 			
 				
@@ -264,7 +263,7 @@ public class ClassBuilder {
 				}	//count number of inherited class
 				
 			    if(ClassManager.getClassType(classId) == ClassType.ENUM) {
-					JELogger.error(JEMessages.INVALID_CLASS_FORMAT + " : " + JEMessages.INHERITED_CLASS_ENUM, LogCategory.DESIGN_MODE, null, LogSubModule.CLASS, classDefinition.getIdClass());
+					JELogger.error(JEMessages.INVALID_CLASS_FORMAT + " : " + JEMessages.INHERITED_CLASS_ENUM, LogCategory.DESIGN_MODE, null, LogSubModule.CLASS, classDefinition.getClassId());
 
 					throw new ClassLoadException(JEMessages.INVALID_CLASS_FORMAT + " : " + JEMessages.INHERITED_CLASS_ENUM); }
 				
@@ -280,7 +279,7 @@ public class ClassBuilder {
 			else if (inheritedClass.size()>1)
 			{
 				JELogger.error(JEMessages.INVALID_CLASS_FORMAT + " : " + JEMessages.INHERITED_CLASS_ENUM, LogCategory.DESIGN_MODE, null,
-						LogSubModule.CLASS, classDefinition.getIdClass());
+						LogSubModule.CLASS, classDefinition.getClassId());
 				throw new ClassLoadException(JEMessages.INVALID_CLASS_FORMAT + " : " + JEMessages.MULTIPLE_INHERITANCE);
 			}
 			//if base types contains class 
@@ -298,6 +297,11 @@ public class ClassBuilder {
 
 		// store class
 		unitSG.addClass(newClass);
+		ComponentSupplier componentSupplier = ComponentContainer.getInstance();
+		ClassFactory classFactory = componentSupplier.getClassFactory();
+		ClassFactory.ClassRetriever classRetriever = classFactory.loadOrBuildAndDefine(
+				unitSG
+		);
 		String filePath= generationPath + "\\" + ClassBuilderConfig.generationPackageName  + "\\" + className +".java" ;
 		File file = new File(generationPath);
 		file.delete();
@@ -312,6 +316,7 @@ public class ClassBuilder {
 	 */
 	private static Class<?> getType(String type) throws ClassLoadException {
 		Class<?> classType = null;
+		type = type.toUpperCase();
 		switch (type) {
 		case "BYTE" :
 			classType =  byte.class;

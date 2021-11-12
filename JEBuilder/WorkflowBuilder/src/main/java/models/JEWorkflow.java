@@ -3,16 +3,14 @@ package models;
 import blocks.WorkflowBlock;
 import blocks.basic.StartBlock;
 import blocks.events.ErrorBoundaryEvent;
-import io.je.utilities.config.Utility;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.InvalidSequenceFlowException;
 import io.je.utilities.exceptions.WorkflowBlockNotFound;
 import io.je.utilities.models.WorkflowModel;
 import io.je.utilities.runtimeobject.JEObject;
-import io.je.utilities.time.JEDate;
 import org.springframework.data.mongodb.core.mapping.Document;
+import utils.date.DateUtils;
 
-import java.time.format.DateTimeFormatter;
 import java.util.concurrent.ConcurrentHashMap;
 
 /*
@@ -28,10 +26,6 @@ public class JEWorkflow extends JEObject {
     public final static String BUILT = "BUILT";
 
     public final static String IDLE = "IDLE";
-    /*
-     * Workflow name
-     */
-    private String workflowName;
 
     /*
      * Workflow start block
@@ -78,7 +72,17 @@ public class JEWorkflow extends JEObject {
     * */
     private boolean onProjectBoot = false;
 
+    /*
+    * Workflow description
+    * */
     private String description;
+
+    /*
+    * True if workflow is enabled for execution
+    * */
+    private boolean isEnabled;
+
+    private boolean hasErrors = false;
 
     private String getScript() {
         return script;
@@ -127,20 +131,6 @@ public class JEWorkflow extends JEObject {
 
     public void setIsScript(boolean script) {
         isScript = script;
-    }
-
-    /*
-     * Return workflow name
-     */
-    public String getWorkflowName() {
-        return workflowName;
-    }
-
-    /*
-     * set workflow name
-     */
-    public void setWorkflowName(String workflowName) {
-        this.workflowName = workflowName;
     }
 
     /*
@@ -235,7 +225,9 @@ public class JEWorkflow extends JEObject {
         if(allBlocks.get(to) instanceof ErrorBoundaryEvent) {
             ((ErrorBoundaryEvent) allBlocks.get(to)).setAttachedToRef(from);
         }
-        workflowStartBlock = (StartBlock) allBlocks.get(workflowStartBlock.getJobEngineElementID());
+        if(workflowStartBlock != null) {
+            workflowStartBlock = (StartBlock) allBlocks.get(workflowStartBlock.getJobEngineElementID());
+        }
         status = IDLE;
     }
 
@@ -294,7 +286,7 @@ public class JEWorkflow extends JEObject {
 
     public static WorkflowModel mapJEWorkflowToModel(JEWorkflow wf) {
         WorkflowModel model = new WorkflowModel();
-        model.setName(wf.getWorkflowName());
+        model.setName(wf.getJobEngineElementName());
         model.setOnProjectBoot(wf.isOnProjectBoot());
         model.setModifiedBy(wf.getJeObjectModifiedBy());
         model.setDescription(wf.getDescription());
@@ -304,16 +296,38 @@ public class JEWorkflow extends JEObject {
         model.setProjectId(wf.getJobEngineProjectID());
         model.setTriggeredByEvent(wf.isTriggeredByEvent());
         model.setStatus(wf.getStatus());
-        model.setCreatedAt(JEDate.formatDateToSIOTHFormat(wf.getJeObjectCreationDate()));
-        model.setModifiedAt(JEDate.formatDateToSIOTHFormat(wf.getJeObjectLastUpdate()));
+        model.setCreatedAt(DateUtils.formatDateToSIOTHFormat(wf.getJeObjectCreationDate()));
+        model.setModifiedAt(DateUtils.formatDateToSIOTHFormat(wf.getJeObjectLastUpdate()));
         model.setFrontConfig(wf.getFrontConfig());
+        model.setEnabled(wf.isEnabled);
         return model;
     }
+
+    public void setScript(boolean script) {
+        isScript = script;
+    }
+
+    public boolean isEnabled() {
+        return isEnabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        isEnabled = enabled;
+    }
+
+    public boolean isHasErrors() {
+        return hasErrors;
+    }
+
+    public void setHasErrors(boolean hasErrors) {
+        this.hasErrors = hasErrors;
+    }
+
     @Override
     public String toString() {
         return "JEWorkflow{" +
                 "id='" + jobEngineElementID + '\'' +
-                "workflowName='" + workflowName + '\'' +
+                "workflowName='" + jobEngineElementName + '\'' +
                 ", workflowStartBlock=" + workflowStartBlock +
                 ", bpmnPath='" + bpmnPath + '\'' +
                 ", status='" + status + '\'' +
