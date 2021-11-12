@@ -21,16 +21,16 @@ public class WebSocketService {
         try {
             MonitoringMessage msg = objectMapper.readValue(payload, MonitoringMessage.class);
             if (msg.getObjectType().equals(ObjectType.JERULE)) {
-                template.convertAndSend("/rule/ruleUpdates", payload);
+                template.convertAndSend("/rule/ruleUpdates", msg);
             }
             else if (msg.getObjectType().equals(ObjectType.JEWORKFLOW)) {
-                template.convertAndSend("/workflow/workflowUpdates", payload);
+                template.convertAndSend("/workflow/workflowUpdates", msg);
             }
             else if (msg.getObjectType().equals(ObjectType.JEEVENT)) {
-                template.convertAndSend("/event/eventUpdates", payload);
+                template.convertAndSend("/event/eventUpdates", msg);
             }
             else {
-                template.convertAndSend("/variable/variableUpdates", payload);
+                template.convertAndSend("/variable/variableUpdates", msg);
             }
         } catch (Exception e) {
             e.printStackTrace();

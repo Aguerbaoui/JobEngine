@@ -7,6 +7,7 @@ import org.springframework.context.annotation.PropertySource;
 
 import io.siothconfig.*;
 
+import java.util.Locale;
 
 
 @ConfigurationProperties
@@ -47,7 +48,7 @@ public class BuilderProperties {
 	}
 
 	public String getIssuer() {
-		return issuer;
+		return issuer.toLowerCase();
 	}
 
 	public void setIssuer(String issuer) {
