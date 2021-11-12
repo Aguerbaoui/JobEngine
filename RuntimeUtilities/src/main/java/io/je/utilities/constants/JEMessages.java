@@ -695,4 +695,7 @@ public class JEMessages {
     public static final String DMAPI_RESPONSE = "Data Model definition returned : ";
 
     public static final String CUSTOM_COMPILATION_SUCCESS = "Compilation in JEClassLoader succeeded.";
+
+    public static final String CODE_COMPILATION_SUCCESSFUL = "Code was successfully compiled";
+    public static final String PROCEDURE_SHOULD_CONTAIN_CODE = "Procedure should contain code";
 }

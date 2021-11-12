@@ -255,7 +255,7 @@ public class Executioner {
    /* public static void main(String[] args) {
         executeScript("test", "", "");
     }*/
-    public static void executeScript(String name, String processId, String projectId, int timeout) throws JavaCodeInjectionError {
+    public static void executeScript(String name, String processId, String projectId, int timeout) {
         JEClassLoader.overrideInstance();
         Class<?> loadClass = null;
         try {

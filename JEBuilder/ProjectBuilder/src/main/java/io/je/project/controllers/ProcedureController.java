@@ -4,24 +4,19 @@ import io.je.classbuilder.models.MethodModel;
 import io.je.project.exception.JEExceptionHandler;
 import io.je.project.services.ClassService;
 import io.je.project.services.ProjectService;
-import io.je.utilities.beans.JEMethod;
 import io.je.utilities.beans.JEResponse;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.exceptions.ClassLoadException;
 import io.je.utilities.models.LibModel;
-import io.je.utilities.models.WorkflowModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.util.HashMap;
 import java.util.List;
 
-import static io.je.utilities.constants.JEMessages.ADDED_WORKFLOW_SUCCESSFULLY;
-import static io.je.utilities.constants.JEMessages.PROCEDURE_ADDED_SUCCESSFULLY;
+import static io.je.utilities.constants.JEMessages.*;
 
 
 /*
@@ -56,6 +51,22 @@ public class ProcedureController {
         return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, PROCEDURE_ADDED_SUCCESSFULLY));
     }
 
+    @PostMapping(value = "/compileCode", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> compileCode(@RequestBody MethodModel m) {
+        try {
+            //projectService.getProject(m.getProjectId());
+            classService.compileCode(m);
+        } catch (ClassLoadException e) {
+            if(!e.getCompilationErrorMessage().isEmpty()) {
+                return ResponseEntity.ok(new JEResponse(e.getCode(), e.getCompilationErrorMessage()));
+            }
+            return JEExceptionHandler.handleException(e);
+        }
+        catch (Exception e) {
+            return JEExceptionHandler.handleException(e);
+        }
+        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, CODE_COMPILATION_SUCCESSFUL));
+    }
     @PatchMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> updateProcedure(@RequestBody MethodModel m) {
         try {
@@ -77,7 +88,7 @@ public class ProcedureController {
     @ResponseBody
     public ResponseEntity<?> getMethodByName(@PathVariable("name") String methodName) {
         try {
-            MethodModel m = classService.getMethodModel(methodName);
+            MethodModel m = classService.getMethodModelByName(methodName);
             return ResponseEntity.ok(m);
         }
         catch (Exception exception) {
