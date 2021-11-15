@@ -14,7 +14,7 @@ public class MonitoringMessage {
 	ObjectType objectType; //Variable/Event : ClassName
 	String objectProjectId;
 	String objectValue;
-	Status status;
+	String status;
 	/*ArchiveOption isArchived = ArchiveOption.AS_SOURCE_DATA;
 	boolean isBroadcasted=true;
 	String Source="JobEngine";*/
@@ -24,7 +24,7 @@ public class MonitoringMessage {
 	
 	public MonitoringMessage() {}
 	public MonitoringMessage(LocalDateTime timestamp, String objectId, ObjectType objectType, String objectProjectId,
-							 String objectValue, Status status) {
+							 String objectValue, String status) {
 		super();
 		this.timestamp = timestamp.toString();
 		this.objectId = objectId;
@@ -84,11 +84,11 @@ public class MonitoringMessage {
 		this.timestamp = timestamp;
 	}
 
-	public Status getStatus() {
+	public String getStatus() {
 		return status;
 	}
 
-	public void setStatus(Status status) {
+	public void setStatus(String status) {
 		this.status = status;
 	}
 
@@ -106,7 +106,7 @@ public class MonitoringMessage {
 
 	public static MonitoringMessage getMonitoringMessage(LocalDateTime timestamp, String objectId, ObjectType objectType, String objectProjectId,
 														 String objectValue, Status status) {
-		return new MonitoringMessage(timestamp, objectId, objectType, objectProjectId, objectValue, status);
+		return new MonitoringMessage(timestamp, objectId, objectType, objectProjectId, objectValue, status.toString());
 	}
 }
 

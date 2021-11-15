@@ -18,10 +18,11 @@ public class Subscriber implements Runnable {
     @Autowired
     WebSocketService service;
 
-    private ZMQ.Context context;
-    private ZMQ.Socket subscriber;
-
+    private final ZMQ.Context context;
+    private final ZMQ.Socket subscriber;
+    private final String subscribedTo = "test";
     private boolean listening;
+
     public Subscriber() {
         this.listening = false;
         context = ZMQ.context(1);

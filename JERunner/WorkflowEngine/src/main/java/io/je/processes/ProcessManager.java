@@ -125,7 +125,7 @@ public class ProcessManager {
     public void deployProcess(String key) throws WorkflowBuildException {
         ResourceBundle.clearCache(Thread.currentThread().getContextClassLoader());
         MonitoringMessage msg = new MonitoringMessage(LocalDateTime.now(), key, ObjectType.JEWORKFLOW,
-                processes.get(key).getProjectId(), String.valueOf(Status.BUILDING), Status.BUILDING);
+                processes.get(key).getProjectId(), Status.BUILDING.toString(), Status.BUILDING.toString());
         JELogger.debug(SENDING_WORKFLOW_MONITORING_DATA_TO_JEMONITOR + "\n" + msg, LogCategory.RUNTIME, "", LogSubModule.WORKFLOW, processes.get(key).getName());
         JEMonitor.publish(msg);
         //repoService.
@@ -141,7 +141,7 @@ public class ProcessManager {
             processes.get(key).setDeployed(true);
             FileUtilities.deleteFileFromPath(processes.get(key).getBpmnPath());
             msg = new MonitoringMessage(LocalDateTime.now(), key, ObjectType.JEWORKFLOW,
-                    processes.get(key).getProjectId(), String.valueOf(Status.STOPPED), Status.STOPPED);
+                    processes.get(key).getProjectId(), Status.STOPPED.toString(), Status.STOPPED.toString());
             JELogger.debug(SENDING_WORKFLOW_MONITORING_DATA_TO_JEMONITOR + "\n" + msg, LogCategory.RUNTIME, "", LogSubModule.WORKFLOW, processes.get(key).getName());
             JEMonitor.publish(msg);
         } catch (Exception e) {
@@ -168,7 +168,7 @@ public class ProcessManager {
 
                 process.setActiveThread(new Thread(() -> {
                     ProcessInstance p = runtimeService.startProcessInstanceByKey(id);
-                    process.setRunning(true);
+                    //process.setRunning(true);
                 }));
                 process.getActiveThread().start();
             } else {
@@ -202,7 +202,7 @@ public class ProcessManager {
                 process.setActiveThread(new Thread(() -> {
                     ProcessInstance p = runtimeService.startProcessInstanceByKey(id, variables);
 
-                    process.setRunning(true);
+                    //process.setRunning(true);
                 }));
                 process.getActiveThread().start();
             } catch (BpmnError e) {
@@ -238,7 +238,7 @@ public class ProcessManager {
                     }
                     process.setActiveThread(new Thread(() -> {
                         ProcessInstance p = runtimeService.startProcessInstanceByMessage(messageId, variables);
-                        process.setRunning(true);
+                        //process.setRunning(true);
                     }));
                     process.getActiveThread().start();
                     break;
@@ -311,7 +311,7 @@ public class ProcessManager {
         processes.get(id).setRunning(b);
         Status s = b? Status.RUNNING : Status.STOPPED;
         MonitoringMessage msg = new MonitoringMessage(LocalDateTime.now(), id, ObjectType.JEWORKFLOW,
-                processes.get(id).getProjectId(), String.valueOf(b), s);
+                processes.get(id).getProjectId(), String.valueOf(b), s.toString());
         JELogger.debug(SENDING_WORKFLOW_MONITORING_DATA_TO_JEMONITOR + "\n" + msg, LogCategory.RUNTIME, "", LogSubModule.WORKFLOW, processes.get(id).getName());
         JEMonitor.publish(msg);
     }

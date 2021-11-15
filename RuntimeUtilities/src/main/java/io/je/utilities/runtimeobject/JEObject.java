@@ -81,7 +81,8 @@ public abstract class JEObject {
     }
 
     public void setJeObjectLastUpdate(LocalDateTime jeObjectLastUpdate) {
-        this.jeObjectLastUpdate = jeObjectLastUpdate;
+        if(jeObjectLastUpdate != null)
+            this.jeObjectLastUpdate = jeObjectLastUpdate;
     }
 
     // Overriding equals() to compare two JEObjects
@@ -143,7 +144,10 @@ public abstract class JEObject {
 
 
 	public void setJeObjectCreatedBy(String jeObjectCreatedBy) {
-		this.jeObjectCreatedBy = jeObjectCreatedBy;
+        if(jeObjectCreatedBy != null)
+        {
+            this.jeObjectCreatedBy = jeObjectCreatedBy;
+        }
 	}
 
 
@@ -153,7 +157,9 @@ public abstract class JEObject {
 
 
 	public void setJeObjectModifiedBy(String jeObjectModifiedBy) {
-		this.jeObjectModifiedBy = jeObjectModifiedBy;
+        if(jeObjectModifiedBy != null) {
+            this.jeObjectModifiedBy = jeObjectModifiedBy;
+        }
 	}
 
 

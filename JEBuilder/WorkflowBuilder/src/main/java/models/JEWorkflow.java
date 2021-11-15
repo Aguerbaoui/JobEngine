@@ -219,7 +219,8 @@ public class JEWorkflow extends JEObject {
     }
 
     public void setDescription(String description) {
-        this.description = description;
+        if(description != null)
+            this.description = description;
     }
 
     /*

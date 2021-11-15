@@ -20,9 +20,10 @@ public class JEMonitor  {
 	static ZMQ.Context  mContext  = ZMQ.context(1);
 	static ZMQ.Socket publisher = mContext.socket(ZMQ.PUB);
 	static boolean init = false;
+	private static String port;
 	public static void publish(MonitoringMessage msg) {
 		if(!init) {
-			publisher.bind("tcp://*:15020");
+			publisher.bind("tcp://*:" + port);
 			init = true;
 		}
 
@@ -38,6 +39,12 @@ public class JEMonitor  {
 		}
 		
 	}
-	
 
+	public static String getPort() {
+		return port;
+	}
+
+	public static void setPort(String port) {
+		JEMonitor.port = port;
+	}
 }

@@ -6,7 +6,7 @@ public enum Status {
 	RUNNING("Running"),
 	STOPPING("Stopping"),
 	STOPPED("Stopped"),
-	NOT_BUILT("Not Built"),
+	NOT_BUILT("To be built"),
 	RUNNING_NOT_UP_TO_DATE("Running/Not Updated"),
     TRIGGERED("Triggered"),
     NOT_TRIGGERED("Not triggered");
@@ -25,7 +25,14 @@ public enum Status {
     public String toString() {
        return this.name;
     }
-	
-	
 
+
+    public static Status fromString(String text) {
+        for (Status b : Status.values()) {
+            if (b.toString().equalsIgnoreCase(text)) {
+                return b;
+            }
+        }
+        return null;
+    }
 }

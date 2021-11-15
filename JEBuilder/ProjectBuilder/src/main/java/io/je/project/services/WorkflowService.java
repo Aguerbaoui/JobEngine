@@ -882,8 +882,8 @@ public class WorkflowService {
 
     public void updateWorkflow(String projectId, String workflowId, WorkflowModel m) throws WorkflowNotFoundException, ProjectNotFoundException, LicenseNotActiveException {
         LicenseProperties.checkLicenseIsActive();
-
         JEProject project = ProjectService.getProjectById(projectId);
+
         if (project == null) {
             throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
         }
@@ -891,6 +891,7 @@ public class WorkflowService {
         if (!project.workflowExists(workflowId)) {
             throw new WorkflowNotFoundException(JEMessages.WORKFLOW_NOT_FOUND);
         }
+
         JEWorkflow wf = project.getWorkflowByIdOrName(workflowId);
         JELogger.debug("[projectId =" + projectId + " ][workflowId = " + workflowId + "]" + JEMessages.UPDATING_WF,
                 LogCategory.DESIGN_MODE, projectId,
@@ -920,6 +921,28 @@ public class WorkflowService {
 
     }
 
+    /*
+    * Update workflow status
+    * */
+    public void updateWorkflowStatus(String projectId, String workflowId, String status) throws ProjectNotFoundException, WorkflowNotFoundException {
+        JEProject project = ProjectService.getProjectById(projectId);
+
+        if (project == null) {
+            throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
+        }
+
+        if (!project.workflowExists(workflowId)) {
+            throw new WorkflowNotFoundException(JEMessages.WORKFLOW_NOT_FOUND);
+        }
+
+        JEWorkflow wf = project.getWorkflowByIdOrName(workflowId);
+        JELogger.debug("[projectId =" + projectId + " ][workflowId = " + workflowId + "]" + JEMessages.UPDATING_WF,
+                LogCategory.DESIGN_MODE, projectId,
+                LogSubModule.WORKFLOW, workflowId);
+
+        wf.setStatus(Status.fromString(status));
+        workflowRepository.save(wf);
+    }
     public void setFrontConfig(String projectId, String workflowId, String config) throws ProjectNotFoundException, WorkflowNotFoundException, LicenseNotActiveException {
 
         LicenseProperties.checkLicenseIsActive();

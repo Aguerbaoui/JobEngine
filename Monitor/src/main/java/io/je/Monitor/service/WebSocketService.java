@@ -1,6 +1,8 @@
 package io.je.Monitor.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.je.utilities.apis.JEBuilderApiHandler;
+import io.je.utilities.models.WorkflowModel;
 import io.je.utilities.monitoring.MonitoringMessage;
 import io.je.utilities.monitoring.ObjectType;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +27,11 @@ public class WebSocketService {
             }
             else if (msg.getObjectType().equals(ObjectType.JEWORKFLOW)) {
                 template.convertAndSend("/workflow/workflowUpdates", msg);
+                WorkflowModel m = new WorkflowModel();
+                m.setProjectId(msg.getObjectProjectId());
+                m.setStatus(msg.getStatus());
+                m.setId(msg.getObjectId());
+                JEBuilderApiHandler.updateWorkflowStatus(msg.getObjectId(), msg.getObjectProjectId(), m);
             }
             else if (msg.getObjectType().equals(ObjectType.JEEVENT)) {
                 template.convertAndSend("/event/eventUpdates", msg);

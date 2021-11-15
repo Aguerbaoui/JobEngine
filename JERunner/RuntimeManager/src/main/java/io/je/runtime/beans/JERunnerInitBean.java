@@ -2,6 +2,7 @@ package io.je.runtime.beans;
 
 import io.je.runtime.config.RunnerProperties;
 import io.je.utilities.log.JELogger;
+import io.je.utilities.monitoring.JEMonitor;
 import io.siothconfig.SIOTHConfigUtility;
 
 import org.springframework.beans.factory.InitializingBean;
@@ -22,6 +23,7 @@ public class JERunnerInitBean implements InitializingBean {
             ZMQSecurity.setSecure(runnerProperties.getUseZmqSecurity());
             JELogger.initLogger("JERunner", runnerProperties.getJeRunnerLogPath(),runnerProperties.getJeRunnerLogLevel());
             DateUtils.setFormatter(SIOTHConfigUtility.getSiothConfig().getDateFormat());
+            JEMonitor.setPort("15020");
         }
         catch (Exception e) {e.printStackTrace();}
     }

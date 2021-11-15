@@ -91,6 +91,32 @@ public class Network {
     }
 
 
+    public static Response makePatchNetworkCallWithJsonBodyWithResponse(Object json, String url) throws IOException, InterruptedException, ExecutionException {
+        String jsonStr = "";
+
+        jsonStr = new ObjectMapper().writeValueAsString(json);
+
+        /*} catch (JsonProcessingException e) {
+            /*JELogger.error("Json parsing error" + e.getMessage(),
+                    LogCategory.RUNTIME, null,
+                    LogSubModule.JERUNNER,null);
+
+        }
+        JELogger.debug(JEMessages.NETWORK_POST + url,
+                LogCategory.RUNTIME, null,
+                LogSubModule.JERUNNER,null);*/
+        RequestBody body = RequestBody.create(MediaType.parse("application/json"), jsonStr);
+        Request request = new Request.Builder().url(url).patch(body).build();
+        CompletableFuture<Response> f = CompletableFuture.supplyAsync(() -> {
+            try {
+                return client.newCall(request).execute();
+            } catch (IOException e) {
+                return null;
+            }
+        }, getAsyncExecutor());
+        return f.get();
+    }
+
     public static Response makeNetworkCallWithStringObjectBodyWithResponse(String json, String url) throws IOException, ExecutionException, InterruptedException {
         RequestBody body = RequestBody.create(MediaType.parse("application/json"), json);
         Request request = new Request.Builder().url(url).post(body).build();
