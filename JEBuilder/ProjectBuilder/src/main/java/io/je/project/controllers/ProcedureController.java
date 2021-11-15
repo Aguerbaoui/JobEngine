@@ -9,10 +9,12 @@ import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.exceptions.ClassLoadException;
 import io.je.utilities.models.LibModel;
+import org.drools.modelcompiler.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import utils.string.StringUtilities;
 
 import java.util.List;
 
@@ -57,7 +59,7 @@ public class ProcedureController {
             //projectService.getProject(m.getProjectId());
             classService.compileCode(m);
         } catch (ClassLoadException e) {
-            if(!e.getCompilationErrorMessage().isEmpty()) {
+            if(!StringUtilities.isEmpty(e.getCompilationErrorMessage())) {
                 return ResponseEntity.ok(new JEResponse(e.getCode(), e.getCompilationErrorMessage()));
             }
             return JEExceptionHandler.handleException(e);

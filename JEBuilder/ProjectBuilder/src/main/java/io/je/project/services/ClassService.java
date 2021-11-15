@@ -37,8 +37,7 @@ import java.util.*;
 
 import static io.je.classbuilder.builder.ClassManager.getClassModel;
 import static io.je.classbuilder.builder.ClassManager.getLibModel;
-import static io.je.utilities.constants.JEMessages.CLASS_LOAD_IN_RUNNER_FAILED;
-import static io.je.utilities.constants.JEMessages.PROCEDURE_SHOULD_CONTAIN_CODE;
+import static io.je.utilities.constants.JEMessages.*;
 import static io.je.utilities.constants.WorkflowConstants.EXECUTE_SCRIPT;
 
 /*
@@ -290,19 +289,19 @@ public class ClassService {
     public ClassDefinition getTempClassFromMethod(MethodModel methodModel) {
         ClassDefinition c = new ClassDefinition();
         c.setClass(true);
-        if(methodModel.getId() == null) {
+        if(StringUtilities.isEmpty(methodModel.getId())) {
             methodModel.setId(StringUtilities.generateUUID());
         }
-        if(methodModel.getMethodName() == null) {
+        if(StringUtilities.isEmpty(methodModel.getMethodName())) {
             methodModel.setMethodName(StringUtilities.generateRandomAlphabeticString(4));
         }
-        if(methodModel.getMethodScope() == null) {
+        if(StringUtilities.isEmpty(methodModel.getMethodScope())) {
             methodModel.setMethodScope(WorkflowConstants.STATIC);
         }
-        if(methodModel.getMethodVisibility() == null) {
+        if(StringUtilities.isEmpty(methodModel.getMethodVisibility())){
             methodModel.setMethodVisibility(WorkflowConstants.PUBLIC);
         }
-        if(methodModel.getReturnType() == null) {
+        if(StringUtilities.isEmpty(methodModel.getReturnType())) {
             methodModel.setReturnType(WorkflowConstants.VOID);
         }
         c.setClassId(methodModel.getId());
@@ -585,6 +584,9 @@ public class ClassService {
     * */
     public void compileCode(MethodModel m) throws ClassLoadException, AddClassException {
         //create a temp class
+        if(StringUtilities.isEmpty(m.getCode())) {
+            throw new ClassLoadException(EMPTY_CODE);
+        }
         ClassDefinition tempClass = getTempClassFromMethod(m);
         tempClass.setImports(m.getImports());
         //compile without saving or sending to the runner

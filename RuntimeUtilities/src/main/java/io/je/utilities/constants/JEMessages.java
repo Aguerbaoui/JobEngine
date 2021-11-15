@@ -346,6 +346,7 @@ public class JEMessages {
     public static final String TOPIC_ADDED = "Added topics successfully";
 
     public static final String EMPTY_SCRIPT = "Script block must have a valid script";
+    public static final String EMPTY_CODE = "Code is empty";
 
     // ****************************************EVENTS**************************************************
 
