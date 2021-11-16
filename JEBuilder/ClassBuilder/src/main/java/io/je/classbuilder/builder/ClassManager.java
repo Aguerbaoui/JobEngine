@@ -349,15 +349,6 @@ public class ClassManager {
 			methodModels.add(getMethodModel(method));
 		}
 		c.setMethods(methodModels);
-        /*MethodModel m = new MethodModel();
-        m.setMethodName("executeScript");
-        m.setReturnType("VOID");
-        m.setMethodScope("STATIC");
-        m.setCode(script);
-        m.setMethodVisibility("PUBLIC");
-        List<MethodModel> methodModels = new ArrayList<>();
-        methodModels.add(m);
-        c.setMethods(methodModels);*/
 
 		//Compile class first
 		return c;

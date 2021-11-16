@@ -12,7 +12,6 @@ import io.je.project.repository.LibraryRepository;
 import io.je.project.repository.MethodRepository;
 import io.je.utilities.apis.JERunnerAPIHandler;
 import io.je.utilities.beans.*;
-import io.je.utilities.classloader.JEClassCompiler;
 import io.je.utilities.classloader.JEClassLoader;
 import io.je.utilities.config.ConfigurationConstants;
 import io.je.utilities.constants.JEMessages;
@@ -28,6 +27,7 @@ import org.springframework.web.multipart.MultipartFile;
 import utils.files.FileUtilities;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
+import utils.string.StringUtilities;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
@@ -37,7 +37,8 @@ import java.util.*;
 
 import static io.je.classbuilder.builder.ClassManager.getClassModel;
 import static io.je.classbuilder.builder.ClassManager.getLibModel;
-import static io.je.utilities.constants.JEMessages.CLASS_LOAD_IN_RUNNER_FAILED;
+import static io.je.utilities.constants.JEMessages.*;
+import static io.je.utilities.constants.WorkflowConstants.EXECUTE_SCRIPT;
 
 /*
  * Service class to handle classes
@@ -49,6 +50,7 @@ public class ClassService {
     public static final String CLASS_PATH = "classPath";
     public static final String CLASS_ID = "classId";
 
+
     @Autowired
     ClassRepository classRepository;
 
@@ -57,7 +59,9 @@ public class ClassService {
 
     @Autowired
     MethodRepository methodRepository;
+
     Map<String, JEClass> loadedClasses = new HashMap<String, JEClass>();
+
     @Autowired
     private HttpServletRequest request;
 
@@ -84,7 +88,7 @@ public class ClassService {
     /*
      * Add Class from Class definition
      */
-    public List<JEClass> addClass(ClassDefinition classDefinition, boolean sendToRunner, boolean reloadClassDefinition)
+    public void addClass(ClassDefinition classDefinition, boolean sendToRunner, boolean reloadClassDefinition)
             throws AddClassException, ClassLoadException {
         if(reloadClassDefinition) {
             JEClassLoader.overrideInstance();
@@ -93,14 +97,17 @@ public class ClassService {
         for (JEClass _class : builtClasses) {
             if (sendToRunner) {
                 addClassToJeRunner(_class, reloadClassDefinition);
+                classRepository.save(_class);
             }
-            classRepository.save(_class);
+
         }
-        return builtClasses;
 
     }
 
 
+    /*
+    * Add class to runner from datamodel
+    * */
     public void addClass(String workspaceId, String classId, boolean sendToRunner)
             throws ClassLoadException, AddClassException {
         ClassDefinition classDefinition = ClassManager.loadClassDefinition(workspaceId, classId);
@@ -119,7 +126,7 @@ public class ClassService {
     /*
      * Add Class from Class definition
      */
-    public List<JEClass> updateClass(ClassDefinition classDefinition, boolean sendToRunner)
+   /* public List<JEClass> updateClass(ClassDefinition classDefinition, boolean sendToRunner)
             throws AddClassException, ClassLoadException {
         List<JEClass> builtClasses = ClassManager.buildClass(classDefinition);
         for (JEClass _class : builtClasses) {
@@ -131,8 +138,8 @@ public class ClassService {
         }
         return builtClasses;
 
-    }
-
+    }*/
+/*
     public void sendClassesToJeRunner(Collection<JEClass> collection)
             throws AddClassException {
         ArrayList<HashMap> classesList = new ArrayList<>();
@@ -154,7 +161,7 @@ public class ClassService {
         if (jeRunnerResp.getCode() != ResponseCodes.CODE_OK) {
             throw new AddClassException(JEMessages.CLASS_LOAD_FAILED);
         }
-    }
+    }*/
 
 
     /*
@@ -265,28 +272,51 @@ public class ClassService {
         this.loadedClasses = loadedClasses;
     }
 
+    /*
+     * Get a script task class
+     * */
+    public ClassDefinition getScriptTaskClassModel(String script) {
+        MethodModel m = new MethodModel();
+        //m.setId(name);
+        m.setMethodName(EXECUTE_SCRIPT);
+        m.setCode(script);
+        return getTempClassFromMethod(m);
+    }
 
-    public ClassDefinition getScriptTaskClassModel(String id, String name, String script) {
+    /*
+    * Get a temporary class for compilation purposes
+    * */
+    public ClassDefinition getTempClassFromMethod(MethodModel methodModel) {
         ClassDefinition c = new ClassDefinition();
         c.setClass(true);
-        c.setClassId(id);
-        c.setName(name);
-        c.setClassVisibility("public");
-        MethodModel m = new MethodModel();
-        m.setId(name);
-        m.setMethodName("executeScript");
-        m.setReturnType("VOID");
-        m.setMethodScope("STATIC");
-        m.setCode(script);
-        m.setMethodVisibility("PUBLIC");
+        if(StringUtilities.isEmpty(methodModel.getId())) {
+            methodModel.setId(StringUtilities.generateUUID());
+        }
+        if(StringUtilities.isEmpty(methodModel.getMethodName())) {
+            methodModel.setMethodName(StringUtilities.generateRandomAlphabeticString(4));
+        }
+        if(StringUtilities.isEmpty(methodModel.getMethodScope())) {
+            methodModel.setMethodScope(WorkflowConstants.STATIC);
+        }
+        if(StringUtilities.isEmpty(methodModel.getMethodVisibility())){
+            methodModel.setMethodVisibility(WorkflowConstants.PUBLIC);
+        }
+        if(StringUtilities.isEmpty(methodModel.getReturnType())) {
+            methodModel.setReturnType(WorkflowConstants.VOID);
+        }
+        c.setClassId(methodModel.getId());
+        c.setName(methodModel.getMethodName());
+        c.setClassVisibility(WorkflowConstants.PUBLIC);
         List<MethodModel> methodModels = new ArrayList<>();
-        methodModels.add(m);
+        methodModels.add(methodModel);
         c.setMethods(methodModels);
         return c;
     }
 
-
-    public MethodModel getMethodModel(String name) throws MethodException {
+    /*
+     * Return method by name from database
+     * */
+    public MethodModel getMethodModelByName(String name) throws MethodException {
         //HashMap<String, JEMethod> methods = loadedClasses.get(WorkflowConstants.JEPROCEDURES).getMethods();
         JEMethod method = methodRepository.findByJobEngineElementName(name);
         if (method == null) {
@@ -298,7 +328,9 @@ public class ClassService {
 
     }
 
-
+    /*
+     * Return JEMethod object from MethodModel
+     * */
     public JEMethod getMethodFromModel(MethodModel m) {
         JEMethod method = new JEMethod();
         method.setCode(m.getCode());
@@ -319,7 +351,18 @@ public class ClassService {
         return method;
     }
 
+    /*
+     * Create new procedure
+     * */
     public void addProcedure(MethodModel m) throws ClassLoadException, AddClassException, MethodException {
+
+        if(m.getCode().isEmpty()) throw new MethodException(PROCEDURE_SHOULD_CONTAIN_CODE);
+        ClassDefinition tempClass = getTempClassFromMethod(m);
+        tempClass.setImports(m.getImports());
+        addClass(tempClass, false, true);
+
+        //TODO cleanup classes
+
         JEClass clazz = loadedClasses.get(WorkflowConstants.JEPROCEDURES);
         if (clazz == null) {
             clazz = getNewJEProcedureClass();
@@ -359,6 +402,9 @@ public class ClassService {
         }*/
     }
 
+    /*
+     * Create new SIOTHProcedure class
+     * */
     private JEClass getNewJEProcedureClass() {
         return new JEClass(null, WorkflowConstants.JEPROCEDURES,
                 WorkflowConstants.JEPROCEDURES,
@@ -366,6 +412,9 @@ public class ClassService {
                 , ClassType.CLASS);
     }
 
+    /*
+    * Return JEField object from FieldModel
+    * */
     public JEField getFieldFromModel(FieldModel f) {
         JEField field = new JEField();
         field.setComment("");
@@ -375,6 +424,9 @@ public class ClassService {
         return field;
     }
 
+    /*
+    * Add new jar library to projects
+    * */
     public void addJarToProject(LibModel libModel) throws LibraryException {
         JELogger.info(JEMessages.ADDING_JAR_TO_PROJECT,
                 LogCategory.DESIGN_MODE, null, LogSubModule.JEBUILDER, libModel.getFileName());
@@ -425,6 +477,9 @@ public class ClassService {
         }
     }
 
+    /*
+     * return all methods
+     * */
     public List<MethodModel> getAllMethods() {
         List<JEMethod> methods = methodRepository.findAll();
         List<MethodModel> response = new ArrayList<>();
@@ -437,6 +492,9 @@ public class ClassService {
     }
 
 
+    /*
+    * return all libraries
+    * */
     public List<LibModel> getAllLibs() {
         List<JELib> libraries = libraryRepository.findAll();
         List<LibModel> models = new ArrayList<>();
@@ -446,15 +504,19 @@ public class ClassService {
         return models;
     }
 
+    /*
+    * return library by id
+    * */
     public LibModel getLibraryById(String id) {
         Optional<JELib> lib = libraryRepository.findById(id);
-        if (lib.isPresent()) {
-            return getLibModel(lib.get());
-        }
-        return null;
+        return lib.map(ClassManager::getLibModel).orElse(null);
     }
 
+    /*
+    * Remove library
+    * */
     public void removeLibrary(String id) throws LibraryException {
+        //delete library from db
         Optional<JELib> lib = libraryRepository.findById(id);
         if (lib.isPresent()) {
             libraryRepository.deleteById(id);
@@ -464,8 +526,12 @@ public class ClassService {
         }
     }
 
+    /*
+    * Remove procedure from SIOTHProcedures
+    * */
     public void removeProcedure(String name) throws MethodException {
         try {
+            //delete method from DB
             JEMethod method = methodRepository.findByJobEngineElementName(name);
             if (method == null) {
                 method = methodRepository.findById(name).isPresent() ? methodRepository.findById(name).get() : null;
@@ -473,6 +539,7 @@ public class ClassService {
             if (method != null) {
                 methodRepository.delete(method);
             }
+            //updated existent SIOTHProcedures
             loadedClasses.get(WorkflowConstants.JEPROCEDURES).getMethods().remove(method.getJobEngineElementID());
             ClassDefinition c = getClassModel(loadedClasses.get(WorkflowConstants.JEPROCEDURES));
             addClass(c, true, true);
@@ -483,16 +550,22 @@ public class ClassService {
         }
     }
 
+    /*
+    * Update SIOTH procedures
+    * */
     public void updateProcedure(MethodModel m) throws MethodException, AddClassException, ClassLoadException {
         JEClass clazz = loadedClasses.get(WorkflowConstants.JEPROCEDURES);
 
         if (clazz == null) {
             clazz = getNewJEProcedureClass();
         }
+        //check if method exists in DB
         Optional<JEMethod> methodOptional = methodRepository.findById(m.getId());
-        if (!methodOptional.isPresent()) {
+        if (methodOptional.isEmpty()) {
             throw new MethodException(JEMessages.METHOD_MISSING);
         }
+
+    //   update method in SIOTHProcedures class
 
         JEMethod method = getMethodFromModel(m);
         method.setScope(WorkflowConstants.STATIC);
@@ -500,9 +573,24 @@ public class ClassService {
         //try {
         ClassDefinition c = getClassModel(clazz);
         c.setImports(m.getImports());
+        //load new SIOTHProcedures in runner and in Db
         addClass(c, true, true);
-        classRepository.save(clazz);
+        //save updated method in db
         methodRepository.save(method);
+    }
+
+    /*
+    * Compile code before injecting it to the JVM
+    * */
+    public void compileCode(MethodModel m) throws ClassLoadException, AddClassException {
+        //create a temp class
+        if(StringUtilities.isEmpty(m.getCode())) {
+            throw new ClassLoadException(EMPTY_CODE);
+        }
+        ClassDefinition tempClass = getTempClassFromMethod(m);
+        tempClass.setImports(m.getImports());
+        //compile without saving or sending to the runner
+        addClass(tempClass, false, true);
     }
 
 	/*public void updateClass(ClassDefinition classDefinition, boolean sendToRunner)

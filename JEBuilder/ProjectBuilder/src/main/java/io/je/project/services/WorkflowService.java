@@ -708,11 +708,12 @@ public class WorkflowService {
             ArrayList<String> imports = (ArrayList) block.getAttributes().get(IMPORTS);
             b.setScript((String) block.getAttributes().get(SCRIPT));
             b.setTimeout((Integer) block.getAttributes().get(TIMEOUT));
-            ClassDefinition c = classService.getScriptTaskClassModel(b.getJobEngineElementID(), project.getWorkflowByIdOrName(block.getWorkflowId()).getJobEngineElementName() + b.getJobEngineElementName(), b.getScript());
+            ClassDefinition c = classService.getScriptTaskClassModel(b.getScript());
+            //update to an existent class, no longer temporary class
             c.setImports(imports);
+            c.setName(wf.getJobEngineElementName() + b.getJobEngineElementName());
             //True to send directly to JERunner
             classService.addClass(c, true, true);
-            //JEClassLoader.generateScriptTaskClass(b.getName(), b.getScript());
             project.addBlockToWorkflow(b);
         } else if (block.getType().equalsIgnoreCase(WorkflowConstants.PARALLELGATEWAY_TYPE)) {
             ParallelGatewayBlock b = (ParallelGatewayBlock) wf.getAllBlocks().get(block.getId());
