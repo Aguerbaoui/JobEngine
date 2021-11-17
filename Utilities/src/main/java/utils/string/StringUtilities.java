@@ -2,6 +2,9 @@ package utils.string;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.Random;
+import java.util.UUID;
+
 public class StringUtilities {
 
     public static String substring(String base, int start, int end) {
@@ -22,7 +25,32 @@ public class StringUtilities {
                 && (str.matches("^[a-zA-Z]*$")));
     }
 
+    public static String generateRandomAlphabeticString(int length) {
+        String alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        // create random string builder
+        StringBuilder sb = new StringBuilder();
+        // create an object of Random class
+        Random random = new Random();
+        for(int i = 0; i < length; i++) {
 
+            // generate random index number
+            int index = random.nextInt(alphabet.length());
+
+            // get character specified by index
+            // from the string
+            char randomChar = alphabet.charAt(index);
+
+            // append the character to string builder
+            sb.append(randomChar);
+        }
+
+        return sb.toString();
+    }
+
+    public static String generateUUID() {
+        UUID uuid = UUID.randomUUID();
+        return uuid.toString();
+    }
     /*public static void  main(String[] args) {
         File f = new File("D:\\commons-lang3-3.11.jar");
         Set<String> classNames = new HashSet<>();
