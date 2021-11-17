@@ -30,9 +30,9 @@ public class JEClassCompiler {
 		//ClassLoadException exception = null;
 		String message = "";
 		try {
-			JELogger.debug(" loadPath = " + loadPath, LogCategory.RUNTIME,
+			JELogger.debug("loadPath = " + loadPath, LogCategory.RUNTIME,
 					null, LogSubModule.JERUNNER, null);
-			JELogger.debug(" Filepath = "+ filePath, LogCategory.RUNTIME,
+			JELogger.debug("Filepath = "+ filePath, LogCategory.RUNTIME,
 					null, LogSubModule.JERUNNER, null);
 			File sourceFile = new File(filePath);
 			JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
