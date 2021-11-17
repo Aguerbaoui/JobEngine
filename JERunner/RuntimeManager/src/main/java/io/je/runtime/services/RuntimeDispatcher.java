@@ -219,10 +219,10 @@ public class RuntimeDispatcher {
 				Class<?> c = JEClassLoader.getInstance()
 						.loadClass(ClassBuilderConfig.generationPackageName + "." + classModel.getClassName());
 				ClassRepository.addClass(classModel.getClassId(), classModel.getClassName(), c);
-				JELogger.debug(" ! "+JEClassLoader.getInstance().toString());
+			/*	JELogger.debug(" ! "+JEClassLoader.getInstance().toString());
 				JELogger.debug(" ! "+c.getClassLoader().toString());
 				JELogger.debug(" ! "+ClassRepository.getClassById(classModel.getClassId()).getClassLoader().toString());
-
+*/
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
 				throw new ClassLoadException(
@@ -240,7 +240,7 @@ public class RuntimeDispatcher {
 		JEClassLoader.overrideInstance(ClassBuilderConfig.generationPackageName + "." + classModel.getClassName());
 		addClass(classModel);
 		RuleEngineHandler.reloadContainers();
-		JELogger.debug(">>>>> "+JEClassLoader.getInstance().toString());
+		//JELogger.debug(">>>>> "+JEClassLoader.getInstance().toString());
 
 	}
 

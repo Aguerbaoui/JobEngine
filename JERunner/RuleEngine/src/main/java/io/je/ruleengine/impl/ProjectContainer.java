@@ -324,7 +324,7 @@ public class ProjectContainer {
 				// create container
 				try {
 					kieContainer = kieServices.newKieContainer(releaseId, JEClassLoader.getInstance());
-					JELogger.debug("   CONTAINER :" + kieContainer.getClassLoader().toString());
+					//JELogger.debug("   CONTAINER :" + kieContainer.getClassLoader().toString());
 					kScanner = kieServices.newKieScanner(kieContainer);
 					kieBase = kieContainer.getKieBase("kie-base");
 					Thread.currentThread().setContextClassLoader(JEClassLoader.getInstance());
@@ -715,13 +715,13 @@ public class ProjectContainer {
 					// //io.je.utilities.classloader.JEClassLoader@733aa287
 					// ClassLoader test = fact.getClass().getClassLoader();
 					// //io.je.utilities.classloader.JEClassLoader@41ee5f60
-					JELogger.trace(JEClassLoader.getInstance().toString(), LogCategory.RUNTIME, projectId,
+					/*JELogger.trace(JEClassLoader.getInstance().toString(), LogCategory.RUNTIME, projectId,
 							LogSubModule.RULE, fact.getJobEngineElementID());
 					JELogger.trace(fact.getClass().getClassLoader().toString(), LogCategory.RUNTIME, projectId,
 							LogSubModule.RULE, fact.getJobEngineElementID());
 					JELogger.trace(kieContainer.getClassLoader().toString(), LogCategory.RUNTIME, projectId,
 							LogSubModule.RULE, fact.getJobEngineElementID());
-
+*/
 					synchronized (facts) {
 						JELogger.debug(
 								"[projectId =" + projectId + "] [factId :" + fact.getJobEngineElementID() + "]"
