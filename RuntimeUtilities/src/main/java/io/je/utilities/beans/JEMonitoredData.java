@@ -4,7 +4,7 @@ import io.je.utilities.runtimeobject.JEObject;
 
 public abstract class JEMonitoredData extends JEObject{
 	
-	 protected ArchiveOption isArchived = ArchiveOption.asInstance;
+	 protected ArchiveOption isArchived = ArchiveOption.AS_INSTANCE;
 	 protected boolean isBroadcasted=true;
 	 
 	  
@@ -22,7 +22,7 @@ public abstract class JEMonitoredData extends JEObject{
 		super(jobEngineElementID, jobEngineProjectID, jobEngineElementName);
 		this.isArchived = isArchived;
 		this.isBroadcasted = isBroadcasted;
-		if(isArchived==ArchiveOption.asInstance)
+		if(isArchived==ArchiveOption.AS_INSTANCE)
 		{
 			isBroadcasted=true;
 		}

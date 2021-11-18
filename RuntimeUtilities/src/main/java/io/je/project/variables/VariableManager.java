@@ -88,7 +88,7 @@ public class VariableManager {
 		       message.getVariables().add(varMessage);
 	           try {
 	   			JELogger.debug("Variable ["+variable.getJobEngineElementName() + "] = " +variable.getValue(), LogCategory.RUNTIME, projectId, LogSubModule.VARIABLE, variableId);
-	   			JEMonitor.publish(LocalDateTime.now(), variable.getJobEngineElementID(), ObjectType.JEVARIABLE, variable.getJobEngineProjectID(), variable.getValue(), ArchiveOption.asSourceData, false);
+	   			//JEMonitor.publish(LocalDateTime.now(), variable.getJobEngineElementID(), ObjectType.JEVARIABLE, variable.getJobEngineProjectID(), variable.getValue(), ArchiveOption.AS_SOURCE_DATA, false);
 				JELogger.debugWithoutPublish(objectMapper.writeValueAsString(message), LogCategory.RUNTIME, projectId, LogSubModule.VARIABLE, variableId);
 			} catch (JsonProcessingException e) {
 				// TODO Auto-generated catch block

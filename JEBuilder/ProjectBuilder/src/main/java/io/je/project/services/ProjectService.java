@@ -11,7 +11,6 @@ import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.*;
 import io.je.utilities.log.JELogger;
 import io.je.utilities.ruleutils.OperationStatusDetails;
-import io.je.utilities.ruleutils.RuleStatus;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
 

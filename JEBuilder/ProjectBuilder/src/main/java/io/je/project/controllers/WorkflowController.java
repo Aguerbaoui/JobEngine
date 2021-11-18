@@ -136,7 +136,7 @@ public class WorkflowController {
     }
 
     /*
-     * Delete a workflow
+     * Update a workflow
      */
     @PatchMapping(value = "/updateWorkflow/{projectId}/{workflowId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> updateWorkflow(@PathVariable("projectId") String projectId,
@@ -165,6 +165,24 @@ public class WorkflowController {
 			return JEExceptionHandler.handleException(e);
 
 		}
+    }
+
+    /*
+     * Update a workflow status
+     */
+    @PatchMapping(value = "/updateStatus", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> updateStatus(@RequestBody WorkflowModel m) {
+
+        try {
+            projectService.getProject(m.getProjectId());
+
+            workflowService.updateWorkflowStatus(m.getProjectId(), m.getId(), m.getStatus());
+        } catch (Exception e) {
+            return JEExceptionHandler.handleException(e);
+
+        }
+
+        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, WORKFLOW_UPDATED_SUCCESS));
     }
 
     @GetMapping(value = "/getWorkflowById/{projectId}/{key}")
@@ -222,7 +240,7 @@ public class WorkflowController {
     }
 
     /*
-     * Delete a wokflow block
+     * Delete a workflow block
      * */
     @DeleteMapping(value = "deleteWorkflowBlock/{projectId}/{key}/{id}")
     public ResponseEntity<?> deleteWorkflowBlock(@PathVariable String projectId, @PathVariable String key, @PathVariable String id) {

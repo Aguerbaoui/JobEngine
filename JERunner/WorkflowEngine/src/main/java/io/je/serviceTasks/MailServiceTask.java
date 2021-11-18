@@ -48,7 +48,7 @@ public class MailServiceTask extends ServiceTask {
         attributes.put(EMAIL_MESSAGE, task.getEmailMessage());
         attributes.put(SMTP_SERVER, task.getStrSMTPServer());
         String url = task.isbUseDefaultCredentials() ?  SIOTHConfigUtility.getSiothConfig().getApis().getEmailAPI().getAddress() + SEND_EMAIL : SIOTHConfigUtility.getSiothConfig().getApis().getEmailAPI().getAddress() + SEND_EMAIL_AUTH;
-        try {
+        try { //http://192.168.4.128:14003/api/SIOTHEmail/SendEmailAuth
             String json = new ObjectMapper().writeValueAsString(attributes);
             Network network = new Network.Builder(url).hasBody(true)
                     .withMethod(HttpMethod.POST).withBodyType(BodyType.JSON)

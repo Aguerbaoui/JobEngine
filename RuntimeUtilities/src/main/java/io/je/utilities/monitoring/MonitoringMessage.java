@@ -5,33 +5,35 @@ import java.time.LocalDateTime;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.je.utilities.beans.ArchiveOption;
+import io.je.utilities.beans.Status;
 
 public class MonitoringMessage {
 	
 	String timestamp;
 	String objectId;
-	@JsonProperty("ModelId")
 	ObjectType objectType; //Variable/Event : ClassName
 	String objectProjectId;
-	Object objectValue;
-	ArchiveOption isArchived = ArchiveOption.asSourceData;
+	String objectValue;
+	String status;
+	/*ArchiveOption isArchived = ArchiveOption.AS_SOURCE_DATA;
 	boolean isBroadcasted=true;
-	String Source="JobEngine";
+	String Source="JobEngine";*/
 	
 	
 	
 	
-	
+	public MonitoringMessage() {}
 	public MonitoringMessage(LocalDateTime timestamp, String objectId, ObjectType objectType, String objectProjectId,
-			Object objectValue, ArchiveOption isArchived, boolean isBroadcasted) {
+							 String objectValue, String status) {
 		super();
 		this.timestamp = timestamp.toString();
 		this.objectId = objectId;
 		this.objectType = objectType;
 		this.objectProjectId = objectProjectId;
 		this.objectValue = objectValue;
-		this.isArchived = isArchived;
-		this.isBroadcasted = isBroadcasted;
+		this.status = status;
+		/*this.isArchived = isArchived;
+		this.isBroadcasted = isBroadcasted;*/
 	}
 	public String getTimestamp() {
 		return timestamp;
@@ -57,13 +59,13 @@ public class MonitoringMessage {
 	public void setObjectProjectId(String objectProjectId) {
 		this.objectProjectId = objectProjectId;
 	}
-	public Object getObjectValue() {
+	public String getObjectValue() {
 		return objectValue;
 	}
-	public void setObjectValue(Object objectValue) {
+	public void setObjectValue(String objectValue) {
 		this.objectValue = objectValue;
 	}
-	public ArchiveOption getIsArchived() {
+	/*public ArchiveOption getIsArchived() {
 		return isArchived;
 	}
 	public void setIsArchived(ArchiveOption isArchived) {
@@ -75,17 +77,37 @@ public class MonitoringMessage {
     
 	public void setisBroadcasted(boolean isBroadcasted) {
 		this.isBroadcasted = isBroadcasted;
-	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	}*/
 
+
+	public void setTimestamp(String timestamp) {
+		this.timestamp = timestamp;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	@Override
+	public String toString() {
+		return "MonitoringMessage{" +
+				"timestamp='" + timestamp + '\'' +
+				", objectId='" + objectId + '\'' +
+				", objectType=" + objectType +
+				", objectProjectId='" + objectProjectId + '\'' +
+				", objectValue='" + objectValue + '\'' +
+				", status=" + status +
+				'}';
+	}
+
+	public static MonitoringMessage getMonitoringMessage(LocalDateTime timestamp, String objectId, ObjectType objectType, String objectProjectId,
+														 String objectValue, Status status) {
+		return new MonitoringMessage(timestamp, objectId, objectType, objectProjectId, objectValue, status.toString());
+	}
 }
 
 
