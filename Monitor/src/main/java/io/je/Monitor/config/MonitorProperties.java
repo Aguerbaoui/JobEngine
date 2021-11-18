@@ -20,9 +20,16 @@ public class MonitorProperties {
     @Value("${use.ZMQ.Security}")
     Boolean useZmqSecurity;
 
+    @Value("${monitoring.port}")
+    int monitoringPort;
 
-
-    public String getJeMonitorLogPath() {
+    public int getMonitoringPort() {
+		return monitoringPort;
+	}
+	public void setMonitoringPort(int monitoringPort) {
+		this.monitoringPort = monitoringPort;
+	}
+	public String getJeMonitorLogPath() {
         return jeMonitorLogPath;
     }
     public void setJeMonitorLogPath(String jeMonitorLogPath) {

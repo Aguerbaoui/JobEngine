@@ -1,50 +1,51 @@
 package io.je.utilities.monitoring;
 
-import java.time.LocalDateTime;
-import java.util.Arrays;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.je.utilities.beans.ArchiveOption;
-import io.je.utilities.constants.JEMessages;
 import io.je.utilities.log.JELogger;
 import io.siothconfig.SIOTHConfigUtility;
-import org.zeromq.ZMQ;
+
+import java.util.Arrays;
+
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
 import utils.zmq.ZMQPublisher;
 
 public class JEMonitor  {
 
+	
+	static int port;
+	static ZMQPublisher publisher ;
 	static ObjectMapper objectMapper = new ObjectMapper();
-	static ZMQ.Context  mContext  = ZMQ.context(1);
-	static ZMQ.Socket publisher = mContext.socket(ZMQ.PUB);
-	static boolean init = false;
-	private static String port;
-	public static void publish(MonitoringMessage msg) {
-		if(!init) {
-			publisher.bind("tcp://*:" + port);
-			init = true;
-		}
 
+	public static void publish(MonitoringMessage msg) {
 		try {
+			if(publisher==null)
+			{
+				publisher	= new ZMQPublisher("tcp://"+SIOTHConfigUtility.getSiothConfig().getNodes().getSiothMasterNode() , port);
+			}
+			
 			String jsonMsg = objectMapper.writeValueAsString(msg);
-			String update = "JEMonitorTopic:" + jsonMsg;
-			publisher.send(update, 0);
+			publisher.publish(jsonMsg, "JEMonitorTopic");
+			//System.out.println(jsonMsg);
 
 		} catch (Exception e) {
-			JELogger.error(JEMessages.FAILED_TO_SEND_MONITORING_MESSAGE_TO_THE_LOGGING_SYSTEM,
+			// TODO : replace with custom exception
+			JELogger.error("Failed to publish monitoring value. " + Arrays.toString(e.getStackTrace()),
 					LogCategory.RUNTIME, null,
 					LogSubModule.JERUNNER, null);
 		}
 		
 	}
 
-	public static String getPort() {
+	public static int getPort() {
 		return port;
 	}
 
-	public static void setPort(String port) {
+	public static void setPort(int port) {
 		JEMonitor.port = port;
 	}
+
+
+	
 }

@@ -13,7 +13,6 @@ import utils.log.LogSubModule;
 import java.util.HashMap;
 
 @SpringBootApplication
-
 public class MonitorApplication {
 
 	public static void main(String[] args) {

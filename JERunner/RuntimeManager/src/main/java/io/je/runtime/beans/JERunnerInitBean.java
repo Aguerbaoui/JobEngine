@@ -23,7 +23,7 @@ public class JERunnerInitBean implements InitializingBean {
             ZMQSecurity.setSecure(runnerProperties.getUseZmqSecurity());
             JELogger.initLogger("JERunner", runnerProperties.getJeRunnerLogPath(),runnerProperties.getJeRunnerLogLevel());
             DateUtils.setFormatter(SIOTHConfigUtility.getSiothConfig().getDateFormat());
-            JEMonitor.setPort("15020");
+            JEMonitor.setPort(runnerProperties.getMonitoringPort());
         }
         catch (Exception e) {e.printStackTrace();}
     }

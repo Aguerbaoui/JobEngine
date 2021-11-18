@@ -39,7 +39,7 @@ public class JEBuilderInitializingBean implements InitializingBean {
                     LogSubModule.JEBUILDER, null);
             AuthenticationInterceptor.init(builderProperties.getIssuer());
             LicenseProperties.init();
-            JEMonitor.setPort("15021");
+           // JEMonitor.setPort(builderProperties.getMonitoringPort());
         	/*while(!LicenseProperties.licenseIsActive())
         	{
         		try {
@@ -55,7 +55,7 @@ public class JEBuilderInitializingBean implements InitializingBean {
         	}*/
         	
             
-            
+            JEMonitor.setPort(builderProperties.getMonitoringPort());
             ZMQSecurity.setSecure(builderProperties.getUseZmqSecurity());
 			configService.init();
             JELogger.control(JEMessages.BUILDER_STARTED,  LogCategory.DESIGN_MODE,
