@@ -32,12 +32,8 @@ import utils.log.LogSubModule;
 import org.springframework.stereotype.Service;
 
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.Map.Entry;
-import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 import static io.je.utilities.constants.JEMessages.ADDING_JAR_FILE_TO_RUNNER;
@@ -219,10 +215,14 @@ public class RuntimeDispatcher {
 		//if (!ClassRepository.containsClass(classModel.getClassId())) {
 			JEClassCompiler.compileClass(classModel.getClassPath(), ConfigurationConstants.RUNNER_CLASS_LOAD_PATH);
 			try {
-
-				ClassRepository.addClass(classModel.getClassId(), JEClassLoader.getInstance()
-						.loadClass(ClassBuilderConfig.generationPackageName + "." + classModel.getClassName()));
-
+				
+				Class<?> c = JEClassLoader.getInstance()
+						.loadClass(ClassBuilderConfig.generationPackageName + "." + classModel.getClassName());
+				ClassRepository.addClass(classModel.getClassId(), classModel.getClassName(), c);
+			/*	JELogger.debug(" ! "+JEClassLoader.getInstance().toString());
+				JELogger.debug(" ! "+c.getClassLoader().toString());
+				JELogger.debug(" ! "+ClassRepository.getClassById(classModel.getClassId()).getClassLoader().toString());
+*/
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
 				throw new ClassLoadException(
@@ -236,10 +236,12 @@ public class RuntimeDispatcher {
 
 	}
 
-	public void updateClass(ClassModel classModel) throws ClassLoadException {
-		JEClassLoader.overrideInstance();
+	public void updateClass(ClassModel classModel) throws ClassLoadException, ClassNotFoundException {
+		JEClassLoader.overrideInstance(ClassBuilderConfig.generationPackageName + "." + classModel.getClassName());
 		addClass(classModel);
 		RuleEngineHandler.reloadContainers();
+		//JELogger.debug(">>>>> "+JEClassLoader.getInstance().toString());
+
 	}
 
 	public void updateClasses(List<ClassModel> classes) throws ClassLoadException {
