@@ -1,6 +1,7 @@
 package io.je.utilities.classloader;
 
 import io.je.utilities.constants.ClassBuilderConfig;
+import io.je.utilities.instances.ClassRepository;
 import io.je.utilities.log.JELogger;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
@@ -52,47 +53,81 @@ public class JEClassLoader extends ClassLoader {
     }
     
     
+    public static JEClassLoader overrideInstance(String newClass) throws ClassNotFoundException
+    {
+
+    		if(customClasses==null)
+        	{
+        		customClasses=new HashSet<>();
+        	}
+        	synchronized (customClasses) {
+        	instance = new JEClassLoader(customClasses);
+        	customClasses.remove(newClass);
+        	Set< String> all = customClasses;
+        	for(String c : all)
+        	{
+        		ClassRepository.addClass(ClassRepository.getClassIdByName(c), c, instance.loadClass(c));
+        	}
+    		
+		}
+    	
+    	return instance;
+    }
+    
     private void loadAllClasses() throws ClassNotFoundException
     {
     	
-    	for(String _class : customClasses)
-    	{
-    		try {
-                Class c = getClass(_class);
-              
-            }catch (Exception e) {
-               
-             }
-    	}
+    	synchronized (customClasses) {
+    		for(String _class : customClasses)
+        	{
+        		try {
+                    Class c = getClass(_class);
+    				ClassRepository.addClass(ClassRepository.getClassIdByName(_class), _class, c);
+
+                  
+                }catch (Exception e) {
+                	
+                   JELogger.debug("CLASS RELOAD FAILED");
+                 }
+        	}
+    		
+		}
     }
     
     @Override
     public Class<?> loadClass(String name) throws ClassNotFoundException {
-        if(customClasses.contains(name))
-        {
-        	customClasses.remove(name);
-        	//Tempo fix should check later
-        	//loadAllClasses();
-        }
-        //TODO Check again 
-        if (name.startsWith(ClassBuilderConfig.generationPackageName+".") && !name.contains("Propagation")) {
-            customClasses.add(name);
-
-            try {
-                JELogger.trace("Class Loading by je custom loader Started for " + name, LogCategory.RUNTIME,
-                        null, LogSubModule.CLASS, null);
-                Class c = getClass(name);
-                return c;
+       
+    	
+    	//JELogger.debug("**************************"+name);
+    
+    	/*	if(customClasses.contains(name))
+            {
+            	customClasses.remove(name);
+            	//Tempo fix should check later
+            	//loadAllClasses();
             }
-            catch (Exception e) {
-              //  JELogger.debug("Class Loading failed by je custom loader for " + name);
-               // JELogger.error(Arrays.toString(e.getStackTrace()));
-            }
-        }
-        //JELogger.debug("Class Loading Started for " + name);
-        return super.loadClass(name);
+            */
+            //TODO Check again 
+            if (name.startsWith(ClassBuilderConfig.generationPackageName+".") && !name.contains("Propagation")) {
+                customClasses.add(name);
 
-    }
+                try {
+                    JELogger.trace("Class Loading by je custom loader Started for " + name, LogCategory.RUNTIME,
+                            null, LogSubModule.CLASS, null);
+                    Class c = getClass(name);
+                    return c;
+                }
+                catch (Exception e) {
+                  //  JELogger.debug("Class Loading failed by je custom loader for " + name);
+                   // JELogger.error(Arrays.toString(e.getStackTrace()));
+                }
+            }
+            //JELogger.debug("Class Loading Started for " + name);
+            return super.loadClass(name);	
+		}
+    	
+
+    
 
     /**
      * Loading of class from .class file

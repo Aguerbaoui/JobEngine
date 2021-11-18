@@ -96,6 +96,6 @@ public class WorkflowConstants {
     public static final String TARGET_REF = "targetRef";
     public static final String CONDITION = "condition";
     public static final String IMPORTS = "imports";
-
+    public static final String EXECUTE_SCRIPT = "executeScript";
 
 }

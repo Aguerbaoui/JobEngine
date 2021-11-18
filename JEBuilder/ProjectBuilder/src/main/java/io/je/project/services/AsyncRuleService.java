@@ -21,6 +21,7 @@ import io.je.utilities.exceptions.RuleBuildFailedException;
 import io.je.utilities.exceptions.RuleNotFoundException;
 import io.je.utilities.log.JELogger;
 import io.je.utilities.ruleutils.OperationStatusDetails;
+import io.je.utilities.ruleutils.RuleStatus;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
 
@@ -116,6 +117,14 @@ public class AsyncRuleService {
 			return CompletableFuture.completedFuture(result);
 		}
 		result.setItemName(rule.getJobEngineElementName());
+		
+		if(rule.getStatus()==RuleStatus.RUNNING)
+		{
+			result.setOperationSucceeded(false);
+			result.setOperationError(JEMessages.RULE_ALREADY_RUNNING);
+			return CompletableFuture.completedFuture(result);
+		}
+		
 		
 		if(!rule.isEnabled())
 		{
