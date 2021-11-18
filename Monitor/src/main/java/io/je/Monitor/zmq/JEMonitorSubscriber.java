@@ -10,9 +10,9 @@ import io.siothconfig.SIOTHConfigUtility;
 public class JEMonitorSubscriber {
 
 
+	@Autowired
+	MonitoringSubscriber subscriber;
 	
-    private static MonitoringSubscriber subscriber;
-    
     @Autowired
     MonitorProperties monitorProperties;
 
@@ -20,9 +20,7 @@ public class JEMonitorSubscriber {
     
     
     public void initSubscriber() {
-        //"tcp://"+ SIOTHConfigUtility.getSiothConfig().getNodes().getSiothMasterNode(), SIOTHConfigUtility.getSiothConfig().getDataModelPORTS().getDmService_PubAddress(), topic
-        //Subscriber subscriber = new Subscriber(/*"tcp://" + SIOTHConfigUtility.getSiothConfig().getNodes().getSiothMasterNode()*/"tcp://192.168.4.128", 12345, "JEMonitorTopic");
-        subscriber = new MonitoringSubscriber("tcp://" + SIOTHConfigUtility.getSiothConfig().getNodes().getSiothMasterNode(), monitorProperties.getMonitoringPort(), "JEMonitorTopic");
+        subscriber.setConfig("tcp://" + SIOTHConfigUtility.getSiothConfig().getNodes().getSiothMasterNode(), monitorProperties.getMonitoringPort(), "JEMonitorTopic");
     	Thread thread = new Thread(subscriber);
         subscriber.setListening(true);
         thread.start();

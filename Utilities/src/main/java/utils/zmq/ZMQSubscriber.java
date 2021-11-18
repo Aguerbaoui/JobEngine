@@ -30,7 +30,13 @@ public abstract class ZMQSubscriber implements Runnable {
     }
 
     
-    public void closeSocket()
+    public ZMQSubscriber() {
+		super();
+		this.context = new ZContext();
+	}
+
+
+	public void closeSocket()
     {
     	if(this.subSocket!=null)
     	{

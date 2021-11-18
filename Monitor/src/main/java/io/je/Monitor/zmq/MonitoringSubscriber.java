@@ -20,12 +20,21 @@ public class MonitoringSubscriber extends ZMQSubscriber{
 	  @Autowired
 	    WebSocketService service;
 	
-	  @Autowired
+	  
 	public MonitoringSubscriber(String url, int subPort, String topic) {
 		super(url, subPort, topic);
 		// TODO Auto-generated constructor stub
 	}
 	
+	public void setConfig(String url, int subPort, String topic){
+		 this.url = url;
+	        this.subPort = subPort;
+	        this.topic = topic;
+	}
+	
+	public MonitoringSubscriber() {
+
+	}
 
 	
 	@Override
