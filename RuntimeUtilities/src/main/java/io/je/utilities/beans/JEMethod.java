@@ -18,6 +18,8 @@ public class JEMethod extends JEObject {
 
     String scope;
 
+    boolean compiled;
+
     public JEMethod() {}
     public List<JEField> getInputs() {
         return inputs;
@@ -57,5 +59,13 @@ public class JEMethod extends JEObject {
 
     public void setScope(String scope) {
         this.scope = scope;
+    }
+
+    public boolean isCompiled() {
+        return compiled;
+    }
+
+    public void setCompiled(boolean compiled) {
+        this.compiled = compiled;
     }
 }
