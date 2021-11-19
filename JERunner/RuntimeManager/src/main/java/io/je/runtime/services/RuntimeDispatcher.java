@@ -173,6 +173,9 @@ public class RuntimeDispatcher {
 			ActivitiTaskManager.addTask(activitiTask);
 			process.addActivitiTask(activitiTask);
 		}
+		if(wf.getEndBlockEventId() != null) {
+			process.setEndEventId(wf.getEndBlockEventId());
+		}
 		WorkflowEngineHandler.addProcess(process);
 
 	}

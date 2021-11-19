@@ -237,7 +237,9 @@ public class ClassService {
         List<JEMethod> methods = methodRepository.findAll();
         HashMap<String, JEMethod> methodHashMap = new HashMap<>();
         for (JEMethod m : methods) {
-            methodHashMap.put(m.getJobEngineElementID(), m);
+            if(m.isCompiled()) {
+                methodHashMap.put(m.getJobEngineElementID(), m);
+            }
         }
         c.setMethods(methodHashMap);
 
@@ -342,6 +344,7 @@ public class ClassService {
         method.setJeObjectLastUpdate(LocalDateTime.now());
         method.setJeObjectCreationDate(LocalDateTime.now());
         method.setInputs(new ArrayList<>());
+        method.setScope(WorkflowConstants.STATIC);
         if (!m.getInputs().isEmpty()) {
             for (FieldModel f : m.getInputs()) {
                 method.getInputs().add(getFieldFromModel(f));
@@ -350,23 +353,39 @@ public class ClassService {
         method.setImports(m.getImports());
         return method;
     }
-
+    /*
+     * Compile code before injecting it to the JVM
+     * */
+    public void compileCode(MethodModel m) throws ClassLoadException, AddClassException {
+        //create a temp class
+        if(StringUtilities.isEmpty(m.getCode())) {
+            throw new ClassLoadException(EMPTY_CODE);
+        }
+        ClassDefinition tempClass = getTempClassFromMethod(m);
+        tempClass.setImports(m.getImports());
+        //compile without saving or sending to the runner
+        addClass(tempClass, false, true);
+    }
+    /*
+    * try to compile code before saving
+    * */
+    private boolean tryCompileMethod(MethodModel m) {
+        boolean compiled = true;
+        try {
+            compileCode(m);
+        }
+        catch (Exception e) {
+            compiled = false;
+        }
+        return compiled;
+    }
     /*
      * Create new procedure
      * */
     public void addProcedure(MethodModel m) throws ClassLoadException, AddClassException, MethodException {
 
         if(m.getCode().isEmpty()) throw new MethodException(PROCEDURE_SHOULD_CONTAIN_CODE);
-        ClassDefinition tempClass = getTempClassFromMethod(m);
-        tempClass.setImports(m.getImports());
-        addClass(tempClass, false, true);
 
-        //TODO cleanup classes
-
-        JEClass clazz = loadedClasses.get(WorkflowConstants.JEPROCEDURES);
-        if (clazz == null) {
-            clazz = getNewJEProcedureClass();
-        }
         JEMethod method = methodRepository.findByJobEngineElementName(m.getMethodName());
         if (method != null) {
             boolean sameInputs = true;
@@ -386,16 +405,21 @@ public class ClassService {
                 throw new MethodException(JEMessages.METHOD_EXISTS);
             }
         }
-
-
+        boolean compiled = tryCompileMethod(m);
+        //TODO cleanup classes
         method = getMethodFromModel(m);
-        method.setScope(WorkflowConstants.STATIC);
-        clazz.getMethods().put(m.getId(), method);
-        //try {
-        ClassDefinition c = getClassModel(clazz);
-        c.setImports(m.getImports());
-        addClass(c, true, true);
-        classRepository.save(clazz);
+        method.setCompiled(compiled);
+        if(compiled) {
+            JEClass clazz = loadedClasses.get(WorkflowConstants.JEPROCEDURES);
+            if (clazz == null) {
+                clazz = getNewJEProcedureClass();
+            }
+            clazz.getMethods().put(m.getId(), method);
+            ClassDefinition c = getClassModel(clazz);
+            c.setImports(m.getImports());
+            addClass(c, true, true);
+            classRepository.save(clazz);
+        }
         methodRepository.save(method);
   /*      } catch (ClassLoadException | AddClassException e) {
             e.printStackTrace();
@@ -554,22 +578,28 @@ public class ClassService {
     * Update SIOTH procedures
     * */
     public void updateProcedure(MethodModel m) throws MethodException, AddClassException, ClassLoadException {
-        JEClass clazz = loadedClasses.get(WorkflowConstants.JEPROCEDURES);
 
-        if (clazz == null) {
-            clazz = getNewJEProcedureClass();
-        }
-        //check if method exists in DB
+        if(m.getCode().isEmpty()) throw new MethodException(PROCEDURE_SHOULD_CONTAIN_CODE);
+
         Optional<JEMethod> methodOptional = methodRepository.findById(m.getId());
         if (methodOptional.isEmpty()) {
             throw new MethodException(JEMessages.METHOD_MISSING);
         }
 
-    //   update method in SIOTHProcedures class
-
+        boolean compiled = tryCompileMethod(m);
         JEMethod method = getMethodFromModel(m);
-        method.setScope(WorkflowConstants.STATIC);
-        clazz.getMethods().put(m.getId(), method);
+        method.setCompiled(compiled);
+        JEClass clazz = loadedClasses.get(WorkflowConstants.JEPROCEDURES);
+        if (clazz == null) {
+            clazz = getNewJEProcedureClass();
+        }
+        if(!compiled) {
+            clazz.getMethods().remove(m.getId());
+        }
+        else {
+            clazz.getMethods().put(m.getId(), method);
+        }
+
         //try {
         ClassDefinition c = getClassModel(clazz);
         c.setImports(m.getImports());
@@ -579,19 +609,7 @@ public class ClassService {
         methodRepository.save(method);
     }
 
-    /*
-    * Compile code before injecting it to the JVM
-    * */
-    public void compileCode(MethodModel m) throws ClassLoadException, AddClassException {
-        //create a temp class
-        if(StringUtilities.isEmpty(m.getCode())) {
-            throw new ClassLoadException(EMPTY_CODE);
-        }
-        ClassDefinition tempClass = getTempClassFromMethod(m);
-        tempClass.setImports(m.getImports());
-        //compile without saving or sending to the runner
-        addClass(tempClass, false, true);
-    }
+
 
 	/*public void updateClass(ClassDefinition classDefinition, boolean sendToRunner)
 			throws AddClassException, JERunnerErrorException, InterruptedException, ExecutionException,

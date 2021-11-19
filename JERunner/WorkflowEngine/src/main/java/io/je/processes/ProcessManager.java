@@ -4,6 +4,7 @@ import io.je.JEProcess;
 import io.je.callbacks.OnExecuteOperation;
 import io.je.serviceTasks.ActivitiTask;
 import io.je.serviceTasks.InformTask;
+import io.je.utilities.apis.JERunnerAPIHandler;
 import io.je.utilities.beans.Status;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.*;
@@ -308,12 +309,22 @@ public class ProcessManager {
     }
 
     public static void setRunning(String id, boolean b, String processInstanceId) {
-        processes.get(id).setRunning(b);
-        Status s = b? Status.RUNNING : Status.STOPPED;
+        JEProcess process = processes.get(id);
+        process.setRunning(b);
+        Status status= b? Status.RUNNING : Status.STOPPED;
         MonitoringMessage msg = new MonitoringMessage(LocalDateTime.now(), id, ObjectType.JEWORKFLOW,
-                processes.get(id).getProjectId(), String.valueOf(b), s.toString());
-        JELogger.debug(SENDING_WORKFLOW_MONITORING_DATA_TO_JEMONITOR + "\n" + msg, LogCategory.RUNTIME, "", LogSubModule.WORKFLOW, processes.get(id).getName());
+                processes.get(id).getProjectId(), String.valueOf(b), status.toString());
+        JELogger.debug(SENDING_WORKFLOW_MONITORING_DATA_TO_JEMONITOR + "\n" + msg, LogCategory.RUNTIME, process.getProjectId(), LogSubModule.WORKFLOW, processes.get(id).getName());
         JEMonitor.publish(msg);
+        if(!b) {
+            if(process.getEndEventId() != null) {
+                try {
+                    JERunnerAPIHandler.triggerEvent(process.getEndEventId(), process.getProjectId());
+                } catch (JERunnerErrorException e) {
+                    JELogger.error(JEMessages.ERROR_TRIGGERING_EVENT, LogCategory.RUNTIME, process.getProjectId(), LogSubModule.WORKFLOW, processes.get(id).getName());
+                }
+            }
+        }
     }
 
 

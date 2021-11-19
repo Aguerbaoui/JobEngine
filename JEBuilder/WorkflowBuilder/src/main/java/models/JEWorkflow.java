@@ -1,6 +1,7 @@
 package models;
 
 import blocks.WorkflowBlock;
+import blocks.basic.EndBlock;
 import blocks.basic.StartBlock;
 import blocks.events.ErrorBoundaryEvent;
 import io.je.utilities.beans.Status;
@@ -312,6 +313,15 @@ public class JEWorkflow extends JEObject {
         model.setFrontConfig(wf.getFrontConfig());
         model.setEnabled(wf.isEnabled);
         return model;
+    }
+
+    public EndBlock getWorkflowEndBlock() {
+        for (WorkflowBlock b: allBlocks.values()) {
+            if(b instanceof EndBlock) {
+                return (EndBlock) b;
+            }
+        }
+        return null;
     }
 
     public void setScript(boolean script) {
