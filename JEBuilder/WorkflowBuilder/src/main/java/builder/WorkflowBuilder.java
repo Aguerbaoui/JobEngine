@@ -128,7 +128,11 @@ public class WorkflowBuilder {
      * Build pbpmn and Deploy it in engine
      * */
     public static boolean buildWorkflow(JEWorkflow workflow) {
-        if (workflow.getWorkflowStartBlock() == null || workflow.getAllBlocks() == null || workflow.getAllBlocks().size() == 0 || workflow.isHasErrors())
+        if (workflow.getWorkflowEndBlock() == null ||
+                workflow.getWorkflowStartBlock() == null ||
+                workflow.getAllBlocks() == null ||
+                workflow.getAllBlocks().size() == 0 ||
+                workflow.isHasErrors())
             return false;
         if (!workflow.isScript()) {
             JEToBpmnMapper.createBpmnFromJEWorkflow(workflow);
@@ -181,6 +185,10 @@ public class WorkflowBuilder {
         }
         wf.setTasks(tasks);
         workflow.setStatus(Status.BUILDING);
+        String endEventId = workflow.getWorkflowEndBlock().getEventId();
+        if(endEventId != null) {
+            wf.setEndBlockEventId(endEventId);
+        }
         JELogger.debug( JEMessages.DEPLOYING_IN_RUNNER_WORKFLOW_WITH_ID + " = " + workflow.getJobEngineElementID(),
                 LogCategory.DESIGN_MODE, workflow.getJobEngineProjectID(),
                 LogSubModule.WORKFLOW, workflow.getJobEngineElementID());
@@ -193,6 +201,7 @@ public class WorkflowBuilder {
             workflow.setStatus(Status.NOT_BUILT);
             return false;
         }
+
         workflow.setStatus(Status.STOPPED);
         return true;
 

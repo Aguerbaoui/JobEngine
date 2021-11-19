@@ -642,6 +642,11 @@ public class WorkflowService {
         } else if (block.getType().equalsIgnoreCase(WorkflowConstants.END_TYPE)) {
             EndBlock b = (EndBlock) wf.getAllBlocks().get(block.getId());
             b.setJobEngineElementName((String) block.getAttributes().get(NAME));
+            b.setEventId(null);
+            if (!StringUtilities.isEmpty((String) block.getAttributes().get(EVENT_ID))) {
+                //eventService.updateEventType(block.getProjectId(), (String) block.getAttributes().get(EVENT_ID), EventType.GENERIC_EVENT.toString());
+                b.setEventId((String) block.getAttributes().get(EVENT_ID));
+            }
             project.addBlockToWorkflow(b);
         } else if (block.getType().equalsIgnoreCase(WorkflowConstants.EVENTGATEWAY_TYPE)) {
             EventGatewayBlock b = (EventGatewayBlock) wf.getAllBlocks().get(block.getId());

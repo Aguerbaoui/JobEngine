@@ -41,9 +41,10 @@ public class JEClassCompiler {
 
 			options.add("-Xlint:-unchecked");
 			options.add("-Xlint:-rawtypes");
+			options.add("-Xlint:deprecation");
 
-			StringBuilder sb = new StringBuilder();
-			/*options.add("-classpath");
+			/*StringBuilder sb = new StringBuilder();
+			options.add("-classpath");
 			URLClassLoader urlClassLoader = (URLClassLoader) Thread.currentThread().getContextClassLoader();
 			for (URL url : urlClassLoader.getURLs()){
 				//JELogger.info(JEClassLoader.class, url.getFile().substring(1));

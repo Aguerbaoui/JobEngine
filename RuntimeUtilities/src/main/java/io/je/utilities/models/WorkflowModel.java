@@ -22,6 +22,8 @@ public class WorkflowModel {
 
     private boolean onProjectBoot;
 
+    private String endBlockEventId;
+
     private String triggerMessage;
 
     private ArrayList<EventModel> events;
@@ -195,10 +197,35 @@ public class WorkflowModel {
         this.enabled = enabled;
     }
 
-    @Override
-    public String toString() {
-        return "WorkflowModel [projectId=" + projectId + ", key=" + id + ", path=" + path + ", events=" + events
-                + ", tasks=" + tasks + "]";
+    public String getEndBlockEventId() {
+        return endBlockEventId;
     }
 
+    public void setEndBlockEventId(String endBlockEventId) {
+        this.endBlockEventId = endBlockEventId;
+    }
+
+    @Override
+    public String toString() {
+        return "WorkflowModel{" +
+                "projectId='" + projectId + '\'' +
+                ", id='" + id + '\'' +
+                ", path='" + path + '\'' +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", triggeredByEvent=" + triggeredByEvent +
+                ", onProjectBoot=" + onProjectBoot +
+                ", endBlockEventId='" + endBlockEventId + '\'' +
+                ", triggerMessage='" + triggerMessage + '\'' +
+                ", events=" + events +
+                ", tasks=" + tasks +
+                ", createdBy='" + createdBy + '\'' +
+                ", modifiedBy='" + modifiedBy + '\'' +
+                ", status='" + status + '\'' +
+                ", modifiedAt='" + modifiedAt + '\'' +
+                ", createdAt='" + createdAt + '\'' +
+                ", frontConfig='" + frontConfig + '\'' +
+                ", enabled=" + enabled +
+                '}';
+    }
 }

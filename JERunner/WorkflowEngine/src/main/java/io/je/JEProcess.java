@@ -25,6 +25,8 @@ public class JEProcess {
 
     private ProcessInstance processInstance;
 
+    private String endEventId;
+
     /*
      * True if the workflow starts with project boot
      * */
@@ -147,5 +149,13 @@ public class JEProcess {
 
     public void setActiveThread(Thread activeThread) {
         this.activeThread = activeThread;
+    }
+
+    public String getEndEventId() {
+        return endEventId;
+    }
+
+    public void setEndEventId(String endEventId) {
+        this.endEventId = endEventId;
     }
 }
