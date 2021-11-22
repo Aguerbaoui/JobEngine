@@ -82,9 +82,6 @@ public class JEClassCompiler {
 		}catch (Exception e) {
 			JELogger.error(JEMessages.UNEXPECTED_ERROR + Arrays.toString(e.getStackTrace()), LogCategory.RUNTIME,
 					null, LogSubModule.JERUNNER, null);
-			//ClassLoadException exception = new ClassLoadException(JEMessages.CLASS_LOAD_FAILED);
-			//exception.setCompilationErrorMessage(message);
-			//throw exception;
 		}
 		if(!message.isEmpty()) {
 			ClassLoadException exception = new ClassLoadException(JEMessages.CLASS_LOAD_FAILED);

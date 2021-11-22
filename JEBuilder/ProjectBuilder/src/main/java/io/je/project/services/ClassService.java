@@ -99,6 +99,14 @@ public class ClassService {
                 addClassToJeRunner(_class, reloadClassDefinition);
                 classRepository.save(_class);
             }
+            else {
+                try {
+                FileUtilities.deleteFileFromPath(_class.getClassPath());
+
+            } catch (Exception e) {
+                JELogger.error(FAILED_TO_DELETE_FILES, LogCategory.DESIGN_MODE, "", LogSubModule.CLASS, classDefinition.getName());
+            }
+            }
 
         }
 
@@ -176,7 +184,6 @@ public class ClassService {
         classMap.put(CLASS_ID, clazz.getClassId());
         JELogger.debug(JEMessages.ADDING_CLASSES_TO_RUNNER_FROM_BUILDER, LogCategory.DESIGN_MODE, null, LogSubModule.CLASS, clazz.getClassName());
         JEResponse jeRunnerResp;
-
         if (reloadClassDefinition) {
             try {
                 jeRunnerResp = JERunnerAPIHandler.updateClass(classMap);
@@ -569,7 +576,7 @@ public class ClassService {
             addClass(c, true, true);
 
         } catch (Exception e) {
-            JELogger.debug(JEMessages.ERROR_REMOVING_LIBRARY, LogCategory.DESIGN_MODE, "", LogSubModule.CLASS, name);
+            JELogger.debug(JEMessages.ERROR_REMOVING_LIBRARY + "\n" + Arrays.toString(e.getStackTrace()), LogCategory.DESIGN_MODE, "", LogSubModule.CLASS, name);
             throw new MethodException(JEMessages.ERROR_REMOVING_METHOD);
         }
     }

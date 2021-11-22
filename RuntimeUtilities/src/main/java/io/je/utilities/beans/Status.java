@@ -6,10 +6,10 @@ public enum Status {
 	RUNNING("Running"),
 	STOPPING("Stopping"),
 	STOPPED("Stopped"),
-	NOT_BUILT("To be built"),
+	NOT_BUILT("To be Built"),
 	RUNNING_NOT_UP_TO_DATE("Running/Not Updated"),
     TRIGGERED("Triggered"),
-    NOT_TRIGGERED("Not triggered");
+    NOT_TRIGGERED("Not Triggered");
 	
 
     private final String name;       

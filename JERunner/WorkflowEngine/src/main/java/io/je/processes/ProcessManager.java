@@ -140,7 +140,7 @@ public class ProcessManager {
             Deployment dep = deploymentBuilder.deploy(); //to debug it if needed
             //String id = deploymentBuilder.deploy().getId();
             processes.get(key).setDeployed(true);
-            FileUtilities.deleteFileFromPath(processes.get(key).getBpmnPath());
+            //FileUtilities.deleteFileFromPath(processes.get(key).getBpmnPath());
             msg = new MonitoringMessage(LocalDateTime.now(), key, ObjectType.JEWORKFLOW,
                     processes.get(key).getProjectId(), Status.STOPPED.toString(), Status.STOPPED.toString());
             JELogger.debug(SENDING_WORKFLOW_MONITORING_DATA_TO_JEMONITOR + "\n" + msg, LogCategory.RUNTIME, "", LogSubModule.WORKFLOW, processes.get(key).getName());

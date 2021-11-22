@@ -7,7 +7,7 @@ import io.je.utilities.classloader.JEClassLoader;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.*;
 import io.je.utilities.log.JELogger;
-import io.je.utilities.ruleutils.RuleIdManager;
+import io.je.utilities.ruleutils.IdManager;
 import io.je.utilities.runtimeobject.JEObject;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
@@ -211,7 +211,7 @@ public class ProjectContainer {
 				} catch (Exception e) {
 					e.printStackTrace();
 					// fatal : Runtime Executions
-					String ruleId = RuleIdManager.getRuleIdFromErrorMsg(e.getMessage());
+					String ruleId = IdManager.getRuleIdFromErrorMsg(e.getMessage());
 					e.printStackTrace();
 					JELogger.error(
 							JEMessages.RULE_EXECUTION_ERROR + StringUtils.substringBefore(e.getMessage(), " in "),
