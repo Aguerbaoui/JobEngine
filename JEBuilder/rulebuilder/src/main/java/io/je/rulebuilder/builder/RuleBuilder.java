@@ -16,7 +16,7 @@ import io.je.utilities.exceptions.RuleBuildFailedException;
 import io.je.utilities.log.JELogger;
 import io.je.utilities.mapping.JERunnerRuleMapping;
 import io.je.utilities.beans.JEResponse;
-import io.je.utilities.ruleutils.RuleIdManager;
+import io.je.utilities.ruleutils.IdManager;
 import io.siothconfig.SIOTHConfigUtility;
 
 import org.drools.template.ObjectDataCompiler;
@@ -24,11 +24,9 @@ import utils.date.DateUtils;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.concurrent.ExecutionException;
 
 /*
  * Rule Builder class that builds .drl file from JERule instance
@@ -134,7 +132,7 @@ public class RuleBuilder {
         String scriptedRuleid = "";
         List<ScriptedRule> scriptedRules = new ArrayList<>();
         Set<Block> rootBlocks = getRootBlocks(uRule);
-        String subRulePrefix = RuleIdManager.generateSubRulePrefix(uRule.getJobEngineElementID());
+        String subRulePrefix = IdManager.generateSubRulePrefix(uRule.getJobEngineElementID());
         for (Block root : rootBlocks) {
             scriptedRuleid = subRulePrefix + uRule.getJobEngineElementName() + ++scriptedRulesCounter;
             String condition = "";

@@ -2,9 +2,12 @@ package models;
 
 import blocks.WorkflowBlock;
 import blocks.basic.EndBlock;
+import blocks.basic.ScriptBlock;
 import blocks.basic.StartBlock;
 import blocks.events.ErrorBoundaryEvent;
 import io.je.utilities.beans.Status;
+import io.je.utilities.config.ConfigurationConstants;
+import io.je.utilities.constants.ClassBuilderConfig;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.InvalidSequenceFlowException;
 import io.je.utilities.exceptions.WorkflowBlockNotFound;
@@ -16,12 +19,14 @@ import io.je.utilities.monitoring.ObjectType;
 import io.je.utilities.runtimeobject.JEObject;
 import org.springframework.data.mongodb.core.mapping.Document;
 import utils.date.DateUtils;
+import utils.files.FileUtilities;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
 
 import java.time.LocalDateTime;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static io.je.utilities.constants.JEMessages.FAILED_TO_DELETE_FILES;
 import static io.je.utilities.constants.JEMessages.SENDING_WORKFLOW_MONITORING_DATA_TO_JEMONITOR;
 
 /*
@@ -29,6 +34,7 @@ import static io.je.utilities.constants.JEMessages.SENDING_WORKFLOW_MONITORING_D
  * */
 @Document(collection = "JEWorkflowCollection")
 public class JEWorkflow extends JEObject {
+
 
     /*public final static String RUNNING = "RUNNING";
 
@@ -272,10 +278,21 @@ public class JEWorkflow extends JEObject {
         if (b == null) {
             throw new WorkflowBlockNotFound(JEMessages.WORKFLOW_BLOCK_NOT_FOUND);
         }
+        if(b instanceof ScriptBlock) {
+            cleanUpScriptTaskBlock((ScriptBlock) b);
+        }
         allBlocks.remove(id);
         if (allBlocks.size() == 0) workflowStartBlock = null;
         b = null;
         status = Status.NOT_BUILT;
+
+    }
+    public void cleanUpScriptTaskBlock(ScriptBlock b) {
+        try {
+            FileUtilities.deleteFileFromPath(b.getScriptPath());
+        } catch (Exception e) {
+            JELogger.error(FAILED_TO_DELETE_FILES, LogCategory.DESIGN_MODE, jobEngineProjectID, LogSubModule.WORKFLOW, b.getJobEngineElementID());
+        }
 
     }
 

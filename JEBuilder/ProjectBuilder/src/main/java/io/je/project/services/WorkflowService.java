@@ -26,10 +26,12 @@ import io.je.utilities.models.EventType;
 import io.je.utilities.models.WorkflowBlockModel;
 import io.je.utilities.models.WorkflowModel;
 import io.je.utilities.ruleutils.OperationStatusDetails;
+import io.je.utilities.ruleutils.IdManager;
 import models.JEWorkflow;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import utils.files.FileUtilities;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
 import utils.string.StringUtilities;
@@ -42,6 +44,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static io.je.utilities.constants.JEMessages.FAILED_TO_DELETE_FILES;
 import static io.je.utilities.constants.JEMessages.THREAD_INTERRUPTED_WHILE_EXECUTING;
 import static io.je.utilities.constants.WorkflowConstants.*;
 
@@ -714,12 +717,21 @@ public class WorkflowService {
             ArrayList<String> imports = (ArrayList) block.getAttributes().get(IMPORTS);
             b.setScript((String) block.getAttributes().get(SCRIPT));
             b.setTimeout((Integer) block.getAttributes().get(TIMEOUT));
+            String name = IdManager.getScriptTaskId(wf.getJobEngineElementName(), b.getJobEngineElementName());
+            b.setScriptPath(name);
+            //System.out.println("se");
             ClassDefinition c = classService.getScriptTaskClassModel(b.getScript());
             //update to an existent class, no longer temporary class
             c.setImports(imports);
-            c.setName(wf.getJobEngineElementName() + b.getJobEngineElementName());
+            c.setName(name);
             //True to send directly to JERunner
-            classService.addClass(c, true, true);
+            try {
+                classService.addClass(c, true, true);
+            }
+            catch (Exception e) {
+                deleteGeneratedScriptTaskClass(b);
+                throw e;
+            }
             project.addBlockToWorkflow(b);
         } else if (block.getType().equalsIgnoreCase(WorkflowConstants.PARALLELGATEWAY_TYPE)) {
             ParallelGatewayBlock b = (ParallelGatewayBlock) wf.getAllBlocks().get(block.getId());
@@ -857,6 +869,15 @@ public class WorkflowService {
         workflowRepository.save(wf);
 
 
+    }
+
+    private void deleteGeneratedScriptTaskClass(ScriptBlock b) {
+        try {
+            FileUtilities.deleteFileFromPath(b.getScriptPath());
+        }
+        catch (Exception ex) {
+            JELogger.error(FAILED_TO_DELETE_FILES, LogCategory.DESIGN_MODE, b.getJobEngineProjectName(), LogSubModule.CLASS, b.getJobEngineElementName());
+        }
     }
 
 

@@ -704,4 +704,5 @@ public class JEMessages {
 
     public static final String CODE_COMPILATION_SUCCESSFUL = "Code was successfully compiled";
     public static final String PROCEDURE_SHOULD_CONTAIN_CODE = "Procedure should contain code";
+    public static final String FAILED_TO_DELETE_FILES = "Failed to delete files ";
 }

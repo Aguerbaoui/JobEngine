@@ -22,6 +22,7 @@ import io.je.utilities.log.JELogger;
 import io.je.utilities.models.LibModel;
 import io.siothconfig.SIOTHConfigUtility;
 import utils.date.DateUtils;
+import utils.files.FileUtilities;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
 import utils.zmq.ZMQPublisher;
@@ -115,7 +116,6 @@ public class ClassManager {
 
 		// load .java -> .class
 		JEClassCompiler.compileClass(filePath, loadPath);
-
 		// Load the target class using its binary name
 		Class<?> loadedClass;
 		try {
@@ -346,7 +346,8 @@ public class ClassManager {
 		c.setClassVisibility("public");
 		List<MethodModel> methodModels = new ArrayList<>();
 		for(JEMethod method: clazz.getMethods().values()) {
-			methodModels.add(getMethodModel(method));
+			if(method.isCompiled())
+				methodModels.add(getMethodModel(method));
 		}
 		c.setMethods(methodModels);
 
