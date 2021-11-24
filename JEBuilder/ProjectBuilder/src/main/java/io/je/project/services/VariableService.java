@@ -17,7 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
@@ -161,8 +161,8 @@ public class VariableService {
         }
         JEVariable var = new JEVariable(variableModel.getId(),variableModel.getProjectId(),variableModel.getName(),variableModel.getType(), variableModel.getInitialValue(),variableModel.getDescription(),variableModel.getCreatedBy(),variableModel.getModifiedBy());
         var.setJobEngineProjectName(project.getProjectName());
-        var.setJeObjectCreationDate(LocalDateTime.now());
-        var.setJeObjectLastUpdate(LocalDateTime.now());
+        var.setJeObjectCreationDate(Instant.now());
+        var.setJeObjectLastUpdate(Instant.now());
 		try {
 			JERunnerAPIHandler.addVariable(variableModel.getProjectId(), variableModel.getId(), variableModel);
 		}

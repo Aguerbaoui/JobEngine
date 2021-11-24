@@ -32,7 +32,7 @@ import utils.string.StringUtilities;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.*;
 
 import static io.je.classbuilder.builder.ClassManager.getClassModel;
@@ -339,8 +339,8 @@ public class ClassService {
         method.setJobEngineElementName(m.getMethodName());
         method.setJeObjectCreatedBy(m.getCreatedBy());
         method.setJeObjectModifiedBy(m.getModifiedBy());
-        method.setJeObjectLastUpdate(LocalDateTime.now());
-        method.setJeObjectCreationDate(LocalDateTime.now());
+        method.setJeObjectLastUpdate(Instant.now());
+        method.setJeObjectCreationDate(Instant.now());
         method.setInputs(new ArrayList<>());
         if (!m.getInputs().isEmpty()) {
             for (FieldModel f : m.getInputs()) {
@@ -463,7 +463,7 @@ public class ClassService {
                 jeLib.setScope(LibScope.JOBENGINE);
                 jeLib.setJeObjectCreatedBy(libModel.getCreatedBy());
                 jeLib.setJeObjectModifiedBy(libModel.getCreatedBy());
-                jeLib.setJeObjectCreationDate(LocalDateTime.now());
+                jeLib.setJeObjectCreationDate(Instant.now());
                 jeLib.setJobEngineElementID(libModel.getId());
                 HashMap<String, String> payload = new HashMap<>();
                 payload.put("name", file.getOriginalFilename());

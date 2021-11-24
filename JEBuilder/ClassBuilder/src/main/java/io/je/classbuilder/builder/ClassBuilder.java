@@ -32,7 +32,8 @@ import utils.string.StringUtilities;
 public class ClassBuilder {
 
 	
-
+	static String dataModelDateFormat;
+	
 	/*
 	 * build .java class/interface/enum from classModel
 	 * returns  path where file was created
@@ -194,7 +195,7 @@ public class ClassBuilder {
 				{					 
 					newField.addAnnotation(new AnnotationSourceGenerator("JsonDeserialize(using = LocalDateTimeDeserializer.class)"));
 					newField.addAnnotation(new AnnotationSourceGenerator("JsonSerialize(using = LocalDateTimeSerializer.class)"));
-					newField.addAnnotation(new AnnotationSourceGenerator("JsonFormat (shape = JsonFormat.Shape.STRING, pattern = \""+SIOTHConfigUtility.getSiothConfig().getDateFormat()+"\")"));					
+					newField.addAnnotation(new AnnotationSourceGenerator("JsonFormat (shape = JsonFormat.Shape.STRING, pattern ="+dataModelDateFormat+")"));					
 				}
 				newClass.addField(newField);
 				String attributeName = field.getName();
@@ -410,6 +411,11 @@ public class ClassBuilder {
 			// TODO: throw except
 		}
 		return value;
+	}
+
+	public static void setDataModelDateFormat(String dataModelDateFormat) {
+		ClassBuilder.dataModelDateFormat = dataModelDateFormat;
+		
 	}
 
 }

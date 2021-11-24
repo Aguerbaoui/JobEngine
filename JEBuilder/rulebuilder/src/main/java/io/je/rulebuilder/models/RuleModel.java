@@ -1,10 +1,11 @@
 package io.je.rulebuilder.models;
 
+
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.je.rulebuilder.components.JERule;
 import io.je.rulebuilder.components.UserDefinedRule;
 import io.je.rulebuilder.config.AttributesMapping;
-import utils.date.DateUtils;
 
 
 /*
@@ -65,8 +66,8 @@ public class RuleModel {
 		this.ruleName = rule.getJobEngineElementName();
 		this.description = rule.getDescription();
 		this.status = String.valueOf(rule.isBuilt());
-		this.createdAt = DateUtils.formatDateToSIOTHFormat(rule.getJeObjectCreationDate());
-		this.lastModifiedAt = DateUtils.formatDateToSIOTHFormat(rule.getJeObjectLastUpdate());
+		this.createdAt = rule.getJeObjectCreationDate().toString();
+		this.lastModifiedAt = rule.getJeObjectLastUpdate().toString();
 		this.createdBy = rule.getJeObjectCreatedBy();
 		this.modifiedBy = rule.getJeObjectModifiedBy();
 		this.status=rule.getStatus().toString();

@@ -156,20 +156,6 @@ public class JELogger extends LoggerUtils {
 		publishLogMessage(logMessage);
 	}
 
-	// get Log message object for the logging service
-	public static LogMessage getLogMessage(LogLevel logLevel, String message, LogCategory category, String projectId,
-			LogSubModule subModule, String objectId) {
-		String logDate = DateUtils.formatDate(LocalDateTime.now(), "yyyy-MM-dd HH:mm:ss.SSS");
-
-		return new LogMessage(logLevel, message, logDate, /* category, */ projectId, subModule, objectId);
-	}
-
-	// get Log message object for the logging service
-	public static LogMessage getLogMessage(LogLevel logLevel, String message, LogCategory category, String projectId,
-			LogSubModule subModule, String objectId, String blockName) {
-		String logDate = DateUtils.formatDate(LocalDateTime.now(), "yyyy-MM-dd HH:mm:ss.SSS");
-
-		return new LogMessage(logLevel, message, logDate, /* category, */ projectId, subModule, objectId, blockName);
-	}
+	
 
 }

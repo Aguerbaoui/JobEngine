@@ -26,7 +26,7 @@ import utils.log.LogCategory;
 import utils.log.LogSubModule;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.concurrent.CompletableFuture;
@@ -82,8 +82,8 @@ public class RuleService {
 		rule.setJobEngineElementName(ruleModel.getRuleName());
 		rule.setJobEngineProjectName(project.getProjectName());
 		rule.setDescription(ruleModel.getDescription());
-		rule.setJeObjectCreationDate(LocalDateTime.now());
-		rule.setJeObjectLastUpdate(LocalDateTime.now());
+		rule.setJeObjectCreationDate(Instant.now());
+		rule.setJeObjectLastUpdate(Instant.now());
 		RuleParameters ruleParameters = new RuleParameters();
 		rule.setJeObjectCreatedBy(ruleModel.getCreatedBy());
 		rule.setJeObjectModifiedBy(ruleModel.getModifiedBy());
@@ -136,7 +136,7 @@ public class RuleService {
 		LicenseProperties.checkLicenseIsActive();
 		JEProject project = getProject(projectId);
 		UserDefinedRule ruleToUpdate = (UserDefinedRule) project.getRule(ruleModel.getRuleId());
-		ruleToUpdate.setJeObjectLastUpdate(LocalDateTime.now());
+		ruleToUpdate.setJeObjectLastUpdate(Instant.now());
 		if (ruleToUpdate.isRunning()) {
 			ruleToUpdate.setStatus(Status.RUNNING_NOT_UP_TO_DATE);
 
@@ -262,7 +262,7 @@ public class RuleService {
 
 		// add block to rule
 		rule.addBlock(block);
-		rule.setJeObjectLastUpdate(LocalDateTime.now());
+		rule.setJeObjectLastUpdate(Instant.now());
 
 		// retrieve topic names from getter blocks
 		if (blockModel.getOperationId() == 4002 && blockModel.getBlockConfiguration() != null
@@ -341,7 +341,7 @@ public class RuleService {
 
 		// add block to rule
 		rule.addBlock(block);
-		rule.setJeObjectLastUpdate(LocalDateTime.now());
+		rule.setJeObjectLastUpdate(Instant.now());
 
 		// retrieve topic names from getter blocks
 		if (blockModel.getOperationId() == 4002 && blockModel.getBlockConfiguration() != null
@@ -826,7 +826,7 @@ public class RuleService {
 	 * LicenseNotActiveException, ProjectNotFoundException {
 	 * LicenseProperties.checkLicenseIsActive();
 	 * 
-	 * System.out.println("----Compiling rules : "+ LocalDateTime.now() );
+	 * System.out.println("----Compiling rules : "+ Instant.now() );
 	 * if(ruleIds==null) {
 	 * 
 	 * ruleIds = Collections.list(getProject(projectId).getRules().keys()); }
@@ -913,7 +913,7 @@ public class RuleService {
 	 * ProjectNotFoundException { LicenseProperties.checkLicenseIsActive();
 	 * List<OperationStatusDetails> results ;
 	 * 
-	 * System.out.println("----Compiling rules : "+ LocalDateTime.now() );
+	 * System.out.println("----Compiling rules : "+ Instant.now() );
 	 * if(ruleIds==null) {
 	 * 
 	 * ruleIds = Collections.list(getProject(projectId).getRules().keys()); }

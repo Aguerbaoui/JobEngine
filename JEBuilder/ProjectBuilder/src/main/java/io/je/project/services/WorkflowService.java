@@ -34,7 +34,7 @@ import utils.log.LogCategory;
 import utils.log.LogSubModule;
 import utils.string.StringUtilities;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -75,8 +75,8 @@ public class WorkflowService {
         wf.setJobEngineProjectID(m.getProjectId());
         wf.setJobEngineElementName(m.getName());
         wf.setDescription(m.getDescription());
-        wf.setJeObjectLastUpdate(LocalDateTime.now());
-        wf.setJeObjectCreationDate(LocalDateTime.now());
+        wf.setJeObjectLastUpdate(Instant.now());
+        wf.setJeObjectCreationDate(Instant.now());
         wf.setJeObjectCreatedBy(m.getCreatedBy());
         wf.setJeObjectModifiedBy(m.getModifiedBy());
         wf.setEnabled(m.isEnabled());
@@ -469,7 +469,7 @@ public class WorkflowService {
     @Async
     public CompletableFuture<List<OperationStatusDetails>> buildWorkflows(String projectId, List<String> ids) throws ProjectNotFoundException,  LicenseNotActiveException, WorkflowNotFoundException, WorkflowException {
         LicenseProperties.checkLicenseIsActive();
-		System.out.println(">>>> building wfs : "+ LocalDateTime.now() );
+		System.out.println(">>>> building wfs : "+ Instant.now() );
 
         JEProject project = ProjectService.getProjectById(projectId);
         if (project == null) {
@@ -848,7 +848,7 @@ public class WorkflowService {
             //b.setErrorRef((String) block.getAttributes().get(ERROR_REF));
             project.addBlockToWorkflow(b);
         }
-        wf.setJeObjectLastUpdate(LocalDateTime.now());
+        wf.setJeObjectLastUpdate(Instant.now());
         workflowRepository.save(wf);
 
 
@@ -912,7 +912,7 @@ public class WorkflowService {
         if(m.isEnabled() != wf.isEnabled()) {
             wf.setEnabled(m.isEnabled());
         }
-        wf.setJeObjectLastUpdate(LocalDateTime.now());
+        wf.setJeObjectLastUpdate(Instant.now());
         wf.setDescription(m.getDescription());
         wf.setJeObjectCreatedBy(m.getCreatedBy());
         wf.setJeObjectModifiedBy(m.getModifiedBy());

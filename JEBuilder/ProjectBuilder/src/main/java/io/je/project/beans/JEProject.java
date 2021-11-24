@@ -18,7 +18,7 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -328,7 +328,7 @@ public class JEProject {
 	    		throw new RuleNotFoundException(projectId, rule.getJobEngineElementID());
 	    			}
 	        rules.put(rule.getJobEngineElementID(), rule);
-			rule.setJeObjectLastUpdate( LocalDateTime.now());
+			rule.setJeObjectLastUpdate( Instant.now());
 			isBuilt=false;
 
 
@@ -363,7 +363,7 @@ public class JEProject {
 
 		public void deleteRuleBlock(String ruleId, String blockId) throws RuleBlockNotFoundException {
 			((UserDefinedRule) rules.get(ruleId)).deleteBlock(blockId);
-			rules.get(ruleId).setJeObjectLastUpdate(  LocalDateTime.now());
+			rules.get(ruleId).setJeObjectLastUpdate(  Instant.now());
 			isBuilt=false;
 
 			
