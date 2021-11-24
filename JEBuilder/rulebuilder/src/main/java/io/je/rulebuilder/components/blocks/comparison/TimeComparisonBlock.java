@@ -5,6 +5,7 @@ import java.time.format.DateTimeFormatter;
 
 import io.je.rulebuilder.config.AttributesMapping;
 import io.je.rulebuilder.models.BlockModel;
+import io.je.utilities.config.ConfigurationConstants;
 import io.siothconfig.SIOTHConfigUtility;
 import utils.date.DateUtils;
 
@@ -26,7 +27,7 @@ public class TimeComparisonBlock extends ComparisonBlock {
 		{
 			LocalDateTime date = LocalDateTime.parse((String)blockModel.getBlockConfiguration().get(AttributesMapping.VALUE), DateTimeFormatter.ISO_DATE_TIME);
 
-			threshold = "\""+ DateUtils.formatDate(date, SIOTHConfigUtility.getSiothConfig().getDateFormat())+"\"";
+			threshold = "\""+ DateUtils.formatDate(date, ConfigurationConstants.DROOLS_DATE_FORMAT)+"\"";
 		}
 		
 		operator = getOperatorByOperationId(blockModel.getOperationId());

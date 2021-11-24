@@ -1,5 +1,6 @@
 package io.je.project.beans;
 
+import io.je.classbuilder.builder.ClassBuilder;
 //import io.je.project.config.AuthenticationInterceptor;
 import io.je.project.config.AuthenticationInterceptor;
 import io.je.project.config.BuilderProperties;
@@ -58,6 +59,7 @@ public class JEBuilderInitializingBean implements InitializingBean {
             JEMonitor.setPort(builderProperties.getMonitoringPort());
             ZMQSecurity.setSecure(builderProperties.getUseZmqSecurity());
 			configService.init();
+			ClassBuilder.setDataModelDateFormat(builderProperties.getDataModelDateFormat());
             JELogger.control(JEMessages.BUILDER_STARTED,  LogCategory.DESIGN_MODE,
                     null, LogSubModule.JEBUILDER, null);
 

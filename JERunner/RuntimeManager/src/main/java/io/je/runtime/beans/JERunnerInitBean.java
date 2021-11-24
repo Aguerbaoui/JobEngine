@@ -1,6 +1,7 @@
 package io.je.runtime.beans;
 
 import io.je.runtime.config.RunnerProperties;
+import io.je.utilities.config.ConfigurationConstants;
 import io.je.utilities.log.JELogger;
 import io.je.utilities.monitoring.JEMonitor;
 import io.siothconfig.SIOTHConfigUtility;
@@ -24,6 +25,8 @@ public class JERunnerInitBean implements InitializingBean {
             JELogger.initLogger("JERunner", runnerProperties.getJeRunnerLogPath(),runnerProperties.getJeRunnerLogLevel());
             DateUtils.setFormatter(SIOTHConfigUtility.getSiothConfig().getDateFormat());
             JEMonitor.setPort(runnerProperties.getMonitoringPort());
+            System.setProperty("drools.dateformat", ConfigurationConstants.DROOLS_DATE_FORMAT);
+            
         }
         catch (Exception e) {e.printStackTrace();}
     }

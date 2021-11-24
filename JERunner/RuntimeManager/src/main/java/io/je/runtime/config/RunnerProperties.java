@@ -24,6 +24,20 @@ public class RunnerProperties {
 	@Value("${monitoring.port}")
 	int monitoringPort;
 
+	@Value("${data.model.date.format}")
+	String dataModelDateFormat;
+	
+	
+	
+	
+	public String getDataModelDateFormat() {
+		return dataModelDateFormat;
+	}
+
+	public void setDataModelDateFormat(String dataModelDateFormat) {
+		this.dataModelDateFormat = dataModelDateFormat;
+	}
+
 	public int getMonitoringPort() {
 		return monitoringPort;
 	}
