@@ -45,7 +45,7 @@ public class LogBlock extends ExecutionBlock {
 	public String formatMessage()
 	{
 		String msg = logMessage;
-		Pattern pattern = Pattern.compile("\\$\\w+");
+		Pattern pattern = Pattern.compile("\\$(\\w|\\.|\\(|\\))+");
 
 		Matcher matcher = pattern.matcher(msg);
 		ArrayList<String> wordsToBeReplaced = new ArrayList<String>();
