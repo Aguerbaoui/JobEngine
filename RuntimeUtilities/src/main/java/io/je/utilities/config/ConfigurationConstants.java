@@ -32,7 +32,7 @@ public class ConfigurationConstants {
     public static final String BPMN_PATH = "D:\\JobEngine\\projects\\";
 
     // path for imported libraries
-    public static String EXTERNAL_LIB_PATH =  "D:\\myproject2\\";
+    public static String EXTERNAL_LIB_PATH =  "D:\\testPr\\";
     
     /*
      * Config for tomcat
