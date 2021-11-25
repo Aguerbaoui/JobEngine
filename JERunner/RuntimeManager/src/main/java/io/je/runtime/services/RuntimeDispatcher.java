@@ -168,6 +168,7 @@ public class RuntimeDispatcher {
 		if (wf.isTriggeredByEvent()) {
 			process.setTriggerMessage(wf.getTriggerMessage());
 		}
+		JobEngine.updateProjects(wf.getProjectId(), wf.getProjectName());
 		for (TaskModel task : wf.getTasks()) {
 			ActivitiTask activitiTask = WorkflowEngineHandler.parseTask(wf.getProjectId(), wf.getId(), task);
 			ActivitiTaskManager.addTask(activitiTask);

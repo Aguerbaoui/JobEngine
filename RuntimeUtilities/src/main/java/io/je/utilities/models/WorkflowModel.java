@@ -10,6 +10,8 @@ public class WorkflowModel {
 
     private String projectId;
 
+    private String projectName;
+
     private String id;
 
     private String path;
@@ -205,10 +207,19 @@ public class WorkflowModel {
         this.endBlockEventId = endBlockEventId;
     }
 
+    public String getProjectName() {
+        return projectName;
+    }
+
+    public void setProjectName(String projectName) {
+        this.projectName = projectName;
+    }
+
     @Override
     public String toString() {
         return "WorkflowModel{" +
                 "projectId='" + projectId + '\'' +
+                ", projectName='" + projectName + '\'' +
                 ", id='" + id + '\'' +
                 ", path='" + path + '\'' +
                 ", name='" + name + '\'' +

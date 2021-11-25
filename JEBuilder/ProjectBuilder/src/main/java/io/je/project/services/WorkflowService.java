@@ -83,6 +83,7 @@ public class WorkflowService {
         wf.setJeObjectCreationDate(LocalDateTime.now());
         wf.setJeObjectCreatedBy(m.getCreatedBy());
         wf.setJeObjectModifiedBy(m.getModifiedBy());
+        wf.setJobEngineProjectName(project.getProjectName());
         wf.setEnabled(m.isEnabled());
         if (m.isOnProjectBoot()) {
             JEWorkflow startupWorkflow = project.getStartupWorkflow();
@@ -885,7 +886,7 @@ public class WorkflowService {
             FileUtilities.deleteFileFromPath(b.getScriptPath());
         }
         catch (Exception ex) {
-            JELogger.error(FAILED_TO_DELETE_FILES, LogCategory.DESIGN_MODE, b.getJobEngineProjectName(), LogSubModule.CLASS, b.getJobEngineElementName());
+            JELogger.error(FAILED_TO_DELETE_FILES, LogCategory.DESIGN_MODE, b.getJobEngineProjectID(), LogSubModule.CLASS, b.getJobEngineElementName());
         }
     }
 
@@ -907,6 +908,7 @@ public class WorkflowService {
         wf.setJobEngineElementName(workflowId);
         wf.setJobEngineProjectID(projectId);
         wf.setJobEngineElementID(workflowId);
+        wf.setJobEngineProjectName(project.getProjectName());
         wf.setBpmnPath(ConfigurationConstants.BPMN_PATH + wf.getJobEngineElementName().trim() + WorkflowConstants.BPMN_EXTENSION);
         wf.setIsScript(true);
         wf.setScript(bpmn);
