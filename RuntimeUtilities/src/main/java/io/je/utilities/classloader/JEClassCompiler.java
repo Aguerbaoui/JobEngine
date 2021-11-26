@@ -73,7 +73,7 @@ public class JEClassCompiler {
 
 				List<Diagnostic<? extends JavaFileObject>> diagnostics = diagnosticsCollector.getDiagnostics();
 				for (Diagnostic<? extends JavaFileObject> diagnostic : diagnostics) {
-					// read error dertails from the diagnostic object
+					// read error details from the diagnostic object
 					message = diagnostic.getMessage(null) ;
 
 				}

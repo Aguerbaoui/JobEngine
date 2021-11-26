@@ -144,6 +144,7 @@ public class WorkflowBuilder {
         wf.setTriggeredByEvent(workflow.isTriggeredByEvent());
         wf.setTriggerMessage(workflow.getWorkflowStartBlock().getEventId());
         wf.setOnProjectBoot(workflow.isOnProjectBoot());
+        wf.setProjectName(workflow.getJobEngineProjectName());
         ArrayList<TaskModel> tasks = new ArrayList<>();
         for (WorkflowBlock block : workflow.getAllBlocks().values()) {
             if (block instanceof WebApiBlock) {

@@ -168,6 +168,7 @@ public class RuntimeDispatcher {
 		if (wf.isTriggeredByEvent()) {
 			process.setTriggerMessage(wf.getTriggerMessage());
 		}
+		JobEngine.updateProjects(wf.getProjectId(), wf.getProjectName());
 		for (TaskModel task : wf.getTasks()) {
 			ActivitiTask activitiTask = WorkflowEngineHandler.parseTask(wf.getProjectId(), wf.getId(), task);
 			ActivitiTaskManager.addTask(activitiTask);
@@ -388,8 +389,8 @@ public class RuntimeDispatcher {
 		JELogger.debug(ADDING_JAR_FILE_TO_RUNNER + payload, LogCategory.RUNTIME, null, LogSubModule.JERUNNER, null);
 		// TODO finish this once the ui specs are decided
 		try {
-			JarFile j = new JarFile(payload.get("path"));
-			JobEngine.addJarFile(payload.get("name"), j);
+			//JarFile j = new JarFile(payload.get("path"));
+			//JobEngine.addJarFile(payload.get("name"), j);
 
 			//JELogger.debug("hello There, your uploaded file is " + JobEngine.getJarFile("org.eclipse.jdt.core-3.7.1.jar").getName());
 			JELogger.debug("Jar file uploaded successfully", LogCategory.RUNTIME, "", LogSubModule.CLASS, "");

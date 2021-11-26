@@ -473,12 +473,9 @@ public class ClassService {
                     throw new LibraryException(JEMessages.JOB_ENGINE_ACCEPTS_JAR_FILES_ONLY);
                 }
                 String uploadsDir = ConfigurationConstants.EXTERNAL_LIB_PATH;
-                //TODO change to the path set by the user for classes in sioth
-                String realPathtoUploads = request.getServletContext().getRealPath(uploadsDir);
                 if (!new File(uploadsDir).exists()) {
-                    new File(realPathtoUploads).mkdir();
+                    new File(uploadsDir).mkdir();
                 }
-
 
                 String filePath = uploadsDir + orgName;
                 File dest = new File(filePath);
@@ -550,6 +547,12 @@ public class ClassService {
         //delete library from db
         Optional<JELib> lib = libraryRepository.findById(id);
         if (lib.isPresent()) {
+            try {
+                FileUtilities.deleteFileFromPath(lib.get().getFilePath());
+            } catch (Exception e) {
+                JELogger.error(JEMessages.FAILED_TO_DELETE_FILES, LogCategory.DESIGN_MODE, "", LogSubModule.CLASS, id);
+            }
+
             libraryRepository.deleteById(id);
         } else {
             JELogger.debug(JEMessages.ERROR_REMOVING_LIBRARY, LogCategory.DESIGN_MODE, "", LogSubModule.CLASS, id);
@@ -614,6 +617,13 @@ public class ClassService {
         addClass(c, true, true);
         //save updated method in db
         methodRepository.save(method);
+    }
+
+    /*
+    * Remove a class from the job engine database
+    * */
+    public void removeClass(ClassDefinition model) {
+
     }
 
 
