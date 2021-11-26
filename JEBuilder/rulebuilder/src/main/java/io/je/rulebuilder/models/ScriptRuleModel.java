@@ -1,7 +1,5 @@
 package io.je.rulebuilder.models;
 
-import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 //import io.je.utilities.runtimeobject.ClassDefinition;

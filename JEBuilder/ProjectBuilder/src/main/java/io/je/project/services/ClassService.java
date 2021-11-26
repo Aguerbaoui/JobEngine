@@ -1,5 +1,29 @@
 package io.je.project.services;
 
+import static io.je.classbuilder.builder.ClassManager.getClassModel;
+import static io.je.classbuilder.builder.ClassManager.getLibModel;
+import static io.je.utilities.constants.JEMessages.CLASS_LOAD_IN_RUNNER_FAILED;
+import static io.je.utilities.constants.JEMessages.EMPTY_CODE;
+import static io.je.utilities.constants.JEMessages.FAILED_TO_DELETE_FILES;
+import static io.je.utilities.constants.JEMessages.PROCEDURE_SHOULD_CONTAIN_CODE;
+import static io.je.utilities.constants.WorkflowConstants.EXECUTE_SCRIPT;
+
+import java.io.File;
+import java.io.IOException;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
 import io.je.classbuilder.builder.ClassManager;
 import io.je.classbuilder.entity.ClassType;
 import io.je.classbuilder.entity.JEClass;
@@ -11,34 +35,28 @@ import io.je.project.repository.ClassRepository;
 import io.je.project.repository.LibraryRepository;
 import io.je.project.repository.MethodRepository;
 import io.je.utilities.apis.JERunnerAPIHandler;
-import io.je.utilities.beans.*;
+import io.je.utilities.beans.JEField;
+import io.je.utilities.beans.JELib;
+import io.je.utilities.beans.JEMethod;
+import io.je.utilities.beans.JEResponse;
+import io.je.utilities.beans.LibScope;
 import io.je.utilities.classloader.JEClassLoader;
 import io.je.utilities.config.ConfigurationConstants;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.constants.WorkflowConstants;
-import io.je.utilities.exceptions.*;
+import io.je.utilities.exceptions.AddClassException;
+import io.je.utilities.exceptions.ClassLoadException;
+import io.je.utilities.exceptions.JERunnerErrorException;
+import io.je.utilities.exceptions.LibraryException;
+import io.je.utilities.exceptions.MethodException;
 import io.je.utilities.log.JELogger;
 import io.je.utilities.models.LibModel;
 import io.siothconfig.SIOTHConfigUtility;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 import utils.files.FileUtilities;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
 import utils.string.StringUtilities;
-
-import javax.servlet.http.HttpServletRequest;
-import java.io.File;
-import java.io.IOException;
-import java.time.Instant;
-import java.util.*;
-
-import static io.je.classbuilder.builder.ClassManager.getClassModel;
-import static io.je.classbuilder.builder.ClassManager.getLibModel;
-import static io.je.utilities.constants.JEMessages.*;
-import static io.je.utilities.constants.WorkflowConstants.EXECUTE_SCRIPT;
 
 /*
  * Service class to handle classes

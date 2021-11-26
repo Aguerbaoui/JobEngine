@@ -1,7 +1,5 @@
 package utils.string;
 
-import org.apache.commons.lang3.StringUtils;
-
 import java.util.Random;
 import java.util.UUID;
 
