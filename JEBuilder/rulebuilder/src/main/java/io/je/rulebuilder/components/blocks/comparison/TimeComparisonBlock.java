@@ -6,7 +6,6 @@ import java.time.format.DateTimeFormatter;
 import io.je.rulebuilder.config.AttributesMapping;
 import io.je.rulebuilder.models.BlockModel;
 import io.je.utilities.config.ConfigurationConstants;
-import io.siothconfig.SIOTHConfigUtility;
 import utils.date.DateUtils;
 
 

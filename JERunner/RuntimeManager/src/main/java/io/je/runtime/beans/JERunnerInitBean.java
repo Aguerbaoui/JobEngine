@@ -23,7 +23,6 @@ public class JERunnerInitBean implements InitializingBean {
         try {
             ZMQSecurity.setSecure(runnerProperties.getUseZmqSecurity());
             JELogger.initLogger("JERunner", runnerProperties.getJeRunnerLogPath(),runnerProperties.getJeRunnerLogLevel());
-            DateUtils.setFormatter(SIOTHConfigUtility.getSiothConfig().getDateFormat());
             JEMonitor.setPort(runnerProperties.getMonitoringPort());
             System.setProperty("drools.dateformat", ConfigurationConstants.DROOLS_DATE_FORMAT);
             

@@ -24,7 +24,6 @@ public class SIOTHConfigUtility {
 		if (jsonString != null) {
 			try {
 				siothConfig =  objectMapper.readValue(jsonString, SIOTHConfig.class);
-				DateUtils.setFormatter(siothConfig.getDateFormat());
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

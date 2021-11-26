@@ -16,6 +16,7 @@ import io.je.utilities.exceptions.RuleBuildFailedException;
 import io.je.utilities.log.JELogger;
 import io.je.utilities.mapping.JERunnerRuleMapping;
 import io.je.utilities.beans.JEResponse;
+import io.je.utilities.config.ConfigurationConstants;
 import io.je.utilities.ruleutils.RuleIdManager;
 import io.siothconfig.SIOTHConfigUtility;
 
@@ -25,8 +26,12 @@ import utils.log.LogCategory;
 import utils.log.LogSubModule;
 
 import java.io.IOException;
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 
@@ -184,13 +189,12 @@ public class RuleBuilder {
         ruleTemplateAttributes.put("consequence", consequences);
         ruleTemplateAttributes.put("duration", duration);
         if (ruleParameters.getDateEffective() != null && !ruleParameters.getDateEffective().isEmpty()) {
-            LocalDateTime date = LocalDateTime.parse(ruleParameters.getDateEffective(), DateTimeFormatter.ISO_DATE_TIME);
-
-            ruleTemplateAttributes.put("dateEffective", "\"" + DateUtils.formatDate(date, SIOTHConfigUtility.getSiothConfig().getDateFormat()) + "\"");
+        	LocalDateTime date = LocalDateTime.ofInstant(Instant.parse(ruleParameters.getDateEffective()), ZoneOffset.systemDefault());
+            ruleTemplateAttributes.put("dateEffective", "\"" + DateUtils.formatDate(date, ConfigurationConstants.DROOLS_DATE_FORMAT) + "\"");
         }
         if (ruleParameters.getDateExpires() != null && !ruleParameters.getDateExpires().isEmpty()) {
-            LocalDateTime date = LocalDateTime.parse(ruleParameters.getDateEffective(), DateTimeFormatter.ISO_DATE_TIME);
-            ruleTemplateAttributes.put("dateExpires", "\"" + DateUtils.formatDate(date, SIOTHConfigUtility.getSiothConfig().getDateFormat()) + "\"");
+        	LocalDateTime date = LocalDateTime.ofInstant(Instant.parse(ruleParameters.getDateExpires()), ZoneOffset.systemDefault());
+            ruleTemplateAttributes.put("dateExpires", "\"" + DateUtils.formatDate(date, ConfigurationConstants.DROOLS_DATE_FORMAT) + "\"");
         }
 
         ObjectDataCompiler objectDataCompiler = new ObjectDataCompiler();

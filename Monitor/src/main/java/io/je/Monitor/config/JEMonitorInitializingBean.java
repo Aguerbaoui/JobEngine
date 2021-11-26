@@ -25,7 +25,6 @@ public class JEMonitorInitializingBean  implements InitializingBean {
     public void afterPropertiesSet() throws Exception {
         try {
             JELogger.initLogger("JEMonitor", monitorProperties.getJeMonitorLogPath(), monitorProperties.getJeMonitorLogLevel());
-            DateUtils.setFormatter(SIOTHConfigUtility.getSiothConfig().getDateFormat());
             JELogger.control(JEMessages.LOGGER_INITIALIZED,
                     LogCategory.MONITOR, null,
                     LogSubModule.JEMONITOR, null);
