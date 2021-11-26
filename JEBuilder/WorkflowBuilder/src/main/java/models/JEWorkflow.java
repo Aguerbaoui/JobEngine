@@ -265,27 +265,28 @@ public class JEWorkflow extends JEObject {
      * Delete a workflow block
      * */
     public void deleteWorkflowBlock(String id) throws InvalidSequenceFlowException, WorkflowBlockNotFound {
-        for (String blockId : allBlocks.get(id).getInflows().values()) {
-            WorkflowBlock block = this.getBlockById(blockId);
-            deleteSequenceFlow(block.getJobEngineElementID(), id);
-        }
-        for (String blockId : allBlocks.get(id).getOutFlows().values()) {
-            WorkflowBlock block = this.getBlockById(blockId);
-            deleteSequenceFlow(id, block.getJobEngineElementID());
-        }
+        if(allBlocks.containsKey(id)) {
+            for (String blockId : allBlocks.get(id).getInflows().values()) {
+                WorkflowBlock block = this.getBlockById(blockId);
+                deleteSequenceFlow(block.getJobEngineElementID(), id);
+            }
+            for (String blockId : allBlocks.get(id).getOutFlows().values()) {
+                WorkflowBlock block = this.getBlockById(blockId);
+                deleteSequenceFlow(id, block.getJobEngineElementID());
+            }
 
-        WorkflowBlock b = allBlocks.get(id);
-        if (b == null) {
-            throw new WorkflowBlockNotFound(JEMessages.WORKFLOW_BLOCK_NOT_FOUND);
+            WorkflowBlock b = allBlocks.get(id);
+            if (b == null) {
+                throw new WorkflowBlockNotFound(JEMessages.WORKFLOW_BLOCK_NOT_FOUND);
+            }
+            if (b instanceof ScriptBlock) {
+                cleanUpScriptTaskBlock((ScriptBlock) b);
+            }
+            allBlocks.remove(id);
+            if (allBlocks.size() == 0) workflowStartBlock = null;
+            b = null;
+            status = Status.NOT_BUILT;
         }
-        if(b instanceof ScriptBlock) {
-            cleanUpScriptTaskBlock((ScriptBlock) b);
-        }
-        allBlocks.remove(id);
-        if (allBlocks.size() == 0) workflowStartBlock = null;
-        b = null;
-        status = Status.NOT_BUILT;
-
     }
     public void cleanUpScriptTaskBlock(ScriptBlock b) {
         try {
