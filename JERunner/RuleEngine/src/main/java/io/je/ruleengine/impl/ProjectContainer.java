@@ -723,7 +723,7 @@ public class ProjectContainer {
 							LogSubModule.RULE, fact.getJobEngineElementID());
 */
 					synchronized (facts) {
-						JELogger.debug(
+						JELogger.trace(
 								"[projectId =" + projectId + "] [factId :" + fact.getJobEngineElementID() + "]"
 										+ JEMessages.UPDATING_FACT,
 								LogCategory.DESIGN_MODE, projectId, LogSubModule.RULE, fact.getJobEngineElementID());

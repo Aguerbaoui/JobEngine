@@ -478,7 +478,7 @@ public class WorkflowService {
         if (project == null) {
             throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
         }
-        JELogger.debug("[projectId =" + projectId + " ]" + JEMessages.BUILDING_WFS,
+        JELogger.debug("[project =" + project.getProjectName() + " ]" + JEMessages.BUILDING_WFS,
                 LogCategory.DESIGN_MODE, projectId,
                 LogSubModule.WORKFLOW, null);
 
@@ -543,8 +543,8 @@ public class WorkflowService {
             return CompletableFuture.completedFuture(result);
         }
 
-        JELogger.info("[projectId =" + project.getProjectName() + " ][workflowId = " +
-                        wf.getJobEngineElementID() + "]" + JEMessages.RUNNING_WF,
+        JELogger.info("[project =" + project.getProjectName() + " ][workflow = " +
+                        wf.getJobEngineElementName() + "]" + JEMessages.RUNNING_WF,
                 LogCategory.DESIGN_MODE, projectId,
                 LogSubModule.WORKFLOW, workflowId);
         try {

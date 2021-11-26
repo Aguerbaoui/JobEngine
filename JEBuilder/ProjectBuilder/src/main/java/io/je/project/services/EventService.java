@@ -94,14 +94,14 @@ public class EventService {
 	public void addEvent(String projectId, EventModel eventModel) throws ProjectNotFoundException,  EventException, LicenseNotActiveException {
     	LicenseProperties.checkLicenseIsActive();
 
-		JELogger.debug(JEMessages.ADDING_EVENT+ "[ id="+eventModel.getName()+"] in project id = " + projectId,
-				LogCategory.DESIGN_MODE, projectId,
-				LogSubModule.EVENT, eventModel.getEventId());
+		
 		JEProject project = ProjectService.getProjectById(projectId);
 		if (project == null) {
 			throw new ProjectNotFoundException( JEMessages.PROJECT_NOT_FOUND);
 		}
-		
+		JELogger.debug(JEMessages.ADDING_EVENT+ "[event="+eventModel.getName()+"] to project = " + project.getProjectName(),
+				LogCategory.DESIGN_MODE, projectId,
+				LogSubModule.EVENT, eventModel.getEventId());
 		if(project.getEvents().contains(eventModel.getEventId()))
 		{
 			throw new EventException(JEMessages.EVENT_ALREADY_EXISTS);

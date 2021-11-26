@@ -226,8 +226,8 @@ public class ProjectService {
 	public JEProject getProject(String projectId) throws ProjectNotFoundException, JERunnerErrorException, LicenseNotActiveException, ProjectLoadException {
 
 		JEProject project = null;
-		JELogger.debug("[projectId= " + projectId + "]" + JEMessages.LOADING_PROJECT, LogCategory.DESIGN_MODE,
-				projectId, LogSubModule.JEBUILDER, null);
+	//	JELogger.trace("[projectId= " + projectId + "]" + JEMessages.LOADING_PROJECT, LogCategory.DESIGN_MODE,
+			// 	projectId, LogSubModule.JEBUILDER, null);
 		if (!loadedProjects.containsKey(projectId)) {
 			Optional<JEProject> p = projectRepository.findById(projectId);
 			project = p.isEmpty() ? null : p.get();
