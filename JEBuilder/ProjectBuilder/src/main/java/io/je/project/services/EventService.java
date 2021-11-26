@@ -1,17 +1,13 @@
 package io.je.project.services;
 
-import static io.je.utilities.constants.JEMessages.ADDING_JAR_FILE_TO_RUNNER;
 import static io.je.utilities.constants.JEMessages.UPDATING_EVENT;
 
-import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
-import io.je.utilities.models.EventType;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,6 +26,7 @@ import io.je.utilities.exceptions.ProjectNotFoundException;
 import io.je.utilities.log.JELogger;
 import io.je.utilities.mapping.EventModelMapping;
 import io.je.utilities.models.EventModel;
+import io.je.utilities.models.EventType;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
 import utils.string.StringUtilities;

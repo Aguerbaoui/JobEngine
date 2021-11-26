@@ -1,6 +1,5 @@
 package io.je.project.beans;
 
-import io.je.classbuilder.builder.ClassBuilder;
 //import io.je.project.config.AuthenticationInterceptor;
 import io.je.project.config.AuthenticationInterceptor;
 import io.je.project.config.BuilderProperties;
@@ -14,7 +13,6 @@ import io.je.utilities.monitoring.JEMonitor;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.util.concurrent.ListenableFuture;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
 import utils.zmq.ZMQSecurity;

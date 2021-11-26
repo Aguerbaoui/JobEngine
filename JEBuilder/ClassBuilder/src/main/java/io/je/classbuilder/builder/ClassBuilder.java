@@ -8,8 +8,13 @@ import java.util.List;
 
 import org.burningwave.core.assembler.ComponentContainer;
 import org.burningwave.core.assembler.ComponentSupplier;
-import org.burningwave.core.classes.*;
-
+import org.burningwave.core.classes.AnnotationSourceGenerator;
+import org.burningwave.core.classes.ClassFactory;
+import org.burningwave.core.classes.ClassSourceGenerator;
+import org.burningwave.core.classes.FunctionSourceGenerator;
+import org.burningwave.core.classes.TypeDeclarationSourceGenerator;
+import org.burningwave.core.classes.UnitSourceGenerator;
+import org.burningwave.core.classes.VariableSourceGenerator;
 
 import io.je.classbuilder.entity.ClassType;
 import io.je.classbuilder.models.ClassDefinition;
@@ -21,7 +26,6 @@ import io.je.utilities.exceptions.AddClassException;
 import io.je.utilities.exceptions.ClassLoadException;
 import io.je.utilities.log.JELogger;
 import io.je.utilities.runtimeobject.JEObject;
-import io.siothconfig.SIOTHConfigUtility;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
 import utils.string.StringUtilities;

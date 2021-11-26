@@ -1,5 +1,14 @@
 package io.je.project.beans;
 
+import java.time.Instant;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
+
 import blocks.WorkflowBlock;
 import blocks.basic.SubProcessBlock;
 import io.je.rulebuilder.components.JERule;
@@ -9,18 +18,15 @@ import io.je.utilities.beans.JEEvent;
 import io.je.utilities.beans.JEVariable;
 import io.je.utilities.config.ConfigurationConstants;
 import io.je.utilities.constants.JEMessages;
-import io.je.utilities.exceptions.*;
-import io.je.utilities.execution.JobEngine;
+import io.je.utilities.exceptions.AddRuleBlockException;
+import io.je.utilities.exceptions.EventException;
+import io.je.utilities.exceptions.InvalidSequenceFlowException;
+import io.je.utilities.exceptions.RuleAlreadyExistsException;
+import io.je.utilities.exceptions.RuleBlockNotFoundException;
+import io.je.utilities.exceptions.RuleNotFoundException;
+import io.je.utilities.exceptions.VariableNotFoundException;
+import io.je.utilities.exceptions.WorkflowBlockNotFound;
 import models.JEWorkflow;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.Transient;
-import org.springframework.data.mongodb.core.mapping.DBRef;
-import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
-
-import java.time.Instant;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 @Document(collection="ProjectDefinitionCollection")
 public class JEProject {

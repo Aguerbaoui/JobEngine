@@ -1,11 +1,7 @@
 package io.je.utilities.log;
 
-import java.time.LocalDateTime;
-
 import org.apache.logging.log4j.Level;
 
-import io.je.utilities.log.JELogger;
-import utils.date.DateUtils;
 import utils.log.LogCategory;
 import utils.log.LogLevel;
 import utils.log.LogMessage;

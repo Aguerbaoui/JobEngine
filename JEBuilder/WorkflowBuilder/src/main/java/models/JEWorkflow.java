@@ -1,5 +1,9 @@
 package models;
 
+import java.util.concurrent.ConcurrentHashMap;
+
+import org.springframework.data.mongodb.core.mapping.Document;
+
 import blocks.WorkflowBlock;
 import blocks.basic.StartBlock;
 import blocks.events.ErrorBoundaryEvent;
@@ -7,21 +11,8 @@ import io.je.utilities.beans.Status;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.InvalidSequenceFlowException;
 import io.je.utilities.exceptions.WorkflowBlockNotFound;
-import io.je.utilities.log.JELogger;
 import io.je.utilities.models.WorkflowModel;
-import io.je.utilities.monitoring.JEMonitor;
-import io.je.utilities.monitoring.MonitoringMessage;
-import io.je.utilities.monitoring.ObjectType;
 import io.je.utilities.runtimeobject.JEObject;
-import org.springframework.data.mongodb.core.mapping.Document;
-import utils.date.DateUtils;
-import utils.log.LogCategory;
-import utils.log.LogSubModule;
-
-import java.time.LocalDateTime;
-import java.util.concurrent.ConcurrentHashMap;
-
-import static io.je.utilities.constants.JEMessages.SENDING_WORKFLOW_MONITORING_DATA_TO_JEMONITOR;
 
 /*
  * Model class for a workflow

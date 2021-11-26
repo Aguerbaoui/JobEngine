@@ -1,5 +1,7 @@
 package io.je.runtime.data;
 
+import java.util.Arrays;
+
 import io.je.runtime.services.RuntimeDispatcher;
 import io.je.utilities.beans.JEData;
 import io.je.utilities.constants.JEMessages;
@@ -7,9 +9,6 @@ import io.je.utilities.log.JELogger;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
 import utils.zmq.ZMQSubscriber;
-
-import java.util.Arrays;
-import java.util.HashMap;
 
 public class ZMQAgent extends ZMQSubscriber {
 

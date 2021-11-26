@@ -3,9 +3,9 @@ package io.je.utilities.models;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
 import io.je.utilities.beans.JEEvent;
 import io.je.utilities.mapping.EventModelMapping;
-import utils.date.DateUtils;
 
 
 @JsonInclude(Include.NON_NULL)
