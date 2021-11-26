@@ -1,10 +1,9 @@
 package io.je.executionListeners;
 
-import io.je.processes.ProcessManager;
-import io.je.utilities.log.JELogger;
-
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.ExecutionListener;
+
+import io.je.processes.ProcessManager;
 
 public class ProcessListener implements ExecutionListener {
 

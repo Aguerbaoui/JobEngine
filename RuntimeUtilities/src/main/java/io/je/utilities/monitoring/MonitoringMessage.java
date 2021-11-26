@@ -2,9 +2,6 @@ package io.je.utilities.monitoring;
 
 import java.time.LocalDateTime;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-import io.je.utilities.beans.ArchiveOption;
 import io.je.utilities.beans.Status;
 
 public class MonitoringMessage {

@@ -1,5 +1,14 @@
 package io.je.project.beans;
 
+import java.time.Instant;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
+
 import blocks.WorkflowBlock;
 import blocks.basic.ScriptBlock;
 import blocks.basic.SubProcessBlock;
@@ -331,7 +340,7 @@ public class JEProject {
 	    		throw new RuleNotFoundException(projectId, rule.getJobEngineElementID());
 	    			}
 	        rules.put(rule.getJobEngineElementID(), rule);
-			rule.setJeObjectLastUpdate( LocalDateTime.now());
+			rule.setJeObjectLastUpdate( Instant.now());
 			isBuilt=false;
 
 
@@ -366,7 +375,7 @@ public class JEProject {
 
 		public void deleteRuleBlock(String ruleId, String blockId) throws RuleBlockNotFoundException {
 			((UserDefinedRule) rules.get(ruleId)).deleteBlock(blockId);
-			rules.get(ruleId).setJeObjectLastUpdate(  LocalDateTime.now());
+			rules.get(ruleId).setJeObjectLastUpdate(  Instant.now());
 			isBuilt=false;
 
 			

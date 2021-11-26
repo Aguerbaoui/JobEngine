@@ -1,14 +1,12 @@
 package io.je.runtime.beans;
 
 import io.je.runtime.config.RunnerProperties;
+import io.je.utilities.config.ConfigurationConstants;
 import io.je.utilities.log.JELogger;
 import io.je.utilities.monitoring.JEMonitor;
-import io.siothconfig.SIOTHConfigUtility;
-
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import utils.date.DateUtils;
 import utils.zmq.ZMQSecurity;
 
 @Component
@@ -22,8 +20,9 @@ public class JERunnerInitBean implements InitializingBean {
         try {
             ZMQSecurity.setSecure(runnerProperties.getUseZmqSecurity());
             JELogger.initLogger("JERunner", runnerProperties.getJeRunnerLogPath(),runnerProperties.getJeRunnerLogLevel());
-            DateUtils.setFormatter(SIOTHConfigUtility.getSiothConfig().getDateFormat());
             JEMonitor.setPort(runnerProperties.getMonitoringPort());
+            System.setProperty("drools.dateformat", ConfigurationConstants.DROOLS_DATE_FORMAT);
+            
         }
         catch (Exception e) {e.printStackTrace();}
     }

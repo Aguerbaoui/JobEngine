@@ -723,10 +723,10 @@ public class ProjectContainer {
 							LogSubModule.RULE, fact.getJobEngineElementID());
 */
 					synchronized (facts) {
-						JELogger.trace(
+					/*	JELogger.debug(
 								"[projectId =" + projectId + "] [factId :" + fact.getJobEngineElementID() + "]"
 										+ JEMessages.UPDATING_FACT,
-								LogCategory.DESIGN_MODE, projectId, LogSubModule.RULE, fact.getJobEngineElementID());
+								LogCategory.DESIGN_MODE, projectId, LogSubModule.RULE, fact.getJobEngineElementID()); */
 						if (facts.containsKey(fact.getJobEngineElementID())) {
 							kieSession.update(facts.get(fact.getJobEngineElementID()), fact);
 

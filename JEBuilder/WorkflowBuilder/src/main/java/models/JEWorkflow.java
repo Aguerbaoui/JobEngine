@@ -1,5 +1,9 @@
 package models;
 
+import java.util.concurrent.ConcurrentHashMap;
+
+import org.springframework.data.mongodb.core.mapping.Document;
+
 import blocks.WorkflowBlock;
 import blocks.basic.EndBlock;
 import blocks.basic.ScriptBlock;
@@ -11,11 +15,7 @@ import io.je.utilities.constants.ClassBuilderConfig;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.InvalidSequenceFlowException;
 import io.je.utilities.exceptions.WorkflowBlockNotFound;
-import io.je.utilities.log.JELogger;
 import io.je.utilities.models.WorkflowModel;
-import io.je.utilities.monitoring.JEMonitor;
-import io.je.utilities.monitoring.MonitoringMessage;
-import io.je.utilities.monitoring.ObjectType;
 import io.je.utilities.runtimeobject.JEObject;
 import org.springframework.data.mongodb.core.mapping.Document;
 import utils.date.DateUtils;
@@ -325,8 +325,8 @@ public class JEWorkflow extends JEObject {
         model.setProjectId(wf.getJobEngineProjectID());
         model.setTriggeredByEvent(wf.isTriggeredByEvent());
         model.setStatus(wf.getStatus().toString());
-        model.setCreatedAt(DateUtils.formatDateToSIOTHFormat(wf.getJeObjectCreationDate()));
-        model.setModifiedAt(DateUtils.formatDateToSIOTHFormat(wf.getJeObjectLastUpdate()));
+        model.setCreatedAt( wf.getJeObjectCreationDate().toString());
+        model.setModifiedAt( wf.getJeObjectLastUpdate().toString());
         model.setFrontConfig(wf.getFrontConfig());
         model.setEnabled(wf.isEnabled);
         return model;

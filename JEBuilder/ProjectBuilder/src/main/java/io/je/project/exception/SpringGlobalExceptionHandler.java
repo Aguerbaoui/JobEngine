@@ -1,19 +1,19 @@
 package io.je.project.exception;
 
-import io.je.utilities.beans.JEResponse;
-import io.je.utilities.constants.JEMessages;
-import io.je.utilities.constants.ResponseCodes;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.MultipartException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import io.je.utilities.beans.JEResponse;
+import io.je.utilities.constants.JEMessages;
+import io.je.utilities.constants.ResponseCodes;
 
 @ControllerAdvice
 public class SpringGlobalExceptionHandler {

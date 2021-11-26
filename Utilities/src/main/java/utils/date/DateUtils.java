@@ -1,6 +1,8 @@
 package utils.date;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 
 public class DateUtils {
@@ -48,6 +50,12 @@ public class DateUtils {
     }
 
 
+    public static String parseUTCStringToLocalTimeString(String utcStr)
+    {
+    	return LocalDateTime.ofInstant(Instant.parse(utcStr), ZoneOffset.systemDefault()).toString();
+    }
+    
+    
     /*
      * converts a date String to a LocalDateTime instance
      */

@@ -7,8 +7,6 @@ import org.springframework.context.annotation.PropertySource;
 
 import io.siothconfig.*;
 
-import java.util.Locale;
-
 @ConfigurationProperties
 @Configuration("BuilderProperties")
 @PropertySource(SIOTHConfigurationConstants.APPLICATION_PROPERTIES_PATH)
@@ -28,6 +26,8 @@ public class BuilderProperties {
 
 	@Value("${monitoring.port}")
 	int monitoringPort;
+	
+
 
 	public int getMonitoringPort() {
 		return monitoringPort;

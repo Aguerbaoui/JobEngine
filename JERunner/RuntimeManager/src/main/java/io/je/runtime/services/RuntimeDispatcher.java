@@ -32,7 +32,7 @@ import utils.log.LogSubModule;
 import org.springframework.stereotype.Service;
 
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.*;
 import java.util.jar.JarFile;
 
@@ -357,8 +357,8 @@ public class RuntimeDispatcher {
 		JEVariable var = new JEVariable(variableModel.getId(), variableModel.getProjectId(), variableModel.getName(),
 				variableModel.getType(), variableModel.getInitialValue(), variableModel.getDescription(),
 				variableModel.getCreatedBy(), variableModel.getModifiedBy());
-		var.setJeObjectCreationDate(LocalDateTime.now());
-		var.setJeObjectLastUpdate(LocalDateTime.now());
+		var.setJeObjectCreationDate(Instant.now());
+		var.setJeObjectLastUpdate(Instant.now());
 		// JEStringSubstitutor.addVariable(var.getJobEngineProjectID(), var.getName(),
 		// (String) var.getValue());
 		VariableManager.addVariable(var);
@@ -376,8 +376,8 @@ public class RuntimeDispatcher {
 	}
 
 	public void writeVariableValue(String projectId, String variableId, String value) {
-		JELogger.trace("[projectId = " + projectId + "] [variable = " + variableId + "]" + JEMessages.UPDATING_VARIABLE,
-				LogCategory.RUNTIME, projectId, LogSubModule.VARIABLE, variableId);
+		//JELogger.debug("[projectId = " + projectId + "] [variable = " + variableId + "]" + JEMessages.UPDATING_VARIABLE,
+			//	LogCategory.RUNTIME, projectId, LogSubModule.VARIABLE, variableId);
 		JEVariable var = VariableManager.updateVariableValue(projectId, variableId, value);
 		if (var != null) {
 			RuleEngineHandler.addVariable(var);

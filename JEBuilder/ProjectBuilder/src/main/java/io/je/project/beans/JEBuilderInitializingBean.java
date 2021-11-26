@@ -13,7 +13,6 @@ import io.je.utilities.monitoring.JEMonitor;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.util.concurrent.ListenableFuture;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
 import utils.zmq.ZMQSecurity;

@@ -1,5 +1,17 @@
 package io.je.project.services;
 
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutionException;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import io.je.project.beans.JEProject;
 import io.je.project.config.LicenseProperties;
 import io.je.project.repository.VariableRepository;
@@ -7,20 +19,16 @@ import io.je.utilities.apis.JERunnerAPIHandler;
 import io.je.utilities.beans.JEType;
 import io.je.utilities.beans.JEVariable;
 import io.je.utilities.constants.JEMessages;
-import io.je.utilities.exceptions.*;
+import io.je.utilities.exceptions.JERunnerErrorException;
+import io.je.utilities.exceptions.LicenseNotActiveException;
+import io.je.utilities.exceptions.ProjectNotFoundException;
+import io.je.utilities.exceptions.VariableAlreadyExistsException;
+import io.je.utilities.exceptions.VariableException;
+import io.je.utilities.exceptions.VariableNotFoundException;
 import io.je.utilities.log.JELogger;
 import io.je.utilities.models.VariableModel;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.io.IOException;
-import java.time.LocalDateTime;
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutionException;
 
 @Service
 public class VariableService {
@@ -161,8 +169,8 @@ public class VariableService {
         }
         JEVariable var = new JEVariable(variableModel.getId(),variableModel.getProjectId(),variableModel.getName(),variableModel.getType(), variableModel.getInitialValue(),variableModel.getDescription(),variableModel.getCreatedBy(),variableModel.getModifiedBy());
         var.setJobEngineProjectName(project.getProjectName());
-        var.setJeObjectCreationDate(LocalDateTime.now());
-        var.setJeObjectLastUpdate(LocalDateTime.now());
+        var.setJeObjectCreationDate(Instant.now());
+        var.setJeObjectLastUpdate(Instant.now());
 		try {
 			JERunnerAPIHandler.addVariable(variableModel.getProjectId(), variableModel.getId(), variableModel);
 		}

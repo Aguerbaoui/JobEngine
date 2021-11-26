@@ -25,7 +25,7 @@ import utils.log.LogCategory;
 import utils.log.LogSubModule;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.time.ZoneOffset;
 import java.util.*;
 
 /*
@@ -182,13 +182,12 @@ public class RuleBuilder {
         ruleTemplateAttributes.put("consequence", consequences);
         ruleTemplateAttributes.put("duration", duration);
         if (ruleParameters.getDateEffective() != null && !ruleParameters.getDateEffective().isEmpty()) {
-            LocalDateTime date = LocalDateTime.parse(ruleParameters.getDateEffective(), DateTimeFormatter.ISO_DATE_TIME);
-
-            ruleTemplateAttributes.put("dateEffective", "\"" + DateUtils.formatDate(date, SIOTHConfigUtility.getSiothConfig().getDateFormat()) + "\"");
+        	LocalDateTime date = LocalDateTime.ofInstant(Instant.parse(ruleParameters.getDateEffective()), ZoneOffset.systemDefault());
+            ruleTemplateAttributes.put("dateEffective", "\"" + DateUtils.formatDate(date, ConfigurationConstants.DROOLS_DATE_FORMAT) + "\"");
         }
         if (ruleParameters.getDateExpires() != null && !ruleParameters.getDateExpires().isEmpty()) {
-            LocalDateTime date = LocalDateTime.parse(ruleParameters.getDateEffective(), DateTimeFormatter.ISO_DATE_TIME);
-            ruleTemplateAttributes.put("dateExpires", "\"" + DateUtils.formatDate(date, SIOTHConfigUtility.getSiothConfig().getDateFormat()) + "\"");
+        	LocalDateTime date = LocalDateTime.ofInstant(Instant.parse(ruleParameters.getDateExpires()), ZoneOffset.systemDefault());
+            ruleTemplateAttributes.put("dateExpires", "\"" + DateUtils.formatDate(date, ConfigurationConstants.DROOLS_DATE_FORMAT) + "\"");
         }
 
         ObjectDataCompiler objectDataCompiler = new ObjectDataCompiler();

@@ -2,6 +2,7 @@ package blocks.events;
 
 import blocks.WorkflowBlock;
 import io.je.utilities.constants.Timers;
+import utils.date.DateUtils;
 
 public class TimerEvent extends WorkflowBlock {
 
@@ -18,7 +19,7 @@ public class TimerEvent extends WorkflowBlock {
     int occurrences = -1;
 
     public String getTimeDate() {
-        return timeDate;
+    	return DateUtils.parseUTCStringToLocalTimeString(timeDate);
     }
 
     public void setTimeDate(String timeDate) {
@@ -57,7 +58,7 @@ public class TimerEvent extends WorkflowBlock {
     }
 
     public String getEndDate() {
-        return endDate;
+        return  DateUtils.parseUTCStringToLocalTimeString(endDate);
     }
 
     public void setEndDate(String endDate) {

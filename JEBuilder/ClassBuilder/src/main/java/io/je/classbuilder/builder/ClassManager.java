@@ -1,6 +1,13 @@
 package io.je.classbuilder.builder;
 
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import io.je.classbuilder.entity.ClassType;
 import io.je.classbuilder.entity.JEClass;
 import io.je.classbuilder.models.ClassDefinition;
@@ -27,12 +34,6 @@ import utils.log.LogCategory;
 import utils.log.LogSubModule;
 import utils.zmq.ZMQPublisher;
 import utils.zmq.ZMQRequester;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 
 /*
@@ -152,8 +153,8 @@ public class ClassManager {
 		method.setJobEngineElementName(m.getMethodName());
 		method.setJeObjectCreatedBy(m.getCreatedBy());
 		method.setJeObjectModifiedBy(m.getModifiedBy());
-		method.setJeObjectLastUpdate(LocalDateTime.now());
-		method.setJeObjectCreationDate(LocalDateTime.now());
+		method.setJeObjectLastUpdate(Instant.now());
+		method.setJeObjectCreationDate(Instant.now());
 		method.setInputs(new ArrayList<>());
 		if(m.getInputs() != null) {
 			for (FieldModel f : m.getInputs()) {
@@ -311,9 +312,9 @@ public class ClassManager {
 		m.setMethodName(method.getJobEngineElementName());
 		m.setMethodScope(WorkflowConstants.STATIC);
 		m.setId(method.getJobEngineElementID());
-		m.setModifiedAt(DateUtils.formatDateToSIOTHFormat(method.getJeObjectLastUpdate()));
+		m.setModifiedAt(method.getJeObjectLastUpdate().toString());
 		m.setCreatedBy(method.getJeObjectCreatedBy());
-		m.setCreatedAt(DateUtils.formatDateToSIOTHFormat(method.getJeObjectCreationDate()));
+		m.setCreatedAt(method.getJeObjectCreationDate().toString());
 		m.setModifiedBy(method.getJeObjectModifiedBy());
 		List<FieldModel> fieldModels = new ArrayList<>();
 		for(JEField f: method.getInputs()) {
@@ -363,7 +364,7 @@ public class ClassManager {
 		model.setFileName(lib.getJobEngineElementName());
 		model.setCreatedBy(lib.getJeObjectCreatedBy());
 		model.setFilePath(lib.getFilePath());
-		model.setCreatedAt(DateUtils.formatDateToSIOTHFormat(lib.getJeObjectCreationDate()));
+		model.setCreatedAt(lib.getJeObjectCreationDate().toString());
 		model.setId(lib.getJobEngineElementID());
 		return model;
 	}

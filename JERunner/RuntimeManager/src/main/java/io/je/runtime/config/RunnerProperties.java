@@ -24,6 +24,7 @@ public class RunnerProperties {
 	@Value("${monitoring.port}")
 	int monitoringPort;
 
+
 	public int getMonitoringPort() {
 		return monitoringPort;
 	}

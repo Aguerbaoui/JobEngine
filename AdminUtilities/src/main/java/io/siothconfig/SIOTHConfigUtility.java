@@ -1,14 +1,11 @@
 package io.siothconfig;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import utils.date.DateUtils;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class SIOTHConfigUtility {
 
@@ -24,7 +21,6 @@ public class SIOTHConfigUtility {
 		if (jsonString != null) {
 			try {
 				siothConfig =  objectMapper.readValue(jsonString, SIOTHConfig.class);
-				DateUtils.setFormatter(siothConfig.getDateFormat());
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
