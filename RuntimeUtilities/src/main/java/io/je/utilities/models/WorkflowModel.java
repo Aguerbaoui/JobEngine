@@ -10,6 +10,8 @@ public class WorkflowModel {
 
     private String projectId;
 
+    private String projectName;
+
     private String id;
 
     private String path;
@@ -21,6 +23,8 @@ public class WorkflowModel {
     private boolean triggeredByEvent;
 
     private boolean onProjectBoot;
+
+    private String endBlockEventId;
 
     private String triggerMessage;
 
@@ -195,10 +199,44 @@ public class WorkflowModel {
         this.enabled = enabled;
     }
 
-    @Override
-    public String toString() {
-        return "WorkflowModel [projectId=" + projectId + ", key=" + id + ", path=" + path + ", events=" + events
-                + ", tasks=" + tasks + "]";
+    public String getEndBlockEventId() {
+        return endBlockEventId;
     }
 
+    public void setEndBlockEventId(String endBlockEventId) {
+        this.endBlockEventId = endBlockEventId;
+    }
+
+    public String getProjectName() {
+        return projectName;
+    }
+
+    public void setProjectName(String projectName) {
+        this.projectName = projectName;
+    }
+
+    @Override
+    public String toString() {
+        return "WorkflowModel{" +
+                "projectId='" + projectId + '\'' +
+                ", projectName='" + projectName + '\'' +
+                ", id='" + id + '\'' +
+                ", path='" + path + '\'' +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", triggeredByEvent=" + triggeredByEvent +
+                ", onProjectBoot=" + onProjectBoot +
+                ", endBlockEventId='" + endBlockEventId + '\'' +
+                ", triggerMessage='" + triggerMessage + '\'' +
+                ", events=" + events +
+                ", tasks=" + tasks +
+                ", createdBy='" + createdBy + '\'' +
+                ", modifiedBy='" + modifiedBy + '\'' +
+                ", status='" + status + '\'' +
+                ", modifiedAt='" + modifiedAt + '\'' +
+                ", createdAt='" + createdAt + '\'' +
+                ", frontConfig='" + frontConfig + '\'' +
+                ", enabled=" + enabled +
+                '}';
+    }
 }

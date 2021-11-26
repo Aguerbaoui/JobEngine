@@ -5,7 +5,9 @@ import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.DirectoryNotEmptyException;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Locale;
@@ -30,10 +32,8 @@ public class FileUtilities {
 		return content;
 	}
 
-	public static void deleteFileFromPath(String path) {
-
-			File file = new File(path);
-
+	public static void deleteFileFromPath(String path) throws IOException {
+		Files.deleteIfExists(Paths.get(path));
 
 	}
 	public static void deleteFilesInPathByPrefix(final String path, final String prefix) {

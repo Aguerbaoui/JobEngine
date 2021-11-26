@@ -48,9 +48,10 @@ public class JEClassCompiler {
 
 			options.add("-Xlint:-unchecked");
 			options.add("-Xlint:-rawtypes");
+			options.add("-Xlint:deprecation");
 
-			StringBuilder sb = new StringBuilder();
-			/*options.add("-classpath");
+			/*StringBuilder sb = new StringBuilder();
+			options.add("-classpath");
 			URLClassLoader urlClassLoader = (URLClassLoader) Thread.currentThread().getContextClassLoader();
 			for (URL url : urlClassLoader.getURLs()){
 				//JELogger.info(JEClassLoader.class, url.getFile().substring(1));
@@ -79,7 +80,7 @@ public class JEClassCompiler {
 
 				List<Diagnostic<? extends JavaFileObject>> diagnostics = diagnosticsCollector.getDiagnostics();
 				for (Diagnostic<? extends JavaFileObject> diagnostic : diagnostics) {
-					// read error dertails from the diagnostic object
+					// read error details from the diagnostic object
 					message = diagnostic.getMessage(null) ;
 
 				}
@@ -88,9 +89,6 @@ public class JEClassCompiler {
 		}catch (Exception e) {
 			JELogger.error(JEMessages.UNEXPECTED_ERROR + Arrays.toString(e.getStackTrace()), LogCategory.RUNTIME,
 					null, LogSubModule.JERUNNER, null);
-			//ClassLoadException exception = new ClassLoadException(JEMessages.CLASS_LOAD_FAILED);
-			//exception.setCompilationErrorMessage(message);
-			//throw exception;
 		}
 		if(!message.isEmpty()) {
 			ClassLoadException exception = new ClassLoadException(JEMessages.CLASS_LOAD_FAILED);

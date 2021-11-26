@@ -15,7 +15,7 @@ import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.exceptions.*;
 import io.je.utilities.log.JELogger;
-import io.je.utilities.ruleutils.RuleIdManager;
+import io.je.utilities.ruleutils.IdManager;
 import io.je.utilities.beans.Status;
 import io.je.utilities.ruleutils.OperationStatusDetails;
 
@@ -437,7 +437,7 @@ public class RuleService {
 
 	private void cleanUpRule(JEProject project, String ruleId) throws JERunnerErrorException {
 
-		String rulePrefix = RuleIdManager.generateSubRulePrefix(ruleId);
+		String rulePrefix = IdManager.generateSubRulePrefix(ruleId);
 		FileUtilities.deleteFilesInPathByPrefix(project.getConfigurationPath(), rulePrefix);
 		JELogger.debug(JEMessages.DELETING_RULE_RUNNER, CATEGORY, project.getProjectId(), RULE, ruleId);
 		if (project.getRule(ruleId) instanceof UserDefinedRule) {
