@@ -65,7 +65,7 @@ public class RuntimeDispatcher {
 		projectStatus.put(projectId, true);
 		List<String> topics = DataModelListener.getTopicsByProjectId(projectId);
 
-		JELogger.debug("[projectId  = " + projectId + "]" + JEMessages.RUNNING_PROJECT, LogCategory.RUNTIME, projectId,
+		JELogger.debugWithoutPublish("[projectId  = " + projectId + "]" + JEMessages.RUNNING_PROJECT, LogCategory.RUNTIME, projectId,
 				LogSubModule.JERUNNER, null);
 		try {
 			// start listening to datasources
@@ -376,7 +376,7 @@ public class RuntimeDispatcher {
 	}
 
 	public void writeVariableValue(String projectId, String variableId, String value) {
-		JELogger.debug("[projectId = " + projectId + "] [variable = " + variableId + "]" + JEMessages.UPDATING_VARIABLE,
+		JELogger.trace("[projectId = " + projectId + "] [variable = " + variableId + "]" + JEMessages.UPDATING_VARIABLE,
 				LogCategory.RUNTIME, projectId, LogSubModule.VARIABLE, variableId);
 		JEVariable var = VariableManager.updateVariableValue(projectId, variableId, value);
 		if (var != null) {
@@ -393,7 +393,7 @@ public class RuntimeDispatcher {
 			//JobEngine.addJarFile(payload.get("name"), j);
 
 			//JELogger.debug("hello There, your uploaded file is " + JobEngine.getJarFile("org.eclipse.jdt.core-3.7.1.jar").getName());
-			JELogger.debug("Jar file uploaded successfully", LogCategory.RUNTIME, "", LogSubModule.CLASS, "");
+			JELogger.info("Jar file uploaded successfully", LogCategory.RUNTIME, "", LogSubModule.CLASS, "");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
