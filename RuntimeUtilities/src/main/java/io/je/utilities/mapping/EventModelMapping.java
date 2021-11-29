@@ -12,6 +12,7 @@ public class EventModelMapping {
 	public static final String TRIGGERED = "triggered";
 	public static final String TIMOUTVALUE = "timeoutValue";
 	public static final String TIMEOUTUNIT = "timeoutUnit";
+	public static final String PROJECTNAME = "projectName";
 
 
 

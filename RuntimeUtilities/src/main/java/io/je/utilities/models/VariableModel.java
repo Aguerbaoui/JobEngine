@@ -11,6 +11,8 @@ public class VariableModel {
     private String type; 
 
     private String projectId;
+    
+    private String projectName;
 
     private String name;
 
@@ -123,10 +125,20 @@ public class VariableModel {
 
 	private VariableModel() {}
 
+	
 
+
+	public String getProjectName() {
+		return projectName;
+	}
+
+	public void setProjectName(String projectName) {
+		this.projectName = projectName;
+	}
 
 	public VariableModel(JEVariable variable) {
 		 this.projectId = variable.getJobEngineProjectID();
+		 this.projectName = variable.getJobEngineProjectName();
 	        this.id = variable.getJobEngineElementID();
 	        this.name = variable.getJobEngineElementName();
 	        this.type = variable.getType().toString();

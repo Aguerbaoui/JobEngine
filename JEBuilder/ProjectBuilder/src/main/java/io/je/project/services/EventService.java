@@ -169,6 +169,7 @@ public class EventService {
 		eventMap.put(EventModelMapping.EVENTTYPE, event.getType().toString());
 		eventMap.put(EventModelMapping.TIMEOUTUNIT, event.getTimeoutUnit());
 		eventMap.put(EventModelMapping.TIMOUTVALUE, event.getTimeoutValue());
+		eventMap.put(EventModelMapping.PROJECTNAME, project.getProjectName());
 		JELogger.debug(JEMessages.REGISTERING_EVENT,
 				LogCategory.DESIGN_MODE, event.getJobEngineProjectID(),
 				LogSubModule.EVENT,event.getJobEngineElementID());
@@ -230,9 +231,6 @@ public class EventService {
 	public void deleteEvent(String projectId, String eventId) throws EventException, ProjectNotFoundException, LicenseNotActiveException {
     	LicenseProperties.checkLicenseIsActive();
 
-		JELogger.debug(JEMessages.DELETING_EVENT+"[ id="+eventId+"] in project id = " + projectId,
-				LogCategory.DESIGN_MODE, projectId,
-				LogSubModule.EVENT,eventId);
 		JEProject project = ProjectService.getProjectById(projectId);
 		if (project == null) {
 			throw new ProjectNotFoundException( JEMessages.PROJECT_NOT_FOUND);
@@ -260,6 +258,10 @@ public class EventService {
 		catch(JERunnerErrorException e) {
 			throw new EventException(JEMessages.ERROR_DELETING_EVENT);
 		}
+
+		JELogger.debug("[project="+event.getJobEngineProjectName()+"][event="+event.getJobEngineElementName()+"]"+JEMessages.DELETING_EVENT,
+				LogCategory.DESIGN_MODE, projectId,
+				LogSubModule.EVENT,eventId);
 		project.getEvents().remove(event.getJobEngineElementID());
 		eventRepository.deleteById(eventId);
 		

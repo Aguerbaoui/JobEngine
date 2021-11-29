@@ -151,8 +151,8 @@ public class WorkflowService {
             wf.setOnProjectBoot(true);
         }
 
-        JELogger.debug("[projectId =" + m.getProjectId() + " ][workflowId = " +
-                        wf.getJobEngineElementID() + "]" + JEMessages.ADDING_WF,
+        JELogger.debug("[project=" + project.getProjectName() + " ][workflow = " +
+                        wf.getJobEngineElementName() + "]" + JEMessages.ADDING_WF,
                 LogCategory.DESIGN_MODE, m.getProjectId(), LogSubModule.WORKFLOW, m.getId());
         project.addWorkflow(wf);
         workflowRepository.save(wf);
@@ -177,7 +177,7 @@ public class WorkflowService {
 
         JEWorkflow wf = project.getWorkflowByIdOrName(workflowId);
         String wfName = wf.getJobEngineElementName().trim();
-        JELogger.debug("[projectId =" + project.getProjectName() + " ][workflowId = " + wfName + "]" + JEMessages.REMOVING_WF,
+        JELogger.debug("[project=" + project.getProjectName() + " ][workflow = " + wfName + "]" + JEMessages.REMOVING_WF,
                 LogCategory.DESIGN_MODE, projectId, LogSubModule.WORKFLOW, workflowId);
         try {
             JERunnerAPIHandler.deleteWorkflow(projectId, wfName);
@@ -212,8 +212,8 @@ public class WorkflowService {
         } else if (!project.workflowExists(block.getWorkflowId())) {
             throw new WorkflowNotFoundException(JEMessages.WORKFLOW_NOT_FOUND);
         }
-        JELogger.debug("[projectId =" + block.getProjectId() + " ][workflowId = " +
-                        block.getWorkflowId() + "]" + JEMessages.ADDING_WF_BLOCK + "" +
+        JELogger.debug("[project=" + project.getProjectName() + " ][workflow = " +
+                        project.getWorkflowByIdOrName(block.getWorkflowId()).getJobEngineElementName() + "]" + JEMessages.ADDING_WF_BLOCK + "" +
                         " id = " + block.getId(),
                 LogCategory.DESIGN_MODE, block.getProjectId(),
                 LogSubModule.WORKFLOW, block.getWorkflowId());
@@ -444,7 +444,7 @@ public class WorkflowService {
         } else if (!project.workflowExists(workflowId)) {
             throw new WorkflowNotFoundException(JEMessages.WORKFLOW_NOT_FOUND);
         }
-        JELogger.debug("[projectId =" + projectId + " ][workflowId = " + workflowId + "]" + "[blockId = " + blockId + "]" +
+        JELogger.debug("[project=" + project.getProjectName() + " ][workflow = " + project.getWorkflowByIdOrName(workflowId).getJobEngineElementName() + "]" + "[blockId = " + blockId + "]" +
                         JEMessages.DELETING_WF_BLOCK,
                 LogCategory.DESIGN_MODE, projectId,
                 LogSubModule.WORKFLOW, workflowId);
@@ -464,8 +464,7 @@ public class WorkflowService {
         } else if (!project.workflowExists(workflowId)) {
             throw new WorkflowNotFoundException(JEMessages.WORKFLOW_NOT_FOUND);
         }
-        JELogger.debug("[projectId =" + projectId + " ][workflowId = " +
-                        workflowId + "]" + JEMessages.DELETING_SEQUENCE_FLOW + sourceRef + " to  " + targetRef + " in workflow id = " + workflowId,
+        JELogger.debug("[project=" + project.getProjectName() + " ][workflow = " + project.getWorkflowByIdOrName(workflowId).getJobEngineElementName() + "]" + JEMessages.DELETING_SEQUENCE_FLOW + sourceRef + " to  " + targetRef + " in workflow id = " + workflowId,
                 LogCategory.DESIGN_MODE, projectId,
                 LogSubModule.WORKFLOW, workflowId);
         project.deleteWorkflowSequenceFlow(workflowId, sourceRef, targetRef);
@@ -486,7 +485,7 @@ public class WorkflowService {
         } else if (!project.workflowExists(workflowId)) {
             throw new WorkflowNotFoundException(JEMessages.WORKFLOW_NOT_FOUND);
         }
-        JELogger.debug("[projectId =" + projectId + " ][workflowId = " + workflowId + "]" +
+        JELogger.debug("[project=" + project.getProjectName() + " ][workflow = " + project.getWorkflowByIdOrName(workflowId).getJobEngineElementName() + "]" +
                         JEMessages.ADDING_SEQUENCE_FLOW + sourceRef + " to  " + targetRef + " in workflow id = " + workflowId,
                 LogCategory.DESIGN_MODE, projectId,
                 LogSubModule.WORKFLOW, workflowId);
@@ -519,7 +518,7 @@ public class WorkflowService {
             result.setOperationError(JEMessages.WORKFLOW_IS_DISABLED);
             return CompletableFuture.completedFuture(result);
         }
-        JELogger.info("[projectId =" + project.getProjectName() + " ][workflowId = " + workflow.getJobEngineElementName() + "]" + JEMessages.BUILDING_WF,
+        JELogger.info("[project=" + project.getProjectName() + " ][workflow = " + workflow.getJobEngineElementName() + "]" + JEMessages.BUILDING_WF,
                 LogCategory.DESIGN_MODE, projectId,
                 LogSubModule.WORKFLOW, workflowId);
 
@@ -545,7 +544,7 @@ public class WorkflowService {
         if (project == null) {
             throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
         }
-        JELogger.debug("[project =" + project.getProjectName() + " ]" + JEMessages.BUILDING_WFS,
+        JELogger.debug("[project=" + project.getProjectName() + " ]" + JEMessages.BUILDING_WFS,
                 LogCategory.DESIGN_MODE, projectId,
                 LogSubModule.WORKFLOW, null);
 
@@ -610,7 +609,7 @@ public class WorkflowService {
             return CompletableFuture.completedFuture(result);
         }
 
-        JELogger.info("[project =" + project.getProjectName() + " ][workflow = " +
+        JELogger.info("[project=" + project.getProjectName() + " ][workflow= " +
                         wf.getJobEngineElementName() + "]" + JEMessages.RUNNING_WF,
                 LogCategory.DESIGN_MODE, projectId,
                 LogSubModule.WORKFLOW, workflowId);
@@ -991,7 +990,7 @@ public class WorkflowService {
         }
 
         JEWorkflow wf = project.getWorkflowByIdOrName(workflowId);
-        JELogger.debug("[projectId =" + projectId + " ][workflowId = " + workflowId + "]" + JEMessages.UPDATING_WF,
+        JELogger.debug("[project=" + m.getProjectName() + " ][workflow = " + m.getName() + "]" + JEMessages.UPDATING_WF,
                 LogCategory.DESIGN_MODE, projectId,
                 LogSubModule.WORKFLOW, workflowId);
         if (m.getName() != null) {
@@ -1039,7 +1038,7 @@ public class WorkflowService {
         }
 
         JEWorkflow wf = project.getWorkflowByIdOrName(workflowId);
-        JELogger.debug("[projectId =" + projectId + " ][workflowId = " + workflowId + "]" + JEMessages.UPDATING_WF,
+        JELogger.debug("[project=" + project.getProjectName() + " ][workflow = " + project.getWorkflowByIdOrName(workflowId).getJobEngineElementName() + "]" + JEMessages.UPDATING_WF,
                 LogCategory.DESIGN_MODE, projectId,
                 LogSubModule.WORKFLOW, workflowId);
 
@@ -1077,7 +1076,7 @@ public class WorkflowService {
             throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
         }
 
-        JELogger.debug("[projectId =" + projectId + " ]" + JEMessages.REMOVING_WFS,
+        JELogger.debug("[project=" + project.getProjectName() + " ]" + JEMessages.REMOVING_WFS,
                 LogCategory.DESIGN_MODE, projectId,
                 LogSubModule.WORKFLOW, null);
         for (String id : ids) {
@@ -1108,7 +1107,7 @@ public class WorkflowService {
             return CompletableFuture.completedFuture(result);
         }
         JEWorkflow wf = project.getWorkflowByIdOrName(workflowId);
-        JELogger.debug("[projectId =" + projectId + " ][workflowId = " + workflowId + "]" + JEMessages.STOPPING_WF,
+        JELogger.debug("[project=" + project.getProjectName() + " ][workflow = " + wf.getJobEngineElementName() + "]" + JEMessages.STOPPING_WF,
                 LogCategory.DESIGN_MODE, projectId,
                 LogSubModule.WORKFLOW, workflowId);
         try {
@@ -1119,7 +1118,7 @@ public class WorkflowService {
 
         }
         catch(JERunnerErrorException e) {
-            JELogger.debug("[projectId =" + projectId + " ][workflowId = " + workflowId + "]" + JEMessages.STOPPING_WF + e.getMessage(),
+            JELogger.debug("[project=" + project.getProjectName() + " ][workflow = " + wf.getJobEngineElementName() + "]" + JEMessages.STOPPING_WF + e.getMessage(),
                     LogCategory.DESIGN_MODE, projectId,
                     LogSubModule.WORKFLOW, workflowId);
             result.setOperationSucceeded(false);

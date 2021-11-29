@@ -86,7 +86,7 @@ public class JEMessages {
 
     public static final String ADDING_CLASS_TO_RUNNER_FROM_BUILDER_WITH_ID = "Adding class to JERunner from JEBuilder with Id";
 
-    public static final String ADDING_CLASSES_TO_RUNNER_FROM_BUILDER = "Adding class to JERunner from JEBuilder";
+    public static final String ADDING_CLASS_TO_RUNNER_FROM_BUILDER = "Adding class to JERunner from JEBuilder";
 
 
     public static final String FAILED_TO_LOAD_CLASS = "Failed to load class";

@@ -19,6 +19,9 @@ public class EventModel {
 
     @JsonProperty(EventModelMapping.PROJECTID)
     private String projectId;
+   
+    @JsonProperty(EventModelMapping.PROJECTNAME)
+    private String projectName;
 
     @JsonProperty(EventModelMapping.EVENTTYPE)
     private String eventType;
@@ -164,6 +167,14 @@ public class EventModel {
 
 	public void setModifiedBy(String modifiedBy) {
 		this.modifiedBy = modifiedBy;
+	}
+
+	public String getProjectName() {
+		return projectName;
+	}
+
+	public void setProjectName(String projectName) {
+		this.projectName = projectName;
 	}
     
     

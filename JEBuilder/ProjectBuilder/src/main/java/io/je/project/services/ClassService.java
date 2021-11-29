@@ -200,7 +200,7 @@ public class ClassService {
         classMap.put(CLASS_NAME, clazz.getClassName());
         classMap.put(CLASS_PATH, clazz.getClassPath());
         classMap.put(CLASS_ID, clazz.getClassId());
-        JELogger.debug(JEMessages.ADDING_CLASSES_TO_RUNNER_FROM_BUILDER, LogCategory.DESIGN_MODE, null, LogSubModule.CLASS, clazz.getClassName());
+        JELogger.debug("[class="+clazz.getClassName()+"]"+JEMessages.ADDING_CLASS_TO_RUNNER_FROM_BUILDER, LogCategory.DESIGN_MODE, null, LogSubModule.CLASS, clazz.getClassName());
         JEResponse jeRunnerResp;
         if (reloadClassDefinition) {
             try {
@@ -477,7 +477,7 @@ public class ClassService {
     * Add new jar library to projects
     * */
     public void addJarToProject(LibModel libModel) throws LibraryException {
-        JELogger.info(JEMessages.ADDING_JAR_TO_PROJECT,
+        JELogger.control(JEMessages.ADDING_JAR_TO_PROJECT,
                 LogCategory.DESIGN_MODE, null, LogSubModule.JEBUILDER, libModel.getFileName());
         try {
             MultipartFile file = libModel.getFile();
