@@ -73,7 +73,7 @@ public class ProjectService {
 	 */
 	@Async
 	public CompletableFuture<Void> removeProject(String id) throws ProjectNotFoundException,
-			JERunnerErrorException, LicenseNotActiveException {
+			JERunnerErrorException, LicenseNotActiveException, VariableNotFoundException {
 
 		if (!loadedProjects.containsKey(id)) {
 			throw new ProjectNotFoundException("[projectId= " + id + "]" + JEMessages.PROJECT_NOT_FOUND);
@@ -83,7 +83,7 @@ public class ProjectService {
 			stopProject(id);
 		} catch (Exception e) {
 		}
-		JELogger.info("[project = " + loadedProjects.get(id).getProjectName() + "]" + JEMessages.DELETING_PROJECT, LogCategory.DESIGN_MODE, id,
+		JELogger.info("[project= " + loadedProjects.get(id).getProjectName() + "]" + JEMessages.DELETING_PROJECT, LogCategory.DESIGN_MODE, id,
 				LogSubModule.JEBUILDER, null);
 		JERunnerAPIHandler.cleanProjectDataFromRunner(id);
 		/*
@@ -167,11 +167,11 @@ public class ProjectService {
 			JEProject project = loadedProjects.get(projectId);
 			if (project.isBuilt()) {
 				if (!project.isRunning()) {
-					JELogger.info("[project = " + project.getProjectName() + "]" + JEMessages.RUNNING_PROJECT,
+					JELogger.info("[project= " + project.getProjectName() + "]" + JEMessages.RUNNING_PROJECT,
 							LogCategory.DESIGN_MODE, projectId, LogSubModule.JEBUILDER, null);
 					try {
 						ruleService.buildRules(projectId);
-						JERunnerAPIHandler.runProject(projectId);
+						JERunnerAPIHandler.runProject(projectId,project.getProjectName());
 						ruleService.updateRulesStatus(projectId, true);
 						project.getRuleEngine().setRunning(true);
 
@@ -204,11 +204,11 @@ public class ProjectService {
 		}
 		JEProject project = loadedProjects.get(projectId);
 		// if (project.isRunning()) {
-		JELogger.info("[project = " + project.getProjectName() + "]" + JEMessages.STOPPING_PROJECT,
+		JELogger.control("[project = " + project.getProjectName() + "]" + JEMessages.STOPPING_PROJECT,
 				LogCategory.DESIGN_MODE, projectId, LogSubModule.JEBUILDER, null);
 
 		try {
-			JERunnerAPIHandler.stopProject(projectId);
+			JERunnerAPIHandler.stopProject(projectId,project.getProjectName());
 			ruleService.stopRules(projectId, null);
 
 		} catch (JERunnerErrorException e) {

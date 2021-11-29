@@ -92,10 +92,13 @@ public class EventManager {
         }
         //When event is found:
         if(event != null) {
-            JELogger.debug(JEMessages.FOUND_EVENT + eventId + JEMessages.TRIGGERING_NOW,
+            JELogger.trace(JEMessages.FOUND_EVENT + eventId + JEMessages.TRIGGERING_NOW,
                     LogCategory.RUNTIME, event.getJobEngineProjectID(),
                     LogSubModule.EVENT,event.getJobEngineElementID());
             
+    		
+    		JELogger.debug("[project = " + event.getJobEngineProjectName() + "] [event = " + event.getJobEngineElementName() + "]" + JEMessages.EVENT_TRIGGERED,
+    				LogCategory.RUNTIME, projectId, LogSubModule.EVENT, event.getJobEngineElementID());
             //trigger event
             event.trigger();
 

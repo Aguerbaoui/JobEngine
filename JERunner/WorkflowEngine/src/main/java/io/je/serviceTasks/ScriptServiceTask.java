@@ -17,7 +17,7 @@ public class ScriptServiceTask extends ServiceTask {
         //throw new BpmnError("testErrorRef");
 
         ScriptTask task = (ScriptTask) ActivitiTaskManager.getTask(execution.getCurrentActivityId());
-        String message = "Executing script task with id = " + task.getTaskId();
+        String message = "[Task= "+task.getTaskName()+"]Executing script task"  ;
         LogMessage msg = new LogMessage(LogLevel.Inform,  message,  LocalDateTime.now().toString(),   task.getProjectId(),
                 LogSubModule.WORKFLOW, task.getTaskName()) ;
         try {

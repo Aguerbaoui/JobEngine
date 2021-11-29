@@ -56,7 +56,7 @@ public class LicenseProperties {
 
 	public static void setLicenseStatus(SIOTHLicenseStatus status) {
 
-		JELogger.info("License Status changed to " + status + ".", LogCategory.SIOTH_APPLICATION, "",
+		JELogger.control("License Status changed to " + status + ".", LogCategory.SIOTH_APPLICATION, "",
 				LogSubModule.JEBUILDER, "");
 
 		if ((status == SIOTHLicenseStatus.Corrupted) || status == SIOTHLicenseStatus.Backdated

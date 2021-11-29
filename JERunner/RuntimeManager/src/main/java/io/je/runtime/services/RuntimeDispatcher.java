@@ -83,12 +83,12 @@ public class RuntimeDispatcher {
 	}
 
 	// run project
-	public void runProject(String projectId) throws JEException {
+	public void runProject(String projectId,String projectName) throws JEException {
 
 		projectStatus.put(projectId, true);
 		List<String> topics = DataModelListener.getTopicsByProjectId(projectId);
 
-		JELogger.debugWithoutPublish("[projectId  = " + projectId + "]" + JEMessages.RUNNING_PROJECT, LogCategory.RUNTIME, projectId,
+		JELogger.control("[project  = " + projectName + "]" + JEMessages.RUNNING_PROJECT, LogCategory.RUNTIME, projectId,
 				LogSubModule.JERUNNER, null);
 		try {
 			// start listening to datasources
@@ -106,7 +106,7 @@ public class RuntimeDispatcher {
 
 			}
 		} catch (JEException e) {
-			JELogger.error(" [projectId  = " + projectId + "]" + JEMessages.PROJECT_RUN_FAILED, LogCategory.RUNTIME,
+			JELogger.error(" [project  = " + projectName + "]" + JEMessages.PROJECT_RUN_FAILED, LogCategory.RUNTIME,
 					projectId, LogSubModule.JERUNNER, null);
 			DataModelListener.stopListening(topics);
 			RuleEngineHandler.stopRuleEngineProjectExecution(projectId);
@@ -119,10 +119,10 @@ public class RuntimeDispatcher {
 
 	// stop project
 	// run project
-	public void stopProject(String projectId) {
+	public void stopProject(String projectId,String projectName) {
 
 		// stop workflows
-		JELogger.debug("[projectId  = " + projectId + "]" + JEMessages.STOPPING_PROJECT, LogCategory.RUNTIME, projectId,
+		JELogger.control("[project = " + projectName + "]" + JEMessages.STOPPING_PROJECT, LogCategory.RUNTIME, projectId,
 				LogSubModule.JERUNNER, null);
 		WorkflowEngineHandler.stopProjectWorfklows(projectId);
 		List<String> topics = DataModelListener.getTopicsByProjectId(projectId);
@@ -308,8 +308,7 @@ public class RuntimeDispatcher {
 
 	// Trigger an event
 	public void triggerEvent(String projectId, String id) throws EventException, ProjectNotFoundException {
-		JELogger.debug("[projectId = " + projectId + "] [event = " + id + "]" + JEMessages.EVENT_TRIGGERED,
-				LogCategory.RUNTIME, projectId, LogSubModule.EVENT, id);
+
 		EventManager.triggerEvent(projectId, id);
 	}
 
@@ -318,9 +317,9 @@ public class RuntimeDispatcher {
 		JEEvent e = new JEEvent(eventModel.getEventId(), eventModel.getProjectId(), eventModel.getName(),
 				EventType.valueOf(eventModel.getEventType()), eventModel.getDescription(), eventModel.getTimeout(),
 				eventModel.getTimeoutUnit(), eventModel.getCreatedBy(), eventModel.getModifiedBy());
-
+		e.setJobEngineProjectName(eventModel.getProjectName());
 		JELogger.debug(
-				"[projectId = " + e.getJobEngineProjectID() + "] [event = " + e.getJobEngineElementID() + "]"
+				"[project = " + e.getJobEngineProjectName() + "] [event = " + e.getJobEngineElementName()+ "]"
 						+ JEMessages.ADDING_EVENT,
 				LogCategory.RUNTIME, eventModel.getProjectId(), LogSubModule.EVENT, eventModel.getEventId());
 
@@ -374,7 +373,7 @@ public class RuntimeDispatcher {
 	// add variable to runner
 	public void addVariable(VariableModel variableModel) {
 		JELogger.debug(
-				"[projectId = " + variableModel.getProjectId() + "] [variable = " + variableModel.getId() + "]"
+				"[project = " + variableModel.getProjectName() + "] [variable = " + variableModel.getName() + "]"
 						+ JEMessages.ADDING_VARIABLE,
 				LogCategory.RUNTIME, variableModel.getProjectId(), LogSubModule.VARIABLE, variableModel.getId());
 		JEVariable var = new JEVariable(variableModel.getId(), variableModel.getProjectId(), variableModel.getName(),
@@ -416,7 +415,7 @@ public class RuntimeDispatcher {
 			//JobEngine.addJarFile(payload.get("name"), j);
 
 			//JELogger.debug("hello There, your uploaded file is " + JobEngine.getJarFile("org.eclipse.jdt.core-3.7.1.jar").getName());
-			JELogger.info("Jar file uploaded successfully", LogCategory.RUNTIME, "", LogSubModule.CLASS, "");
+			JELogger.control("Jar file uploaded successfully", LogCategory.RUNTIME, "", LogSubModule.CLASS, "");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
