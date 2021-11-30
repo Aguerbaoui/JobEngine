@@ -193,7 +193,7 @@ public class WorkflowEngineHandler {
                 webApiTask.setHasBody(true);
                 webApiTask.setBody((HashMap<String, String>) attributes.get(INPUTS));
             } else {
-                webApiTask.setHasBody(true);
+                webApiTask.setHasBody(false);
                 webApiTask.setStringBody((String) attributes.get(BODY));
             }
             webApiTask.setHttpMethod(HttpMethod.valueOf((String) attributes.get(METHOD)));

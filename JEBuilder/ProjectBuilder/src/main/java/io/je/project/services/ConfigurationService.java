@@ -86,6 +86,7 @@ public class ConfigurationService {
 						JELogger.debug(JEMessages.DATABASE_IS_DOWN_CHECKING_AGAIN,
 								LogCategory.DESIGN_MODE, null,
 								LogSubModule.JEBUILDER,null);
+						Thread.sleep(healthCheck);
 					}
 				}
 
