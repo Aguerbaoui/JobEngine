@@ -75,12 +75,12 @@ public class RuntimeDispatcher {
 
 	///////////////////////////////// PROJECT
 	// build project
-	public void buildProject(String projectId) throws RuleBuildFailedException, WorkflowBuildException {
+	/*public void buildProject(String projectId) throws RuleBuildFailedException, WorkflowBuildException {
 		/*JELogger.debug("[projectId  = " + projectId + "]" + JEMessages.BUILDING_PROJECT, LogCategory.RUNTIME, projectId,
 				LogSubModule.JERUNNER, null);*/
-		RuleEngineHandler.buildProject(projectId);
+		/*RuleEngineHandler.buildProject(projectId);
 		WorkflowEngineHandler.buildProject(projectId);
-	}
+	}*/
 
 	// run project
 	public void runProject(String projectId) throws JEException {
@@ -212,7 +212,7 @@ public class RuntimeDispatcher {
 			WorkflowBuildException, WorkflowRunException {
 		JELogger.debug("[projectId = " + projectId + "] [workflow = " + key + "]" + JEMessages.RUNNING_WF,
 				LogCategory.RUNTIME, projectId, LogSubModule.WORKFLOW, key);
-		buildWorkflow(projectId, key);
+		//buildWorkflow(projectId, key);
 		WorkflowEngineHandler.launchProcessWithoutVariables(projectId, key, runProject);
 
 	}

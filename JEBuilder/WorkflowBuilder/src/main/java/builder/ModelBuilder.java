@@ -99,7 +99,7 @@ public class ModelBuilder {
                 startEvent.addEventDefinition(createTimerEvent(timerEvent.getTimeDuration(), null, null, null));
             }
             else if(timerEvent.getTimer().equals(Timers.CYCLIC)) {
-                startEvent.addEventDefinition(createTimerEvent(null, timerEvent.getTimeDate(), timerEvent.getTimeCycle(), null));
+                startEvent.addEventDefinition(createTimerEvent(null, timerEvent.getEndDate(), timerEvent.getTimeCycle(), null));
             }
             else {
                 startEvent.addEventDefinition(createTimerEvent(null, timerEvent.getTimeDate(), null, null));

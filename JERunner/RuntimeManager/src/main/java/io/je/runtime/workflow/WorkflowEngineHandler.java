@@ -129,9 +129,9 @@ public class WorkflowEngineHandler {
     /*
     * Deploy project workflows
     * */
-    public static void buildProject(String projectId) throws WorkflowBuildException {
+   /* public static void buildProject(String projectId) throws WorkflowBuildException {
         processManagerHashMap.get(projectId).buildProjectWorkflows(projectId);
-    }
+    }*/
 
     /*
     * Stop project workflows

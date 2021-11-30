@@ -539,7 +539,7 @@ public class WorkflowService {
     @Async
     public CompletableFuture<List<OperationStatusDetails>> buildWorkflows(String projectId, List<String> ids) throws ProjectNotFoundException,  LicenseNotActiveException, WorkflowNotFoundException, WorkflowException {
         LicenseProperties.checkLicenseIsActive();
-		System.out.println(">>>> building wfs : "+ Instant.now() );
+		//System.out.println(">>>> building wfs : "+ Instant.now() );
 
         JEProject project = ProjectService.getProjectById(projectId);
         if (project == null) {

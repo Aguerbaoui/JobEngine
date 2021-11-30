@@ -26,7 +26,7 @@ public class ProjectController {
      * Build whole project
      * */
 
-    @GetMapping(value = "/buildProject", produces = MediaType.APPLICATION_JSON_VALUE)
+  /*  @GetMapping(value = "/buildProject", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> buildProject(@RequestBody String input) {
         try {
             dispatcher.buildProject(input);
@@ -36,7 +36,7 @@ public class ProjectController {
 
         return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.BUILT_EVERYTHING_SUCCESSFULLY));
 
-    }
+    }*/
 
     /*
      * Run the whole project ( rules and workflows )

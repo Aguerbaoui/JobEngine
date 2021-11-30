@@ -25,6 +25,8 @@ public class JEProcess {
 
     private ProcessInstance processInstance;
 
+    private String deploymentId;
+
     private String endEventId;
 
     /*
@@ -157,5 +159,31 @@ public class JEProcess {
 
     public void setEndEventId(String endEventId) {
         this.endEventId = endEventId;
+    }
+
+    public String getDeploymentId() {
+        return deploymentId;
+    }
+
+    public void setDeploymentId(String deploymentId) {
+        this.deploymentId = deploymentId;
+    }
+
+    @Override
+    public String toString() {
+        return "JEProcess{" +
+                "key='" + key + '\'' +
+                ", name='" + name + '\'' +
+                ", bpmnPath='" + bpmnPath + '\'' +
+                ", triggeredByEvent=" + triggeredByEvent +
+                ", triggerMessage='" + triggerMessage + '\'' +
+                ", running=" + running +
+                ", deployed=" + deployed +
+                ", projectId='" + projectId + '\'' +
+                ", deploymentId='" + deploymentId + '\'' +
+                ", endEventId='" + endEventId + '\'' +
+                ", onProjectBoot=" + onProjectBoot +
+                ", activeThread=" + activeThread +
+                '}';
     }
 }
