@@ -1,5 +1,6 @@
 package utils.log;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.LinkedList;
@@ -124,7 +125,7 @@ public class LoggerUtils {
 	// get Log message object for the logging service
 	public static LogMessage getLogMessage(LogLevel logLevel, String message, LogCategory category, String projectId,
 			LogSubModule subModule, String objectId) {
-		String logDate = DateUtils.formatDate(LocalDateTime.now(), "yyyy-MM-dd HH:mm:ss.SSS");
+		String logDate = Instant.now().toString();
 
 		return new LogMessage(logLevel, message, logDate, /* category, */ projectId, subModule, objectId);
 	}
@@ -132,7 +133,7 @@ public class LoggerUtils {
 	// get Log message object for the logging service
 	public static LogMessage getLogMessage(LogLevel logLevel, String message, LogCategory category, String projectId,
 			LogSubModule subModule, String objectId, String blockName) {
-		String logDate = DateUtils.formatDate(LocalDateTime.now(), "yyyy-MM-dd HH:mm:ss.SSS");
+		String logDate = Instant.now().toString();
 
 		return new LogMessage(logLevel, message, logDate, /* category, */ projectId, subModule, objectId, blockName);
 	}

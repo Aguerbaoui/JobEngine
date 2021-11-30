@@ -36,7 +36,7 @@ public class LogBlock extends ExecutionBlock {
 				+ "message.addBlockMessage(blockMsg);\r\n"
 				+ "message.setType(\"BlockMessage\");\r\n"
 				+ "message.setExecutionTime(LocalDateTime.now().toString());\r\n"
-				+ */"Executioner.informRuleBlock(\"" +this.jobEngineProjectID +"\",\"" + this.ruleId +"\",\" "+formatMessage()+ "\",LocalDateTime.now().toString(),\""+this.blockName +" \" );"; 
+				+ */"Executioner.informRuleBlock(\"" +this.jobEngineProjectID +"\",\"" + this.ruleId +"\",\" "+formatMessage()+ "\",Instant.now().toString(),\""+this.blockName +" \" );"; 
 	}
 
 
