@@ -425,9 +425,9 @@ public class MathUtilities {
     /*
      * divide
      */
-    public static long divide(double a , double b) {
+    public static double divide(double a , double b) {
 
-        return (long) (a/b);
+        return  a/b;
     }
 
 
