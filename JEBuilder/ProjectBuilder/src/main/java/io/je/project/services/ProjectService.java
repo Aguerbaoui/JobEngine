@@ -331,45 +331,51 @@ public class ProjectService {
 		JELogger.info(JEMessages.LOADING_PROJECTS, LogCategory.DESIGN_MODE, null, LogSubModule.JEBUILDER, null);
 		List<JEProject> projects = projectRepository.findAll();
 		for (JEProject project : projects) {
-			Optional<JEProject> p = projectRepository.findById(project.getProjectId());
-			project = p.isEmpty() ? null : p.get();
-			if (project != null) {
-				project.setEvents(eventService.getAllJEEvents(project.getProjectId()));
-				project.setRules(ruleService.getAllJERules(project.getProjectId()));
-				project.setVariables(variableService.getAllJEVariables(project.getProjectId()));
-				project.setWorkflows(workflowService.getAllJEWorkflows(project.getProjectId()));
-				// project.setBuilt(false);
-				loadedProjects.put(project.getProjectId(), project);
-				for (JEEvent event : project.getEvents().values()) {
-					try {
-						eventService.registerEvent(event);
-					} catch (EventException e) {
-						throw new ProjectLoadException(JEMessages.PROJECT_LOAD_ERROR);
+			try {
+				Optional<JEProject> p = projectRepository.findById(project.getProjectId());
+				project = p.isEmpty() ? null : p.get();
+				if (project != null) {
+					project.setEvents(eventService.getAllJEEvents(project.getProjectId()));
+					project.setRules(ruleService.getAllJERules(project.getProjectId()));
+					project.setVariables(variableService.getAllJEVariables(project.getProjectId()));
+					project.setWorkflows(workflowService.getAllJEWorkflows(project.getProjectId()));
+					// project.setBuilt(false);
+					loadedProjects.put(project.getProjectId(), project);
+					for (JEEvent event : project.getEvents().values()) {
+						try {
+							eventService.registerEvent(event);
+						} catch (EventException e) {
+							throw new ProjectLoadException(JEMessages.PROJECT_LOAD_ERROR);
+						}
 					}
-				}
-				for (JEVariable variable : project.getVariables().values()) {
-					try {
-						variableService.addVariableToRunner(variable);
-					} catch (JERunnerErrorException e) {
-						throw new ProjectLoadException(JEMessages.PROJECT_LOAD_ERROR);
+					for (JEVariable variable : project.getVariables().values()) {
+						try {
+							variableService.addVariableToRunner(variable);
+						} catch (JERunnerErrorException e) {
+							throw new ProjectLoadException(JEMessages.PROJECT_LOAD_ERROR);
+						}
 					}
-				}
-				
-				
-				
-				if (!project.isAutoReload()) {
-					project.setBuilt(false);
-					project.setRunning(false);
-					for(JERule rule : project.getRules().values())
-					{
-						rule.setRunning(false);
-						rule.setBuilt(false);
-						RuleService.updateRuleStatus(rule);
-						ruleService.saveRule(rule);
-					}
-					saveProject(project);
+					
+					
+					
+					if (!project.isAutoReload()) {
+						project.setBuilt(false);
+						project.setRunning(false);
+						for(JERule rule : project.getRules().values())
+						{
+							rule.setRunning(false);
+							rule.setBuilt(false);
+							RuleService.updateRuleStatus(rule);
+							ruleService.saveRule(rule);
+						}
+						saveProject(project);
 
-				}
+					}
+				}	
+			}catch(Exception e)
+			{
+				JELogger.warn("[project = "+project.getProjectName() +"]"+JEMessages.FAILED_TO_LOAD_PROJECT, LogCategory.DESIGN_MODE, project.getProjectId(), LogSubModule.JEBUILDER, null);
+
 			}
 
 		}
