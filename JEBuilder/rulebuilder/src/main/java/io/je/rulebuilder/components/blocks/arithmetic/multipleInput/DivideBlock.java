@@ -16,7 +16,7 @@ public class DivideBlock extends MultipleInputArithmeticBlock {
 
 	@Override
 	protected String getArithmeticFormula(int level,String type) {
-		return "MathUtilities.divide( "  ;
+		return "JEMathUtils.divide( \""+this.jobEngineProjectID+"\",\""+this.ruleId+"\",\""+this.blockName+"\","  ;
 
 	}
 
