@@ -50,6 +50,8 @@ public class WorkflowConstants {
     public static final String URL = "url";
     public static final String INPUTS = "inputs";
     public static final String OUTPUTS = "outputs";
+    public static final String AUTHENTICATION = "authentication";
+    public static final String AUTH_SCHEME = "authscheme";
     public static final String REQUEST = "request";
     public static final String DATABASE_ID = "databaseId";
     public static final String USE_DEFAULT_CREDENTIALS = "bUseDefaultCredentials";

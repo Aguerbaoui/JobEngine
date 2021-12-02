@@ -2,43 +2,7 @@ package io.je.project.services;
 
 import static io.je.utilities.constants.JEMessages.FAILED_TO_DELETE_FILES;
 import static io.je.utilities.constants.JEMessages.THREAD_INTERRUPTED_WHILE_EXECUTING;
-import static io.je.utilities.constants.WorkflowConstants.BODY;
-import static io.je.utilities.constants.WorkflowConstants.BOUNDARYEVENT_TYPE;
-import static io.je.utilities.constants.WorkflowConstants.CONDITION;
-import static io.je.utilities.constants.WorkflowConstants.DATABASE_ID;
-import static io.je.utilities.constants.WorkflowConstants.DBEDITSERVICETASK_TYPE;
-import static io.je.utilities.constants.WorkflowConstants.DBWRITESERVICETASK_TYPE;
-import static io.je.utilities.constants.WorkflowConstants.DESCRIPTION;
-import static io.je.utilities.constants.WorkflowConstants.DURATION;
-import static io.je.utilities.constants.WorkflowConstants.EMAIL_MESSAGE;
-import static io.je.utilities.constants.WorkflowConstants.ENABLE_SSL;
-import static io.je.utilities.constants.WorkflowConstants.ENDDATE;
-import static io.je.utilities.constants.WorkflowConstants.EVENT_ID;
-import static io.je.utilities.constants.WorkflowConstants.IMPORTS;
-import static io.je.utilities.constants.WorkflowConstants.INPUTS;
-import static io.je.utilities.constants.WorkflowConstants.MESSAGE;
-import static io.je.utilities.constants.WorkflowConstants.METHOD;
-import static io.je.utilities.constants.WorkflowConstants.NAME;
-import static io.je.utilities.constants.WorkflowConstants.NBOCCURENCES;
-import static io.je.utilities.constants.WorkflowConstants.OUTPUTS;
-import static io.je.utilities.constants.WorkflowConstants.PASSWORD;
-import static io.je.utilities.constants.WorkflowConstants.PORT;
-import static io.je.utilities.constants.WorkflowConstants.RECEIVER_ADDRESS;
-import static io.je.utilities.constants.WorkflowConstants.REQUEST;
-import static io.je.utilities.constants.WorkflowConstants.SCRIPT;
-import static io.je.utilities.constants.WorkflowConstants.SENDER_ADDRESS;
-import static io.je.utilities.constants.WorkflowConstants.SEND_TIME_OUT;
-import static io.je.utilities.constants.WorkflowConstants.SEQ_FLOW_TYPE;
-import static io.je.utilities.constants.WorkflowConstants.SMTP_SERVER;
-import static io.je.utilities.constants.WorkflowConstants.SOURCE_REF;
-import static io.je.utilities.constants.WorkflowConstants.SUBWORKFLOWID;
-import static io.je.utilities.constants.WorkflowConstants.TARGET_REF;
-import static io.je.utilities.constants.WorkflowConstants.TIMECYCLE;
-import static io.je.utilities.constants.WorkflowConstants.TIMEDATE;
-import static io.je.utilities.constants.WorkflowConstants.TIMEOUT;
-import static io.je.utilities.constants.WorkflowConstants.URL;
-import static io.je.utilities.constants.WorkflowConstants.USERNAME;
-import static io.je.utilities.constants.WorkflowConstants.USE_DEFAULT_CREDENTIALS;
+import static io.je.utilities.constants.WorkflowConstants.*;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -104,6 +68,7 @@ import models.JEWorkflow;
 import utils.files.FileUtilities;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
+import utils.network.AuthScheme;
 import utils.string.StringUtilities;
 
 @Service
@@ -513,6 +478,9 @@ public class WorkflowService {
         }
 
         JEWorkflow workflow = project.getWorkflowByIdOrName(workflowId);
+         result.setItemName(workflow.getJobEngineElementName());
+         result.setItemName(workflow.getJobEngineElementName());
+         result.setItemId(workflowId);
         if(!workflow.isEnabled()) {
             result.setOperationSucceeded(false);
             result.setOperationError(JEMessages.WORKFLOW_IS_DISABLED);
@@ -527,8 +495,7 @@ public class WorkflowService {
             result.setOperationError(JEMessages.WORKFLOW_BUILD_ERROR + " " + workflow.getJobEngineElementName());
             //throw new WorkflowBuildException(JEMessages.WORKFLOW_BUILD_ERROR + " " + workflow.getJobEngineElementName());
         }
-        result.setItemName(workflow.getJobEngineElementName());
-        result.setItemId(workflowId);
+
         return CompletableFuture.completedFuture(result);
     }
 
@@ -891,8 +858,9 @@ public class WorkflowService {
                 b.setBody(null);
                 b.setInputs((HashMap<String, ArrayList<Object>>) block.getAttributes().get(INPUTS));
             }
-
             b.setOutputs((HashMap<String, String>) block.getAttributes().get(OUTPUTS));
+            b.setAuthScheme(AuthScheme.valueOf((String) block.getAttributes().get(AUTH_SCHEME)));
+            b.setAuthentication((HashMap<String, String>) block.getAttributes().get(AUTHENTICATION));
             project.addBlockToWorkflow(b);
         } else if (block.getType().equalsIgnoreCase(WorkflowConstants.INFORMSERVICETASK_TYPE)) {
             InformBlock b = (InformBlock) wf.getAllBlocks().get(block.getId());
@@ -937,6 +905,7 @@ public class WorkflowService {
 
     }
 
+    /*delete script task class*/
     private void deleteGeneratedScriptTaskClass(ScriptBlock b) {
         try {
             FileUtilities.deleteFileFromPath(b.getScriptPath());
