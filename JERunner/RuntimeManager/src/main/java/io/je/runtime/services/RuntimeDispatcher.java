@@ -110,7 +110,7 @@ public class RuntimeDispatcher {
 					projectId, LogSubModule.JERUNNER, null);
 			DataModelListener.stopListening(topics);
 			RuleEngineHandler.stopRuleEngineProjectExecution(projectId);
-			WorkflowEngineHandler.stopProjectWorfklows(projectId);
+			WorkflowEngineHandler.stopProjectWorkflows(projectId);
 			projectStatus.put(projectId, false);
 			throw e;
 		}
@@ -124,7 +124,7 @@ public class RuntimeDispatcher {
 		// stop workflows
 		JELogger.control("[project = " + projectName + "]" + JEMessages.STOPPING_PROJECT, LogCategory.RUNTIME, projectId,
 				LogSubModule.JERUNNER, null);
-		WorkflowEngineHandler.stopProjectWorfklows(projectId);
+		WorkflowEngineHandler.stopProjectWorkflows(projectId);
 		List<String> topics = DataModelListener.getTopicsByProjectId(projectId);
 		DataModelListener.stopListening(topics);
 		projectStatus.put(projectId, false);

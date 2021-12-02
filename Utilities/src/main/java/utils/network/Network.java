@@ -7,19 +7,22 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 
+import com.squareup.okhttp.*;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.squareup.okhttp.HttpUrl;
-import com.squareup.okhttp.MediaType;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.RequestBody;
-import com.squareup.okhttp.Response;
+import zmq.socket.reqrep.Req;
 
 public class Network {
 
     private static final OkHttpClient client = new OkHttpClient();
+    public static final String AUTHORIZATION = "Authorization";
+    public static final String BEARER = "Bearer ";
+    public static final String TOKEN = "token";
+    public static final String KEY = "key";
+    public static final String VALUE = "value";
+    public static final String USERNAME = "username";
+    public static final String PASSWORD = "password";
     private static ThreadPoolTaskExecutor executor = null;
     private HttpMethod method;
     private BodyType bodyType;
@@ -28,6 +31,9 @@ public class Network {
     private String classType;
     private String url;
     private boolean hasParameters;
+    //private boolean isAuthenticated;
+    private AuthScheme authScheme;
+    private HashMap<String, String> authentication;
     private HashMap<String, String> parameters;
 
     private Network() {
@@ -143,26 +149,38 @@ public class Network {
 
         RequestBody requestBody = null;
         Request request = null;
+        Request.Builder builder = null;
         if (hasBody) {
             if (bodyType == BodyType.JSON) {
                 body = body.replace("=", ":");
                 requestBody = RequestBody.create(MediaType.parse("application/json"), body);
             }
-
-            request = new Request.Builder().url(url).post(requestBody).build();
+            builder = new Request.Builder().url(url).post(requestBody);
         } else {
             if (hasParameters) {
                 HttpUrl.Builder httpBuilder = HttpUrl.parse(url).newBuilder();
                 for (Map.Entry<String, String> param : parameters.entrySet()) {
                     httpBuilder.addQueryParameter(param.getKey(), param.getValue());
                 }
-
-                request = new Request.Builder().url(httpBuilder.build()).build();
+                builder = new Request.Builder().url(httpBuilder.build());
             } else {
-                request = new Request.Builder().url(url).get().build();
+                builder = new Request.Builder().url(url).get();
             }
         }
-
+        if(authScheme == AuthScheme.BASIC) {
+            String credential = Credentials.basic(authentication.get(USERNAME), authentication.get(PASSWORD));
+            builder.header(AUTHORIZATION, credential);
+        }
+        else if(authScheme == AuthScheme.BEARER){
+            String token = BEARER + authentication.get(TOKEN);
+            builder.addHeader(AUTHORIZATION, token);
+        }
+        else if(authScheme == AuthScheme.API_KEY){
+            String key = authentication.get(KEY);
+            String value = authentication.get(VALUE);
+            builder.addHeader(key, value);
+        }
+        request = builder.build();
         OkHttpClient client = new OkHttpClient();
         return client.newCall(request).execute();
     }
@@ -175,13 +193,26 @@ public class Network {
         private BodyType bodyType;
         private String body;
         private String classType;
-        private String url;
+        private final String url;
         private boolean hasParameters;
         private boolean hasBody;
+        private HashMap<String, String> authentication;
+        private AuthScheme authScheme;
         private HashMap<String, String> parameters;
 
         public Builder(String url) {
             this.url = url;
+        }
+
+
+        public Builder withAuthentication(HashMap<String, String> authentication) {
+            if (authentication != null) this.authentication = authentication;
+            return this;
+        }
+
+        public Builder withAuthScheme(AuthScheme scheme) {
+            this.authScheme = scheme;
+            return this;
         }
 
         public Builder hasParameters(boolean hasParameters) {
@@ -230,6 +261,9 @@ public class Network {
             network.method = this.method;
             network.hasParameters = this.hasParameters;
             network.parameters = this.parameters;
+            network.authScheme = this.authScheme;
+            network.authentication = this.authentication;
+            //network.isAuthenticated = this.isAuthenticated;
             return network;
         }
     }

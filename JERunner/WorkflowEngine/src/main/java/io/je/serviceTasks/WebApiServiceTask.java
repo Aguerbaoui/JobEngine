@@ -29,7 +29,7 @@ public class WebApiServiceTask extends ServiceTask{
                 json = StringSub.replace(task.getProjectId(), json);
                 network = new Network.Builder(task.getUrl()).hasBody(task.hasBody())
                         .toClass(task.getResponseClass()).withMethod(task.getHttpMethod()).withBodyType(task.getBodyType())
-                        .withBody(json).build();
+                        .withBody(json).withAuthScheme(task.getAuthScheme()).withAuthentication(task.getAuthentication()).build();
             }
             catch(Exception e) {
                 JELogger.error(JEMessages.UNEXPECTED_ERROR +  Arrays.toString(e.getStackTrace()), LogCategory.RUNTIME, null,
@@ -39,7 +39,8 @@ public class WebApiServiceTask extends ServiceTask{
         }
         else {
             network = new Network.Builder(task.getUrl()).hasBody(task.hasBody())
-                    .toClass(task.getResponseClass()).withMethod(task.getHttpMethod()).build();
+                    .toClass(task.getResponseClass()).withMethod(task.getHttpMethod()).
+                    withAuthScheme(task.getAuthScheme()).withAuthentication(task.getAuthentication()).build();
         }
         try {
             Response response = network.call();

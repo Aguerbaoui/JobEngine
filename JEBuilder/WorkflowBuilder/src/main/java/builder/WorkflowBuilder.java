@@ -42,17 +42,17 @@ public class WorkflowBuilder {
     }
 
     /*Get attributes map for web api task*/
-    private static HashMap<String, Object > getWebApiAttributesMap(WebApiBlock WebApiBlock) {
+    private static HashMap<String, Object > getWebApiAttributesMap(WebApiBlock webApiBlock) {
         HashMap<String, Object> attributes = new HashMap<>();
-        attributes.put(URL, WebApiBlock.getUrl());
-        attributes.put(METHOD, WebApiBlock.getMethod());
-        if (WebApiBlock.getBody() != null) {
-            attributes.put(BODY, WebApiBlock.getBody());
+        attributes.put(URL, webApiBlock.getUrl());
+        attributes.put(METHOD, webApiBlock.getMethod());
+        if (webApiBlock.getBody() != null) {
+            attributes.put(BODY, webApiBlock.getBody());
         } else {
-            if (WebApiBlock.getInputs() != null && WebApiBlock.getInputs().size() > 0) {
+            if (webApiBlock.getInputs() != null && webApiBlock.getInputs().size() > 0) {
                 HashMap<String, Object> inputs = new HashMap<>();
-                for (String key : WebApiBlock.getInputs().keySet()) {
-                    ArrayList<Object> input = WebApiBlock.getInputs().get(key);
+                for (String key : webApiBlock.getInputs().keySet()) {
+                    ArrayList<Object> input = webApiBlock.getInputs().get(key);
                     if (input.size() == 1) {
                         inputs.put(key, input.get(0));
                     } else {
@@ -62,7 +62,11 @@ public class WorkflowBuilder {
                 attributes.put(INPUTS, inputs);
             }
         }
-        attributes.put(OUTPUTS, WebApiBlock.getOutputs());
+        attributes.put(OUTPUTS, webApiBlock.getOutputs());
+        if(webApiBlock.getAuthScheme() != null) {
+            attributes.put(AUTH_SCHEME, webApiBlock.getAuthScheme());
+            attributes.put(AUTHENTICATION, webApiBlock.getAuthentication());
+        }
         return attributes;
     }
 

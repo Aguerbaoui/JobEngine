@@ -178,7 +178,7 @@ public class ProjectController {
 		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, PROJECT_DELETED));
 	}
 
-	@GetMapping("/getProject/{projectId}")
+	/*@GetMapping("/getProject/{projectId}")
 	public ResponseEntity<?> getProject(@PathVariable String projectId) {
 	/*	JEProject project = null;
 		try {
@@ -196,9 +196,9 @@ public class ProjectController {
 		}
 		
 */
-		return ResponseEntity.ok("");
+	/*	return ResponseEntity.ok("");
 
-	}
+	}*/
 
 	/*
 	 * Build entire project files
