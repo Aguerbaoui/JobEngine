@@ -9,7 +9,6 @@ import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.exceptions.ClassLoadException;
 import io.je.utilities.models.LibModel;
-import org.drools.modelcompiler.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
