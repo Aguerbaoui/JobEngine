@@ -1,6 +1,6 @@
 package io.je.processes;
 
-import static io.je.utilities.constants.JEMessages.SENDING_WORKFLOW_MONITORING_DATA_TO_JEMONITOR;
+//import static io.je.utilities.constants.JEMessages.SENDING_WORKFLOW_MONITORING_DATA_TO_JEMONITOR;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -145,7 +145,7 @@ public class ProcessManager {
         ResourceBundle.clearCache(Thread.currentThread().getContextClassLoader());
         MonitoringMessage msg = new MonitoringMessage(LocalDateTime.now(), key, ObjectType.JEWORKFLOW,
                 processes.get(key).getProjectId(), Status.BUILDING.toString(), Status.BUILDING.toString());
-        JELogger.debug(SENDING_WORKFLOW_MONITORING_DATA_TO_JEMONITOR + "\n" + msg, LogCategory.RUNTIME, "", LogSubModule.WORKFLOW, processes.get(key).getName());
+        //JELogger.debug(SENDING_WORKFLOW_MONITORING_DATA_TO_JEMONITOR + "\n" + msg, LogCategory.RUNTIME, "", LogSubModule.WORKFLOW, processes.get(key).getName());
         JEMonitor.publish(msg);
         //repoService.
         try {
@@ -166,7 +166,7 @@ public class ProcessManager {
             processes.get(key).setDeploymentId(deployment.getId());
               msg = new MonitoringMessage(LocalDateTime.now(), key, ObjectType.JEWORKFLOW,
                     processes.get(key).getProjectId(), Status.STOPPED.toString(), Status.STOPPED.toString());
-            JELogger.debug(SENDING_WORKFLOW_MONITORING_DATA_TO_JEMONITOR + "\n" + msg, LogCategory.RUNTIME, "", LogSubModule.WORKFLOW, processes.get(key).getName());
+            //JELogger.debug(SENDING_WORKFLOW_MONITORING_DATA_TO_JEMONITOR + "\n" + msg, LogCategory.RUNTIME, "", LogSubModule.WORKFLOW, processes.get(key).getName());
             JEMonitor.publish(msg);
         } catch (Exception e) {
             throw new WorkflowBuildException(JEMessages.WORKFLOW_BUILD_ERROR + " with id = " + key);
@@ -339,7 +339,7 @@ public class ProcessManager {
         Status status= b? Status.RUNNING : Status.STOPPED;
         MonitoringMessage msg = new MonitoringMessage(LocalDateTime.now(), id, ObjectType.JEWORKFLOW,
                 processes.get(id).getProjectId(), String.valueOf(b), status.toString());
-        JELogger.debug(SENDING_WORKFLOW_MONITORING_DATA_TO_JEMONITOR + "\n" + msg, LogCategory.RUNTIME, process.getProjectId(), LogSubModule.WORKFLOW, processes.get(id).getName());
+        //JELogger.debug(SENDING_WORKFLOW_MONITORING_DATA_TO_JEMONITOR + "\n" + msg, LogCategory.RUNTIME, process.getProjectId(), LogSubModule.WORKFLOW, processes.get(id).getName());
         JEMonitor.publish(msg);
         if(!b) {
             if(process.getEndEventId() != null) {

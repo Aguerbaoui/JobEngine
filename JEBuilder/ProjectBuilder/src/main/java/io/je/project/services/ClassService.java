@@ -640,8 +640,8 @@ public class ClassService {
     /*
     * Remove a class from the job engine database
     * */
-    public void removeClass(ClassDefinition model) {
-
+    public void removeClass(String className) {
+        classRepository.deleteByClassName(className);
     }
 
 

@@ -66,7 +66,7 @@ public class ClassUpdateListener extends ZMQSubscriber {
                          }
 						if(update.getAction()==DataModelAction.DELETE)
 						{
-							classService.removeClass(update.getModel());
+							classService.removeClass(update.getModel().getName());
 						}
                     }
                      

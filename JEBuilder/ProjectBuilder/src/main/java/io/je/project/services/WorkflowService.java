@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import blocks.WorkflowBlock;
 import blocks.basic.DBEditBlock;
 import blocks.basic.DBReadBlock;
 import blocks.basic.DBWriteBlock;
@@ -38,6 +39,7 @@ import builder.WorkflowBuilder;
 import io.je.classbuilder.models.ClassDefinition;
 import io.je.project.beans.JEProject;
 import io.je.project.config.LicenseProperties;
+import io.je.project.repository.ClassRepository;
 import io.je.project.repository.WorkflowRepository;
 import io.je.utilities.apis.JERunnerAPIHandler;
 import io.je.utilities.beans.Status;
@@ -156,13 +158,22 @@ public class WorkflowService {
         while (blockIds.hasMoreElements()) {
             project.removeBlockName(blockIds.nextElement());
         }
-
+		for(WorkflowBlock b: wf.getAllBlocks().values()) {
+			if(b instanceof ScriptBlock) {
+                String scriptName = IdManager.getScriptTaskId(wf.getJobEngineElementName(), b.getJobEngineElementName());
+				wf.cleanUpScriptTaskBlock((ScriptBlock) b);
+                classService.removeClass(scriptName);
+			}
+		}
+        
         workflowRepository.deleteById(workflowId);
+
         try {
             FileUtilities.deleteFileFromPath(wf.getBpmnPath());
         } catch (Exception e) {
             JELogger.error(JEMessages.FAILED_TO_DELETE_FILES, LogCategory.DESIGN_MODE, projectId, LogSubModule.WORKFLOW, wf.getJobEngineElementID());
         }
+ 
         project.removeWorkflow(workflowId);
     }
 
@@ -520,6 +531,7 @@ public class WorkflowService {
                 for (JEWorkflow wf : project.getWorkflows().values()) {
                     try {
                         results.add(buildWorkflow(projectId, wf.getJobEngineElementID()).get());
+                        workflowRepository.save(wf);
                     }
                     catch (Exception e) {
                         results.add(OperationStatusDetails.getResultDetails(wf.getJobEngineElementID(), false, THREAD_INTERRUPTED_WHILE_EXECUTING,
@@ -529,7 +541,9 @@ public class WorkflowService {
             } else {
                 for (String id : ids) {
                     try {
+                        JEWorkflow wf = project.getWorkflows().get(id);
                         results.add(buildWorkflow(projectId, id).get());
+                        workflowRepository.save(wf);
                     }
                     catch (Exception e) {
                         results.add(OperationStatusDetails.getResultDetails(id, false, THREAD_INTERRUPTED_WHILE_EXECUTING,
@@ -762,7 +776,7 @@ public class WorkflowService {
                 classService.addClass(c, true, true);
             }
             catch (Exception e) {
-                deleteGeneratedScriptTaskClass(b);
+                wf.cleanUpScriptTaskBlock(b);
                 throw e;
             }
             project.addBlockToWorkflow(b);
@@ -904,17 +918,6 @@ public class WorkflowService {
 
 
     }
-
-    /*delete script task class*/
-    private void deleteGeneratedScriptTaskClass(ScriptBlock b) {
-        try {
-            FileUtilities.deleteFileFromPath(b.getScriptPath());
-        }
-        catch (Exception ex) {
-            JELogger.error(FAILED_TO_DELETE_FILES, LogCategory.DESIGN_MODE, b.getJobEngineProjectID(), LogSubModule.CLASS, b.getJobEngineElementName());
-        }
-    }
-
 
     /*
     * Add a scripted xml file to activiti engine
