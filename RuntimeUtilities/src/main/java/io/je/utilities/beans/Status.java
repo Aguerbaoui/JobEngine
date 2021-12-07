@@ -7,7 +7,7 @@ public enum Status {
 	STOPPING("Stopping"),
 	STOPPED("Stopped"),
 	NOT_BUILT("To be Built"),
-	RUNNING_NOT_UP_TO_DATE("Running/Not Updated"),
+	RUNNING_NOT_UP_TO_DATE("Running-Not Updated"),
     TRIGGERED("Triggered"),
     NOT_TRIGGERED("Not Triggered");
 	

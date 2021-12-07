@@ -197,9 +197,9 @@ public class ProcessManager {
                 }));
                 process.getActiveThread().start();
             } else {
-                JELogger.error(JEMessages.PROCESS_HAS_TO_BE_TRIGGERED_BY_EVENT,
+                /*JELogger.error(JEMessages.PROCESS_HAS_TO_BE_TRIGGERED_BY_EVENT,
                         LogCategory.RUNTIME, processes.get(id).getProjectId(),
-                        LogSubModule.WORKFLOW, id);
+                        LogSubModule.WORKFLOW, id);*/
                 //TODO blocking exception to be removed forget not
                 throw new WorkflowRunException(JEMessages.PROCESS_HAS_TO_BE_TRIGGERED_BY_EVENT);
             }
@@ -237,9 +237,9 @@ public class ProcessManager {
                 throw new WorkflowBuildException(JEMessages.WORKFLOW_RUN_ERROR);
             }
         } else {
-            JELogger.error(JEMessages.PROCESS_HAS_TO_BE_TRIGGERED_BY_EVENT,
+            /*JELogger.error(JEMessages.PROCESS_HAS_TO_BE_TRIGGERED_BY_EVENT,
                     LogCategory.RUNTIME, processes.get(id).getProjectId(),
-                    LogSubModule.WORKFLOW, id);
+                    LogSubModule.WORKFLOW, id);*/
         }
 
 
@@ -299,9 +299,9 @@ public class ProcessManager {
                             LogCategory.RUNTIME, projectId,
                             LogSubModule.WORKFLOW, process.getKey());
                 } catch (WorkflowRunException e) {
-                    JELogger.error(JEMessages.PROCESS_HAS_TO_BE_TRIGGERED_BY_EVENT + process.getKey(),
+                    /*JELogger.error(JEMessages.PROCESS_HAS_TO_BE_TRIGGERED_BY_EVENT + process.getKey(),
                             LogCategory.RUNTIME, projectId,
-                            LogSubModule.WORKFLOW, process.getKey());
+                            LogSubModule.WORKFLOW, process.getKey());*/
                 } catch (WorkflowBuildException e) {
                     JELogger.error(JEMessages.WORKFLOW_RUN_ERROR + process.getKey(),
                             LogCategory.RUNTIME, projectId,

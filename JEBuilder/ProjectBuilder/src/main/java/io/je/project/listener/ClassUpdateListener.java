@@ -4,11 +4,13 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.je.classbuilder.models.DataModelAction;
 import io.je.classbuilder.models.ModelUpdate;
 import io.je.project.services.ClassService;
+import io.je.utilities.beans.ClassAuthor;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.InstanceCreationFailed;
 import io.je.utilities.log.JELogger;
@@ -22,7 +24,7 @@ public class ClassUpdateListener extends ZMQSubscriber {
 	ClassService classService = new ClassService();
 	
 	
-	static ObjectMapper objectMapper = new ObjectMapper();
+	static ObjectMapper objectMapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 	
 	public ClassUpdateListener(String url, int subPort, String topic) {
 		super(url, subPort, topic);
@@ -60,6 +62,7 @@ public class ClassUpdateListener extends ZMQSubscriber {
                      
                     for(ModelUpdate update : updates )
                     {
+						update.getModel().setClassAuthor(ClassAuthor.DATA_MODEL);
                     	 if(update.getAction()==DataModelAction.UPDATE)
                          {
                         	 classService.addClass(update.getModel(), true,true);

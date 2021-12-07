@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.je.classbuilder.entity.ClassType;
@@ -14,6 +15,7 @@ import io.je.classbuilder.models.ClassDefinition;
 import io.je.classbuilder.models.FieldModel;
 import io.je.classbuilder.models.GetModelObject;
 import io.je.classbuilder.models.MethodModel;
+import io.je.utilities.beans.ClassAuthor;
 import io.je.utilities.beans.JEField;
 import io.je.utilities.beans.JELib;
 import io.je.utilities.beans.JEMethod;
@@ -45,7 +47,7 @@ public class ClassManager {
 	static Map<String, Class<?>> builtClasses = new ConcurrentHashMap<>(); // key = id , value = class
 	static ZMQPublisher publisher = new ZMQPublisher("tcp://"+SIOTHConfigUtility.getSiothConfig().getNodes().getSiothMasterNode(),
 			SIOTHConfigUtility.getSiothConfig().getPorts().getTrackingPort());
-	static ObjectMapper objectMapper = new ObjectMapper();
+	static ObjectMapper objectMapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
 	// TODO: see with islem if possible to change field type to class id instead of
 	// name
@@ -120,7 +122,7 @@ public class ClassManager {
 		// Load the target class using its binary name
 		Class<?> loadedClass;
 		try {
-			loadedClass = JEClassLoader.getInstance()
+			loadedClass = JEClassLoader.getJeInstance()
 					.loadClass(ClassBuilderConfig.generationPackageName + "." + classDefinition.getName());
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
@@ -131,6 +133,7 @@ public class ClassManager {
 		classNames.put(classDefinition.getName(), classDefinition.getClassId());
 		JEClass jeClass = new JEClass(classDefinition.getWorkspaceId(), classDefinition.getClassId(),
 				classDefinition.getName(), filePath, classType);
+				jeClass.setClassAuthor(classDefinition.getClassAuthor());
 		if(classDefinition.getMethods()!=null)
 		{
 			for(MethodModel m: classDefinition.getMethods()) {
@@ -188,6 +191,7 @@ public class ClassManager {
 		try
 		{
 			jeClass = objectMapper.readValue(response, ClassDefinition.class);
+			jeClass.setClassAuthor(ClassAuthor.DATA_MODEL);
 			// jeClass.setWorkspaceId(workspaceId);
 
 		}catch(Exception e)
@@ -345,6 +349,7 @@ public class ClassManager {
 		c.setClassId(clazz.getClassId());
 		c.setName(clazz.getClassName());
 		c.setClassVisibility("public");
+		c.setClassAuthor(clazz.getClassAuthor());
 		List<MethodModel> methodModels = new ArrayList<>();
 		for(JEMethod method: clazz.getMethods().values()) {
 			if(method.isCompiled())

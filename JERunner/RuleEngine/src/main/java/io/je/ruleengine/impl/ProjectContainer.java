@@ -303,7 +303,7 @@ public class ProjectContainer {
 
 		// build all rules
 		try {
-			kieServices.newKieBuilder(kieFileSystem, JEClassLoader.getInstance()).buildAll(null);
+			kieServices.newKieBuilder(kieFileSystem, JEClassLoader.getDataModelInstance()).buildAll(null);
 		} catch (Exception e) {
 			// e.printStackTrace();
 			JELogger.error("Error creating kieBuilder \n " + Arrays.toString(e.getStackTrace()), LogCategory.RUNTIME,
@@ -323,11 +323,11 @@ public class ProjectContainer {
 
 				// create container
 				try {
-					kieContainer = kieServices.newKieContainer(releaseId, JEClassLoader.getInstance());
+					kieContainer = kieServices.newKieContainer(releaseId, JEClassLoader.getDataModelInstance());
 					//JELogger.debug("   CONTAINER :" + kieContainer.getClassLoader().toString());
 					kScanner = kieServices.newKieScanner(kieContainer);
 					kieBase = kieContainer.getKieBase("kie-base");
-					Thread.currentThread().setContextClassLoader(JEClassLoader.getInstance());
+					Thread.currentThread().setContextClassLoader(JEClassLoader.getDataModelInstance());
 
 				} catch (Exception e) {
 					JELogger.error("Error creating kieBase \n " + Arrays.toString(e.getStackTrace()),
@@ -453,9 +453,9 @@ public class ProjectContainer {
 			releaseId = kieServices.newReleaseId("io.je", "ruleengine", getReleaseVer());
 			JELogger.debug("release Id = " + releaseId, LogCategory.RUNTIME, projectId, LogSubModule.RULE, null);
 			kieFileSystem.generateAndWritePomXML(releaseId);
-			kieServices.newKieBuilder(kieFileSystem, JEClassLoader.getInstance()).buildAll();
+			kieServices.newKieBuilder(kieFileSystem, JEClassLoader.getDataModelInstance()).buildAll();
 			if (kieContainer == null) {
-				kieContainer = kieServices.newKieContainer(releaseId, JEClassLoader.getInstance());
+				kieContainer = kieServices.newKieContainer(releaseId, JEClassLoader.getDataModelInstance());
 			}
 			// Thread.currentThread().setContextClassLoader(JEClassLoader.getInstance());
 
@@ -621,7 +621,7 @@ public class ProjectContainer {
 		 * f.getName()); } } catch (ClassNotFoundException e) { e.printStackTrace(); }
 		 */
 		// Thread.currentThread().setContextClassLoader( loader );
-		KieBuilder kieBuilder = kieServices.newKieBuilder(kfsToCompile, JEClassLoader.getInstance()).buildAll();
+		KieBuilder kieBuilder = kieServices.newKieBuilder(kfsToCompile, JEClassLoader.getDataModelInstance()).buildAll();
 
 		Results results = kieBuilder.getResults();
 		if (results.hasMessages(Message.Level.ERROR)) {
@@ -639,7 +639,7 @@ public class ProjectContainer {
 	public boolean compileAllRules() {
 		JELogger.debugWithoutPublish("[projectId =" + projectId + "]" + JEMessages.COMPILING_RULES,
 				LogCategory.DESIGN_MODE, projectId, LogSubModule.RULE, null);
-		KieBuilder kieBuilder = kieServices.newKieBuilder(kieFileSystem, JEClassLoader.getInstance()).buildAll(null);
+		KieBuilder kieBuilder = kieServices.newKieBuilder(kieFileSystem, JEClassLoader.getDataModelInstance()).buildAll(null);
 		Results results = kieBuilder.getResults();
 		if (results.hasMessages(Message.Level.ERROR)) {
 			JELogger.error(results.getMessages().toString(), LogCategory.RUNTIME, projectId, LogSubModule.RULE, null);
