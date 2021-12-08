@@ -30,6 +30,7 @@ public class JEClassCompiler {
 	static String generationPath = ConfigurationConstants.JAVA_GENERATION_PATH;
 
 	
+	
 	/*
 	 * generate .class file from an input file located at filePath in the loadPath
 	 */
@@ -70,7 +71,7 @@ public class JEClassCompiler {
 			// Compile the file
 			Iterable<? extends JavaFileObject> compilationUnit = fileManager.getJavaFileObjectsFromFiles(Arrays.asList(sourceFile));
 			DiagnosticCollector<JavaFileObject> diagnosticsCollector = new DiagnosticCollector<>();
-			JavaCompiler.CompilationTask task = compiler.getTask(null, fileManager, diagnosticsCollector, options, null,
+			JavaCompiler.CompilationTask task = compiler.getTask(null, fileManager, diagnosticsCollector, null, null,
 					compilationUnit);
 			if(task.call()) {
 				JELogger.debug(JEMessages.CUSTOM_COMPILATION_SUCCESS, LogCategory.RUNTIME,
