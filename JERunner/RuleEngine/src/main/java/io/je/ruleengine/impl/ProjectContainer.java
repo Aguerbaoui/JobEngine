@@ -50,6 +50,7 @@ public class ProjectContainer {
 
 	// This is where all the compiled rules are saved.
 
+	
 	Map<String, Rule> allRules = new ConcurrentHashMap<>();
 
 	private String projectId;
@@ -91,7 +92,7 @@ public class ProjectContainer {
 	// private KieSessionManagerInterface kieManager;
 	// This attribute is responsible for listening to the engine while it's active.
 	private RuleListener ruleListener;
-
+	private boolean  reloadContainer = false;
 	// private boolean isInitialised = false;
 	// JEClassLoader loader = JEClassLoader.getInstance();
 	ConcurrentHashMap<String, FactHandle> facts = new ConcurrentHashMap<>();
@@ -114,20 +115,7 @@ public class ProjectContainer {
 	}
 
 	public void resetContainer() {
-		if (kieContainer != null) {
-			/*
-			 * try { //releaseId = kieServices.newReleaseId("io.je", "ruleengine",
-			 * getReleaseVer()); kieContainer = kieServices.newKieContainer(releaseId,
-			 * JEClassLoader.getInstance()); kScanner =
-			 * kieServices.newKieScanner(kieContainer); kieBase =
-			 * kieContainer.getKieBase("kie-base");
-			 * Thread.currentThread().setContextClassLoader(JEClassLoader.getInstance());
-			 * }catch (Exception e) {
-			 * JELogger.error("!!!!!Failed to update container's classloader!!!!!");
-			 * 
-			 * }
-			 */
-			// updateContainer();
+		if (kieContainer != null && reloadContainer) {
 			initKieBase();
 			if (status == Status.RUNNING) {
 				stopRuleExecution(true, true);
@@ -140,8 +128,8 @@ public class ProjectContainer {
 				}
 			}
 		}
-
-		JELogger.debug("Reloaded Rule Engine ");
+		reloadContainer = false;
+		JELogger.trace("Reloaded Rule Engine.");
 	}
 
 	/*--------------------------------------------------------PROJECT METHODS ---------------------------------------------------------------*/
@@ -303,7 +291,7 @@ public class ProjectContainer {
 
 		// build all rules
 		try {
-			kieServices.newKieBuilder(kieFileSystem, JEClassLoader.getInstance()).buildAll(null);
+			kieServices.newKieBuilder(kieFileSystem, JEClassLoader.getDataModelInstance()).buildAll(null);
 		} catch (Exception e) {
 			// e.printStackTrace();
 			JELogger.error("Error creating kieBuilder \n " + Arrays.toString(e.getStackTrace()), LogCategory.RUNTIME,
@@ -323,11 +311,11 @@ public class ProjectContainer {
 
 				// create container
 				try {
-					kieContainer = kieServices.newKieContainer(releaseId, JEClassLoader.getInstance());
+					kieContainer = kieServices.newKieContainer(releaseId, JEClassLoader.getDataModelInstance());
 					//JELogger.debug("   CONTAINER :" + kieContainer.getClassLoader().toString());
 					kScanner = kieServices.newKieScanner(kieContainer);
 					kieBase = kieContainer.getKieBase("kie-base");
-					Thread.currentThread().setContextClassLoader(JEClassLoader.getInstance());
+					Thread.currentThread().setContextClassLoader(JEClassLoader.getDataModelInstance());
 
 				} catch (Exception e) {
 					JELogger.error("Error creating kieBase \n " + Arrays.toString(e.getStackTrace()),
@@ -453,9 +441,9 @@ public class ProjectContainer {
 			releaseId = kieServices.newReleaseId("io.je", "ruleengine", getReleaseVer());
 			JELogger.debug("release Id = " + releaseId, LogCategory.RUNTIME, projectId, LogSubModule.RULE, null);
 			kieFileSystem.generateAndWritePomXML(releaseId);
-			kieServices.newKieBuilder(kieFileSystem, JEClassLoader.getInstance()).buildAll();
+			kieServices.newKieBuilder(kieFileSystem, JEClassLoader.getDataModelInstance()).buildAll();
 			if (kieContainer == null) {
-				kieContainer = kieServices.newKieContainer(releaseId, JEClassLoader.getInstance());
+				kieContainer = kieServices.newKieContainer(releaseId, JEClassLoader.getDataModelInstance());
 			}
 			// Thread.currentThread().setContextClassLoader(JEClassLoader.getInstance());
 
@@ -621,7 +609,7 @@ public class ProjectContainer {
 		 * f.getName()); } } catch (ClassNotFoundException e) { e.printStackTrace(); }
 		 */
 		// Thread.currentThread().setContextClassLoader( loader );
-		KieBuilder kieBuilder = kieServices.newKieBuilder(kfsToCompile, JEClassLoader.getInstance()).buildAll();
+		KieBuilder kieBuilder = kieServices.newKieBuilder(kfsToCompile, JEClassLoader.getDataModelInstance()).buildAll();
 
 		Results results = kieBuilder.getResults();
 		if (results.hasMessages(Message.Level.ERROR)) {
@@ -639,7 +627,7 @@ public class ProjectContainer {
 	public boolean compileAllRules() {
 		JELogger.debugWithoutPublish("[projectId =" + projectId + "]" + JEMessages.COMPILING_RULES,
 				LogCategory.DESIGN_MODE, projectId, LogSubModule.RULE, null);
-		KieBuilder kieBuilder = kieServices.newKieBuilder(kieFileSystem, JEClassLoader.getInstance()).buildAll(null);
+		KieBuilder kieBuilder = kieServices.newKieBuilder(kieFileSystem, JEClassLoader.getDataModelInstance()).buildAll(null);
 		Results results = kieBuilder.getResults();
 		if (results.hasMessages(Message.Level.ERROR)) {
 			JELogger.error(results.getMessages().toString(), LogCategory.RUNTIME, projectId, LogSubModule.RULE, null);
@@ -770,6 +758,17 @@ public class ProjectContainer {
 
 	}
 
+	public boolean isReloadContainer() {
+		return reloadContainer;
+	}
+
+	public void setReloadContainer(boolean reloadContainer) {
+		this.reloadContainer = reloadContainer;
+	}
+
+	
+	
+	
 	/*
 	 * public void setClassLoader(JEClassLoader loader) { this.loader = loader;
 	 * Thread.currentThread().setContextClassLoader(loader); updateContainer();

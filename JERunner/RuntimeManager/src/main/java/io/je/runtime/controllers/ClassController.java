@@ -79,7 +79,7 @@ public class ClassController {
 	/*
 	 * Adding a list of classes
 	 */
-	@PostMapping(value = "/addClasses", produces = MediaType.APPLICATION_JSON_VALUE)
+	/*@PostMapping(value = "/addClasses", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> addClasses( @RequestBody List<ClassModel> classModelList) {
 
 
@@ -92,7 +92,7 @@ public class ClassController {
 
 
 		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.CLASS_WAS_ADDED_SUCCESSFULLY));
-	}
+	}*/
 
 	@PostMapping("/uploadJar")
 	public ResponseEntity<?> uploadJar(@RequestBody HashMap<String, String> payload) {

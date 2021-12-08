@@ -428,19 +428,7 @@ public class JEProject {
      * Remove a workflow
      */
     public void removeWorkflow(String id) {
-        JEWorkflow wf = getWorkflowByIdOrName(id);
-		for(WorkflowBlock b: wf.getAllBlocks().values()) {
-			if(b instanceof ScriptBlock) {
-				wf.cleanUpScriptTaskBlock((ScriptBlock) b);
-			}
-		}
-		try {
-			FileUtilities.deleteFileFromPath(wf.getBpmnPath());
-		} catch (Exception e) {
-			JELogger.error(JEMessages.FAILED_TO_DELETE_FILES, LogCategory.DESIGN_MODE, projectId, LogSubModule.WORKFLOW, id);
-		}
 		workflows.remove(id);
-        wf = null;
         isBuilt=false;
 
     }

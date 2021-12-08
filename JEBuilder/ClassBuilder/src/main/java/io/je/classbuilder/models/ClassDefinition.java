@@ -4,6 +4,8 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import io.je.utilities.beans.ClassAuthor;
+
 
 public class ClassDefinition {
 	
@@ -49,7 +51,7 @@ public class ClassDefinition {
     @JsonProperty(ClassModelAttributeMapping.IMPORTS)
 	List<String> imports;
 	
-	
+	ClassAuthor classAuthor;
 	
 	public String getInheritanceSemantics() {
 		return inheritanceSemantics;
@@ -134,13 +136,22 @@ public class ClassDefinition {
 		this.imports = imports;
 	}
 	
-	
 	public List<MethodModel> getMethods() {
 		return methods;
 	}
+
 	public void setMethods(List<MethodModel> methods) {
 		this.methods = methods;
 	}
+
+	public ClassAuthor getClassAuthor(){
+		return classAuthor;
+	}
+	
+	public void setClassAuthor(ClassAuthor classAuthor){
+		this.classAuthor = classAuthor;
+	}
+
 	@Override
 	public String toString() {
 		return "ClassModel [idClass=" + classId + ", workspaceId=" + workspaceId + ", name=" + name + ", attributes="

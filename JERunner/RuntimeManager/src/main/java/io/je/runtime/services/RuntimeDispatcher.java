@@ -21,6 +21,7 @@ import io.je.runtime.ruleenginehandler.RuleEngineHandler;
 import io.je.runtime.workflow.WorkflowEngineHandler;
 import io.je.serviceTasks.ActivitiTask;
 import io.je.serviceTasks.ActivitiTaskManager;
+import io.je.utilities.beans.ClassAuthor;
 import io.je.utilities.beans.JEData;
 import io.je.utilities.beans.JEEvent;
 import io.je.utilities.beans.JEVariable;
@@ -239,47 +240,44 @@ public class RuntimeDispatcher {
 	// add class
 	public void addClass(ClassModel classModel) throws ClassLoadException {
 		JELogger.debug(JEMessages.ADDING_CLASS+": "+classModel.getClassName(), LogCategory.RUNTIME, null, LogSubModule.CLASS, null);
-		//if (!ClassRepository.containsClass(classModel.getClassId())) {
 			JEClassCompiler.compileClass(classModel.getClassPath(), ConfigurationConstants.RUNNER_CLASS_LOAD_PATH);
 			try {
-				
-				Class<?> c = JEClassLoader.getInstance()
-						.loadClass(ClassBuilderConfig.generationPackageName + "." + classModel.getClassName());
+				Class<?> c = null;
+				if(classModel.getClassAuthor().equals(ClassAuthor.DATA_MODEL)) {
+					c = JEClassLoader.getDataModelInstance()
+						.loadClassInDataModelClassLoader(ClassBuilderConfig.generationPackageName + "." + classModel.getClassName());
+				}
+				else {
+					c = JEClassLoader.getJeInstance()
+					.loadClassInJobEngineClassLoader(ClassBuilderConfig.generationPackageName + "." + classModel.getClassName());
+				}
 				ClassRepository.addClass(classModel.getClassId(), classModel.getClassName(), c);
-			/*	JELogger.debug(" ! "+JEClassLoader.getInstance().toString());
-				JELogger.debug(" ! "+c.getClassLoader().toString());
-				JELogger.debug(" ! "+ClassRepository.getClassById(classModel.getClassId()).getClassLoader().toString());
-*/
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
 				throw new ClassLoadException(
 						"[class :" + classModel.getClassName() + " ]" + JEMessages.CLASS_LOAD_FAILED);
 			}
-		/*}else {
-			JELogger.warn(JEMessages.FAILED_TO_LOAD_CLASS +" : "+ JEMessages.CLASS_ALREADY_EXISTS,
-	                LogCategory.RUNTIME, null,
-	                LogSubModule.CLASS, null);
-		}*/
 
 	}
 
 	public void updateClass(ClassModel classModel) throws ClassLoadException, ClassNotFoundException {
-		JEClassLoader.overrideInstance(ClassBuilderConfig.generationPackageName + "." + classModel.getClassName());
-		addClass(classModel);
-		RuleEngineHandler.reloadContainers();
-		//JELogger.debug(">>>>> "+JEClassLoader.getInstance().toString());
-
-	}
-
-	public void updateClasses(List<ClassModel> classes) throws ClassLoadException {
-		for (ClassModel classModel : classes) {
-			addClass(classModel);
+		
+		if(classModel.getClassAuthor().equals(ClassAuthor.DATA_MODEL)) {
+			JEClassLoader.overrideDataModelInstance(ClassBuilderConfig.generationPackageName + "." + classModel.getClassName());
+			RuleEngineHandler.reloadContainers();
 		}
+		
+		else {
+			JEClassLoader.overrideJeInstance(ClassBuilderConfig.generationPackageName + "." + classModel.getClassName());
+		}
+		addClass(classModel);
+		
+
 	}
 
-	// update class
-	// delete class
 
+
+	// inject data into the rule/workflow engine
 	public static void injectData(JEData jeData) throws InstanceCreationFailed {
 		JELogger.trace(JEMessages.INJECTING_DATA, LogCategory.RUNTIME, null, LogSubModule.JERUNNER, null);
 		try {

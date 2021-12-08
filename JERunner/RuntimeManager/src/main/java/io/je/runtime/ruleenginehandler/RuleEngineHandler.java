@@ -198,7 +198,4 @@ public class RuleEngineHandler {
 		
 	}
 
-   /* public static void setClassLoader(JEClassLoader loader) {
-		RuleEngine.setClassLoader(loader);
-    }*/
 }
