@@ -42,7 +42,7 @@ public class ZMQAgent extends ZMQSubscriber {
 			}
 
 			try {
-				Thread.sleep(100);
+				Thread.sleep(50);
 			} catch (InterruptedException e) {
 				JELogger.error(JEMessages.THREAD_INTERRUPTED, LogCategory.RUNTIME, null, LogSubModule.JERUNNER, null);
 			}
