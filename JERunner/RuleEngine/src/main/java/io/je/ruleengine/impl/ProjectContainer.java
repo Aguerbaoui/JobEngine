@@ -29,8 +29,10 @@ import org.kie.api.runtime.rule.FactHandle;
 
 import java.io.FileNotFoundException;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 enum Status {
@@ -50,8 +52,9 @@ public class ProjectContainer {
 
 	// This is where all the compiled rules are saved.
 
+	
 	Map<String, Rule> allRules = new ConcurrentHashMap<>();
-
+	Set<String> classes = new HashSet<String>();
 	private String projectId;
 	// A project can be either running, or stopped.
 	private Status status = Status.STOPPED;
@@ -91,7 +94,7 @@ public class ProjectContainer {
 	// private KieSessionManagerInterface kieManager;
 	// This attribute is responsible for listening to the engine while it's active.
 	private RuleListener ruleListener;
-
+	private boolean  reloadContainer = false;
 	// private boolean isInitialised = false;
 	// JEClassLoader loader = JEClassLoader.getInstance();
 	ConcurrentHashMap<String, FactHandle> facts = new ConcurrentHashMap<>();
@@ -114,20 +117,7 @@ public class ProjectContainer {
 	}
 
 	public void resetContainer() {
-		if (kieContainer != null) {
-			/*
-			 * try { //releaseId = kieServices.newReleaseId("io.je", "ruleengine",
-			 * getReleaseVer()); kieContainer = kieServices.newKieContainer(releaseId,
-			 * JEClassLoader.getInstance()); kScanner =
-			 * kieServices.newKieScanner(kieContainer); kieBase =
-			 * kieContainer.getKieBase("kie-base");
-			 * Thread.currentThread().setContextClassLoader(JEClassLoader.getInstance());
-			 * }catch (Exception e) {
-			 * JELogger.error("!!!!!Failed to update container's classloader!!!!!");
-			 * 
-			 * }
-			 */
-			// updateContainer();
+		if (kieContainer != null && reloadContainer) {
 			initKieBase();
 			if (status == Status.RUNNING) {
 				stopRuleExecution(true, true);
@@ -140,8 +130,8 @@ public class ProjectContainer {
 				}
 			}
 		}
-
-		JELogger.debug("Reloaded Rule Engine ");
+		reloadContainer = false;
+		JELogger.trace("Reloaded Rule Engine.");
 	}
 
 	/*--------------------------------------------------------PROJECT METHODS ---------------------------------------------------------------*/
@@ -770,6 +760,17 @@ public class ProjectContainer {
 
 	}
 
+	public boolean isReloadContainer() {
+		return reloadContainer;
+	}
+
+	public void setReloadContainer(boolean reloadContainer) {
+		this.reloadContainer = reloadContainer;
+	}
+
+	
+	
+	
 	/*
 	 * public void setClassLoader(JEClassLoader loader) { this.loader = loader;
 	 * Thread.currentThread().setContextClassLoader(loader); updateContainer();
