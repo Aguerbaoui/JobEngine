@@ -29,10 +29,8 @@ import org.kie.api.runtime.rule.FactHandle;
 
 import java.io.FileNotFoundException;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 enum Status {
@@ -54,7 +52,7 @@ public class ProjectContainer {
 
 	
 	Map<String, Rule> allRules = new ConcurrentHashMap<>();
-	Set<String> classes = new HashSet<String>();
+
 	private String projectId;
 	// A project can be either running, or stopped.
 	private Status status = Status.STOPPED;
