@@ -6,12 +6,10 @@ public class DivideBlock extends MultipleInputArithmeticBlock {
 
 	public DivideBlock(BlockModel blockModel) {
 		super(blockModel);
-		stopExecutionIfInvalidInput = true;
 	}
 	
 	private DivideBlock()
 	{
-		stopExecutionIfInvalidInput = true;
 	}
 
 	@Override
@@ -22,7 +20,7 @@ public class DivideBlock extends MultipleInputArithmeticBlock {
 	
 	@Override
 	protected String evaluateExecution(String...inputs) {
-		return "eval(JEMathUtils.DivisionByZero(\""+this.jobEngineProjectID+"\",\""+this.ruleId+"\",\""+this.blockName+"\","+inputs[0]+"))\n";
+		return "eval(JEMathUtils.divisionByZero(\""+this.jobEngineProjectID+"\",\""+this.ruleId+"\",\""+this.blockName+"\","+inputs[0]+"))\n";
 	}
 
 }
