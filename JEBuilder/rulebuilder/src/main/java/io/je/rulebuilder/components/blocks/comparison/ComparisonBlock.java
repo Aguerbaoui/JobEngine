@@ -95,7 +95,7 @@ public  class ComparisonBlock extends PersistableBlock {
 	}
 	protected String getOperationExpression()
 	{
-		String firstOperand = null;
+		String firstOperand = "";
 		if(inputBlocks.get(0) instanceof AttributeGetterBlock)
 		{
 			firstOperand = inputBlocks.get(0).getRefName();

@@ -5,7 +5,7 @@ import io.je.rulebuilder.models.BlockModel;
 public abstract class ArithmeticBlock extends ConditionBlock {
 
 
-	protected boolean stopExecutionIfInvalidInput = false;
+	protected boolean stopExecutionIfInvalidInput = true;
 	
 	public ArithmeticBlock(BlockModel blockModel) {
 		super(blockModel.getBlockId(), blockModel.getProjectId(), blockModel.getRuleId(), blockModel.getBlockName(),
