@@ -1,39 +1,51 @@
 package io.je.utilities.monitoring;
 
-import java.time.LocalDateTime;
-import java.util.Arrays;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.je.utilities.beans.ArchiveOption;
-import io.je.utilities.constants.JEMessages;
 import io.je.utilities.log.JELogger;
 import io.siothconfig.SIOTHConfigUtility;
+
+import java.util.Arrays;
+
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
 import utils.zmq.ZMQPublisher;
 
 public class JEMonitor  {
+
 	
-	static ZMQPublisher publisher = new ZMQPublisher("tcp://"+SIOTHConfigUtility.getSiothConfig().getNodes().getSiothMasterNode() , SIOTHConfigUtility.getSiothConfig().getPorts().getTrackingPort());
+	static int port;
+	static ZMQPublisher publisher ;
 	static ObjectMapper objectMapper = new ObjectMapper();
 
-	public static void publish(LocalDateTime timestamp, String objectId, ObjectType objectType, String objectProjectId,
-			Object objectValue, ArchiveOption isArchived, boolean isBroadcasted) {
+	public static void publish(MonitoringMessage msg) {
 		try {
-			MonitoringMessage msg = new MonitoringMessage(timestamp, objectId, objectType, objectProjectId, objectValue, isArchived, isBroadcasted);
+			if(publisher==null)
+			{
+				publisher	= new ZMQPublisher("tcp://"+SIOTHConfigUtility.getSiothConfig().getNodes().getSiothMasterNode() , port);
+			}
+			
 			String jsonMsg = objectMapper.writeValueAsString(msg);
-			publisher.publish(jsonMsg, "MonitoringTopic");
+			publisher.publish(jsonMsg, "JEMonitorTopic");
 			//System.out.println(jsonMsg);
 
 		} catch (Exception e) {
 			// TODO : replace with custom exception
-			JELogger.error(JEMessages.FAILED_TO_SEND_LOG_MESSAGE_TO_THE_LOGGING_SYSTEM + Arrays.toString(e.getStackTrace()),
+			JELogger.error("Failed to publish monitoring value. " + Arrays.toString(e.getStackTrace()),
 					LogCategory.RUNTIME, null,
 					LogSubModule.JERUNNER, null);
 		}
 		
 	}
-	
 
+	public static int getPort() {
+		return port;
+	}
+
+	public static void setPort(int port) {
+		JEMonitor.port = port;
+	}
+
+
+	
 }

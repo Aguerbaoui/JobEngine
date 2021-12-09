@@ -3,7 +3,7 @@ package io.je.utilities.runtimeobject;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Document(collection="JEObject")
 public abstract class JEObject {
@@ -18,9 +18,9 @@ public abstract class JEObject {
     
     protected String jobEngineElementName;
 
-    protected LocalDateTime jeObjectLastUpdate;
+    protected Instant jeObjectLastUpdate;
     
-    protected LocalDateTime jeObjectCreationDate;
+    protected Instant jeObjectCreationDate;
     
     protected String jeObjectCreatedBy;
 
@@ -33,8 +33,8 @@ public abstract class JEObject {
         super();
         this.jobEngineElementID = jobEngineElementID;
         this.jobEngineProjectID = jobEngineProjectID;
-        this.jeObjectLastUpdate = LocalDateTime.now();
-        this.jeObjectCreationDate = LocalDateTime.now();
+        this.jeObjectLastUpdate = Instant.now();
+        this.jeObjectCreationDate = Instant.now();
         this.jobEngineElementName = jobEngineElementName;
         //TODO: add time config (format, timezone, etc ..)
         //set update time
@@ -44,8 +44,8 @@ public abstract class JEObject {
         super();
         this.jobEngineElementID = jobEngineElementID;
         this.jobEngineProjectID = jobEngineProjectID;
-        this.jeObjectLastUpdate = LocalDateTime.now();
-        this.jeObjectCreationDate = LocalDateTime.now();
+        this.jeObjectLastUpdate = Instant.now();
+        this.jeObjectCreationDate = Instant.now();
         this.jobEngineElementName = jobEngineElementName;
         this.jobEngineProjectName = jobEngineProjectName;
         //TODO: add time config (format, timezone, etc ..)
@@ -55,8 +55,8 @@ public abstract class JEObject {
 
     //TODO: to be deleted. Only constructor with fields needs to be kept.
     protected JEObject() {
-        this.jeObjectLastUpdate = LocalDateTime.now();
-        this.jeObjectCreationDate = LocalDateTime.now();
+        this.jeObjectLastUpdate = Instant.now();
+        this.jeObjectCreationDate = Instant.now();
     }
 
     public String getJobEngineElementID() {
@@ -76,12 +76,13 @@ public abstract class JEObject {
         this.jobEngineProjectID = jobEngineProjectID;
     }
 
-    public LocalDateTime getJeObjectLastUpdate() {
+    public Instant getJeObjectLastUpdate() {
         return jeObjectLastUpdate;
     }
 
-    public void setJeObjectLastUpdate(LocalDateTime jeObjectLastUpdate) {
-        this.jeObjectLastUpdate = jeObjectLastUpdate;
+    public void setJeObjectLastUpdate(Instant jeObjectLastUpdate) {
+        if(jeObjectLastUpdate != null)
+            this.jeObjectLastUpdate = jeObjectLastUpdate;
     }
 
     // Overriding equals() to compare two JEObjects
@@ -117,12 +118,12 @@ public abstract class JEObject {
     }
 
 
-	public LocalDateTime getJeObjectCreationDate() {
+	public Instant getJeObjectCreationDate() {
 		return jeObjectCreationDate;
 	}
 
 
-	public void setJeObjectCreationDate(LocalDateTime jeObjectCreationDate) {
+	public void setJeObjectCreationDate(Instant jeObjectCreationDate) {
 		this.jeObjectCreationDate = jeObjectCreationDate;
 	}
 
@@ -143,7 +144,10 @@ public abstract class JEObject {
 
 
 	public void setJeObjectCreatedBy(String jeObjectCreatedBy) {
-		this.jeObjectCreatedBy = jeObjectCreatedBy;
+        if(jeObjectCreatedBy != null)
+        {
+            this.jeObjectCreatedBy = jeObjectCreatedBy;
+        }
 	}
 
 
@@ -153,7 +157,9 @@ public abstract class JEObject {
 
 
 	public void setJeObjectModifiedBy(String jeObjectModifiedBy) {
-		this.jeObjectModifiedBy = jeObjectModifiedBy;
+        if(jeObjectModifiedBy != null) {
+            this.jeObjectModifiedBy = jeObjectModifiedBy;
+        }
 	}
 
 

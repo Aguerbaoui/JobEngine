@@ -15,7 +15,7 @@ public class MathUtilities {
             value = Math.log((double) x);
         }catch(Exception e)
         {
-            value= Math.log((long) x);
+            value= Math.log((double) x);
         }
         return (double) value;
     }
@@ -29,7 +29,7 @@ public class MathUtilities {
             value = Math.ceil((double) x);
         }catch(Exception e)
         {
-            value= Math.ceil((long) x);
+            value= Math.ceil((double) x);
         }
         return (double) value;
     }
@@ -48,7 +48,7 @@ public class MathUtilities {
             value = Math.round((double) x);
         }catch(Exception e)
         {
-            value= Math.round((long) x);
+            value= Math.round((double) x);
         }
         return (double) value;
     }
@@ -63,7 +63,7 @@ public class MathUtilities {
             value = Math.floor((double) x);
         }catch(Exception e)
         {
-            value= Math.floor((long) x);
+            value= Math.floor((double) x);
         }
         return (double) value;	}
 
@@ -77,7 +77,7 @@ public class MathUtilities {
             value = Math.sin((double) x);
         }catch(Exception e)
         {
-            value= Math.sin((long) x);
+            value= Math.sin((double) x);
         }
         return (double) value;
     }
@@ -92,7 +92,7 @@ public class MathUtilities {
             value = Math.cos((double) x);
         }catch(Exception e)
         {
-            value= Math.cos((long) x);
+            value= Math.cos((double) x);
         }
         return (double) value;
     }
@@ -107,7 +107,7 @@ public class MathUtilities {
             value = Math.asin((double) x);
         }catch(Exception e)
         {
-            value= Math.asin((long) x);
+            value= Math.asin((double) x);
         }
         return (double) value;	}
 
@@ -122,7 +122,7 @@ public class MathUtilities {
             value = Math.atan((double) x);
         }catch(Exception e)
         {
-            value= Math.atan((long) x);
+            value= Math.atan((double) x);
         }
         return (double) value;
     }
@@ -138,7 +138,7 @@ public class MathUtilities {
             value = Math.tan((double) x);
         }catch(Exception e)
         {
-            value= Math.tan((long) x);
+            value= Math.tan((double) x);
         }
         return (double) value;
     }
@@ -153,7 +153,7 @@ public class MathUtilities {
             value = Math.pow((double) x,2);
         }catch(Exception e)
         {
-            value= Math.pow((long) x,2);
+            value= Math.pow((double) x,2);
         }
         return (double) value;
     }
@@ -167,7 +167,7 @@ public class MathUtilities {
             value = Math.sqrt((double) x);
         }catch(Exception e)
         {
-            value= Math.sqrt((long) x);
+            value= Math.sqrt((double) x);
         }
         return (double) value;
     }
@@ -181,7 +181,7 @@ public class MathUtilities {
             value = Math.acos((double) x);
         }catch(Exception e)
         {
-            value= Math.acos((long) x);
+            value= Math.acos((double) x);
         }
         return (double) value;
     }/*
@@ -194,7 +194,7 @@ public class MathUtilities {
             value = Math.abs((double) x);
         }catch(Exception e)
         {
-            value= Math.abs((long) x);
+            value= Math.abs((double) x);
         }
         return (double) value;
     }
@@ -208,7 +208,7 @@ public class MathUtilities {
             value = Math.log10((double) x);
         }catch(Exception e)
         {
-            value= Math.log10((long) x);
+            value= Math.log10((double) x);
         }
         return (double) value;
     }
@@ -226,7 +226,7 @@ public class MathUtilities {
         {
             //Tempo fix should revise later
             try {
-                value = Math.pow((long) x, i);
+                value = Math.pow((double) x, i);
             }
             catch(Exception ex ) {
                 value = Math.pow((Float) x, i);
@@ -248,7 +248,7 @@ public class MathUtilities {
         {
             //Tempo fix should revise later
             try {
-                value = (long) x+i;
+                value = (double) x+i;
             }
             catch(Exception ex ) {
                 value = (float) x+i;
@@ -267,7 +267,7 @@ public class MathUtilities {
             value = Math.exp((double) x);
         }catch(Exception e)
         {
-            value= Math.exp((long) x);
+            value= Math.exp((double) x);
         }
         return (double) value;
 
@@ -287,7 +287,7 @@ public class MathUtilities {
     /*
      * factorial
      */
-    public static long factorial(Object x) {
+    public static double factorial(Object x) {
         return CombinatoricsUtils.factorial((int) x);
 
     }
@@ -295,8 +295,16 @@ public class MathUtilities {
     /*
      * change sign
      */
-    public static long changeSign(Object x) {
-        return  -(long)x;
+    public static double changeSign(Object x) {
+        return  -(double)x;
+
+    }
+
+    /*
+     * change sign
+     */
+    public static double changeSign(float x) {
+        return  -(double)x;
 
     }
 
@@ -304,16 +312,16 @@ public class MathUtilities {
     /*
      * change sign
      */
-    public static long changeSign(Double x) {
-        return (long) -x;
+    public static double changeSign(Double x) {
+        return (double) -x;
 
     }
 
     /*
      * multiplicative Inverse
      */
-    public static long multiplicativeInverse(Double x) {
-        return (long) (1 / x);
+    public static double multiplicativeInverse(Double x) {
+        return (double) (1 / x);
 
     }
 
@@ -322,47 +330,47 @@ public class MathUtilities {
     /*
      * multiplicative Inverse
      */
-    public static long multiplicativeInverse(long x) {
-        return (long) (1 / x);
+    public static double multiplicativeInverse(double x) {
+        return (double) (1 / x);
 
     }
 
     /*
      * multiplicative Inverse
      */
-    public static long multiplicativeInverse(int x) {
-        return (long) (1 / x);
+    public static double multiplicativeInverse(int x) {
+        return (double) (1 / x);
 
     }
     /*
      * multiplicative Inverse
      */
-    public static long multiplicativeInverse(float x) {
-        return (long) (1 / x);
+    public static double multiplicativeInverse(float x) {
+        return (double) (1 / x);
 
     }
 
     /*
      * highLimiting returns min ( limitValue, max(Inputs..) )
      */
-    public static long highLimiting(double limit, double... numbers) {
+    public static double highLimiting(double limit, double... numbers) {
         double max = maximum(numbers);
 
-        return (long) Math.min(limit, max);
+        return (double) Math.min(limit, max);
 
     }
 
     /*
      * low Limiting returns min ( limitValue, min(Inputs..) )
      */
-    public static long lowLimiting(double limit, double... numbers) {
+    public static double lowLimiting(double limit, double... numbers) {
         double min = minimum(numbers);
 
-        return (long) Math.min(limit, min);
+        return (double) Math.min(limit, min);
 
     }
 
-    public static long minimum(double... numbers) {
+    public static double minimum(double... numbers) {
         double min = numbers[0];
         for (double number : numbers) {
             if (number < min) {
@@ -370,25 +378,25 @@ public class MathUtilities {
             }
         }
 
-        return (long) min;
+        return (double) min;
 
     }
 
     /*
      * sum
      */
-    public static long sum(double... numbers) {
+    public static double sum(double... numbers) {
         double sum = 0;
         for (double number : numbers) {
             sum+=number;
         }
-        return (long) sum;
+        return (double) sum;
     }
 
     /*
      * average
      */
-    public static long average(double... numbers) {
+    public static double average(double... numbers) {
         double sum = 0;
         int count = 0;
         for (double number : numbers) {
@@ -399,25 +407,25 @@ public class MathUtilities {
         {
         	return 0;
         }
-        return (long) sum/count;
+        return (double) sum/count;
     }
     /*
      * multiply
      */
-    public static long multiply(double... numbers) {
+    public static double multiply(double... numbers) {
         double result = 1;
         for (double number : numbers) {
             result*=number;
         }
-        return (long) result;
+        return (double) result;
     }
 
     /*
      * subtract
      */
-    public static long subtract(double a , double b) {
+    public static double subtract(double a , double b) {
 
-        return (long) (a-b);
+        return (double) (a-b);
     }
 
 
@@ -425,13 +433,14 @@ public class MathUtilities {
     /*
      * divide
      */
-    public static long divide(double a , double b) {
+    public static double divide(double a , double b) {
 
-        return (long) (a/b);
+        return  a/b;
     }
 
 
-    public static long maximum(double... numbers) {
+
+    public static double maximum(double... numbers) {
         double max = numbers[0];
         for (double number : numbers) {
             if (number > max) {
@@ -439,7 +448,7 @@ public class MathUtilities {
             }
         }
 
-        return (long) max;
+        return (double) max;
 
     }
 

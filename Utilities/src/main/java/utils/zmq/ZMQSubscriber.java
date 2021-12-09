@@ -30,7 +30,13 @@ public abstract class ZMQSubscriber implements Runnable {
     }
 
     
-    public void closeSocket()
+    public ZMQSubscriber() {
+		super();
+		this.context = new ZContext();
+	}
+
+
+	public void closeSocket()
     {
     	if(this.subSocket!=null)
     	{
@@ -64,29 +70,7 @@ public abstract class ZMQSubscriber implements Runnable {
         return subSocket;
     }
 
-   /* public void incrementSubscriptionCount() {
-        subscribers += 1;
-    }
 
-    public void decrementSubscriptionCount() {
-        subscribers -=1;
-    }
-    public int getSubscribers() {
-        return subscribers;
-    }
-
-    public void setSubscribers(int subscribers) {
-        this.subscribers = subscribers;
-    }
-*/
-    /*public static void main(String[] args) {
-            ZMQAgent agent = new ZMQAgent("tcp://192.168.0.128", 5554, 6638, "");
-            while(true) {
-                String log = agent.getSubSocket().recvStr();
-                JELogger.info(ZMQAgent.class, log);
-            }
-
-        }*/
     
 
     public boolean isListening() {

@@ -7,6 +7,7 @@ public enum LogSubModule {
 	VARIABLE,
 	JEBUILDER,
 	JERUNNER,
+	JEMONITOR,
 	CLASS
 
 }

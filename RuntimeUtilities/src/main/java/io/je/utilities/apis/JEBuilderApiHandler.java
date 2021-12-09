@@ -1,18 +1,14 @@
 package io.je.utilities.apis;
 
-import static io.je.utilities.apis.Request.*;
-import static io.je.utilities.constants.APIConstants.*;
+import io.je.utilities.beans.JEResponse;
+import io.je.utilities.constants.APIConstants;
+import io.je.utilities.exceptions.JERunnerErrorException;
+import io.siothconfig.SIOTHConfigUtility;
 
 import java.util.concurrent.ExecutionException;
 
-import io.je.utilities.constants.APIConstants;
-import io.je.utilities.constants.JEMessages;
-import io.je.utilities.exceptions.JERunnerErrorException;
-import io.je.utilities.log.JELogger;
-import io.siothconfig.SIOTHConfigUtility;
-import utils.log.LogCategory;
-import utils.log.LogSubModule;
-import io.je.utilities.beans.JEResponse;
+import static io.je.utilities.apis.Request.*;
+import static io.je.utilities.constants.APIConstants.*;
 
 public class JEBuilderApiHandler {
 
@@ -81,10 +77,15 @@ public class JEBuilderApiHandler {
         String requestUrl = SIOTHConfigUtility.getSiothConfig().getJobEngine().getJeBuilder() + EVENT_UNTRIGGER_EVENT + projectId + "/" + eventId;
         return sendRequest(requestUrl);
     }
-	   public static JEResponse triggerEvent(String eventId, String projectId) throws JERunnerErrorException, InterruptedException, ExecutionException {
+	   public static JEResponse triggerEvent(String eventId, String projectId) throws JERunnerErrorException {
         String requestUrl = SIOTHConfigUtility.getSiothConfig().getJobEngine().getJeBuilder() + EVENT_TRIGGER_EVENT + projectId + "/" + eventId;
 		   /*JELogger.debug(JEMessages.TRIGGERING_NOW+" project id = " + projectId + " event id = " + eventId, LogCategory.RUNTIME,
 				   projectId, LogSubModule.JEBUILDER, eventId);*/
         return sendRequest(requestUrl);
     }
+
+	public static JEResponse updateWorkflowStatus(String workflowId, String projectId, Object obj) throws JERunnerErrorException {
+		String requestUrl = SIOTHConfigUtility.getSiothConfig().getJobEngine().getJeBuilder() + UPDATE_WORKFLOW_STATUS;
+		return sendPatchRequestWithBody(requestUrl,obj);
+	}
 }

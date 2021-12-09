@@ -5,7 +5,6 @@ import io.je.project.config.LicenseProperties;
 import io.je.project.repository.RuleRepository;
 import io.je.rulebuilder.components.*;
 import io.je.rulebuilder.components.blocks.Block;
-import io.je.rulebuilder.components.blocks.getter.AttributeGetterBlock;
 import io.je.rulebuilder.config.AttributesMapping;
 import io.je.rulebuilder.models.BlockModel;
 import io.je.rulebuilder.models.RuleModel;
@@ -16,19 +15,18 @@ import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.exceptions.*;
 import io.je.utilities.log.JELogger;
-import io.je.utilities.ruleutils.RuleIdManager;
-import io.je.utilities.ruleutils.RuleStatus;
+import io.je.utilities.ruleutils.IdManager;
+import io.je.utilities.beans.Status;
 import io.je.utilities.ruleutils.OperationStatusDetails;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import utils.files.FileUtilities;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.concurrent.CompletableFuture;
@@ -84,8 +82,8 @@ public class RuleService {
 		rule.setJobEngineElementName(ruleModel.getRuleName());
 		rule.setJobEngineProjectName(project.getProjectName());
 		rule.setDescription(ruleModel.getDescription());
-		rule.setJeObjectCreationDate(LocalDateTime.now());
-		rule.setJeObjectLastUpdate(LocalDateTime.now());
+		rule.setJeObjectCreationDate(Instant.now());
+		rule.setJeObjectLastUpdate(Instant.now());
 		RuleParameters ruleParameters = new RuleParameters();
 		rule.setJeObjectCreatedBy(ruleModel.getCreatedBy());
 		rule.setJeObjectModifiedBy(ruleModel.getModifiedBy());
@@ -95,7 +93,7 @@ public class RuleService {
 		ruleParameters.setDateEffective(ruleModel.getDateEffective());
 		ruleParameters.setDateExpires(ruleModel.getDateExpires());
 		rule.setRuleParameters(ruleParameters);
-		rule.setStatus(RuleStatus.NOT_BUILT);
+		rule.setStatus(Status.NOT_BUILT);
 		project.addRule(rule);
 		ruleRepository.save(rule);
 	}
@@ -138,12 +136,12 @@ public class RuleService {
 		LicenseProperties.checkLicenseIsActive();
 		JEProject project = getProject(projectId);
 		UserDefinedRule ruleToUpdate = (UserDefinedRule) project.getRule(ruleModel.getRuleId());
-		ruleToUpdate.setJeObjectLastUpdate(LocalDateTime.now());
+		ruleToUpdate.setJeObjectLastUpdate(Instant.now());
 		if (ruleToUpdate.isRunning()) {
-			ruleToUpdate.setStatus(RuleStatus.RUNNING_NOT_UP_TO_DATE);
+			ruleToUpdate.setStatus(Status.RUNNING_NOT_UP_TO_DATE);
 
 		} else {
-			ruleToUpdate.setStatus(RuleStatus.NOT_BUILT);
+			ruleToUpdate.setStatus(Status.NOT_BUILT);
 
 		}
 		JELogger.debug("[project = " + project.getProjectName() + "] [rule = "
@@ -264,7 +262,7 @@ public class RuleService {
 
 		// add block to rule
 		rule.addBlock(block);
-		rule.setJeObjectLastUpdate(LocalDateTime.now());
+		rule.setJeObjectLastUpdate(Instant.now());
 
 		// retrieve topic names from getter blocks
 		if (blockModel.getOperationId() == 4002 && blockModel.getBlockConfiguration() != null
@@ -281,10 +279,10 @@ public class RuleService {
 		project.addBlockName(blockModel.getBlockId(), generatedBlockName);
 		project.setBuilt(false);
 		if (rule.isRunning()) {
-			rule.setStatus(RuleStatus.RUNNING_NOT_UP_TO_DATE);
+			rule.setStatus(Status.RUNNING_NOT_UP_TO_DATE);
 
 		} else {
-			rule.setStatus(RuleStatus.NOT_BUILT);
+			rule.setStatus(Status.NOT_BUILT);
 
 		}
 		ruleRepository.save(rule);
@@ -343,7 +341,7 @@ public class RuleService {
 
 		// add block to rule
 		rule.addBlock(block);
-		rule.setJeObjectLastUpdate(LocalDateTime.now());
+		rule.setJeObjectLastUpdate(Instant.now());
 
 		// retrieve topic names from getter blocks
 		if (blockModel.getOperationId() == 4002 && blockModel.getBlockConfiguration() != null
@@ -358,10 +356,10 @@ public class RuleService {
 		}
 		project.setBuilt(false);
 		if (rule.isRunning()) {
-			rule.setStatus(RuleStatus.RUNNING_NOT_UP_TO_DATE);
+			rule.setStatus(Status.RUNNING_NOT_UP_TO_DATE);
 
 		} else {
-			rule.setStatus(RuleStatus.NOT_BUILT);
+			rule.setStatus(Status.NOT_BUILT);
 
 		}
 		ruleRepository.save(rule);
@@ -385,10 +383,10 @@ public class RuleService {
 		project.deleteRuleBlock(ruleId, blockId);
 		project.removeBlockName(blockId);
 		if (project.getRule(ruleId).isRunning()) {
-			project.getRule(ruleId).setStatus(RuleStatus.RUNNING_NOT_UP_TO_DATE);
+			project.getRule(ruleId).setStatus(Status.RUNNING_NOT_UP_TO_DATE);
 
 		} else {
-			project.getRule(ruleId).setStatus(RuleStatus.NOT_BUILT);
+			project.getRule(ruleId).setStatus(Status.NOT_BUILT);
 
 		}
 		ruleRepository.save(project.getRule(ruleId));
@@ -439,7 +437,7 @@ public class RuleService {
 
 	private void cleanUpRule(JEProject project, String ruleId) throws JERunnerErrorException {
 
-		String rulePrefix = RuleIdManager.generateSubRulePrefix(ruleId);
+		String rulePrefix = IdManager.generateSubRulePrefix(ruleId);
 		FileUtilities.deleteFilesInPathByPrefix(project.getConfigurationPath(), rulePrefix);
 		JELogger.debug(JEMessages.DELETING_RULE_RUNNER, CATEGORY, project.getProjectId(), RULE, ruleId);
 		if (project.getRule(ruleId) instanceof UserDefinedRule) {
@@ -746,8 +744,8 @@ public class RuleService {
 		}
 		result.setItemName(rule.getJobEngineElementName());
 
-		if (rule.getStatus() != RuleStatus.STOPPED && rule.getStatus() != RuleStatus.STOPPING && rule.getStatus()!=RuleStatus.NOT_BUILT ) {
-			rule.setStatus(RuleStatus.STOPPING);
+		if (rule.getStatus() != Status.STOPPED && rule.getStatus() != Status.STOPPING && rule.getStatus()!= Status.NOT_BUILT ) {
+			rule.setStatus(Status.STOPPING);
 			boolean allSubRulesStopped = true;
 			if (rule.isRunning() && rule.getSubRules() != null) {
 				for (String subRuleId : rule.getSubRules()) {
@@ -828,7 +826,7 @@ public class RuleService {
 	 * LicenseNotActiveException, ProjectNotFoundException {
 	 * LicenseProperties.checkLicenseIsActive();
 	 * 
-	 * System.out.println("----Compiling rules : "+ LocalDateTime.now() );
+	 * System.out.println("----Compiling rules : "+ Instant.now() );
 	 * if(ruleIds==null) {
 	 * 
 	 * ruleIds = Collections.list(getProject(projectId).getRules().keys()); }
@@ -868,18 +866,18 @@ public class RuleService {
 	}
 
 	public static void updateRuleStatus(JERule rule) {
-		if (rule.isRunning() || rule.getStatus()==RuleStatus.RUNNING_NOT_UP_TO_DATE) {
+		if (rule.isRunning() || rule.getStatus()== Status.RUNNING_NOT_UP_TO_DATE) {
 			if (rule.isBuilt()) {
-				rule.setStatus(RuleStatus.RUNNING);
+				rule.setStatus(Status.RUNNING);
 			} else {
-				rule.setStatus(RuleStatus.RUNNING_NOT_UP_TO_DATE);
+				rule.setStatus(Status.RUNNING_NOT_UP_TO_DATE);
 			}
 		} else {
 			
 			if(rule.isCompiled()) {
-				rule.setStatus(RuleStatus.STOPPED);
+				rule.setStatus(Status.STOPPED);
 			}else {
-				rule.setStatus(RuleStatus.NOT_BUILT);
+				rule.setStatus(Status.NOT_BUILT);
 			}
 			
 		}
@@ -915,7 +913,7 @@ public class RuleService {
 	 * ProjectNotFoundException { LicenseProperties.checkLicenseIsActive();
 	 * List<OperationStatusDetails> results ;
 	 * 
-	 * System.out.println("----Compiling rules : "+ LocalDateTime.now() );
+	 * System.out.println("----Compiling rules : "+ Instant.now() );
 	 * if(ruleIds==null) {
 	 * 
 	 * ruleIds = Collections.list(getProject(projectId).getRules().keys()); }

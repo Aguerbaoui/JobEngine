@@ -1,17 +1,26 @@
 package models;
 
+import static io.je.utilities.constants.JEMessages.FAILED_TO_DELETE_FILES;
+
+import java.util.concurrent.ConcurrentHashMap;
+
+import org.springframework.data.mongodb.core.mapping.Document;
+
 import blocks.WorkflowBlock;
+import blocks.basic.EndBlock;
+import blocks.basic.ScriptBlock;
 import blocks.basic.StartBlock;
 import blocks.events.ErrorBoundaryEvent;
+import io.je.utilities.beans.Status;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.InvalidSequenceFlowException;
 import io.je.utilities.exceptions.WorkflowBlockNotFound;
+import io.je.utilities.log.JELogger;
 import io.je.utilities.models.WorkflowModel;
 import io.je.utilities.runtimeobject.JEObject;
-import org.springframework.data.mongodb.core.mapping.Document;
-import utils.date.DateUtils;
-
-import java.util.concurrent.ConcurrentHashMap;
+import utils.files.FileUtilities;
+import utils.log.LogCategory;
+import utils.log.LogSubModule;
 
 /*
  * Model class for a workflow
@@ -19,13 +28,14 @@ import java.util.concurrent.ConcurrentHashMap;
 @Document(collection = "JEWorkflowCollection")
 public class JEWorkflow extends JEObject {
 
-    public final static String RUNNING = "RUNNING";
+
+    /*public final static String RUNNING = "RUNNING";
 
     public final static String BUILDING = "BUILDING";
 
     public final static String BUILT = "BUILT";
 
-    public final static String IDLE = "IDLE";
+    public final static String IDLE = "IDLE";*/
 
     /*
      * Workflow start block
@@ -40,7 +50,7 @@ public class JEWorkflow extends JEObject {
     /*
      * Current workflow status ( running, building, nothing)
      * */
-    private String status;
+    private Status status;
 
     /*
      * List of all workflow blocks
@@ -98,7 +108,7 @@ public class JEWorkflow extends JEObject {
     public JEWorkflow() {
         super();
         allBlocks = new ConcurrentHashMap<String, WorkflowBlock>();
-        status = IDLE;
+        status = Status.NOT_BUILT;
     }
 
     public boolean isTriggeredByEvent() {
@@ -109,11 +119,11 @@ public class JEWorkflow extends JEObject {
         this.triggeredByEvent = triggeredByEvent;
     }
 
-    public String getStatus() {
+    public Status getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(Status status) {
         this.status = status;
     }
 
@@ -201,7 +211,7 @@ public class JEWorkflow extends JEObject {
             } else this.setTriggeredByEvent(false);
         }
         allBlocks.put(block.getJobEngineElementID(), block);
-        status = IDLE;
+        status = Status.NOT_BUILT;
     }
 
     public String getDescription() {
@@ -209,7 +219,8 @@ public class JEWorkflow extends JEObject {
     }
 
     public void setDescription(String description) {
-        this.description = description;
+        if(description != null)
+            this.description = description;
     }
 
     /*
@@ -228,7 +239,7 @@ public class JEWorkflow extends JEObject {
         if(workflowStartBlock != null) {
             workflowStartBlock = (StartBlock) allBlocks.get(workflowStartBlock.getJobEngineElementID());
         }
-        status = IDLE;
+        status = Status.NOT_BUILT;
     }
 
     /*
@@ -240,30 +251,42 @@ public class JEWorkflow extends JEObject {
         }
         allBlocks.get(sourceRef).getOutFlows().remove(targetRef);
         allBlocks.get(targetRef).getInflows().remove(sourceRef);
-        status = IDLE;
+        status = Status.NOT_BUILT;
     }
 
     /*
      * Delete a workflow block
      * */
     public void deleteWorkflowBlock(String id) throws InvalidSequenceFlowException, WorkflowBlockNotFound {
-        for (String blockId : allBlocks.get(id).getInflows().values()) {
-            WorkflowBlock block = this.getBlockById(blockId);
-            deleteSequenceFlow(block.getJobEngineElementID(), id);
-        }
-        for (String blockId : allBlocks.get(id).getOutFlows().values()) {
-            WorkflowBlock block = this.getBlockById(blockId);
-            deleteSequenceFlow(id, block.getJobEngineElementID());
-        }
+        if(allBlocks.containsKey(id)) {
+            for (String blockId : allBlocks.get(id).getInflows().values()) {
+                WorkflowBlock block = this.getBlockById(blockId);
+                deleteSequenceFlow(block.getJobEngineElementID(), id);
+            }
+            for (String blockId : allBlocks.get(id).getOutFlows().values()) {
+                WorkflowBlock block = this.getBlockById(blockId);
+                deleteSequenceFlow(id, block.getJobEngineElementID());
+            }
 
-        WorkflowBlock b = allBlocks.get(id);
-        if (b == null) {
-            throw new WorkflowBlockNotFound(JEMessages.WORKFLOW_BLOCK_NOT_FOUND);
+            WorkflowBlock b = allBlocks.get(id);
+            if (b == null) {
+                throw new WorkflowBlockNotFound(JEMessages.WORKFLOW_BLOCK_NOT_FOUND);
+            }
+            if (b instanceof ScriptBlock) {
+                cleanUpScriptTaskBlock((ScriptBlock) b);
+            }
+            allBlocks.remove(id);
+            if (allBlocks.size() == 0) workflowStartBlock = null;
+            b = null;
+            status = Status.NOT_BUILT;
         }
-        allBlocks.remove(id);
-        if (allBlocks.size() == 0) workflowStartBlock = null;
-        b = null;
-        status = IDLE;
+    }
+    public void cleanUpScriptTaskBlock(ScriptBlock b) {
+        try {
+            FileUtilities.deleteFileFromPath(b.getScriptPath());
+        } catch (Exception e) {
+            JELogger.error(FAILED_TO_DELETE_FILES, LogCategory.DESIGN_MODE, jobEngineProjectID, LogSubModule.WORKFLOW, b.getJobEngineElementID());
+        }
 
     }
 
@@ -280,7 +303,7 @@ public class JEWorkflow extends JEObject {
             block.setProcessed(false);
         }
         workflowStartBlock.setProcessed(false);
-        status = IDLE;
+        status = Status.NOT_BUILT;
     }
     
 
@@ -295,12 +318,21 @@ public class JEWorkflow extends JEObject {
         model.setPath(wf.getBpmnPath());
         model.setProjectId(wf.getJobEngineProjectID());
         model.setTriggeredByEvent(wf.isTriggeredByEvent());
-        model.setStatus(wf.getStatus());
-        model.setCreatedAt(DateUtils.formatDateToSIOTHFormat(wf.getJeObjectCreationDate()));
-        model.setModifiedAt(DateUtils.formatDateToSIOTHFormat(wf.getJeObjectLastUpdate()));
+        model.setStatus(wf.getStatus().toString());
+        model.setCreatedAt( wf.getJeObjectCreationDate().toString());
+        model.setModifiedAt( wf.getJeObjectLastUpdate().toString());
         model.setFrontConfig(wf.getFrontConfig());
         model.setEnabled(wf.isEnabled);
         return model;
+    }
+
+    public EndBlock getWorkflowEndBlock() {
+        for (WorkflowBlock b: allBlocks.values()) {
+            if(b instanceof EndBlock) {
+                return (EndBlock) b;
+            }
+        }
+        return null;
     }
 
     public void setScript(boolean script) {

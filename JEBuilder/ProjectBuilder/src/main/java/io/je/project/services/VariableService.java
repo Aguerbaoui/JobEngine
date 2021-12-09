@@ -1,5 +1,17 @@
 package io.je.project.services;
 
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutionException;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import io.je.project.beans.JEProject;
 import io.je.project.config.LicenseProperties;
 import io.je.project.repository.VariableRepository;
@@ -7,20 +19,16 @@ import io.je.utilities.apis.JERunnerAPIHandler;
 import io.je.utilities.beans.JEType;
 import io.je.utilities.beans.JEVariable;
 import io.je.utilities.constants.JEMessages;
-import io.je.utilities.exceptions.*;
+import io.je.utilities.exceptions.JERunnerErrorException;
+import io.je.utilities.exceptions.LicenseNotActiveException;
+import io.je.utilities.exceptions.ProjectNotFoundException;
+import io.je.utilities.exceptions.VariableAlreadyExistsException;
+import io.je.utilities.exceptions.VariableException;
+import io.je.utilities.exceptions.VariableNotFoundException;
 import io.je.utilities.log.JELogger;
 import io.je.utilities.models.VariableModel;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.io.IOException;
-import java.time.LocalDateTime;
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutionException;
 
 @Service
 public class VariableService {
@@ -102,7 +110,7 @@ public class VariableService {
         if(project.variableExists(variableModel.getId())) {
             throw new VariableAlreadyExistsException(JEMessages.VARIABLE_EXISTS);
         }
-
+        variableModel.setProjectName(project.getProjectName());
         JEVariable var = new JEVariable(variableModel.getId(),variableModel.getProjectId(),variableModel.getName(),variableModel.getType(),variableModel.getInitialValue(),variableModel.getDescription(),variableModel.getCreatedBy(),variableModel.getModifiedBy());
         var.setJobEngineProjectName(project.getProjectName());
         try {
@@ -159,10 +167,11 @@ public class VariableService {
         if(!project.variableExists(variableModel.getId())) {
             throw new VariableNotFoundException(JEMessages.VARIABLE_NOT_FOUND);
         }
+        variableModel.setProjectName(project.getProjectName());
         JEVariable var = new JEVariable(variableModel.getId(),variableModel.getProjectId(),variableModel.getName(),variableModel.getType(), variableModel.getInitialValue(),variableModel.getDescription(),variableModel.getCreatedBy(),variableModel.getModifiedBy());
         var.setJobEngineProjectName(project.getProjectName());
-        var.setJeObjectCreationDate(LocalDateTime.now());
-        var.setJeObjectLastUpdate(LocalDateTime.now());
+        var.setJeObjectCreationDate(Instant.now());
+        var.setJeObjectLastUpdate(Instant.now());
 		try {
 			JERunnerAPIHandler.addVariable(variableModel.getProjectId(), variableModel.getId(), variableModel);
 		}
@@ -221,7 +230,7 @@ public class VariableService {
 		//return true;
 	}
 
-	public void deleteVariables(String projectId, List<String> ids) throws LicenseNotActiveException, ProjectNotFoundException {
+	public void deleteVariables(String projectId, List<String> ids) throws LicenseNotActiveException, ProjectNotFoundException, VariableNotFoundException {
 		LicenseProperties.checkLicenseIsActive();
 
 		JELogger.debug(JEMessages.DELETING_VARIABLES,
@@ -237,7 +246,7 @@ public class VariableService {
 					deleteVariable(projectId, var.getJobEngineElementID());
 				}
 				catch (Exception e) {
-					JELogger.error(JEMessages.ERROR_DELETING_VARIABLE_FROM_PROJECT + " id = " + var.getJobEngineElementID() + " " + e.getMessage(),
+					JELogger.error("[variable="+var.getJobEngineElementName() + "]"+JEMessages.ERROR_DELETING_VARIABLE_FROM_PROJECT +  e.getMessage(),
 							LogCategory.DESIGN_MODE, projectId,
 							LogSubModule.VARIABLE, var.getJobEngineElementID());
 				}
@@ -249,7 +258,7 @@ public class VariableService {
 					deleteVariable(projectId, id);
 				}
 				catch (Exception e) {
-					JELogger.error(JEMessages.ERROR_DELETING_VARIABLE_FROM_PROJECT + " id = " + id + " " + e.getMessage(),
+					JELogger.error("[variable="+project.getVariable(id).getJobEngineElementName() + "]"+JEMessages.ERROR_DELETING_VARIABLE_FROM_PROJECT  + e.getMessage(),
 							LogCategory.DESIGN_MODE, projectId,
 							LogSubModule.VARIABLE, id);
 				}

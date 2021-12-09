@@ -6,7 +6,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import io.siothconfig.SIOTHConfigUtility;
 
-import java.util.Collections;
 import java.util.HashMap;
 
 @SpringBootApplication

@@ -1,6 +1,16 @@
 package io.je.project.beans;
 
+import java.time.Instant;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
+
 import blocks.WorkflowBlock;
+import blocks.basic.ScriptBlock;
 import blocks.basic.SubProcessBlock;
 import io.je.rulebuilder.components.JERule;
 import io.je.rulebuilder.components.UserDefinedRule;
@@ -10,13 +20,15 @@ import io.je.utilities.beans.JEVariable;
 import io.je.utilities.config.ConfigurationConstants;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.*;
-import io.je.utilities.execution.JobEngine;
+import io.je.utilities.log.JELogger;
 import models.JEWorkflow;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
+import utils.files.FileUtilities;
+import utils.log.LogCategory;
+import utils.log.LogSubModule;
 
 import java.time.LocalDateTime;
 import java.util.Map;
@@ -96,11 +108,11 @@ public class JEProject {
 	
      private boolean autoReload = false;
 
-     
+
      private boolean isRunning=false;
-     
+
      private boolean isBuilt=false;
-     
+
 
     /*
     * project Status
@@ -265,15 +277,15 @@ public class JEProject {
 		        break;
             }
         }
-	*/	
+	*/
 		return isBuilt;
 	}
-	
+
 	public boolean isRunning() {
 		return isRunning;
 	}
-	
- 
+
+
 	/******************************************************** RULES **********************************************************************/
 
 
@@ -288,7 +300,7 @@ public class JEProject {
 	* Set project rules
 	* */
 	public void setRules(ConcurrentHashMap<String, JERule> rules) {
-		isBuilt=false;	
+		isBuilt=false;
 		if(rules!=null)
 		{
 			this.rules = rules;
@@ -328,7 +340,7 @@ public class JEProject {
 	    		throw new RuleNotFoundException(projectId, rule.getJobEngineElementID());
 	    			}
 	        rules.put(rule.getJobEngineElementID(), rule);
-			rule.setJeObjectLastUpdate( LocalDateTime.now());
+			rule.setJeObjectLastUpdate( Instant.now());
 			isBuilt=false;
 
 
@@ -363,7 +375,7 @@ public class JEProject {
 
 		public void deleteRuleBlock(String ruleId, String blockId) throws RuleBlockNotFoundException {
 			((UserDefinedRule) rules.get(ruleId)).deleteBlock(blockId);
-			rules.get(ruleId).setJeObjectLastUpdate(  LocalDateTime.now());
+			rules.get(ruleId).setJeObjectLastUpdate(  Instant.now());
 			isBuilt=false;
 
 			
@@ -416,9 +428,7 @@ public class JEProject {
      * Remove a workflow
      */
     public void removeWorkflow(String id) {
-        JEWorkflow wf = getWorkflowByIdOrName(id);
-        workflows.remove(id);
-        wf = null;
+		workflows.remove(id);
         isBuilt=false;
 
     }

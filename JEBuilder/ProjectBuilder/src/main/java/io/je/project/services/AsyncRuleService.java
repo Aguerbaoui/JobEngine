@@ -13,6 +13,7 @@ import io.je.project.repository.RuleRepository;
 import io.je.rulebuilder.builder.RuleBuilder;
 import io.je.rulebuilder.components.JERule;
 import io.je.utilities.apis.JERunnerAPIHandler;
+import io.je.utilities.beans.Status;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.JERunnerErrorException;
 import io.je.utilities.exceptions.LicenseNotActiveException;
@@ -21,7 +22,6 @@ import io.je.utilities.exceptions.RuleBuildFailedException;
 import io.je.utilities.exceptions.RuleNotFoundException;
 import io.je.utilities.log.JELogger;
 import io.je.utilities.ruleutils.OperationStatusDetails;
-import io.je.utilities.ruleutils.RuleStatus;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
 
@@ -118,7 +118,7 @@ public class AsyncRuleService {
 		}
 		result.setItemName(rule.getJobEngineElementName());
 		
-		if(rule.getStatus()==RuleStatus.RUNNING)
+		if(rule.getStatus()==Status.RUNNING)
 		{
 			result.setOperationSucceeded(false);
 			result.setOperationError(JEMessages.RULE_ALREADY_RUNNING);

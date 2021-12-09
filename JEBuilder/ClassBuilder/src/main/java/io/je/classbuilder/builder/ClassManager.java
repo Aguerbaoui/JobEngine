@@ -1,12 +1,21 @@
 package io.je.classbuilder.builder;
 
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import io.je.classbuilder.entity.ClassType;
 import io.je.classbuilder.entity.JEClass;
 import io.je.classbuilder.models.ClassDefinition;
 import io.je.classbuilder.models.FieldModel;
 import io.je.classbuilder.models.GetModelObject;
 import io.je.classbuilder.models.MethodModel;
+import io.je.utilities.beans.ClassAuthor;
 import io.je.utilities.beans.JEField;
 import io.je.utilities.beans.JELib;
 import io.je.utilities.beans.JEMethod;
@@ -22,16 +31,11 @@ import io.je.utilities.log.JELogger;
 import io.je.utilities.models.LibModel;
 import io.siothconfig.SIOTHConfigUtility;
 import utils.date.DateUtils;
+import utils.files.FileUtilities;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
 import utils.zmq.ZMQPublisher;
 import utils.zmq.ZMQRequester;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 
 /*
@@ -43,7 +47,7 @@ public class ClassManager {
 	static Map<String, Class<?>> builtClasses = new ConcurrentHashMap<>(); // key = id , value = class
 	static ZMQPublisher publisher = new ZMQPublisher("tcp://"+SIOTHConfigUtility.getSiothConfig().getNodes().getSiothMasterNode(),
 			SIOTHConfigUtility.getSiothConfig().getPorts().getTrackingPort());
-	static ObjectMapper objectMapper = new ObjectMapper();
+	static ObjectMapper objectMapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
 	// TODO: see with islem if possible to change field type to class id instead of
 	// name
@@ -115,11 +119,10 @@ public class ClassManager {
 
 		// load .java -> .class
 		JEClassCompiler.compileClass(filePath, loadPath);
-
 		// Load the target class using its binary name
 		Class<?> loadedClass;
 		try {
-			loadedClass = JEClassLoader.getInstance()
+			loadedClass = JEClassLoader.getJeInstance()
 					.loadClass(ClassBuilderConfig.generationPackageName + "." + classDefinition.getName());
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
@@ -130,6 +133,7 @@ public class ClassManager {
 		classNames.put(classDefinition.getName(), classDefinition.getClassId());
 		JEClass jeClass = new JEClass(classDefinition.getWorkspaceId(), classDefinition.getClassId(),
 				classDefinition.getName(), filePath, classType);
+				jeClass.setClassAuthor(classDefinition.getClassAuthor());
 		if(classDefinition.getMethods()!=null)
 		{
 			for(MethodModel m: classDefinition.getMethods()) {
@@ -152,8 +156,8 @@ public class ClassManager {
 		method.setJobEngineElementName(m.getMethodName());
 		method.setJeObjectCreatedBy(m.getCreatedBy());
 		method.setJeObjectModifiedBy(m.getModifiedBy());
-		method.setJeObjectLastUpdate(LocalDateTime.now());
-		method.setJeObjectCreationDate(LocalDateTime.now());
+		method.setJeObjectLastUpdate(Instant.now());
+		method.setJeObjectCreationDate(Instant.now());
 		method.setInputs(new ArrayList<>());
 		if(m.getInputs() != null) {
 			for (FieldModel f : m.getInputs()) {
@@ -187,6 +191,7 @@ public class ClassManager {
 		try
 		{
 			jeClass = objectMapper.readValue(response, ClassDefinition.class);
+			jeClass.setClassAuthor(ClassAuthor.DATA_MODEL);
 			// jeClass.setWorkspaceId(workspaceId);
 
 		}catch(Exception e)
@@ -311,9 +316,9 @@ public class ClassManager {
 		m.setMethodName(method.getJobEngineElementName());
 		m.setMethodScope(WorkflowConstants.STATIC);
 		m.setId(method.getJobEngineElementID());
-		m.setModifiedAt(DateUtils.formatDateToSIOTHFormat(method.getJeObjectLastUpdate()));
+		m.setModifiedAt(method.getJeObjectLastUpdate().toString());
 		m.setCreatedBy(method.getJeObjectCreatedBy());
-		m.setCreatedAt(DateUtils.formatDateToSIOTHFormat(method.getJeObjectCreationDate()));
+		m.setCreatedAt(method.getJeObjectCreationDate().toString());
 		m.setModifiedBy(method.getJeObjectModifiedBy());
 		List<FieldModel> fieldModels = new ArrayList<>();
 		for(JEField f: method.getInputs()) {
@@ -344,20 +349,13 @@ public class ClassManager {
 		c.setClassId(clazz.getClassId());
 		c.setName(clazz.getClassName());
 		c.setClassVisibility("public");
+		c.setClassAuthor(clazz.getClassAuthor());
 		List<MethodModel> methodModels = new ArrayList<>();
 		for(JEMethod method: clazz.getMethods().values()) {
-			methodModels.add(getMethodModel(method));
+			if(method.isCompiled())
+				methodModels.add(getMethodModel(method));
 		}
 		c.setMethods(methodModels);
-        /*MethodModel m = new MethodModel();
-        m.setMethodName("executeScript");
-        m.setReturnType("VOID");
-        m.setMethodScope("STATIC");
-        m.setCode(script);
-        m.setMethodVisibility("PUBLIC");
-        List<MethodModel> methodModels = new ArrayList<>();
-        methodModels.add(m);
-        c.setMethods(methodModels);*/
 
 		//Compile class first
 		return c;
@@ -371,7 +369,7 @@ public class ClassManager {
 		model.setFileName(lib.getJobEngineElementName());
 		model.setCreatedBy(lib.getJeObjectCreatedBy());
 		model.setFilePath(lib.getFilePath());
-		model.setCreatedAt(DateUtils.formatDateToSIOTHFormat(lib.getJeObjectCreationDate()));
+		model.setCreatedAt(lib.getJeObjectCreationDate().toString());
 		model.setId(lib.getJobEngineElementID());
 		return model;
 	}

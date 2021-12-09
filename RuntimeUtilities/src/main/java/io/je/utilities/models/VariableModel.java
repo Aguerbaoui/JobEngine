@@ -11,6 +11,8 @@ public class VariableModel {
     private String type; 
 
     private String projectId;
+    
+    private String projectName;
 
     private String name;
 
@@ -123,16 +125,26 @@ public class VariableModel {
 
 	private VariableModel() {}
 
+	
 
+
+	public String getProjectName() {
+		return projectName;
+	}
+
+	public void setProjectName(String projectName) {
+		this.projectName = projectName;
+	}
 
 	public VariableModel(JEVariable variable) {
 		 this.projectId = variable.getJobEngineProjectID();
+		 this.projectName = variable.getJobEngineProjectName();
 	        this.id = variable.getJobEngineElementID();
 	        this.name = variable.getJobEngineElementName();
 	        this.type = variable.getType().toString();
 	        this.initialValue = String.valueOf(variable.getInitialValue());
-			this.createdAt = DateUtils.formatDateToSIOTHFormat(variable.getJeObjectCreationDate());
-			this.lastModifiedAt = DateUtils.formatDateToSIOTHFormat(variable.getJeObjectLastUpdate());
+			this.createdAt = variable.getJeObjectCreationDate().toString();
+			this.lastModifiedAt = variable.getJeObjectLastUpdate().toString();
 	        this.value = null;
 			this.createdBy = variable.getJeObjectCreatedBy();
 			this.modifiedBy = variable.getJeObjectModifiedBy();

@@ -48,15 +48,15 @@ public class JERunnerAPIHandler {
     /*
      * run project
      */
-    public static JEResponse runProject(String projectId)
+    public static JEResponse runProject(String projectId,String projectName)
             throws JERunnerErrorException{
-        String requestUrl = runtimeManagerBaseApi + APIConstants.RUN_PROJECT + projectId;
+        String requestUrl = runtimeManagerBaseApi + APIConstants.RUN_PROJECT + projectId + "/"+projectName;
         return sendRequest(requestUrl);
     }
 
-    public static JEResponse stopProject(String projectId)
+    public static JEResponse stopProject(String projectId,String projectName)
             throws JERunnerErrorException{
-        String requestUrl = runtimeManagerBaseApi + APIConstants.STOP_PROJECT + projectId;
+        String requestUrl = runtimeManagerBaseApi + APIConstants.STOP_PROJECT + projectId+ "/"+projectName;;
         return sendRequest(requestUrl);
     }
 
@@ -124,7 +124,6 @@ public class JERunnerAPIHandler {
 
     // add workflow
     public static JEResponse addWorkflow(WorkflowModel wf) throws JERunnerErrorException {
-        Response response = null;
         String requestUrl = runtimeManagerBaseApi + APIConstants.ADD_WORKFLOW;
         return sendRequestWithBody(requestUrl, wf);
 

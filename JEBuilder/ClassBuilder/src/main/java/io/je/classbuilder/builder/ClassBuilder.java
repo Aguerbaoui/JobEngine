@@ -8,8 +8,13 @@ import java.util.List;
 
 import org.burningwave.core.assembler.ComponentContainer;
 import org.burningwave.core.assembler.ComponentSupplier;
-import org.burningwave.core.classes.*;
-
+import org.burningwave.core.classes.AnnotationSourceGenerator;
+import org.burningwave.core.classes.ClassFactory;
+import org.burningwave.core.classes.ClassSourceGenerator;
+import org.burningwave.core.classes.FunctionSourceGenerator;
+import org.burningwave.core.classes.TypeDeclarationSourceGenerator;
+import org.burningwave.core.classes.UnitSourceGenerator;
+import org.burningwave.core.classes.VariableSourceGenerator;
 
 import io.je.classbuilder.entity.ClassType;
 import io.je.classbuilder.models.ClassDefinition;
@@ -21,7 +26,6 @@ import io.je.utilities.exceptions.AddClassException;
 import io.je.utilities.exceptions.ClassLoadException;
 import io.je.utilities.log.JELogger;
 import io.je.utilities.runtimeobject.JEObject;
-import io.siothconfig.SIOTHConfigUtility;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
 import utils.string.StringUtilities;
@@ -33,6 +37,7 @@ public class ClassBuilder {
 
 	
 
+	
 	/*
 	 * build .java class/interface/enum from classModel
 	 * returns  path where file was created
@@ -194,7 +199,7 @@ public class ClassBuilder {
 				{					 
 					newField.addAnnotation(new AnnotationSourceGenerator("JsonDeserialize(using = LocalDateTimeDeserializer.class)"));
 					newField.addAnnotation(new AnnotationSourceGenerator("JsonSerialize(using = LocalDateTimeSerializer.class)"));
-					newField.addAnnotation(new AnnotationSourceGenerator("JsonFormat (shape = JsonFormat.Shape.STRING, pattern = \""+SIOTHConfigUtility.getSiothConfig().getDateFormat()+"\")"));					
+					//newField.addAnnotation(new AnnotationSourceGenerator("JsonFormat (shape = JsonFormat.Shape.STRING, pattern ="+dataModelDateFormat+")"));					
 				}
 				newClass.addField(newField);
 				String attributeName = field.getName();
@@ -411,5 +416,6 @@ public class ClassBuilder {
 		}
 		return value;
 	}
+
 
 }

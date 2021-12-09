@@ -1,12 +1,15 @@
 package io.je.rulebuilder.components.blocks.arithmetic.multipleInput;
 
+import io.je.rulebuilder.config.AttributesMapping;
 import io.je.rulebuilder.models.BlockModel;
 
 public class LowLimitingBlock extends MultipleInputArithmeticBlock {
 
+	String limit;
 	public LowLimitingBlock(BlockModel blockModel) {
 		super(blockModel);
-		// TODO Auto-generated constructor stub
+		limit=String.valueOf( blockModel.getBlockConfiguration().get(AttributesMapping.VALUE));
+
 	}
 	
 	private LowLimitingBlock()
@@ -16,7 +19,7 @@ public class LowLimitingBlock extends MultipleInputArithmeticBlock {
 
 	@Override
 	protected String getArithmeticFormula(int level,String type) {
-		return "MathUtilities.lowLimiting( "  ;
+		return "MathUtilities.lowLimiting( "+limit+","  ;
 
 	}
 

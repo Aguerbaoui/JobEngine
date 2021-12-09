@@ -36,7 +36,7 @@ public class LogBlock extends ExecutionBlock {
 				+ "message.addBlockMessage(blockMsg);\r\n"
 				+ "message.setType(\"BlockMessage\");\r\n"
 				+ "message.setExecutionTime(LocalDateTime.now().toString());\r\n"
-				+ */"Executioner.informRuleBlock(\"" +this.jobEngineProjectID +"\",\"" + this.ruleId +"\",\" "+formatMessage()+ "\",LocalDateTime.now().toString(),\""+this.blockName +" \" );"; 
+				+ */"Executioner.informRuleBlock(\"" +this.jobEngineProjectID +"\",\"" + this.ruleId +"\",\" "+formatMessage()+ "\",Instant.now().toString(),\""+this.blockName +" \" );"; 
 	}
 
 
@@ -45,7 +45,7 @@ public class LogBlock extends ExecutionBlock {
 	public String formatMessage()
 	{
 		String msg = logMessage;
-		Pattern pattern = Pattern.compile("\\$\\w+");
+		Pattern pattern = Pattern.compile("\\$(\\w|\\.|\\(|\\))+");
 
 		Matcher matcher = pattern.matcher(msg);
 		ArrayList<String> wordsToBeReplaced = new ArrayList<String>();

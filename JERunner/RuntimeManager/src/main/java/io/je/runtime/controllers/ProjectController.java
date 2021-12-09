@@ -26,7 +26,7 @@ public class ProjectController {
      * Build whole project
      * */
 
-    @GetMapping(value = "/buildProject", produces = MediaType.APPLICATION_JSON_VALUE)
+  /*  @GetMapping(value = "/buildProject", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> buildProject(@RequestBody String input) {
         try {
             dispatcher.buildProject(input);
@@ -36,15 +36,15 @@ public class ProjectController {
 
         return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.BUILT_EVERYTHING_SUCCESSFULLY));
 
-    }
+    }*/
 
     /*
      * Run the whole project ( rules and workflows )
      * */
-    @GetMapping(value = "/runProject/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> runProject(@PathVariable String projectId) {
+    @GetMapping(value = "/runProject/{projectId}/{projectName}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> runProject(@PathVariable String projectId,@PathVariable String projectName) {
         try {
-            dispatcher.runProject(projectId);
+            dispatcher.runProject(projectId,projectName);
         } catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
 		}
@@ -55,10 +55,10 @@ public class ProjectController {
     /*
      * Stop the project
      * */
-    @GetMapping(value = "/stopProject/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> stopProject(@PathVariable String projectId) {
+    @GetMapping(value = "/stopProject/{projectId}/{projectName}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> stopProject(@PathVariable String projectId,@PathVariable String projectName) {
     	//TODO: add failed to stop project exception
-            dispatcher.stopProject(projectId);
+            dispatcher.stopProject(projectId,projectName);
 
         return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.PROJECT_STOPPED));
 

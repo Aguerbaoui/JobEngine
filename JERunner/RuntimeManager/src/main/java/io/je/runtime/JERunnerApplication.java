@@ -22,7 +22,7 @@ public class JERunnerApplication {
 	
     public static void main(String[] args) {
     	SIOTHConfigUtility.init();
-    	System.setProperty("drools.dateformat", SIOTHConfigUtility.getSiothConfig().getDateFormat());
+    	//System.setProperty("drools.dateformat", SIOTHConfigUtility.getSiothConfig().getDateFormat());
         SpringApplication app = new SpringApplication(JERunnerApplication.class);
         app.setBannerMode(Banner.Mode.OFF);
         app.setDefaultProperties(Collections

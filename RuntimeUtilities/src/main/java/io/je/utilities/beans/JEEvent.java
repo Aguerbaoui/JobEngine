@@ -2,6 +2,7 @@ package io.je.utilities.beans;
 
 import io.je.utilities.models.EventType;
 import io.je.utilities.monitoring.JEMonitor;
+import io.je.utilities.monitoring.MonitoringMessage;
 import io.je.utilities.monitoring.ObjectType;
 import java.time.LocalDateTime;
 
@@ -122,7 +123,7 @@ public class JEEvent extends JEMonitoredData {
 	public void trigger() {
 		isTriggered = true;
 		lastTriggerTime = System.nanoTime();
-		JEMonitor.publish(LocalDateTime.now(), jobEngineElementID, ObjectType.JEEVENT, jobEngineProjectID, String.valueOf(isTriggered), isArchived, isBroadcasted);
+		JEMonitor.publish(MonitoringMessage.getMonitoringMessage(LocalDateTime.now(), jobEngineElementID, ObjectType.JEEVENT, jobEngineProjectID, String.valueOf(isTriggered), Status.TRIGGERED));
 		
 
 	}
@@ -130,8 +131,8 @@ public class JEEvent extends JEMonitoredData {
 	public void untrigger() {
 		isTriggered = false;
 		lastTriggerTime = System.nanoTime();
-		JEMonitor.publish(LocalDateTime.now(), jobEngineElementID, ObjectType.JEEVENT, jobEngineProjectID, String.valueOf(isTriggered), isArchived, isBroadcasted);
-		
+		JEMonitor.publish(MonitoringMessage.getMonitoringMessage(LocalDateTime.now(), jobEngineElementID, ObjectType.JEEVENT, jobEngineProjectID, String.valueOf(isTriggered), Status.NOT_TRIGGERED));
+
 
 	}
 

@@ -21,6 +21,9 @@ public class JobEngine {
 
     private static HashMap<String, JarFile> libraries;
 
+    //Map of projectName=>ProjectId
+    private static HashMap<String, String> projects;
+
     public static void addJarFile(String name, JarFile file) {
         if(libraries == null) {
             libraries = new HashMap<>();
@@ -185,8 +188,12 @@ public class JobEngine {
     /*
     * Send user message
     * */
-    public static int informUser(String message, String projectId) {
+    public static int informUser(String message, String projectName) {
         if(!StringUtilities.isEmpty(message)) {
+            String projectId = projectName;
+            if(projects.containsKey(projectName)){
+                projectId = projects.get(projectName);
+            }
             JELogger.info( message,  LogCategory.RUNTIME,  projectId,
                     LogSubModule.WORKFLOW, null);
         }
@@ -268,5 +275,12 @@ public class JobEngine {
                     projectId, LogSubModule.WORKFLOW, null);
         }
         return responseCode;
+    }
+
+    public static void updateProjects(String projectId, String projectName) {
+        if(projects == null) {
+            projects = new HashMap<>();
+        }
+        projects.put(projectName, projectId);
     }
 }

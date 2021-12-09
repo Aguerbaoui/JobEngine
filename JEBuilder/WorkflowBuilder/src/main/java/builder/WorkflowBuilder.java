@@ -3,6 +3,7 @@ package builder;
 import blocks.WorkflowBlock;
 import blocks.basic.*;
 import io.je.utilities.apis.JERunnerAPIHandler;
+import io.je.utilities.beans.Status;
 import io.je.utilities.config.ConfigurationConstants;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.WorkflowConstants;
@@ -41,17 +42,17 @@ public class WorkflowBuilder {
     }
 
     /*Get attributes map for web api task*/
-    private static HashMap<String, Object > getWebApiAttributesMap(WebApiBlock WebApiBlock) {
+    private static HashMap<String, Object > getWebApiAttributesMap(WebApiBlock webApiBlock) {
         HashMap<String, Object> attributes = new HashMap<>();
-        attributes.put(URL, WebApiBlock.getUrl());
-        attributes.put(METHOD, WebApiBlock.getMethod());
-        if (WebApiBlock.getBody() != null) {
-            attributes.put(BODY, WebApiBlock.getBody());
+        attributes.put(URL, webApiBlock.getUrl());
+        attributes.put(METHOD, webApiBlock.getMethod());
+        if (webApiBlock.getBody() != null) {
+            attributes.put(BODY, webApiBlock.getBody());
         } else {
-            if (WebApiBlock.getInputs() != null && WebApiBlock.getInputs().size() > 0) {
+            if (webApiBlock.getInputs() != null && webApiBlock.getInputs().size() > 0) {
                 HashMap<String, Object> inputs = new HashMap<>();
-                for (String key : WebApiBlock.getInputs().keySet()) {
-                    ArrayList<Object> input = WebApiBlock.getInputs().get(key);
+                for (String key : webApiBlock.getInputs().keySet()) {
+                    ArrayList<Object> input = webApiBlock.getInputs().get(key);
                     if (input.size() == 1) {
                         inputs.put(key, input.get(0));
                     } else {
@@ -61,7 +62,11 @@ public class WorkflowBuilder {
                 attributes.put(INPUTS, inputs);
             }
         }
-        attributes.put(OUTPUTS, WebApiBlock.getOutputs());
+        attributes.put(OUTPUTS, webApiBlock.getOutputs());
+        if(webApiBlock.getAuthScheme() != null) {
+            attributes.put(AUTH_SCHEME, webApiBlock.getAuthScheme());
+            attributes.put(AUTHENTICATION, webApiBlock.getAuthentication());
+        }
         return attributes;
     }
 
@@ -127,7 +132,11 @@ public class WorkflowBuilder {
      * Build pbpmn and Deploy it in engine
      * */
     public static boolean buildWorkflow(JEWorkflow workflow) {
-        if (workflow.getWorkflowStartBlock() == null || workflow.getAllBlocks() == null || workflow.getAllBlocks().size() == 0 || workflow.isHasErrors())
+        if (workflow.getWorkflowEndBlock() == null ||
+                workflow.getWorkflowStartBlock() == null ||
+                workflow.getAllBlocks() == null ||
+                workflow.getAllBlocks().size() == 0 ||
+                workflow.isHasErrors())
             return false;
         if (!workflow.isScript()) {
             JEToBpmnMapper.createBpmnFromJEWorkflow(workflow);
@@ -139,6 +148,7 @@ public class WorkflowBuilder {
         wf.setTriggeredByEvent(workflow.isTriggeredByEvent());
         wf.setTriggerMessage(workflow.getWorkflowStartBlock().getEventId());
         wf.setOnProjectBoot(workflow.isOnProjectBoot());
+        wf.setProjectName(workflow.getJobEngineProjectName());
         ArrayList<TaskModel> tasks = new ArrayList<>();
         for (WorkflowBlock block : workflow.getAllBlocks().values()) {
             if (block instanceof WebApiBlock) {
@@ -179,7 +189,11 @@ public class WorkflowBuilder {
 
         }
         wf.setTasks(tasks);
-        workflow.setStatus(JEWorkflow.BUILDING);
+        workflow.setStatus(Status.BUILDING);
+        String endEventId = workflow.getWorkflowEndBlock().getEventId();
+        if(endEventId != null) {
+            wf.setEndBlockEventId(endEventId);
+        }
         JELogger.debug( JEMessages.DEPLOYING_IN_RUNNER_WORKFLOW_WITH_ID + " = " + workflow.getJobEngineElementID(),
                 LogCategory.DESIGN_MODE, workflow.getJobEngineProjectID(),
                 LogSubModule.WORKFLOW, workflow.getJobEngineElementID());
@@ -189,10 +203,11 @@ public class WorkflowBuilder {
             JELogger.error( JEMessages.FAILED_TO_DEPLOY_IN_RUNNER_WORKFLOW_WITH_ID + " = " + workflow.getJobEngineElementID(),
                     LogCategory.DESIGN_MODE, workflow.getJobEngineProjectID(),
                     LogSubModule.WORKFLOW, workflow.getJobEngineElementID());
-            workflow.setStatus(JEWorkflow.IDLE);
+            workflow.setStatus(Status.NOT_BUILT);
             return false;
         }
-        workflow.setStatus(JEWorkflow.BUILT);
+
+        workflow.setStatus(Status.STOPPED);
         return true;
 
     }

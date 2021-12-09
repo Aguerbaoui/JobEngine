@@ -1,24 +1,32 @@
 package io.je.runtime.workflow;
 
-import io.je.JEProcess;
-import io.je.processes.ProcessManager;
-import io.je.serviceTasks.*;
-import io.je.utilities.constants.JEMessages;
-import io.je.utilities.constants.WorkflowConstants;
-import io.je.utilities.exceptions.*;
-import io.je.utilities.log.JELogger;
-import io.je.utilities.models.TaskModel;
-import utils.log.LogCategory;
-import utils.log.LogSubModule;
-import utils.network.BodyType;
-import utils.network.HttpMethod;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import io.je.JEProcess;
+import io.je.processes.ProcessManager;
+import io.je.serviceTasks.ActivitiTask;
+import io.je.serviceTasks.DatabaseTask;
+import io.je.serviceTasks.InformTask;
+import io.je.serviceTasks.MailTask;
+import io.je.serviceTasks.ScriptTask;
+import io.je.serviceTasks.WebApiTask;
+import io.je.utilities.constants.JEMessages;
+import io.je.utilities.constants.WorkflowConstants;
+import io.je.utilities.exceptions.WorkflowAlreadyRunningException;
+import io.je.utilities.exceptions.WorkflowBuildException;
+import io.je.utilities.exceptions.WorkflowNotFoundException;
+import io.je.utilities.exceptions.WorkflowRunException;
+import io.je.utilities.log.JELogger;
+import io.je.utilities.models.TaskModel;
+import utils.log.LogCategory;
+import utils.log.LogSubModule;
+import utils.network.AuthScheme;
+import utils.network.BodyType;
+import utils.network.HttpMethod;
+
 import static io.je.utilities.constants.WorkflowConstants.*;
-import static io.je.utilities.constants.WorkflowConstants.URL;
 
 /*
  * Workflow Engine handler class
@@ -101,14 +109,14 @@ public class WorkflowEngineHandler {
     /*
     * Deploy project workflows
     * */
-    public static void buildProject(String projectId) throws WorkflowBuildException {
+   /* public static void buildProject(String projectId) throws WorkflowBuildException {
         processManagerHashMap.get(projectId).buildProjectWorkflows(projectId);
-    }
+    }*/
 
     /*
     * Stop project workflows
     * */
-    public static void stopProjectWorfklows(String projectId) {
+    public static void stopProjectWorkflows(String projectId) {
     	if(processManagerHashMap.containsKey(projectId))
     	{
             /*JELogger.debug("[projectId = " + projectId +"]"+JEMessages.STOPPING_WORKFLOW,
@@ -130,12 +138,13 @@ public class WorkflowEngineHandler {
     	}
     }
 
+    /**/
     public static void deleteProjectProcesses(String projectId) {
       /*  JELogger.debug("[projectId = " + projectId +"]"+JEMessages.REMOVING_WFS,
                 LogCategory.RUNTIME, projectId,
                 LogSubModule.WORKFLOW,null);*/
         if(processManagerHashMap.containsKey(projectId)) {
-            stopProjectWorfklows(projectId);
+            stopProjectWorkflows(projectId);
             processManagerHashMap.remove(projectId);
         }
 
@@ -149,93 +158,123 @@ public class WorkflowEngineHandler {
         }
     }
 
+    //Parse activiti task
     public static ActivitiTask parseTask(String projectId, String workflowId, TaskModel task) {
         /*JELogger.debug("Parsing activiti task",
                 LogCategory.RUNTIME, projectId,
                 LogSubModule.WORKFLOW,workflowId);*/
         if(task.getType().equals(WorkflowConstants.WEBSERVICETASK_TYPE)) {
-            WebApiTask webApiTask = new WebApiTask();
-            webApiTask.setBodyType(BodyType.JSON);
-            webApiTask.setTaskId(task.getTaskId());
-            webApiTask.setTaskName(task.getTaskName());
-            webApiTask.setProcessId(workflowId);
-            webApiTask.setProjectId(projectId);
-            HashMap<String, Object> attributes = task.getAttributes();
-            if (attributes.get(INPUTS) != null) {
-                webApiTask.setHasBody(true);
-                webApiTask.setBody((HashMap<String, String>) attributes.get(INPUTS));
-            } else {
-                webApiTask.setHasBody(true);
-                webApiTask.setStringBody((String) attributes.get(BODY));
-            }
-            webApiTask.setHttpMethod(HttpMethod.valueOf((String) attributes.get(METHOD)));
-            webApiTask.setUrl((String) attributes.get(URL));
-            return webApiTask;
+            return parseWebApiTask(projectId, workflowId, task);
         }
         else if(task.getType().equals(WorkflowConstants.SCRIPTTASK_TYPE)){
-            ScriptTask scriptTask = new ScriptTask();
-            scriptTask.setTaskName(task.getTaskName());
-            scriptTask.setTaskId(task.getTaskId());
-            scriptTask.setProjectId(projectId);
-            scriptTask.setProcessId(workflowId);
-            HashMap<String, Object> attributes = task.getAttributes();
-            if(attributes.containsKey(SCRIPT)) {
-                scriptTask.setScript((String) attributes.get(SCRIPT));
-                scriptTask.setTimeout((Integer) attributes.get(TIMEOUT));
-            }
-            return scriptTask;
+            return parseScriptTask(projectId, workflowId, task);
         }
         else if(task.getType().equals(WorkflowConstants.INFORMSERVICETASK_TYPE)) {
-            InformTask informTask = new InformTask();
-            informTask.setTaskName(task.getTaskName());
-            informTask.setTaskId(task.getTaskId());
-            informTask.setProjectId(projectId);
-            informTask.setProcessId(workflowId);
-            HashMap<String, Object> attributes = task.getAttributes();
-            if(attributes.get(MESSAGE) != null) {
-                informTask.setMessage((String) attributes.get(MESSAGE));
-            }
-            return informTask;
+            return parseInformTask(projectId, workflowId, task);
         }
         else if(task.getType().equals(DBREADSERVICETASK_TYPE) ||
                 task.getType().equals(DBWRITESERVICETASK_TYPE) ||
                 task.getType().equals(DBEDITSERVICETASK_TYPE)) {
-            DatabaseTask databaseTask = new DatabaseTask();
-            databaseTask.setTaskName(task.getTaskName());
-            databaseTask.setTaskId(task.getTaskId());
-            databaseTask.setProjectId(projectId);
-            databaseTask.setProcessId(workflowId);
-            HashMap<String, Object> attributes = task.getAttributes();
-            if(attributes.get(REQUEST) != null) {
-                databaseTask.setRequest((String) attributes.get(REQUEST));
-            }
-            if(attributes.get(DATABASE_ID) != null) {
-                databaseTask.setDatabaseId((String) attributes.get(DATABASE_ID));
-            }
-            return databaseTask;
+            return parseDBTask(projectId, workflowId, task);
         }
         else if(task.getType().equals(WorkflowConstants.MAILSERVICETASK_TYPE)) {
-            MailTask mailTask = new MailTask();
-            mailTask.setTaskId(task.getTaskId());
-            mailTask.setTaskName(task.getTaskName());
-            mailTask.setProjectId(projectId);
-            mailTask.setProcessId(workflowId);
-
-            HashMap<String, Object> attributes = task.getAttributes();
-            if(attributes.containsKey(USE_DEFAULT_CREDENTIALS)) {
-                mailTask.setbUseDefaultCredentials((boolean) task.getAttributes().get(USE_DEFAULT_CREDENTIALS));
-                mailTask.setbEnableSSL((boolean) task.getAttributes().get(ENABLE_SSL));
-            }
-            mailTask.setiPort((Integer) task.getAttributes().get(PORT));
-            mailTask.setStrSenderAddress((String) task.getAttributes().get(SENDER_ADDRESS));
-            mailTask.setiSendTimeOut((Integer) task.getAttributes().get(SEND_TIME_OUT));
-            mailTask.setLstRecieverAddress((List<String>) task.getAttributes().get(RECEIVER_ADDRESS));
-            mailTask.setEmailMessage((HashMap<String, String>) task.getAttributes().get(EMAIL_MESSAGE));
-            mailTask.setStrSMTPServer((String) task.getAttributes().get(SMTP_SERVER));
-            mailTask.setStrPassword((String) task.getAttributes().get(PASSWORD));
-            mailTask.setStrUserName((String) task.getAttributes().get(USERNAME));
-            return mailTask;
+            return parseMailTask(projectId, workflowId, task);
         }
         else return null;
+    }
+
+    //parse web api task
+    public static WebApiTask parseWebApiTask(String projectId, String workflowId, TaskModel task) {
+        WebApiTask webApiTask = new WebApiTask();
+        webApiTask.setBodyType(BodyType.JSON);
+        webApiTask.setTaskId(task.getTaskId());
+        webApiTask.setTaskName(task.getTaskName());
+        webApiTask.setProcessId(workflowId);
+        webApiTask.setProjectId(projectId);
+        HashMap<String, Object> attributes = task.getAttributes();
+        if (attributes.get(INPUTS) != null) {
+            webApiTask.setHasBody(true);
+            webApiTask.setBody((HashMap<String, String>) attributes.get(INPUTS));
+        } else {
+            webApiTask.setHasBody(false);
+            webApiTask.setStringBody((String) attributes.get(BODY));
+        }
+        webApiTask.setHttpMethod(HttpMethod.valueOf((String) attributes.get(METHOD)));
+        webApiTask.setUrl((String) attributes.get(URL));
+        if(attributes.containsKey(AUTH_SCHEME)) {
+            webApiTask.setAuthentication((HashMap<String, String>) attributes.get(AUTHENTICATION));
+            webApiTask.setAuthScheme(AuthScheme.valueOf((String) attributes.get(AUTH_SCHEME)));
+        }
+        return webApiTask;
+    }
+
+    //parse script task
+    public static ScriptTask parseScriptTask(String projectId, String workflowId, TaskModel task) {
+        ScriptTask scriptTask = new ScriptTask();
+        scriptTask.setTaskName(task.getTaskName());
+        scriptTask.setTaskId(task.getTaskId());
+        scriptTask.setProjectId(projectId);
+        scriptTask.setProcessId(workflowId);
+        HashMap<String, Object> attributes = task.getAttributes();
+        if(attributes.containsKey(SCRIPT)) {
+            scriptTask.setScript((String) attributes.get(SCRIPT));
+            scriptTask.setTimeout((Integer) attributes.get(TIMEOUT));
+        }
+        return scriptTask;
+    }
+
+    //parse an inform task
+    public static InformTask parseInformTask(String projectId, String workflowId, TaskModel task) {
+        InformTask informTask = new InformTask();
+        informTask.setTaskName(task.getTaskName());
+        informTask.setTaskId(task.getTaskId());
+        informTask.setProjectId(projectId);
+        informTask.setProcessId(workflowId);
+        HashMap<String, Object> attributes = task.getAttributes();
+        if(attributes.get(MESSAGE) != null) {
+            informTask.setMessage((String) attributes.get(MESSAGE));
+        }
+        return informTask;
+    }
+
+    //parse database task
+    public static DatabaseTask parseDBTask(String projectId, String workflowId, TaskModel task) {
+        DatabaseTask databaseTask = new DatabaseTask();
+        databaseTask.setTaskName(task.getTaskName());
+        databaseTask.setTaskId(task.getTaskId());
+        databaseTask.setProjectId(projectId);
+        databaseTask.setProcessId(workflowId);
+        HashMap<String, Object> attributes = task.getAttributes();
+        if(attributes.get(REQUEST) != null) {
+            databaseTask.setRequest((String) attributes.get(REQUEST));
+        }
+        if(attributes.get(DATABASE_ID) != null) {
+            databaseTask.setDatabaseId((String) attributes.get(DATABASE_ID));
+        }
+        return databaseTask;
+    }
+
+    //parse email task
+    public static MailTask parseMailTask(String projectId, String workflowId, TaskModel task) {
+        MailTask mailTask = new MailTask();
+        mailTask.setTaskId(task.getTaskId());
+        mailTask.setTaskName(task.getTaskName());
+        mailTask.setProjectId(projectId);
+        mailTask.setProcessId(workflowId);
+
+        HashMap<String, Object> attributes = task.getAttributes();
+        if(attributes.containsKey(USE_DEFAULT_CREDENTIALS)) {
+            mailTask.setbUseDefaultCredentials((boolean) task.getAttributes().get(USE_DEFAULT_CREDENTIALS));
+            mailTask.setbEnableSSL((boolean) task.getAttributes().get(ENABLE_SSL));
+        }
+        mailTask.setiPort((Integer) task.getAttributes().get(PORT));
+        mailTask.setStrSenderAddress((String) task.getAttributes().get(SENDER_ADDRESS));
+        mailTask.setiSendTimeOut((Integer) task.getAttributes().get(SEND_TIME_OUT));
+        mailTask.setLstRecieverAddress((List<String>) task.getAttributes().get(RECEIVER_ADDRESS));
+        mailTask.setEmailMessage((HashMap<String, String>) task.getAttributes().get(EMAIL_MESSAGE));
+        mailTask.setStrSMTPServer((String) task.getAttributes().get(SMTP_SERVER));
+        mailTask.setStrPassword((String) task.getAttributes().get(PASSWORD));
+        mailTask.setStrUserName((String) task.getAttributes().get(USERNAME));
+        return mailTask;
     }
 }

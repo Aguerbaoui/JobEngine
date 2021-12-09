@@ -9,6 +9,8 @@ public class JEMessages {
 
     public static final String RUNNER_STARTED = "Runner started successfully";
 
+    public static final String MONITOR_STARTED = "Monitor started successfully";
+
     public static final String RUNNER_SHUTTING_DOWN = "Runner is shutting down";
 
     public static final String RUNNER_CONFFIG_UPDATE = "Updating JERunner configuration";
@@ -84,7 +86,7 @@ public class JEMessages {
 
     public static final String ADDING_CLASS_TO_RUNNER_FROM_BUILDER_WITH_ID = "Adding class to JERunner from JEBuilder with Id";
 
-    public static final String ADDING_CLASSES_TO_RUNNER_FROM_BUILDER = "Adding class to JERunner from JEBuilder";
+    public static final String ADDING_CLASS_TO_RUNNER_FROM_BUILDER = "Adding class to JERunner from JEBuilder";
 
 
     public static final String FAILED_TO_LOAD_CLASS = "Failed to load class";
@@ -346,6 +348,7 @@ public class JEMessages {
     public static final String TOPIC_ADDED = "Added topics successfully";
 
     public static final String EMPTY_SCRIPT = "Script block must have a valid script";
+    public static final String EMPTY_CODE = "Code is empty";
 
     // ****************************************EVENTS**************************************************
 
@@ -634,6 +637,7 @@ public class JEMessages {
     public static final String ERROR_EXECUTING_DB_QUERY = "Error while executing the database query";
     public static final String ERROR_GETTING_CLASS_UPDATES = "Error while getting class updates";
     public static final String FAILED_TO_SEND_LOG_MESSAGE_TO_THE_LOGGING_SYSTEM = "Failed to send log message to the Tracker module: ";
+    public static final String FAILED_TO_SEND_MONITORING_MESSAGE_TO_THE_LOGGING_SYSTEM = "Failed to send monitoring data to the JEMonitor module: ";
     public static final String CHECK_DM_FOR_DETAILS = "Check Integration Objects' SIOTH Data Model service's log file for more details. ";
     public static final String ERROR_RUNNING_PROJECT = "Error while running project, check your configuration";
     public static final String ERROR_STOPPING_PROJECT = "Error while stopping project, check your configuration";
@@ -695,4 +699,13 @@ public class JEMessages {
     public static final String DMAPI_RESPONSE = "Data Model definition returned : ";
 
     public static final String CUSTOM_COMPILATION_SUCCESS = "Compilation in JEClassLoader succeeded.";
+    public static final String SENDING_WORKFLOW_MONITORING_DATA_TO_JEMONITOR = "Sending workflow Monitoring data to JEMonitor: ";
+    public static final String STARTED_LISTENING_FOR_MONITORING_DATA_FROM_THE_JOB_ENGINE = "Started listening for monitoring data from the JobEngine";
+
+    public static final String CODE_COMPILATION_SUCCESSFUL = "Code was successfully compiled";
+    public static final String PROCEDURE_SHOULD_CONTAIN_CODE = "Procedure should contain code";
+    public static final String FAILED_TO_DELETE_FILES = "Failed to delete files ";
+
+	public static final String FAILED_TO_LOAD_PROJECT = "Failed to load project from database";
+	public static final String ILLEGAL_OPERATION_CLASS_UPDATE_DURING_PROJECT_RUN = "Class updates will only be effective once the project is stopped. Rules using the updated class will not work anymore";
 }

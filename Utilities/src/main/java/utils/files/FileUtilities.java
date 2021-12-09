@@ -1,14 +1,12 @@
 package utils.files;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.Locale;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 
 public class FileUtilities {
 
@@ -30,10 +28,8 @@ public class FileUtilities {
 		return content;
 	}
 
-	public static void deleteFileFromPath(String path) {
-
-			File file = new File(path);
-
+	public static void deleteFileFromPath(String path) throws IOException {
+		Files.deleteIfExists(Paths.get(path));
 
 	}
 	public static void deleteFilesInPathByPrefix(final String path, final String prefix) {

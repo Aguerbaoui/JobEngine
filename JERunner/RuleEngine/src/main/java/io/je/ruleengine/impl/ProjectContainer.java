@@ -7,7 +7,7 @@ import io.je.utilities.classloader.JEClassLoader;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.*;
 import io.je.utilities.log.JELogger;
-import io.je.utilities.ruleutils.RuleIdManager;
+import io.je.utilities.ruleutils.IdManager;
 import io.je.utilities.runtimeobject.JEObject;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
@@ -50,6 +50,7 @@ public class ProjectContainer {
 
 	// This is where all the compiled rules are saved.
 
+	
 	Map<String, Rule> allRules = new ConcurrentHashMap<>();
 
 	private String projectId;
@@ -88,12 +89,12 @@ public class ProjectContainer {
 	// We interact with the engine through a KieSession.
 	private KieSession kieSession;
 	private int releaseVersion = 1;
-	//private KieSessionManagerInterface kieManager;
+	// private KieSessionManagerInterface kieManager;
 	// This attribute is responsible for listening to the engine while it's active.
 	private RuleListener ruleListener;
-
-	private boolean isInitialised = false;
-	//JEClassLoader loader = JEClassLoader.getInstance();
+	private boolean  reloadContainer = false;
+	// private boolean isInitialised = false;
+	// JEClassLoader loader = JEClassLoader.getInstance();
 	ConcurrentHashMap<String, FactHandle> facts = new ConcurrentHashMap<>();
 
 	/*
@@ -106,26 +107,29 @@ public class ProjectContainer {
 		kieServices = KieServices.Factory.get();
 		kieFileSystem = kieServices.newKieFileSystem();
 		kfsToCompile = kieServices.newKieFileSystem();
-		ruleListener= new RuleListener(projectId);
+		ruleListener = new RuleListener(projectId);
 
 		// createKModule
 		createKModule();
 
 	}
-	
-	
-	public void resetContainer()
-	{
-		try {
-			releaseId = kieServices.newReleaseId("io.je", "ruleengine", getReleaseVer());
-			kieContainer = kieServices.newKieContainer(releaseId, JEClassLoader.getInstance());
-			kScanner = kieServices.newKieScanner(kieContainer);
-			kieBase = kieContainer.getKieBase("kie-base");
-			Thread.currentThread().setContextClassLoader(JEClassLoader.getInstance());
-		}catch (Exception e) {
-			// TODO: handle exception
-		}
 
+	public void resetContainer() {
+		if (kieContainer != null && reloadContainer) {
+			initKieBase();
+			if (status == Status.RUNNING) {
+				stopRuleExecution(true, true);
+				try {
+					fireRules();
+				} catch (RulesNotFiredException | RuleBuildFailedException e) {
+					e.printStackTrace();
+					JELogger.error(JEMessages.FAILED_TO_FIRE_RULES, LogCategory.RUNTIME, projectId, LogSubModule.RULE,
+							null);
+				}
+			}
+		}
+		reloadContainer = false;
+		JELogger.trace("Reloaded Rule Engine.");
 	}
 
 	/*--------------------------------------------------------PROJECT METHODS ---------------------------------------------------------------*/
@@ -142,19 +146,16 @@ public class ProjectContainer {
 	 * rules.
 	 */
 	public void buildProject() throws RuleBuildFailedException {
-		JELogger.debugWithoutPublish(JEMessages.BUILDING_PROJECT_CONTAINER,
-				LogCategory.RUNTIME, projectId,
+		JELogger.debugWithoutPublish(JEMessages.BUILDING_PROJECT_CONTAINER, LogCategory.RUNTIME, projectId,
 				LogSubModule.RULE, null);
-		 //loader = new JEClassLoader(ProjectContainer.class.getClassLoader());
+		// loader = new JEClassLoader(ProjectContainer.class.getClassLoader());
 		// build kie environment
 		if (!buildKie()) {
-			JELogger.error(JEMessages.BUILDING_PROJECT_CONTAINER_FAILED,
-					LogCategory.RUNTIME, projectId,
+			JELogger.error(JEMessages.BUILDING_PROJECT_CONTAINER_FAILED, LogCategory.RUNTIME, projectId,
 					LogSubModule.RULE, null);
 			throw new RuleBuildFailedException(JEMessages.BUILDING_PROJECT_CONTAINER_FAILED);
 		}
-		JELogger.debugWithoutPublish(JEMessages.BUILDING_PROJECT_CONTAINER_SUCCESS,
-				LogCategory.RUNTIME, projectId,
+		JELogger.debugWithoutPublish(JEMessages.BUILDING_PROJECT_CONTAINER_SUCCESS, LogCategory.RUNTIME, projectId,
 				LogSubModule.RULE, null);
 
 	}
@@ -164,18 +165,15 @@ public class ProjectContainer {
 	 */
 	public void fireRules() throws RulesNotFiredException, RuleBuildFailedException {
 
-		JELogger.debugWithoutPublish("[projectId ="+projectId+"]" + JEMessages.FIRING_ALL_RULES,
-				LogCategory.RUNTIME, projectId,
-				LogSubModule.RULE, null);
+		JELogger.debugWithoutPublish("[projectId =" + projectId + "]" + JEMessages.FIRING_ALL_RULES,
+				LogCategory.RUNTIME, projectId, LogSubModule.RULE, null);
 		facts = new ConcurrentHashMap<String, FactHandle>();
-		if(allRules == null || allRules.isEmpty())
-		{
-			JELogger.debugWithoutPublish("[projectId ="+projectId+"] " + JEMessages.NO_RULES,
-					LogCategory.RUNTIME, projectId,
-					LogSubModule.RULE, null);
+		if (allRules == null || allRules.isEmpty()) {
+			JELogger.debugWithoutPublish("[projectId =" + projectId + "] " + JEMessages.NO_RULES, LogCategory.RUNTIME,
+					projectId, LogSubModule.RULE, null);
 
 		}
-		
+
 		// build project if not already built
 		if (buildStatus == BuildStatus.UNBUILT) {
 			buildProject();
@@ -183,8 +181,8 @@ public class ProjectContainer {
 
 		// check that project is not already running
 		if (status == Status.RUNNING) {
-			stopRuleExecution(false,false);
-			
+			stopRuleExecution(false, false);
+
 		}
 
 		// fire rules
@@ -193,28 +191,28 @@ public class ProjectContainer {
 			if (kieSession == null) {
 				kieSession = kieBase.newKieSession();
 			}
-			Runnable runnable = () -> { 
+			Runnable runnable = () -> {
 				try {
-				kieSession.addEventListener(ruleListener);
-			//	Thread.currentThread().setContextClassLoader(loader);
-				kieSession.fireUntilHalt();
-				}catch(Exception e)
-				{
+					kieSession.addEventListener(ruleListener);
+					// Thread.currentThread().setContextClassLoader(loader);
+					kieSession.fireUntilHalt();
+				} catch (Exception e) {
 					e.printStackTrace();
-					//fatal : Runtime Executions
-					String ruleId= RuleIdManager.getRuleIdFromErrorMsg(e.getMessage());
+					// fatal : Runtime Executions
+					String ruleId = IdManager.getRuleIdFromErrorMsg(e.getMessage());
 					e.printStackTrace();
-					JELogger.error(JEMessages.RULE_EXECUTION_ERROR +StringUtils.substringBefore(e.getMessage(), " in ") ,  LogCategory.RUNTIME,
-                              projectId, LogSubModule.RULE, ruleId);
+					JELogger.error(
+							JEMessages.RULE_EXECUTION_ERROR + StringUtils.substringBefore(e.getMessage(), " in "),
+							LogCategory.RUNTIME, projectId, LogSubModule.RULE, ruleId);
 					try {
 						fireRules();
-					} catch (RulesNotFiredException | RuleBuildFailedException  e1) {
-						JELogger.error(JEMessages.FAILED_TO_FIRE_RULES,  LogCategory.RUNTIME,
-								projectId, LogSubModule.RULE, ruleId);
+					} catch (RulesNotFiredException | RuleBuildFailedException e1) {
+						JELogger.error(JEMessages.FAILED_TO_FIRE_RULES, LogCategory.RUNTIME, projectId,
+								LogSubModule.RULE, ruleId);
 					}
-					
+
 				}
-				};
+			};
 			t1 = new Thread(runnable);
 			t1.start();
 			status = Status.RUNNING;
@@ -223,52 +221,45 @@ public class ProjectContainer {
 			if (t1 != null) {
 				kieSession.halt();
 			}
-			JELogger.error(JEMessages.FAILED_TO_FIRE_RULES+" : "+e.getMessage(),  LogCategory.RUNTIME,
-					projectId, LogSubModule.RULE, null);
-			//TODO Add message to exception
+			JELogger.error(JEMessages.FAILED_TO_FIRE_RULES + " : " + e.getMessage(), LogCategory.RUNTIME, projectId,
+					LogSubModule.RULE, null);
+			// TODO Add message to exception
 			e.printStackTrace();
 			throw new RulesNotFiredException("");
 
 		}
 
 	}
-	
-	
-	
-
 
 	/*
 	 * This method stops the rule execution
 	 */
-	public boolean stopRuleExecution(boolean destroySession,boolean removeAllRules) {
-		JELogger.debugWithoutPublish(JEMessages.STOPPING_PROJECT_CONTAINER,  LogCategory.RUNTIME,
-				projectId, LogSubModule.RULE, null);
-		//destroySession=false;
+	public boolean stopRuleExecution(boolean destroySession, boolean removeAllRules) {
+		JELogger.debugWithoutPublish(JEMessages.STOPPING_PROJECT_CONTAINER, LogCategory.RUNTIME, projectId,
+				LogSubModule.RULE, null);
+		// destroySession=false;
 		try {
 
-			if(kieSession!=null)
-			{
+			if (kieSession != null) {
 				kieSession.halt();
 				status = Status.STOPPED;
-				if(destroySession)
-				{
+				if (destroySession) {
 					kieSession.dispose();
 					kieSession.destroy();
-					kieSession=null;
+					kieSession = null;
 					facts.clear();
 				}
-				if(removeAllRules)
-				{
+				if (removeAllRules) {
 					allRules.clear();
 					deleteAllRulesFromKieFileSystem();
 				}
 
 			}
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
-			JELogger.error(JEMessages.STOPPING_PROJECT_CONTAINER_FAILED,  LogCategory.RUNTIME,
-					projectId, LogSubModule.RULE, null);
+			JELogger.error(JEMessages.STOPPING_PROJECT_CONTAINER_FAILED, LogCategory.RUNTIME, projectId,
+					LogSubModule.RULE, null);
 			return false;
 		}
 		return true;
@@ -285,11 +276,11 @@ public class ProjectContainer {
 	 * creating the project's kie container.
 	 */
 	private boolean buildKie() {
-		JELogger.debugWithoutPublish("[projectId ="+projectId+"]" + JEMessages.BUILDING_PROJECT,  LogCategory.RUNTIME,
-				projectId, LogSubModule.RULE, null);
-		/*if (allRules.isEmpty()) {
-			return false;
-		}*/
+		JELogger.debugWithoutPublish("[projectId =" + projectId + "]" + JEMessages.BUILDING_PROJECT,
+				LogCategory.RUNTIME, projectId, LogSubModule.RULE, null);
+		/*
+		 * if (allRules.isEmpty()) { return false; }
+		 */
 
 		// TODO: only delete/re-add rule that have been modified
 		// empty kie file system
@@ -300,55 +291,45 @@ public class ProjectContainer {
 
 		// build all rules
 		try {
-			kieServices.newKieBuilder(kieFileSystem, JEClassLoader.getInstance()).buildAll(null);
+			kieServices.newKieBuilder(kieFileSystem, JEClassLoader.getDataModelInstance()).buildAll(null);
 		} catch (Exception e) {
-			//e.printStackTrace();
-			JELogger.error("Error creating kieBuilder \n " + Arrays.toString(e.getStackTrace()),  LogCategory.RUNTIME,
+			// e.printStackTrace();
+			JELogger.error("Error creating kieBuilder \n " + Arrays.toString(e.getStackTrace()), LogCategory.RUNTIME,
 					projectId, LogSubModule.RULE, null);
 			return false;
 		}
-		if (!isInitialised) {
 
-			return initKieBase();
-
-		} else {
-			JELogger.debugWithoutPublish("[projectId ="+projectId+"]"+JEMessages.KIE_BUILT,  LogCategory.RUNTIME,
-					projectId, LogSubModule.RULE, null);
-			return true;
-		}
+		return initKieBase();
 
 	}
 
 	private boolean initKieBase() {
-		if (!isInitialised) {
-			JELogger.debugWithoutPublish("[projectId ="+projectId+"]" + JEMessages.KIE_INIT,  LogCategory.RUNTIME,
+		
+			JELogger.debugWithoutPublish("[projectId =" + projectId + "]" + JEMessages.KIE_INIT, LogCategory.RUNTIME,
 					projectId, LogSubModule.RULE, null);
 			if (releaseId != null) {
 
 				// create container
 				try {
-					kieContainer = kieServices.newKieContainer(releaseId, JEClassLoader.getInstance());
+					kieContainer = kieServices.newKieContainer(releaseId, JEClassLoader.getDataModelInstance());
+					//JELogger.debug("   CONTAINER :" + kieContainer.getClassLoader().toString());
 					kScanner = kieServices.newKieScanner(kieContainer);
 					kieBase = kieContainer.getKieBase("kie-base");
-					Thread.currentThread().setContextClassLoader(JEClassLoader.getInstance());
-
+					Thread.currentThread().setContextClassLoader(JEClassLoader.getDataModelInstance());
 
 				} catch (Exception e) {
-					JELogger.error("Error creating kieBase \n " + Arrays.toString(e.getStackTrace()),  LogCategory.RUNTIME,
-							projectId, LogSubModule.RULE, null);
+					JELogger.error("Error creating kieBase \n " + Arrays.toString(e.getStackTrace()),
+							LogCategory.RUNTIME, projectId, LogSubModule.RULE, null);
 					return false;
 				}
 
 			} else {
 				return false;
 			}
-			//isInitialised = true;
-			return true;
-		} else {
 			return true;
 		}
-		
-	}
+
+	
 
 	/*
 	 * this method is responsible for creating the kieModule
@@ -376,7 +357,7 @@ public class ProjectContainer {
 			// generate pom file
 			kieFileSystem.generateAndWritePomXML(releaseId);
 		} catch (Exception e) {
-			JELogger.error(JEMessages.UNEXPECTED_ERROR + "\n" + Arrays.toString(e.getStackTrace()),  LogCategory.RUNTIME,
+			JELogger.error(JEMessages.UNEXPECTED_ERROR + "\n" + Arrays.toString(e.getStackTrace()), LogCategory.RUNTIME,
 					projectId, LogSubModule.RULE, null);
 		}
 
@@ -401,8 +382,7 @@ public class ProjectContainer {
 
 		try {
 			String ruleName = generateResourceName(ResourceType.DRL, rule.getJobEngineElementName());
-			JELogger.trace(">>> adding "+ruleName ,  LogCategory.RUNTIME,
-					projectId, LogSubModule.RULE, null);		
+			JELogger.trace(">>> adding " + ruleName, LogCategory.RUNTIME, projectId, LogSubModule.RULE, null);
 			kieFileSystem.write(ruleName, rule.getContent());
 
 		} catch (Exception e) {
@@ -419,19 +399,15 @@ public class ProjectContainer {
 
 		try {
 			String ruleName = generateResourceName(ResourceType.DRL, rule.getJobEngineElementName());
-			JELogger.trace("deleting "+ruleName ,  LogCategory.RUNTIME,
-					projectId, LogSubModule.RULE, null);	
-			
+			JELogger.trace("deleting " + ruleName, LogCategory.RUNTIME, projectId, LogSubModule.RULE, null);
 
-			if(kieFileSystem.read(ruleName)!=null)
-			{
+			if (kieFileSystem.read(ruleName) != null) {
 				kieFileSystem.delete(ruleName);
 			}
 
 		} catch (Exception e) {
-			
-			JELogger.error(JEMessages.FAILED_TO_DELETE_RULE,  LogCategory.RUNTIME,
-					projectId, LogSubModule.RULE, null);
+
+			JELogger.error(JEMessages.FAILED_TO_DELETE_RULE, LogCategory.RUNTIME, projectId, LogSubModule.RULE, null);
 			return false;
 		}
 
@@ -463,29 +439,27 @@ public class ProjectContainer {
 	public boolean updateContainer() {
 		try {
 			releaseId = kieServices.newReleaseId("io.je", "ruleengine", getReleaseVer());
-			JELogger.debug("release Id = "+releaseId,  LogCategory.RUNTIME,
-					projectId, LogSubModule.RULE, null);
+			JELogger.debug("release Id = " + releaseId, LogCategory.RUNTIME, projectId, LogSubModule.RULE, null);
 			kieFileSystem.generateAndWritePomXML(releaseId);
-			kieServices.newKieBuilder(kieFileSystem, JEClassLoader.getInstance()).buildAll();
-			if(kieContainer==null)
-			{
-				kieContainer = kieServices.newKieContainer(releaseId, JEClassLoader.getInstance());
+			kieServices.newKieBuilder(kieFileSystem, JEClassLoader.getDataModelInstance()).buildAll();
+			if (kieContainer == null) {
+				kieContainer = kieServices.newKieContainer(releaseId, JEClassLoader.getDataModelInstance());
 			}
-			//Thread.currentThread().setContextClassLoader(JEClassLoader.getInstance());
+			// Thread.currentThread().setContextClassLoader(JEClassLoader.getInstance());
 
 			kieContainer.updateToVersion(releaseId);
 
-			if(kScanner==null)
-			{
-				 kScanner = kieServices.newKieScanner(kieContainer);
+			if (kScanner == null) {
+				kScanner = kieServices.newKieScanner(kieContainer);
 			}
 			kScanner.scanNow();
 
 		} catch (Exception e) {
 			e.printStackTrace();
-			JELogger.error(JEMessages.UNEXPECTED_ERROR + "\n" + e.getMessage(),  LogCategory.RUNTIME,
-					projectId, LogSubModule.RULE, null);
-			//JELogger.error(ProjectContainer.class, RuleEngineErrors.FailedToUpdateContainer + e.getMessage());
+			JELogger.error(JEMessages.UNEXPECTED_ERROR + "\n" + e.getMessage(), LogCategory.RUNTIME, projectId,
+					LogSubModule.RULE, null);
+			// JELogger.error(ProjectContainer.class,
+			// RuleEngineErrors.FailedToUpdateContainer + e.getMessage());
 		}
 
 		return true;
@@ -517,8 +491,9 @@ public class ProjectContainer {
 	public void addRule(Rule rule)
 			throws RuleCompilationException, RuleAlreadyExistsException, JEFileNotFoundException {
 
-		JELogger.debugWithoutPublish("[projectId ="+projectId+"] " + JEMessages.ADDING_RULE+ " ["+rule.getJobEngineElementName()+"]",  LogCategory.RUNTIME,
-				projectId, LogSubModule.RULE, rule.getJobEngineElementID());
+		JELogger.debugWithoutPublish("[projectId =" + projectId + "] " + JEMessages.ADDING_RULE + " ["
+				+ rule.getJobEngineElementName() + "]", LogCategory.RUNTIME, projectId, LogSubModule.RULE,
+				rule.getJobEngineElementID());
 		// check if rule already exists
 		if (ruleExists(rule)) {
 			throw new RuleAlreadyExistsException(JEMessages.RULE_EXISTS);
@@ -541,11 +516,12 @@ public class ProjectContainer {
 	 * rule exists => rule will be updates
 	 */
 	public boolean updateRule(Rule rule) throws RuleCompilationException, JEFileNotFoundException {
-		JELogger.debugWithoutPublish("[projectId ="+projectId+"] " + JEMessages.UPDATING_RULE+ " ["+rule.getJobEngineElementName()+"]",  LogCategory.RUNTIME,
-				projectId, LogSubModule.RULE, rule.getJobEngineElementID());
+		JELogger.debugWithoutPublish("[projectId =" + projectId + "] " + JEMessages.UPDATING_RULE + " ["
+				+ rule.getJobEngineElementName() + "]", LogCategory.RUNTIME, projectId, LogSubModule.RULE,
+				rule.getJobEngineElementID());
 		// compile rule
 		compileRule(rule);
-		
+
 		if (status != Status.RUNNING) {
 			buildStatus = BuildStatus.UNBUILT;
 		}
@@ -568,12 +544,11 @@ public class ProjectContainer {
 			addRuleToKieFileSystem(rule);
 			updateContainer();
 		} catch (Exception e) {
-			JELogger.error(JEMessages.RULE_UPDATE_FAIL + "\n" + Arrays.toString(e.getStackTrace()),  LogCategory.RUNTIME,
+			JELogger.error(JEMessages.RULE_UPDATE_FAIL + "\n" + Arrays.toString(e.getStackTrace()), LogCategory.RUNTIME,
 					projectId, LogSubModule.RULE, rule.getJobEngineElementID());
 			return false;
 		}
 
-		
 		return true;
 
 	}
@@ -582,29 +557,29 @@ public class ProjectContainer {
 	 * delete rule from engine
 	 */
 	public void deleteRule(String ruleId) throws DeleteRuleException {
-		JELogger.debugWithoutPublish("[projectId ="+projectId+"] "+JEMessages.DELETING_RULE+" [id : "+ruleId+"]..",  LogCategory.RUNTIME,
-				projectId, LogSubModule.RULE, ruleId);
+		JELogger.debugWithoutPublish(
+				"[projectId =" + projectId + "] " + JEMessages.DELETING_RULE + " [id : " + ruleId + "]..",
+				LogCategory.RUNTIME, projectId, LogSubModule.RULE, ruleId);
 		// check that rule exists
 		if (!ruleExists(ruleId)) {
-				return;
+			return;
 		}
 		// if project is running, update container without interrupting project
-			try {
-				deleteRuleFromKieFileSystem(allRules.get(ruleId));
-				//deleteAllRulesFromKieFileSystem();
-				//addAllRulesToKieFileSystem();
-		
-				updateContainer();
-			} catch (Exception e) {
-				JELogger.error(JEMessages.RULE_DELETE_FAIL + "\n" + Arrays.toString(e.getStackTrace()),  LogCategory.RUNTIME,
-						projectId, LogSubModule.RULE, ruleId);
-				throw new DeleteRuleException(JEMessages.RULE_DELETE_FAIL);
+		try {
+			deleteRuleFromKieFileSystem(allRules.get(ruleId));
+			// deleteAllRulesFromKieFileSystem();
+			// addAllRulesToKieFileSystem();
 
+			updateContainer();
+		} catch (Exception e) {
+			JELogger.error(JEMessages.RULE_DELETE_FAIL + "\n" + Arrays.toString(e.getStackTrace()), LogCategory.RUNTIME,
+					projectId, LogSubModule.RULE, ruleId);
+			throw new DeleteRuleException(JEMessages.RULE_DELETE_FAIL);
 
-			}
-			allRules.remove(ruleId);
+		}
+		allRules.remove(ruleId);
 
-			if (status != Status.RUNNING) {
+		if (status != Status.RUNNING) {
 
 			buildStatus = BuildStatus.UNBUILT;
 		}
@@ -618,31 +593,29 @@ public class ProjectContainer {
 
 		// load rule content from rule path
 
-		JELogger.debugWithoutPublish("[projectId ="+projectId+"]"+
-						JEMessages.COMPILING_RULE+" ["+rule.getJobEngineElementName()+"]..",
-				LogCategory.DESIGN_MODE, rule.getJobEngineProjectID(),
-				LogSubModule.RULE,rule.getJobEngineElementID());
+		JELogger.debugWithoutPublish(
+				"[projectId =" + projectId + "]" + JEMessages.COMPILING_RULE + " [" + rule.getJobEngineElementName()
+						+ "]..",
+				LogCategory.DESIGN_MODE, rule.getJobEngineProjectID(), LogSubModule.RULE, rule.getJobEngineElementID());
 		RuleLoader.loadRuleContent(rule);
 		String filename = generateResourceName(ResourceType.DRL, rule.getJobEngineElementName());
 		kfsToCompile.write(filename, rule.getContent());
-		//JEClassLoader loader = new JEClassLoader(ProjectContainer.class.getClassLoader());
-		/*try {
-			Class c = loader.loadClass("classes.Car");
-			for(Field f: c.getDeclaredFields()) {
-				JELogger.info("field name in loaded class in project container = " + f.getName());
-			}
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		}*/
-		//Thread.currentThread().setContextClassLoader( loader );
-		KieBuilder kieBuilder = kieServices.newKieBuilder(kfsToCompile, JEClassLoader.getInstance()).buildAll();
+		// JEClassLoader loader = new
+		// JEClassLoader(ProjectContainer.class.getClassLoader());
+		/*
+		 * try { Class c = loader.loadClass("classes.Car"); for(Field f:
+		 * c.getDeclaredFields()) {
+		 * JELogger.info("field name in loaded class in project container = " +
+		 * f.getName()); } } catch (ClassNotFoundException e) { e.printStackTrace(); }
+		 */
+		// Thread.currentThread().setContextClassLoader( loader );
+		KieBuilder kieBuilder = kieServices.newKieBuilder(kfsToCompile, JEClassLoader.getDataModelInstance()).buildAll();
 
 		Results results = kieBuilder.getResults();
 		if (results.hasMessages(Message.Level.ERROR)) {
-			JELogger.error(results.getMessages().toString(),  LogCategory.RUNTIME,
-					projectId, LogSubModule.RULE, rule.getJobEngineElementID());
-			throw new RuleCompilationException(JEMessages.RULE_CONTAINS_ERRORS,
-					results.getMessages().get(0).getText());
+			JELogger.error(results.getMessages().toString(), LogCategory.RUNTIME, projectId, LogSubModule.RULE,
+					rule.getJobEngineElementID());
+			throw new RuleCompilationException(JEMessages.RULE_CONTAINS_ERRORS, results.getMessages().get(0).getText());
 		}
 		kfsToCompile.delete(filename);
 
@@ -652,14 +625,12 @@ public class ProjectContainer {
 	 * this method compiles all the rules in this project container
 	 */
 	public boolean compileAllRules() {
-		JELogger.debugWithoutPublish("[projectId ="+projectId+"]"+JEMessages.COMPILING_RULES,
-				LogCategory.DESIGN_MODE, projectId,
-				LogSubModule.RULE,null);
-		KieBuilder kieBuilder = kieServices.newKieBuilder(kieFileSystem, JEClassLoader.getInstance()).buildAll(null);
+		JELogger.debugWithoutPublish("[projectId =" + projectId + "]" + JEMessages.COMPILING_RULES,
+				LogCategory.DESIGN_MODE, projectId, LogSubModule.RULE, null);
+		KieBuilder kieBuilder = kieServices.newKieBuilder(kieFileSystem, JEClassLoader.getDataModelInstance()).buildAll(null);
 		Results results = kieBuilder.getResults();
 		if (results.hasMessages(Message.Level.ERROR)) {
-			JELogger.error(results.getMessages().toString(),  LogCategory.RUNTIME,
-					projectId, LogSubModule.RULE, null);
+			JELogger.error(results.getMessages().toString(), LogCategory.RUNTIME, projectId, LogSubModule.RULE, null);
 			return false;
 		}
 
@@ -728,19 +699,24 @@ public class ProjectContainer {
 			// kieSession.insert(fact);
 			synchronized (kieSession) {
 				try {
-					//ClassLoader t = JEClassLoader.getInstance(); //io.je.utilities.classloader.JEClassLoader@733aa287
-					//ClassLoader test = fact.getClass().getClassLoader(); //io.je.utilities.classloader.JEClassLoader@41ee5f60
-					JELogger.trace(JEClassLoader.getInstance().toString(), LogCategory.RUNTIME, projectId, LogSubModule.RULE, fact.getJobEngineElementID());
-					JELogger.trace(fact.getClass().getClassLoader().toString(), LogCategory.RUNTIME, projectId, LogSubModule.RULE, fact.getJobEngineElementID());
-
-					synchronized(facts)
-					{
-						JELogger.debug("[projectId ="+projectId+"] [factId :"+fact.getJobEngineElementID()+"]" + JEMessages.UPDATING_FACT,
-								LogCategory.DESIGN_MODE, projectId,
-								LogSubModule.RULE,fact.getJobEngineElementID());
+					// ClassLoader t = JEClassLoader.getInstance();
+					// //io.je.utilities.classloader.JEClassLoader@733aa287
+					// ClassLoader test = fact.getClass().getClassLoader();
+					// //io.je.utilities.classloader.JEClassLoader@41ee5f60
+					/*JELogger.trace(JEClassLoader.getInstance().toString(), LogCategory.RUNTIME, projectId,
+							LogSubModule.RULE, fact.getJobEngineElementID());
+					JELogger.trace(fact.getClass().getClassLoader().toString(), LogCategory.RUNTIME, projectId,
+							LogSubModule.RULE, fact.getJobEngineElementID());
+					JELogger.trace(kieContainer.getClassLoader().toString(), LogCategory.RUNTIME, projectId,
+							LogSubModule.RULE, fact.getJobEngineElementID());
+*/
+					synchronized (facts) {
+					/*	JELogger.debug(
+								"[projectId =" + projectId + "] [factId :" + fact.getJobEngineElementID() + "]"
+										+ JEMessages.UPDATING_FACT,
+								LogCategory.DESIGN_MODE, projectId, LogSubModule.RULE, fact.getJobEngineElementID()); */
 						if (facts.containsKey(fact.getJobEngineElementID())) {
-							kieSession.update(facts.get(fact.getJobEngineElementID()), fact); 
-							
+							kieSession.update(facts.get(fact.getJobEngineElementID()), fact);
 
 						} else {
 							facts.put(fact.getJobEngineElementID(), kieSession.insert(fact));
@@ -749,23 +725,24 @@ public class ProjectContainer {
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
-					JELogger.error("[factId ="
-									+ fact.getJobEngineElementID() + "]"+ JEMessages.FAILED_TO_UPDATE_FACT + ": " + e.getMessage() + "\n" ,  LogCategory.RUNTIME,
-							projectId, LogSubModule.RULE, fact.getJobEngineElementID());
+					JELogger.error(
+							"[factId =" + fact.getJobEngineElementID() + "]" + JEMessages.FAILED_TO_UPDATE_FACT + ": "
+									+ e.getMessage() + "\n",
+							LogCategory.RUNTIME, projectId, LogSubModule.RULE, fact.getJobEngineElementID());
 
 				}
 
 			}
-			
+
 		}
 
 	}
 
 	public void retractFact(String factId) {
 		try {
-			//kieSession.delete(facts.get(factId));
+			// kieSession.delete(facts.get(factId));
 
-		}catch (Exception e) {
+		} catch (Exception e) {
 			// TODO: handle exception
 			e.printStackTrace();
 		}
@@ -778,13 +755,24 @@ public class ProjectContainer {
 
 	public Rule getRule(String ruleId) {
 		return allRules.get(ruleId);
-		
+
 	}
 
-	/*public void setClassLoader(JEClassLoader loader) {
-		this.loader = loader;
-		Thread.currentThread().setContextClassLoader(loader);
-		updateContainer();
+	public boolean isReloadContainer() {
+		return reloadContainer;
+	}
 
-	}*/
+	public void setReloadContainer(boolean reloadContainer) {
+		this.reloadContainer = reloadContainer;
+	}
+
+	
+	
+	
+	/*
+	 * public void setClassLoader(JEClassLoader loader) { this.loader = loader;
+	 * Thread.currentThread().setContextClassLoader(loader); updateContainer();
+	 * 
+	 * }
+	 */
 }

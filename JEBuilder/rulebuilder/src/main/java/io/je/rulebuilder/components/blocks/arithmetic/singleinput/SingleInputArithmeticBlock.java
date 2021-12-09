@@ -68,6 +68,10 @@ public abstract class SingleInputArithmeticBlock extends ArithmeticBlock {
 		expression.append(inputBlocks.get(0).getExpression());
 		expression.append("\n");
 		expression.append( getBlockNameAsVariable()+" : " +getArithmeticFormula (0,defaultType));
+		if(stopExecutionIfInvalidInput)
+		{
+			expression.append("\n"+evaluateExecution(asDouble(getInputRefName(0))));
+		}
 		return expression.toString();
 	}
 
@@ -79,6 +83,10 @@ public abstract class SingleInputArithmeticBlock extends ArithmeticBlock {
 		expression.append("\n");
 	
 		expression.append( getBlockNameAsVariable()+" : " +getArithmeticFormula (1,defaultType));
+		if(stopExecutionIfInvalidInput)
+		{
+			expression.append("\n"+evaluateExecution(asDouble(getInputRefName(0))));
+		}
 		return expression.toString();
 	}
 
@@ -89,6 +97,10 @@ public abstract class SingleInputArithmeticBlock extends ArithmeticBlock {
 		expression.append(inputBlocks.get(0).getJoinExpression());
 		expression.append("\n");
 		expression.append( getBlockNameAsVariable()+" : " +getArithmeticFormula (0,defaultType));
+		if(stopExecutionIfInvalidInput)
+		{
+			expression.append("\n"+evaluateExecution(asDouble(getInputRefName(0))));
+		}
 		return expression.toString();
 	}
 
@@ -101,6 +113,10 @@ public abstract class SingleInputArithmeticBlock extends ArithmeticBlock {
 		expression.append(inputBlocks.get(0).getJoinedExpression(joinId));
 		expression.append("\n");
 		expression.append( getBlockNameAsVariable()+" : " +getArithmeticFormula (0,defaultType));
+		if(stopExecutionIfInvalidInput)
+		{
+			expression.append("\n"+evaluateExecution(asDouble(getInputRefName(0))));
+		}
 		return expression.toString();
 	}
 
@@ -112,6 +128,10 @@ public abstract class SingleInputArithmeticBlock extends ArithmeticBlock {
 		expression.append("\n");
 	
 		expression.append( getBlockNameAsVariable()+" : " +getArithmeticFormula (1,defaultType));
+		if(stopExecutionIfInvalidInput)
+		{
+			expression.append("\n"+evaluateExecution(asDouble(getInputRefName(0))));
+		}
 		return expression.toString();
 	}
 
@@ -123,6 +143,10 @@ public abstract class SingleInputArithmeticBlock extends ArithmeticBlock {
 		expression.append("\n");
 	
 		expression.append( getBlockNameAsVariable()+" : " +getArithmeticFormula (1,defaultType));
+		if(stopExecutionIfInvalidInput)
+		{
+			expression.append("\n"+evaluateExecution(asDouble(getInputRefName(0))));
+		}
 		return expression.toString();
 	}
 

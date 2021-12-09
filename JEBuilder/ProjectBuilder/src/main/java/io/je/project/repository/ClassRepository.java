@@ -7,5 +7,5 @@ import io.je.classbuilder.entity.JEClass;
 
 @Repository
 public interface ClassRepository extends MongoRepository<JEClass, String> {
-
+    void deleteByClassName (String className);
 }

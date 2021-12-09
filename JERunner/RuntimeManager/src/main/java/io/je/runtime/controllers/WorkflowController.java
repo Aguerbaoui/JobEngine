@@ -31,10 +31,11 @@ public class WorkflowController {
      * */
     @PostMapping(value = "/addWorkflow", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> addWorkflow(@RequestBody WorkflowModel wf) {
-        dispatcher.addWorkflow(wf);
+
         try {
-            dispatcher.buildWorkflow(wf.getProjectId(), wf.getId());
-        } catch (WorkflowBuildException e) {
+            dispatcher.addWorkflow(wf);
+            //dispatcher.buildWorkflow(wf.getProjectId(), wf.getId());
+        } catch (Exception e) {
             return JEExceptionHandler.handleException(e);
         }
         return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ADDED_WORKFLOW_SUCCESSFULLY));
@@ -44,15 +45,15 @@ public class WorkflowController {
     /*
      * Build and deploy workflow
      * */
-    @PostMapping(value = "/buildWorkflow/{projectId}/{key}", produces = MediaType.APPLICATION_JSON_VALUE)
+   /* @PostMapping(value = "/buildWorkflow/{projectId}/{key}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> buildWorkflow(@PathVariable String projectId, @PathVariable String key) {
         try {
-            dispatcher.buildWorkflow(projectId, key);
+            //dispatcher.buildWorkflow(projectId, key);
         } catch (WorkflowBuildException e) {
             return JEExceptionHandler.handleException(e);
         }
         return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, WORKFLOW_DEPLOYED));
-    }
+    }*/
 
     /*
      * Run workflow

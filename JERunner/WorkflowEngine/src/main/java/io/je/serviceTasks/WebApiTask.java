@@ -2,6 +2,7 @@ package io.je.serviceTasks;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import utils.network.AuthScheme;
 import utils.network.BodyType;
 import utils.network.HttpMethod;
 
@@ -21,6 +22,10 @@ public class WebApiTask extends  ActivitiTask{
     private String responseClass;
 
     private boolean hasBody;
+
+    private AuthScheme authScheme = AuthScheme.NONE;
+
+    private HashMap<String, String> authentication;
 
     private String url;
 
@@ -75,5 +80,29 @@ public class WebApiTask extends  ActivitiTask{
 
     public void setStringBody(String stringBody) {
         this.stringBody = stringBody;
+    }
+
+    public String getStringBody() {
+        return stringBody;
+    }
+
+    public boolean isHasBody() {
+        return hasBody;
+    }
+
+    public AuthScheme getAuthScheme() {
+        return authScheme;
+    }
+
+    public void setAuthScheme(AuthScheme authScheme) {
+        this.authScheme = authScheme;
+    }
+
+    public HashMap<String, String> getAuthentication() {
+        return authentication;
+    }
+
+    public void setAuthentication(HashMap<String, String> authentication) {
+        this.authentication = authentication;
     }
 }

@@ -4,11 +4,16 @@ import io.je.rulebuilder.models.BlockModel;
 
 public abstract class ArithmeticBlock extends ConditionBlock {
 
+
+	protected boolean stopExecutionIfInvalidInput = true;
+	
 	public ArithmeticBlock(BlockModel blockModel) {
 		super(blockModel.getBlockId(), blockModel.getProjectId(), blockModel.getRuleId(), blockModel.getBlockName(),
 				blockModel.getDescription(),blockModel.getInputBlocksIds(),blockModel.getOutputBlocksIds());
 
 	}
+	
+	
 
 	public ArithmeticBlock() {
 		super();
@@ -24,7 +29,7 @@ public abstract class ArithmeticBlock extends ConditionBlock {
 	
 	public String asDouble(String val)
 	{
-		return " Double.valueOf( "+val+" )";
+		return"JEMathUtils.castToDouble("+val+" )"; //" Double.valueOf( "+val+" )";
 	}
 	
 	
@@ -36,7 +41,9 @@ public abstract class ArithmeticBlock extends ConditionBlock {
 	protected abstract String getArithmeticFormula(int level,String type);
 	
 
-	
+	protected String evaluateExecution(String...inputs) {
+		return "";
+	}
 	
 
 }

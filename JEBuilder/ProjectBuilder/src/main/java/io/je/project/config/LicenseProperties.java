@@ -19,14 +19,14 @@ public class LicenseProperties {
 
 	public static void init() {
 
-		JELogger.info("Checking License Status..", LogCategory.SIOTH_APPLICATION, "", LogSubModule.JEBUILDER, "");
+		/*JELogger.info("Checking License Status..", LogCategory.SIOTH_APPLICATION, "", LogSubModule.JEBUILDER, "");
 		InitResponse response = ClientLicenseManager.initializeLicense(licenseManagerUrl, jobEngineFeatureCode, 0);
 
 		if (!response.getErrorMsg().isEmpty()) {
 			JELogger.error("Error occured while initializing license. Error: " + response.getErrorMsg(),
 					LogCategory.SIOTH_APPLICATION, "", LogSubModule.JEBUILDER, "");
 
-		}
+		}*/
 	//	setLicenseStatus(response.getStatus());
 	//	ClientLicenseManager.initListeners(jobEngineFeatureCode);
 	//	ClientLicenseManager.register(new JELicenseStatusListener());
@@ -56,7 +56,7 @@ public class LicenseProperties {
 
 	public static void setLicenseStatus(SIOTHLicenseStatus status) {
 
-		JELogger.info("License Status changed to " + status + ".", LogCategory.SIOTH_APPLICATION, "",
+		JELogger.control("License Status changed to " + status + ".", LogCategory.SIOTH_APPLICATION, "",
 				LogSubModule.JEBUILDER, "");
 
 		if ((status == SIOTHLicenseStatus.Corrupted) || status == SIOTHLicenseStatus.Backdated

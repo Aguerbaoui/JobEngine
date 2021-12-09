@@ -1,14 +1,18 @@
 package io.je.rulebuilder.components.blocks.arithmetic.multipleInput;
 
+import io.je.rulebuilder.config.AttributesMapping;
 import io.je.rulebuilder.models.BlockModel;
 
 public class HighLimitingBlock extends MultipleInputArithmeticBlock {
 
+	String limit;
+
 	public HighLimitingBlock(BlockModel blockModel) {
 		super(blockModel);
-		// TODO Auto-generated constructor stub
+		limit=String.valueOf( blockModel.getBlockConfiguration().get(AttributesMapping.VALUE));
+
 	}
-	
+
 	private HighLimitingBlock()
 	{
 		
@@ -16,7 +20,7 @@ public class HighLimitingBlock extends MultipleInputArithmeticBlock {
 
 	@Override
 	protected String getArithmeticFormula(int level,String type) {
-		return "MathUtilities.highLimiting( "  ;
+		return "MathUtilities.highLimiting( "+limit+","  ;
 
 	}
 

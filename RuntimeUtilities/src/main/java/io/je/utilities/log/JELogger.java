@@ -1,11 +1,7 @@
 package io.je.utilities.log;
 
-import java.time.LocalDateTime;
-
 import org.apache.logging.log4j.Level;
 
-import io.je.utilities.log.JELogger;
-import utils.date.DateUtils;
 import utils.log.LogCategory;
 import utils.log.LogLevel;
 import utils.log.LogMessage;
@@ -156,20 +152,6 @@ public class JELogger extends LoggerUtils {
 		publishLogMessage(logMessage);
 	}
 
-	// get Log message object for the logging service
-	public static LogMessage getLogMessage(LogLevel logLevel, String message, LogCategory category, String projectId,
-			LogSubModule subModule, String objectId) {
-		String logDate = DateUtils.formatDate(LocalDateTime.now(), "yyyy-MM-dd HH:mm:ss.SSS");
-
-		return new LogMessage(logLevel, message, logDate, /* category, */ projectId, subModule, objectId);
-	}
-
-	// get Log message object for the logging service
-	public static LogMessage getLogMessage(LogLevel logLevel, String message, LogCategory category, String projectId,
-			LogSubModule subModule, String objectId, String blockName) {
-		String logDate = DateUtils.formatDate(LocalDateTime.now(), "yyyy-MM-dd HH:mm:ss.SSS");
-
-		return new LogMessage(logLevel, message, logDate, /* category, */ projectId, subModule, objectId, blockName);
-	}
+	
 
 }

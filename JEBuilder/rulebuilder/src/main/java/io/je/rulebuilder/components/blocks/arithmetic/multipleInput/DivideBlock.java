@@ -6,18 +6,21 @@ public class DivideBlock extends MultipleInputArithmeticBlock {
 
 	public DivideBlock(BlockModel blockModel) {
 		super(blockModel);
-		// TODO Auto-generated constructor stub
 	}
 	
 	private DivideBlock()
 	{
-		
 	}
 
 	@Override
 	protected String getArithmeticFormula(int level,String type) {
 		return "MathUtilities.divide( "  ;
 
+	}
+	
+	@Override
+	protected String evaluateExecution(String...inputs) {
+		return "eval(JEMathUtils.divisionByZero(\""+this.jobEngineProjectID+"\",\""+this.ruleId+"\",\""+this.blockName+"\","+inputs[0]+"))\n";
 	}
 
 }

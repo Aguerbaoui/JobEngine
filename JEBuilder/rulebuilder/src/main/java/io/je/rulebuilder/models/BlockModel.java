@@ -1,14 +1,11 @@
 package io.je.rulebuilder.models;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import io.je.rulebuilder.components.enumerations.TimePersistenceUnit;
-import io.je.rulebuilder.config.AttributesMapping;
-import io.je.utilities.log.JELogger;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import org.springframework.lang.Nullable;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import io.je.rulebuilder.config.AttributesMapping;
 
 
 public class BlockModel {

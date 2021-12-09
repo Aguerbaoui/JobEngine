@@ -14,12 +14,9 @@ import utils.log.LogCategory;
 import utils.log.LogSubModule;
 import io.je.utilities.beans.JEResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
 import static io.je.utilities.constants.JEMessages.*;
 
 import java.util.HashMap;
@@ -181,7 +178,7 @@ public class ProjectController {
 		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, PROJECT_DELETED));
 	}
 
-	@GetMapping("/getProject/{projectId}")
+	/*@GetMapping("/getProject/{projectId}")
 	public ResponseEntity<?> getProject(@PathVariable String projectId) {
 	/*	JEProject project = null;
 		try {
@@ -199,9 +196,9 @@ public class ProjectController {
 		}
 		
 */
-		return ResponseEntity.ok("");
+	/*	return ResponseEntity.ok("");
 
-	}
+	}*/
 
 	/*
 	 * Build entire project files
@@ -288,7 +285,7 @@ public class ProjectController {
 		try {
 			JEProject project = projectService.getProject(projectId);
 			if(project != null) {
-				JELogger.debug("[projectId =" + project.getProjectName() + " ]  " + JEMessages.PROJECT_AUTO_RELOAD + autoReload, LogCategory.DESIGN_MODE,
+				JELogger.debug("[project =" + project.getProjectName() + " ]  " + JEMessages.PROJECT_AUTO_RELOAD + autoReload, LogCategory.DESIGN_MODE,
 						projectId, LogSubModule.JEBUILDER, null);
 				project.setAutoReload(autoReload);
 				projectService.saveProject(project).get();

@@ -9,7 +9,6 @@ import org.json.JSONObject;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.je.utilities.classloader.JEClassLoader;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.InstanceCreationFailed;
 import io.je.utilities.log.JELogger;
@@ -50,7 +49,6 @@ public class InstanceManager {
 	 */
 	public static JEObject createInstance(String dataReceived ) throws InstanceCreationFailed
 	{
-		 objectMapper.setTypeFactory(objectMapper.getTypeFactory().withClassLoader(JEClassLoader.getInstance()));
 		
 		InstanceModel instanceModel = getInstanceModel(dataReceived);
 		//JELogger.control("Listening for data from class "+instanceModel.getModelName(), null, "", LogSubModule.JERUNNER, "123");
@@ -63,7 +61,8 @@ public class InstanceManager {
 			throw new InstanceCreationFailed(JEMessages.CLASS_NOT_LOADED + instanceModel.getInstanceId());
 		}
 			
-		
+		 objectMapper.setTypeFactory(objectMapper.getTypeFactory().withClassLoader(instanceClass.getClassLoader()));
+
 		//create instance
 		Object instance=null;
 		//addInstanceId

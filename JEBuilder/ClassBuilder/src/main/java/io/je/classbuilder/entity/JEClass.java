@@ -1,5 +1,6 @@
 package io.je.classbuilder.entity;
 
+import io.je.utilities.beans.ClassAuthor;
 import io.je.utilities.beans.JEMethod;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -16,6 +17,7 @@ public class JEClass  {
 	String workspaceId;
 	String className;
 	HashMap<String, JEMethod>  methods = new HashMap<>();
+
 	/*
 	 * path where .java file is saved
 	 */
@@ -25,6 +27,9 @@ public class JEClass  {
 	 * class type : class, interface or enum
 	 */
 	ClassType classType;
+
+	//Class author ( Script, procedure or a datamodel class)
+	ClassAuthor classAuthor;
 	
 	public JEClass() {
 		methods = new HashMap<>();
@@ -102,5 +107,13 @@ public class JEClass  {
 
 	public void setMethods(HashMap<String, JEMethod> methods) {
 		this.methods = methods;
+	}
+
+	public ClassAuthor getClassAuthor(){
+		return classAuthor;
+	}
+	
+	public void setClassAuthor(ClassAuthor classAuthor){
+		this.classAuthor = classAuthor;
 	}
 }

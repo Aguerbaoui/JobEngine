@@ -114,12 +114,17 @@ public abstract class MultipleInputArithmeticBlock extends ArithmeticBlock {
 			comparableExpression = " : Number(doubleValue " + Keywords.toBeReplaced + ") from ";
 		}
 		StringBuilder expression = new StringBuilder();
+		
 		expression.append(getBlockNameAsVariable() + comparableExpression);
 		expression.append(getArithmeticFormula(0,"number") + asDouble(getInputRefName(0)));
 		for (int i = 1; i < inputBlocks.size(); i++) {
 			expression.append(" , " + asDouble(getInputRefName(i)));
 		}
 		expression.append(")");
+		if(stopExecutionIfInvalidInput)
+		{
+			expression.append("\n"+evaluateExecution(asDouble(getInputRefName(1))));
+		}
 		return expression.toString();
 		
 		

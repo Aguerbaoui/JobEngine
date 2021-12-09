@@ -11,7 +11,6 @@ import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.*;
 import io.je.utilities.log.JELogger;
 import io.je.utilities.ruleutils.OperationStatusDetails;
-import io.je.utilities.ruleutils.RuleStatus;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
 
@@ -74,7 +73,7 @@ public class ProjectService {
 	 */
 	@Async
 	public CompletableFuture<Void> removeProject(String id) throws ProjectNotFoundException,
-			JERunnerErrorException, LicenseNotActiveException {
+			JERunnerErrorException, LicenseNotActiveException, VariableNotFoundException {
 
 		if (!loadedProjects.containsKey(id)) {
 			throw new ProjectNotFoundException("[projectId= " + id + "]" + JEMessages.PROJECT_NOT_FOUND);
@@ -84,7 +83,7 @@ public class ProjectService {
 			stopProject(id);
 		} catch (Exception e) {
 		}
-		JELogger.info("[project = " + loadedProjects.get(id).getProjectName() + "]" + JEMessages.DELETING_PROJECT, LogCategory.DESIGN_MODE, id,
+		JELogger.info("[project= " + loadedProjects.get(id).getProjectName() + "]" + JEMessages.DELETING_PROJECT, LogCategory.DESIGN_MODE, id,
 				LogSubModule.JEBUILDER, null);
 		JERunnerAPIHandler.cleanProjectDataFromRunner(id);
 		/*
@@ -168,11 +167,11 @@ public class ProjectService {
 			JEProject project = loadedProjects.get(projectId);
 			if (project.isBuilt()) {
 				if (!project.isRunning()) {
-					JELogger.info("[project = " + project.getProjectName() + "]" + JEMessages.RUNNING_PROJECT,
+					JELogger.info("[project= " + project.getProjectName() + "]" + JEMessages.RUNNING_PROJECT,
 							LogCategory.DESIGN_MODE, projectId, LogSubModule.JEBUILDER, null);
 					try {
 						ruleService.buildRules(projectId);
-						JERunnerAPIHandler.runProject(projectId);
+						JERunnerAPIHandler.runProject(projectId,project.getProjectName());
 						ruleService.updateRulesStatus(projectId, true);
 						project.getRuleEngine().setRunning(true);
 
@@ -205,11 +204,11 @@ public class ProjectService {
 		}
 		JEProject project = loadedProjects.get(projectId);
 		// if (project.isRunning()) {
-		JELogger.info("[project = " + project.getProjectName() + "]" + JEMessages.STOPPING_PROJECT,
+		JELogger.control("[project = " + project.getProjectName() + "]" + JEMessages.STOPPING_PROJECT,
 				LogCategory.DESIGN_MODE, projectId, LogSubModule.JEBUILDER, null);
 
 		try {
-			JERunnerAPIHandler.stopProject(projectId);
+			JERunnerAPIHandler.stopProject(projectId,project.getProjectName());
 			ruleService.stopRules(projectId, null);
 
 		} catch (JERunnerErrorException e) {
@@ -227,8 +226,8 @@ public class ProjectService {
 	public JEProject getProject(String projectId) throws ProjectNotFoundException, JERunnerErrorException, LicenseNotActiveException, ProjectLoadException {
 
 		JEProject project = null;
-		JELogger.debug("[projectId= " + projectId + "]" + JEMessages.LOADING_PROJECT, LogCategory.DESIGN_MODE,
-				projectId, LogSubModule.JEBUILDER, null);
+	//	JELogger.trace("[projectId= " + projectId + "]" + JEMessages.LOADING_PROJECT, LogCategory.DESIGN_MODE,
+			// 	projectId, LogSubModule.JEBUILDER, null);
 		if (!loadedProjects.containsKey(projectId)) {
 			Optional<JEProject> p = projectRepository.findById(projectId);
 			project = p.isEmpty() ? null : p.get();
@@ -332,45 +331,51 @@ public class ProjectService {
 		JELogger.info(JEMessages.LOADING_PROJECTS, LogCategory.DESIGN_MODE, null, LogSubModule.JEBUILDER, null);
 		List<JEProject> projects = projectRepository.findAll();
 		for (JEProject project : projects) {
-			Optional<JEProject> p = projectRepository.findById(project.getProjectId());
-			project = p.isEmpty() ? null : p.get();
-			if (project != null) {
-				project.setEvents(eventService.getAllJEEvents(project.getProjectId()));
-				project.setRules(ruleService.getAllJERules(project.getProjectId()));
-				project.setVariables(variableService.getAllJEVariables(project.getProjectId()));
-				project.setWorkflows(workflowService.getAllJEWorkflows(project.getProjectId()));
-				// project.setBuilt(false);
-				loadedProjects.put(project.getProjectId(), project);
-				for (JEEvent event : project.getEvents().values()) {
-					try {
-						eventService.registerEvent(event);
-					} catch (EventException e) {
-						throw new ProjectLoadException(JEMessages.PROJECT_LOAD_ERROR);
+			try {
+				Optional<JEProject> p = projectRepository.findById(project.getProjectId());
+				project = p.isEmpty() ? null : p.get();
+				if (project != null) {
+					project.setEvents(eventService.getAllJEEvents(project.getProjectId()));
+					project.setRules(ruleService.getAllJERules(project.getProjectId()));
+					project.setVariables(variableService.getAllJEVariables(project.getProjectId()));
+					project.setWorkflows(workflowService.getAllJEWorkflows(project.getProjectId()));
+					// project.setBuilt(false);
+					loadedProjects.put(project.getProjectId(), project);
+					for (JEEvent event : project.getEvents().values()) {
+						try {
+							eventService.registerEvent(event);
+						} catch (EventException e) {
+							throw new ProjectLoadException(JEMessages.PROJECT_LOAD_ERROR);
+						}
 					}
-				}
-				for (JEVariable variable : project.getVariables().values()) {
-					try {
-						variableService.addVariableToRunner(variable);
-					} catch (JERunnerErrorException e) {
-						throw new ProjectLoadException(JEMessages.PROJECT_LOAD_ERROR);
+					for (JEVariable variable : project.getVariables().values()) {
+						try {
+							variableService.addVariableToRunner(variable);
+						} catch (JERunnerErrorException e) {
+							throw new ProjectLoadException(JEMessages.PROJECT_LOAD_ERROR);
+						}
 					}
-				}
-				
-				
-				
-				if (!project.isAutoReload()) {
-					project.setBuilt(false);
-					project.setRunning(false);
-					for(JERule rule : project.getRules().values())
-					{
-						rule.setRunning(false);
-						rule.setBuilt(false);
-						RuleService.updateRuleStatus(rule);
-						ruleService.saveRule(rule);
-					}
-					saveProject(project);
+					
+					
+					
+					if (!project.isAutoReload()) {
+						project.setBuilt(false);
+						project.setRunning(false);
+						for(JERule rule : project.getRules().values())
+						{
+							rule.setRunning(false);
+							rule.setBuilt(false);
+							RuleService.updateRuleStatus(rule);
+							ruleService.saveRule(rule);
+						}
+						saveProject(project);
 
-				}
+					}
+				}	
+			}catch(Exception e)
+			{
+				JELogger.warn("[project = "+project.getProjectName() +"]"+JEMessages.FAILED_TO_LOAD_PROJECT, LogCategory.DESIGN_MODE, project.getProjectId(), LogSubModule.JEBUILDER, null);
+
 			}
 
 		}

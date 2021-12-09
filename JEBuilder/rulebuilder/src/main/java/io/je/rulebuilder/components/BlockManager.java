@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
+
 import io.je.rulebuilder.components.blocks.Block;
-import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.RuleBuildFailedException;
 import io.je.utilities.log.JELogger;
 import utils.log.LogCategory;

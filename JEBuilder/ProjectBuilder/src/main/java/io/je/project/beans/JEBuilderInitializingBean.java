@@ -7,14 +7,12 @@ import io.je.project.config.LicenseProperties;
 import io.je.project.services.ConfigurationService;
 import io.je.project.services.ProjectService;
 import io.je.utilities.constants.JEMessages;
-import io.je.utilities.exceptions.LicenseNotActiveException;
 import io.je.utilities.log.JELogger;
-import io.siothconfig.SIOTHConfigUtility;
+import io.je.utilities.monitoring.JEMonitor;
 
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import utils.date.DateUtils;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
 import utils.zmq.ZMQSecurity;
@@ -40,6 +38,7 @@ public class JEBuilderInitializingBean implements InitializingBean {
                     LogSubModule.JEBUILDER, null);
             AuthenticationInterceptor.init(builderProperties.getIssuer());
             LicenseProperties.init();
+           // JEMonitor.setPort(builderProperties.getMonitoringPort());
         	/*while(!LicenseProperties.licenseIsActive())
         	{
         		try {
@@ -55,7 +54,7 @@ public class JEBuilderInitializingBean implements InitializingBean {
         	}*/
         	
             
-            
+            JEMonitor.setPort(builderProperties.getMonitoringPort());
             ZMQSecurity.setSecure(builderProperties.getUseZmqSecurity());
 			configService.init();
             JELogger.control(JEMessages.BUILDER_STARTED,  LogCategory.DESIGN_MODE,
