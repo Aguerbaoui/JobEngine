@@ -2,7 +2,6 @@ package io.je.ruleengine.utils;
 
 import io.je.utilities.log.JELogger;
 import utils.log.LogSubModule;
-import utils.maths.MathUtilities;
 
 public class JEMathUtils {
 	

@@ -18,6 +18,7 @@ import io.je.rulebuilder.components.blocks.execution.TriggerEventBlock;
 import io.je.rulebuilder.components.blocks.getter.AttributeGetterBlock;
 import io.je.rulebuilder.components.blocks.getter.VariableGetterBlock;
 import io.je.rulebuilder.components.blocks.logic.JoinBlock;
+import io.je.rulebuilder.components.blocks.logic.NotBlock;
 import io.je.rulebuilder.models.BlockModel;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.AddRuleBlockException;
@@ -111,7 +112,7 @@ public class BlockGenerator {
 			return new JoinBlock(blockModel);
 		// NOT Block
 		case 3005:
-			//return new NotBlock(blockModel);
+			return new NotBlock(blockModel);
 
 		case 3:
 			break;
