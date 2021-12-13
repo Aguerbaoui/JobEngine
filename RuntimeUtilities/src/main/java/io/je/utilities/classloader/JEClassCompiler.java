@@ -71,7 +71,7 @@ public class JEClassCompiler {
 			// Compile the file
 			Iterable<? extends JavaFileObject> compilationUnit = fileManager.getJavaFileObjectsFromFiles(Arrays.asList(sourceFile));
 			DiagnosticCollector<JavaFileObject> diagnosticsCollector = new DiagnosticCollector<>();
-			JavaCompiler.CompilationTask task = compiler.getTask(null, fileManager, diagnosticsCollector, null, null,
+			JavaCompiler.CompilationTask task = compiler.getTask(null, fileManager, diagnosticsCollector, options, null,
 					compilationUnit);
 			if(task.call()) {
 				JELogger.debug(JEMessages.CUSTOM_COMPILATION_SUCCESS, LogCategory.RUNTIME,
