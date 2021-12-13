@@ -312,6 +312,7 @@ public class ProjectContainer {
 				// create container
 				try {
 					kieContainer = kieServices.newKieContainer(releaseId, JEClassLoader.getDataModelInstance());
+					JEClassLoader.setCurrentRuleEngineClassLoader(JEClassLoader.getDataModelInstance());
 					//JELogger.debug("   CONTAINER :" + kieContainer.getClassLoader().toString());
 					kScanner = kieServices.newKieScanner(kieContainer);
 					kieBase = kieContainer.getKieBase("kie-base");
@@ -444,6 +445,7 @@ public class ProjectContainer {
 			kieServices.newKieBuilder(kieFileSystem, JEClassLoader.getDataModelInstance()).buildAll();
 			if (kieContainer == null) {
 				kieContainer = kieServices.newKieContainer(releaseId, JEClassLoader.getDataModelInstance());
+				JEClassLoader.setCurrentRuleEngineClassLoader(JEClassLoader.getDataModelInstance());
 			}
 			// Thread.currentThread().setContextClassLoader(JEClassLoader.getInstance());
 
@@ -538,7 +540,6 @@ public class ProjectContainer {
 		allRules.put(rule.getJobEngineElementID(), rule);
 
 		// if project is running, update container without interrupting project
-
 		try {
 			deleteRuleFromKieFileSystem(rule);
 			addRuleToKieFileSystem(rule);

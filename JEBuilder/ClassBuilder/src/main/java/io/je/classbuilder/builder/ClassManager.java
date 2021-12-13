@@ -186,7 +186,7 @@ public class ClassManager {
 
 		String response = requestClassDefinition(workspaceId, classId);
 		// create class model from response
-		if(response!=null )
+		if(response!=null && !response.equals("null") )
 		{
 		try
 		{
@@ -201,6 +201,8 @@ public class ClassManager {
 		}
 
 
+		}else {
+			JELogger.warn("[class="+classId+"]"+JEMessages.CLASS_NOT_FOUND, null, null, LogSubModule.CLASS, classId);
 		}
 
 		// set workspace id
@@ -248,7 +250,7 @@ public class ClassManager {
               }
 
 		} catch (Exception e) {
-			JELogger.error("Failed to send log message to the logging system : " + e.getMessage(),
+			JELogger.error(JEMessages.FAILED_TO_SEND_LOG_MESSAGE_TO_THE_LOGGING_SYSTEM + e.getMessage(),
 					LogCategory.DESIGN_MODE, null,
 					LogSubModule.JEBUILDER,null);
 		}

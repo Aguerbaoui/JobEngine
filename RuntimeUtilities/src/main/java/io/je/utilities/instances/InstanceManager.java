@@ -9,6 +9,7 @@ import org.json.JSONObject;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.je.utilities.classloader.JEClassLoader;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.InstanceCreationFailed;
 import io.je.utilities.log.JELogger;
@@ -61,7 +62,7 @@ public class InstanceManager {
 			throw new InstanceCreationFailed(JEMessages.CLASS_NOT_LOADED + instanceModel.getInstanceId());
 		}
 			
-		 objectMapper.setTypeFactory(objectMapper.getTypeFactory().withClassLoader(instanceClass.getClassLoader()));
+		 objectMapper.setTypeFactory(objectMapper.getTypeFactory().withClassLoader(JEClassLoader.getCurrentRuleEngineClassLoader()));
 
 		//create instance
 		Object instance=null;
@@ -74,7 +75,9 @@ public class InstanceManager {
 		
 		try {
 			instance = objectMapper.readValue(instanceModel.getPayload().toString(), instanceClass);
-		} catch (Exception e) {
+		}
+		
+		catch (Exception e) {
 			
 			e.printStackTrace();
 			throw new InstanceCreationFailed(JEMessages.ADD_INSTANCE_FAILED + e.getMessage());
