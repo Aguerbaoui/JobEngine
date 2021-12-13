@@ -1,9 +1,0 @@
-package io.je.ruleengine.rules
- 
-rule "Hello World"
-    when
-    then
-        System.out.println( "rule is ruled" )
-       
-end
-
