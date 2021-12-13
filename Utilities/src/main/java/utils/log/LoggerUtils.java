@@ -159,6 +159,8 @@ public class LoggerUtils {
 			break;
 		case "INFO":
 			return Level.INFO;
+		case "INFORM":
+			return Level.INFO;	
 		case "WARN":
 			return Level.WARN;
 		case "TRACE":
