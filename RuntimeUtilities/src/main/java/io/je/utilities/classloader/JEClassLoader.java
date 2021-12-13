@@ -25,6 +25,8 @@ public class JEClassLoader extends ClassLoader {
 
     static JEClassLoader dataModelInstance;
 
+    static JEClassLoader currentRuleEngineClassLoader;
+    
     static JEClassLoader jeInstance;
 
     private JEClassLoader(Set<String> jeCustomClasses, Set<String> dataModelCustomClasses) {
@@ -201,6 +203,14 @@ public class JEClassLoader extends ClassLoader {
         return streams.get(name);
     }
 
+	public static JEClassLoader getCurrentRuleEngineClassLoader() {
+		return currentRuleEngineClassLoader;
+	}
+
+	public static void setCurrentRuleEngineClassLoader(JEClassLoader currentRuleEngineClassLoader) {
+		JEClassLoader.currentRuleEngineClassLoader = currentRuleEngineClassLoader;
+	}
+
     /*
      * public static void main(String[] args) throws ClassNotFoundException,
      * InstantiationException, IllegalAccessException, IllegalArgumentException,
@@ -226,4 +236,6 @@ public class JEClassLoader extends ClassLoader {
      * }
      */
 
+    
+    
 }
