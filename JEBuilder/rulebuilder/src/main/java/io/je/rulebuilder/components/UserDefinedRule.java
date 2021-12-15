@@ -7,6 +7,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import io.je.rulebuilder.components.blocks.Block;
 import io.je.rulebuilder.components.blocks.getter.AttributeGetterBlock;
+import io.je.utilities.log.JELogger;
 
 /*
  * Rules defined graphically by the user.
@@ -55,17 +56,42 @@ public class UserDefinedRule extends JERule {
 
 	}
 	
+
+	
+	//Topics are class ids or classId#instanceId for specific instances
+	//if a block has not specific instances, it means it is to be applied on all instances 
 	@Override
 	public void loadTopics()
 	{
 		this.setTopics(new ConcurrentHashMap());
 		for(Block block : blocks.getAll())
 		{
+			
+			
 			if(block instanceof AttributeGetterBlock)
 			{
-				addTopic(((AttributeGetterBlock)block).getClassId());
+				AttributeGetterBlock b = (AttributeGetterBlock)block;
+				if(b.getSpecificInstances().isEmpty())
+				{
+					addTopic(b.getClassId(),this.getTopics());
+				}else
+				{
+					for (String instanceId : b.getSpecificInstances())
+					{
+						addTopic(b.getClassId()+"#"+instanceId,instanceTopics);
+					}
+				}
 			}
 		}
+		
+		//for specific instance topics, they are only added if there isn't already a generic topic that inludes their class
+		for(String instanceTopic : instanceTopics.keySet())
+		{
+			if(!this.getTopics().containsKey(instanceTopic.split("#")[0])) {
+				addTopic(instanceTopic,this.getTopics());
+			}
+		}
+		
 	}
 	
 	
