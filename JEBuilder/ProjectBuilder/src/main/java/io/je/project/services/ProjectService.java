@@ -75,26 +75,40 @@ public class ProjectService {
 	public CompletableFuture<Void> removeProject(String id) throws ProjectNotFoundException,
 			JERunnerErrorException, LicenseNotActiveException, VariableNotFoundException {
 
-		if (!loadedProjects.containsKey(id)) {
-			throw new ProjectNotFoundException("[projectId= " + id + "]" + JEMessages.PROJECT_NOT_FOUND);
-		}
-
 		try {
 			stopProject(id);
 		} catch (Exception e) {
 		}
 		JELogger.info("[project= " + loadedProjects.get(id).getProjectName() + "]" + JEMessages.DELETING_PROJECT, LogCategory.DESIGN_MODE, id,
 				LogSubModule.JEBUILDER, null);
-		JERunnerAPIHandler.cleanProjectDataFromRunner(id);
+		try {
+			JERunnerAPIHandler.cleanProjectDataFromRunner(id);
+		} catch (Exception e) {
+		}
 		/*
 		 * synchronized (projectRepository) { projectRepository.deleteById(id); }
 		 */
 		loadedProjects.remove(id);
-		ruleService.deleteAll(id);
-		workflowService.deleteAll(id);
-		eventService.deleteEvents(id, null);
-		variableService.deleteVariables(id, null);
-		projectRepository.deleteById(id);
+		try {
+			ruleService.deleteAll(id);
+		} catch (Exception e) {
+		}
+		try {
+			workflowService.deleteAll(id);
+		} catch (Exception e) {
+		}
+		try {
+			eventService.deleteEvents(id, null);
+		} catch (Exception e) {
+		}
+		try {
+			variableService.deleteVariables(id, null);
+		} catch (Exception e) {
+		}
+		try {
+			projectRepository.deleteById(id);
+		} catch (Exception e) {
+		}
 
 		return CompletableFuture.completedFuture(null);
 
