@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 import org.springframework.stereotype.Service;
 
@@ -281,12 +282,21 @@ public class RuntimeDispatcher {
 	public static void injectData(JEData jeData) throws InstanceCreationFailed {
 		JELogger.trace(JEMessages.INJECTING_DATA, LogCategory.RUNTIME, null, LogSubModule.JERUNNER, null);
 		try {
-			JEObject instanceData = InstanceManager.createInstance(jeData.getData());
-			for (String projectId : DataModelListener.getProjectsSubscribedToTopic(jeData.getTopic())) {
-				if (Boolean.TRUE.equals(projectStatus.get(projectId))) {
-					RuleEngineHandler.injectData(projectId, instanceData);
+			CompletableFuture.runAsync(() -> {
+				JEObject instanceData;
+				try {
+					instanceData = InstanceManager.createInstance(jeData.getData());
+					for (String projectId : DataModelListener.getProjectsSubscribedToTopic(jeData.getTopic())) {
+						if (Boolean.TRUE.equals(projectStatus.get(projectId))) {
+							RuleEngineHandler.injectData(projectId, instanceData);
+						}
+					}
+				} catch (InstanceCreationFailed e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
-			}
+				
+			});
 		} catch (Exception e) {
 			JELogger.error(JEMessages.FAILED_TO_INJECT_DATA + e.getMessage(), LogCategory.RUNTIME, null,
 					LogSubModule.JERUNNER, null);

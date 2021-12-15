@@ -35,6 +35,7 @@ public class ZMQAgent extends ZMQSubscriber {
 					JELogger.trace(JEMessages.DATA_RECEIVED + data, LogCategory.RUNTIME, null, LogSubModule.JERUNNER,
 							null);
 					RuntimeDispatcher.injectData(new JEData(this.topic, data));
+
 				}
 			} catch (Exception e) {
 				JELogger.error(JEMessages.UKNOWN_ERROR + Arrays.toString(e.getStackTrace()), LogCategory.RUNTIME, null,
@@ -42,8 +43,7 @@ public class ZMQAgent extends ZMQSubscriber {
 			}
 
 			try {
-				Thread.sleep(5);
-			} catch (InterruptedException e) {
+			} catch (Exception e) {
 				JELogger.error(JEMessages.THREAD_INTERRUPTED, LogCategory.RUNTIME, null, LogSubModule.JERUNNER, null);
 			}
 		}
