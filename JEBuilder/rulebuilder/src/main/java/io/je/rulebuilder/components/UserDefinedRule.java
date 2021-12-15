@@ -91,7 +91,6 @@ public class UserDefinedRule extends JERule {
 				addTopic(instanceTopic,this.getTopics());
 			}
 		}
-		System.out.println(">>>>>>>>>>>>>>>>>TOPICS ARE" + this.getTopics());
 		
 	}
 	
