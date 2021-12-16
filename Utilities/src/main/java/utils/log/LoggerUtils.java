@@ -165,6 +165,8 @@ public class LoggerUtils {
 			return Level.WARN;
 		case "TRACE":
 			return Level.TRACE;
+		case "CONTROL":
+			return CONTROL;
 		case "OFF":
 			return Level.OFF;
 		case "ALL":

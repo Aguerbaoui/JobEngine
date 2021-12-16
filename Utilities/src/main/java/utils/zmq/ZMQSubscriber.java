@@ -52,7 +52,7 @@ public abstract class ZMQSubscriber implements Runnable {
         if(subSocket == null) {
             try {
                 this.subSocket = this.context.createSocket(SocketType.SUB);
-                this.subSocket.setReceiveTimeOut(1000);
+                this.subSocket.setReceiveTimeOut(-1);
                 this.subSocket.connect(url+":"+subPort);
                 this.subSocket.subscribe(topic.getBytes());
                if(ZMQSecurity.isSecure())

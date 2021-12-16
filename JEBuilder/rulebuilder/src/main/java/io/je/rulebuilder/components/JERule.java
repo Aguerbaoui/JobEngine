@@ -3,6 +3,7 @@ package io.je.rulebuilder.components;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import io.je.utilities.beans.Status;
@@ -31,11 +32,18 @@ public abstract class JERule extends JEObject  {
 	
 	Status status = Status.NOT_BUILT;
 	
+	@Transient
 	private Map<String,Integer> topics = new HashMap<>();
+	
+	protected Map<String,Integer> classTopics = new HashMap<>();
+	
+	protected Map<String,Integer> instanceTopics = new HashMap<>();
 	
 	String description ;
 	
 	String ruleFrontConfig;
+	
+	
 	
 	public JERule(String jobEngineElementID, String jobEngineProjectID, String ruleName) {
 		super(jobEngineElementID, jobEngineProjectID, ruleName);
@@ -101,7 +109,7 @@ public abstract class JERule extends JEObject  {
 		this.description = description;
 	}
 
-	public void addTopic(String topic) {
+	public void addTopic(String topic,Map<String,Integer> topics) {
 		if(!topics.containsKey(topic))
 		{
 			topics.put(topic,1);
@@ -113,12 +121,12 @@ public abstract class JERule extends JEObject  {
 	}
 	
 	
-	public void updateTopic(String oldTopic, String newTopic) {
-			removeTopic(oldTopic);
-			addTopic(newTopic);
+	public void updateTopic(String oldTopic, String newTopic,Map<String,Integer> topics) {
+			removeTopic(oldTopic,topics);
+			addTopic(newTopic,topics);
 	}
 	
-	public void removeTopic(String topic)
+	public void removeTopic(String topic,Map<String,Integer> topics)
 	{
 		if(topics.containsKey(topic))
 		{

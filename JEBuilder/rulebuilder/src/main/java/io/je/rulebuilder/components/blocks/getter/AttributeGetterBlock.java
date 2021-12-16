@@ -296,6 +296,14 @@ public class AttributeGetterBlock extends GetterBlock {
 		this.classId = classId;
 	}
 
+	public List<String> getSpecificInstances() {
+		return specificInstances;
+	}
+
+	public void setSpecificInstances(List<String> specificInstances) {
+		this.specificInstances = specificInstances;
+	}
+
 
 
 
