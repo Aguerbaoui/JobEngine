@@ -90,11 +90,27 @@ public class ProjectService {
 		 * synchronized (projectRepository) { projectRepository.deleteById(id); }
 		 */
 
-		ruleService.deleteAll(id);
-		workflowService.deleteAll(id);
-		eventService.deleteEvents(id, null);
-		variableService.deleteVariables(id, null);
-		projectRepository.deleteById(id);
+		try {
+			ruleService.deleteAll(id);
+		} catch (Exception e) {
+		}
+		try {
+			workflowService.deleteAll(id);
+		} catch (Exception e) {
+		}
+		try {
+			eventService.deleteEvents(id, null);
+		} catch (Exception e) {
+		}
+		try {
+			variableService.deleteVariables(id, null);
+		} catch (Exception e) {
+		}
+		try {
+			projectRepository.deleteById(id);
+		} catch (Exception e) {
+		}
+
 		loadedProjects.remove(id);
 		return CompletableFuture.completedFuture(null);
 
