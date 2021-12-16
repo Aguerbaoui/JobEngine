@@ -45,8 +45,10 @@ public class LinkedVariableSetterBlock extends ExecutionBlock {
 	public String getExpression() {		
 		  return "Executioner.updateVariableValue( "
 				  +"\"" + this.jobEngineProjectID  +"\","
+				  +"\"" + this.ruleId  +"\","
 				  +"\"" + this.variableId  +"\", "
 				  + getInputRefName(0)
+				  +", "+"\"" + blockName  +"\" "
 				  +");\r\n";
 			
 

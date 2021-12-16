@@ -78,7 +78,7 @@ public class RuleListener extends DefaultAgendaEventListener {
     		ruleMessage.addBlockMessage(new JEBlockMessage(declaredVariableName,event.getMatch().getDeclarationValue(declaredVariableName).toString()));
     	}
     	
-    	JELogger.debug("Rule["+ IdManager.retrieveNameFromSubRuleName(event.getMatch().getRule().getName())+"] was fired",LogCategory.NOT_ASSIGNED , ruleId, LogSubModule.RULE, ruleId);
+    	//JELogger.debug("Rule["+ IdManager.retrieveNameFromSubRuleName(event.getMatch().getRule().getName())+"] was fired",LogCategory.NOT_ASSIGNED , ruleId, LogSubModule.RULE, ruleId);
     	//Executioner.informRuleBlock( projectId,  ruleId, "Rule was fired",LocalDateTime.now().toString(), "APP");
 
     	

@@ -707,5 +707,8 @@ public class JEMessages {
     public static final String FAILED_TO_DELETE_FILES = "Failed to delete files ";
 
 	public static final String FAILED_TO_LOAD_PROJECT = "Failed to load project from database";
-	public static final String ILLEGAL_OPERATION_CLASS_UPDATE_DURING_PROJECT_RUN = "Class updates will only be effective once the project is stopped. Rules using the updated class will not work anymore";
+	public static final String ILLEGAL_OPERATION_CLASS_UPDATE_DURING_PROJECT_RUN = "Class updates will only be effective once the project is stopped. Rules using the updated class may be corrupted";
+	
+    public static final String READ_INSTANCE_VALUE_FAILED = "Failed to read instance from DataModel service. ";
+
 }

@@ -133,6 +133,7 @@ public class SetterBlock extends ExecutionBlock {
 					expression.append("Executioner.updateInstanceAttributeValueFromVariable( "
 							  +"\"" + this.jobEngineProjectID  +"\","
 							  +"\"" + this.ruleId  +"\","
+							   +"\"" + this.blockName  +"\","
 							  +"\"" + instanceId  +"\","
 							  +"\"" + this.destinationAttributeName  +"\","
 							  +"\"" + this.sourceVariableId  +"\""
@@ -148,6 +149,7 @@ public class SetterBlock extends ExecutionBlock {
 					expression.append("Executioner.updateInstanceAttributeValueFromAnotherInstance( "
 							  +"\"" + this.jobEngineProjectID  +"\","
 							  +"\"" + this.ruleId  +"\","
+							   +"\"" + this.blockName  +"\","
 							  +"\"" + this.sourceInstanceId  +"\","
 							  +"\"" + this.sourceAttributeName  +"\","
 							  +"\"" + instanceId  +"\","
@@ -170,21 +172,27 @@ public class SetterBlock extends ExecutionBlock {
 		   case STATIC :		   
 			   return "Executioner.updateVariableValue( " 
 				  +"\"" + this.jobEngineProjectID  +"\","
+				  +"\"" + this.ruleId  +"\","
 				  +"\"" + this.destinationVariableId  +"\","
-				  +"\"" + this.value  +"\""
+				  +"\"" + this.value  +"\"" +", "
+				  +"\"" + this.blockName  +"\" "
 				  +");\r\n";
 		   case VARIABLE:
 			   return "Executioner.updateVariableValueFromAnotherVariable( " 
 				  +"\"" + this.jobEngineProjectID  +"\","
+				  +"\"" + this.ruleId  +"\","
 				  +"\"" + this.sourceVariableId  +"\","
-				  +"\"" + this.destinationVariableId  +"\""
+				  +"\"" + this.destinationVariableId  +"\","
+				  +"\"" + this.blockName  +"\" "
 				  +");\r\n";
 		   case ATTRIBUTE :
 			   return "Executioner.updateVariableValueFromDataModel( " 
 				  +"\"" + this.jobEngineProjectID  +"\","
+				   +"\"" + this.ruleId  +"\","
 				  +"\"" + this.destinationVariableId  +"\","
 				  +"\"" + this.sourceInstanceId  +"\","
-				  +"\"" + this.sourceAttributeName  +"\""
+				  +"\"" + this.sourceAttributeName  +"\","
+				  +"\"" + this.blockName  +"\" "
 				  +");\r\n";
 			  		
 		  default:

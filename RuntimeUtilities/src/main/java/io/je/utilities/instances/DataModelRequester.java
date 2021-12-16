@@ -46,7 +46,9 @@ public class DataModelRequester {
 		} catch (JsonProcessingException e) {
 		
 		}
-    	return requester.sendRequest(request);
+    
+    	String response= requester.sendRequest(request);
+    	return response;
 	}
 	
 	/*
