@@ -2,6 +2,8 @@ package io.je.utilities.classloader;
 
 
 import java.io.File;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -50,6 +52,7 @@ public class JEClassCompiler {
 			options.add("-Xlint:-unchecked");
 			options.add("-Xlint:-rawtypes");
 			options.add("-Xlint:deprecation");
+			options.add("-Xdiags:verbose");
 
 			/*StringBuilder sb = new StringBuilder();
 			options.add("-classpath");

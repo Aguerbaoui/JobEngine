@@ -89,13 +89,13 @@ public class ProjectService {
 		/*
 		 * synchronized (projectRepository) { projectRepository.deleteById(id); }
 		 */
-		loadedProjects.remove(id);
+
 		ruleService.deleteAll(id);
 		workflowService.deleteAll(id);
 		eventService.deleteEvents(id, null);
 		variableService.deleteVariables(id, null);
 		projectRepository.deleteById(id);
-
+		loadedProjects.remove(id);
 		return CompletableFuture.completedFuture(null);
 
 	}

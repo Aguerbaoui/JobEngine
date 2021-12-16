@@ -14,7 +14,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import java.util.Collections;
 
 import javax.annotation.PreDestroy;
-import java.util.Collections;
 
 @SpringBootApplication
 public class JERunnerApplication {
