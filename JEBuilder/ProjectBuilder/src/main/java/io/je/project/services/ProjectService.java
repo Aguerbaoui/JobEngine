@@ -93,22 +93,27 @@ public class ProjectService {
 		try {
 			ruleService.deleteAll(id);
 		} catch (Exception e) {
+			JELogger.error("Error deleting rules",LogCategory.DESIGN_MODE,id, LogSubModule.JEBUILDER, id);
 		}
 		try {
 			workflowService.deleteAll(id);
 		} catch (Exception e) {
+			JELogger.error("Error deleting workflows",LogCategory.DESIGN_MODE,id, LogSubModule.JEBUILDER, id);
 		}
 		try {
 			eventService.deleteEvents(id, null);
 		} catch (Exception e) {
+			JELogger.error("Error deleting events",LogCategory.DESIGN_MODE,id, LogSubModule.JEBUILDER, id);
 		}
 		try {
 			variableService.deleteVariables(id, null);
 		} catch (Exception e) {
+			JELogger.error("Error deleting variables",LogCategory.DESIGN_MODE,id, LogSubModule.JEBUILDER, id);
 		}
 		try {
 			projectRepository.deleteById(id);
 		} catch (Exception e) {
+			JELogger.error("Error deleting project from database",LogCategory.DESIGN_MODE,id, LogSubModule.JEBUILDER, id);
 		}
 
 		loadedProjects.remove(id);
