@@ -44,8 +44,8 @@ public class Network {
         if (executor == null) {
             executor = new ThreadPoolTaskExecutor();
             executor.setCorePoolSize(3);
-            executor.setMaxPoolSize(10);
-            executor.setQueueCapacity(10);
+            executor.setMaxPoolSize(100);
+            executor.setQueueCapacity(150);
             executor.setThreadNamePrefix("NetworkAsyncThread-");
             executor.initialize();
         }
