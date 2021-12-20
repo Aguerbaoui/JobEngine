@@ -12,12 +12,10 @@ import io.je.utilities.beans.JEVariable;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.DeleteRuleException;
 import io.je.utilities.exceptions.JEFileNotFoundException;
-import io.je.utilities.exceptions.ProjectAlreadyRunningException;
 import io.je.utilities.exceptions.RuleAlreadyExistsException;
 import io.je.utilities.exceptions.RuleBuildFailedException;
 import io.je.utilities.exceptions.RuleCompilationException;
 import io.je.utilities.exceptions.RuleFormatNotValidException;
-import io.je.utilities.exceptions.RuleNotAddedException;
 import io.je.utilities.exceptions.RulesNotFiredException;
 import io.je.utilities.log.JELogger;
 import io.je.utilities.runtimeobject.JEObject;
@@ -65,7 +63,7 @@ public class RuleEngineHandler {
      * add rule to rule engine
      */
 
-    public static void addRule(RunnerRuleModel runnerRuleModel) throws RuleAlreadyExistsException, RuleCompilationException, RuleNotAddedException, JEFileNotFoundException, RuleFormatNotValidException {
+    public static void addRule(RunnerRuleModel runnerRuleModel) throws RuleAlreadyExistsException, RuleCompilationException, JEFileNotFoundException, RuleFormatNotValidException {
     	verifyRuleIsValid(runnerRuleModel);       
         Rule rule = new Rule(runnerRuleModel.getRuleId(), runnerRuleModel.getProjectId(), runnerRuleModel.getRuleName(), runnerRuleModel.getFormat(), runnerRuleModel.getRulePath());
         rule.setJobEngineProjectName(runnerRuleModel.getProjectName());
@@ -92,7 +90,7 @@ public class RuleEngineHandler {
     /*
      * start running a project given a project id
      */
-    public static  void runRuleEngineProject(String projectId) throws RulesNotFiredException, RuleBuildFailedException, ProjectAlreadyRunningException {
+    public static  void runRuleEngineProject(String projectId) throws RulesNotFiredException, RuleBuildFailedException {
         RuleEngine.fireRules(projectId);
     }
 

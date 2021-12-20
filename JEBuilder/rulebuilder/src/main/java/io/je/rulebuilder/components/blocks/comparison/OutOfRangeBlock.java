@@ -58,9 +58,9 @@ public class OutOfRangeBlock extends ComparisonBlock {
 
 		if (includeBounds) {
 			return "("+firstOperand + "<=" + minRange + "||" + firstOperand + ">=" + maxRange+")";
-		} else {
+		} 
 			return "("+firstOperand + "<" + minRange + "||" + firstOperand + ">" + maxRange+")";
-		}
+		
 
 	}
 

@@ -18,6 +18,7 @@ import utils.network.Network;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 import static io.je.utilities.apis.Request.*;
@@ -87,13 +88,13 @@ public class JERunnerAPIHandler {
 
     ///// CLASSES ///////
 
-    public static JEResponse addClass(HashMap<String, String> requestModel) throws JERunnerErrorException {
+    public static JEResponse addClass(Map<String, String> requestModel) throws JERunnerErrorException {
         String requestUrl = runtimeManagerBaseApi + ADD_CLASS;
         return sendRequestWithBody(requestUrl, requestModel);
 
     }
     
-    public static JEResponse updateClass(HashMap<String, String> requestModel) throws JERunnerErrorException {
+    public static JEResponse updateClass(Map<String, String> requestModel) throws JERunnerErrorException {
         String requestUrl = runtimeManagerBaseApi + UPDATE_CLASS;
         return sendRequestWithBody(requestUrl, requestModel);
 
@@ -232,7 +233,7 @@ public class JERunnerAPIHandler {
     }
 
 
-    public static JEResponse untriggerEvent(String eventId, String projectId) throws JERunnerErrorException, InterruptedException, ExecutionException {
+    public static JEResponse untriggerEvent(String eventId, String projectId) throws JERunnerErrorException {
         String requestUrl = runtimeManagerBaseApi + EVENT_UNTRIGGER_EVENT + projectId + "/" + eventId;
         return sendRequest(requestUrl);
     }

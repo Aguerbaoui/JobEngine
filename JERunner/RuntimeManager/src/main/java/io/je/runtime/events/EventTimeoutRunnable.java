@@ -29,7 +29,7 @@ public class EventTimeoutRunnable implements Runnable {
 				
 
 			} catch (InterruptedException e) {
-				
+				 Thread.currentThread().interrupt();
 			}
 
 		}

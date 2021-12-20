@@ -336,7 +336,7 @@ public class JEProject {
 	    /*
 	    * Add a block to a rule
 	    * */
-	    public void addBlockToRule(Block block) throws AddRuleBlockException 
+	    public void addBlockToRule(Block block) 
 	    	
 	    {	
 	    	((UserDefinedRule) rules.get(block.getJobEngineElementID())).addBlock(block);
@@ -349,7 +349,7 @@ public class JEProject {
 	    /*
 	     * update Block
 	     */
-		public void updateRuleBlock(Block block) throws AddRuleBlockException {
+		public void updateRuleBlock(Block block)  {
 	    	((UserDefinedRule) rules.get(block.getJobEngineElementID())).updateBlock(block);
 	    	isBuilt=false;
 
@@ -360,7 +360,7 @@ public class JEProject {
 		 * delete Block
 		 */
 
-		public void deleteRuleBlock(String ruleId, String blockId) throws RuleBlockNotFoundException {
+		public void deleteRuleBlock(String ruleId, String blockId)  {
 			((UserDefinedRule) rules.get(ruleId)).deleteBlock(blockId);
 			rules.get(ruleId).setJeObjectLastUpdate(  Instant.now());
 			isBuilt=false;

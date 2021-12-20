@@ -27,7 +27,6 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.runtime.rule.FactHandle;
 
-import java.io.FileNotFoundException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -651,7 +650,7 @@ public class ProjectContainer {
 	 * add a list of rules
 	 */
 	public void addRules(List<Rule> rules) throws RuleCompilationException, RuleAlreadyExistsException,
-			FileNotFoundException, JEFileNotFoundException {
+			 JEFileNotFoundException {
 		for (Rule rule : rules) {
 			addRule(rule);
 		}

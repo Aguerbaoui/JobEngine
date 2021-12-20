@@ -37,13 +37,11 @@ import io.je.utilities.exceptions.EventException;
 import io.je.utilities.exceptions.InstanceCreationFailed;
 import io.je.utilities.exceptions.JEException;
 import io.je.utilities.exceptions.JEFileNotFoundException;
-import io.je.utilities.exceptions.ProjectAlreadyRunningException;
 import io.je.utilities.exceptions.ProjectNotFoundException;
 import io.je.utilities.exceptions.RuleAlreadyExistsException;
 import io.je.utilities.exceptions.RuleBuildFailedException;
 import io.je.utilities.exceptions.RuleCompilationException;
 import io.je.utilities.exceptions.RuleFormatNotValidException;
-import io.je.utilities.exceptions.RuleNotAddedException;
 import io.je.utilities.exceptions.RulesNotFiredException;
 import io.je.utilities.exceptions.WorkflowAlreadyRunningException;
 import io.je.utilities.exceptions.WorkflowBuildException;
@@ -145,7 +143,7 @@ public class RuntimeDispatcher {
 
 	// add rule
 	public void addRule(RunnerRuleModel runnerRuleModel) throws RuleAlreadyExistsException, RuleCompilationException,
-			RuleNotAddedException, JEFileNotFoundException, RuleFormatNotValidException {
+			 JEFileNotFoundException, RuleFormatNotValidException {
 
 		JELogger.debug(JEMessages.ADDING_RULE + " : " + runnerRuleModel.getRuleName(), LogCategory.RUNTIME,
 				runnerRuleModel.getProjectId(), LogSubModule.RULE, runnerRuleModel.getRuleId());
@@ -222,7 +220,7 @@ public class RuntimeDispatcher {
 	/*
 	 * Run all workflows deployed in the engine without project specification
 	 */
-	public void runAllWorkflows(String projectId) throws WorkflowNotFoundException, WorkflowBuildException {
+	public void runAllWorkflows(String projectId) throws WorkflowNotFoundException {
 		JELogger.debug("[projectId = " + projectId + "]" + JEMessages.RUNNING_WFS, LogCategory.RUNTIME, projectId,
 				LogSubModule.WORKFLOW, null);
 		WorkflowEngineHandler.runAllWorkflows(projectId, false);
@@ -279,7 +277,7 @@ public class RuntimeDispatcher {
 
 
 	// inject data into the rule/workflow engine
-	public static void injectData(JEData jeData) throws InstanceCreationFailed {
+	public static void injectData(JEData jeData)  {
 		JELogger.trace(JEMessages.INJECTING_DATA, LogCategory.RUNTIME, null, LogSubModule.JERUNNER, null);
 		try {
 			CompletableFuture.runAsync(() -> {
@@ -430,7 +428,7 @@ public class RuntimeDispatcher {
 	}
 
 	public void runProjectRules(String projectId)
-			throws RulesNotFiredException, RuleBuildFailedException, ProjectAlreadyRunningException {
+			throws RulesNotFiredException, RuleBuildFailedException {
 
 		List<String> topics = DataModelListener.getRuleTopicsByProjectId(projectId);
 		DataModelListener.startListening(topics);

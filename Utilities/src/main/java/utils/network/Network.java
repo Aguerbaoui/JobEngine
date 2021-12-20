@@ -23,11 +23,9 @@ public class Network {
     public static final String USERNAME = "username";
     public static final String PASSWORD = "password";
     private static ThreadPoolTaskExecutor executor = null;
-    private HttpMethod method;
     private BodyType bodyType;
     private String body;
     private boolean hasBody;
-    private String classType;
     private String url;
     private boolean hasParameters;
     //private boolean isAuthenticated;
@@ -51,7 +49,7 @@ public class Network {
         return executor;
     }
 
-    public static Response makeGetNetworkCallWithResponse(String url) throws IOException, InterruptedException, ExecutionException {
+    public static Response makeGetNetworkCallWithResponse(String url) throws  InterruptedException, ExecutionException {
         Request request = new Request.Builder().url(url).get().build();
         CompletableFuture<Response> f = CompletableFuture.supplyAsync(() -> {
             try {
@@ -63,7 +61,7 @@ public class Network {
         return f.get();
     }
 
-    public static Response makeDeleteNetworkCallWithResponse(String url) throws IOException, InterruptedException, ExecutionException {
+    public static Response makeDeleteNetworkCallWithResponse(String url) throws  InterruptedException, ExecutionException {
         Request request = new Request.Builder().url(url).delete().build();
         CompletableFuture<Response> f = CompletableFuture.supplyAsync(() -> {
             try {
@@ -128,7 +126,7 @@ public class Network {
         return f.get();
     }
 
-    public static Response makeNetworkCallWithStringObjectBodyWithResponse(String json, String url) throws IOException, ExecutionException, InterruptedException {
+    public static Response makeNetworkCallWithStringObjectBodyWithResponse(String json, String url) throws  ExecutionException, InterruptedException {
         RequestBody body = RequestBody.create(MediaType.parse("application/json"), json);
         Request request = new Request.Builder().url(url).post(body).build();
         /*JELogger.debug(JEMessages.NETWORK_POST + url,
@@ -254,10 +252,8 @@ public class Network {
             Network network = new Network();
             network.body = this.body;
             network.bodyType = this.bodyType;
-            network.classType = this.classType;
             network.hasBody = this.hasBody;
             network.url = this.url;
-            network.method = this.method;
             network.hasParameters = this.hasParameters;
             network.parameters = this.parameters;
             network.authScheme = this.authScheme;

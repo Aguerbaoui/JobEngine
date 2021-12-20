@@ -23,7 +23,7 @@ public class LicenseStatusWatcher implements Runnable {
 
 	public LicenseStatusWatcher(int featureCode, ZMQRequester objZMQRequest) {
 		this.featureCode = featureCode;
-		this.objZMQRequest = objZMQRequest;
+		LicenseStatusWatcher.objZMQRequest = objZMQRequest;
 	}
 
 	public boolean isListening() {

@@ -40,7 +40,7 @@ public class RuleEngine {
 	}
 
 	public static boolean fireRules(String projectId)
-			throws RulesNotFiredException, RuleBuildFailedException, ProjectAlreadyRunningException {
+			throws RulesNotFiredException, RuleBuildFailedException {
 
 		ProjectContainer project = projectManager.getProjectContainer(projectId);
 		project.fireRules();

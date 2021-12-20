@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutionException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -96,7 +95,7 @@ public class VariableService {
     /*
     * Add a new variable to the project
     * */
-    public void addVariable(VariableModel variableModel) throws ProjectNotFoundException, VariableAlreadyExistsException, ExecutionException, InterruptedException, LicenseNotActiveException, VariableException {
+    public void addVariable(VariableModel variableModel) throws ProjectNotFoundException, VariableAlreadyExistsException, LicenseNotActiveException, VariableException {
     	LicenseProperties.checkLicenseIsActive();
 
     	JELogger.debug(JEMessages.ADDING_VARIABLE,

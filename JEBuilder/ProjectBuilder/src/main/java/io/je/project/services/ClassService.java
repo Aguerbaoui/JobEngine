@@ -358,7 +358,7 @@ public class ClassService {
         }
         if (method != null) {
             return ClassManager.getMethodModel(method);
-        } else
+        } 
             throw new MethodException(JEMessages.METHOD_MISSING);
 
     }
@@ -366,7 +366,7 @@ public class ClassService {
     /*
      * Return JEMethod object from MethodModel
      */
-    public JEMethod getMethodFromModel(MethodModel m) {
+    public static JEMethod getMethodFromModel(MethodModel m) {
         JEMethod method = new JEMethod();
         method.setCode(m.getCode());
         method.setReturnType(m.getReturnType());
@@ -478,7 +478,7 @@ public class ClassService {
     /*
      * Return JEField object from FieldModel
      */
-    public JEField getFieldFromModel(FieldModel f) {
+    public static JEField getFieldFromModel(FieldModel f) {
         JEField field = new JEField();
         field.setComment("");
         field.setVisibility(f.getFieldVisibility());
@@ -497,7 +497,7 @@ public class ClassService {
             MultipartFile file = libModel.getFile();
             String orgName = file.getOriginalFilename();
             if (file.getSize() > SIOTHConfigUtility.getSiothConfig().getJobEngine().getLibraryMaxFileSize()) {
-                JELogger.debug("File size = " + file.getSize());
+                JELogger.trace("File size = " + file.getSize());
                 throw new LibraryException(JEMessages.FILE_TOO_LARGE);
             }
             if (!file.isEmpty()) {
@@ -533,7 +533,7 @@ public class ClassService {
 
             }
         } catch (JERunnerErrorException | IOException e) {
-            throw new LibraryException(JEMessages.ERROR_IMPORTING_FILE);
+            throw new LibraryException(JEMessages.ERROR_IMPORTING_FILE + ":"+e.getMessage());
         }
     }
 
@@ -581,7 +581,7 @@ public class ClassService {
             try {
                 FileUtilities.deleteFileFromPath(lib.get().getFilePath());
             } catch (Exception e) {
-                JELogger.error(JEMessages.FAILED_TO_DELETE_FILES, LogCategory.DESIGN_MODE, "", LogSubModule.CLASS, id);
+                JELogger.error(JEMessages.FAILED_TO_DELETE_FILES + ":"+e.getMessage(), LogCategory.DESIGN_MODE, "", LogSubModule.CLASS, id);
             }
 
             libraryRepository.deleteById(id);
@@ -599,18 +599,25 @@ public class ClassService {
             // delete method from DB
             JEMethod method = methodRepository.findByJobEngineElementName(name);
             if (method == null) {
-                method = methodRepository.findById(name).isPresent() ? methodRepository.findById(name).get() : null;
+            	Optional<JEMethod> m = methodRepository.findById(name); 
+               if(!m.isPresent())
+               {
+            	   JELogger.error(JEMessages.ERROR_REMOVING_LIBRARY + ": Not Found.\n " ,
+                           LogCategory.DESIGN_MODE, "", LogSubModule.CLASS, name);
+            	   return;
+               }
+            	   
+               method=m.get();
             }
-            if (method != null) {
                 methodRepository.delete(method);
-            }
+            
             // updated existent SIOTHProcedures
             loadedClasses.get(WorkflowConstants.JEPROCEDURES).getMethods().remove(method.getJobEngineElementID());
             ClassDefinition c = getClassModel(loadedClasses.get(WorkflowConstants.JEPROCEDURES));
             addClass(c, true, true);
 
         } catch (Exception e) {
-            JELogger.debug(JEMessages.ERROR_REMOVING_LIBRARY + "\n" + Arrays.toString(e.getStackTrace()),
+            JELogger.error(JEMessages.ERROR_REMOVING_LIBRARY + "\n" + Arrays.toString(e.getStackTrace()),
                     LogCategory.DESIGN_MODE, "", LogSubModule.CLASS, name);
             throw new MethodException(JEMessages.ERROR_REMOVING_METHOD);
         }

@@ -59,7 +59,7 @@ public class JobEngine {
 			if (libraryMaxFileSize != null) {
 				int size = Integer.valueOf(libraryMaxFileSize.substring(0, libraryMaxFileSize.indexOf("MB")));
 				return size * 1048576;
-			} else return 100 * 1048576;
+			}  return 100 * 1048576;
 		}
 		catch (Exception e) {
 			return 100 * 1048576;

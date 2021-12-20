@@ -5,7 +5,6 @@ import io.je.runtime.beans.DMListener;
 import io.je.runtime.services.RuntimeDispatcher;
 import io.je.utilities.beans.JEData;
 import io.je.utilities.constants.JEMessages;
-import io.je.utilities.exceptions.InstanceCreationFailed;
 import io.je.utilities.instances.DataModelRequester;
 import io.je.utilities.log.JELogger;
 import io.siothconfig.SIOTHConfigUtility;
@@ -111,7 +110,7 @@ public class DataModelListener {
      		 try {				
 				RuntimeDispatcher.injectData(new JEData(modelId, objectMapper.writeValueAsString(value)));
 				
-			} catch (InstanceCreationFailed | JsonProcessingException e) {
+			} catch (  JsonProcessingException e) {
 				e.printStackTrace();
 			
 			}

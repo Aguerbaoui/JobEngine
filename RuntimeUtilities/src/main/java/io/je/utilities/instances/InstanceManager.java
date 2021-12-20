@@ -110,12 +110,12 @@ public class InstanceManager {
         	   
     	   		
     		}else {
-    			JELogger.error("Failed to read last values for topic : " + instanceId , null, "", LogSubModule.JERUNNER, instanceId);
+    			JELogger.error(JEMessages.READ_INSTANCE_FAILED + instanceId , null, "", LogSubModule.JERUNNER, instanceId);
 
     		}
 			 
 		} catch (Exception e) {
-			JELogger.error("Failed to read last values for topic : " + instanceId , null, "", LogSubModule.JERUNNER, instanceId);
+			JELogger.error(JEMessages.READ_INSTANCE_FAILED + instanceId + " "+e.getMessage() , null, "", LogSubModule.JERUNNER, instanceId);
 		}
 		return null;
 		
@@ -142,13 +142,13 @@ public class InstanceManager {
     		if(data!=null && !data.isEmpty())
     		{
     			return createInstance(data);
-    		}else {
+    		}
     			JELogger.error(JEMessages.READ_INSTANCE_FAILED+ instanceId , null, "", LogSubModule.JERUNNER, instanceId);
 
-    		}
+    		
 			 
 		} catch (Exception e) {
-			JELogger.error(JEMessages.READ_INSTANCE_FAILED + instanceId , null, "", LogSubModule.JERUNNER, instanceId);
+			JELogger.error(JEMessages.READ_INSTANCE_FAILED + instanceId + " "+e.getMessage() , null, "", LogSubModule.JERUNNER, instanceId);
 		}
 		return null;
 	}

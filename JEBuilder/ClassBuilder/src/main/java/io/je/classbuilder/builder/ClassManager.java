@@ -259,7 +259,7 @@ public class ClassManager {
 		return classNames.containsKey(className);
 	}
 
-	public static Class getClassByName(String className) {
+	public static Class<?> getClassByName(String className) {
 		return builtClasses.get(classNames.get(className));
 	}
 
@@ -271,23 +271,23 @@ public class ClassManager {
 			if (classDefinition.getIsInterface() || classDefinition.getIsEnum()) {
 				throw new ClassLoadException("[" + classDefinition.getName() + "]:" + JEMessages.INVALID_CLASS_FORMAT
 						+ "\n" + JEMessages.UNKNOW_CLASS_TYPE);
-			} else {
+			} 
 				return ClassType.CLASS;
-			}
+			
 		} else if (classDefinition.getIsInterface()) {
 			if (classDefinition.getIsClass() || classDefinition.getIsEnum()) {
 				throw new ClassLoadException("[" + classDefinition.getName() + "]:" + JEMessages.INVALID_CLASS_FORMAT
 						+ "\n" + JEMessages.UNKNOW_CLASS_TYPE);
-			} else {
-				return ClassType.INTERFACE;
 			}
+				return ClassType.INTERFACE;
+			
 		} else if (classDefinition.getIsEnum()) {
 			if (classDefinition.getIsInterface() || classDefinition.getIsClass()) {
 				throw new ClassLoadException("[" + classDefinition.getName() + "]:" + JEMessages.INVALID_CLASS_FORMAT
 						+ "\n" + JEMessages.UNKNOW_CLASS_TYPE);
-			} else {
+			} 
 				return ClassType.ENUM;
-			}
+			
 		} else {
 			throw new ClassLoadException("[" + classDefinition.getName() + "]:" + JEMessages.INVALID_CLASS_FORMAT + "\n"
 					+ JEMessages.UNKNOW_CLASS_TYPE);

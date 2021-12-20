@@ -2,7 +2,6 @@ package io.je.ruleengine.models;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import io.je.ruleengine.enumerations.RuleFormat;
 import io.je.utilities.beans.JEEvent;

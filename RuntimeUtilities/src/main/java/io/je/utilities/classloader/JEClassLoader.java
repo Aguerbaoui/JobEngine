@@ -131,7 +131,7 @@ public class JEClassLoader extends ClassLoader {
             try {
                 JELogger.trace("Class Loading by dm custom loader Started for " + className, LogCategory.RUNTIME,
                         null, LogSubModule.CLASS, null);
-                Class c = dataModelInstance.getClass(className);
+                Class<?> c = dataModelInstance.getClass(className);
                 return c;
             } catch (Exception e) {
                 // JELogger.debug("Class Loading failed by je custom loader for " + name);
