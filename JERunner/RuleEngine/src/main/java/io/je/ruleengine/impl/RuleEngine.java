@@ -1,14 +1,12 @@
 package io.je.ruleengine.impl;
 
 import io.je.ruleengine.models.Rule;
-import io.je.utilities.beans.JEData;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.*;
 import io.je.utilities.log.JELogger;
 import io.je.utilities.runtimeobject.JEObject;
 
 import java.util.List;
-import java.util.Set;
 
 /*
  * This class handles all the rule engine operations.

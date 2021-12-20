@@ -11,7 +11,6 @@ import com.squareup.okhttp.*;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import zmq.socket.reqrep.Req;
 
 public class Network {
 

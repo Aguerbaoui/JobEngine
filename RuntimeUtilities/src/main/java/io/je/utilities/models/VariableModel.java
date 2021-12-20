@@ -1,7 +1,6 @@
 package io.je.utilities.models;
 
 import io.je.utilities.beans.JEVariable;
-import utils.date.DateUtils;
 
 
 public class VariableModel {

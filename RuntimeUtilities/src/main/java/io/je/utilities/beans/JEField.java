@@ -1,7 +1,5 @@
 package io.je.utilities.beans;
 
-import io.je.utilities.runtimeobject.JEObject;
-
 public class JEField {
 
     private String type;

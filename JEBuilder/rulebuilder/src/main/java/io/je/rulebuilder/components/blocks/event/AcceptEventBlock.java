@@ -1,7 +1,6 @@
 package io.je.rulebuilder.components.blocks.event;
 
 
-import io.je.rulebuilder.components.blocks.Block;
 import io.je.rulebuilder.components.blocks.ConditionBlock;
 import io.je.rulebuilder.config.AttributesMapping;
 import io.je.rulebuilder.models.BlockModel;

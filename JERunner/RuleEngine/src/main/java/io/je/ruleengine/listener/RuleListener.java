@@ -8,11 +8,8 @@ import org.kie.api.event.rule.*;
 
 import io.je.utilities.beans.JEBlockMessage;
 import io.je.utilities.beans.JEMessage;
-import io.je.utilities.log.JELogger;
 import io.je.utilities.ruleutils.IdManager;
 import io.je.utilities.runtimeobject.JEObject;
-import utils.log.LogCategory;
-import utils.log.LogSubModule;
 
 public class RuleListener extends DefaultAgendaEventListener {
 	

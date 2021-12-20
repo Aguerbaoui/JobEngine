@@ -2,8 +2,6 @@ package io.je.rulebuilder.components.blocks.execution;
 
 import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
-
 import io.je.rulebuilder.components.blocks.ExecutionBlock;
 import io.je.rulebuilder.config.AttributesMapping;
 import io.je.rulebuilder.models.BlockModel;

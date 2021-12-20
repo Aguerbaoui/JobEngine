@@ -7,7 +7,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import io.je.rulebuilder.components.blocks.Block;
 import io.je.rulebuilder.components.blocks.getter.AttributeGetterBlock;
-import io.je.utilities.log.JELogger;
 
 /*
  * Rules defined graphically by the user.
