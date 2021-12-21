@@ -17,7 +17,6 @@ import utils.log.LogSubModule;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -72,22 +71,21 @@ public class ProjectService {
 	 * delete project
 	 */
 	@Async
-	public CompletableFuture<Void> removeProject(String id) throws ProjectNotFoundException,
-			JERunnerErrorException, LicenseNotActiveException, VariableNotFoundException {
+	public CompletableFuture<Void> removeProject(String id) {
 
 		try {
 			stopProject(id);
-		} catch (Exception e) {
+		} catch ( ProjectNotFoundException | ProjectStopException | LicenseNotActiveException  | ExecutionException e) {
+		} catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
 		}
 		JELogger.info("[project= " + loadedProjects.get(id).getProjectName() + "]" + JEMessages.DELETING_PROJECT, LogCategory.DESIGN_MODE, id,
 				LogSubModule.JEBUILDER, null);
 		try {
 			JERunnerAPIHandler.cleanProjectDataFromRunner(id);
-		} catch (Exception e) {
+		} catch ( JERunnerErrorException e) {
 		}
-		/*
-		 * synchronized (projectRepository) { projectRepository.deleteById(id); }
-		 */
+
 
 		try {
 			ruleService.deleteAll(id);
@@ -151,8 +149,7 @@ public class ProjectService {
 	 */
 
 	public List<OperationStatusDetails> buildAll(String projectId)
-			throws ProjectNotFoundException, InterruptedException, ExecutionException, LicenseNotActiveException,
-			WorkflowNotFoundException, WorkflowException {
+			throws ProjectNotFoundException, InterruptedException, ExecutionException, LicenseNotActiveException{
 		JELogger.info("[project= " + loadedProjects.get(projectId).getProjectName() + "]" + JEMessages.BUILDING_PROJECT, LogCategory.DESIGN_MODE,
 				projectId, LogSubModule.JEBUILDER, null);
 //CompletableFuture<?> buildRules = ruleService.compileALLRules(projectId);
@@ -243,7 +240,7 @@ public class ProjectService {
 	 * Return project by id
 	 */
 
-	public JEProject getProject(String projectId) throws ProjectNotFoundException, JERunnerErrorException, LicenseNotActiveException, ProjectLoadException {
+	public JEProject getProject(String projectId) throws ProjectNotFoundException, LicenseNotActiveException, ProjectLoadException {
 
 		JEProject project = null;
 	//	JELogger.trace("[projectId= " + projectId + "]" + JEMessages.LOADING_PROJECT, LogCategory.DESIGN_MODE,
@@ -305,49 +302,11 @@ public class ProjectService {
 		return true;
 	}
 
-	/*
-	 * delete project
-	 */
-	/*
-	 * @Async public CompletableFuture<Void> closeProject(String id) throws
-	 * ProjectNotFoundException, InterruptedException, JERunnerErrorException,
-	 * ExecutionException { if (!loadedProjects.containsKey(id)) { throw new
-	 * ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND); }
-	 * JELogger.trace(ProjectService.class, "[projectId= "+id+"]"+
-	 * JEMessages.CLOSING_PROJECT);
-	 * JERunnerAPIHandler.cleanProjectDataFromRunner(id); loadedProjects.remove(id);
-	 * return CompletableFuture.completedFuture(null);
-	 * 
-	 * }
-	 */
 
-	/*
-	 * public void resetProjects() throws ProjectNotFoundException,
-	 * RuleBuildFailedException, JERunnerErrorException, RuleNotFoundException,
-	 * IOException, InterruptedException, ExecutionException, ProjectRunException,
-	 * ConfigException, WorkflowBuildException {
-	 * 
-	 * loadAllProjects(); for (JEProject project : loadedProjects.values()) { //we
-	 * are loading them in loadAllProjects() /* for (JEEvent event :
-	 * project.getEvents().values()) { eventService.registerEvent(event); }
-	 * for(JEVariable variable : project.getVariables().values()) {
-	 * variableService.addVariableToRunner(variable); }
-	 */
-
-	/*
-	 * if (project.isBuilt()) { project.setBuilt(false);
-	 * buildAll(project.getProjectId()); } if (project.isRunning()) {
-	 * project.setRunning(false); runAll(project.getProjectId()); } }
-	 * JELogger.trace(JEMessages.RESETTING_PROJECTS);
-	 * 
-	 * }
-	 */
 
 	@Async
-	public CompletableFuture<Void> loadAllProjects() throws ProjectNotFoundException, JERunnerErrorException,
-			IOException, InterruptedException, ExecutionException, LicenseNotActiveException, ProjectLoadException, RuleNotFoundException {
+	public CompletableFuture<Void> loadAllProjects()  {
 
-		// loadedProjects = new ConcurrentHashMap<String, JEProject>();
 		JELogger.info(JEMessages.LOADING_PROJECTS, LogCategory.DESIGN_MODE, null, LogSubModule.JEBUILDER, null);
 		List<JEProject> projects = projectRepository.findAll();
 		for (JEProject project : projects) {

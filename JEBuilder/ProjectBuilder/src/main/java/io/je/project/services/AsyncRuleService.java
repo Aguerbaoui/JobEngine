@@ -159,12 +159,17 @@ public class AsyncRuleService {
 			project.getRule(ruleId).setRunning(false);
 			rule.setRunning(true);
 			result.setOperationSucceeded(true);
-		} catch (  JERunnerErrorException | InterruptedException e) {
+		} catch (  JERunnerErrorException  e) {
+			
 			result.setOperationSucceeded(false);
 			result.setOperationError(e.getMessage());
 		} catch (ExecutionException e) {
 			result.setOperationSucceeded(false);
 			result.setOperationError(e.getCause().getMessage());
+		} catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
+			result.setOperationSucceeded(false);
+			result.setOperationError(e.getMessage());
 		}
 		try {
 			RuleService.updateRuleStatus(rule);

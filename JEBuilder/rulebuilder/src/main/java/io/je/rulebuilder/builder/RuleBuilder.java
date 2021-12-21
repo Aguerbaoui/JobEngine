@@ -2,7 +2,7 @@ package io.je.rulebuilder.builder;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -119,10 +119,11 @@ public class RuleBuilder {
         
         
         if (jeRunnerResp == null || jeRunnerResp.getCode() != ResponseCodes.CODE_OK) {
-			JELogger.error("[project = "+rule.getJobEngineProjectName()+"][rule =" + rule.getJobEngineElementName() + " ]" + JEMessages.RULE_BUILD_FAILED + jeRunnerResp.getMessage(),
+        	String response = jeRunnerResp ==null? JEMessages.JERUNNER_UNREACHABLE:jeRunnerResp.getMessage();
+			JELogger.error("[project = "+rule.getJobEngineProjectName()+"][rule =" + rule.getJobEngineElementName() + " ]" + JEMessages.RULE_BUILD_FAILED + response,
 					LogCategory.DESIGN_MODE, rule.getJobEngineProjectID(),
 					LogSubModule.RULE, rule.getJobEngineElementID());
-            throw new RuleBuildFailedException(jeRunnerResp.getMessage());
+            throw new RuleBuildFailedException(response);
         }
         
 
@@ -189,11 +190,11 @@ public class RuleBuilder {
         ruleTemplateAttributes.put("consequence", consequences);
         ruleTemplateAttributes.put("duration", duration);
         if (ruleParameters.getDateEffective() != null && !ruleParameters.getDateEffective().isEmpty()) {
-        	LocalDateTime date = LocalDateTime.ofInstant(Instant.parse(ruleParameters.getDateEffective()), ZoneOffset.systemDefault());
+        	LocalDateTime date = LocalDateTime.ofInstant(Instant.parse(ruleParameters.getDateEffective()), ZoneId.systemDefault());
             ruleTemplateAttributes.put("dateEffective", "\"" + DateUtils.formatDate(date, ConfigurationConstants.DROOLS_DATE_FORMAT) + "\"");
         }
         if (ruleParameters.getDateExpires() != null && !ruleParameters.getDateExpires().isEmpty()) {
-        	LocalDateTime date = LocalDateTime.ofInstant(Instant.parse(ruleParameters.getDateExpires()), ZoneOffset.systemDefault());
+        	LocalDateTime date = LocalDateTime.ofInstant(Instant.parse(ruleParameters.getDateExpires()), ZoneId.systemDefault());
             ruleTemplateAttributes.put("dateExpires", "\"" + DateUtils.formatDate(date, ConfigurationConstants.DROOLS_DATE_FORMAT) + "\"");
         }
 

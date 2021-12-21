@@ -10,7 +10,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import blocks.WorkflowBlock;
-import blocks.basic.ScriptBlock;
 import blocks.basic.SubProcessBlock;
 import io.je.rulebuilder.components.JERule;
 import io.je.rulebuilder.components.UserDefinedRule;
@@ -20,19 +19,7 @@ import io.je.utilities.beans.JEVariable;
 import io.je.utilities.config.ConfigurationConstants;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.*;
-import io.je.utilities.log.JELogger;
 import models.JEWorkflow;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.Transient;
-import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
-import utils.files.FileUtilities;
-import utils.log.LogCategory;
-import utils.log.LogSubModule;
-
-import java.time.LocalDateTime;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 @Document(collection="ProjectDefinitionCollection")
 public class JEProject {
@@ -349,7 +336,7 @@ public class JEProject {
 	    /*
 	    * Add a block to a rule
 	    * */
-	    public void addBlockToRule(Block block) throws AddRuleBlockException 
+	    public void addBlockToRule(Block block) 
 	    	
 	    {	
 	    	((UserDefinedRule) rules.get(block.getJobEngineElementID())).addBlock(block);
@@ -362,7 +349,7 @@ public class JEProject {
 	    /*
 	     * update Block
 	     */
-		public void updateRuleBlock(Block block) throws AddRuleBlockException {
+		public void updateRuleBlock(Block block)  {
 	    	((UserDefinedRule) rules.get(block.getJobEngineElementID())).updateBlock(block);
 	    	isBuilt=false;
 
@@ -373,7 +360,7 @@ public class JEProject {
 		 * delete Block
 		 */
 
-		public void deleteRuleBlock(String ruleId, String blockId) throws RuleBlockNotFoundException {
+		public void deleteRuleBlock(String ruleId, String blockId)  {
 			((UserDefinedRule) rules.get(ruleId)).deleteBlock(blockId);
 			rules.get(ruleId).setJeObjectLastUpdate(  Instant.now());
 			isBuilt=false;

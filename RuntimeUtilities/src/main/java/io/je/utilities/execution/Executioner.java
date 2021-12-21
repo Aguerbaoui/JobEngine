@@ -11,7 +11,6 @@ import io.je.project.variables.VariableManager;
 import io.je.utilities.apis.JERunnerAPIHandler;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.JERunnerErrorException;
-import io.je.utilities.exceptions.JavaCodeInjectionError;
 import io.je.utilities.exceptions.VariableNotFoundException;
 import io.je.utilities.instances.ClassRepository;
 import io.je.utilities.instances.InstanceManager;
@@ -223,17 +222,11 @@ public class Executioner {
 
 	}
 
-	public static void executeScript(String name, String processId, String projectId, int timeout)
-			throws JavaCodeInjectionError, ClassNotFoundException {
-		// JEClassLoader.overrideInstance(ClassBuilderConfig.generationPackageName +"."
-		// + name);
+	public static void executeScript(String name, String processId, String projectId, int timeout){
 		Class<?> loadClass = null;
 		try {
 			loadClass = ClassRepository
-					.getClassByName(name); /*
-											 * JEClassLoader.getInstance().loadClass(ClassBuilderConfig.
-											 * generationPackageName +"." + name);
-											 */
+					.getClassByName(name); 
 			Method method = loadClass.getDeclaredMethods()[0];
 			method.invoke(null);
 		} catch (InvocationTargetException | IllegalAccessException e) {

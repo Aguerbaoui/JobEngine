@@ -8,101 +8,105 @@ import utils.network.HttpMethod;
 
 import java.util.HashMap;
 
-public class WebApiTask extends  ActivitiTask{
+public class WebApiTask extends ActivitiTask {
 
-    public WebApiTask() {}
-    private HttpMethod httpMethod;
+	public WebApiTask() {
+	}
 
-    private BodyType bodyType;
+	private HttpMethod httpMethod;
 
-    private String stringBody;
+	private BodyType bodyType;
 
-    private HashMap<String, String> body;
+	private String stringBody;
 
-    private String responseClass;
+	private HashMap<String, String> body;
 
-    private boolean hasBody;
+	private String responseClass;
 
-    private AuthScheme authScheme = AuthScheme.NONE;
+	private boolean hasBody;
 
-    private HashMap<String, String> authentication;
+	private AuthScheme authScheme = AuthScheme.NONE;
 
-    private String url;
+	private HashMap<String, String> authentication;
 
-    public HttpMethod getHttpMethod() {
-        return httpMethod;
-    }
+	private String url;
 
-    public void setHttpMethod(HttpMethod httpMethod) {
-        this.httpMethod = httpMethod;
-    }
+	public HttpMethod getHttpMethod() {
+		return httpMethod;
+	}
 
-    public boolean hasBody() {
-        return hasBody;
-    }
+	public void setHttpMethod(HttpMethod httpMethod) {
+		this.httpMethod = httpMethod;
+	}
 
-    public void setHasBody(boolean hasBody) {
-        this.hasBody = hasBody;
-    }
+	public boolean hasBody() {
+		return hasBody;
+	}
 
-    public BodyType getBodyType() {
-        return bodyType;
-    }
+	public void setHasBody(boolean hasBody) {
+		this.hasBody = hasBody;
+	}
 
-    public void setBodyType(BodyType bodyType) {
-        this.bodyType = bodyType;
-    }
+	public BodyType getBodyType() {
+		return bodyType;
+	}
 
-    public String getBody() throws JsonProcessingException {
-        if(stringBody != null) return stringBody;
-        else return new ObjectMapper().writeValueAsString(body);
-    }
+	public void setBodyType(BodyType bodyType) {
+		this.bodyType = bodyType;
+	}
 
-    public void setBody(HashMap<String, String> body) {
-        this.body = body;
-    }
+	public String getBody() throws JsonProcessingException {
+		if (stringBody != null) {
+			return stringBody;
+		}
+		return new ObjectMapper().writeValueAsString(body);
+	}
 
-    public String getResponseClass() {
-        return responseClass;
-    }
+	public void setBody(HashMap<String, String> body) {
+		this.body = body;
+	}
 
-    public void setResponseClass(String responseClass) {
-        this.responseClass = responseClass;
-    }
+	public String getResponseClass() {
+		return responseClass;
+	}
 
-    public String getUrl() {
-        return url;
-    }
+	public void setResponseClass(String responseClass) {
+		this.responseClass = responseClass;
+	}
 
-    public void setUrl(String url) {
-        this.url = url;
-    }
+	public String getUrl() {
+		return url;
+	}
 
-    public void setStringBody(String stringBody) {
-        this.stringBody = stringBody;
-    }
+	public void setUrl(String url) {
+		this.url = url;
+	}
 
-    public String getStringBody() {
-        return stringBody;
-    }
+	public void setStringBody(String stringBody) {
+		this.stringBody = stringBody;
+	}
 
-    public boolean isHasBody() {
-        return hasBody;
-    }
+	public String getStringBody() {
+		return stringBody;
+	}
 
-    public AuthScheme getAuthScheme() {
-        return authScheme;
-    }
+	public boolean isHasBody() {
+		return hasBody;
+	}
 
-    public void setAuthScheme(AuthScheme authScheme) {
-        this.authScheme = authScheme;
-    }
+	public AuthScheme getAuthScheme() {
+		return authScheme;
+	}
 
-    public HashMap<String, String> getAuthentication() {
-        return authentication;
-    }
+	public void setAuthScheme(AuthScheme authScheme) {
+		this.authScheme = authScheme;
+	}
 
-    public void setAuthentication(HashMap<String, String> authentication) {
-        this.authentication = authentication;
-    }
+	public HashMap<String, String> getAuthentication() {
+		return authentication;
+	}
+
+	public void setAuthentication(HashMap<String, String> authentication) {
+		this.authentication = authentication;
+	}
 }

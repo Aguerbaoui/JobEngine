@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.apache.commons.text.StringSubstitutor;
+
 public class StringSub {
 
     //Project variable substitutions
@@ -26,13 +28,13 @@ public class StringSub {
     public static String replace(String projectId, String toBeReplaced) {
         if (variables.containsKey(projectId)) {
             //HashMap<String, Object> subMap = variables.get(projectId);
-            return substitutor.replace(toBeReplaced, variables.get(projectId));
+            return StringSubstitutor.replace(toBeReplaced, variables.get(projectId));
         }
-        else return toBeReplaced;
+         return toBeReplaced;
     }
 
     public static String replace(String toBeReplaced, HashMap<String, Object> vars) {
-        return substitutor.replace(toBeReplaced, vars);
+        return StringSubstitutor.replace(toBeReplaced, vars);
     }
 
     public static void main(String[] args) {
@@ -58,7 +60,7 @@ public class StringSub {
 
             // Sets this flag to true to throw exception if any variable is undefined.
             stringSubstitutor.setEnableUndefinedVariableException(true);
-            String result = stringSubstitutor.replace(test, valuesMap);
+            String result = StringSubstitutor.replace(test, valuesMap);
 
             System.out.println(result);
         }catch (Exception ex){

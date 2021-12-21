@@ -1,11 +1,8 @@
 package io.je.project.config;
 
-import io.je.project.listener.JELicenseStatusListener;
 import io.je.utilities.exceptions.LicenseNotActiveException;
 import io.je.utilities.log.JELogger;
-import io.licensemanager.LicenseManager.ClientLicenseManager;
 import io.licensemanager.common.enums.SIOTHLicenseStatus;
-import io.licensemanager.utilities.InitResponse;
 import io.siothconfig.SIOTHConfigUtility;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;

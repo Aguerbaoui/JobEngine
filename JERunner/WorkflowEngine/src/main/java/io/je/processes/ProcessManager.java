@@ -286,7 +286,7 @@ public class ProcessManager {
     /*
      * Run all workflows ( in case runProject == false we run all kinds of workflows( scheduled or not ) )
      * */
-    public void runAll(String projectId, boolean runProject) throws WorkflowNotFoundException, WorkflowBuildException {
+    public void runAll(String projectId, boolean runProject) throws WorkflowNotFoundException {
         JELogger.debug(JEMessages.RUNNING_ALL_WORKFLOWS_IN_PROJECT_ID + " = " + projectId,
                 LogCategory.RUNTIME, projectId,
                 LogSubModule.WORKFLOW, null);

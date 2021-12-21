@@ -1,7 +1,5 @@
 package io.je.rulebuilder.config;
 
-import java.util.ArrayList;
-
 /*
  * mapping for block parameters
  */

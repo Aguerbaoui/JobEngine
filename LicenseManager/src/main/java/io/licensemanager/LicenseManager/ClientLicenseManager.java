@@ -20,24 +20,21 @@ public class ClientLicenseManager {
 	static ObjectMapper objectMapper = new ObjectMapper();
 	static boolean isRegistered = false;
 
-
 	static SIOTHLicenseStatus siothlicenseStatus;
 
-	
-	private ClientLicenseManager()
-	{
-		
+	private ClientLicenseManager() {
+
 	}
-	public static void initListeners(int featureCode)
-	{
-		LicenseStatusWatcher listener = new LicenseStatusWatcher(featureCode,objZMQRequest);
+
+	public static void initListeners(int featureCode) {
+		LicenseStatusWatcher listener = new LicenseStatusWatcher(featureCode, objZMQRequest);
 		listener.setListening(true);
 		Thread getLicenseStatusThread = new Thread(listener);
-		getLicenseStatusThread.setName("GetLicenseStatusThread");									
+		getLicenseStatusThread.setName("GetLicenseStatusThread");
 		getLicenseStatusThread.start();
 
 	}
-	
+
 	public static InitResponse initializeLicense(String licenseManagerUrl, int featureCode,
 			int tags/* , out SIOTHLicenseStatus licenseStatus, out String strError */) {
 		String strError = "";
@@ -64,16 +61,15 @@ public class ClientLicenseManager {
 
 				if (cipheredData != null) {
 
-					String cipheredSIOTHRequest =cipheredData; /*new String(Base64Utils.encode(cipheredData));*/					
+					String cipheredSIOTHRequest = cipheredData; /* new String(Base64Utils.encode(cipheredData)); */
 
 					requestTimeout = 20000;
-					String rcvData =  objZMQRequest.sendRequest( cipheredSIOTHRequest,requestTimeout);
+					String rcvData = objZMQRequest.sendRequest(cipheredSIOTHRequest, requestTimeout);
 
 					if (rcvData != null && !rcvData.isEmpty()) {
 						// Decrypt rcvData
-						
-						String plainRcvResponse = LicenseUtilities.decrypt(rcvData,
-								GeneralKeys.passPhraseConnectors);
+
+						String plainRcvResponse = LicenseUtilities.decrypt(rcvData, GeneralKeys.passPhraseConnectors);
 
 						if (plainRcvResponse != null) {
 							// Deserialize obj
@@ -81,23 +77,19 @@ public class ClientLicenseManager {
 									SIOTHLicenseResponse.class);
 
 							if (objSIOTHLicenseResponse.bAuthorized) {
-								//siothlicenseStatus = licenseStatus = objSIOTHLicenseResponse.Status;
+								// siothlicenseStatus = licenseStatus = objSIOTHLicenseResponse.Status;
 								siothlicenseStatus = licenseStatus = SIOTHLicenseStatus.Corrupted;
 
 								if (siothlicenseStatus == SIOTHLicenseStatus.Backdated
 										|| siothlicenseStatus == SIOTHLicenseStatus.Corrupted
 										|| siothlicenseStatus == SIOTHLicenseStatus.Expired) {
-									return new InitResponse(false, strError,siothlicenseStatus );
-								} else {
-									isRegistered=true;
-									return new InitResponse(true, strError,siothlicenseStatus );
-
+									return new InitResponse(false, strError, siothlicenseStatus);
 								}
-								
+								isRegistered = true;
+								return new InitResponse(true, strError, siothlicenseStatus);
 
-							} else {
-								strError = objSIOTHLicenseResponse.Error;
 							}
+							strError = objSIOTHLicenseResponse.Error;
 
 						} else {
 							strError = LicenseMessages.ERROR_RECEIVING_DATA;
@@ -107,7 +99,7 @@ public class ClientLicenseManager {
 					}
 
 				} else {
-					strError = LicenseMessages.ERROR_SENDING_REQUEST ;
+					strError = LicenseMessages.ERROR_SENDING_REQUEST;
 				}
 
 			} else {
@@ -115,19 +107,18 @@ public class ClientLicenseManager {
 				strError = LicenseMessages.initZMQError(strError);
 			}
 
-			return new InitResponse(false, strError,siothlicenseStatus );
-
+			return new InitResponse(false, strError, siothlicenseStatus);
 
 		} catch (Exception ex) {
-			strError = LicenseMessages.initLicenseError( ex.getMessage());
-			return new InitResponse(false, strError,siothlicenseStatus );
+			strError = LicenseMessages.initLicenseError(ex.getMessage());
+			return new InitResponse(false, strError, siothlicenseStatus);
 
 		}
 	}
 
 	public static void register(LicenseStatusListener jeLicenseStatusListener) {
 		LicenseStatusChangeHandler.addListener(jeLicenseStatusListener);
-		
+
 	}
 
 	public static boolean isRegistered() {
@@ -137,6 +128,5 @@ public class ClientLicenseManager {
 	public static void setRegistered(boolean isRegistered) {
 		ClientLicenseManager.isRegistered = isRegistered;
 	}
-
 
 }

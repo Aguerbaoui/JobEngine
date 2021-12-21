@@ -1,9 +1,5 @@
 package io.je.utilities.beans;
 
-import io.je.utilities.log.JELogger;
-import io.je.utilities.runtimeobject.JEObject;
-import utils.log.LogSubModule;
-
 import java.time.LocalDateTime;
 
 import org.springframework.data.annotation.Transient;

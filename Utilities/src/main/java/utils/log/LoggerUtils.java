@@ -19,8 +19,6 @@ import org.apache.logging.log4j.core.config.builder.api.LayoutComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.RootLoggerComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
 
-import utils.date.DateUtils;
-
 /*
  * Class Responsible for logging 
  * A log request of level p in a logger with level q is enabled if p >= q. 

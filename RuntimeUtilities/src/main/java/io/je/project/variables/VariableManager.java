@@ -1,13 +1,10 @@
 package io.je.project.variables;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.je.utilities.beans.*;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.VariableNotFoundException;
 import io.je.utilities.log.JELogger;
-import io.je.utilities.monitoring.JEMonitor;
-import io.je.utilities.monitoring.ObjectType;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
 import utils.string.StringSub;

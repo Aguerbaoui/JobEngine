@@ -1,13 +1,11 @@
 package io.je;
 
 import static org.junit.Assert.*;
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Enumeration;
 import java.util.Properties;
 
 import com.fasterxml.jackson.databind.ObjectMapper;

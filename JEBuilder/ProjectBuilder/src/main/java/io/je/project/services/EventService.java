@@ -18,7 +18,6 @@ import io.je.project.repository.EventRepository;
 import io.je.utilities.apis.JERunnerAPIHandler;
 import io.je.utilities.beans.JEEvent;
 import io.je.utilities.constants.JEMessages;
-import io.je.utilities.exceptions.ConfigException;
 import io.je.utilities.exceptions.EventException;
 import io.je.utilities.exceptions.JERunnerErrorException;
 import io.je.utilities.exceptions.LicenseNotActiveException;
@@ -185,7 +184,7 @@ public class EventService {
 		
 	}
 
-	public void updateEventType(String projectId, String eventId, String eventType) throws ProjectNotFoundException, EventException, ConfigException, LicenseNotActiveException {
+	public void updateEventType(String projectId, String eventId, String eventType) throws ProjectNotFoundException, EventException, LicenseNotActiveException {
     	LicenseProperties.checkLicenseIsActive();
 
 

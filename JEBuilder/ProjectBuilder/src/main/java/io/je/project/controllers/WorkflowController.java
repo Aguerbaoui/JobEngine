@@ -29,351 +29,353 @@ import static io.je.utilities.constants.JEMessages.*;
 @CrossOrigin(maxAge = 3600)
 public class WorkflowController {
 
-
-    @Autowired
-    WorkflowService workflowService;
-    @Autowired
+	@Autowired
+	WorkflowService workflowService;
+	@Autowired
 	ProjectService projectService;
 
-
-    @PostMapping(value = "/addWorkflow", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> addWorkflow(@RequestBody WorkflowModel m) {
-        try {
+	@PostMapping(value = "/addWorkflow", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> addWorkflow(@RequestBody WorkflowModel m) {
+		try {
 			projectService.getProject(m.getProjectId());
 
-            workflowService.addWorkflow(m);
-        } catch (Exception e) {
+			workflowService.addWorkflow(m);
+		} catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
 		}
-        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ADDED_WORKFLOW_SUCCESSFULLY));
-    }
+		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ADDED_WORKFLOW_SUCCESSFULLY));
+	}
 
-    /*
-     * Build workflow
-     */
-    @PostMapping(value = "/buildWorkflow/{projectId}/{key}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> buildWorkflow(@PathVariable String projectId, @PathVariable String key) {
+	/*
+	 * Build workflow
+	 */
+	@PostMapping(value = "/buildWorkflow/{projectId}/{key}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> buildWorkflow(@PathVariable String projectId, @PathVariable String key) {
 
-        try {
+		try {
 			projectService.getProject(projectId);
-            OperationStatusDetails result = workflowService.buildWorkflow(projectId, key).get();
-            if(result.isOperationSucceeded()) {
-                return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, WORKFLOW_BUILT_SUCCESSFULLY));
-            }
+			OperationStatusDetails result = workflowService.buildWorkflow(projectId, key).get();
+			if (result.isOperationSucceeded()) {
+				return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, WORKFLOW_BUILT_SUCCESSFULLY));
+			}
 
-            else {
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new JEResponse(ResponseCodes.WORKFLOW_BUILD_ERROR, result.getOperationError()));
-            }
-        }catch (Exception e) {
-			return JEExceptionHandler.handleException(e);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body(new JEResponse(ResponseCodes.WORKFLOW_BUILD_ERROR, result.getOperationError()));
 
-        }
-
-    }
-
-    /*
-     * Run Workflow
-     */
-    @PostMapping(value = "/runWorkflow/{projectId}/{key}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> runWorkflow(@PathVariable String projectId, @PathVariable String key) {
-        try {
-			projectService.getProject(projectId);
-            OperationStatusDetails result = workflowService.runWorkflow(projectId, key).get();
-            if(result.isOperationSucceeded()) {
-                return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, EXECUTING_WORKFLOW));
-            }
-
-            else {
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new JEResponse(ResponseCodes.WORKFLOW_RUN_ERROR, result.getOperationError()));
-            }
-        }catch (Exception e) {
+		} catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
 
 		}
 
-    }
+	}
 
-    /*
-     * Stop Workflow
-     */
-    @PostMapping(value = "/stopWorkflow/{projectId}/{key}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> stopWorkflow(@PathVariable String projectId, @PathVariable String key) {
-        try {
+	/*
+	 * Run Workflow
+	 */
+	@PostMapping(value = "/runWorkflow/{projectId}/{key}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> runWorkflow(@PathVariable String projectId, @PathVariable String key) {
+		try {
 			projectService.getProject(projectId);
+			OperationStatusDetails result = workflowService.runWorkflow(projectId, key).get();
+			if (result.isOperationSucceeded()) {
+				return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, EXECUTING_WORKFLOW));
+			}
 
-            workflowService.stopWorkflow(projectId, key);
-            OperationStatusDetails result = workflowService.stopWorkflow(projectId, key).get();
-            if(result.isOperationSucceeded()) {
-                return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ERROR_STOPPING_WORKFLOW));
-            }
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body(new JEResponse(ResponseCodes.WORKFLOW_RUN_ERROR, result.getOperationError()));
 
-            else {
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new JEResponse(ResponseCodes.WORKFLOW_DELETION_ERROR, result.getOperationError()));
-            }
-        }catch (Exception e) {
-            return JEExceptionHandler.handleException(e);
-
-        }
-    }
-
-    /*
-     * Delete a workflow
-     */
-    @DeleteMapping(value = "/deleteWorkflow/{projectId}/{workflowId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> deleteWorkflow(@PathVariable("projectId") String projectId,
-                                            @PathVariable("workflowId") String workflowId) {
-
-        try {
-			projectService.getProject(projectId);
-
-            workflowService.removeWorkflow(projectId, workflowId);
-        } catch (Exception e) {
+		} catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
 
 		}
 
-        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.WORKFLOW_DELETED_SUCCESSFULLY));
-    }
+	}
 
-    /*
-     * Update a workflow
-     */
-    @PatchMapping(value = "/updateWorkflow/{projectId}/{workflowId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> updateWorkflow(@PathVariable("projectId") String projectId,
-                                            @PathVariable("workflowId") String workflowId, @RequestBody WorkflowModel m) {
-
-        try {
+	/*
+	 * Stop Workflow
+	 */
+	@PostMapping(value = "/stopWorkflow/{projectId}/{key}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> stopWorkflow(@PathVariable String projectId, @PathVariable String key) {
+		try {
 			projectService.getProject(projectId);
 
-            workflowService.updateWorkflow(projectId, workflowId, m);
-        } catch (Exception e) {
+			workflowService.stopWorkflow(projectId, key);
+			OperationStatusDetails result = workflowService.stopWorkflow(projectId, key).get();
+			if (result.isOperationSucceeded()) {
+				return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ERROR_STOPPING_WORKFLOW));
+			}
+
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body(new JEResponse(ResponseCodes.WORKFLOW_DELETION_ERROR, result.getOperationError()));
+
+		} catch (Exception e) {
+			return JEExceptionHandler.handleException(e);
+
+		}
+	}
+
+	/*
+	 * Delete a workflow
+	 */
+	@DeleteMapping(value = "/deleteWorkflow/{projectId}/{workflowId}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> deleteWorkflow(@PathVariable("projectId") String projectId,
+			@PathVariable("workflowId") String workflowId) {
+
+		try {
+			projectService.getProject(projectId);
+
+			workflowService.removeWorkflow(projectId, workflowId);
+		} catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
 
 		}
 
-        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, WORKFLOW_UPDATED_SUCCESS));
-    }
+		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.WORKFLOW_DELETED_SUCCESSFULLY));
+	}
 
-    @GetMapping(value = "/getAllWorkflows/{projectId}")
-    @ResponseBody
-    public ResponseEntity<?> getAllWorkflows(@PathVariable("projectId") String projectId) {
-        try {
+	/*
+	 * Update a workflow
+	 */
+	@PatchMapping(value = "/updateWorkflow/{projectId}/{workflowId}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> updateWorkflow(@PathVariable("projectId") String projectId,
+			@PathVariable("workflowId") String workflowId, @RequestBody WorkflowModel m) {
+
+		try {
 			projectService.getProject(projectId);
 
-            return ResponseEntity.ok(workflowService.getAllWorkflows(projectId).get());
-        } catch (Exception e) {
+			workflowService.updateWorkflow(projectId, workflowId, m);
+		} catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
 
 		}
-    }
 
-    /*
-     * Update a workflow status
-     */
-    @PatchMapping(value = "/updateStatus", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> updateStatus(@RequestBody WorkflowModel m) {
+		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, WORKFLOW_UPDATED_SUCCESS));
+	}
 
-        try {
-            projectService.getProject(m.getProjectId());
-
-            workflowService.updateWorkflowStatus(m.getProjectId(), m.getId(), m.getStatus());
-        } catch (Exception e) {
-            return JEExceptionHandler.handleException(e);
-
-        }
-
-        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, WORKFLOW_UPDATED_SUCCESS));
-    }
-
-    @GetMapping(value = "/getWorkflowById/{projectId}/{key}")
-    @ResponseBody
-    public ResponseEntity<?> getWorkflowById(@PathVariable("projectId") String projectId, @PathVariable("key") String key) {
-        WorkflowModel w = null;
-        try {
+	@GetMapping(value = "/getAllWorkflows/{projectId}")
+	@ResponseBody
+	public ResponseEntity<?> getAllWorkflows(@PathVariable("projectId") String projectId) {
+		try {
 			projectService.getProject(projectId);
 
-            w = workflowService.getWorkflow( key).get();
-            return ResponseEntity.ok(w);
-        }catch (Exception e) {
+			return ResponseEntity.ok(workflowService.getAllWorkflows(projectId).get());
+		} catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
 
 		}
-    }
+	}
 
-    /*
-     * Add a new Workflow component
-     */
-    @PostMapping(value = "/addWorkflowBlock", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> addWorkflowBlock(@RequestBody WorkflowBlockModel block) {
-    	String generatedBlockName = "";
+	/*
+	 * Update a workflow status
+	 */
+	@PatchMapping(value = "/updateStatus", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> updateStatus(@RequestBody WorkflowModel m) {
 
-    	try {
+		try {
+			projectService.getProject(m.getProjectId());
+
+			workflowService.updateWorkflowStatus(m.getProjectId(), m.getId(), m.getStatus());
+		} catch (Exception e) {
+			return JEExceptionHandler.handleException(e);
+
+		}
+
+		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, WORKFLOW_UPDATED_SUCCESS));
+	}
+
+	@GetMapping(value = "/getWorkflowById/{projectId}/{key}")
+	@ResponseBody
+	public ResponseEntity<?> getWorkflowById(@PathVariable("projectId") String projectId,
+			@PathVariable("key") String key) {
+		WorkflowModel w = null;
+		try {
+			projectService.getProject(projectId);
+
+			w = workflowService.getWorkflow(key).get();
+			return ResponseEntity.ok(w);
+		} catch (Exception e) {
+			return JEExceptionHandler.handleException(e);
+
+		}
+	}
+
+	/*
+	 * Add a new Workflow component
+	 */
+	@PostMapping(value = "/addWorkflowBlock", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> addWorkflowBlock(@RequestBody WorkflowBlockModel block) {
+		String generatedBlockName = "";
+
+		try {
 			projectService.getProject(block.getProjectId());
 
-        	generatedBlockName=  workflowService.addWorkflowBlock(block);
+			generatedBlockName = workflowService.addWorkflowBlock(block);
 			projectService.saveProject(block.getProjectId());
 
-
-        } catch (Exception e) {
+		} catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
 
 		}
-    	HashMap<String, String> object = new HashMap<>();
+		HashMap<String, String> object = new HashMap<>();
 
 		object.put("blockName", generatedBlockName);
 		return ResponseEntity.ok(object);
-    }
+	}
 
-    @PatchMapping(value = "/updateWorkflowBlock")
-    public ResponseEntity<?> updateWorkflowBlock(@RequestBody WorkflowBlockModel block) {
+	@PatchMapping(value = "/updateWorkflowBlock")
+	public ResponseEntity<?> updateWorkflowBlock(@RequestBody WorkflowBlockModel block) {
 
-        try {
+		try {
 			projectService.getProject(block.getProjectId());
-            workflowService.updateWorkflowBlock(block);
+			workflowService.updateWorkflowBlock(block);
 			projectService.saveProject(block.getProjectId());
 
-        } catch (Exception e) {
+		} catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
 
 		}
-        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, WORKFLOW_UPDATED_SUCCESS));
-    }
+		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, WORKFLOW_UPDATED_SUCCESS));
+	}
 
-    /*
-     * Delete a workflow block
-     * */
-    @DeleteMapping(value = "deleteWorkflowBlock/{projectId}/{key}/{id}")
-    public ResponseEntity<?> deleteWorkflowBlock(@PathVariable String projectId, @PathVariable String key, @PathVariable String id) {
+	/*
+	 * Delete a workflow block
+	 */
+	@DeleteMapping(value = "deleteWorkflowBlock/{projectId}/{key}/{id}")
+	public ResponseEntity<?> deleteWorkflowBlock(@PathVariable String projectId, @PathVariable String key,
+			@PathVariable String id) {
 
-        try {
+		try {
 			projectService.getProject(projectId);
 
-            workflowService.deleteWorkflowBlock(projectId, key, id);
+			workflowService.deleteWorkflowBlock(projectId, key, id);
 			projectService.saveProject(projectId);
 
-        } catch (Exception e) {
+		} catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
 
 		}
-        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, BLOCK_DELETED_SUCCESSFULLY));
-    }
+		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, BLOCK_DELETED_SUCCESSFULLY));
+	}
 
-    /*
-     * Delete a sequence flow in a workflow
-     * */
-    @DeleteMapping(value = "deleteSequenceFlow/{projectId}/{key}/{from}/{to}")
-    public ResponseEntity<?> deleteSequenceFlow(@PathVariable String projectId, @PathVariable String key, @PathVariable String from, @PathVariable String to) {
+	/*
+	 * Delete a sequence flow in a workflow
+	 */
+	@DeleteMapping(value = "deleteSequenceFlow/{projectId}/{key}/{from}/{to}")
+	public ResponseEntity<?> deleteSequenceFlow(@PathVariable String projectId, @PathVariable String key,
+			@PathVariable String from, @PathVariable String to) {
 
-        try {
+		try {
 			projectService.getProject(projectId);
 
-            workflowService.deleteSequenceFlow(projectId, key, from, to);
-        } catch (Exception e) {
+			workflowService.deleteSequenceFlow(projectId, key, from, to);
+		} catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
 
 		}
-        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, SEQUENCE_FLOW_DELETED_SUCCESSFULLY));
+		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, SEQUENCE_FLOW_DELETED_SUCCESSFULLY));
 
-    }
+	}
 
-    /*
-     * add a new scripted Rule
-     */
-    @PostMapping(value = "/addBpmn/{projectId}/{workflowId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> addScriptedRule(@PathVariable("projectId") String projectId, @PathVariable("workflowId") String workflowId, @RequestBody String bpmn) {
+	/*
+	 * add a new scripted Rule
+	 */
+	@PostMapping(value = "/addBpmn/{projectId}/{workflowId}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> addScriptedRule(@PathVariable("projectId") String projectId,
+			@PathVariable("workflowId") String workflowId, @RequestBody String bpmn) {
 
-        try {
+		try {
 			projectService.getProject(projectId);
 
-            workflowService.addBpmn(projectId, workflowId, bpmn);
+			workflowService.addBpmn(projectId, workflowId, bpmn);
 
-        } catch (Exception e) {
+		} catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
 
 		}
 
-        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.ADDED_WORKFLOW_SUCCESSFULLY));
-    }
+		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.ADDED_WORKFLOW_SUCCESSFULLY));
+	}
 
-    /*
-     * temporary function until autosave is implemented
-     */
-    @PostMapping(value = "/saveWorkflowFrontConfig/{projectId}/{workflowId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> saveWorkflowFrontConfig(@PathVariable("projectId") String projectId,@PathVariable("workflowId") String workflowId, @RequestBody String config) {
-        try {
+	/*
+	 * temporary function until autosave is implemented
+	 */
+	@PostMapping(value = "/saveWorkflowFrontConfig/{projectId}/{workflowId}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> saveWorkflowFrontConfig(@PathVariable("projectId") String projectId,
+			@PathVariable("workflowId") String workflowId, @RequestBody String config) {
+		try {
 			projectService.getProject(projectId);
 
-            workflowService.setFrontConfig(projectId, workflowId, config);
-        } catch (Exception e) {
-            return JEExceptionHandler.handleException(e);
+			workflowService.setFrontConfig(projectId, workflowId, config);
+		} catch (Exception e) {
+			return JEExceptionHandler.handleException(e);
 
-        }
-        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, FRONT_CONFIG));
-    }
+		}
+		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, FRONT_CONFIG));
+	}
 
-    @PostMapping(value = "/deleteWorkflows/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> deleteWorkflows(@PathVariable("projectId") String projectId, @RequestBody(required = false) List<String> ids) {
-        try {
+	@PostMapping(value = "/deleteWorkflows/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> deleteWorkflows(@PathVariable("projectId") String projectId,
+			@RequestBody(required = false) List<String> ids) {
+		try {
 			projectService.getProject(projectId);
 
-            workflowService.removeWorkflows(projectId, ids);
-        } catch (Exception e) {
-            return JEExceptionHandler.handleException(e);
-        }
-        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, WORKFLOW_DELETED_SUCCESSFULLY));
-    }
+			workflowService.removeWorkflows(projectId, ids);
+		} catch (Exception e) {
+			return JEExceptionHandler.handleException(e);
+		}
+		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, WORKFLOW_DELETED_SUCCESSFULLY));
+	}
 
-    /*
-     * Build workflow
-     */
-    @PostMapping(value = "/buildWorkflows/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> buildWorkflows(@PathVariable String projectId, @RequestBody(required = false) List<String> ids) {
+	/*
+	 * Build workflow
+	 */
+	@PostMapping(value = "/buildWorkflows/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> buildWorkflows(@PathVariable String projectId,
+			@RequestBody(required = false) List<String> ids) {
 
-        try {
-            projectService.getProject(projectId);
+		try {
+			projectService.getProject(projectId);
 
-            List<OperationStatusDetails> results = workflowService.buildWorkflows(projectId, ids).get();
-            return ResponseEntity.ok(new JECustomResponse(ResponseCodes.CODE_OK, "Build completed.",results));
-        }catch (Exception e) {
-            return JEExceptionHandler.handleException(e);
+			List<OperationStatusDetails> results = workflowService.buildWorkflows(projectId, ids).get();
+			return ResponseEntity.ok(new JECustomResponse(ResponseCodes.CODE_OK, "Build completed.", results));
+		} catch (Exception e) {
+			return JEExceptionHandler.handleException(e);
 
-        }
+		}
 
+	}
 
-    }
+	/*
+	 * Run Workflow
+	 */
+	@PostMapping(value = "/runWorkflows/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> runWorkflows(@PathVariable String projectId,
+			@RequestBody(required = false) List<String> ids) {
+		try {
+			projectService.getProject(projectId);
+			List<OperationStatusDetails> results = workflowService.runWorkflows(projectId, ids).get();
+			return ResponseEntity.ok(new JECustomResponse(ResponseCodes.CODE_OK, "Run completed.", results));
+		} catch (Exception e) {
+			return JEExceptionHandler.handleException(e);
 
-    /*
-     * Run Workflow
-     */
-    @PostMapping(value = "/runWorkflows/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> runWorkflows(@PathVariable String projectId, @RequestBody(required = false) List<String> ids) {
-        try {
-            projectService.getProject(projectId);
-            List<OperationStatusDetails> results = workflowService.runWorkflows(projectId, ids).get();
-            return ResponseEntity.ok(new JECustomResponse(ResponseCodes.CODE_OK, "Run completed.",results));
-        }catch (Exception e) {
-            return JEExceptionHandler.handleException(e);
+		}
 
-        }
+	}
 
+	/*
+	 * Stop Workflow
+	 */
+	@PostMapping(value = "/stopWorkflows/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> stopWorkflow(@PathVariable String projectId,
+			@RequestBody(required = false) List<String> ids) {
+		try {
+			projectService.getProject(projectId);
+			List<OperationStatusDetails> results = workflowService.stopWorkflows(projectId, ids).get();
+			return ResponseEntity.ok(new JECustomResponse(ResponseCodes.CODE_OK, "Stop completed.", results));
+		} catch (Exception e) {
+			return JEExceptionHandler.handleException(e);
 
-    }
+		}
 
-
-    /*
-     * Stop Workflow
-     */
-    @PostMapping(value = "/stopWorkflows/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> stopWorkflow(@PathVariable String projectId, @RequestBody(required = false) List<String> ids) {
-        try {
-            projectService.getProject(projectId);
-            List<OperationStatusDetails> results = workflowService.stopWorkflows(projectId, ids).get();
-            return ResponseEntity.ok(new JECustomResponse(ResponseCodes.CODE_OK, "Stop completed.",results));
-        }catch (Exception e) {
-            return JEExceptionHandler.handleException(e);
-
-        }
-
-
-    }
+	}
 }

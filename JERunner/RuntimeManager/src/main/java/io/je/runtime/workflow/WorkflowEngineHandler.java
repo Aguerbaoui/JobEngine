@@ -99,7 +99,7 @@ public class WorkflowEngineHandler {
     /*
     * Run all deployed workflows
     * */
-    public static void runAllWorkflows(String projectId, boolean runProject) throws WorkflowNotFoundException, WorkflowBuildException {
+    public static void runAllWorkflows(String projectId, boolean runProject) throws WorkflowNotFoundException {
        if(processManagerHashMap.containsKey(projectId))
     	{
     	   processManagerHashMap.get(projectId).runAll(projectId, runProject);
