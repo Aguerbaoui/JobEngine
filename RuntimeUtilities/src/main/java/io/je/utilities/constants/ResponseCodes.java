@@ -60,6 +60,7 @@ public class ResponseCodes {
 	public static final int ERROR_IMPORTING_FILE = 1046;
 	public static final int METHOD_EXCEPTION = 1047;
 	public static final int FILE_TOO_LARGE_EXCEPTION = 1048;
+	public static final int ZMQError = 1049;
 
 
 

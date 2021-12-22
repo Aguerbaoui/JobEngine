@@ -1,120 +1,118 @@
 package utils.zmq;
 
-
 import org.zeromq.SocketType;
 import org.zeromq.ZContext;
 import org.zeromq.ZMQ;
 
 public abstract class ZMQSubscriber implements Runnable {
 
-    protected ZContext context = null;
+	protected ZContext context = null;
 
-    protected ZMQ.Socket subSocket = null;
+	protected ZMQ.Socket subSocket = null;
 
-    protected String url;
+	protected String url;
 
-    protected int subPort;
+	protected int subPort;
 
-    protected String topic;
+	protected String topic;
 
-    //protected int subscribers = 0;
+	protected boolean listening = false;
 
-    protected boolean listening = false;
+	public ZMQSubscriber(String url, int subPort, String topic) {
+		this.url = url;
+		this.subPort = subPort;
+		this.topic = topic;
+		this.context = new ZContext();
+	}
 
-    public ZMQSubscriber(String url, int subPort, String topic) {
-        this.url = url;
-        this.subPort = subPort;
-        this.topic = topic;
-        this.context = new ZContext();
-       // subscribers += 1;
-    }
-
-    
-    public ZMQSubscriber() {
+	public ZMQSubscriber() {
 		super();
 		this.context = new ZContext();
 	}
 
+	public void closeSocket() {
+		if (this.subSocket != null) {
+			this.subSocket.close();
+			this.context.destroySocket(subSocket);
+			this.subSocket = null;
+		}
+	}
 
-	public void closeSocket()
-    {
-    	if(this.subSocket!=null)
-    	{
-    		this.subSocket.close();
-    		this.context.destroySocket(subSocket);
-    		this.subSocket=null;
-    	}
-    }
-    
-    
-    
-    public ZMQ.Socket getSubSocket() {
-        if(subSocket == null) {
-            try {
-                this.subSocket = this.context.createSocket(SocketType.SUB);
-                this.subSocket.setReceiveTimeOut(-1);
-                this.subSocket.connect(url+":"+subPort);
-                this.subSocket.subscribe(topic.getBytes());
-               if(ZMQSecurity.isSecure())
-               {
-            	   subSocket.setCurveServerKey(ZMQSecurity.getServerPair().publicKey.getBytes());
-                   subSocket.setCurveSecretKey(ZMQSecurity.getServerPair().secretKey.getBytes());
-           		   subSocket.setCurvePublicKey(ZMQSecurity.getServerPair().publicKey.getBytes());
-               }
+	public void connectToAddress(ZMQBind bindType) throws ZMQConnectionFailedException {
+		try {
+			this.subSocket = this.context.createSocket(SocketType.SUB);
+			this.subSocket.setReceiveTimeOut(-1);
+			if (bindType == ZMQBind.CONNECT) {
+				this.subSocket.connect(url + ":" + subPort);
+			} else if (bindType == ZMQBind.BIND) {
+				this.subSocket.bind(url + ":" + subPort);
 
-            } catch (Exception e) {
-            	System.out.println( e.getMessage());
-                this.subSocket = null;
-            }
-        }
-        return subSocket;
-    }
+			}
+			this.subSocket.subscribe(topic.getBytes());
+			if (ZMQSecurity.isSecure()) {
+				subSocket.setCurveServerKey(ZMQSecurity.getServerPair().publicKey.getBytes());
+				subSocket.setCurveSecretKey(ZMQSecurity.getServerPair().secretKey.getBytes());
+				subSocket.setCurvePublicKey(ZMQSecurity.getServerPair().publicKey.getBytes());
+			}
+		} catch (Exception e) {
+			closeSocket();
+			throw new ZMQConnectionFailedException(0,"Failed to connect to address [ "+url + ":" + subPort+"]: "+ e.toString());
+		}
+	}
 
+	public ZMQ.Socket getSubSocket(ZMQBind bindType) throws ZMQConnectionFailedException {
+		if (subSocket == null) {
 
-    
+			connectToAddress(bindType);
 
-    public boolean isListening() {
-        return listening;
-    }
+		}
+		return subSocket;
+	}
 
-    public void setListening(boolean listening) {
-        this.listening = listening;
-    }
-    public ZContext getContext() {
-        return context;
-    }
+	public boolean isListening() {
+		return listening;
+	}
 
-    public void setContext(ZContext context) {
-        this.context = context;
-    }
+	public void setListening(boolean listening) {
+		this.listening = listening;
+	}
 
-    public void setSubSocket(ZMQ.Socket subSocket) {
-        this.subSocket = subSocket;
-    }
+	public ZContext getContext() {
+		return context;
+	}
 
+	public void setContext(ZContext context) {
+		this.context = context;
+	}
 
-    public String getUrl() {
-        return url;
-    }
+	public void setSubSocket(ZMQ.Socket subSocket) {
+		this.subSocket = subSocket;
+	}
 
-    public void setUrl(String url) {
-        this.url = url;
-    }
+	public String getUrl() {
+		return url;
+	}
 
-    public int getSubPort() {
-        return subPort;
-    }
+	public void setUrl(String url) {
+		this.url = url;
+	}
 
-    public void setSubPort(int subPort) {
-        this.subPort = subPort;
-    }
+	public int getSubPort() {
+		return subPort;
+	}
 
-    public String getTopic() {
-        return topic;
-    }
+	public void setSubPort(int subPort) {
+		this.subPort = subPort;
+	}
 
-    public void setTopic(String topic) {
-        this.topic = topic;
-    }
-    
+	public String getTopic() {
+		return topic;
+	}
+
+	public void setTopic(String topic) {
+		this.topic = topic;
+	}
+
+	// public abstract void handleConnectionFail();
+
 }

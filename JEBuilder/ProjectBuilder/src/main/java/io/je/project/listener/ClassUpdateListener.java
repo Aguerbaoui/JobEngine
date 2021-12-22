@@ -16,6 +16,7 @@ import io.je.utilities.exceptions.InstanceCreationFailed;
 import io.je.utilities.log.JELogger;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
+import utils.zmq.ZMQBind;
 import utils.zmq.ZMQSubscriber;
 
 
@@ -39,7 +40,7 @@ public class ClassUpdateListener extends ZMQSubscriber {
 
    		 String data = null;
    		 try {
-   			data = this.getSubSocket().recvStr();
+   			data = this.getSubSocket(ZMQBind.CONNECT).recvStr();
    		 }catch (Exception e) {
 			e.printStackTrace();
 			continue;
