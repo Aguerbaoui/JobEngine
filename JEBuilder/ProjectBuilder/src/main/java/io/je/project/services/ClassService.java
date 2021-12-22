@@ -446,7 +446,7 @@ public class ClassService {
         method = getMethodFromModel(m);
         method.setCompiled(compiled);
         if (compiled) {
-            JEClass clazz = loadedClasses.get(WorkflowConstants.JEPROCEDURES);
+            JEClass clazz = classRepository.findById(WorkflowConstants.JEPROCEDURES).get();
             if (clazz == null) {
                 clazz = getNewJEProcedureClass();
             }
@@ -454,6 +454,7 @@ public class ClassService {
             ClassDefinition c = getClassModel(clazz);
             c.setImports(m.getImports());
             addClass(c, true, true);
+            
             classRepository.save(clazz);
         }
         methodRepository.save(method);
@@ -612,9 +613,12 @@ public class ClassService {
                 methodRepository.delete(method);
             
             // updated existent SIOTHProcedures
-            loadedClasses.get(WorkflowConstants.JEPROCEDURES).getMethods().remove(method.getJobEngineElementID());
-            ClassDefinition c = getClassModel(loadedClasses.get(WorkflowConstants.JEPROCEDURES));
-            addClass(c, true, true);
+                JEClass clazz = classRepository.findById(WorkflowConstants.JEPROCEDURES).get();
+                clazz.getMethods().remove(method.getJobEngineElementID());
+                ClassDefinition c = getClassModel(clazz);
+                addClass(c, true, true);
+                classRepository.save(clazz);
+
 
         } catch (Exception e) {
             JELogger.error(JEMessages.ERROR_REMOVING_LIBRARY + "\n" + Arrays.toString(e.getStackTrace()),
@@ -639,7 +643,7 @@ public class ClassService {
         boolean compiled = tryCompileMethod(m);
         JEMethod method = getMethodFromModel(m);
         method.setCompiled(compiled);
-        JEClass clazz = loadedClasses.get(WorkflowConstants.JEPROCEDURES);
+        JEClass clazz = classRepository.findById(WorkflowConstants.JEPROCEDURES).get();
         if (clazz == null) {
             clazz = getNewJEProcedureClass();
         }
@@ -656,6 +660,7 @@ public class ClassService {
         addClass(c, true, true);
         // save updated method in db
         methodRepository.save(method);
+        classRepository.save(clazz);
     }
 
     /*
