@@ -19,12 +19,12 @@ import java.util.jar.JarFile;
 
 public class JobEngine {
 
-    private static HashMap<String, JarFile> libraries;
+   // private static HashMap<String, JarFile> libraries;
 
     //Map of projectName=>ProjectId
     private static HashMap<String, String> projects;
 
-    public static void addJarFile(String name, JarFile file) {
+    /*public static void addJarFile(String name, JarFile file) {
         if(libraries == null) {
             libraries = new HashMap<>();
         }
@@ -34,7 +34,7 @@ public class JobEngine {
 
     public static JarFile getJarFile(String name) {
         return libraries.get(name);
-    }
+    }*/
 
     /*
     * Run a workflow from script task

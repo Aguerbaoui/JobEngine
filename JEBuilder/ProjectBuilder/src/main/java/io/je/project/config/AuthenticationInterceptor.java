@@ -40,7 +40,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
             return true;
         }
 
-        HandlerMethod handlerMethod = (HandlerMethod) handler;
+        /*HandlerMethod handlerMethod = (HandlerMethod) handler;
         Method method = handlerMethod.getMethod();
         String originToken = request.getHeader("Authorization");
         String uri = request.getRequestURI();
@@ -69,7 +69,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
             writer.write(exception.getMessage());
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return false;
-        }
+        }*/
         return true;
     }
 

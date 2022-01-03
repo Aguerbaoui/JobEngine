@@ -102,7 +102,7 @@ public class WorkflowController {
 			workflowService.stopWorkflow(projectId, key);
 			OperationStatusDetails result = workflowService.stopWorkflow(projectId, key).get();
 			if (result.isOperationSucceeded()) {
-				return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ERROR_STOPPING_WORKFLOW));
+				return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, WORKFLOW_STOPPED_SUCCESSFULLY));
 			}
 
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

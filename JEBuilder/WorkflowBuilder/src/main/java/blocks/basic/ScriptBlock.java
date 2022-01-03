@@ -38,6 +38,6 @@ public class ScriptBlock extends WorkflowBlock {
     }
 
     public void setScriptPath(String scriptPath) {
-        this.scriptPath = ConfigurationConstants.JAVA_GENERATION_PATH + "\\" + ClassBuilderConfig.generationPackageName + "\\" + scriptPath + ".java";
+        this.scriptPath = ConfigurationConstants.JAVA_GENERATION_PATH + "\\" + ClassBuilderConfig.CLASS_PACKAGE + "\\" + scriptPath + ".java";
     }
 }

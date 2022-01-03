@@ -12,6 +12,8 @@ public class ActivitiTask {
 
     private String processId;
 
+    private long pid = -1;
+
     public String getProcessId() {
         return processId;
     }
@@ -42,5 +44,13 @@ public class ActivitiTask {
 
     public void setTaskName(String taskName) {
         this.taskName = taskName;
+    }
+
+    public long getPid() {
+        return pid;
+    }
+
+    public void setPid(long pid) {
+        this.pid = pid;
     }
 }

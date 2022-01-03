@@ -16,7 +16,7 @@ import org.burningwave.core.classes.TypeDeclarationSourceGenerator;
 import org.burningwave.core.classes.UnitSourceGenerator;
 import org.burningwave.core.classes.VariableSourceGenerator;
 
-import io.je.classbuilder.entity.ClassType;
+import io.je.utilities.beans.ClassType;
 import io.je.classbuilder.models.ClassDefinition;
 import io.je.classbuilder.models.FieldModel;
 import io.je.classbuilder.models.MethodModel;
@@ -42,7 +42,7 @@ public class ClassBuilder {
 	 * build .java class/interface/enum from classModel
 	 * returns  path where file was created
 	 */
-	public static String buildClass(ClassDefinition classDefinition, String generationPath) throws AddClassException, ClassLoadException {
+	public static String buildClass(ClassDefinition classDefinition, String generationPath, String packageName) throws AddClassException, ClassLoadException {
 		
 		//check if class format is valid
 		if(classDefinition.getName()==null)
@@ -57,7 +57,7 @@ public class ClassBuilder {
 		
 		//generate class
 		if (classDefinition.getIsClass()) {
-			return  generateClass(classDefinition, generationPath);
+			return  generateClass(classDefinition, generationPath, packageName);
 			
 
 		}
@@ -107,7 +107,7 @@ public class ClassBuilder {
 	 * generate an interface
 	 */
 	private static String generateInterface(ClassDefinition classDefinition, String generationPath) throws ClassLoadException {
-		 UnitSourceGenerator unitSG = UnitSourceGenerator.create(ClassBuilderConfig.generationPackageName);
+		 UnitSourceGenerator unitSG = UnitSourceGenerator.create(ClassBuilderConfig.CLASS_PACKAGE);
 			//add imports
 			addImports(classDefinition.getImports(),unitSG);
 		// class name
@@ -152,7 +152,7 @@ public class ClassBuilder {
 		
 		// store class
 				unitSG.addClass(newInterface);
-				String filePath= generationPath + "\\" + ClassBuilderConfig.generationPackageName  + "\\" + classDefinition.getName() +".java" ;
+				String filePath= generationPath + "\\" + ClassBuilderConfig.CLASS_PACKAGE + "\\" + classDefinition.getName() +".java" ;
 				File file = new File(generationPath);
 				file.delete();
 				unitSG.storeToClassPath(generationPath);
@@ -168,8 +168,8 @@ public class ClassBuilder {
 	/*
 	 * generate a class
 	 */
-	private static String generateClass(ClassDefinition classDefinition, String generationPath) throws ClassLoadException {
-		 UnitSourceGenerator unitSG = UnitSourceGenerator.create(ClassBuilderConfig.generationPackageName);
+	private static String generateClass(ClassDefinition classDefinition, String generationPath, String packageName) throws ClassLoadException {
+		 UnitSourceGenerator unitSG = UnitSourceGenerator.create(packageName);
 			//add imports
 			addImports(classDefinition.getImports(),unitSG);
 			
@@ -307,7 +307,7 @@ public class ClassBuilder {
 		ClassFactory.ClassRetriever classRetriever = classFactory.loadOrBuildAndDefine(
 				unitSG
 		);
-		String filePath= generationPath + "\\" + ClassBuilderConfig.generationPackageName  + "\\" + className +".java" ;
+		String filePath= generationPath + packageName + "\\" + className +".java" ;
 		File file = new File(generationPath);
 		file.delete();
 		unitSG.storeToClassPath(generationPath);
@@ -355,6 +355,9 @@ public class ClassBuilder {
 			break;
 		case "STRING":
 			classType =  String.class;
+			break;
+		case "STRING[]":
+			classType =  String[].class;
 			break;
 		case "DATETIME":
 			classType =  LocalDateTime.class;

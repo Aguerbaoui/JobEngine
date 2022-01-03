@@ -711,4 +711,6 @@ public class JEMessages {
 	
     public static final String READ_INSTANCE_VALUE_FAILED = "Failed to read instance from DataModel service. ";
 
+    public static final String WORKFLOW_STOPPED_SUCCESSFULLY = "Workflow stopped successfully";
+    public static final String ERROR_STOPPING_PROCESS = "Error stopping process by pid";
 }

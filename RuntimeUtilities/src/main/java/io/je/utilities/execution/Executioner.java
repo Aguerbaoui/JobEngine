@@ -1,20 +1,24 @@
 package io.je.utilities.execution;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.je.project.variables.VariableManager;
 import io.je.utilities.apis.JERunnerAPIHandler;
+import io.je.utilities.config.ConfigurationConstants;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.JERunnerErrorException;
 import io.je.utilities.exceptions.VariableNotFoundException;
 import io.je.utilities.instances.ClassRepository;
 import io.je.utilities.instances.InstanceManager;
 import io.je.utilities.log.JELogger;
+import utils.ProcessRunner;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
 
@@ -219,6 +223,26 @@ public class Executioner {
 
 			}
 		});
+
+	}
+
+	public static long executeScript(String filePath) throws IOException, InterruptedException {
+		String classpathFolder = System.getenv(ConfigurationConstants.SIOTH_ENVIRONMENT_VARIABLE) + "\\..\\Job Engine\\libs\\*";
+		String command = "java" + " " + "-cp" + " \"" + classpathFolder  + "\" " + filePath;
+		/*new Thread(() -> {
+			try {
+				Process process = ProcessRunner.executeCommandWithPidOutput(command);
+				process.waitFor(30, TimeUnit.SECONDS);
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+
+		}).start();*/
+		return ProcessRunner.executeCommandWithPidOutput(command);
+
+		//long pid = ProcessRunner.executeCommandWithPidOutput(command);
 
 	}
 

@@ -244,11 +244,11 @@ public class RuntimeDispatcher {
 				Class<?> c = null;
 				if(classModel.getClassAuthor().equals(ClassAuthor.DATA_MODEL)) {
 					c = JEClassLoader.getDataModelInstance()
-						.loadClassInDataModelClassLoader(ClassBuilderConfig.generationPackageName + "." + classModel.getClassName());
+						.loadClassInDataModelClassLoader(ClassBuilderConfig.CLASS_PACKAGE + "." + classModel.getClassName());
 				}
 				else {
 					c = JEClassLoader.getJeInstance()
-					.loadClassInJobEngineClassLoader(ClassBuilderConfig.generationPackageName + "." + classModel.getClassName());
+					.loadClassInJobEngineClassLoader(ClassBuilderConfig.CLASS_PACKAGE + "." + classModel.getClassName());
 				}
 				ClassRepository.addClass(classModel.getClassId(), classModel.getClassName(), c);
 			} catch (ClassNotFoundException e) {
@@ -262,12 +262,12 @@ public class RuntimeDispatcher {
 	public void updateClass(ClassModel classModel) throws ClassLoadException, ClassNotFoundException {
 		
 		if(classModel.getClassAuthor().equals(ClassAuthor.DATA_MODEL)) {
-			JEClassLoader.overrideDataModelInstance(ClassBuilderConfig.generationPackageName + "." + classModel.getClassName());
+			JEClassLoader.overrideDataModelInstance(ClassBuilderConfig.CLASS_PACKAGE + "." + classModel.getClassName());
 			RuleEngineHandler.reloadContainers();
 		}
 		
 		else {
-			JEClassLoader.overrideJeInstance(ClassBuilderConfig.generationPackageName + "." + classModel.getClassName());
+			JEClassLoader.overrideJeInstance(ClassBuilderConfig.CLASS_PACKAGE + "." + classModel.getClassName());
 		}
 		addClass(classModel);
 		

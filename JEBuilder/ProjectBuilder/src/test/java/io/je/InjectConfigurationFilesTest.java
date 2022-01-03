@@ -8,6 +8,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Properties;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.junit.Test;
@@ -53,7 +54,7 @@ public class InjectConfigurationFilesTest {
     String configPath = SIOTHConfigurationConstants.SIOTH_JSON_CONFIG;
     assertNotNull(configPath);
     try {
-      ObjectMapper objectMapper = new ObjectMapper()/*.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)*/;
+      ObjectMapper objectMapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
       String file = configPath;
       String json = new String(Files.readAllBytes(Paths.get(file)));
       assertNotNull(json);
