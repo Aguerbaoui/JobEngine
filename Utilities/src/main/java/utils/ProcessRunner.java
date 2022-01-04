@@ -38,7 +38,7 @@ public class ProcessRunner {
         Process process = rt.exec(command);
         //process.waitFor(30, TimeUnit.SECONDS);
         long pid = process.pid();
-       /* StringBuilder textBuilder = new StringBuilder();
+        StringBuilder textBuilder = new StringBuilder();
         try (Reader reader = new BufferedReader(new InputStreamReader
                 (process.getInputStream(), Charset.forName(StandardCharsets.UTF_8.name())))) {
             int c = 0;
@@ -63,7 +63,7 @@ public class ProcessRunner {
 
         if(errorTextBuilder.length() > 0) {
             output += errorTextBuilder.toString() + "\n";
-        }*/
+        }
         return pid;
     }
 
