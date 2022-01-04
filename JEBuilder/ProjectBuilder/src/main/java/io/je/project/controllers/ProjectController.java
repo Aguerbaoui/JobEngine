@@ -9,6 +9,7 @@ import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.exceptions.ProjectNotFoundException;
 import io.je.utilities.log.JELogger;
+import io.je.utilities.models.LibModel;
 import io.je.utilities.ruleutils.OperationStatusDetails;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;

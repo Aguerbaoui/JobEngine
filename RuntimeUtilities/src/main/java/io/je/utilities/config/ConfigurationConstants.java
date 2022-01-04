@@ -21,7 +21,7 @@ public class ConfigurationConstants {
      */
 
 	 //path where .java files are generated : 
-    public 	static String JAVA_GENERATION_PATH = "F:\\myproject2" ;
+    public 	static String JAVA_GENERATION_PATH = "D:\\myproject2" ;
 	
     // path where builder loads classes 
     public static String BUILDER_CLASS_LOAD_PATH = System.getProperty("java.class.path").split(";")[0];
@@ -29,12 +29,12 @@ public class ConfigurationConstants {
     // path where runner loads classes
     public static String RUNNER_CLASS_LOAD_PATH = System.getProperty("java.class.path").split(";")[0];
     
-    public static final String PROJECTS_PATH = "F:\\JobEngine\\projects\\";
+    public static final String PROJECTS_PATH = "D:\\JobEngine\\projects\\";
    
-    public static final String BPMN_PATH = "F:\\JobEngine\\projects\\";
+    public static final String BPMN_PATH = "D:\\JobEngine\\projects\\";
 
     // path for imported libraries
-    public static String EXTERNAL_LIB_PATH =  "F:\\myproject2\\";
+    public static String EXTERNAL_LIB_PATH =  "D:\\myproject2\\";
     
     /*
      * Config for tomcat

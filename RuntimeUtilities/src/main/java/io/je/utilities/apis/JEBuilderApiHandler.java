@@ -1,10 +1,16 @@
 package io.je.utilities.apis;
 
+import com.squareup.okhttp.Response;
 import io.je.utilities.beans.JEResponse;
 import io.je.utilities.constants.APIConstants;
 import io.je.utilities.exceptions.JERunnerErrorException;
+import io.je.utilities.models.LibModel;
 import io.siothconfig.SIOTHConfigUtility;
+import utils.network.Network;
 
+
+import java.io.IOException;
+import java.util.concurrent.ExecutionException;
 
 import static io.je.utilities.apis.Request.*;
 import static io.je.utilities.constants.APIConstants.*;
@@ -86,5 +92,14 @@ public class JEBuilderApiHandler {
 	public static JEResponse updateWorkflowStatus(String workflowId, String projectId, Object obj) throws JERunnerErrorException {
 		String requestUrl = SIOTHConfigUtility.getSiothConfig().getJobEngine().getJeBuilder() + UPDATE_WORKFLOW_STATUS;
 		return sendPatchRequestWithBody(requestUrl,obj);
+	}
+
+    public static int uploadFileTo(String url, LibModel libModel) throws ExecutionException, InterruptedException, IOException {
+		Response response = sendMultipartFormDataPostRequest(url, libModel);
+		return response.code();
+    }
+
+	private static Response sendMultipartFormDataPostRequest(String url, LibModel libModel) throws ExecutionException, InterruptedException, IOException {
+		return Network.makeMultipartFormDataPost(url, libModel.getFileName(), libModel.getFilePath());
 	}
 }

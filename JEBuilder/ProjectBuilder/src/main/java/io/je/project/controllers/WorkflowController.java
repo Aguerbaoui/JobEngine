@@ -2,6 +2,7 @@ package io.je.project.controllers;
 
 import io.je.project.exception.JEExceptionHandler;
 import io.je.utilities.beans.JECustomResponse;
+import io.je.utilities.models.LibModel;
 import io.je.utilities.models.WorkflowBlockModel;
 import io.je.project.services.ProjectService;
 import io.je.project.services.WorkflowService;
@@ -376,6 +377,19 @@ public class WorkflowController {
 			return JEExceptionHandler.handleException(e);
 
 		}
-
 	}
+
+	@PostMapping(value = "/upload")
+	public ResponseEntity<?> uploadFile(@ModelAttribute LibModel libModel) {
+
+		try {
+			workflowService.addAttachment(libModel);
+		} catch (Exception e) {
+			return JEExceptionHandler.handleException(e);
+		}
+
+		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.PROJECT_UPDATED));
+	}
+
+
 }

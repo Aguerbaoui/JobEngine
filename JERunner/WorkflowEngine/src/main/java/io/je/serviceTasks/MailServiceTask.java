@@ -41,12 +41,16 @@ public class MailServiceTask extends ServiceTask {
             attributes.put(USERNAME, task.getStrUserName());
             attributes.put(PASSWORD, task.getStrPassword());
         }
-        attributes.put(WorkflowConstants.PORT, task.getiPort());
-        attributes.put(WorkflowConstants.SENDER_ADDRESS, task.getStrSenderAddress());
+        attributes.put(PORT, task.getiPort());
+        attributes.put(SENDER_ADDRESS, task.getStrSenderAddress());
         attributes.put(SEND_TIME_OUT, task.getiSendTimeOut());
         attributes.put(RECEIVER_ADDRESS, task.getLstRecieverAddress());
         attributes.put(EMAIL_MESSAGE, task.getEmailMessage());
         attributes.put(SMTP_SERVER, task.getStrSMTPServer());
+        attributes.put(CC_LIST, task.getLstCCs());
+        attributes.put(BCC_LIST, task.getLstBCCs());
+        attributes.put(ATTACHEMENT_URLS, task.getLstAttachementPaths());
+        attributes.put(UPLOADED_FILES_PATHS, task.getLstUploadedFiles());
         String url = task.isbUseDefaultCredentials() ?  SIOTHConfigUtility.getSiothConfig().getApis().getEmailAPI().getAddress() + SEND_EMAIL : SIOTHConfigUtility.getSiothConfig().getApis().getEmailAPI().getAddress() + SEND_EMAIL_AUTH;
         try { //http://192.168.4.128:14003/api/SIOTHEmail/SendEmailAuth
             String json = new ObjectMapper().writeValueAsString(attributes);

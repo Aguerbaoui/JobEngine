@@ -3,6 +3,7 @@ package io.je.project.services;
 import static io.je.utilities.constants.JEMessages.THREAD_INTERRUPTED_WHILE_EXECUTING;
 import static io.je.utilities.constants.WorkflowConstants.*;
 
+import java.io.IOException;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -10,8 +11,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutionException;
 
+import io.je.project.repository.LibraryRepository;
+import io.je.utilities.apis.JEBuilderApiHandler;
+import io.je.utilities.beans.FileType;
+import io.je.utilities.beans.JELib;
+import io.je.utilities.exceptions.*;
+import io.je.utilities.models.LibModel;
+import io.siothconfig.SIOTHConfigUtility;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -45,18 +55,6 @@ import io.je.utilities.config.ConfigurationConstants;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.Timers;
 import io.je.utilities.constants.WorkflowConstants;
-import io.je.utilities.exceptions.AddClassException;
-import io.je.utilities.exceptions.ClassLoadException;
-import io.je.utilities.exceptions.EventException;
-import io.je.utilities.exceptions.InvalidSequenceFlowException;
-import io.je.utilities.exceptions.JERunnerErrorException;
-import io.je.utilities.exceptions.LicenseNotActiveException;
-import io.je.utilities.exceptions.ProjectNotFoundException;
-import io.je.utilities.exceptions.WorkflowBlockException;
-import io.je.utilities.exceptions.WorkflowBlockNotFound;
-import io.je.utilities.exceptions.WorkflowException;
-import io.je.utilities.exceptions.WorkflowNotFoundException;
-import io.je.utilities.exceptions.WorkflowRunException;
 import io.je.utilities.log.JELogger;
 import io.je.utilities.models.EventType;
 import io.je.utilities.models.WorkflowBlockModel;
@@ -68,6 +66,7 @@ import utils.files.FileUtilities;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
 import utils.network.AuthScheme;
+import utils.network.Network;
 import utils.string.StringUtilities;
 
 @Service
@@ -81,6 +80,13 @@ public class WorkflowService {
 
     @Autowired
     ClassService classService;
+
+    @Autowired
+    LibraryRepository libraryRepository;
+
+    @Autowired
+    @Lazy
+    ProjectService projectService;
 
     /*
      * Add a workflow to a project
@@ -883,6 +889,17 @@ public class WorkflowService {
             b.setiPort((Integer) block.getAttributes().get(PORT));
             b.setStrSenderAddress((String) block.getAttributes().get(SENDER_ADDRESS));
             b.setiSendTimeOut((Integer) block.getAttributes().get(SEND_TIME_OUT));
+            b.setLstCCs((List<String>) block.getAttributes().get(CC_LIST));
+            b.setLstBCCs((List<String>) block.getAttributes().get(BCC_LIST));
+            b.setLstAttachementPaths((List<String>) block.getAttributes().get(ATTACHEMENT_URLS));
+            List<String> uploadedFiles = (List<String>) block.getAttributes().get(UPLOADED_FILES_PATHS);
+            for(String fileName: uploadedFiles) {
+                JELib jeLib = libraryRepository.findByJobEngineElementName(fileName);
+                if(jeLib != null) {
+                    b.getLstUploadedFiles().add(jeLib.getFilePath());
+                }
+            }
+            b.setLstUploadedFiles((List<String>) block.getAttributes().get(UPLOADED_FILES_PATHS));
             b.setLstRecieverAddress((List<String>) block.getAttributes().get(RECEIVER_ADDRESS));
             b.setEmailMessage((HashMap<String, String>) block.getAttributes().get(EMAIL_MESSAGE));
             b.setStrSMTPServer((String) block.getAttributes().get(SMTP_SERVER));
@@ -1295,4 +1312,20 @@ public class WorkflowService {
         return CompletableFuture.completedFuture(results);
     }
 
+    public void addAttachment(LibModel libModel) throws LibraryException, ExecutionException, InterruptedException, IOException {
+        JELib jeLib = projectService.addFile(libModel);
+        if(jeLib != null) {
+        libModel.setFilePath(jeLib.getFilePath());
+        int responseCode = JEBuilderApiHandler.uploadFileTo(SIOTHConfigUtility.getSiothConfig().getApis().getEmailAPI().getAddress() + "GetFiles", libModel);
+        if(responseCode != 204 && responseCode != 200) {
+            FileUtilities.deleteFileFromPath(jeLib.getFilePath());
+            throw new LibraryException(JEMessages.ERROR_IMPORTING_FILE);
+        }
+        else {
+            libraryRepository.save(jeLib);
+        }
+        }
+
+
+    }
 }

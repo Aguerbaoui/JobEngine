@@ -604,6 +604,7 @@ public class JEMessages {
 //******************************************************* updates ****************************************
 
     public static final String ADDING_JAR_TO_PROJECT = "Adding jar to project";
+    public static final String ADDING_FILE_TO_PROJECT = "Adding file to project";
     public static final String ADDING_JAR_FILE_TO_RUNNER = "Adding jar file to JERunner ";
     public static final String CLASS_COMPILATION_FAILED = "Class compilation failed ";
     public static final String DATA_MODEL_DATE_FORMAT_MISSING = "Data Model timedate format is not specified";

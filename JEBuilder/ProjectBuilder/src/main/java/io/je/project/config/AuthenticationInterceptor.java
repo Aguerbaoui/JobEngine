@@ -39,7 +39,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
         if (!(handler instanceof HandlerMethod)) {
             return true;
         }
-
+/*
         HandlerMethod handlerMethod = (HandlerMethod) handler;
         Method method = handlerMethod.getMethod();
         String originToken = request.getHeader("Authorization");
@@ -69,7 +69,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
             writer.write(exception.getMessage());
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return false;
-        }
+        }*/
         return true;
     }
 

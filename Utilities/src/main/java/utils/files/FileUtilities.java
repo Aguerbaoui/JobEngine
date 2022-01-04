@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Locale;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -47,10 +48,14 @@ public class FileUtilities {
 	}
 
 	public static String getFileExtension(String fileName) {
-		return FilenameUtils.getExtension(fileName);
+		return FilenameUtils.getExtension(fileName).toUpperCase(Locale.ROOT);
 	}
 
 	public static boolean fileIsJar(String fileName) {
 		return getFileExtension(fileName).equals("jar");
+	}
+
+	public String getExtension(String filename) {
+		return FilenameUtils.getExtension(filename);
 	}
 }

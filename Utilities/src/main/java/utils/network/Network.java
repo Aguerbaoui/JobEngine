@@ -1,5 +1,6 @@
 package utils.network;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -59,6 +60,42 @@ public class Network {
             }
         }, getAsyncExecutor());
         return f.get();
+    }
+
+    public static Response makeMultipartFormDataPost(String url, String fileName, String filePath) throws ExecutionException, InterruptedException, IOException {
+        RequestBody requestBody = new MultipartBuilder().type(MultipartBuilder.FORM)
+                .addFormDataPart("file", fileName,
+                        RequestBody.create(null, new File(filePath)))
+                .build();
+
+        Request request = new Request.Builder()
+                .url(url)
+                .post(requestBody)
+                .build();
+
+        return client.newCall(request).execute();
+
+        /*RequestBody requestBody = new MultipartBuilder()
+                .type(MultipartBuilder.FORM)
+                .addPart(
+                        Headers.of("Content-Disposition", "form-data; name=\"" + fileName + "\""),
+                        RequestBody.create(null, new File(filePath)))
+                .build();
+
+        Request request = new Request.Builder()
+                .url(url)
+                .post(requestBody)
+                .build();
+
+        CompletableFuture<Response> f = CompletableFuture.supplyAsync(() -> {
+            try {
+                return client.newCall(request).execute();
+            } catch (IOException e) {
+                return null;
+            }
+        }, getAsyncExecutor());
+        return f.get();*/
+        //return resp[0];
     }
 
     public static Response makeDeleteNetworkCallWithResponse(String url) throws  InterruptedException, ExecutionException {
@@ -141,6 +178,8 @@ public class Network {
         }, getAsyncExecutor());
         return f.get();
     }
+
+
 
     public Response call() throws IOException {
 
