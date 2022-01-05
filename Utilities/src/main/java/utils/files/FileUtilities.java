@@ -30,7 +30,31 @@ public class FileUtilities {
 
 	public static void deleteFileFromPath(String path) throws IOException {
 		Files.deleteIfExists(Paths.get(path));
+	}
 
+	public static void deleteDirectory(String path) {
+
+		File directory = new File(path);
+		// if the file is directory or not
+		if(directory.isDirectory()) {
+			File[] files = directory.listFiles();
+
+			// if the directory contains any file
+			if(files != null) {
+				for(File file : files) {
+
+					// recursive call if the subdirectory is non-empty
+					deleteDirectory(file.getAbsolutePath());
+				}
+			}
+		}
+
+		/*if(directory.delete()) {
+			System.out.println(directory + " is deleted");
+		}
+		else {
+			System.out.println("Directory not deleted");
+		}*/
 	}
 	public static void deleteFilesInPathByPrefix(final String path, final String prefix) {
 

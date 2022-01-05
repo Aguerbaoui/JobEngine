@@ -264,4 +264,8 @@ public class VariableService {
 			}
 		}
 	}
+
+    public void cleanUpHouse() {
+		   variableRepository.deleteAll();
+    }
 }

@@ -906,7 +906,11 @@ public class RuleService {
 
 	}
 
-	/*
+    public void cleanUpHouse() {
+		ruleRepository.deleteAll();
+    }
+
+    /*
 	 * public List<OperationStatusDetails> compileRules3(String projectId,
 	 * List<String> ruleIds) throws LicenseNotActiveException,
 	 * ProjectNotFoundException { LicenseProperties.checkLicenseIsActive();

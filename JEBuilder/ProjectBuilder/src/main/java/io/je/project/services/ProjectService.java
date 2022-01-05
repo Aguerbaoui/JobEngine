@@ -7,10 +7,12 @@ import io.je.rulebuilder.components.JERule;
 import io.je.utilities.apis.JERunnerAPIHandler;
 import io.je.utilities.beans.JEEvent;
 import io.je.utilities.beans.JEVariable;
+import io.je.utilities.config.ConfigurationConstants;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.*;
 import io.je.utilities.log.JELogger;
 import io.je.utilities.ruleutils.OperationStatusDetails;
+import utils.files.FileUtilities;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
 
@@ -47,6 +49,8 @@ public class ProjectService {
 	@Autowired
 	VariableService variableService;
 
+	@Autowired
+	ClassService classService;
 
 	/* project management */
 
@@ -360,6 +364,22 @@ public class ProjectService {
 		}
 		return CompletableFuture.completedFuture(null);
 
+	}
+
+	public void cleanUpHouse() {
+		//List<JEProject> projects = projectRepository.findAll();
+		try {
+			eventService.cleanUpHouse();
+			ruleService.cleanUpHouse();
+			workflowService.cleanUpHouse();
+			variableService.cleanUpHouse();
+			classService.cleanUpHouse();
+			projectRepository.deleteAll();
+			FileUtilities.deleteDirectory(ConfigurationConstants.PROJECTS_PATH);
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	/*
