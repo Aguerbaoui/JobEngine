@@ -12,6 +12,7 @@ import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.*;
 import io.je.utilities.log.JELogger;
 import io.je.utilities.ruleutils.OperationStatusDetails;
+import org.springframework.cloud.context.restart.RestartEndpoint;
 import utils.files.FileUtilities;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
@@ -366,9 +367,15 @@ public class ProjectService {
 
 	}
 
+	/*
+	* Clean up job engine data
+	* */
 	public void cleanUpHouse() {
-		//List<JEProject> projects = projectRepository.findAll();
+		List<JEProject> projects = projectRepository.findAll();
 		try {
+			for(JEProject project: projects) {
+				stopProject(project.getProjectId());
+			}
 			eventService.cleanUpHouse();
 			ruleService.cleanUpHouse();
 			workflowService.cleanUpHouse();
@@ -382,25 +389,6 @@ public class ProjectService {
 		}
 	}
 
-	/*
-	 * public void addJarToProject(MultipartFile file) throws LibraryException {
-	 * JELogger.info( JEMessages.ADDING_JAR_TO_PROJECT, LogCategory.DESIGN_MODE,
-	 * null, LogSubModule.JEBUILDER, null); try { if (!file.isEmpty()) { String
-	 * uploadsDir = ConfigurationConstants.EXTERNAL_LIB_PATH; //TODO change to the
-	 * path set by the user for classes in sioth String realPathtoUploads =
-	 * request.getServletContext().getRealPath(uploadsDir); if (!new
-	 * File(realPathtoUploads).exists()) { new File(realPathtoUploads).mkdir(); }
-	 * 
-	 * String orgName = file.getOriginalFilename(); String filePath =
-	 * realPathtoUploads + orgName; File dest = new File(filePath);
-	 * file.transferTo(dest); JELogger.debug(JEMessages.UPLOADED_JAR_TO_PATH + dest,
-	 * LogCategory.DESIGN_MODE, null, LogSubModule.JEBUILDER, null); HashMap<String,
-	 * String> payload = new HashMap<>(); payload.put("name",
-	 * file.getOriginalFilename()); payload.put("path", dest.getAbsolutePath());
-	 * 
-	 * JERunnerAPIHandler.addJarToRunner(new LibModel()); } }
-	 * catch(JERunnerErrorException | IOException e ) { throw new
-	 * LibraryException(JEMessages.ERROR_IMPORTING_FILE); } }
-	 */
+
 
 }
