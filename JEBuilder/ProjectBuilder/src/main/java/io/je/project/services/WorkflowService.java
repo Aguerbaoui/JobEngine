@@ -1136,7 +1136,7 @@ public class WorkflowService {
             result.setItemName(wf.getJobEngineElementName());
             result.setItemId(workflowId);
             JERunnerAPIHandler.deleteWorkflow(projectId, wf.getJobEngineElementName());
-            wf.setStatus(Status.STOPPING);
+            //wf.setStatus(Status.STOPPING);
 
         } catch (JERunnerErrorException e) {
             JELogger.debug(
@@ -1147,7 +1147,7 @@ public class WorkflowService {
             result.setOperationSucceeded(false);
             result.setOperationError(JEMessages.ERROR_STOPPING_WORKFLOW);
         }
-        project.getWorkflowByIdOrName(workflowId).setStatus(Status.STOPPING);
+        //project.getWorkflowByIdOrName(workflowId).setStatus(Status.STOPPING);
         workflowRepository.save(project.getWorkflowByIdOrName(workflowId));
         return CompletableFuture.completedFuture(result);
     }

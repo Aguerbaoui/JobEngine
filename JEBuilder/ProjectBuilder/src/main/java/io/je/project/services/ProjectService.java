@@ -12,7 +12,6 @@ import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.*;
 import io.je.utilities.log.JELogger;
 import io.je.utilities.ruleutils.OperationStatusDetails;
-import org.springframework.cloud.context.restart.RestartEndpoint;
 import utils.files.FileUtilities;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
@@ -155,7 +154,8 @@ public class ProjectService {
 
 	public List<OperationStatusDetails> buildAll(String projectId)
 			throws ProjectNotFoundException, InterruptedException, ExecutionException, LicenseNotActiveException{
-		JELogger.info("[project= " + loadedProjects.get(projectId).getProjectName() + "]" + JEMessages.BUILDING_PROJECT, LogCategory.DESIGN_MODE,
+		JEProject project = projectRepository.findById(projectId).get();
+		JELogger.info("[project= " + project.getProjectName() + "]" + JEMessages.BUILDING_PROJECT, LogCategory.DESIGN_MODE,
 				projectId, LogSubModule.JEBUILDER, null);
 //CompletableFuture<?> buildRules = ruleService.compileALLRules(projectId);
 		CompletableFuture<List<OperationStatusDetails>> buildWorkflows = workflowService.buildWorkflows(projectId,
