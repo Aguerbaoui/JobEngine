@@ -345,4 +345,8 @@ public class EventService {
 			}
 		}
 	}
+
+    public void cleanUpHouse() {
+		eventRepository.deleteAll();
+    }
 }

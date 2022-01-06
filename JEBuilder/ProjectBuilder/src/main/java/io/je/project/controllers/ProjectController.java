@@ -320,5 +320,14 @@ public class ProjectController {
 		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, "Updated"));
 	}
 
+	@GetMapping(value = "/cleanUp", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> cleanUpHouse() {
 
+		try {
+			projectService.cleanUpHouse();
+		} catch (Exception e) {
+			return JEExceptionHandler.handleException(e);
+		}
+		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, "Updated"));
+	}
 }

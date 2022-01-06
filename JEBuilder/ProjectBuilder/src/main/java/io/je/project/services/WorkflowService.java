@@ -1295,4 +1295,14 @@ public class WorkflowService {
         return CompletableFuture.completedFuture(results);
     }
 
+    public void cleanUpHouse() {
+        try {
+            workflowRepository.deleteAll();
+            FileUtilities.deleteDirectory(ConfigurationConstants.BPMN_PATH);
+
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

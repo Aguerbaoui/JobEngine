@@ -670,6 +670,19 @@ public class ClassService {
         classRepository.deleteByClassName(className);
     }
 
+    public void cleanUpHouse() {
+        try {
+            classRepository.deleteAll();
+            methodRepository.deleteAll();
+            libraryRepository.deleteAll();
+            FileUtilities.deleteDirectory(ConfigurationConstants.JAVA_GENERATION_PATH);
+            FileUtilities.deleteDirectory(ConfigurationConstants.EXTERNAL_LIB_PATH);
+
+        }
+        catch (Exception e) {
+            e.printStackTrace();}
+    }
+
     /*
      * public void updateClass(ClassDefinition classDefinition, boolean
      * sendToRunner)
