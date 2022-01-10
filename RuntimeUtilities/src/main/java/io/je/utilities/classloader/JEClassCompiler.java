@@ -24,7 +24,7 @@ import utils.log.LogCategory;
 import utils.log.LogSubModule;
 
 /*
- * class responsible for loading user defined classes
+ * class responsible for loading user defined classess
  */
 public class JEClassCompiler {
 
