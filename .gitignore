@@ -8,8 +8,8 @@
 *.ear
 *.nar
 hs_err_pid*
-src/main/java/ConfigurationConstants.java
-src/main/java/JEClassCompiler.java
+/RuntimeUtilities/src/main/java/ConfigurationConstants.java
+/RuntimeUtilities/src/main/java/JEClassCompiler.java
 
 ##############################
 ## Maven
