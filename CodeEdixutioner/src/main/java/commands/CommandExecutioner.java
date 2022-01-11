@@ -23,7 +23,7 @@ public class CommandExecutioner {
 
     public static final String JAR = "jar ";
 
-    public static final String JAVAC = "javac ";
+    public static final String JAVAC = "javac -Xlint:unchecked -Xlint:-rawtypes -Xlint:deprecation -Xdiags:verbose";
 
     public static final String CP = "-cp";
 
@@ -36,12 +36,12 @@ public class CommandExecutioner {
     public static final String classpathFolder = System.getenv(ConfigurationConstants.SIOTH_ENVIRONMENT_VARIABLE) + "\\..\\Job Engine\\libs\\*";
 
     public static void compileCode(String filePath, boolean currentClassPath) throws InterruptedException, IOException, ClassLoadException {
-        currentClassPath = false;
+        //currentClassPath = false;
         String command = currentClassPath ? JAVAC + " " + CP + " \"" + classpathFolder + getCurrentClassPath() + "\" " + "\"" + filePath + "\" "
                 :
                 JAVAC + " " + CP + " \"" + classpathFolder + "\" " + "\"" + filePath + "\" ";
         String errorTextBuilder =  ProcessRunner.executeCommandWithErrorOutput(command);
-        if(errorTextBuilder.length() > 0) {
+        if(errorTextBuilder.length() > 0 && errorTextBuilder.indexOf("error:") != -1) {
             String error = errorTextBuilder.substring(errorTextBuilder.indexOf("error:"));
             ClassLoadException exception = new ClassLoadException(JEMessages.CLASS_LOAD_FAILED);
             JELogger.debug(error);
@@ -51,7 +51,7 @@ public class CommandExecutioner {
     }
 
     public static long runCode(String filePath) throws IOException, InterruptedException {
-        String command = JAVA + " " + CP + " " + classpathFolder  + " " + filePath;
+        String command = JAVA + " " + CP + " " + classpathFolder  + getCurrentClassPath() +  " " + filePath;
         return ProcessRunner.executeCommandWithPidOutput(command);
         //return p.pid();
     }

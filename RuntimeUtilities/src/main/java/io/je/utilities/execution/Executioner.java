@@ -1,8 +1,11 @@
 package io.je.utilities.execution;
 
+import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -225,10 +228,19 @@ public class Executioner {
 		});
 
 	}
-
+	public static String getCurrentClassPath() {
+		StringBuilder sb = new StringBuilder();
+		sb.append(File.pathSeparator);
+		URLClassLoader urlClassLoader = (URLClassLoader) Thread.currentThread().getContextClassLoader();
+		for (URL url : urlClassLoader.getURLs()){
+			//JELogger.info(JEClassLoader.class, url.getFile().substring(1));
+			sb.append(url.getFile().substring(1).replace("%20", " ")).append(File.pathSeparator);
+		}
+		return sb.toString().replace("/", "\\");
+	}
 	public static long executeScript(String filePath) throws IOException, InterruptedException {
 		String classpathFolder = System.getenv(ConfigurationConstants.SIOTH_ENVIRONMENT_VARIABLE) + "\\..\\Job Engine\\libs\\*";
-		String command = "java" + " " + "-cp" + " \"" + classpathFolder  + "\" " + filePath;
+		String command = "java" + " " + "-cp" + " \"" + classpathFolder  + getCurrentClassPath() + "\" " + filePath;
 		/*new Thread(() -> {
 			try {
 				Process process = ProcessRunner.executeCommandWithPidOutput(command);

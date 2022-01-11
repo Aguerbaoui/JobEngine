@@ -9,25 +9,25 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class SIOTHConfigUtility {
 
-	private static SIOTHConfig siothConfig;
+	private static SIOTHConfig siothConfig = null;
 
 	private SIOTHConfigUtility() {
 		
 	}
 
 	public static void init() {
-		ObjectMapper objectMapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-		String jsonString = loadSIOTHConfig();
-		if (jsonString != null) {
-			try {
-				siothConfig =  objectMapper.readValue(jsonString, SIOTHConfig.class);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}	
 
+			ObjectMapper objectMapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+			String jsonString = loadSIOTHConfig();
+			if (jsonString != null) {
+				try {
+					siothConfig = objectMapper.readValue(jsonString, SIOTHConfig.class);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 
-		}
 	}
 
 	private static String loadSIOTHConfig() {
@@ -47,6 +47,7 @@ public class SIOTHConfigUtility {
 
 
 	public static SIOTHConfig getSiothConfig() {
+		if(siothConfig == null) {init();}
 		return siothConfig;
 	}
 
