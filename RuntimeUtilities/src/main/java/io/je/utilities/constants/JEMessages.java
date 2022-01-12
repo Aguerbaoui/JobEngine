@@ -647,7 +647,7 @@ public class JEMessages {
     public static final String WORKFLOW_IS_DISABLED = "The workflow is disabled, check your configuration";
     public static final String PROCEDURE_DELETED_SUCCESSFULLY = "The procedure was deleted successfully";
     public static final String LIBRARY_DELETED_SUCCESSFULLY = "The library was deleted successfully";
-    public static final String LIBRARY_EXISTS = "The library already exists in the system";
+    public static final String LIBRARY_EXISTS = "The file already exists in the system";
     public static final String THREAD_INTERRUPTED_WHILE_EXECUTING = "Thread execution interrupted";
 
 

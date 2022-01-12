@@ -538,7 +538,7 @@ public class WorkflowService {
             // throw new WorkflowBuildException(JEMessages.WORKFLOW_BUILD_ERROR + " " +
             // workflow.getJobEngineElementName());
         }
-
+        workflowRepository.save(workflow);
         return CompletableFuture.completedFuture(result);
     }
 
@@ -893,10 +893,12 @@ public class WorkflowService {
             b.setLstBCCs((List<String>) block.getAttributes().get(BCC_LIST));
             b.setLstAttachementPaths((List<String>) block.getAttributes().get(ATTACHEMENT_URLS));
             List<String> uploadedFiles = (List<String>) block.getAttributes().get(UPLOADED_FILES_PATHS);
-            for(String fileName: uploadedFiles) {
-                JELib jeLib = libraryRepository.findByJobEngineElementName(fileName);
-                if(jeLib != null) {
-                    b.getLstUploadedFiles().add(jeLib.getFilePath());
+            if(uploadedFiles != null) {
+                for (String fileName : uploadedFiles) {
+                    JELib jeLib = libraryRepository.findByJobEngineElementName(fileName);
+                    if (jeLib != null) {
+                        b.getLstUploadedFiles().add(jeLib.getFilePath());
+                    }
                 }
             }
             b.setLstUploadedFiles((List<String>) block.getAttributes().get(UPLOADED_FILES_PATHS));
@@ -1153,7 +1155,7 @@ public class WorkflowService {
             result.setItemName(wf.getJobEngineElementName());
             result.setItemId(workflowId);
             JERunnerAPIHandler.deleteWorkflow(projectId, wf.getJobEngineElementName());
-            wf.setStatus(Status.STOPPING);
+            //wf.setStatus(Status.STOPPING);
 
         } catch (JERunnerErrorException e) {
             JELogger.debug(
@@ -1164,7 +1166,7 @@ public class WorkflowService {
             result.setOperationSucceeded(false);
             result.setOperationError(JEMessages.ERROR_STOPPING_WORKFLOW);
         }
-        project.getWorkflowByIdOrName(workflowId).setStatus(Status.STOPPING);
+        //project.getWorkflowByIdOrName(workflowId).setStatus(Status.STOPPING);
         workflowRepository.save(project.getWorkflowByIdOrName(workflowId));
         return CompletableFuture.completedFuture(result);
     }
@@ -1327,5 +1329,19 @@ public class WorkflowService {
         }
 
 
+    }
+
+    public void addAttachments(List<LibModel> libModels) throws LibraryException, IOException, ExecutionException, InterruptedException {
+        for(LibModel libModel: libModels) {
+            addAttachment(libModel);
+        }
+    }
+
+    public void deleteAttachmentByName(String libName) throws IOException {
+        JELib lib = libraryRepository.findByJobEngineElementName(libName);
+        if(lib != null) {
+            FileUtilities.deleteFileFromPath(lib.getFilePath());
+            libraryRepository.delete(lib);
+        }
     }
 }

@@ -100,6 +100,7 @@ public class JEBuilderApiHandler {
     }
 
 	private static Response sendMultipartFormDataPostRequest(String url, LibModel libModel) throws ExecutionException, InterruptedException, IOException {
-		return Network.makeMultipartFormDataPost(url, libModel.getFileName(), libModel.getFilePath());
+		String fileName = libModel.getFileName() != null ? libModel.getFileName() : libModel.getId();
+		return Network.makeMultipartFormDataPost(url, fileName, libModel.getFilePath());
 	}
 }
