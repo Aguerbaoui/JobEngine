@@ -9,8 +9,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.je.classbuilder.entity.ClassType;
-import io.je.classbuilder.entity.JEClass;
+import io.je.utilities.beans.ClassType;
+import io.je.utilities.beans.JEClass;
 import io.je.classbuilder.models.ClassDefinition;
 import io.je.classbuilder.models.FieldModel;
 import io.je.classbuilder.models.GetModelObject;
@@ -57,7 +57,7 @@ public class ClassManager {
 	/*
 	 * build class (generate .java then load Class )
 	 */
-	public static List<JEClass> buildClass(ClassDefinition classDefinition)
+	public static List<JEClass> buildClass(ClassDefinition classDefinition, String packageName)
 			throws AddClassException,   ClassLoadException {
 
 		JELogger.debug(JEMessages.BUILDING_CLASS + "[className = " + classDefinition.getName() + "]",
@@ -78,7 +78,7 @@ public class ClassManager {
 				try {
 					ClassDefinition inheritedClassModel = loadClassDefinition(classDefinition.getWorkspaceId(), baseTypeId);
 					// load inherited class
-					for (JEClass _class : ClassManager.buildClass(inheritedClassModel)) {
+					for (JEClass _class : ClassManager.buildClass(inheritedClassModel, packageName)) {
 						classes.add(_class);
 					}
 				}
@@ -98,7 +98,7 @@ public class ClassManager {
 			for (String baseTypeId : classDefinition.getDependentEntities()) {
 				try {
 					ClassDefinition dependentClass = loadClassDefinition(classDefinition.getWorkspaceId(), baseTypeId);
-					for (JEClass _class : ClassManager.buildClass(dependentClass)) {
+					for (JEClass _class : ClassManager.buildClass(dependentClass, packageName)) {
 						classes.add(_class);
 					}
 				}
@@ -113,7 +113,7 @@ public class ClassManager {
 		}
 
 		// create .java
-		String filePath = ClassBuilder.buildClass(classDefinition, generationPath);
+		String filePath = ClassBuilder.buildClass(classDefinition, generationPath, packageName);
 
 		// load .java -> .class
 		JEClassCompiler.compileClass(filePath, loadPath);
@@ -121,7 +121,7 @@ public class ClassManager {
 		Class<?> loadedClass;
 		try {
 			loadedClass = JEClassLoader.getJeInstance()
-					.loadClass(ClassBuilderConfig.generationPackageName + "." + classDefinition.getName());
+					.loadClass(ClassBuilderConfig.CLASS_PACKAGE + "." + classDefinition.getName());
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 			throw new ClassLoadException(

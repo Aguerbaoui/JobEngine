@@ -109,7 +109,7 @@ public class JEClassLoader extends ClassLoader {
 
 
     public Class<?> loadClassInJobEngineClassLoader(String className) throws ClassNotFoundException {
-        if (className.startsWith(ClassBuilderConfig.generationPackageName + ".")
+        if (className.startsWith(ClassBuilderConfig.CLASS_PACKAGE + ".")
                 && !className.contains("Propagation")) {
             jeCustomClasses.add(className);
             try {
@@ -125,7 +125,7 @@ public class JEClassLoader extends ClassLoader {
     }
 
     public Class<?> loadClassInDataModelClassLoader(String className) throws ClassNotFoundException {
-        if (className.startsWith(ClassBuilderConfig.generationPackageName + ".")
+        if (className.startsWith(ClassBuilderConfig.CLASS_PACKAGE + ".")
                 && !className.contains("Propagation")) {
             dataModelCustomClasses.add(className);
             try {

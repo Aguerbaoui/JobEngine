@@ -23,11 +23,12 @@
         <module>LicenseManager</module>
         <module>JERunner</module>
         <module>Monitor</module>
-        <!--<module>WorkflowBuilder</module>
-        <module>rulebuilder</module>
-        <module>RuleEngine</module>
-        <module>ProjectBuilder</module>
-        <module>RuntimeManager</module> -->
+      <module>CodeEdixutioner</module>
+      <!--<module>WorkflowBuilder</module>
+      <module>rulebuilder</module>
+      <module>RuleEngine</module>
+      <module>ProjectBuilder</module>
+      <module>RuntimeManager</module> -->
         
     </modules>
   <dependencies>

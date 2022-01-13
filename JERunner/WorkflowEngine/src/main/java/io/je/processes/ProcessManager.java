@@ -2,6 +2,7 @@ package io.je.processes;
 
 //import static io.je.utilities.constants.JEMessages.SENDING_WORKFLOW_MONITORING_DATA_TO_JEMONITOR;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -9,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
+import commands.CommandExecutioner;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.DynamicBpmnService;
 import org.activiti.engine.HistoryService;
@@ -41,6 +43,7 @@ import io.je.utilities.log.JELogger;
 import io.je.utilities.monitoring.JEMonitor;
 import io.je.utilities.monitoring.MonitoringMessage;
 import io.je.utilities.monitoring.ObjectType;
+import utils.ProcessRunner;
 import utils.files.FileUtilities;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
@@ -338,6 +341,7 @@ public class ProcessManager {
         JEMonitor.publish(msg);
         if(!b) {
             if(process.getEndEventId() != null) {
+
                 try {
                     JERunnerAPIHandler.triggerEvent(process.getEndEventId(), process.getProjectId());
                 } catch (JERunnerErrorException e) {
@@ -360,6 +364,18 @@ public class ProcessManager {
                 repoService.deleteDeployment(process.getDeploymentId());
                 if(process.getActiveThread() != null) {
                     process.getActiveThread().interrupt();
+                }
+                HashMap<String, ActivitiTask> tasks = process.getActivitiTasks();
+                for(ActivitiTask task: tasks.values()) {
+                    if (task.getPid() != -1) {
+                        try {
+                            CommandExecutioner.KillProcessByPid(task.getPid());
+                            task.setPid(-1);
+                        } catch (Exception e) {
+                            JELogger.error(JEMessages.ERROR_STOPPING_PROCESS, LogCategory.RUNTIME, process.getProjectId(), LogSubModule.WORKFLOW, process.getName());
+
+                        }
+                    }
                 }
                 JELogger.debug(JEMessages.STOPPING_WORKFLOW_FORCED,
                         LogCategory.RUNTIME, process.getProjectId(),

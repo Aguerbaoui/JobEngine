@@ -12,6 +12,8 @@ import utils.network.Network;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
+import java.util.HashMap;
+
 import static io.je.utilities.apis.Request.*;
 import static io.je.utilities.constants.APIConstants.*;
 
@@ -92,6 +94,19 @@ public class JEBuilderApiHandler {
 	public static JEResponse updateWorkflowStatus(String workflowId, String projectId, Object obj) throws JERunnerErrorException {
 		String requestUrl = SIOTHConfigUtility.getSiothConfig().getJobEngine().getJeBuilder() + UPDATE_WORKFLOW_STATUS;
 		return sendPatchRequestWithBody(requestUrl,obj);
+	}
+
+	public static JEResponse informUser(Object body) throws JERunnerErrorException {
+		String requestUrl = SIOTHConfigUtility.getSiothConfig().getJobEngine().getJeBuilder() + INFORM_USER;
+		//System.out.println(requestUrl);
+		return sendRequestWithBody(requestUrl, body);
+	}
+
+
+	public static JEResponse sendLogMessage(Object body) throws JERunnerErrorException {
+		String requestUrl = SIOTHConfigUtility.getSiothConfig().getJobEngine().getJeBuilder() + SEND_LOG;
+		//System.out.println(requestUrl);
+		return sendRequestWithBody(requestUrl, body);
 	}
 
     public static int uploadFileTo(String url, LibModel libModel) throws ExecutionException, InterruptedException, IOException {

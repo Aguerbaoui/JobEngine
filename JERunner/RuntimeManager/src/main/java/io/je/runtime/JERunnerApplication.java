@@ -20,7 +20,7 @@ public class JERunnerApplication {
 
 	
     public static void main(String[] args) {
-    	SIOTHConfigUtility.init();
+    	//SIOTHConfigUtility.init();
     	//System.setProperty("drools.dateformat", SIOTHConfigUtility.getSiothConfig().getDateFormat());
         SpringApplication app = new SpringApplication(JERunnerApplication.class);
         app.setBannerMode(Banner.Mode.OFF);

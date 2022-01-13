@@ -2,6 +2,8 @@ package io.je.project.services;
 
 import static io.je.classbuilder.builder.ClassManager.getClassModel;
 import static io.je.classbuilder.builder.ClassManager.getLibModel;
+import static io.je.utilities.constants.ClassBuilderConfig.CLASS_PACKAGE;
+import static io.je.utilities.constants.ClassBuilderConfig.SCRIPTS_PACKAGE;
 import static io.je.utilities.constants.JEMessages.CLASS_LOAD_IN_RUNNER_FAILED;
 import static io.je.utilities.constants.JEMessages.EMPTY_CODE;
 import static io.je.utilities.constants.JEMessages.FAILED_TO_DELETE_FILES;
@@ -20,6 +22,9 @@ import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 
+import commands.CommandExecutioner;
+import io.je.classbuilder.builder.ClassBuilder;
+import io.je.utilities.constants.ClassBuilderConfig;
 import io.je.utilities.beans.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -27,8 +32,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import io.je.classbuilder.builder.ClassManager;
-import io.je.classbuilder.entity.ClassType;
-import io.je.classbuilder.entity.JEClass;
+import io.je.utilities.beans.ClassType;
+import io.je.utilities.beans.JEClass;
 import io.je.classbuilder.models.ClassDefinition;
 import io.je.classbuilder.models.FieldModel;
 import io.je.classbuilder.models.MethodModel;
@@ -37,6 +42,12 @@ import io.je.project.repository.ClassRepository;
 import io.je.project.repository.LibraryRepository;
 import io.je.project.repository.MethodRepository;
 import io.je.utilities.apis.JERunnerAPIHandler;
+import io.je.utilities.beans.ClassAuthor;
+import io.je.utilities.beans.JEField;
+import io.je.utilities.beans.JELib;
+import io.je.utilities.beans.JEMethod;
+import io.je.utilities.beans.JEResponse;
+import io.je.utilities.beans.LibScope;
 import io.je.utilities.classloader.JEClassLoader;
 import io.je.utilities.config.ConfigurationConstants;
 import io.je.utilities.constants.JEMessages;
@@ -65,6 +76,7 @@ public class ClassService {
     public static final String CLASS_PATH = "classPath";
     public static final String CLASS_ID = "classId";
     public static final String CLASS_AUTHOR = "classAuthor";
+    public static final String MAIN = "main";
 
     @Autowired
     ClassRepository classRepository;
@@ -116,7 +128,7 @@ public class ClassService {
         if (reloadClassDefinition) {
             JEClassLoader.overrideJeInstance();
         }
-        List<JEClass> builtClasses = ClassManager.buildClass(classDefinition);
+        List<JEClass> builtClasses = ClassManager.buildClass(classDefinition, CLASS_PACKAGE);
         for (JEClass _class : builtClasses) {
             if (sendToRunner) {
                 addClassToJeRunner(_class, reloadClassDefinition);
@@ -241,7 +253,13 @@ public class ClassService {
 
             loadProcedures(jeClass);
             ClassDefinition c = getClassModel(jeClass);
-            addClass(c, true, true);
+            String filePath = ClassBuilder.buildClass(c, ConfigurationConstants.JAVA_GENERATION_PATH, CLASS_PACKAGE);
+            c.setClassAuthor(ClassAuthor.PROCEDURE);
+            jeClass.setClassPath(filePath);
+            classRepository.save(jeClass);
+            CommandExecutioner.compileCode(filePath, true);
+            CommandExecutioner.buildJar();
+            //addClass(c, true, true);
 
         } catch (Exception e) {
             JELogger.error(JEMessages.FAILED_TO_LOAD_CLASS + " " + jeClass.getClassId(), LogCategory.DESIGN_MODE,
@@ -310,8 +328,14 @@ public class ClassService {
      */
     public ClassDefinition getScriptTaskClassModel(String script) {
         MethodModel m = new MethodModel();
-        m.setMethodName(EXECUTE_SCRIPT);
+        m.setMethodName(MAIN);
         m.setCode(script);
+        FieldModel fieldModel = new FieldModel();
+        fieldModel.setType("String[]");
+        fieldModel.setName("args");
+        List<FieldModel> list = new ArrayList<>();
+        list.add(fieldModel);
+        m.setInputs(list);
         return getTempClassFromMethod(m);
     }
 
@@ -390,7 +414,7 @@ public class ClassService {
     /*
      * Compile code before injecting it to the JVM
      */
-    public void compileCode(MethodModel m) throws ClassLoadException, AddClassException {
+    public void compileCode(MethodModel m, String packageName) throws ClassLoadException, AddClassException, IOException, InterruptedException {
         // create a temp class
         if (StringUtilities.isEmpty(m.getCode())) {
             throw new ClassLoadException(EMPTY_CODE);
@@ -398,26 +422,19 @@ public class ClassService {
         ClassDefinition tempClass = getTempClassFromMethod(m);
         tempClass.setImports(m.getImports());
         // compile without saving or sending to the runner
-        addClass(tempClass, false, true);
+        //addClass(tempClass, false, true);
+        compileCode(tempClass, packageName);
     }
 
-    /*
-     * try to compile code before saving
-     */
-    private boolean tryCompileMethod(MethodModel m) {
-        boolean compiled = true;
-        try {
-            compileCode(m);
-        } catch (Exception e) {
-            compiled = false;
-        }
-        return compiled;
+    public void compileCode(ClassDefinition c, String packageName) throws ClassLoadException, AddClassException, IOException, InterruptedException {
+        String filePath = ClassBuilder.buildClass(c, ConfigurationConstants.JAVA_GENERATION_PATH, packageName);
+        CommandExecutioner.compileCode(filePath, true);
     }
 
     /*
      * Create new procedure
      */
-    public void addProcedure(MethodModel m) throws ClassLoadException, AddClassException, MethodException {
+    public void addProcedure(MethodModel m) throws ClassLoadException, AddClassException, MethodException, IOException, InterruptedException {
 
         if (m.getCode().isEmpty())
             throw new MethodException(PROCEDURE_SHOULD_CONTAIN_CODE);
@@ -441,7 +458,13 @@ public class ClassService {
                 throw new MethodException(JEMessages.METHOD_EXISTS);
             }
         }
-        boolean compiled = tryCompileMethod(m);
+        boolean compiled = true;
+        try {
+            compileCode(m, CLASS_PACKAGE);
+        }
+        catch (Exception e) {
+            compiled = false;
+        }
         // TODO cleanup classes
         method = getMethodFromModel(m);
         method.setCompiled(compiled);
@@ -453,8 +476,10 @@ public class ClassService {
             clazz.getMethods().put(m.getId(), method);
             ClassDefinition c = getClassModel(clazz);
             c.setImports(m.getImports());
-            addClass(c, true, true);
-            
+            //addClass(c, true, true);
+            String filePath = ClassBuilder.buildClass(c, ConfigurationConstants.JAVA_GENERATION_PATH, CLASS_PACKAGE);
+            CommandExecutioner.compileCode(clazz.getClassPath(), true);
+            CommandExecutioner.buildJar();
             classRepository.save(clazz);
         }
         methodRepository.save(method);
@@ -492,10 +517,49 @@ public class ClassService {
      * Add new jar library to projects
      */
     public void addJarToProject(LibModel libModel) throws LibraryException {
-        JELib jeLib = projectService.addFile(libModel);
-        if(jeLib != null) {
-            jeLib.setFileType(FileType.JAR);
-            libraryRepository.save(jeLib);
+        JELogger.control(JEMessages.ADDING_JAR_TO_PROJECT,
+                LogCategory.DESIGN_MODE, null, LogSubModule.JEBUILDER, libModel.getFileName());
+        try {
+            MultipartFile file = libModel.getFile();
+            String orgName = file.getOriginalFilename();
+            if (file.getSize() > SIOTHConfigUtility.getSiothConfig().getJobEngine().getLibraryMaxFileSize()) {
+                JELogger.trace("File size = " + file.getSize());
+                throw new LibraryException(JEMessages.FILE_TOO_LARGE);
+            }
+            if (!file.isEmpty()) {
+                if (!FileUtilities.fileIsJar(orgName)) {
+                    throw new LibraryException(JEMessages.JOB_ENGINE_ACCEPTS_JAR_FILES_ONLY);
+                }
+                String uploadsDir = ConfigurationConstants.EXTERNAL_LIB_PATH;
+                if (!new File(uploadsDir).exists()) {
+                    new File(uploadsDir).mkdir();
+                }
+
+                String filePath = uploadsDir + orgName;
+                File dest = new File(filePath);
+                if (dest.exists()) {
+                    throw new LibraryException(JEMessages.LIBRARY_EXISTS);
+                }
+                file.transferTo(dest);
+                JELogger.debug(JEMessages.UPLOADED_JAR_TO_PATH + dest,
+                        LogCategory.DESIGN_MODE, null, LogSubModule.JEBUILDER, null);
+                JELib jeLib = new JELib();
+                jeLib.setFilePath(dest.getAbsolutePath());
+                jeLib.setJobEngineElementName(orgName);
+                jeLib.setScope(LibScope.JOBENGINE);
+                jeLib.setJeObjectCreatedBy(libModel.getCreatedBy());
+                jeLib.setJeObjectModifiedBy(libModel.getCreatedBy());
+                jeLib.setJeObjectCreationDate(Instant.now());
+                jeLib.setJobEngineElementID(libModel.getId());
+                HashMap<String, String> payload = new HashMap<>();
+                payload.put("name", file.getOriginalFilename());
+                payload.put("path", dest.getAbsolutePath());
+                //JERunnerAPIHandler.addJarToRunner(payload);
+                libraryRepository.save(jeLib);
+
+            }
+        } catch (IOException e) {
+            throw new LibraryException(JEMessages.ERROR_IMPORTING_FILE + ":"+e.getMessage());
         }
     }
 
@@ -578,7 +642,9 @@ public class ClassService {
                 JEClass clazz = classRepository.findById(WorkflowConstants.JEPROCEDURES).get();
                 clazz.getMethods().remove(method.getJobEngineElementID());
                 ClassDefinition c = getClassModel(clazz);
-                addClass(c, true, true);
+                 CommandExecutioner.compileCode(clazz.getClassPath(), true);
+                 CommandExecutioner.buildJar();
+                //addClass(c, true, true);
                 classRepository.save(clazz);
 
 
@@ -592,7 +658,7 @@ public class ClassService {
     /*
      * Update SIOTH procedures
      */
-    public void updateProcedure(MethodModel m) throws MethodException, AddClassException, ClassLoadException {
+    public void updateProcedure(MethodModel m) throws MethodException, AddClassException, ClassLoadException, IOException, InterruptedException {
 
         if (m.getCode().isEmpty())
             throw new MethodException(PROCEDURE_SHOULD_CONTAIN_CODE);
@@ -602,7 +668,13 @@ public class ClassService {
             throw new MethodException(JEMessages.METHOD_MISSING);
         }
 
-        boolean compiled = tryCompileMethod(m);
+        boolean compiled = true;
+        try {
+            compileCode(m, CLASS_PACKAGE);
+        }
+        catch (Exception e) {
+            compiled = false;
+        }
         JEMethod method = getMethodFromModel(m);
         method.setCompiled(compiled);
         JEClass clazz = classRepository.findById(WorkflowConstants.JEPROCEDURES).get();
@@ -619,7 +691,10 @@ public class ClassService {
         ClassDefinition c = getClassModel(clazz);
         c.setImports(m.getImports());
         // load new SIOTHProcedures in runner and in Db
-        addClass(c, true, true);
+        String filePath = ClassBuilder.buildClass(c, ConfigurationConstants.JAVA_GENERATION_PATH, CLASS_PACKAGE);
+        CommandExecutioner.compileCode(clazz.getClassPath(), true);
+        CommandExecutioner.buildJar();
+        //addClass(c, true, true);
         // save updated method in db
         methodRepository.save(method);
         classRepository.save(clazz);
@@ -645,25 +720,6 @@ public class ClassService {
             e.printStackTrace();}
     }
 
-    /*
-     * public void updateClass(ClassDefinition classDefinition, boolean
-     * sendToRunner)
-     * throws AddClassException, JERunnerErrorException, InterruptedException,
-     * ExecutionException,
-     * DataDefinitionUnreachableException, ClassLoadException, IOException {
-     * 
-     * if (classRepository.findById(classDefinition.getIdClass()).isPresent()) {
-     * List<JEClass> builtClasses = ClassManager.buildClass(classDefinition);
-     * for (JEClass _class : builtClasses) {
-     * if (sendToRunner) {
-     * addClassToJeRunner(_class);
-     * }
-     * loadedClasses.put(_class.getClassId(), _class);
-     * }
-     * 
-     * }
-     * 
-     * }
-     */
+
 
 }

@@ -6,6 +6,9 @@ import io.je.project.repository.LibraryRepository;
 import io.je.project.repository.ProjectRepository;
 import io.je.rulebuilder.components.JERule;
 import io.je.utilities.apis.JERunnerAPIHandler;
+import io.je.utilities.beans.InformModel;
+import io.je.utilities.beans.JEEvent;
+import io.je.utilities.beans.JEVariable;
 import io.je.utilities.beans.*;
 import io.je.utilities.config.ConfigurationConstants;
 import io.je.utilities.constants.JEMessages;
@@ -13,6 +16,10 @@ import io.je.utilities.exceptions.*;
 import io.je.utilities.log.JELogger;
 import io.je.utilities.models.LibModel;
 import io.je.utilities.ruleutils.OperationStatusDetails;
+import utils.log.LogCategory;
+import utils.log.LogMessage;
+import utils.log.LogSubModule;
+
 import io.siothconfig.SIOTHConfigUtility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
@@ -31,7 +38,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutionException;
-
 import static io.je.utilities.constants.JEMessages.BUILT_EVERYTHING_SUCCESSFULLY;
 /*
  * Service class to handle business logic for projects
@@ -374,7 +380,19 @@ public class ProjectService {
 	}
 
 	/*
-	* Clean up job engine data
+	* inform message from workflow in runtime
+	* */
+	public void informUser(InformModel informBody) {
+		JELogger.info( informBody.getMessage(),  LogCategory.RUNTIME,  informBody.getProjectName(),
+				LogSubModule.WORKFLOW, null);
+	}
+
+	public void sendLog(LogMessage logMessage) {
+		JELogger.sendLog(logMessage);
+	}
+
+
+	/** Clean up job engine data
 	* */
 	public void cleanUpHouse() {
 		List<JEProject> projects = projectRepository.findAll();
