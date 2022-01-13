@@ -391,10 +391,10 @@ public class WorkflowController {
 		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.PROJECT_UPDATED));
 	}
 
-	@DeleteMapping(value = "/deleteAttachment")
-	public ResponseEntity<?> deleteAttachment(@PathVariable String libName) {
+	@DeleteMapping(value = "/deleteAttachment/{id}")
+	public ResponseEntity<?> deleteAttachment(@PathVariable String id) {
 		try {
-			workflowService.deleteAttachmentByName(libName);
+			workflowService.deleteAttachmentByName(id);
 		}
 		catch (Exception e) {
 			return JEExceptionHandler.handleException(e);

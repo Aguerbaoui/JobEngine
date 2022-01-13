@@ -54,15 +54,18 @@ public class MailServiceTask extends ServiceTask {
         String url = task.isbUseDefaultCredentials() ?  SIOTHConfigUtility.getSiothConfig().getApis().getEmailAPI().getAddress() + SEND_EMAIL : SIOTHConfigUtility.getSiothConfig().getApis().getEmailAPI().getAddress() + SEND_EMAIL_AUTH;
         try { //http://192.168.4.128:14003/api/SIOTHEmail/SendEmailAuth //http://localhost:14003/api/SIOTHEmail/SendEmailAuth
             String json = new ObjectMapper().writeValueAsString(attributes);
-            Network network = new Network.Builder(url).hasBody(true)
+            /*Network network = new Network.Builder(url).hasBody(true)
                     .withMethod(HttpMethod.POST).withBodyType(BodyType.JSON)
                     .withBody(json).build();
+              Response response = network.call();
+             */
+            HashMap<String, Object> response= Network.makePrimitiveNetworkCallWithJson(url, json);
+            int code = (int) response.get("code");
 
-            Response response = network.call();
-            JELogger.debug(JEMessages.MAIL_SERVICE_TASK_RESPONSE + " = " + response.body().string(),  LogCategory.RUNTIME,
-                    task.getProjectId(), LogSubModule.WORKFLOW, null);
 
-            if(response.networkResponse().code() != 200 && response.networkResponse().code() != 204 ) {
+            if(code != 200 && code != 204 ) {
+                JELogger.debug(JEMessages.MAIL_SERVICE_TASK_RESPONSE + " = " + response.get("message").toString() + " code = " + code,  LogCategory.RUNTIME,
+                        task.getProjectId(), LogSubModule.WORKFLOW, null);
                 throw new BpmnError("Error");
             }
         }

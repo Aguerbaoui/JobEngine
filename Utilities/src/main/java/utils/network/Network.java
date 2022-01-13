@@ -1,7 +1,9 @@
 package utils.network;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -179,6 +181,33 @@ public class Network {
         return f.get();
     }
 
+    public static HashMap<String, Object> makePrimitiveNetworkCallWithJson(String url, String json) throws IOException {
+        URL uri = new URL (url);
+        HttpURLConnection con = (HttpURLConnection)uri.openConnection();
+        con.setRequestMethod("POST");
+        con.setRequestProperty("Content-Type", "application/json; utf-8");
+        con.setRequestProperty("Accept", "application/json");
+        con.setDoOutput(true);
+        try(OutputStream os = con.getOutputStream()) {
+            byte[] input = json.getBytes("utf-8");
+            os.write(input, 0, input.length);
+        }
+        int code = con.getResponseCode();
+        //System.out.println(code);
+        StringBuilder response = new StringBuilder();
+        try(BufferedReader br = new BufferedReader(
+                new InputStreamReader(con.getInputStream(), "utf-8"))) {
+            String responseLine = null;
+            while ((responseLine = br.readLine()) != null) {
+                response.append(responseLine.trim());
+            }
+            //System.out.println(response.toString());
+        }
+        HashMap<String, Object> responseMap = new HashMap<>();
+        responseMap.put("code", con.getResponseCode());
+        responseMap.put("message", response.toString());
+        return responseMap;
+    }
 
 
     public Response call() throws IOException {

@@ -1338,7 +1338,7 @@ public class WorkflowService {
     }
 
     public void deleteAttachmentByName(String libName) throws IOException {
-        JELib lib = libraryRepository.findByJobEngineElementName(libName);
+        JELib lib = libraryRepository.findById(libName).get();
         if(lib != null) {
             FileUtilities.deleteFileFromPath(lib.getFilePath());
             libraryRepository.delete(lib);
