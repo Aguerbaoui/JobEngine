@@ -143,10 +143,6 @@ public class ProcessManager {
      * */
     public void deployProcess(String key) throws WorkflowBuildException {
         ResourceBundle.clearCache(Thread.currentThread().getContextClassLoader());
-        MonitoringMessage msg = new MonitoringMessage(LocalDateTime.now(), key, ObjectType.JEWORKFLOW,
-                processes.get(key).getProjectId(), Status.BUILDING.toString(), Status.BUILDING.toString());
-        //JELogger.debug(SENDING_WORKFLOW_MONITORING_DATA_TO_JEMONITOR + "\n" + msg, LogCategory.RUNTIME, "", LogSubModule.WORKFLOW, processes.get(key).getName());
-        JEMonitor.publish(msg);
         //repoService.
         try {
             JELogger.debug(JEMessages.DEPLOYING_IN_RUNNER_WORKFLOW_WITH_ID + " = " + key,
@@ -164,11 +160,10 @@ public class ProcessManager {
                     " tenant id =" + deployment.getTenantId());
             processes.get(key).setDeployed(true);
             processes.get(key).setDeploymentId(deployment.getId());
-              msg = new MonitoringMessage(LocalDateTime.now(), key, ObjectType.JEWORKFLOW,
-                    processes.get(key).getProjectId(), Status.STOPPED.toString(), Status.STOPPED.toString());
-            //JELogger.debug(SENDING_WORKFLOW_MONITORING_DATA_TO_JEMONITOR + "\n" + msg, LogCategory.RUNTIME, "", LogSubModule.WORKFLOW, processes.get(key).getName());
-            JEMonitor.publish(msg);
         } catch (Exception e) {
+            MonitoringMessage msg = new MonitoringMessage(LocalDateTime.now(), key, ObjectType.JEWORKFLOW,
+                    processes.get(key).getProjectId(), Status.STOPPED.toString(), Status.STOPPED.toString());
+            JEMonitor.publish(msg);
             throw new WorkflowBuildException(JEMessages.WORKFLOW_BUILD_ERROR + " with id = " + key);
         }
     }

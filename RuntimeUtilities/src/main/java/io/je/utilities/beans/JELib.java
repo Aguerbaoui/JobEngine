@@ -10,6 +10,7 @@ public class JELib extends JEObject {
 
     private LibScope scope;
 
+    private FileType fileType;
 
     public JELib()  {}
     public String getFilePath() {
@@ -28,4 +29,11 @@ public class JELib extends JEObject {
         this.scope = scope;
     }
 
+    public FileType getFileType() {
+        return fileType;
+    }
+
+    public void setFileType(FileType fileType) {
+        this.fileType = fileType;
+    }
 }

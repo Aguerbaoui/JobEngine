@@ -3,12 +3,17 @@ package io.je.runtime.services;
 import static io.je.utilities.constants.JEMessages.ADDING_JAR_FILE_TO_RUNNER;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
+import io.je.utilities.beans.*;
+import io.je.utilities.monitoring.JEMonitor;
+import io.je.utilities.monitoring.MonitoringMessage;
+import io.je.utilities.monitoring.ObjectType;
 import org.springframework.stereotype.Service;
 
 import io.je.JEProcess;
@@ -22,10 +27,6 @@ import io.je.runtime.ruleenginehandler.RuleEngineHandler;
 import io.je.runtime.workflow.WorkflowEngineHandler;
 import io.je.serviceTasks.ActivitiTask;
 import io.je.serviceTasks.ActivitiTaskManager;
-import io.je.utilities.beans.ClassAuthor;
-import io.je.utilities.beans.JEData;
-import io.je.utilities.beans.JEEvent;
-import io.je.utilities.beans.JEVariable;
 import io.je.utilities.classloader.JEClassCompiler;
 import io.je.utilities.classloader.JEClassLoader;
 import io.je.utilities.config.ConfigurationConstants;
@@ -183,25 +184,37 @@ public class RuntimeDispatcher {
 	 * Add a workflow to the engine
 	 */
 	public void addWorkflow(WorkflowModel wf) {
-		JELogger.debug("[projectId = " + wf.getProjectId() + "] [workflow = " + wf.getId() + "]" + JEMessages.ADDING_WF,
-				LogCategory.RUNTIME, wf.getProjectId(), LogSubModule.WORKFLOW, wf.getId());
-		JEProcess process = new JEProcess(wf.getId(), wf.getName(), wf.getPath(), wf.getProjectId(),
-				wf.isTriggeredByEvent());
-		process.setOnProjectBoot(wf.isOnProjectBoot());
-		if (wf.isTriggeredByEvent()) {
-			process.setTriggerMessage(wf.getTriggerMessage());
+		try {
+			JELogger.debug("[projectId = " + wf.getProjectId() + "] [workflow = " + wf.getId() + "]" + JEMessages.ADDING_WF,
+					LogCategory.RUNTIME, wf.getProjectId(), LogSubModule.WORKFLOW, wf.getId());
+			MonitoringMessage msg = new MonitoringMessage(LocalDateTime.now(), wf.getId(), ObjectType.JEWORKFLOW,
+					wf.getProjectId(), Status.BUILDING.toString(), Status.BUILDING.toString());
+			JEMonitor.publish(msg);
+			JEProcess process = new JEProcess(wf.getId(), wf.getName(), wf.getPath(), wf.getProjectId(),
+					wf.isTriggeredByEvent());
+			process.setOnProjectBoot(wf.isOnProjectBoot());
+			if (wf.isTriggeredByEvent()) {
+				process.setTriggerMessage(wf.getTriggerMessage());
+			}
+			JobEngine.updateProjects(wf.getProjectId(), wf.getProjectName());
+			for (TaskModel task : wf.getTasks()) {
+				ActivitiTask activitiTask = WorkflowEngineHandler.parseTask(wf.getProjectId(), wf.getId(), task);
+				ActivitiTaskManager.addTask(activitiTask);
+				process.addActivitiTask(activitiTask);
+			}
+			if (wf.getEndBlockEventId() != null) {
+				process.setEndEventId(wf.getEndBlockEventId());
+			}
+			WorkflowEngineHandler.addProcess(process);
+			msg = new MonitoringMessage(LocalDateTime.now(), wf.getId(), ObjectType.JEWORKFLOW,
+					wf.getProjectId(), Status.BUILDING.toString(), Status.STOPPED.toString());
+			JEMonitor.publish(msg);
 		}
-		JobEngine.updateProjects(wf.getProjectId(), wf.getProjectName());
-		for (TaskModel task : wf.getTasks()) {
-			ActivitiTask activitiTask = WorkflowEngineHandler.parseTask(wf.getProjectId(), wf.getId(), task);
-			ActivitiTaskManager.addTask(activitiTask);
-			process.addActivitiTask(activitiTask);
+		catch (Exception e) {
+			MonitoringMessage msg = new MonitoringMessage(LocalDateTime.now(), wf.getId(), ObjectType.JEWORKFLOW,
+					wf.getProjectId(), Status.STOPPED.toString(), Status.STOPPED.toString());
+			JEMonitor.publish(msg);
 		}
-		if(wf.getEndBlockEventId() != null) {
-			process.setEndEventId(wf.getEndBlockEventId());
-		}
-		WorkflowEngineHandler.addProcess(process);
-
 	}
 
 	/*

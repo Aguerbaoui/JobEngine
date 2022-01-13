@@ -18,6 +18,7 @@ import utils.network.BodyType;
 import utils.network.HttpMethod;
 import utils.network.Network;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 
@@ -28,7 +29,6 @@ public class MailServiceTask extends ServiceTask {
 
     public static final String SEND_EMAIL_AUTH = "SendEmailAuth";
     public static final String SEND_EMAIL = "SendEmail";
-
     public void execute(DelegateExecution execution) {
 
         MailTask task = (MailTask) ActivitiTaskManager.getTask(execution.getCurrentActivityId());
@@ -41,23 +41,31 @@ public class MailServiceTask extends ServiceTask {
             attributes.put(USERNAME, task.getStrUserName());
             attributes.put(PASSWORD, task.getStrPassword());
         }
-        attributes.put(WorkflowConstants.PORT, task.getiPort());
-        attributes.put(WorkflowConstants.SENDER_ADDRESS, task.getStrSenderAddress());
+        attributes.put(PORT, task.getiPort());
+        attributes.put(SENDER_ADDRESS, task.getStrSenderAddress());
         attributes.put(SEND_TIME_OUT, task.getiSendTimeOut());
         attributes.put(RECEIVER_ADDRESS, task.getLstRecieverAddress());
         attributes.put(EMAIL_MESSAGE, task.getEmailMessage());
         attributes.put(SMTP_SERVER, task.getStrSMTPServer());
+        attributes.put(CC_LIST, task.getLstCCs());
+        attributes.put(BCC_LIST, task.getLstBCCs());
+        attributes.put(ATTACHEMENT_URLS, task.getLstAttachementPaths());
+        attributes.put(UPLOADED_FILES_PATHS, task.getLstUploadedFiles());
         String url = task.isbUseDefaultCredentials() ?  SIOTHConfigUtility.getSiothConfig().getApis().getEmailAPI().getAddress() + SEND_EMAIL : SIOTHConfigUtility.getSiothConfig().getApis().getEmailAPI().getAddress() + SEND_EMAIL_AUTH;
-        try { //http://192.168.4.128:14003/api/SIOTHEmail/SendEmailAuth
+        try { //http://192.168.4.128:14003/api/SIOTHEmail/SendEmailAuth //http://localhost:14003/api/SIOTHEmail/SendEmailAuth
             String json = new ObjectMapper().writeValueAsString(attributes);
-            Network network = new Network.Builder(url).hasBody(true)
+            /*Network network = new Network.Builder(url).hasBody(true)
                     .withMethod(HttpMethod.POST).withBodyType(BodyType.JSON)
                     .withBody(json).build();
-            Response response = network.call();
-            JELogger.debug(JEMessages.MAIL_SERVICE_TASK_RESPONSE + " = " + response.body().string(),  LogCategory.RUNTIME,
-                    task.getProjectId(), LogSubModule.WORKFLOW, null);
+              Response response = network.call();
+             */
+            HashMap<String, Object> response= Network.makePrimitiveNetworkCallWithJson(url, json);
+            int code = (int) response.get("code");
 
-            if(response.networkResponse().code() != 200 && response.networkResponse().code() != 204 ) {
+
+            if(code != 200 && code != 204 ) {
+                JELogger.debug(JEMessages.MAIL_SERVICE_TASK_RESPONSE + " = " + response.get("message").toString() + " code = " + code,  LogCategory.RUNTIME,
+                        task.getProjectId(), LogSubModule.WORKFLOW, null);
                 throw new BpmnError("Error");
             }
         }
@@ -67,5 +75,44 @@ public class MailServiceTask extends ServiceTask {
             throw new BpmnError(String.valueOf(ResponseCodes.UNKNOWN_ERROR));
         }
 
+    }
+
+    public static void main(String... args) {
+        String json = "{\n" +
+                "\"strSenderAddress\": \"ikhdhiri@integrationobjects.com\",\n" +
+                "\"lstRecieverAddress\": [\n" +
+                "\"ikhdhiri@integrationobjects.com\", \"njendoubi@integrationobjects.com\"\n" +
+                "],\n" +
+                "\"strSMTPServer\": \"secure.emailsrvr.com\",\n" +
+                "\"iPort\": 25,\n" +
+                "\"iSendTimeOut\": 1000,\n" +
+                "\"emailMessage\": {\n" +
+                "\"strSubject\": \"EmailBlock test\",\n" +
+                "\"strBody\": \"Hi, This is a test of the email block\"\n" +
+                "},\n" +
+                "\"lstCCs\": [\n" +
+                "\"\"\n" +
+                "],\n" +
+                "\"lstBCCs\": [\n" +
+                "\"\"\n" +
+                "], \n" +
+                "\"lstAttachementPaths\": [\n" +
+                "\"\"\n" +
+                "],\n" +
+                "\"lstUploadedFiles\": [\n" +
+                "\"\"\n" +
+                "],\n" +
+                "\"strUserName\": \"ikhdhiri@integrationobjects.com\",\n" +
+                "\"strPassword\": \"IKh=ObjectS@2131251\"\n" +
+                "}";
+        Network network = new Network.Builder("http://localhost:14003/api/SIOTHEmail/SendEmailAuth").hasBody(true)
+                .withMethod(HttpMethod.POST).withBodyType(BodyType.JSON)
+                .withBody(json).build();
+        try {
+            Response response = network.call();
+            System.out.println(response.body().string());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

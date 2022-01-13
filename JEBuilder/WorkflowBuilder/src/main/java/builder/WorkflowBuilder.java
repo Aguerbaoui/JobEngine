@@ -124,6 +124,10 @@ public class WorkflowBuilder {
         attributes.put(RECEIVER_ADDRESS, block.getLstRecieverAddress());
         attributes.put(EMAIL_MESSAGE, block.getEmailMessage());
         attributes.put(SMTP_SERVER, block.getStrSMTPServer());
+        attributes.put(CC_LIST, block.getLstCCs());
+        attributes.put(BCC_LIST, block.getLstBCCs());
+        attributes.put(ATTACHEMENT_URLS, block.getLstAttachementPaths());
+        attributes.put(UPLOADED_FILES_PATHS, block.getLstUploadedFiles());
         return attributes;
     }
 

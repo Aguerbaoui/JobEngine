@@ -1,5 +1,6 @@
 package io.je.runtime.workflow;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -12,6 +13,7 @@ import io.je.serviceTasks.InformTask;
 import io.je.serviceTasks.MailTask;
 import io.je.serviceTasks.ScriptTask;
 import io.je.serviceTasks.WebApiTask;
+import io.je.utilities.beans.Status;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.WorkflowConstants;
 import io.je.utilities.exceptions.WorkflowAlreadyRunningException;
@@ -20,6 +22,9 @@ import io.je.utilities.exceptions.WorkflowNotFoundException;
 import io.je.utilities.exceptions.WorkflowRunException;
 import io.je.utilities.log.JELogger;
 import io.je.utilities.models.TaskModel;
+import io.je.utilities.monitoring.JEMonitor;
+import io.je.utilities.monitoring.MonitoringMessage;
+import io.je.utilities.monitoring.ObjectType;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
 import utils.network.AuthScheme;
@@ -154,6 +159,9 @@ public class WorkflowEngineHandler {
     //remove/stop workflow from runner
     public static void deleteProcess(String projectId, String workflowId) throws WorkflowRunException {
         if(processManagerHashMap.containsKey(projectId)) {
+            MonitoringMessage msg = new MonitoringMessage(LocalDateTime.now(), workflowId, ObjectType.JEWORKFLOW,
+                    projectId, workflowId, Status.STOPPED.toString());
+            JEMonitor.publish(msg);
             processManagerHashMap.get(projectId).removeProcess(workflowId);
         }
     }

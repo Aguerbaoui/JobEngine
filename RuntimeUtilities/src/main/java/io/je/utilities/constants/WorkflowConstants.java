@@ -59,6 +59,10 @@ public class WorkflowConstants {
     public static final String SENDER_ADDRESS = "strSenderAddress";
     public static final String SEND_TIME_OUT = "iSendTimeOut";
     public static final String RECEIVER_ADDRESS = "lstRecieverAddress";
+    public static final String CC_LIST = "lstCCs";
+    public static final String BCC_LIST = "lstBCCs";
+    public static final String ATTACHEMENT_URLS = "lstAttachementPaths";
+    public static final String UPLOADED_FILES_PATHS = "lstUploadedFiles";
     public static final String EMAIL_MESSAGE = "emailMessage";
     public static final String SMTP_SERVER = "strSMTPServer";
     public static final String PASSWORD = "strPassword";
