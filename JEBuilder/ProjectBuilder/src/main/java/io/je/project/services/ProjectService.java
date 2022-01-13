@@ -8,35 +8,30 @@ import io.je.rulebuilder.components.JERule;
 import io.je.utilities.apis.JERunnerAPIHandler;
 import io.je.utilities.beans.*;
 import io.je.utilities.config.ConfigurationConstants;
-import io.je.utilities.beans.JEEvent;
-import io.je.utilities.beans.JEVariable;
-import io.je.utilities.config.ConfigurationConstants;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.*;
 import io.je.utilities.log.JELogger;
 import io.je.utilities.models.LibModel;
 import io.je.utilities.ruleutils.OperationStatusDetails;
 import io.siothconfig.SIOTHConfigUtility;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import utils.files.FileUtilities;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.stereotype.Service;
-
 import java.io.File;
-import java.io.IOException;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutionException;
+
 import static io.je.utilities.constants.JEMessages.BUILT_EVERYTHING_SUCCESSFULLY;
 /*
  * Service class to handle business logic for projects
@@ -60,8 +55,6 @@ public class ProjectService {
 	@Autowired
 	VariableService variableService;
 
-	@Autowired
-	LibraryRepository libraryRepository;
 	@Autowired
 	ClassService classService;
 
