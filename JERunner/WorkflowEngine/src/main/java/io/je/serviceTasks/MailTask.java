@@ -1,5 +1,6 @@
 package io.je.serviceTasks;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -11,6 +12,14 @@ public class MailTask extends ActivitiTask{
     private String strSenderAddress;
 
     private List<String> lstRecieverAddress;
+
+    private List<String> lstAttachementPaths;
+
+    private List<String> lstUploadedFiles;
+
+    private List<String> lstCCs;
+
+    private List<String> lstBCCs;
 
     private String strSMTPServer;
 
@@ -112,5 +121,41 @@ public class MailTask extends ActivitiTask{
 
     public void setStrPassword(String strPassword) {
         this.strPassword = strPassword;
+    }
+
+    public List<String> getLstAttachementPaths() {
+        if(lstAttachementPaths == null) lstAttachementPaths = new ArrayList<>();
+        return lstAttachementPaths;
+    }
+
+    public void setLstAttachementPaths(List<String> lstAttachementPaths) {
+        this.lstAttachementPaths = lstAttachementPaths;
+    }
+
+    public List<String> getLstUploadedFiles() {
+        if(lstUploadedFiles == null) lstUploadedFiles = new ArrayList<>();
+        return lstUploadedFiles;
+    }
+
+    public void setLstUploadedFiles(List<String> lstUploadedFiles) {
+        this.lstUploadedFiles = lstUploadedFiles;
+    }
+
+    public List<String> getLstCCs() {
+        if(lstCCs == null) lstCCs = new ArrayList<>();
+        return lstCCs;
+    }
+
+    public void setLstCCs(List<String> lstCCs) {
+        this.lstCCs = lstCCs;
+    }
+
+    public List<String> getLstBCCs() {
+        if(lstBCCs == null) lstBCCs = new ArrayList<>();
+        return lstBCCs;
+    }
+
+    public void setLstBCCs(List<String> lstBCCs) {
+        this.lstBCCs = lstBCCs;
     }
 }

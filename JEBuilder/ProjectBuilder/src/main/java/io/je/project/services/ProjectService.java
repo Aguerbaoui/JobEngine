@@ -2,16 +2,22 @@ package io.je.project.services;
 
 import io.je.project.beans.JEProject;
 import io.je.project.config.LicenseProperties;
+import io.je.project.repository.LibraryRepository;
 import io.je.project.repository.ProjectRepository;
 import io.je.rulebuilder.components.JERule;
 import io.je.utilities.apis.JERunnerAPIHandler;
+import io.je.utilities.beans.*;
+import io.je.utilities.config.ConfigurationConstants;
 import io.je.utilities.beans.JEEvent;
 import io.je.utilities.beans.JEVariable;
 import io.je.utilities.config.ConfigurationConstants;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.*;
 import io.je.utilities.log.JELogger;
+import io.je.utilities.models.LibModel;
 import io.je.utilities.ruleutils.OperationStatusDetails;
+import io.siothconfig.SIOTHConfigUtility;
+import org.springframework.web.multipart.MultipartFile;
 import utils.files.FileUtilities;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
@@ -19,7 +25,12 @@ import utils.log.LogSubModule;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+
+import java.io.File;
+import java.io.IOException;
+import java.time.Instant;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -49,6 +60,8 @@ public class ProjectService {
 	@Autowired
 	VariableService variableService;
 
+	@Autowired
+	LibraryRepository libraryRepository;
 	@Autowired
 	ClassService classService;
 
@@ -388,6 +401,53 @@ public class ProjectService {
 			e.printStackTrace();
 		}
 	}
+
+
+    public JELib addFile(LibModel libModel) throws LibraryException {
+		JELogger.control(JEMessages.ADDING_FILE_TO_PROJECT,
+				LogCategory.DESIGN_MODE, null, LogSubModule.JEBUILDER, libModel.getFileName());
+		try {
+			MultipartFile file = libModel.getFile();
+			String orgName = file.getOriginalFilename();
+			if (file.getSize() > SIOTHConfigUtility.getSiothConfig().getJobEngine().getLibraryMaxFileSize()) {
+				JELogger.trace("File size = " + file.getSize());
+				throw new LibraryException(JEMessages.FILE_TOO_LARGE);
+			}
+			if (!file.isEmpty()) {
+				/*if (!FileUtilities.fileIsJar(orgName)) {
+					throw new LibraryException(JEMessages.JOB_ENGINE_ACCEPTS_JAR_FILES_ONLY);
+				}*/
+				String uploadsDir = ConfigurationConstants.EXTERNAL_LIB_PATH;
+				if (!new File(uploadsDir).exists()) {
+					new File(uploadsDir).mkdir();
+				}
+
+				String filePath = uploadsDir + orgName;
+				File dest = new File(filePath);
+				if (dest.exists()) {
+					throw new LibraryException(JEMessages.LIBRARY_EXISTS);
+				}
+				file.transferTo(dest);
+				JELogger.debug(JEMessages.UPLOADED_JAR_TO_PATH + dest,
+						LogCategory.DESIGN_MODE, null, LogSubModule.JEBUILDER, null);
+				JELib jeLib = new JELib();
+				jeLib.setFilePath(dest.getAbsolutePath());
+				jeLib.setJobEngineElementName(orgName);
+				jeLib.setScope(LibScope.JOBENGINE);
+				jeLib.setJeObjectCreatedBy(libModel.getCreatedBy());
+				jeLib.setJeObjectModifiedBy(libModel.getCreatedBy());
+				jeLib.setJeObjectCreationDate(Instant.now());
+				jeLib.setJobEngineElementID(libModel.getId());
+				jeLib.setFileType(FileType.valueOf(FileUtilities.getFileExtension(orgName)));
+				//libraryRepository.save(jeLib);
+				return jeLib;
+			}
+		} catch (Exception e) {
+			throw new LibraryException(JEMessages.ERROR_IMPORTING_FILE + ":"+e.getMessage());
+		}
+
+		return null;
+    }
 
 
 

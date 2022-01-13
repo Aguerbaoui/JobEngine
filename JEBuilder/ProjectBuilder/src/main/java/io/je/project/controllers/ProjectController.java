@@ -9,6 +9,7 @@ import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.exceptions.ProjectNotFoundException;
 import io.je.utilities.log.JELogger;
+import io.je.utilities.models.LibModel;
 import io.je.utilities.ruleutils.OperationStatusDetails;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
@@ -322,7 +323,6 @@ public class ProjectController {
 
 	@GetMapping(value = "/cleanUp", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> cleanUpHouse() {
-
 		try {
 			projectService.cleanUpHouse();
 		} catch (Exception e) {
@@ -330,4 +330,5 @@ public class ProjectController {
 		}
 		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, "Updated"));
 	}
+
 }

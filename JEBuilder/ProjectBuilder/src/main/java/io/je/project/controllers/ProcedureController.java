@@ -29,9 +29,6 @@ import static io.je.utilities.constants.JEMessages.*;
 public class ProcedureController {
 
     @Autowired
-    ProjectService projectService;
-
-    @Autowired
     ClassService classService;
 
 
@@ -162,7 +159,6 @@ public class ProcedureController {
 
         try {
             classService.addJarToProject(libModel);
-
         } catch (Exception e) {
             return JEExceptionHandler.handleException(e);
         }
