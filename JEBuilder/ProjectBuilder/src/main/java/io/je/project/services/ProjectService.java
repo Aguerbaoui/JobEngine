@@ -28,6 +28,7 @@ import org.springframework.web.multipart.MultipartFile;
 import utils.files.FileUtilities;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
+import utils.string.StringUtilities;
 
 import java.io.File;
 import java.time.Instant;
@@ -436,7 +437,8 @@ public class ProjectService {
 				String filePath = uploadsDir + orgName;
 				File dest = new File(filePath);
 				if (dest.exists()) {
-					throw new LibraryException(JEMessages.LIBRARY_EXISTS);
+					FileUtilities.deleteFileFromPath(filePath);
+					//throw new LibraryException(JEMessages.LIBRARY_EXISTS);
 				}
 				file.transferTo(dest);
 				JELogger.debug(JEMessages.UPLOADED_JAR_TO_PATH + dest,
@@ -448,7 +450,7 @@ public class ProjectService {
 				jeLib.setJeObjectCreatedBy(libModel.getCreatedBy());
 				jeLib.setJeObjectModifiedBy(libModel.getCreatedBy());
 				jeLib.setJeObjectCreationDate(Instant.now());
-				jeLib.setJobEngineElementID(libModel.getId());
+				jeLib.setJobEngineElementID(StringUtilities.generateUUID());
 				jeLib.setFileType(FileType.valueOf(FileUtilities.getFileExtension(orgName)));
 				//libraryRepository.save(jeLib);
 				return jeLib;
