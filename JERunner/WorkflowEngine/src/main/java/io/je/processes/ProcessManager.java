@@ -190,7 +190,10 @@ public class ProcessManager {
             if (!process.isTriggeredByEvent() && (process.isOnProjectBoot() || !runProject)) {
 
                 process.setActiveThread(new Thread(() -> {
-                    ProcessInstance p = runtimeService.startProcessInstanceByKey(id);
+                    try {
+                        ProcessInstance p = runtimeService.startProcessInstanceByKey(id);
+                    }
+                    catch (Exception e) {}
                     //process.setRunning(true);
                 }));
                 process.getActiveThread().start();
@@ -223,8 +226,10 @@ public class ProcessManager {
 
             try {
                 process.setActiveThread(new Thread(() -> {
-                    ProcessInstance p = runtimeService.startProcessInstanceByKey(id, variables);
-
+                    try {
+                        ProcessInstance p = runtimeService.startProcessInstanceByKey(id, variables);
+                    }
+                    catch (Exception e) {}
                     //process.setRunning(true);
                 }));
                 process.getActiveThread().start();
