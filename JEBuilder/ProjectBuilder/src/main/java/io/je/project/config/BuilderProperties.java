@@ -27,6 +27,9 @@ public class BuilderProperties {
 	@Value("${monitoring.port}")
 	int monitoringPort;
 	
+	@Value("${sioth.id}")
+	String siothId;
+	
 
 
 	public int getMonitoringPort() {
@@ -68,4 +71,15 @@ public class BuilderProperties {
 	public void setIssuer(String issuer) {
 		this.issuer = issuer;
 	}
+
+	public String getSiothId() {
+		return siothId;
+	}
+
+	public void setSiothId(String siothId) {
+		this.siothId = siothId;
+	}
+
+	
+	
 }
