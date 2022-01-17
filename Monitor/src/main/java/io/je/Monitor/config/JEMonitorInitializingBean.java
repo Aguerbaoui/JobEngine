@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import io.je.Monitor.zmq.JEMonitorSubscriber;
+import io.je.utilities.config.ConfigurationConstants;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.log.JELogger;
 import utils.log.LogCategory;
@@ -26,7 +27,7 @@ public class JEMonitorInitializingBean  implements InitializingBean {
             JELogger.control(JEMessages.LOGGER_INITIALIZED,
                     LogCategory.MONITOR, null,
                     LogSubModule.JEMONITOR, null);
-
+            ConfigurationConstants.setSIOTHID(monitorProperties.getSiothId());
             subscriber.initSubscriber();
         }
         catch (Exception e) {e.printStackTrace();}

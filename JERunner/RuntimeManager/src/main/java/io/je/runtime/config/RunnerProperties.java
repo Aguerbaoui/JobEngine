@@ -23,6 +23,9 @@ public class RunnerProperties {
 
 	@Value("${monitoring.port}")
 	int monitoringPort;
+	
+	@Value("${sioth.id}")
+	String siothId;
 
 
 	public int getMonitoringPort() {
@@ -57,4 +60,14 @@ public class RunnerProperties {
 		this.useZmqSecurity = useZmqSecurity;
 	}
 
+	public String getSiothId() {
+		return siothId;
+	}
+
+	public void setSiothId(String siothId) {
+		this.siothId = siothId;
+	}
+
+	
+	
 }

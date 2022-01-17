@@ -12,10 +12,23 @@ public class ConfigurationConstants {
 
     public static final String APPLICATION_PROPERTIES_PATH = "file:${"+SIOTH_ENVIRONMENT_VARIABLE+"}/JobEngine/jobengine.properties";
 
+    public static String SIOTHID;
+    
     public static final String SIOTH_JSON_CONFIG = System.getenv(ConfigurationConstants.SIOTH_ENVIRONMENT_VARIABLE) + "\\SIOTHConfig.json";
     
     public static final String DROOLS_DATE_FORMAT = "MM/dd/yyyy HH:mm:ss.SSS";
 
+  
+    public static String getSIOTHID() {
+ 		return SIOTHID;
+ 	}
+
+ 	public static void setSIOTHID(String sIOTHID) {
+ 		SIOTHID = sIOTHID;
+ 	}
+    
+    
+    
     /*
      * Config for testing on the IDE
      */
@@ -40,7 +53,9 @@ public class ConfigurationConstants {
      * Config for tomcat
      */
     
-   //path where .java files are generated :
+
+
+	//path where .java files are generated :
     public static String JAVA_GENERATION_PATH = System.getProperty("catalina.base") + "\\webapps\\ProjectBuilder\\WEB-INF\\classes\\io\\je\\";
 
     // path for imported libraries
