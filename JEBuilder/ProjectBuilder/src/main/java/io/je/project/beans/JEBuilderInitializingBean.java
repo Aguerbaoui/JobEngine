@@ -6,6 +6,7 @@ import io.je.project.config.BuilderProperties;
 import io.je.project.config.LicenseProperties;
 import io.je.project.services.ConfigurationService;
 import io.je.project.services.ProjectService;
+import io.je.utilities.config.ConfigurationConstants;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.log.JELogger;
 import io.je.utilities.monitoring.JEMonitor;
@@ -37,6 +38,7 @@ public class JEBuilderInitializingBean implements InitializingBean {
                     LogCategory.DESIGN_MODE, null,
                     LogSubModule.JEBUILDER, null);
             AuthenticationInterceptor.init(builderProperties.getIssuer());
+           
             LicenseProperties.init();
            // JEMonitor.setPort(builderProperties.getMonitoringPort());
         	/*while(!LicenseProperties.licenseIsActive())
@@ -53,7 +55,7 @@ public class JEBuilderInitializingBean implements InitializingBean {
     			}
         	}*/
         	
-            
+            ConfigurationConstants.setSIOTHID(builderProperties.getSiothId());
             JEMonitor.setPort(builderProperties.getMonitoringPort());
             ZMQSecurity.setSecure(builderProperties.getUseZmqSecurity());
 			configService.init();
