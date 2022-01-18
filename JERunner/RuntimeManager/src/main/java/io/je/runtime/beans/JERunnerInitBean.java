@@ -29,6 +29,7 @@ public class JERunnerInitBean implements InitializingBean {
                     LogCategory.DESIGN_MODE, null,
                     LogSubModule.JERUNNER, null);
             ConfigurationConstants.setSIOTHID(runnerProperties.getSiothId());
+            ConfigurationConstants.setDev(runnerProperties.isDev());
             JEMonitor.setPort(runnerProperties.getMonitoringPort());
             System.setProperty("drools.dateformat", ConfigurationConstants.DROOLS_DATE_FORMAT);
             

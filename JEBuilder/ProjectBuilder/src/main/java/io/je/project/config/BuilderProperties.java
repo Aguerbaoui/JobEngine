@@ -29,6 +29,9 @@ public class BuilderProperties {
 	
 	@Value("${sioth.id}")
 	String siothId;
+
+	@Value("${dev.environment}")
+	boolean dev;
 	
 
 
@@ -80,6 +83,11 @@ public class BuilderProperties {
 		this.siothId = siothId;
 	}
 
-	
-	
+	public boolean isDev() {
+		return dev;
+	}
+
+	public void setDev(boolean dev) {
+		this.dev = dev;
+	}
 }

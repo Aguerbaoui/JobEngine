@@ -26,7 +26,8 @@ public class MonitorProperties {
 	@Value("${sioth.id}")
 	String siothId;
 
-	
+    @Value("${dev.environment}")
+    boolean dev;
 	
 
     public String getSiothId() {
@@ -60,4 +61,11 @@ public class MonitorProperties {
         this.useZmqSecurity = useZmqSecurity;
     }
 
+    public boolean isDev() {
+        return dev;
+    }
+
+    public void setDev(boolean dev) {
+        this.dev = dev;
+    }
 }
