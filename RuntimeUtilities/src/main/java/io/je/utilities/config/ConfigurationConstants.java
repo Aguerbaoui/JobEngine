@@ -34,7 +34,7 @@ public class ConfigurationConstants {
      */
 
 	 //path where .java files are generated : 
-    /*public 	static String JAVA_GENERATION_PATH = "D:\\" ;
+    public 	static String JAVA_GENERATION_PATH = "D:\\" ;
 
     // path where builder loads classes
     public static String BUILDER_CLASS_LOAD_PATH = System.getProperty("java.class.path").split(";")[0];
@@ -69,7 +69,7 @@ public class ConfigurationConstants {
 
  	public static final String BPMN_PATH = System.getenv(ConfigurationConstants.SIOTH_ENVIRONMENT_VARIABLE)+ "\\JobEngine\\projects\\";
 
-    public static final String PROJECTS_PATH = System.getenv(ConfigurationConstants.SIOTH_ENVIRONMENT_VARIABLE)+ "\\JobEngine\\projects\\";
+    public static final String PROJECTS_PATH = System.getenv(ConfigurationConstants.SIOTH_ENVIRONMENT_VARIABLE)+ "\\JobEngine\\projects\\";*/
 
 
  
