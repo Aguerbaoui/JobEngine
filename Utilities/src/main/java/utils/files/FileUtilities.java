@@ -76,7 +76,7 @@ public class FileUtilities {
 	}
 
 	public static boolean fileIsJar(String fileName) {
-		return getFileExtension(fileName).equals("jar");
+		return getFileExtension(fileName).equals("JAR");
 	}
 
 	public String getExtension(String filename) {

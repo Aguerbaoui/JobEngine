@@ -28,6 +28,7 @@ public class JEMonitorInitializingBean  implements InitializingBean {
                     LogCategory.MONITOR, null,
                     LogSubModule.JEMONITOR, null);
             ConfigurationConstants.setSIOTHID(monitorProperties.getSiothId());
+            ConfigurationConstants.setDev(monitorProperties.isDev());
             subscriber.initSubscriber();
         }
         catch (Exception e) {e.printStackTrace();}

@@ -53,18 +53,21 @@ public class JEClassCompiler {
 			options.add("-Xlint:-rawtypes");
 			options.add("-Xlint:deprecation");
 			options.add("-Xdiags:verbose");
-
+			if(!ConfigurationConstants.isDev()) {
 			StringBuilder sb = new StringBuilder();
 			options.add("-classpath");
-			URLClassLoader urlClassLoader = (URLClassLoader) Thread.currentThread().getContextClassLoader();
-			for (URL url : urlClassLoader.getURLs()){
-				//JELogger.info(JEClassLoader.class, url.getFile().substring(1));
-				sb.append(url.getFile().substring(1).replace("%20", " ")).append(File.pathSeparator);
-			}
-			//options.add("D:\\Job engine\\RuntimeUtilities\\target\\RuntimeUtilities-0.0.1.jar"); fixed the issue for runtime
 
-			// slash issue Widnows Vs JAVA/Linux to be reviewed with the deployment environment
-			options.add(sb.toString().replace("/", "\\"));
+				URLClassLoader urlClassLoader = (URLClassLoader) Thread.currentThread().getContextClassLoader();
+				for (URL url : urlClassLoader.getURLs()) {
+					//JELogger.info(JEClassLoader.class, url.getFile().substring(1));
+					sb.append(url.getFile().substring(1).replace("%20", " ")).append(File.pathSeparator);
+				}
+				//options.add("D:\\Job engine\\RuntimeUtilities\\target\\RuntimeUtilities-0.0.1.jar"); fixed the issue for runtime
+
+				// slash issue Widnows Vs JAVA/Linux to be reviewed with the deployment environment
+				options.add(sb.toString().replace("/", "\\"));
+				System.out.println("Classpath = \n" + sb.toString());
+			}
 
 			/*options.add("D:\\apache-tomcat-9.0.41\\webapps\\ProjectBuilder\\WEB-INF\\lib\\RuntimeUtilities-0.0.1.jar;D:\\apache-tomcat-9.0.41\\webapps\\ProjectBuilder\\WEB-INF\\lib\\jackson-databind-2.11.3.jar" +
 					";D:\\apache-tomcat-9.0.41\\webapps\\ProjectBuilder\\WEB-INF\\lib\\jackson-core-2.11.3.jar;D:\\apache-tomcat-9.0.41\\webapps\\ProjectBuilder\\WEB-INF\\lib\\jackson-annotations-2.11.3.jar;");*/

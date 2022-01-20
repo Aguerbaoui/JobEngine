@@ -13,6 +13,7 @@ import io.je.utilities.monitoring.JEMonitor;
 
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
@@ -23,6 +24,7 @@ public class JEBuilderInitializingBean implements InitializingBean {
 
 
 	@Autowired
+    @Lazy
     ProjectService projectService;
 	
 	@Autowired 
@@ -30,6 +32,7 @@ public class JEBuilderInitializingBean implements InitializingBean {
 	
 	@Autowired
 	BuilderProperties builderProperties;
+
     @Override
     public void afterPropertiesSet() {
         try {
@@ -56,6 +59,7 @@ public class JEBuilderInitializingBean implements InitializingBean {
         	}*/
         	
             ConfigurationConstants.setSIOTHID(builderProperties.getSiothId());
+            ConfigurationConstants.setDev(builderProperties.isDev());
             JEMonitor.setPort(builderProperties.getMonitoringPort());
             ZMQSecurity.setSecure(builderProperties.getUseZmqSecurity());
 			configService.init();

@@ -192,7 +192,6 @@ public class JobEngine {
         try {
             InformModel informModel = new InformModel(message, projectName);
             JEResponse response = JEBuilderApiHandler.informUser(informModel);
-            System.out.println(response.getMessage());
             respCode = response.getCode();
         } catch (JERunnerErrorException e) {
             e.printStackTrace();
@@ -327,6 +326,10 @@ public class JobEngine {
                     null, LogCategory.RUNTIME, LogSubModule.WORKFLOW);
         }
         return responseCode;
+    }
+
+    public static void endJob() {
+        System.exit(0);
     }
 
     public static void main(String... args) {

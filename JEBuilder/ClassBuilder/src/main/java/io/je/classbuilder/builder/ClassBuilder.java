@@ -84,7 +84,8 @@ public class ClassBuilder {
 		unitSG.addImport("io.je.utilities.execution.*");
 		unitSG.addImport("java.lang.*");
 		unitSG.addImport("java.util.*");
-		unitSG.addImport("jeclasses.*;");
+		unitSG.addImport("jeclasses.*");
+		//unitSG.addImport("JobEngine.jeclasses.*");
 		unitSG.addImport("java.sql.*");
 		unitSG.addImport("javax.sql.*");
 		unitSG.addImport("io.je.utilities.execution.*");

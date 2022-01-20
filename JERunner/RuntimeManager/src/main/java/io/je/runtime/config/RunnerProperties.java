@@ -27,6 +27,8 @@ public class RunnerProperties {
 	@Value("${sioth.id}")
 	String siothId;
 
+	@Value("${dev.environment}")
+	boolean dev;
 
 	public int getMonitoringPort() {
 		return monitoringPort;
@@ -68,6 +70,11 @@ public class RunnerProperties {
 		this.siothId = siothId;
 	}
 
-	
-	
+	public boolean isDev() {
+		return dev;
+	}
+
+	public void setDev(boolean dev) {
+		this.dev = dev;
+	}
 }

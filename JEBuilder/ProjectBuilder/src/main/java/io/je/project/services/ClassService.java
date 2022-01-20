@@ -91,6 +91,9 @@ public class ClassService {
     @Lazy
     ProjectService projectService;
 
+    @Autowired
+    ConfigurationService configurationService;
+
     Map<String, JEClass> loadedClasses = new HashMap<String, JEClass>();
 
     @Autowired
@@ -244,7 +247,7 @@ public class ClassService {
     }
 
     public void loadAllClasses() {
-        List<JEClass> classes = classRepository.findAll();
+
         JELogger.debug(JEMessages.LOADING_ALL_CLASSES_FROM_DB,
                 LogCategory.DESIGN_MODE, null,
                 LogSubModule.CLASS, null);
@@ -257,7 +260,7 @@ public class ClassService {
             c.setClassAuthor(ClassAuthor.PROCEDURE);
             jeClass.setClassPath(filePath);
             classRepository.save(jeClass);
-            CommandExecutioner.compileCode(filePath, true);
+            CommandExecutioner.compileCode(filePath, ConfigurationConstants.isDev());
             CommandExecutioner.buildJar();
             //addClass(c, true, true);
 
@@ -265,15 +268,12 @@ public class ClassService {
             JELogger.error(JEMessages.FAILED_TO_LOAD_CLASS + " " + jeClass.getClassId(), LogCategory.DESIGN_MODE,
                     null, LogSubModule.CLASS, null);
         }
+        List<JEClass> classes = classRepository.findAll();
         for (JEClass clazz : classes) {
             try {
-                if (clazz.getWorkspaceId() != null) {
+                if (clazz.getClassAuthor() == ClassAuthor.DATA_MODEL) {
                     addClass(clazz.getWorkspaceId(), clazz.getClassId(), true);
-                } else {
-                    addClassToJeRunner(clazz, true);
                 }
-                // loadedClasses.put(clazz.getClassId(), clazz);
-
             } catch (Exception e) {
                 JELogger.error(JEMessages.FAILED_TO_LOAD_CLASS + " " + clazz.getClassName(), LogCategory.DESIGN_MODE,
                         null, LogSubModule.CLASS, null);
@@ -428,7 +428,7 @@ public class ClassService {
 
     public void compileCode(ClassDefinition c, String packageName) throws ClassLoadException, AddClassException, IOException, InterruptedException {
         String filePath = ClassBuilder.buildClass(c, ConfigurationConstants.JAVA_GENERATION_PATH, packageName);
-        CommandExecutioner.compileCode(filePath, true);
+        CommandExecutioner.compileCode(filePath, ConfigurationConstants.isDev());
     }
 
     /*
@@ -478,7 +478,7 @@ public class ClassService {
             c.setImports(m.getImports());
             //addClass(c, true, true);
             String filePath = ClassBuilder.buildClass(c, ConfigurationConstants.JAVA_GENERATION_PATH, CLASS_PACKAGE);
-            CommandExecutioner.compileCode(clazz.getClassPath(), true);
+            CommandExecutioner.compileCode(clazz.getClassPath(), ConfigurationConstants.isDev());
             CommandExecutioner.buildJar();
             classRepository.save(clazz);
         }
@@ -538,7 +538,8 @@ public class ClassService {
                 String filePath = uploadsDir + orgName;
                 File dest = new File(filePath);
                 if (dest.exists()) {
-                    throw new LibraryException(JEMessages.LIBRARY_EXISTS);
+                    FileUtilities.deleteFileFromPath(filePath);
+                    //throw new LibraryException(JEMessages.LIBRARY_EXISTS);
                 }
                 file.transferTo(dest);
                 JELogger.debug(JEMessages.UPLOADED_JAR_TO_PATH + dest,
@@ -551,6 +552,7 @@ public class ClassService {
                 jeLib.setJeObjectModifiedBy(libModel.getCreatedBy());
                 jeLib.setJeObjectCreationDate(Instant.now());
                 jeLib.setJobEngineElementID(libModel.getId());
+                jeLib.setFileType(FileType.JAR);
                 HashMap<String, String> payload = new HashMap<>();
                 payload.put("name", file.getOriginalFilename());
                 payload.put("path", dest.getAbsolutePath());
@@ -559,6 +561,7 @@ public class ClassService {
 
             }
         } catch (IOException e) {
+
             throw new LibraryException(JEMessages.ERROR_IMPORTING_FILE + ":"+e.getMessage());
         }
     }
@@ -584,7 +587,7 @@ public class ClassService {
         List<JELib> libraries = libraryRepository.findAll();
         List<LibModel> models = new ArrayList<>();
         for (JELib lib : libraries) {
-            if(lib.getFileType().equals(FileType.JAR))
+            if(lib.getFileType() != null && lib.getFileType().equals(FileType.JAR))
                 models.add(getLibModel(lib));
         }
         return models;
@@ -642,7 +645,7 @@ public class ClassService {
                 JEClass clazz = classRepository.findById(WorkflowConstants.JEPROCEDURES).get();
                 clazz.getMethods().remove(method.getJobEngineElementID());
                 ClassDefinition c = getClassModel(clazz);
-                 CommandExecutioner.compileCode(clazz.getClassPath(), true);
+                 CommandExecutioner.compileCode(clazz.getClassPath(),ConfigurationConstants.isDev());
                  CommandExecutioner.buildJar();
                 //addClass(c, true, true);
                 classRepository.save(clazz);
@@ -692,7 +695,7 @@ public class ClassService {
         c.setImports(m.getImports());
         // load new SIOTHProcedures in runner and in Db
         String filePath = ClassBuilder.buildClass(c, ConfigurationConstants.JAVA_GENERATION_PATH, CLASS_PACKAGE);
-        CommandExecutioner.compileCode(clazz.getClassPath(), true);
+        CommandExecutioner.compileCode(clazz.getClassPath(), ConfigurationConstants.isDev());
         CommandExecutioner.buildJar();
         //addClass(c, true, true);
         // save updated method in db

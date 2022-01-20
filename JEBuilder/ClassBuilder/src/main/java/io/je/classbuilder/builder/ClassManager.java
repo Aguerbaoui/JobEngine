@@ -120,7 +120,7 @@ public class ClassManager {
 		// Load the target class using its binary name
 		Class<?> loadedClass;
 		try {
-			loadedClass = JEClassLoader.getJeInstance()
+			loadedClass = JEClassLoader.getDataModelInstance()
 					.loadClass(ClassBuilderConfig.CLASS_PACKAGE + "." + classDefinition.getName());
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
