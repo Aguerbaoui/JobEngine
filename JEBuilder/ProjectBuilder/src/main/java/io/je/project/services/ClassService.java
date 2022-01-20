@@ -538,7 +538,8 @@ public class ClassService {
                 String filePath = uploadsDir + orgName;
                 File dest = new File(filePath);
                 if (dest.exists()) {
-                    throw new LibraryException(JEMessages.LIBRARY_EXISTS);
+                    FileUtilities.deleteFileFromPath(filePath);
+                    //throw new LibraryException(JEMessages.LIBRARY_EXISTS);
                 }
                 file.transferTo(dest);
                 JELogger.debug(JEMessages.UPLOADED_JAR_TO_PATH + dest,
@@ -551,6 +552,7 @@ public class ClassService {
                 jeLib.setJeObjectModifiedBy(libModel.getCreatedBy());
                 jeLib.setJeObjectCreationDate(Instant.now());
                 jeLib.setJobEngineElementID(libModel.getId());
+                jeLib.setFileType(FileType.JAR);
                 HashMap<String, String> payload = new HashMap<>();
                 payload.put("name", file.getOriginalFilename());
                 payload.put("path", dest.getAbsolutePath());
@@ -559,6 +561,7 @@ public class ClassService {
 
             }
         } catch (IOException e) {
+
             throw new LibraryException(JEMessages.ERROR_IMPORTING_FILE + ":"+e.getMessage());
         }
     }
@@ -584,7 +587,7 @@ public class ClassService {
         List<JELib> libraries = libraryRepository.findAll();
         List<LibModel> models = new ArrayList<>();
         for (JELib lib : libraries) {
-            if(lib.getFileType().equals(FileType.JAR))
+            if(lib.getFileType() != null && lib.getFileType().equals(FileType.JAR))
                 models.add(getLibModel(lib));
         }
         return models;

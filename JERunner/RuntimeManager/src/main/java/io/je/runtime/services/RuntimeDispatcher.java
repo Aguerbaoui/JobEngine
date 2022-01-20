@@ -259,10 +259,6 @@ public class RuntimeDispatcher {
 					c = JEClassLoader.getDataModelInstance()
 						.loadClassInDataModelClassLoader(ClassBuilderConfig.CLASS_PACKAGE + "." + classModel.getClassName());
 				}
-				else {
-					c = JEClassLoader.getJeInstance()
-					.loadClassInJobEngineClassLoader(ClassBuilderConfig.CLASS_PACKAGE + "." + classModel.getClassName());
-				}
 				ClassRepository.addClass(classModel.getClassId(), classModel.getClassName(), c);
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
