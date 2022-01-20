@@ -13,7 +13,7 @@ import java.util.HashMap;
 public class ProjectBuilderApplication {
 
     public static void main(String[] args)  {
-        SIOTHConfigUtility.init();
+        //SIOTHConfigUtility.init();
       
         SpringApplication app = new SpringApplication(ProjectBuilderApplication.class);
         app.setBannerMode(Banner.Mode.OFF);

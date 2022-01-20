@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Collections;
 
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.mongodb.config.AbstractMongoClientConfiguration;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
@@ -17,6 +18,7 @@ import utils.string.StringUtilities;
 
 @Configuration
 @EnableMongoRepositories(basePackages = "io.je.project.repository")
+@Lazy
 public class MongoConfig extends AbstractMongoClientConfiguration {
 
 

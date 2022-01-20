@@ -9,7 +9,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class SIOTHConfigUtility {
 
+	public static final String JSON = ".json";
 	private static SIOTHConfig siothConfig;
+
+	private static String siothId;
 
 	private SIOTHConfigUtility() {
 		
@@ -31,7 +34,7 @@ public class SIOTHConfigUtility {
 	}
 
 	private static String loadSIOTHConfig() {
-		String configPath = SIOTHConfigurationConstants.SIOTH_JSON_CONFIG;
+		String configPath = SIOTHConfigurationConstants.SIOTH_JSON_CONFIG + siothId + JSON;
 		try {
 			String file = configPath;
 			String json = new String(Files.readAllBytes(Paths.get(file)));
@@ -47,6 +50,9 @@ public class SIOTHConfigUtility {
 
 
 	public static SIOTHConfig getSiothConfig() {
+		if(siothConfig == null) {
+			init();
+		}
 		return siothConfig;
 	}
 
@@ -54,7 +60,8 @@ public class SIOTHConfigUtility {
 		SIOTHConfigUtility.siothConfig = siothConfig;
 	}
 
-	
-			
 
+	public static void setSiothId(String id) {
+		siothId = id;
+	}
 }
