@@ -1,5 +1,6 @@
 package io.je.Monitor.config;
 
+import io.siothconfig.SIOTHConfigUtility;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -24,10 +25,12 @@ public class JEMonitorInitializingBean  implements InitializingBean {
     public void afterPropertiesSet() throws Exception {
         try {
             JELogger.initLogger("JEMonitor", monitorProperties.getJeMonitorLogPath(), monitorProperties.getJeMonitorLogLevel());
+            ConfigurationConstants.setSIOTHID(monitorProperties.getSiothId());
+            SIOTHConfigUtility.setSiothId(monitorProperties.getSiothId());
             JELogger.control(JEMessages.LOGGER_INITIALIZED,
                     LogCategory.MONITOR, null,
                     LogSubModule.JEMONITOR, null);
-            ConfigurationConstants.setSIOTHID(monitorProperties.getSiothId());
+
             subscriber.initSubscriber();
         }
         catch (Exception e) {e.printStackTrace();}

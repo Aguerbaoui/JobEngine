@@ -34,7 +34,7 @@ public class ConfigurationConstants {
      */
 
 	 //path where .java files are generated : 
-/*    public 	static String JAVA_GENERATION_PATH = "D:\\myproject2" ;
+    public 	static String JAVA_GENERATION_PATH = "D:\\myproject2" ;
 	
     // path where builder loads classes 
     public static String BUILDER_CLASS_LOAD_PATH = System.getProperty("java.class.path").split(";")[0];
@@ -48,7 +48,7 @@ public class ConfigurationConstants {
 
     // path for imported libraries
     public static String EXTERNAL_LIB_PATH =  "D:\\myproject2\\";
-    */
+
     /*
      * Config for tomcat
      */
@@ -56,7 +56,7 @@ public class ConfigurationConstants {
 
 
 	//path where .java files are generated :
-    public static String JAVA_GENERATION_PATH = System.getProperty("catalina.base") + "\\webapps\\ProjectBuilder\\WEB-INF\\classes\\io\\je\\";
+   /* public static String JAVA_GENERATION_PATH = System.getProperty("catalina.base") + "\\webapps\\ProjectBuilder\\WEB-INF\\classes\\io\\je\\";
 
     // path for imported libraries
     public static String EXTERNAL_LIB_PATH = System.getProperty("catalina.base") + "\\webapps\\ProjectBuilder\\WEB-INF\\libraries\\";
@@ -69,7 +69,7 @@ public class ConfigurationConstants {
 
  	public static final String BPMN_PATH = System.getenv(ConfigurationConstants.SIOTH_ENVIRONMENT_VARIABLE)+ "\\JobEngine\\projects\\";
 
-    public static final String PROJECTS_PATH = System.getenv(ConfigurationConstants.SIOTH_ENVIRONMENT_VARIABLE)+ "\\JobEngine\\projects\\";
+    public static final String PROJECTS_PATH = System.getenv(ConfigurationConstants.SIOTH_ENVIRONMENT_VARIABLE)+ "\\JobEngine\\projects\\";*/
 
 
  
