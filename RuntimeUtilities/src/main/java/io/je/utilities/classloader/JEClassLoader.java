@@ -1,8 +1,10 @@
 package io.je.utilities.classloader;
 
+import io.je.utilities.config.ConfigurationConstants;
 import io.je.utilities.constants.ClassBuilderConfig;
 import io.je.utilities.instances.ClassRepository;
 import io.je.utilities.log.JELogger;
+import utils.files.FileUtilities;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
 
@@ -67,7 +69,7 @@ public class JEClassLoader extends ClassLoader {
     }
 
     public Class<?> loadClassInDataModelClassLoader(String className) throws ClassNotFoundException {
-        if (className.startsWith(ClassBuilderConfig.CLASS_PACKAGE + ".")
+        if (className.contains(ClassBuilderConfig.CLASS_PACKAGE + ".")
                 && !className.contains("Propagation")) {
             dataModelCustomClasses.add(className);
             try {
@@ -101,7 +103,7 @@ public class JEClassLoader extends ClassLoader {
      * @throws ClassNotFoundException
      */
     private Class<?> getClass(String name) throws ClassNotFoundException {
-        String file = JAVA_GENERATION_PATH + name.replace('.', File.separatorChar) + ".class";
+        String file = FileUtilities.getPathPrefix(JAVA_GENERATION_PATH) + name.replace('.', File.separatorChar) + ".class";
         byte[] byteArr = null;
         try {
             // This loads the byte code data from the file
@@ -153,5 +155,10 @@ public class JEClassLoader extends ClassLoader {
 	}
 
 
-    
+    public static String getJobEnginePackageName(String packageName) {
+        String imp = ConfigurationConstants.JAVA_GENERATION_PATH.replace(FileUtilities.getPathPrefix(ConfigurationConstants.JAVA_GENERATION_PATH), "");
+        imp = imp.replace("\\", ".");
+        imp =  imp + "." + packageName;
+        return imp.replace("..", ".");
+    }
 }

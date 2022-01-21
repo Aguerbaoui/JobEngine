@@ -253,7 +253,7 @@ public class ClassService {
 
             loadProcedures(jeClass);
             ClassDefinition c = getClassModel(jeClass);
-            String filePath = ClassBuilder.buildClass(c, ConfigurationConstants.JAVA_GENERATION_PATH, CLASS_PACKAGE);
+            String filePath = ClassBuilder.buildClass(c, ConfigurationConstants.JAVA_GENERATION_PATH, JEClassLoader.getJobEnginePackageName(CLASS_PACKAGE));
             c.setClassAuthor(ClassAuthor.PROCEDURE);
             jeClass.setClassPath(filePath);
             classRepository.save(jeClass);
@@ -424,7 +424,7 @@ public class ClassService {
     }
 
     public void compileCode(ClassDefinition c, String packageName) throws ClassLoadException, AddClassException, IOException, InterruptedException {
-        String filePath = ClassBuilder.buildClass(c, ConfigurationConstants.JAVA_GENERATION_PATH, packageName);
+        String filePath = ClassBuilder.buildClass(c, ConfigurationConstants.JAVA_GENERATION_PATH, JEClassLoader.getJobEnginePackageName(packageName));
         CommandExecutioner.compileCode(filePath, ConfigurationConstants.isDev());
     }
 
@@ -474,7 +474,7 @@ public class ClassService {
             ClassDefinition c = getClassModel(clazz);
             c.setImports(m.getImports());
             //addClass(c, true, true);
-            String filePath = ClassBuilder.buildClass(c, ConfigurationConstants.JAVA_GENERATION_PATH, CLASS_PACKAGE);
+            String filePath = ClassBuilder.buildClass(c, ConfigurationConstants.JAVA_GENERATION_PATH, JEClassLoader.getJobEnginePackageName(CLASS_PACKAGE));
             CommandExecutioner.compileCode(clazz.getClassPath(), ConfigurationConstants.isDev());
             CommandExecutioner.buildJar();
             classRepository.save(clazz);
@@ -691,7 +691,7 @@ public class ClassService {
         ClassDefinition c = getClassModel(clazz);
         c.setImports(m.getImports());
         // load new SIOTHProcedures in runner and in Db
-        String filePath = ClassBuilder.buildClass(c, ConfigurationConstants.JAVA_GENERATION_PATH, CLASS_PACKAGE);
+        String filePath = ClassBuilder.buildClass(c, ConfigurationConstants.JAVA_GENERATION_PATH, JEClassLoader.getJobEnginePackageName(CLASS_PACKAGE));
         CommandExecutioner.compileCode(clazz.getClassPath(), ConfigurationConstants.isDev());
         CommandExecutioner.buildJar();
         //addClass(c, true, true);

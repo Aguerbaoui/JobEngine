@@ -30,6 +30,7 @@ import io.je.utilities.exceptions.ClassLoadException;
 import io.je.utilities.log.JELogger;
 import io.je.utilities.models.LibModel;
 import io.siothconfig.SIOTHConfigUtility;
+import utils.files.FileUtilities;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
 import utils.zmq.ZMQPublisher;
@@ -113,16 +114,16 @@ public class ClassManager {
 		}
 
 		// create .java
-		String filePath = ClassBuilder.buildClass(classDefinition, generationPath, packageName);
+		String filePath = ClassBuilder.buildClass(classDefinition, generationPath, JEClassLoader.getJobEnginePackageName(packageName));
 
 		// load .java -> .class
-		JEClassCompiler.compileClass(filePath, generationPath);
+		JEClassCompiler.compileClass(filePath, FileUtilities.getPathPrefix(generationPath));
 		// Load the target class using its binary name
 		Class<?> loadedClass;
 		try {
 			JEClassLoader.overrideDataModelInstance();
 			loadedClass = JEClassLoader.getDataModelInstance()
-					.loadClassInDataModelClassLoader(ClassBuilderConfig.CLASS_PACKAGE + "." + classDefinition.getName());
+					.loadClassInDataModelClassLoader(JEClassLoader.getJobEnginePackageName(ClassBuilderConfig.CLASS_PACKAGE) + "." + classDefinition.getName());
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 			throw new ClassLoadException(
