@@ -128,9 +128,6 @@ public class ClassService {
      */
     public void addClass(ClassDefinition classDefinition, boolean sendToRunner, boolean reloadClassDefinition)
             throws AddClassException, ClassLoadException {
-        if (reloadClassDefinition) {
-            JEClassLoader.overrideJeInstance();
-        }
         List<JEClass> builtClasses = ClassManager.buildClass(classDefinition, CLASS_PACKAGE);
         for (JEClass _class : builtClasses) {
             if (sendToRunner) {
@@ -496,7 +493,7 @@ public class ClassService {
     private JEClass getNewJEProcedureClass() {
         JEClass c = new JEClass(null, WorkflowConstants.JEPROCEDURES,
                 WorkflowConstants.JEPROCEDURES,
-                ConfigurationConstants.BUILDER_CLASS_LOAD_PATH, ClassType.CLASS);
+                ConfigurationConstants.JAVA_GENERATION_PATH, ClassType.CLASS);
         c.setClassAuthor(ClassAuthor.PROCEDURE);
         return c;
     }

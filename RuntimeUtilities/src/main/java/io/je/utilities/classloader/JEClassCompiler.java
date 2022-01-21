@@ -28,11 +28,6 @@ import utils.log.LogSubModule;
  */
 public class JEClassCompiler {
 
-	static String loadPath =  ConfigurationConstants.RUNNER_CLASS_LOAD_PATH;
-	static String generationPath = ConfigurationConstants.JAVA_GENERATION_PATH;
-
-	
-	
 	/*
 	 * generate .class file from an input file located at filePath in the loadPath
 	 */
@@ -40,8 +35,6 @@ public class JEClassCompiler {
 		//ClassLoadException exception = null;
 		String message = "";
 		try {
-			JELogger.debug("loadPath = " + loadPath, LogCategory.RUNTIME,
-					null, LogSubModule.JERUNNER, null);
 			JELogger.debug("Filepath = "+ filePath, LogCategory.RUNTIME,
 					null, LogSubModule.JERUNNER, null);
 			File sourceFile = new File(filePath);
@@ -66,7 +59,7 @@ public class JEClassCompiler {
 
 				// slash issue Widnows Vs JAVA/Linux to be reviewed with the deployment environment
 				options.add(sb.toString().replace("/", "\\"));
-				System.out.println("Classpath = \n" + sb.toString());
+				//System.out.println("Classpath = \n" + sb.toString());
 			}
 
 			/*options.add("D:\\apache-tomcat-9.0.41\\webapps\\ProjectBuilder\\WEB-INF\\lib\\RuntimeUtilities-0.0.1.jar;D:\\apache-tomcat-9.0.41\\webapps\\ProjectBuilder\\WEB-INF\\lib\\jackson-databind-2.11.3.jar" +

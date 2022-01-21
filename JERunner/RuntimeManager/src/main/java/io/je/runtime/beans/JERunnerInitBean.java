@@ -23,14 +23,13 @@ public class JERunnerInitBean implements InitializingBean {
     @Override
     public void afterPropertiesSet() throws Exception {
         try {
-            ConfigurationConstants.setSIOTHID(runnerProperties.getSiothId());
+            ConfigurationConstants.initConstants(runnerProperties.getSiothId(), runnerProperties.isDev());
             SIOTHConfigUtility.setSiothId(runnerProperties.getSiothId());
             ZMQSecurity.setSecure(runnerProperties.getUseZmqSecurity());
             JELogger.initLogger("JERunner", runnerProperties.getJeRunnerLogPath(),runnerProperties.getJeRunnerLogLevel());
             JELogger.control(JEMessages.LOGGER_INITIALIZED,
                     LogCategory.DESIGN_MODE, null,
                     LogSubModule.JERUNNER, null);
-            ConfigurationConstants.setDev(runnerProperties.isDev());
             JEMonitor.setPort(runnerProperties.getMonitoringPort());
             System.setProperty("drools.dateformat", ConfigurationConstants.DROOLS_DATE_FORMAT);
             

@@ -252,7 +252,7 @@ public class RuntimeDispatcher {
 	// add class
 	public void addClass(ClassModel classModel) throws ClassLoadException {
 		JELogger.debug(JEMessages.ADDING_CLASS+": "+classModel.getClassName(), LogCategory.RUNTIME, null, LogSubModule.CLASS, null);
-			JEClassCompiler.compileClass(classModel.getClassPath(), ConfigurationConstants.RUNNER_CLASS_LOAD_PATH);
+			JEClassCompiler.compileClass(classModel.getClassPath(), ConfigurationConstants.JAVA_GENERATION_PATH);
 			try {
 				Class<?> c = null;
 				if(classModel.getClassAuthor().equals(ClassAuthor.DATA_MODEL)) {
@@ -273,10 +273,6 @@ public class RuntimeDispatcher {
 		if(classModel.getClassAuthor().equals(ClassAuthor.DATA_MODEL)) {
 			JEClassLoader.overrideDataModelInstance(ClassBuilderConfig.CLASS_PACKAGE + "." + classModel.getClassName());
 			RuleEngineHandler.reloadContainers();
-		}
-		
-		else {
-			JEClassLoader.overrideJeInstance(ClassBuilderConfig.CLASS_PACKAGE + "." + classModel.getClassName());
 		}
 		addClass(classModel);
 		

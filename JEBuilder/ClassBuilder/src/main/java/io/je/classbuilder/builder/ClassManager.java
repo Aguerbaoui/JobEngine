@@ -51,7 +51,7 @@ public class ClassManager {
 	// name
 	static Map<String, String> classNames = new ConcurrentHashMap<>(); // key = name, value = classid
 	//static ClassLoader classLoader =   //ClassManager.class.getClassLoader();
-	static String loadPath = ConfigurationConstants.BUILDER_CLASS_LOAD_PATH;
+	//static String loadPath = ConfigurationConstants.JAVA_GENERATION_PATH;
 	static String generationPath = ConfigurationConstants.JAVA_GENERATION_PATH;
 
 	/*
@@ -116,12 +116,13 @@ public class ClassManager {
 		String filePath = ClassBuilder.buildClass(classDefinition, generationPath, packageName);
 
 		// load .java -> .class
-		JEClassCompiler.compileClass(filePath, loadPath);
+		JEClassCompiler.compileClass(filePath, generationPath);
 		// Load the target class using its binary name
 		Class<?> loadedClass;
 		try {
+			JEClassLoader.overrideDataModelInstance();
 			loadedClass = JEClassLoader.getDataModelInstance()
-					.loadClass(ClassBuilderConfig.CLASS_PACKAGE + "." + classDefinition.getName());
+					.loadClassInDataModelClassLoader(ClassBuilderConfig.CLASS_PACKAGE + "." + classDefinition.getName());
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 			throw new ClassLoadException(
