@@ -11,6 +11,7 @@ import io.je.utilities.constants.JEMessages;
 import io.je.utilities.log.JELogger;
 import io.je.utilities.monitoring.JEMonitor;
 
+import io.siothconfig.SIOTHConfigUtility;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -27,7 +28,8 @@ public class JEBuilderInitializingBean implements InitializingBean {
     @Lazy
     ProjectService projectService;
 	
-	@Autowired 
+	@Autowired
+    @Lazy
 	ConfigurationService configService;
 	
 	@Autowired
@@ -36,12 +38,11 @@ public class JEBuilderInitializingBean implements InitializingBean {
     @Override
     public void afterPropertiesSet() {
         try {
+            ConfigurationConstants.setSIOTHID(builderProperties.getSiothId());
+            SIOTHConfigUtility.setSiothId(builderProperties.getSiothId());
             JELogger.initLogger("JEBuilder", builderProperties.getJeBuilderLogPath(),builderProperties.getJeBuilderLogLevel());
-            JELogger.control(JEMessages.LOGGER_INITIALIZED,
-                    LogCategory.DESIGN_MODE, null,
-                    LogSubModule.JEBUILDER, null);
+
             AuthenticationInterceptor.init(builderProperties.getIssuer());
-           
             LicenseProperties.init();
            // JEMonitor.setPort(builderProperties.getMonitoringPort());
         	/*while(!LicenseProperties.licenseIsActive())
@@ -58,11 +59,13 @@ public class JEBuilderInitializingBean implements InitializingBean {
     			}
         	}*/
         	
-            ConfigurationConstants.setSIOTHID(builderProperties.getSiothId());
             ConfigurationConstants.setDev(builderProperties.isDev());
             JEMonitor.setPort(builderProperties.getMonitoringPort());
             ZMQSecurity.setSecure(builderProperties.getUseZmqSecurity());
 			configService.init();
+            JELogger.control(JEMessages.LOGGER_INITIALIZED,
+                    LogCategory.DESIGN_MODE, null,
+                    LogSubModule.JEBUILDER, null);
             JELogger.control(JEMessages.BUILDER_STARTED,  LogCategory.DESIGN_MODE,
                     null, LogSubModule.JEBUILDER, null);
 

@@ -9,29 +9,32 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class SIOTHConfigUtility {
 
-	private static SIOTHConfig siothConfig = null;
+	public static final String JSON = ".json";
+	private static SIOTHConfig siothConfig;
+
+	private static String siothId;
 
 	private SIOTHConfigUtility() {
 		
 	}
 
 	public static void init() {
-
-			ObjectMapper objectMapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-			String jsonString = loadSIOTHConfig();
-			if (jsonString != null) {
-				try {
-					siothConfig = objectMapper.readValue(jsonString, SIOTHConfig.class);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+		ObjectMapper objectMapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+		String jsonString = loadSIOTHConfig();
+		if (jsonString != null) {
+			try {
+				siothConfig =  objectMapper.readValue(jsonString, SIOTHConfig.class);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 
+
+		}
 	}
 
 	private static String loadSIOTHConfig() {
-		String configPath = SIOTHConfigurationConstants.SIOTH_JSON_CONFIG;
+		String configPath = SIOTHConfigurationConstants.SIOTH_JSON_CONFIG + siothId + JSON;
 		try {
 			String file = configPath;
 			String json = new String(Files.readAllBytes(Paths.get(file)));
@@ -47,7 +50,9 @@ public class SIOTHConfigUtility {
 
 
 	public static SIOTHConfig getSiothConfig() {
-		if(siothConfig == null) {init();}
+		if(siothConfig == null) {
+			init();
+		}
 		return siothConfig;
 	}
 
@@ -55,7 +60,8 @@ public class SIOTHConfigUtility {
 		SIOTHConfigUtility.siothConfig = siothConfig;
 	}
 
-	
-			
 
+	public static void setSiothId(String id) {
+		siothId = id;
+	}
 }
