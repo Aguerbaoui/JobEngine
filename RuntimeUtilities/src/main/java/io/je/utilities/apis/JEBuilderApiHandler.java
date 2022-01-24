@@ -2,6 +2,7 @@ package io.je.utilities.apis;
 
 import com.squareup.okhttp.Response;
 import io.je.utilities.beans.JEResponse;
+import io.je.utilities.config.JEConfiguration;
 import io.je.utilities.constants.APIConstants;
 import io.je.utilities.exceptions.JERunnerErrorException;
 import io.je.utilities.models.LibModel;
@@ -97,14 +98,14 @@ public class JEBuilderApiHandler {
 	}
 
 	public static JEResponse informUser(Object body) throws JERunnerErrorException {
-		String requestUrl = SIOTHConfigUtility.getSiothConfig().getJobEngine().getJeBuilder() + INFORM_USER;
+		String requestUrl = JEConfiguration.getProjectBuilderUrl() + INFORM_USER;
 		//System.out.println(requestUrl);
 		return sendRequestWithBody(requestUrl, body);
 	}
 
 
 	public static JEResponse sendLogMessage(Object body) throws JERunnerErrorException {
-		String requestUrl = SIOTHConfigUtility.getSiothConfig().getJobEngine().getJeBuilder() + SEND_LOG;
+		String requestUrl = JEConfiguration.getProjectBuilderUrl() + SEND_LOG;
 		//System.out.println(requestUrl);
 		return sendRequestWithBody(requestUrl, body);
 	}

@@ -59,6 +59,7 @@ import io.je.utilities.models.VariableModel;
 import io.je.utilities.models.WorkflowModel;
 import io.je.utilities.ruleutils.OperationStatusDetails;
 import io.je.utilities.runtimeobject.JEObject;
+import utils.files.FileUtilities;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
 
@@ -252,12 +253,13 @@ public class RuntimeDispatcher {
 	// add class
 	public void addClass(ClassModel classModel) throws ClassLoadException {
 		JELogger.debug(JEMessages.ADDING_CLASS+": "+classModel.getClassName(), LogCategory.RUNTIME, null, LogSubModule.CLASS, null);
-			JEClassCompiler.compileClass(classModel.getClassPath(), ConfigurationConstants.RUNNER_CLASS_LOAD_PATH);
+			JEClassCompiler.compileClass(classModel.getClassPath(), FileUtilities.getPathPrefix(ConfigurationConstants.JAVA_GENERATION_PATH));
 			try {
 				Class<?> c = null;
 				if(classModel.getClassAuthor().equals(ClassAuthor.DATA_MODEL)) {
+					JEClassLoader.overrideDataModelInstance();
 					c = JEClassLoader.getDataModelInstance()
-						.loadClassInDataModelClassLoader(ClassBuilderConfig.CLASS_PACKAGE + "." + classModel.getClassName());
+						.loadClassInDataModelClassLoader(JEClassLoader.getJobEnginePackageName(ClassBuilderConfig.CLASS_PACKAGE) + "." + classModel.getClassName());
 				}
 				ClassRepository.addClass(classModel.getClassId(), classModel.getClassName(), c);
 			} catch (ClassNotFoundException e) {
@@ -273,10 +275,6 @@ public class RuntimeDispatcher {
 		if(classModel.getClassAuthor().equals(ClassAuthor.DATA_MODEL)) {
 			JEClassLoader.overrideDataModelInstance(ClassBuilderConfig.CLASS_PACKAGE + "." + classModel.getClassName());
 			RuleEngineHandler.reloadContainers();
-		}
-		
-		else {
-			JEClassLoader.overrideJeInstance(ClassBuilderConfig.CLASS_PACKAGE + "." + classModel.getClassName());
 		}
 		addClass(classModel);
 		

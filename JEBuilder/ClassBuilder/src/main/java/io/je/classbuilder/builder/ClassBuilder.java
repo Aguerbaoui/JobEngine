@@ -6,6 +6,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.je.utilities.beans.ClassAuthor;
+import io.je.utilities.config.ConfigurationConstants;
 import org.burningwave.core.assembler.ComponentContainer;
 import org.burningwave.core.assembler.ComponentSupplier;
 import org.burningwave.core.classes.AnnotationSourceGenerator;
@@ -20,15 +22,20 @@ import io.je.utilities.beans.ClassType;
 import io.je.classbuilder.models.ClassDefinition;
 import io.je.classbuilder.models.FieldModel;
 import io.je.classbuilder.models.MethodModel;
-import io.je.utilities.constants.ClassBuilderConfig;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.AddClassException;
 import io.je.utilities.exceptions.ClassLoadException;
 import io.je.utilities.log.JELogger;
 import io.je.utilities.runtimeobject.JEObject;
+import utils.files.FileUtilities;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
 import utils.string.StringUtilities;
+
+import static io.je.utilities.constants.ClassBuilderConfig.CLASS_PACKAGE;
+import static io.je.utilities.constants.ClassBuilderConfig.SCRIPTS_PACKAGE;
+import static utils.files.FileUtilities.getPathWithSeparator;
+import static utils.files.FileUtilities.getSeparator;
 
 /*
  * build class from class definition
@@ -72,7 +79,7 @@ public class ClassBuilder {
 	}
 
 	/* add imports */
-	private static void addImports(List<String> imports, UnitSourceGenerator unitSG ) {
+	private static void addImports(List<String> imports, UnitSourceGenerator unitSG, ClassAuthor classAuthor) {
 		//TODO : remove harcoded imports
 		unitSG.addImport("com.fasterxml.jackson.annotation.JsonProperty");
 		unitSG.addImport("com.fasterxml.jackson.annotation.JsonFormat");
@@ -84,12 +91,13 @@ public class ClassBuilder {
 		unitSG.addImport("io.je.utilities.execution.*");
 		unitSG.addImport("java.lang.*");
 		unitSG.addImport("java.util.*");
-		unitSG.addImport("jeclasses.*");
-		//unitSG.addImport("JobEngine.jeclasses.*");
 		unitSG.addImport("java.sql.*");
 		unitSG.addImport("javax.sql.*");
 		unitSG.addImport("io.je.utilities.execution.*");
 		unitSG.addImport("io.je.utilities.models.*");
+		if(!classAuthor.equals(ClassAuthor.DATA_MODEL)) {
+			unitSG.addImport(getJobEngineCustomImport());
+		}
 		//TODO: add job engine api 
 		if (imports != null && !imports.isEmpty()) {
 			
@@ -102,15 +110,21 @@ public class ClassBuilder {
 			}
 			
 	}
-		
+
+	public static String getJobEngineCustomImport() {
+		String imp = ConfigurationConstants.JAVA_GENERATION_PATH.replace(FileUtilities.getPathPrefix(ConfigurationConstants.JAVA_GENERATION_PATH), "");
+		imp = imp.replace("\\", ".");
+		imp =  imp + "." + CLASS_PACKAGE;
+		return imp.replace("..", ".") + ".*";
+	}
 
 	/*
 	 * generate an interface
 	 */
 	private static String generateInterface(ClassDefinition classDefinition, String generationPath) throws ClassLoadException {
-		 UnitSourceGenerator unitSG = UnitSourceGenerator.create(ClassBuilderConfig.CLASS_PACKAGE);
+		 UnitSourceGenerator unitSG = UnitSourceGenerator.create(CLASS_PACKAGE);
 			//add imports
-			addImports(classDefinition.getImports(),unitSG);
+			addImports(classDefinition.getImports(),unitSG, classDefinition.getClassAuthor());
 		// class name
 		String interfaceName = classDefinition.getName();
 		TypeDeclarationSourceGenerator type = TypeDeclarationSourceGenerator.create(interfaceName);
@@ -153,7 +167,7 @@ public class ClassBuilder {
 		
 		// store class
 				unitSG.addClass(newInterface);
-				String filePath= generationPath + "\\" + ClassBuilderConfig.CLASS_PACKAGE + "\\" + classDefinition.getName() +".java" ;
+				String filePath= generationPath + "\\" + CLASS_PACKAGE + "\\" + classDefinition.getName() +".java" ;
 				File file = new File(generationPath);
 				file.delete();
 				unitSG.storeToClassPath(generationPath);
@@ -172,7 +186,7 @@ public class ClassBuilder {
 	private static String generateClass(ClassDefinition classDefinition, String generationPath, String packageName) throws ClassLoadException {
 		 UnitSourceGenerator unitSG = UnitSourceGenerator.create(packageName);
 			//add imports
-			addImports(classDefinition.getImports(),unitSG);
+			addImports(classDefinition.getImports(),unitSG, classDefinition.getClassAuthor());
 			
 
 		// class name
@@ -308,10 +322,11 @@ public class ClassBuilder {
 		ClassFactory.ClassRetriever classRetriever = classFactory.loadOrBuildAndDefine(
 				unitSG
 		);
-		String filePath= generationPath + packageName + "\\" + className +".java" ;
+		String targetFolder = packageName.contains(CLASS_PACKAGE) ? CLASS_PACKAGE : SCRIPTS_PACKAGE;
+		String filePath= getPathWithSeparator(generationPath) + getSeparator() +  targetFolder + getSeparator() + className +".java" ;
 		File file = new File(generationPath);
 		file.delete();
-		unitSG.storeToClassPath(generationPath);
+		unitSG.storeToClassPath(FileUtilities.getPathPrefix(generationPath));
 
 		return filePath;
 		

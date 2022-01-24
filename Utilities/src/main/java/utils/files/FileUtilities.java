@@ -82,4 +82,21 @@ public class FileUtilities {
 	public String getExtension(String filename) {
 		return FilenameUtils.getExtension(filename);
 	}
+
+	public static String getPathPrefix(String path) {
+		//D:\jobengine\
+		return FilenameUtils.getPrefix(path);
+
+	}
+
+	public static String getPathWithSeparator(String path) {
+		return FilenameUtils.getFullPathNoEndSeparator(path);
+	}
+
+	public static String getSeparator() {
+		return "\\";
+	}
+	public static void main(String... args) {
+		//System.out.println(getPathWithSeparator("D:\\jobengine\\"));
+	}
 }
