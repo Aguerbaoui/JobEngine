@@ -154,7 +154,7 @@ public class ClassService {
             throws ClassLoadException, AddClassException {
         ClassDefinition classDefinition = ClassManager.loadClassDefinition(workspaceId, classId);
 
-        if (!loadedClasses.containsKey(classId) && classDefinition != null) {
+        if (classDefinition != null) {
             classDefinition.setWorkspaceId(workspaceId);
             addClass(classDefinition, sendToRunner, false);
             JELogger.info("Class " + classDefinition.getName() + " loaded successfully.", null, null, null,

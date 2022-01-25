@@ -32,6 +32,7 @@ import utils.log.LogCategory;
 import utils.log.LogSubModule;
 import utils.string.StringUtilities;
 
+import static io.je.utilities.config.ConfigurationConstants.getJobEngineCustomImport;
 import static io.je.utilities.constants.ClassBuilderConfig.CLASS_PACKAGE;
 import static io.je.utilities.constants.ClassBuilderConfig.SCRIPTS_PACKAGE;
 import static utils.files.FileUtilities.getPathWithSeparator;
@@ -111,12 +112,7 @@ public class ClassBuilder {
 			
 	}
 
-	public static String getJobEngineCustomImport() {
-		String imp = ConfigurationConstants.JAVA_GENERATION_PATH.replace(FileUtilities.getPathPrefix(ConfigurationConstants.JAVA_GENERATION_PATH), "");
-		imp = imp.replace("\\", ".");
-		imp =  imp + "." + CLASS_PACKAGE;
-		return imp.replace("..", ".") + ".*";
-	}
+
 
 	/*
 	 * generate an interface

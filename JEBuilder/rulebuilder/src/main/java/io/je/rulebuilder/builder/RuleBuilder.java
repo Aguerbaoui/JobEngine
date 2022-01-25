@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.text.StringSubstitutor;
 import org.drools.template.ObjectDataCompiler;
 
 import io.je.rulebuilder.components.JERule;
@@ -182,6 +183,7 @@ public class RuleBuilder {
 
         // set rule attributes
         Map<String, String> ruleTemplateAttributes = new HashMap<>();
+        ruleTemplateAttributes.put("customImport", ConfigurationConstants.getJobEngineCustomImport());
         ruleTemplateAttributes.put("ruleName", ruleId);
         ruleTemplateAttributes.put("salience", ruleParameters.getSalience());
         ruleTemplateAttributes.put("cronExpression", ruleParameters.getTimer());
@@ -206,7 +208,9 @@ public class RuleBuilder {
         } catch (Exception e) {
             throw new RuleBuildFailedException(JEMessages.RULE_BUILD_FAILED + e.getMessage());
         }
-        return ruleContent;
+
+        String content = StringSubstitutor.replace(ruleContent, ruleTemplateAttributes);
+        return content;
 
     }
 

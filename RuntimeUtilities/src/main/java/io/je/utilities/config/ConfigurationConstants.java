@@ -1,6 +1,9 @@
 package io.je.utilities.config;
 
 import org.apache.commons.io.FilenameUtils;
+import utils.files.FileUtilities;
+
+import static io.je.utilities.constants.ClassBuilderConfig.CLASS_PACKAGE;
 
 public class ConfigurationConstants {
 
@@ -47,7 +50,12 @@ public class ConfigurationConstants {
         return dev;
     }
 
-    
+    public static String getJobEngineCustomImport() {
+        String imp = ConfigurationConstants.JAVA_GENERATION_PATH.replace(FileUtilities.getPathPrefix(ConfigurationConstants.JAVA_GENERATION_PATH), "");
+        imp = imp.replace("\\", ".");
+        imp =  imp + "." + CLASS_PACKAGE;
+        return imp.replace("..", ".") + ".*";
+    }
     
 
     
