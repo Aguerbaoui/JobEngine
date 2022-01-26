@@ -25,7 +25,7 @@ public class SIOTHPorts {
 	@JsonProperty("TrackingPort")
 	public int trackingPort;
 	
-	@JsonProperty("JE-ResponsePort")
+	@JsonProperty("JE_ResponsePort")
 	public int jeResponsePort;
 
 	
