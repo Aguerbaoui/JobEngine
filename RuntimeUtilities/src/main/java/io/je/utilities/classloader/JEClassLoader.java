@@ -7,6 +7,7 @@ import io.je.utilities.log.JELogger;
 import utils.files.FileUtilities;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
+import utils.string.StringUtilities;
 
 import java.io.*;
 import java.util.Arrays;
@@ -158,7 +159,14 @@ public class JEClassLoader extends ClassLoader {
     public static String getJobEnginePackageName(String packageName) {
         String imp = ConfigurationConstants.JAVA_GENERATION_PATH.replace(FileUtilities.getPathPrefix(ConfigurationConstants.JAVA_GENERATION_PATH), "");
         imp = imp.replace("\\", ".");
-        imp =  imp + "." + packageName;
+        imp = imp.replace("//", ".");
+        imp = imp.replace("/", ".");
+        if(StringUtilities.isEmpty(imp)) {
+            imp = packageName;
+        }
+        else {
+            imp = imp + "." + packageName;
+        }
         return imp.replace("..", ".");
     }
 }
