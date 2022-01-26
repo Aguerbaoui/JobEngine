@@ -25,6 +25,10 @@ public class SIOTHPorts {
 	@JsonProperty("TrackingPort")
 	public int trackingPort;
 	
+	@JsonProperty("JE-ResponsePort")
+	public int jeResponsePort;
+
+	
 	private SIOTHPorts() {
 		// TODO Auto-generated constructor stub
 	}
@@ -69,6 +73,12 @@ public class SIOTHPorts {
 	}
 	public void setTrackingPort(int trackingPort) {
 		this.trackingPort = trackingPort;
+	}
+	public int getJeResponsePort() {
+		return jeResponsePort;
+	}
+	public void setJeResponsePort(int jeResponsePort) {
+		this.jeResponsePort = jeResponsePort;
 	}
 
 

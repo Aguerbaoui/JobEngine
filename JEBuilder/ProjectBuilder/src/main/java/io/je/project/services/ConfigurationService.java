@@ -6,12 +6,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import io.je.project.exception.JEExceptionHandler;
+import io.je.project.listener.ProjectZMQResponser;
 import io.je.utilities.apis.JERunnerAPIHandler;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.log.JELogger;
 import io.siothconfig.SIOTHConfigUtility;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
+import utils.zmq.ZMQBind;
 
 /*
  * class responsible for application configuration
@@ -23,6 +25,9 @@ public class ConfigurationService {
 
 	@Autowired
 	ProjectService projectService;
+	
+	@Autowired
+	ProjectZMQResponser responser;
 
 	@Autowired
 	ClassService classService;
@@ -52,7 +57,17 @@ public class ConfigurationService {
 	}
 
 
+	public void initResponser() {
+		try {
+			 responser.init("tcp://"+SIOTHConfigUtility.getSiothConfig().getNodes().getSiothMasterNode(), SIOTHConfigUtility.getSiothConfig().getPorts().getJeResponsePort(),ZMQBind.BIND);
+			responser.setListening(true);
+			responser.run();
+		}catch (Exception e) {
+			JELogger.error("Failed start ZMQ Responser "+JEExceptionHandler.getExceptionMessage(e), null, null, LogSubModule.JEBUILDER, null);
 
+		}
+		
+	}
 
 
 
