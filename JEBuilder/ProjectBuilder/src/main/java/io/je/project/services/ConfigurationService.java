@@ -61,7 +61,8 @@ public class ConfigurationService {
 		try {
 			 responser.init("tcp://"+SIOTHConfigUtility.getSiothConfig().getNodes().getSiothMasterNode(), SIOTHConfigUtility.getSiothConfig().getPorts().getJeResponsePort(),ZMQBind.BIND);
 			responser.setListening(true);
-			responser.run();
+			Thread listener = new Thread(responser);
+			listener.start();
 		}catch (Exception e) {
 			JELogger.error("Failed start ZMQ Responser "+JEExceptionHandler.getExceptionMessage(e), null, null, LogSubModule.JEBUILDER, null);
 
