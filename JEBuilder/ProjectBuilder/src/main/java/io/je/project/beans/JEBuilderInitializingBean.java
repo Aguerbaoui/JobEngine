@@ -67,6 +67,7 @@ public class JEBuilderInitializingBean implements InitializingBean {
                     LogSubModule.JEBUILDER, null);
             JELogger.control(JEMessages.BUILDER_STARTED,  LogCategory.DESIGN_MODE,
                     null, LogSubModule.JEBUILDER, null);
+            configService.initResponser();
 
         } catch (  Exception   e) {
             JELogger.error(JEMessages.UNEXPECTED_ERROR , LogCategory.DESIGN_MODE, null,

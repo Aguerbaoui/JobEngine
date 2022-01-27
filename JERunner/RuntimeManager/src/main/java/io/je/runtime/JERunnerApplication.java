@@ -12,6 +12,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.util.Collections;
+import java.util.HashMap;
 
 import javax.annotation.PreDestroy;
 
@@ -24,8 +25,10 @@ public class JERunnerApplication {
     	//System.setProperty("drools.dateformat", SIOTHConfigUtility.getSiothConfig().getDateFormat());
         SpringApplication app = new SpringApplication(JERunnerApplication.class);
         app.setBannerMode(Banner.Mode.OFF);
-        app.setDefaultProperties(Collections
-                .singletonMap("server.port", "8081"));
+        HashMap<String, Object> properties = new HashMap<>();
+        properties.put("server.port", "13021");
+        properties.put("server.servlet.context-path", "/RuntimeManager");
+        app.setDefaultProperties(properties);
         app.run(args);
         JELogger.debug(JEMessages.RUNNER_STARTED,  LogCategory.RUNTIME,
                 null, LogSubModule.JERUNNER, null);

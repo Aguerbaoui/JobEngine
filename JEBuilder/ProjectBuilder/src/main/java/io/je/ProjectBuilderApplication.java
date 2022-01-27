@@ -18,11 +18,8 @@ public class ProjectBuilderApplication {
         SpringApplication app = new SpringApplication(ProjectBuilderApplication.class);
         app.setBannerMode(Banner.Mode.OFF);
         HashMap<String, Object> properties = new HashMap<>();
-        properties.put("server.port", "8080");
-       // properties.put("spring.servlet.multipart.max-file-size", "100MB");
-        //properties.put("spring.servlet.multipart.max-request-size", "100MB");
-        /*app.setDefaultProperties(Collections
-                .singletonMap("server.port", "8080"));*/
+        properties.put("server.port", "13020");
+        properties.put("server.servlet.context-path", "/ProjectBuilder");
         app.setDefaultProperties(properties);
         app.run(args);
        
