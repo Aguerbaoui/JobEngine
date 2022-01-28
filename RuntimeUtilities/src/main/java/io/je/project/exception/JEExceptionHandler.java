@@ -81,5 +81,67 @@ public class JEExceptionHandler {
 		}
 
 	}
+	
+	public static String getExceptionMessage(Exception e) {
+		e.printStackTrace();
+		if (e instanceof DataAccessResourceFailureException || e instanceof MongoTimeoutException || e.getCause() instanceof DataAccessResourceFailureException
+		 || e.getCause() instanceof MongoTimeoutException) {
+			JELogger.error(JEMessages.UKNOWN_ERROR + Arrays.toString(e.getStackTrace()), LogCategory.RUNTIME, null,
+					LogSubModule.JEBUILDER, null);
+
+			return JEMessages.DATABASE_IS_DOWN;
+		}
+
+		else if (e instanceof JEException) {
+			JEException ex = (JEException) e;
+			JELogger.error(e.getMessage(), LogCategory.RUNTIME, null,
+					LogSubModule.JEBUILDER, null);
+			return ex.getMessage();
+//return ResponseEntity.badRequest().body(new JEResponse(ex.getCode(), ex.getMessage()));
+		}
+
+		else if (e instanceof ExecutionException) {
+			try {
+				JEException ex = (JEException) e.getCause();
+				JELogger.error(JEMessages.UKNOWN_ERROR + Arrays.toString(ex.getStackTrace()), LogCategory.RUNTIME, null,
+						LogSubModule.JEBUILDER, null);
+				return ex.getMessage();
+			} catch (Exception e1) {
+				return e.getMessage();
+
+			}
+			
+				}
+		else if ( e instanceof CompletionException) {
+			try {
+				JEException ex = (JEException) e.getCause().getCause();
+				if(ex==null)
+				{
+					ex = (JEException) e.getCause();
+				}
+				JELogger.error(JEMessages.UKNOWN_ERROR + Arrays.toString(ex.getStackTrace()), LogCategory.RUNTIME, null,
+						LogSubModule.JEBUILDER, null);
+
+				return ex.getMessage();
+				} catch (Exception e1) {
+					return e.getMessage();
+			}
+
+		} else if (e instanceof IOException) {
+			JELogger.error(JEMessages.UKNOWN_ERROR + Arrays.toString(e.getStackTrace()), LogCategory.RUNTIME, null,
+					LogSubModule.JEBUILDER, null);
+
+			return JEMessages.UKNOWN_ERROR;
+		}
+
+		else {
+			JELogger.error(JEMessages.UKNOWN_ERROR + Arrays.toString(e.getStackTrace()), LogCategory.RUNTIME, null,
+					LogSubModule.JEBUILDER, null);
+
+			return JEMessages.UKNOWN_ERROR;
+		}
+
+	}
+	
 
 }
