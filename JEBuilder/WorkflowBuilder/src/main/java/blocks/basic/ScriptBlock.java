@@ -15,7 +15,7 @@ public class ScriptBlock extends WorkflowBlock {
     String scriptPath;
 
     public String getScript() {
-        return script;
+        return script + "JobEngine.endJob();";
     }
 
     public int getTimeout() {
