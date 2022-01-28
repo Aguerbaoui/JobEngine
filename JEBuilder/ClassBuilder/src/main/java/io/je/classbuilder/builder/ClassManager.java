@@ -123,7 +123,7 @@ public class ClassManager {
 		try {
 			JEClassLoader.overrideDataModelInstance();
 			loadedClass = JEClassLoader.getDataModelInstance()
-					.loadClassInDataModelClassLoader(JEClassLoader.getJobEnginePackageName(ClassBuilderConfig.CLASS_PACKAGE) + "." + classDefinition.getName());
+					.loadClass(JEClassLoader.getJobEnginePackageName(ClassBuilderConfig.CLASS_PACKAGE) + "." + classDefinition.getName());
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 			throw new ClassLoadException(
