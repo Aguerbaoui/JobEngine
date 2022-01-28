@@ -41,7 +41,7 @@ public class JEBuilderInitializingBean implements InitializingBean {
             ConfigurationConstants.initConstants(builderProperties.getSiothId(), builderProperties.isDev());
             SIOTHConfigUtility.setSiothId(builderProperties.getSiothId());
             JELogger.initLogger("JEBuilder", builderProperties.getJeBuilderLogPath(),builderProperties.getJeBuilderLogLevel());
-
+            ConfigurationConstants.setJavaGenerationPath(SIOTHConfigUtility.getSiothConfig().getJobEngine().getGeneratedClassesPath());
             AuthenticationInterceptor.init(builderProperties.getIssuer());
             LicenseProperties.init();
            // JEMonitor.setPort(builderProperties.getMonitoringPort());

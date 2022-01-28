@@ -27,6 +27,7 @@ public class JERunnerInitBean implements InitializingBean {
             SIOTHConfigUtility.setSiothId(runnerProperties.getSiothId());
             ZMQSecurity.setSecure(runnerProperties.getUseZmqSecurity());
             JELogger.initLogger("JERunner", runnerProperties.getJeRunnerLogPath(),runnerProperties.getJeRunnerLogLevel());
+            ConfigurationConstants.setJavaGenerationPath(SIOTHConfigUtility.getSiothConfig().getJobEngine().getGeneratedClassesPath());
             JELogger.control(JEMessages.LOGGER_INITIALIZED,
                     LogCategory.DESIGN_MODE, null,
                     LogSubModule.JERUNNER, null);
