@@ -6,7 +6,6 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.util.concurrent.TimeUnit;
 
 public class ProcessRunner {
 
@@ -28,6 +27,7 @@ public class ProcessRunner {
 
         if(errorTextBuilder.length() > 0) {
             output += errorTextBuilder.toString() + "\n";
+            System.out.println(output);
         }
 
         return output;
@@ -63,6 +63,7 @@ public class ProcessRunner {
 
         if(errorTextBuilder.length() > 0) {
             output += errorTextBuilder.toString() + "\n";
+            System.out.println(output);
         }
         return pid;
     }
@@ -97,6 +98,7 @@ public class ProcessRunner {
 
         if(errorTextBuilder.length() > 0) {
             output += errorTextBuilder.toString() + "\n";
+            System.out.println(output);
         }
         return process;
     }

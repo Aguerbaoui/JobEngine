@@ -239,20 +239,10 @@ public class Executioner {
 		return sb.toString().replace("/", "\\");
 	}
 	public static long executeScript(String filePath) throws IOException, InterruptedException {
-		String classpathFolder = System.getenv(ConfigurationConstants.SIOTH_ENVIRONMENT_VARIABLE) + "\\..\\Job Engine\\libs\\*";
-		String command = "java" + " " + "-cp" + " \"" + classpathFolder  + getCurrentClassPath() + "\" " + filePath;
-		/*new Thread(() -> {
-			try {
-				Process process = ProcessRunner.executeCommandWithPidOutput(command);
-				process.waitFor(30, TimeUnit.SECONDS);
-			} catch (IOException e) {
-				e.printStackTrace();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-
-		}).start();*/
-		return ProcessRunner.executeCommandWithPidOutput(command);
+		//String classpathFolder = System.getenv(ConfigurationConstants.SIOTH_ENVIRONMENT_VARIABLE) + "\\..\\Job Engine\\libs\\*";
+		//String command = "java" + " " + "-cp" + " \"" + classpathFolder  + getCurrentClassPath() + "\" " + filePath;
+		return CommandExecutioner.runCode(filePath);
+		//return ProcessRunner.executeCommandWithPidOutput(command);
 
 		//long pid = ProcessRunner.executeCommandWithPidOutput(command);
 

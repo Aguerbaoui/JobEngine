@@ -66,6 +66,8 @@ public class JEMessages {
 
     public static final String CLASS_LOAD_IN_RUNNER_FAILED = "Class load failed in runner";
 
+    public static final String CLASS_LOAD_DENIED_ACCESS = "Class load failed due to denied access";
+
     public static final String INVALID_CLASS_FORMAT = "Class format is not valid, interface cannot inherit from class ";
 
     public static final String UNKNOW_CLASS_TYPE = "Class type cannot be determined. [Class types:  Class/Interface/Enum ] ";
@@ -716,4 +718,7 @@ public class JEMessages {
     public static final String ERROR_STOPPING_PROCESS = "Error stopping process by pid";
     public static final String ERROR_SENDING_INFORM_MESSAGE = "Error sending inform message to user";
     public static final String SUCCESSFULLY_INFORMED = "Successfully sent inform message";
+
+    public static final String ERROR_BUILDING_JAR_FILE_AFTER_COMPILING_CLASSES_CHECK_ONGOING_PROCESSES = "Error building jar file after compiling classes, check ongoing processes";
+
 }

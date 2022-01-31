@@ -23,7 +23,6 @@
         <module>LicenseManager</module>
         <module>JERunner</module>
         <module>Monitor</module>
-      <module>CodeEdixutioner</module>
       <!--<module>WorkflowBuilder</module>
       <module>rulebuilder</module>
       <module>RuleEngine</module>

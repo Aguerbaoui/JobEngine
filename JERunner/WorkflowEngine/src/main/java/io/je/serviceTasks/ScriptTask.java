@@ -10,6 +10,8 @@ public class ScriptTask extends ActivitiTask{
 
     private int timeout;
 
+    long pid = -1;
+
     public String getScript() {
         return script;
     }
@@ -41,5 +43,13 @@ public class ScriptTask extends ActivitiTask{
 
     public void setTimeout(int timeout) {
         this.timeout = timeout;
+    }
+
+    public long getPid() {
+        return pid;
+    }
+
+    public void setPid(long pid) {
+        this.pid = pid;
     }
 }
