@@ -61,7 +61,7 @@ public class JEClassLoader extends ClassLoader {
             dataModelCustomClasses.remove(newClass);
             Set<String> all = dataModelCustomClasses;
             for (String c : all) {
-                ClassRepository.addClass(ClassRepository.getClassIdByName(c), c, dataModelInstance.loadClassInDataModelClassLoader(c));
+                ClassRepository.addClass(ClassRepository.getClassIdByName(c), c, dataModelInstance.loadClass(c));
             }
 
         }
@@ -69,7 +69,9 @@ public class JEClassLoader extends ClassLoader {
         return dataModelInstance;
     }
 
-    public Class<?> loadClassInDataModelClassLoader(String className) throws ClassNotFoundException {
+
+    @Override
+    public Class<?> loadClass(String className) throws ClassNotFoundException {
         if (className.contains(ClassBuilderConfig.CLASS_PACKAGE + ".")
                 && !className.contains("Propagation")) {
             dataModelCustomClasses.add(className);
@@ -79,18 +81,11 @@ public class JEClassLoader extends ClassLoader {
                 Class<?> c = dataModelInstance.getClass(className);
                 return c;
             } catch (Exception e) {
-                // JELogger.debug("Class Loading failed by je custom loader for " + name);
+                JELogger.debug("Class Loading failed by je custom loader for " + className);
                 JELogger.error(Arrays.toString(e.getStackTrace()));
             }
         }
-
-        return dataModelInstance.loadClass(className);
-
-    }
-
-    @Override
-    public Class<?> loadClass(String name) throws ClassNotFoundException {
-        return super.loadClass(name);
+        return super.loadClass(className);
     }
 
     /**

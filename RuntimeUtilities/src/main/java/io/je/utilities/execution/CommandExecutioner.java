@@ -1,18 +1,21 @@
-package commands;
+package io.je.utilities.execution;
 
-import io.je.utilities.beans.ClassAuthor;
-import io.je.utilities.beans.JEClass;
 import io.je.utilities.config.ConfigurationConstants;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.ClassLoadException;
 import io.je.utilities.log.JELogger;
 import utils.ProcessRunner;
 import utils.files.FileUtilities;
+import utils.log.LogCategory;
+import utils.log.LogSubModule;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;
+
 import static io.je.utilities.config.ConfigurationConstants.JAVA_GENERATION_PATH;
+import static io.je.utilities.constants.JEMessages.ERROR_BUILDING_JAR_FILE_AFTER_COMPILING_CLASSES_CHECK_ONGOING_PROCESSES;
 
 public class CommandExecutioner {
 
@@ -64,7 +67,9 @@ public class CommandExecutioner {
         try {
             FileUtilities.deleteFileFromPath(ConfigurationConstants.EXTERNAL_LIB_PATH + "JEUtils.jar");
         }
-        catch (Exception e) {}
+        catch (Exception e) {
+            JELogger.error(ERROR_BUILDING_JAR_FILE_AFTER_COMPILING_CLASSES_CHECK_ONGOING_PROCESSES, LogCategory.DESIGN_MODE, "", LogSubModule.JEBUILDER, "");
+        }
         ProcessRunner.executeCommandWithPidOutput(command.toString());
     }
 

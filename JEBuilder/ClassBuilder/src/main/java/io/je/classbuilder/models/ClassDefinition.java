@@ -1,5 +1,6 @@
 package io.je.classbuilder.models;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -130,6 +131,7 @@ public class ClassDefinition {
 		this.dependentEntities = dependentEntities;
 	}
 	public List<String> getImports() {
+		if(imports == null) imports = new ArrayList<>();
 		return imports;
 	}
 	public void setImports(List<String> imports) {

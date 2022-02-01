@@ -30,6 +30,18 @@ public class RunnerProperties {
 	@Value("${dev.environment}")
 	boolean dev;
 
+	@Value("${jobenginemonitor.url}")
+	String monitorUrl;
+
+	@Value("${jobengine.processesdump.path}")
+	String processesDumpPath;
+
+	@Value("${jobenginebuilder.url}")
+	String builderUrl;
+
+	@Value("${jobenginerunner.url}")
+	String runnerUrl;
+
 	public int getMonitoringPort() {
 		return monitoringPort;
 	}
@@ -76,5 +88,37 @@ public class RunnerProperties {
 
 	public void setDev(boolean dev) {
 		this.dev = dev;
+	}
+
+	public String getMonitorUrl() {
+		return monitorUrl;
+	}
+
+	public void setMonitorUrl(String monitorUrl) {
+		this.monitorUrl = monitorUrl;
+	}
+
+	public String getProcessesDumpPath() {
+		return processesDumpPath;
+	}
+
+	public void setProcessesDumpPath(String processesDumpPath) {
+		this.processesDumpPath = processesDumpPath;
+	}
+
+	public String getBuilderUrl() {
+		return builderUrl;
+	}
+
+	public void setBuilderUrl(String builderUrl) {
+		this.builderUrl = builderUrl;
+	}
+
+	public String getRunnerUrl() {
+		return runnerUrl;
+	}
+
+	public void setRunnerUrl(String runnerUrl) {
+		this.runnerUrl = runnerUrl;
 	}
 }

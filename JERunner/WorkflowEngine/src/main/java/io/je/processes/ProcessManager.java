@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.ResourceBundle;
 
 import commands.CommandExecutioner;
+import io.je.serviceTasks.ScriptTask;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.DynamicBpmnService;
 import org.activiti.engine.HistoryService;
@@ -372,10 +373,10 @@ public class ProcessManager {
                 }
                 HashMap<String, ActivitiTask> tasks = process.getActivitiTasks();
                 for(ActivitiTask task: tasks.values()) {
-                    if (task.getPid() != -1) {
+                    if (task instanceof ScriptTask && ((ScriptTask) task).getPid() != -1) {
                         try {
-                            CommandExecutioner.KillProcessByPid(task.getPid());
-                            task.setPid(-1);
+                            CommandExecutioner.KillProcessByPid(((ScriptTask) task).getPid());
+                            ((ScriptTask) task).setPid(-1);
                         } catch (Exception e) {
                             JELogger.error(JEMessages.ERROR_STOPPING_PROCESS, LogCategory.RUNTIME, process.getProjectId(), LogSubModule.WORKFLOW, process.getName());
 

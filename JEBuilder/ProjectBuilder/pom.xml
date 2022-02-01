@@ -143,11 +143,6 @@
             <version>1.7.4</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>io.je</groupId>
-            <artifactId>CodeEdixutioner</artifactId>
-            <version>1.0.0</version>
-        </dependency>
 
     </dependencies>
     <build>

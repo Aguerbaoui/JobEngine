@@ -28,10 +28,6 @@ public class ScriptServiceTask extends ServiceTask {
             long pid = Executioner.executeScript(filePath);
             task.setPid(pid);
         } catch (Exception e) {
-            //JELogger.error(Arrays.toString(e.getStackTrace()));
-            //message = "Error executing script task with id = " + task.getTaskId() + " error message = " + e.getMessage();
-            //msg.setMessage(message);
-            //JELogger.error(Arrays.toString(e.getStackTrace()));
             throw new BpmnError("Error");
         }
         ZMQLogPublisher.publish(msg);

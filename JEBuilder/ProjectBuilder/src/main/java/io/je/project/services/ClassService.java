@@ -2,13 +2,9 @@ package io.je.project.services;
 
 import static io.je.classbuilder.builder.ClassManager.getClassModel;
 import static io.je.classbuilder.builder.ClassManager.getLibModel;
+import static io.je.utilities.beans.ClassAuthor.DATA_MODEL;
 import static io.je.utilities.constants.ClassBuilderConfig.CLASS_PACKAGE;
-import static io.je.utilities.constants.ClassBuilderConfig.SCRIPTS_PACKAGE;
-import static io.je.utilities.constants.JEMessages.CLASS_LOAD_IN_RUNNER_FAILED;
-import static io.je.utilities.constants.JEMessages.EMPTY_CODE;
-import static io.je.utilities.constants.JEMessages.FAILED_TO_DELETE_FILES;
-import static io.je.utilities.constants.JEMessages.PROCEDURE_SHOULD_CONTAIN_CODE;
-import static io.je.utilities.constants.WorkflowConstants.EXECUTE_SCRIPT;
+import static io.je.utilities.constants.JEMessages.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,10 +18,9 @@ import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 
-import commands.CommandExecutioner;
 import io.je.classbuilder.builder.ClassBuilder;
-import io.je.utilities.constants.ClassBuilderConfig;
 import io.je.utilities.beans.*;
+import io.je.utilities.execution.CommandExecutioner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
@@ -127,31 +122,35 @@ public class ClassService {
      * Add Class from Class definition
      */
     public void addClass(ClassDefinition classDefinition, boolean sendToRunner, boolean reloadClassDefinition)
-            throws AddClassException, ClassLoadException {
-        List<JEClass> builtClasses = ClassManager.buildClass(classDefinition, CLASS_PACKAGE);
-        for (JEClass _class : builtClasses) {
-            if (sendToRunner) {
-                addClassToJeRunner(_class, reloadClassDefinition);
-                classRepository.save(_class);
-            } else {
-                try {
-                    FileUtilities.deleteFileFromPath(_class.getClassPath());
+            throws AddClassException, ClassLoadException{
+        try {
+            List<JEClass> builtClasses = ClassManager.buildClass(classDefinition, CLASS_PACKAGE);
+            for (JEClass _class : builtClasses) {
+                if (sendToRunner) {
+                    addClassToJeRunner(_class, reloadClassDefinition);
+                    classRepository.save(_class);
+                } else {
+                    try {
+                        FileUtilities.deleteFileFromPath(_class.getClassPath());
 
-                } catch (Exception e) {
-                    JELogger.error(FAILED_TO_DELETE_FILES, LogCategory.DESIGN_MODE, "", LogSubModule.CLASS,
-                            classDefinition.getName());
+                    } catch (Exception e) {
+                        JELogger.error(FAILED_TO_DELETE_FILES, LogCategory.DESIGN_MODE, "", LogSubModule.CLASS,
+                                classDefinition.getName());
+                    }
                 }
+
             }
-
         }
-
+        catch (IOException | InterruptedException e) {
+            JELogger.error(CLASS_LOAD_DENIED_ACCESS, LogCategory.DESIGN_MODE, "", LogSubModule.CLASS, "");
+        }
     }
 
     /*
      * Add class to runner from datamodel
      */
-    public void addClass(String workspaceId, String classId, boolean sendToRunner)
-            throws ClassLoadException, AddClassException {
+    public void loadClassFromDataModel(String workspaceId, String classId, boolean sendToRunner)
+            throws ClassLoadException, AddClassException{
         ClassDefinition classDefinition = ClassManager.loadClassDefinition(workspaceId, classId);
 
         if (classDefinition != null) {
@@ -162,51 +161,6 @@ public class ClassService {
         }
 
     }
-
-    /*
-     * Add Class from Class definition
-     */
-    /*
-     * public List<JEClass> updateClass(ClassDefinition classDefinition, boolean
-     * sendToRunner)
-     * throws AddClassException, ClassLoadException {
-     * List<JEClass> builtClasses = ClassManager.buildClass(classDefinition);
-     * for (JEClass _class : builtClasses) {
-     * if (sendToRunner) {
-     * addClassToJeRunner(_class, false);
-     * }
-     * classRepository.save(_class);
-     * loadedClasses.put(_class.getClassId(), _class);
-     * }
-     * return builtClasses;
-     * 
-     * }
-     */
-    /*
-     * public void sendClassesToJeRunner(Collection<JEClass> collection)
-     * throws AddClassException {
-     * ArrayList<HashMap> classesList = new ArrayList<>();
-     * JEResponse jeRunnerResp;
-     * for (JEClass clazz : collection) {
-     * HashMap<String, String> classMap = new HashMap<>();
-     * classMap.put(CLASS_NAME, clazz.getClassName());
-     * classMap.put(CLASS_PATH, clazz.getClassPath());
-     * classMap.put(CLASS_ID, clazz.getClassId());
-     * classesList.add(classMap);
-     * }
-     * JELogger.debug(JEMessages.ADDING_CLASSES_TO_RUNNER_FROM_BUILDER,
-     * LogCategory.DESIGN_MODE, null, LogSubModule.CLASS, null);
-     * 
-     * try {
-     * jeRunnerResp = JERunnerAPIHandler.addClasses(classesList);
-     * } catch (JERunnerErrorException e) {
-     * throw new AddClassException(CLASS_LOAD_IN_RUNNER_FAILED);
-     * }
-     * if (jeRunnerResp.getCode() != ResponseCodes.CODE_OK) {
-     * throw new AddClassException(JEMessages.CLASS_LOAD_FAILED);
-     * }
-     * }
-     */
 
     /*
      * send class to je runner to be loaded there
@@ -244,14 +198,30 @@ public class ClassService {
     }
 
     public void loadAllClasses() {
-
         JELogger.debug(JEMessages.LOADING_ALL_CLASSES_FROM_DB,
                 LogCategory.DESIGN_MODE, null,
                 LogSubModule.CLASS, null);
+        loadSIOTHProcedures();
+        loadDataModelClasses();
+    }
+
+    private void loadDataModelClasses() {
+        List<JEClass> classes = classRepository.findByClassAuthor(DATA_MODEL.toString());
+        for (JEClass clazz : classes) {
+            try {
+                loadClassFromDataModel(clazz.getWorkspaceId(), clazz.getClassId(), true);
+            } catch (Exception e) {
+                JELogger.error(JEMessages.FAILED_TO_LOAD_CLASS + " " + clazz.getClassName(), LogCategory.DESIGN_MODE,
+                        null, LogSubModule.CLASS, null);
+            }
+        }
+    }
+
+    private void loadSIOTHProcedures() {
         JEClass jeClass = getNewJEProcedureClass();
         try {
 
-            loadProcedures(jeClass);
+            loadMethods(jeClass);
             ClassDefinition c = getClassModel(jeClass);
             String filePath = ClassBuilder.buildClass(c, ConfigurationConstants.JAVA_GENERATION_PATH, JEClassLoader.getJobEnginePackageName(CLASS_PACKAGE));
             c.setClassAuthor(ClassAuthor.PROCEDURE);
@@ -265,21 +235,12 @@ public class ClassService {
             JELogger.error(JEMessages.FAILED_TO_LOAD_CLASS + " " + jeClass.getClassId(), LogCategory.DESIGN_MODE,
                     null, LogSubModule.CLASS, null);
         }
-        List<JEClass> classes = classRepository.findAll();
-        for (JEClass clazz : classes) {
-            try {
-                if (clazz.getClassAuthor() == ClassAuthor.DATA_MODEL) {
-                    addClass(clazz.getWorkspaceId(), clazz.getClassId(), true);
-                }
-            } catch (Exception e) {
-                JELogger.error(JEMessages.FAILED_TO_LOAD_CLASS + " " + clazz.getClassName(), LogCategory.DESIGN_MODE,
-                        null, LogSubModule.CLASS, null);
-            }
-        }
-
     }
 
-    private void loadProcedures(JEClass c) {
+    /*
+    * Load user defined methods
+    * */
+    private void loadMethods(JEClass c) {
         List<JEMethod> methods = methodRepository.findAll();
         HashMap<String, JEMethod> methodHashMap = new HashMap<>();
         for (JEMethod m : methods) {
@@ -288,27 +249,6 @@ public class ClassService {
             }
         }
         c.setMethods(methodHashMap);
-
-    }
-
-    public void loadAllClassesToBuilder() {
-        List<JEClass> classes = classRepository.findAll();
-        JELogger.debug(JEMessages.LOADING_ALL_CLASSES_FROM_DB,
-                LogCategory.DESIGN_MODE, null,
-                LogSubModule.CLASS, null);
-        for (JEClass clazz : classes) {
-            try {
-                if (clazz.getWorkspaceId() != null) {
-                    addClass(clazz.getWorkspaceId(), clazz.getClassId(), false);
-                } else {
-                    addClassToJeRunner(clazz, true);
-                }
-
-            } catch (Exception e) {
-                JELogger.error(JEMessages.FAILED_TO_LOAD_CLASS + " " + clazz.getClassName(), LogCategory.DESIGN_MODE,
-                        null, LogSubModule.CLASS, null);
-            }
-        }
 
     }
 
@@ -472,7 +412,7 @@ public class ClassService {
             }
             clazz.getMethods().put(m.getId(), method);
             ClassDefinition c = getClassModel(clazz);
-            c.setImports(m.getImports());
+            c.getImports().addAll(m.getImports());
             //addClass(c, true, true);
             String filePath = ClassBuilder.buildClass(c, ConfigurationConstants.JAVA_GENERATION_PATH, JEClassLoader.getJobEnginePackageName(CLASS_PACKAGE));
             CommandExecutioner.compileCode(clazz.getClassPath(), ConfigurationConstants.isDev());
@@ -689,7 +629,7 @@ public class ClassService {
 
         // try {
         ClassDefinition c = getClassModel(clazz);
-        c.setImports(m.getImports());
+        c.getImports().addAll(m.getImports());
         // load new SIOTHProcedures in runner and in Db
         String filePath = ClassBuilder.buildClass(c, ConfigurationConstants.JAVA_GENERATION_PATH, JEClassLoader.getJobEnginePackageName(CLASS_PACKAGE));
         CommandExecutioner.compileCode(clazz.getClassPath(), ConfigurationConstants.isDev());
@@ -713,7 +653,7 @@ public class ClassService {
             methodRepository.deleteAll();
             libraryRepository.deleteAll();
             FileUtilities.deleteDirectory(ConfigurationConstants.JAVA_GENERATION_PATH);
-            FileUtilities.deleteDirectory(ConfigurationConstants.EXTERNAL_LIB_PATH);
+            //FileUtilities.deleteDirectory(ConfigurationConstants.EXTERNAL_LIB_PATH);
 
         }
         catch (Exception e) {
