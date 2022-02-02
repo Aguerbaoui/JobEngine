@@ -105,6 +105,8 @@ public class RuleService {
 			throws ProjectNotFoundException, RuleNotFoundException, JERunnerErrorException, LicenseNotActiveException {
 		LicenseProperties.checkLicenseIsActive();
 		JEProject project = getProject(projectId);
+		JELogger.info(JEMessages.DELETING_RULE, LogCategory.DESIGN_MODE, projectId, LogSubModule.RULE,
+				ruleId);
 		if (project.getRule(ruleId) instanceof UserDefinedRule) {
 			UserDefinedRule rule = getRule(project, ruleId);
 			if (rule.getSubRules() != null) {
@@ -124,6 +126,8 @@ public class RuleService {
 		project.deleteRule(ruleId);
 		project.getRuleEngine().remove(ruleId);
 		ruleRepository.deleteById(ruleId);
+		JELogger.info(JEMessages.RULE_DELETED, LogCategory.DESIGN_MODE, projectId, LogSubModule.RULE,
+				ruleId);
 	}
 
 	/*

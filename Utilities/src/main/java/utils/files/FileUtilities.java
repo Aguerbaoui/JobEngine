@@ -30,7 +30,8 @@ public class FileUtilities {
 	}
 
 	public static void deleteFileFromPath(String path) throws IOException {
-		Files.deleteIfExists(Paths.get(path));
+		if(path != null)
+			Files.deleteIfExists(Paths.get(path));
 	}
 
 	public static void deleteDirectory(String path) {

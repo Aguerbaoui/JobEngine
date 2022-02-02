@@ -367,13 +367,11 @@ public class RuntimeDispatcher {
 
 	// remove/stop workflow from runner
 	public void removeWorkflow(String projectId, String workflowId) {
-		JELogger.debug("[projectId = " + projectId + "] [workflow = " + workflowId + "]" + JEMessages.REMOVING_WF,
-				LogCategory.RUNTIME, projectId, LogSubModule.WORKFLOW, workflowId);
 
 		try {
 			WorkflowEngineHandler.deleteProcess(projectId, workflowId);
 		} catch (WorkflowRunException e) {
-			JELogger.error(JEMessages.ERROR_DELETING_A_NON_EXISTING_PROCESS,
+			JELogger.debug(JEMessages.ERROR_DELETING_A_NON_EXISTING_PROCESS,
 					LogCategory.RUNTIME, projectId,
 					LogSubModule.WORKFLOW, workflowId);
 		}

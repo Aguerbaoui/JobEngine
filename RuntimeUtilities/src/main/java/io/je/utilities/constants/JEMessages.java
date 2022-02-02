@@ -187,6 +187,7 @@ public class JEMessages {
     public static final String GATEWAY_ID = "Gateway Id";
 
     public static final String JUST_EXECUTED = "just executed";
+
     public static final String TASK_ID = "Task Id";
 
     public static final String PROCESS_HAS_TO_BE_TRIGGERED_BY_EVENT = "Process has to be triggered by event or following a specific schedule";
@@ -224,7 +225,7 @@ public class JEMessages {
 
     public static final String LOADING_RULES = "Getting all rules";
 
-    public static final String ADDING_RULE = "Adding rule";
+    public static final String ADDING_RULE = "Adding rule ";
 
     public static final String UPDATING_RULE = "Updating rule";
 
@@ -541,7 +542,7 @@ public class JEMessages {
 
     public static final String RULE_UPDATE_FAIL = "Failed to update rule";
 
-    public static final String RULE_DELETED = "Rule deleted from rule engine";
+    public static final String RULE_DELETED = "Rule deleted from rule engine successfully";
 
     public static final String RULE_DELETE_FAIL = "Failed to delete rule";
 

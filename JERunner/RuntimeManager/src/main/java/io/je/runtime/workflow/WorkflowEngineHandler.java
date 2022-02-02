@@ -61,9 +61,6 @@ public class WorkflowEngineHandler {
      * Launch process without variables
      * */
     public static void launchProcessWithoutVariables(String projectId, String processId, boolean runProject) throws WorkflowNotFoundException, WorkflowAlreadyRunningException, WorkflowBuildException, WorkflowRunException {
-        JELogger.debug("[workflow = "+processId+"]"+JEMessages.REMOVING_WF,
-                LogCategory.RUNTIME, projectId,
-                LogSubModule.WORKFLOW,processId);
         processManagerHashMap.get(projectId).launchProcessByKeyWithoutVariables(processId, runProject);
     }
 

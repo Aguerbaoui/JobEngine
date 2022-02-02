@@ -179,7 +179,8 @@ public class WorkflowService {
             JELogger.error(JEMessages.FAILED_TO_DELETE_FILES, LogCategory.DESIGN_MODE, projectId, LogSubModule.WORKFLOW,
                     wf.getJobEngineElementID());
         }
-
+        JELogger.info(JEMessages.WORKFLOW_DELETED_SUCCESSFULLY, LogCategory.DESIGN_MODE, projectId, LogSubModule.WORKFLOW,
+                wf.getJobEngineElementID());
         project.removeWorkflow(workflowId);
     }
 
@@ -1148,7 +1149,7 @@ public class WorkflowService {
             return CompletableFuture.completedFuture(result);
         }
         JEWorkflow wf = project.getWorkflowByIdOrName(workflowId);
-        JELogger.debug(
+        JELogger.info(
                 "[project=" + project.getProjectName() + " ][workflow = " + wf.getJobEngineElementName() + "]"
                         + JEMessages.STOPPING_WF,
                 LogCategory.DESIGN_MODE, projectId,
@@ -1160,11 +1161,6 @@ public class WorkflowService {
             //wf.setStatus(Status.STOPPING);
 
         } catch (JERunnerErrorException e) {
-            JELogger.debug(
-                    "[project=" + project.getProjectName() + " ][workflow = " + wf.getJobEngineElementName() + "]"
-                            + JEMessages.STOPPING_WF + e.getMessage(),
-                    LogCategory.DESIGN_MODE, projectId,
-                    LogSubModule.WORKFLOW, workflowId);
             result.setOperationSucceeded(false);
             result.setOperationError(JEMessages.ERROR_STOPPING_WORKFLOW);
         }
