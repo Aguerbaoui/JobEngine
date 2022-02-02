@@ -149,9 +149,9 @@ public class ProcessManager {
         ResourceBundle.clearCache(Thread.currentThread().getContextClassLoader());
         //repoService.
         try {
-            JELogger.debug(JEMessages.DEPLOYING_IN_RUNNER_WORKFLOW_WITH_ID + " = " + key,
+           /* JELogger.debug(JEMessages.DEPLOYING_IN_RUNNER_WORKFLOW_WITH_ID + " = " + key,
                     LogCategory.RUNTIME, processes.get(key).getProjectId(),
-                    LogSubModule.WORKFLOW, key);
+                    LogSubModule.WORKFLOW, key);*/
             String processXml = FileUtilities.getStringFromFile(processes.get(key).getBpmnPath());
             //DeploymentBuilder deploymentBuilder = processEngine.getRepositoryService().createDeployment().name(key);
             deploymentBuilder = processEngine.getRepositoryService().createDeployment().name("DeploymentBuilder");
@@ -160,8 +160,8 @@ public class ProcessManager {
                 repoService.deleteDeployment(processes.get(key).getDeploymentId());
             }
             /*Deployment*/ deployment = deploymentBuilder.deploy(); //to debug it if needed
-            JELogger.debug("id = " + deployment.getId() + " key = " + deployment.getKey() + " category =" + deployment.getCategory() +
-                    " tenant id =" + deployment.getTenantId());
+            /*JELogger.debug("id = " + deployment.getId() + " key = " + deployment.getKey() + " category =" + deployment.getCategory() +
+                    " tenant id =" + deployment.getTenantId());*/
             processes.get(key).setDeployed(true);
             processes.get(key).setDeploymentId(deployment.getId());
         } catch (Exception e) {
