@@ -18,8 +18,13 @@ import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.je.classbuilder.builder.ClassBuilder;
+import io.je.classbuilder.models.*;
 import io.je.utilities.beans.*;
+import io.je.utilities.exceptions.*;
 import io.je.utilities.execution.CommandExecutioner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -29,10 +34,6 @@ import org.springframework.web.multipart.MultipartFile;
 import io.je.classbuilder.builder.ClassManager;
 import io.je.utilities.beans.ClassType;
 import io.je.utilities.beans.JEClass;
-import io.je.classbuilder.models.ClassDefinition;
-import io.je.classbuilder.models.FieldModel;
-import io.je.classbuilder.models.MethodModel;
-import io.je.project.listener.ClassUpdateListener;
 import io.je.project.repository.ClassRepository;
 import io.je.project.repository.LibraryRepository;
 import io.je.project.repository.MethodRepository;
@@ -48,11 +49,6 @@ import io.je.utilities.config.ConfigurationConstants;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.constants.WorkflowConstants;
-import io.je.utilities.exceptions.AddClassException;
-import io.je.utilities.exceptions.ClassLoadException;
-import io.je.utilities.exceptions.JERunnerErrorException;
-import io.je.utilities.exceptions.LibraryException;
-import io.je.utilities.exceptions.MethodException;
 import io.je.utilities.log.JELogger;
 import io.je.utilities.models.LibModel;
 import io.siothconfig.SIOTHConfigUtility;
@@ -60,6 +56,8 @@ import utils.files.FileUtilities;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
 import utils.string.StringUtilities;
+import utils.zmq.ZMQBind;
+import utils.zmq.ZMQSubscriber;
 
 /*
  * Service class to handle classes
@@ -72,6 +70,7 @@ public class ClassService {
     public static final String CLASS_ID = "classId";
     public static final String CLASS_AUTHOR = "classAuthor";
     public static final String MAIN = "main";
+    public static final String MODEL_TOPIC = "ModelTopic";
 
     @Autowired
     ClassRepository classRepository;
@@ -107,7 +106,7 @@ public class ClassService {
         ClassUpdateListener runnable = new ClassUpdateListener(
                 "tcp://" + SIOTHConfigUtility.getSiothConfig().getNodes().getSiothMasterNode(),
                 SIOTHConfigUtility.getSiothConfig().getDataModelPORTS().getDmRestAPI_ConfigurationPubAddress(),
-                "ModelTopic");
+                MODEL_TOPIC);
         runnable.setListening(true);
         Thread listener = new Thread(runnable);
         listener.start();
@@ -661,5 +660,74 @@ public class ClassService {
     }
 
 
+    class ClassUpdateListener extends ZMQSubscriber {
 
+        ObjectMapper objectMapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+
+        public ClassUpdateListener(String url, int subPort, String topic) {
+            super(url, subPort, topic);
+
+        }
+
+        @Override
+        public void run() {
+            while(listening)
+            {
+
+                //  JELogger.info(ClassUpdateListener.class, "--------------------------------------");
+
+                String data = null;
+                try {
+                    data = this.getSubSocket(ZMQBind.CONNECT).recvStr();
+                }catch (Exception e) {
+                    e.printStackTrace();
+                    continue;
+                }
+
+                try {
+                    if( data !=null && !data.equals(topic))
+                    {
+                        JELogger.debug(JEMessages.DATA_RECEIVED + data,  LogCategory.RUNTIME,
+                                null, LogSubModule.CLASS, null);
+                        List<ModelUpdate> updates = null;
+                        try {
+                            updates = Arrays.asList(objectMapper.readValue(data, ModelUpdate[].class));
+                        } catch (JsonProcessingException e) {
+
+                            e.printStackTrace();
+                            throw new InstanceCreationFailed("Failed to parse model update : " + e.getMessage());
+
+                        }
+
+                        for(ModelUpdate update : updates )
+                        {
+                            update.getModel().setClassAuthor(ClassAuthor.DATA_MODEL);
+                            if(update.getAction()== DataModelAction.UPDATE || update.getAction()== DataModelAction.ADD)
+                            {
+                                addClass(update.getModel(), true,true);
+                            }
+                            if(update.getAction()==DataModelAction.DELETE)
+                            {
+                                removeClass(update.getModel().getName());
+                            }
+                        }
+
+
+                    }
+                } catch (Exception e) {
+                    JELogger.error(JEMessages.ERROR_GETTING_CLASS_UPDATES, LogCategory.DESIGN_MODE, null,
+                            LogSubModule.CLASS, null);
+                }
+
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    JELogger.error(JEMessages.THREAD_INTERRUPTED, LogCategory.DESIGN_MODE, null,
+                            LogSubModule.CLASS, null);
+                }
+            }
+
+        }
+
+    }
 }
