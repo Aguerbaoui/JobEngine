@@ -388,29 +388,35 @@ public class ProjectService {
 	* inform message from workflow in runtime
 	* */
 	public void informUser(InformModel informBody) {
-		try {
-			String wfId = null;
-			JEProject p = projectRepository.findByProjectName(informBody.getProjectName()).get(0);
-			if (informBody.getWorkflowName() != null) {
-				List<JEWorkflow> wfs = workflowService.getWorkflowByName(informBody.getWorkflowName());
-				for (JEWorkflow wf : wfs) {
-					if (wf.getJobEngineProjectID().equals(p.getProjectId())) {
-						JELogger.info(informBody.getMessage(), LogCategory.RUNTIME, wf.getJobEngineProjectID(),
-								LogSubModule.WORKFLOW, wf.getJobEngineElementID());
-						break;
+		new Thread(() -> {
+			try {
+				String wfId = null;
+				JEProject p = projectRepository.findByProjectName(informBody.getProjectName()).get(0);
+				if (informBody.getWorkflowName() != null) {
+					List<JEWorkflow> wfs = workflowService.getWorkflowByName(informBody.getWorkflowName());
+					for (JEWorkflow wf : wfs) {
+						if (wf.getJobEngineProjectID().equals(p.getProjectId())) {
+							JELogger.info(informBody.getMessage(), LogCategory.RUNTIME, wf.getJobEngineProjectID(),
+									LogSubModule.WORKFLOW, wf.getJobEngineElementID());
+							break;
+						}
 					}
 				}
 			}
-		}
-		catch (Exception e) {
-			JELogger.error("Failed to send inform message to tracker", LogCategory.RUNTIME, informBody.getProjectName(),
-					LogSubModule.WORKFLOW, informBody.getWorkflowName());
-		}
+			catch (Exception e) {
+				JELogger.error("Failed to send inform message to tracker", LogCategory.RUNTIME, informBody.getProjectName(),
+						LogSubModule.WORKFLOW, informBody.getWorkflowName());
+			}
+		}).start();
+
 
 	}
 
 	public void sendLog(LogMessage logMessage) {
-		JELogger.sendLog(logMessage);
+		new Thread(() -> {
+			JELogger.sendLog(logMessage);
+		}).start();
+
 	}
 
 
