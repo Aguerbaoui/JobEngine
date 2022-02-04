@@ -11,7 +11,6 @@ public class ServletInitializer extends SpringBootServletInitializer {
 
 	@Override
 	protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
-		
 		//SIOTHConfigUtility.init();
 		//System.setProperty("drools.dateformat", SIOTHConfigUtility.getSiothConfig().getDateFormat());
 

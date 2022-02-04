@@ -5,6 +5,7 @@ import io.je.project.exception.JEExceptionHandler;
 import io.je.project.services.ClassService;
 import io.je.project.services.ProjectService;
 import io.je.utilities.beans.JEResponse;
+import io.je.utilities.constants.ClassBuilderConfig;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.exceptions.ClassLoadException;
@@ -53,7 +54,7 @@ public class ProcedureController {
     public ResponseEntity<?> compileCode(@RequestBody MethodModel m) {
         try {
             //projectService.getProject(m.getProjectId());
-            classService.compileCode(m);
+            classService.compileCode(m, ClassBuilderConfig.SCRIPTS_PACKAGE);
         } catch (ClassLoadException e) {
             if(!StringUtilities.isEmpty(e.getCompilationErrorMessage())) {
                 return ResponseEntity.ok(new JEResponse(e.getCode(), e.getCompilationErrorMessage()));
