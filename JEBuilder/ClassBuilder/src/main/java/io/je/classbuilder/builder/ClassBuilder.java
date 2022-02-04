@@ -371,8 +371,35 @@ public class ClassBuilder {
 		case "STRING[]":
 			classType =  String[].class;
 			break;
+		case "OBJECT[]":
+			classType =  Object[].class;
+			break;
+		case "INT[]":
+			classType =  int[].class;
+			break;
+		case "FLOAT[]":
+			classType =  float[].class;
+			break;
+		case "LONG[]":
+			classType =  long[].class;
+			break;
+		case "DOUBLE[]":
+			classType =  double[].class;
+			break;
+		case "CHAR[]":
+			classType =  char[].class;
+			break;
+		case "BOOL[]":
+			classType =  boolean[].class;
+			break;
 		case "DATETIME":
 			classType =  LocalDateTime.class;
+			break;
+		case "DATETIME[]":
+			classType =  LocalDateTime[].class;
+			break;
+		case "LIST"	:
+			classType =  ArrayList.class;
 			break;
 		case "VOID":
 			classType =  void.class;
