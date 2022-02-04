@@ -184,13 +184,13 @@ public class JobEngine {
     /*
      * Inform user of a message with inform level
      * */
-    public static int informUser(String message, String projectName) {
+    public static int informUser(String message, String projectName, String workflowName) {
 
         //Network.makeGetNetworkCallWithResponse()
         int respCode = -1;
 
         try {
-            InformModel informModel = new InformModel(message, projectName);
+            InformModel informModel = new InformModel(message, projectName, workflowName);
             JEResponse response = JEBuilderApiHandler.informUser(informModel);
             respCode = response.getCode();
         } catch (JERunnerErrorException e) {

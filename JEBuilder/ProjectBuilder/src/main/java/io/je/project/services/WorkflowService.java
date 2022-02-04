@@ -1352,4 +1352,8 @@ public class WorkflowService {
             e.printStackTrace();
         }
     }
+
+    public List<JEWorkflow> getWorkflowByName(String workflowName) {
+        return workflowRepository.findByJobEngineElementName(workflowName);
+    }
 }

@@ -581,8 +581,11 @@ public class ClassService {
                 JEClass clazz = classRepository.findById(WorkflowConstants.JEPROCEDURES).get();
                 clazz.getMethods().remove(method.getJobEngineElementID());
                 ClassDefinition c = getClassModel(clazz);
-                 CommandExecutioner.compileCode(clazz.getClassPath(),ConfigurationConstants.isDev());
-                 CommandExecutioner.buildJar();
+                try {
+                    CommandExecutioner.compileCode(clazz.getClassPath(), ConfigurationConstants.isDev());
+                    CommandExecutioner.buildJar();
+                }
+                catch (Exception e) {}
                 //addClass(c, true, true);
                 classRepository.save(clazz);
 
@@ -631,8 +634,11 @@ public class ClassService {
         c.getImports().addAll(m.getImports());
         // load new SIOTHProcedures in runner and in Db
         String filePath = ClassBuilder.buildClass(c, ConfigurationConstants.JAVA_GENERATION_PATH, JEClassLoader.getJobEnginePackageName(CLASS_PACKAGE));
-        CommandExecutioner.compileCode(clazz.getClassPath(), ConfigurationConstants.isDev());
-        CommandExecutioner.buildJar();
+        try {
+            CommandExecutioner.compileCode(clazz.getClassPath(), ConfigurationConstants.isDev());
+            CommandExecutioner.buildJar();
+        }
+        catch (Exception e) {}
         //addClass(c, true, true);
         // save updated method in db
         methodRepository.save(method);

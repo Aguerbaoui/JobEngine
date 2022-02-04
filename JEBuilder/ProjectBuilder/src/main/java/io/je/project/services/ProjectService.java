@@ -18,6 +18,7 @@ import io.je.utilities.exceptions.*;
 import io.je.utilities.log.JELogger;
 import io.je.utilities.models.LibModel;
 import io.je.utilities.ruleutils.OperationStatusDetails;
+import models.JEWorkflow;
 import utils.log.LogCategory;
 import utils.log.LogMessage;
 import utils.log.LogSubModule;
@@ -387,8 +388,25 @@ public class ProjectService {
 	* inform message from workflow in runtime
 	* */
 	public void informUser(InformModel informBody) {
-		JELogger.info( informBody.getMessage(),  LogCategory.RUNTIME,  informBody.getProjectName(),
-				LogSubModule.WORKFLOW, null);
+		try {
+			String wfId = null;
+			JEProject p = projectRepository.findByProjectName(informBody.getProjectName()).get(0);
+			if (informBody.getWorkflowName() != null) {
+				List<JEWorkflow> wfs = workflowService.getWorkflowByName(informBody.getWorkflowName());
+				for (JEWorkflow wf : wfs) {
+					if (wf.getJobEngineProjectID().equals(p.getProjectId())) {
+						JELogger.info(informBody.getMessage(), LogCategory.RUNTIME, wf.getJobEngineProjectID(),
+								LogSubModule.WORKFLOW, wf.getJobEngineElementID());
+						break;
+					}
+				}
+			}
+		}
+		catch (Exception e) {
+			JELogger.error("Failed to send inform message to tracker", LogCategory.RUNTIME, informBody.getProjectName(),
+					LogSubModule.WORKFLOW, informBody.getWorkflowName());
+		}
+
 	}
 
 	public void sendLog(LogMessage logMessage) {

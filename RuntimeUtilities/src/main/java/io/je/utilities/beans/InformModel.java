@@ -5,10 +5,13 @@ public class InformModel {
 
     public String projectName;
 
+    public String workflowName;
+
     public InformModel() {}
-    public InformModel(String message, String projectName) {
+    public InformModel(String message, String projectName, String workflowName) {
         this.message = message;
         this.projectName = projectName;
+        this.workflowName = workflowName;
     }
 
     public String getMessage() {
@@ -25,6 +28,14 @@ public class InformModel {
 
     public void setProjectName(String projectName) {
         this.projectName = projectName;
+    }
+
+    public String getWorkflowName() {
+        return workflowName;
+    }
+
+    public void setWorkflowName(String workflowName) {
+        this.workflowName = workflowName;
     }
 
     @Override
