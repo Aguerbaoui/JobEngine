@@ -1,83 +1,77 @@
 package io.je.utilities.config;
 
+import org.apache.commons.io.FilenameUtils;
+import utils.files.FileUtilities;
+import utils.string.StringUtilities;
+
+import static io.je.utilities.constants.ClassBuilderConfig.CLASS_PACKAGE;
+
 public class ConfigurationConstants {
 
     /*
      * SIOTH Config
      */
 
-
-
     public static final String SIOTH_ENVIRONMENT_VARIABLE = "SIOTHJobEngine";
 
     public static final String APPLICATION_PROPERTIES_PATH = "file:${"+SIOTH_ENVIRONMENT_VARIABLE+"}/JobEngine/jobengine.properties";
 
-    public static String SIOTHID;
-    
-    public static final String SIOTH_JSON_CONFIG = System.getenv(ConfigurationConstants.SIOTH_ENVIRONMENT_VARIABLE) + "\\SIOTHConfig.json";
-    
+    public static String SIOTHID ="";
+
+    public static boolean dev = false;
+
     public static final String DROOLS_DATE_FORMAT = "MM/dd/yyyy HH:mm:ss.SSS";
 
-  
-    public static String getSIOTHID() {
- 		return SIOTHID;
- 	}
-
- 	public static void setSIOTHID(String sIOTHID) {
- 		SIOTHID = sIOTHID;
- 	}
-    
-    
-    
-    /*
-     * Config for testing on the IDE
-     */
-
-	 //path where .java files are generated : 
-    public 	static String JAVA_GENERATION_PATH = "D:\\myproject2" ;
-	
-    // path where builder loads classes 
-    public static String BUILDER_CLASS_LOAD_PATH = System.getProperty("java.class.path").split(";")[0];
-    
-    // path where runner loads classes
-    public static String RUNNER_CLASS_LOAD_PATH = System.getProperty("java.class.path").split(";")[0];
-    
-    public static final String PROJECTS_PATH = "D:\\JobEngine\\projects\\";
-   
-    public static final String BPMN_PATH = "D:\\JobEngine\\projects\\";
+	 //path where .java files are generated :
+    public static String JAVA_GENERATION_PATH = "D:\\jobengine\\" ;
 
     // path for imported libraries
-    public static String EXTERNAL_LIB_PATH =  "D:\\myproject2\\";
+    public static String EXTERNAL_LIB_PATH = System.getenv(SIOTH_ENVIRONMENT_VARIABLE) + "\\..\\Job Engine\\libs\\";
 
-    /*
-     * Config for tomcat
-     */
-    
+    // generated bpmn path
+ 	public static String BPMN_PATH;
 
+    //projects path
+    public static String PROJECTS_PATH;
 
-	//path where .java files are generated :
-   /* public static String JAVA_GENERATION_PATH = System.getProperty("catalina.base") + "\\webapps\\ProjectBuilder\\WEB-INF\\classes\\io\\je\\";
+    public static void initConstants(String siothId, boolean isDev) {
+        ConfigurationConstants.dev = isDev;
+        ConfigurationConstants.SIOTHID = siothId;
+        if(isDev) {
+            PROJECTS_PATH = "D:\\JobEngine\\projects\\";
+            BPMN_PATH = "D:\\JobEngine\\projects\\";
+        }
+        else {
+            BPMN_PATH = System.getenv(ConfigurationConstants.SIOTH_ENVIRONMENT_VARIABLE)+ "\\JobEngine\\projects\\";
+            PROJECTS_PATH = System.getenv(ConfigurationConstants.SIOTH_ENVIRONMENT_VARIABLE)+ "\\JobEngine\\projects\\";
+        }
+    }
 
-    // path for imported libraries
-    public static String EXTERNAL_LIB_PATH = System.getProperty("catalina.base") + "\\webapps\\ProjectBuilder\\WEB-INF\\libraries\\";
+    public static boolean isDev() {
+        return dev;
+    }
 
-    // path where builder loads classes
-    public static String BUILDER_CLASS_LOAD_PATH = System.getProperty("catalina.base") + "\\webapps\\ProjectBuilder\\WEB-INF\\classes\\";
+    public static String getJobEngineCustomImport() {
+        String imp = ConfigurationConstants.JAVA_GENERATION_PATH.replace(FileUtilities.getPathPrefix(ConfigurationConstants.JAVA_GENERATION_PATH), "");
+        imp = imp.replace("\\", ".");
+        imp = imp.replace("//", ".");
+        imp = imp.replace("/", ".");
+        if(StringUtilities.isEmpty(imp)) {
+            imp = CLASS_PACKAGE;
+        }
+        else {
+            imp = imp + "." + CLASS_PACKAGE;
+        }
+        return imp.replace("..", ".") + ".*";
+    }
 
-    // path where runner loads classes
-    public static String RUNNER_CLASS_LOAD_PATH = System.getProperty("catalina.base") + "\\webapps\\RuntimeManager\\WEB-INF\\classes\\";
+    public static String getJavaGenerationPath() {
+        return JAVA_GENERATION_PATH;
+    }
 
- 	public static final String BPMN_PATH = System.getenv(ConfigurationConstants.SIOTH_ENVIRONMENT_VARIABLE)+ "\\JobEngine\\projects\\";
-
-    public static final String PROJECTS_PATH = System.getenv(ConfigurationConstants.SIOTH_ENVIRONMENT_VARIABLE)+ "\\JobEngine\\projects\\";*/
-
-
- 
- 
-
-    
-    
-    
-
-    
+    public static void setJavaGenerationPath(String javaGenerationPath) {
+        if(!StringUtilities.isEmpty(javaGenerationPath)) {
+            JAVA_GENERATION_PATH = javaGenerationPath;
+        }
+    }
 }

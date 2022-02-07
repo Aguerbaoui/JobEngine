@@ -30,7 +30,8 @@ public class FileUtilities {
 	}
 
 	public static void deleteFileFromPath(String path) throws IOException {
-		Files.deleteIfExists(Paths.get(path));
+		if(path != null)
+			Files.deleteIfExists(Paths.get(path));
 	}
 
 	public static void deleteDirectory(String path) {
@@ -76,10 +77,27 @@ public class FileUtilities {
 	}
 
 	public static boolean fileIsJar(String fileName) {
-		return getFileExtension(fileName).equals("jar");
+		return getFileExtension(fileName).equals("JAR");
 	}
 
 	public String getExtension(String filename) {
 		return FilenameUtils.getExtension(filename);
+	}
+
+	public static String getPathPrefix(String path) {
+		//D:\jobengine\
+		return FilenameUtils.getPrefix(path);
+
+	}
+
+	public static String getPathWithSeparator(String path) {
+		return FilenameUtils.getFullPathNoEndSeparator(path);
+	}
+
+	public static String getSeparator() {
+		return "\\";
+	}
+	public static void main(String... args) {
+		//System.out.println(getPathWithSeparator("D:\\jobengine\\"));
 	}
 }

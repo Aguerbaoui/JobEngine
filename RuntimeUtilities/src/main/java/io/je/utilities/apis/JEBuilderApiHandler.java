@@ -2,6 +2,7 @@ package io.je.utilities.apis;
 
 import com.squareup.okhttp.Response;
 import io.je.utilities.beans.JEResponse;
+import io.je.utilities.config.JEConfiguration;
 import io.je.utilities.constants.APIConstants;
 import io.je.utilities.exceptions.JERunnerErrorException;
 import io.je.utilities.models.LibModel;
@@ -11,6 +12,8 @@ import utils.network.Network;
 
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
+
+import java.util.HashMap;
 
 import static io.je.utilities.apis.Request.*;
 import static io.je.utilities.constants.APIConstants.*;
@@ -94,13 +97,26 @@ public class JEBuilderApiHandler {
 		return sendPatchRequestWithBody(requestUrl,obj);
 	}
 
+	public static JEResponse informUser(Object body) throws JERunnerErrorException {
+		String requestUrl = JEConfiguration.getProjectBuilderUrl() + INFORM_USER;
+		//System.out.println(requestUrl);
+		return sendRequestWithBody(requestUrl, body);
+	}
+
+
+	public static JEResponse sendLogMessage(Object body) throws JERunnerErrorException {
+		String requestUrl = JEConfiguration.getProjectBuilderUrl() + SEND_LOG;
+		//System.out.println(requestUrl);
+		return sendRequestWithBody(requestUrl, body);
+	}
+
     public static int uploadFileTo(String url, LibModel libModel) throws ExecutionException, InterruptedException, IOException {
 		Response response = sendMultipartFormDataPostRequest(url, libModel);
 		return response.code();
     }
 
 	private static Response sendMultipartFormDataPostRequest(String url, LibModel libModel) throws ExecutionException, InterruptedException, IOException {
-		String fileName = libModel.getFileName() != null ? libModel.getFileName() : libModel.getId();
+		String fileName = libModel.getFile().getOriginalFilename();
 		return Network.makeMultipartFormDataPost(url, fileName, libModel.getFilePath());
 	}
 }

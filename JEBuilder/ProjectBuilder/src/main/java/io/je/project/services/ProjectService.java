@@ -8,6 +8,9 @@ import io.je.project.repository.LibraryRepository;
 import io.je.project.repository.ProjectRepository;
 import io.je.rulebuilder.components.JERule;
 import io.je.utilities.apis.JERunnerAPIHandler;
+import io.je.utilities.beans.InformModel;
+import io.je.utilities.beans.JEEvent;
+import io.je.utilities.beans.JEVariable;
 import io.je.utilities.beans.*;
 import io.je.utilities.config.ConfigurationConstants;
 import io.je.utilities.constants.JEMessages;
@@ -15,6 +18,10 @@ import io.je.utilities.exceptions.*;
 import io.je.utilities.log.JELogger;
 import io.je.utilities.models.LibModel;
 import io.je.utilities.ruleutils.OperationStatusDetails;
+import models.JEWorkflow;
+import utils.log.LogCategory;
+import utils.log.LogMessage;
+import utils.log.LogSubModule;
 import io.siothconfig.SIOTHConfigUtility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
@@ -24,6 +31,7 @@ import utils.files.FileUtilities;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
 import utils.zmq.ZMQBind;
+import utils.string.StringUtilities;
 
 import java.io.File;
 import java.time.Instant;
@@ -377,7 +385,42 @@ public class ProjectService {
 	}
 
 	/*
-	* Clean up job engine data
+	* inform message from workflow in runtime
+	* */
+	public void informUser(InformModel informBody) {
+		new Thread(() -> {
+			try {
+				String wfId = null;
+				JEProject p = projectRepository.findByProjectName(informBody.getProjectName()).get(0);
+				if (informBody.getWorkflowName() != null) {
+					List<JEWorkflow> wfs = workflowService.getWorkflowByName(informBody.getWorkflowName());
+					for (JEWorkflow wf : wfs) {
+						if (wf.getJobEngineProjectID().equals(p.getProjectId())) {
+							JELogger.info(informBody.getMessage(), LogCategory.RUNTIME, wf.getJobEngineProjectID(),
+									LogSubModule.WORKFLOW, wf.getJobEngineElementID());
+							break;
+						}
+					}
+				}
+			}
+			catch (Exception e) {
+				JELogger.error("Failed to send inform message to tracker", LogCategory.RUNTIME, informBody.getProjectName(),
+						LogSubModule.WORKFLOW, informBody.getWorkflowName());
+			}
+		}).start();
+
+
+	}
+
+	public void sendLog(LogMessage logMessage) {
+		new Thread(() -> {
+			JELogger.sendLog(logMessage);
+		}).start();
+
+	}
+
+
+	/** Clean up job engine data
 	* */
 	public void cleanUpHouse() {
 		List<JEProject> projects = projectRepository.findAll();
@@ -421,7 +464,8 @@ public class ProjectService {
 				String filePath = uploadsDir + orgName;
 				File dest = new File(filePath);
 				if (dest.exists()) {
-					throw new LibraryException(JEMessages.LIBRARY_EXISTS);
+					FileUtilities.deleteFileFromPath(filePath);
+					//throw new LibraryException(JEMessages.LIBRARY_EXISTS);
 				}
 				file.transferTo(dest);
 				JELogger.debug(JEMessages.UPLOADED_JAR_TO_PATH + dest,
@@ -433,7 +477,7 @@ public class ProjectService {
 				jeLib.setJeObjectCreatedBy(libModel.getCreatedBy());
 				jeLib.setJeObjectModifiedBy(libModel.getCreatedBy());
 				jeLib.setJeObjectCreationDate(Instant.now());
-				jeLib.setJobEngineElementID(libModel.getId());
+				jeLib.setJobEngineElementID(StringUtilities.generateUUID());
 				jeLib.setFileType(FileType.valueOf(FileUtilities.getFileExtension(orgName)));
 				//libraryRepository.save(jeLib);
 				return jeLib;
@@ -444,8 +488,6 @@ public class ProjectService {
 
 		return null;
     }
-
-	
 
 
 

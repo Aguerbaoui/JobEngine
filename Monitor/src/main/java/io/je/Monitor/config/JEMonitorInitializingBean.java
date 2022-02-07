@@ -24,13 +24,12 @@ public class JEMonitorInitializingBean  implements InitializingBean {
     @Override
     public void afterPropertiesSet() throws Exception {
         try {
+            ConfigurationConstants.initConstants(monitorProperties.getSiothId(), monitorProperties.isDev());
             JELogger.initLogger("JEMonitor", monitorProperties.getJeMonitorLogPath(), monitorProperties.getJeMonitorLogLevel());
-            ConfigurationConstants.setSIOTHID(monitorProperties.getSiothId());
             SIOTHConfigUtility.setSiothId(monitorProperties.getSiothId());
             JELogger.control(JEMessages.LOGGER_INITIALIZED,
                     LogCategory.MONITOR, null,
                     LogSubModule.JEMONITOR, null);
-
             subscriber.initSubscriber();
         }
         catch (Exception e) {e.printStackTrace();}

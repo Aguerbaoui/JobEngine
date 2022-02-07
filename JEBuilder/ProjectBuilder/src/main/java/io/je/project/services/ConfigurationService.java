@@ -44,6 +44,7 @@ public class ConfigurationService {
 	 */
 	public void init()
 			{
+
 		try{
 				JELogger.debug(JEMessages.INITILIZING_BUILDER,  LogCategory.DESIGN_MODE,
 					null, LogSubModule.JEBUILDER, null);
@@ -132,7 +133,5 @@ public class ConfigurationService {
 	public static void setRunnerStatus(boolean status) {
 		runnerStatus = status;
 	}
-
-	
 
 }
