@@ -279,5 +279,15 @@ public Block getInputById(String id)
 	return null;
 }
 
+public  void addSpecificInstance(String instanceId) {
+	
+}
+
+
+
+public void removeSpecificInstance() {
+	// TODO Auto-generated method stub
+	
+}
 
 }

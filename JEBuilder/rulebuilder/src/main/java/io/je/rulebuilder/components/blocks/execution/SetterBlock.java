@@ -2,6 +2,8 @@ package io.je.rulebuilder.components.blocks.execution;
 
 import java.util.List;
 
+import org.springframework.data.annotation.Transient;
+
 import io.je.rulebuilder.components.blocks.ExecutionBlock;
 import io.je.rulebuilder.config.AttributesMapping;
 import io.je.rulebuilder.models.BlockModel;
@@ -17,6 +19,10 @@ import io.je.utilities.exceptions.RuleBuildFailedException;
  */
 public class SetterBlock extends ExecutionBlock {
 		
+	
+	@Transient
+	String primeJoinId;
+	
 	//SOURCE
 	ValueType sourceType; //ATTRIBUTE/STATIC/VARIBLE
 	
@@ -39,6 +45,7 @@ public class SetterBlock extends ExecutionBlock {
 	String destinationAttributeName;
 	String destinationAttributeType;
 	String destinationClassName;
+	String destinationClassId; //to be added
 
 	//variable
 	String destinationVariableId;
@@ -46,11 +53,16 @@ public class SetterBlock extends ExecutionBlock {
 	//Constants
 	String executionerMethod= "Executioner.writeToInstance(";
 	
+	boolean isGeneric;  //to be added
+	
 
 	public SetterBlock(BlockModel blockModel) {
 		super(blockModel);
 		try
 		{
+		
+			isGeneric= (boolean) blockModel.getBlockConfiguration().get("isGeneric");	
+			
 		//source configuration 
 			
 			//source type
@@ -201,6 +213,22 @@ public class SetterBlock extends ExecutionBlock {
 	  }
 	  return "";
 	  
+	}
+
+	public String getDestinationClassId() {
+		return destinationClassId;
+	}
+
+	public void setDestinationClassId(String destinationClassId) {
+		this.destinationClassId = destinationClassId;
+	}
+
+	public boolean isGeneric() {
+		return isGeneric;
+	}
+
+	public void setGeneric(boolean isGeneric) {
+		this.isGeneric = isGeneric;
 	}
 
 

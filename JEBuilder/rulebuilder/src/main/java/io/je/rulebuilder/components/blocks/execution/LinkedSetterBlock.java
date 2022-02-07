@@ -2,6 +2,8 @@ package io.je.rulebuilder.components.blocks.execution;
 
 import java.util.List;
 
+import org.springframework.data.annotation.Transient;
+
 import io.je.rulebuilder.components.blocks.ExecutionBlock;
 import io.je.rulebuilder.config.AttributesMapping;
 import io.je.rulebuilder.models.BlockModel;
@@ -14,7 +16,9 @@ import io.je.rulebuilder.models.BlockModel;
 public class LinkedSetterBlock extends ExecutionBlock {
 	
 
-	
+	boolean isGeneric;
+	@Transient
+	String primeJoinId;
 	/*******************************Instance definition*******************************/
 	String classId;
 	String classPath;
@@ -27,6 +31,7 @@ public class LinkedSetterBlock extends ExecutionBlock {
 		super(blockModel);
 		try
 		{
+			isGeneric= (boolean) blockModel.getBlockConfiguration().get("isGeneric");	
 			classId=(String) blockModel.getBlockConfiguration().get(AttributesMapping.CLASSID);
 			classPath = (String) blockModel.getBlockConfiguration().get(AttributesMapping.CLASSNAME);
 			destinationAttributeName = (String) blockModel.getBlockConfiguration().get(AttributesMapping.ATTRIBUTENAME);
@@ -61,13 +66,27 @@ public class LinkedSetterBlock extends ExecutionBlock {
 	@Override
 	public String getExpression() {		
 		StringBuilder expression = new StringBuilder();
-		for(String instance : instances)
+		if(primeJoinId==null)
+		{
+			for(String instance : instances)
+			{
+				expression.append(  "Executioner.updateInstanceAttributeValueFromStaticValue( "
+						 +"\"" + this.jobEngineProjectID  +"\","
+						  +"\"" + this.ruleId  +"\","
+						  +"\"" + this.blockName  +"\","				  					  
+						  +"\"" + instance  +"\","
+						  +"\"" + this.destinationAttributeName  +"\","
+						  + getInputRefName(0)
+						  +");\r\n");
+				expression.append("\n");
+			}
+		}else
 		{
 			expression.append(  "Executioner.updateInstanceAttributeValueFromStaticValue( "
 					 +"\"" + this.jobEngineProjectID  +"\","
 					  +"\"" + this.ruleId  +"\","
 					  +"\"" + this.blockName  +"\","				  					  
-					  +"\"" + instance  +"\","
+					  + primeJoinId  +","
 					  +"\"" + this.destinationAttributeName  +"\","
 					  + getInputRefName(0)
 					  +");\r\n");
@@ -78,6 +97,31 @@ public class LinkedSetterBlock extends ExecutionBlock {
 
 	}
 
+	public boolean isGeneric() {
+		return isGeneric;
+	}
+
+	public void setGeneric(boolean isGeneric) {
+		this.isGeneric = isGeneric;
+	}
+
+	public String getClassId() {
+		return classId;
+	}
+
+	public void setClassId(String classId) {
+		this.classId = classId;
+	}
+	@Override
+	public  void addSpecificInstance(String instanceId) {
+
+			this.primeJoinId=instanceId;
+		
+	}
+	@Override
+	public  void removeSpecificInstance() {
+		this.primeJoinId=null;
+	}
 
 
 }
