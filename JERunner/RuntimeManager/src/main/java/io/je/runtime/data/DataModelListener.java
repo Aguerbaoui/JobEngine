@@ -81,7 +81,7 @@ public class DataModelListener {
     }
 
     public static void startListening(List<String> topics) {
-        JELogger.control(JEMessages.LISTENING_ON_TOPICS + topics,  LogCategory.RUNTIME,
+        JELogger.debug(JEMessages.LISTENING_ON_TOPICS + topics,  LogCategory.RUNTIME,
                 null, LogSubModule.JERUNNER, null);
     	for (String id : topics)
     	{

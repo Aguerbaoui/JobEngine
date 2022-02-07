@@ -6,6 +6,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.je.utilities.beans.ClassAuthor;
+import io.je.utilities.config.ConfigurationConstants;
 import org.burningwave.core.assembler.ComponentContainer;
 import org.burningwave.core.assembler.ComponentSupplier;
 import org.burningwave.core.classes.AnnotationSourceGenerator;
@@ -16,19 +18,25 @@ import org.burningwave.core.classes.TypeDeclarationSourceGenerator;
 import org.burningwave.core.classes.UnitSourceGenerator;
 import org.burningwave.core.classes.VariableSourceGenerator;
 
-import io.je.classbuilder.entity.ClassType;
+import io.je.utilities.beans.ClassType;
 import io.je.classbuilder.models.ClassDefinition;
 import io.je.classbuilder.models.FieldModel;
 import io.je.classbuilder.models.MethodModel;
-import io.je.utilities.constants.ClassBuilderConfig;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.AddClassException;
 import io.je.utilities.exceptions.ClassLoadException;
 import io.je.utilities.log.JELogger;
 import io.je.utilities.runtimeobject.JEObject;
+import utils.files.FileUtilities;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
 import utils.string.StringUtilities;
+
+import static io.je.utilities.config.ConfigurationConstants.getJobEngineCustomImport;
+import static io.je.utilities.constants.ClassBuilderConfig.CLASS_PACKAGE;
+import static io.je.utilities.constants.ClassBuilderConfig.SCRIPTS_PACKAGE;
+import static utils.files.FileUtilities.getPathWithSeparator;
+import static utils.files.FileUtilities.getSeparator;
 
 /*
  * build class from class definition
@@ -42,7 +50,7 @@ public class ClassBuilder {
 	 * build .java class/interface/enum from classModel
 	 * returns  path where file was created
 	 */
-	public static String buildClass(ClassDefinition classDefinition, String generationPath) throws AddClassException, ClassLoadException {
+	public static String buildClass(ClassDefinition classDefinition, String generationPath, String packageName) throws AddClassException, ClassLoadException {
 		
 		//check if class format is valid
 		if(classDefinition.getName()==null)
@@ -57,7 +65,7 @@ public class ClassBuilder {
 		
 		//generate class
 		if (classDefinition.getIsClass()) {
-			return  generateClass(classDefinition, generationPath);
+			return  generateClass(classDefinition, generationPath, packageName);
 			
 
 		}
@@ -72,7 +80,7 @@ public class ClassBuilder {
 	}
 
 	/* add imports */
-	private static void addImports(List<String> imports, UnitSourceGenerator unitSG ) {
+	private static void addImports(List<String> imports, UnitSourceGenerator unitSG, ClassAuthor classAuthor) {
 		//TODO : remove harcoded imports
 		unitSG.addImport("com.fasterxml.jackson.annotation.JsonProperty");
 		unitSG.addImport("com.fasterxml.jackson.annotation.JsonFormat");
@@ -84,11 +92,13 @@ public class ClassBuilder {
 		unitSG.addImport("io.je.utilities.execution.*");
 		unitSG.addImport("java.lang.*");
 		unitSG.addImport("java.util.*");
-		unitSG.addImport("jeclasses.*;");
 		unitSG.addImport("java.sql.*");
 		unitSG.addImport("javax.sql.*");
 		unitSG.addImport("io.je.utilities.execution.*");
 		unitSG.addImport("io.je.utilities.models.*");
+		if(!classAuthor.equals(ClassAuthor.DATA_MODEL)) {
+			unitSG.addImport(getJobEngineCustomImport());
+		}
 		//TODO: add job engine api 
 		if (imports != null && !imports.isEmpty()) {
 			
@@ -101,15 +111,16 @@ public class ClassBuilder {
 			}
 			
 	}
-		
+
+
 
 	/*
 	 * generate an interface
 	 */
 	private static String generateInterface(ClassDefinition classDefinition, String generationPath) throws ClassLoadException {
-		 UnitSourceGenerator unitSG = UnitSourceGenerator.create(ClassBuilderConfig.generationPackageName);
+		 UnitSourceGenerator unitSG = UnitSourceGenerator.create(CLASS_PACKAGE);
 			//add imports
-			addImports(classDefinition.getImports(),unitSG);
+			addImports(classDefinition.getImports(),unitSG, classDefinition.getClassAuthor());
 		// class name
 		String interfaceName = classDefinition.getName();
 		TypeDeclarationSourceGenerator type = TypeDeclarationSourceGenerator.create(interfaceName);
@@ -152,7 +163,7 @@ public class ClassBuilder {
 		
 		// store class
 				unitSG.addClass(newInterface);
-				String filePath= generationPath + "\\" + ClassBuilderConfig.generationPackageName  + "\\" + classDefinition.getName() +".java" ;
+				String filePath= generationPath + "\\" + CLASS_PACKAGE + "\\" + classDefinition.getName() +".java" ;
 				File file = new File(generationPath);
 				file.delete();
 				unitSG.storeToClassPath(generationPath);
@@ -168,10 +179,10 @@ public class ClassBuilder {
 	/*
 	 * generate a class
 	 */
-	private static String generateClass(ClassDefinition classDefinition, String generationPath) throws ClassLoadException {
-		 UnitSourceGenerator unitSG = UnitSourceGenerator.create(ClassBuilderConfig.generationPackageName);
+	private static String generateClass(ClassDefinition classDefinition, String generationPath, String packageName) throws ClassLoadException {
+		 UnitSourceGenerator unitSG = UnitSourceGenerator.create(packageName);
 			//add imports
-			addImports(classDefinition.getImports(),unitSG);
+			addImports(classDefinition.getImports(),unitSG, classDefinition.getClassAuthor());
 			
 
 		// class name
@@ -307,10 +318,11 @@ public class ClassBuilder {
 		ClassFactory.ClassRetriever classRetriever = classFactory.loadOrBuildAndDefine(
 				unitSG
 		);
-		String filePath= generationPath + "\\" + ClassBuilderConfig.generationPackageName  + "\\" + className +".java" ;
+		String targetFolder = packageName.contains(CLASS_PACKAGE) ? CLASS_PACKAGE : SCRIPTS_PACKAGE;
+		String filePath= getPathWithSeparator(generationPath) + getSeparator() +  targetFolder + getSeparator() + className +".java" ;
 		File file = new File(generationPath);
 		file.delete();
-		unitSG.storeToClassPath(generationPath);
+		unitSG.storeToClassPath(FileUtilities.getPathPrefix(generationPath));
 
 		return filePath;
 		
@@ -356,8 +368,38 @@ public class ClassBuilder {
 		case "STRING":
 			classType =  String.class;
 			break;
+		case "STRING[]":
+			classType =  String[].class;
+			break;
+		case "OBJECT[]":
+			classType =  Object[].class;
+			break;
+		case "INT[]":
+			classType =  int[].class;
+			break;
+		case "FLOAT[]":
+			classType =  float[].class;
+			break;
+		case "LONG[]":
+			classType =  long[].class;
+			break;
+		case "DOUBLE[]":
+			classType =  double[].class;
+			break;
+		case "CHAR[]":
+			classType =  char[].class;
+			break;
+		case "BOOL[]":
+			classType =  boolean[].class;
+			break;
 		case "DATETIME":
 			classType =  LocalDateTime.class;
+			break;
+		case "DATETIME[]":
+			classType =  LocalDateTime[].class;
+			break;
+		case "LIST"	:
+			classType =  ArrayList.class;
 			break;
 		case "VOID":
 			classType =  void.class;

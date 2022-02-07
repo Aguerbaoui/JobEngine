@@ -152,6 +152,21 @@ public class JELogger extends LoggerUtils {
 		publishLogMessage(logMessage);
 	}
 
-	
 
+	public static void sendLog(LogMessage logMessage) {
+		switch(logMessage.getLogLevel()) {
+
+			case Error: { error(logMessage.getMessage().toString()); break; }
+
+			case Inform:{ info(logMessage.getMessage().toString());break; }
+
+			case Debug:{ debug(logMessage.getMessage().toString());break; }
+
+			case Control:{ control(logMessage.getMessage().toString());break; }
+
+			case Warning:{ warn(logMessage.getMessage().toString());break; }
+		}
+
+		publishLogMessage(logMessage);
+	}
 }

@@ -15,6 +15,9 @@ public class JobEngine {
 
 	@JsonProperty("LibraryMaxFileSize")
 	public String libraryMaxFileSize;
+
+	@JsonProperty("GeneratedClassesPath")
+	public String generatedClassesPath;
 	
 	
 	
@@ -68,5 +71,13 @@ public class JobEngine {
 
 	public void setLibraryMaxFileSize(String libraryMaxFileSize) {
 		this.libraryMaxFileSize = libraryMaxFileSize;
+	}
+
+	public String getGeneratedClassesPath() {
+		return generatedClassesPath;
+	}
+
+	public void setGeneratedClassesPath(String generatedClassesPath) {
+		this.generatedClassesPath = generatedClassesPath;
 	}
 }
