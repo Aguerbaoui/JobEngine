@@ -33,15 +33,15 @@ public class JEBuilderInitializingBean implements InitializingBean {
 	ConfigurationService configService;
 	
 	@Autowired
-	BuilderProperties builderProperties;
+    BuilderProperties builderProperties;
 
     @Override
     public void afterPropertiesSet() {
         try {
-            ConfigurationConstants.initConstants(builderProperties.getSiothId(), builderProperties.isDev());
+            ConfigurationConstants.setSIOTHID(builderProperties.getSiothId());
             SIOTHConfigUtility.setSiothId(builderProperties.getSiothId());
             JELogger.initLogger("JEBuilder", builderProperties.getJeBuilderLogPath(),builderProperties.getJeBuilderLogLevel());
-            ConfigurationConstants.setJavaGenerationPath(SIOTHConfigUtility.getSiothConfig().getJobEngine().getGeneratedClassesPath());
+
             AuthenticationInterceptor.init(builderProperties.getIssuer());
             LicenseProperties.init();
            // JEMonitor.setPort(builderProperties.getMonitoringPort());
@@ -58,6 +58,7 @@ public class JEBuilderInitializingBean implements InitializingBean {
     				e.printStackTrace();
     			}
         	}*/
+
             JEMonitor.setPort(builderProperties.getMonitoringPort());
             ZMQSecurity.setSecure(builderProperties.getUseZmqSecurity());
 			configService.init();

@@ -26,9 +26,9 @@ public class ClassRepository {
 	public static void addClass(String classId, String className, Class<?> classs )
 	{
 		loadedClasses.put(classId, classs);
-		if(className.contains(ClassBuilderConfig.CLASS_PACKAGE))
+		if(className.contains(ClassBuilderConfig.generationPackageName))
 		{
-			className = className.replaceFirst(ClassBuilderConfig.CLASS_PACKAGE +".", "");
+			className = className.replaceFirst(ClassBuilderConfig.generationPackageName+".", "");
 		}
 		classIdByName.put(className, classId);
 
@@ -36,9 +36,9 @@ public class ClassRepository {
 	
 	public static String getClassIdByName(String className)
 	{
-		if(className.contains(ClassBuilderConfig.CLASS_PACKAGE))
+		if(className.contains(ClassBuilderConfig.generationPackageName))
 		{
-			className = className.replaceFirst(ClassBuilderConfig.CLASS_PACKAGE +".", "");
+			className = className.replaceFirst(ClassBuilderConfig.generationPackageName+".", "");
 		}
 		return classIdByName.getOrDefault(className, "unknown");
 	}

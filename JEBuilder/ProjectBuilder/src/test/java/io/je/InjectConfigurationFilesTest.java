@@ -48,7 +48,7 @@ public class InjectConfigurationFilesTest {
     }
   }
 
-  /*@Test
+  @Test
   public void SiothConfigJsonTest() {
     environmentVariableExistsTest();
     String configPath = SIOTHConfigurationConstants.SIOTH_JSON_CONFIG;
@@ -64,5 +64,5 @@ public class InjectConfigurationFilesTest {
     } catch (Exception e) {
       assertEquals("Exception thrown for missing json values" + e.getLocalizedMessage(), true);
     }
-  }*/
+  }
 }

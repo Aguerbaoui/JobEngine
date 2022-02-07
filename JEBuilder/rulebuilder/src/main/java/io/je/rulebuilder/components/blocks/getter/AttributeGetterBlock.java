@@ -2,6 +2,8 @@ package io.je.rulebuilder.components.blocks.getter;
 
 import java.util.List;
 
+import org.springframework.data.annotation.Transient;
+
 import io.je.rulebuilder.components.blocks.GetterBlock;
 import io.je.rulebuilder.config.AttributesMapping;
 import io.je.rulebuilder.config.Keywords;
@@ -13,7 +15,10 @@ public class AttributeGetterBlock extends GetterBlock {
 	String classId;
 	String classPath;
 	String attributeName;
-	List<String> specificInstances ; 
+	List<String> specificInstances ;
+	
+	@Transient
+	String primeJoinId;
 
 	public AttributeGetterBlock(BlockModel blockModel) {
 		super(blockModel);
@@ -98,6 +103,13 @@ public class AttributeGetterBlock extends GetterBlock {
 			expression.append(  " , " );
 
 		}
+		if(this.primeJoinId!=null)
+		{
+			expression.append("jobEngineElementID == " +this.primeJoinId);
+			expression.append(  " , " );
+
+
+		}
 		expression.append(getAttributeVariableName() + " : "+ getattributeGetterExpression() );
 		expression.append(  " ) " );
 		return expression.toString();
@@ -123,6 +135,13 @@ public class AttributeGetterBlock extends GetterBlock {
 		{
 			expression.append("jobEngineElementID in ( " + getInstances() + ")");
 			expression.append(  " , " );
+
+		}
+		if(this.primeJoinId!=null)
+		{
+			expression.append("jobEngineElementID == " +this.primeJoinId);
+			expression.append(  " , " );
+
 
 		}
 		expression.append(getAttributeVariableName() + " : "+ getattributeGetterExpression() );
@@ -305,6 +324,16 @@ public class AttributeGetterBlock extends GetterBlock {
 	}
 
 
-
+	@Override
+	public  void addSpecificInstance(String instanceId) {
+		if(this.specificInstances.isEmpty())
+		{
+			this.primeJoinId=instanceId;
+		}
+	}
+	@Override
+	public  void removeSpecificInstance() {
+		this.primeJoinId=null;
+	}
 
 }

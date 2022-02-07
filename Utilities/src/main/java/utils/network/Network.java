@@ -39,9 +39,6 @@ public class Network {
     private Network() {
     }
 
-    /*
-    * Async executor for network calls
-    * */
     public static Executor getAsyncExecutor() {
 
         if (executor == null) {
@@ -55,9 +52,6 @@ public class Network {
         return executor;
     }
 
-    /*
-     * Get with response
-     * */
     public static Response makeGetNetworkCallWithResponse(String url) throws  InterruptedException, ExecutionException {
         Request request = new Request.Builder().url(url).get().build();
         CompletableFuture<Response> f = CompletableFuture.supplyAsync(() -> {
@@ -70,9 +64,6 @@ public class Network {
         return f.get();
     }
 
-    /*
-     * Delete with response
-     * */
     public static Response makeMultipartFormDataPost(String url, String fileName, String filePath) throws ExecutionException, InterruptedException, IOException {
         RequestBody requestBody = new MultipartBuilder().type(MultipartBuilder.FORM)
                 .addFormDataPart("file", fileName,
@@ -121,13 +112,20 @@ public class Network {
         return f.get();
     }
 
-    /*
-     * Post with json body
-     * */
     public static Response makeNetworkCallWithJsonBodyWithResponse(Object json, String url) throws IOException, InterruptedException, ExecutionException {
         String jsonStr = "";
 
             jsonStr = new ObjectMapper().writeValueAsString(json);
+
+        /*} catch (JsonProcessingException e) {
+            /*JELogger.error("Json parsing error" + e.getMessage(),
+                    LogCategory.RUNTIME, null,
+                    LogSubModule.JERUNNER,null);
+
+        }
+        JELogger.debug(JEMessages.NETWORK_POST + url,
+                LogCategory.RUNTIME, null,
+                LogSubModule.JERUNNER,null);*/
         RequestBody body = RequestBody.create(MediaType.parse("application/json"), jsonStr);
         Request request = new Request.Builder().url(url).post(body).build();
         CompletableFuture<Response> f = CompletableFuture.supplyAsync(() -> {
@@ -140,13 +138,21 @@ public class Network {
         return f.get();
     }
 
-    /*
-    * Patch with json body
-    * */
+
     public static Response makePatchNetworkCallWithJsonBodyWithResponse(Object json, String url) throws IOException, InterruptedException, ExecutionException {
         String jsonStr = "";
 
         jsonStr = new ObjectMapper().writeValueAsString(json);
+
+        /*} catch (JsonProcessingException e) {
+            /*JELogger.error("Json parsing error" + e.getMessage(),
+                    LogCategory.RUNTIME, null,
+                    LogSubModule.JERUNNER,null);
+
+        }
+        JELogger.debug(JEMessages.NETWORK_POST + url,
+                LogCategory.RUNTIME, null,
+                LogSubModule.JERUNNER,null);*/
         RequestBody body = RequestBody.create(MediaType.parse("application/json"), jsonStr);
         Request request = new Request.Builder().url(url).patch(body).build();
         CompletableFuture<Response> f = CompletableFuture.supplyAsync(() -> {
@@ -159,12 +165,12 @@ public class Network {
         return f.get();
     }
 
-    /*
-    * Post with string body
-    * */
     public static Response makeNetworkCallWithStringObjectBodyWithResponse(String json, String url) throws  ExecutionException, InterruptedException {
         RequestBody body = RequestBody.create(MediaType.parse("application/json"), json);
         Request request = new Request.Builder().url(url).post(body).build();
+        /*JELogger.debug(JEMessages.NETWORK_POST + url,
+                LogCategory.RUNTIME, null,
+                LogSubModule.JERUNNER,null);*/
         CompletableFuture<Response> f = CompletableFuture.supplyAsync(() -> {
             try {
                 return client.newCall(request).execute();
@@ -175,9 +181,6 @@ public class Network {
         return f.get();
     }
 
-    /*
-    * Execute network call
-    * */
     public static HashMap<String, Object> makePrimitiveNetworkCallWithJson(String url, String json) throws IOException {
         URL uri = new URL (url);
         HttpURLConnection con = (HttpURLConnection)uri.openConnection();

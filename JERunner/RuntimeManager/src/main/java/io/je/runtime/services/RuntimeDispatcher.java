@@ -27,6 +27,7 @@ import io.je.runtime.ruleenginehandler.RuleEngineHandler;
 import io.je.runtime.workflow.WorkflowEngineHandler;
 import io.je.serviceTasks.ActivitiTask;
 import io.je.serviceTasks.ActivitiTaskManager;
+import io.je.utilities.classloader.JEClassCompiler;
 import io.je.utilities.classloader.JEClassLoader;
 import io.je.utilities.config.ConfigurationConstants;
 import io.je.utilities.constants.ClassBuilderConfig;
@@ -58,7 +59,6 @@ import io.je.utilities.models.VariableModel;
 import io.je.utilities.models.WorkflowModel;
 import io.je.utilities.ruleutils.OperationStatusDetails;
 import io.je.utilities.runtimeobject.JEObject;
-import utils.files.FileUtilities;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
 
@@ -196,7 +196,7 @@ public class RuntimeDispatcher {
 			if (wf.isTriggeredByEvent()) {
 				process.setTriggerMessage(wf.getTriggerMessage());
 			}
-			//JobEngine.updateProjects(wf.getProjectId(), wf.getProjectName());
+			JobEngine.updateProjects(wf.getProjectId(), wf.getProjectName());
 			for (TaskModel task : wf.getTasks()) {
 				ActivitiTask activitiTask = WorkflowEngineHandler.parseTask(wf.getProjectId(), wf.getId(), task);
 				ActivitiTaskManager.addTask(activitiTask);
@@ -223,8 +223,8 @@ public class RuntimeDispatcher {
 	public void launchProcessWithoutVariables(String projectId, String key, boolean runProject)
 			throws WorkflowNotFoundException,  WorkflowAlreadyRunningException,
 			WorkflowBuildException, WorkflowRunException {
-		/*JELogger.debug("[projectId = " + projectId + "] [workflow = " + key + "]" + JEMessages.RUNNING_WF,
-				LogCategory.RUNTIME, projectId, LogSubModule.WORKFLOW, key);*/
+		JELogger.debug("[projectId = " + projectId + "] [workflow = " + key + "]" + JEMessages.RUNNING_WF,
+				LogCategory.RUNTIME, projectId, LogSubModule.WORKFLOW, key);
 		//buildWorkflow(projectId, key);
 		WorkflowEngineHandler.launchProcessWithoutVariables(projectId, key, runProject);
 
@@ -252,12 +252,16 @@ public class RuntimeDispatcher {
 	// add class
 	public void addClass(ClassModel classModel) throws ClassLoadException {
 		JELogger.debug(JEMessages.ADDING_CLASS+": "+classModel.getClassName(), LogCategory.RUNTIME, null, LogSubModule.CLASS, null);
+			JEClassCompiler.compileClass(classModel.getClassPath(), ConfigurationConstants.RUNNER_CLASS_LOAD_PATH);
 			try {
 				Class<?> c = null;
 				if(classModel.getClassAuthor().equals(ClassAuthor.DATA_MODEL)) {
-					JEClassLoader.overrideDataModelInstance();
 					c = JEClassLoader.getDataModelInstance()
-						.loadClass(JEClassLoader.getJobEnginePackageName(ClassBuilderConfig.CLASS_PACKAGE) + "." + classModel.getClassName());
+						.loadClassInDataModelClassLoader(ClassBuilderConfig.generationPackageName + "." + classModel.getClassName());
+				}
+				else {
+					c = JEClassLoader.getJeInstance()
+					.loadClassInJobEngineClassLoader(ClassBuilderConfig.generationPackageName + "." + classModel.getClassName());
 				}
 				ClassRepository.addClass(classModel.getClassId(), classModel.getClassName(), c);
 			} catch (ClassNotFoundException e) {
@@ -269,8 +273,14 @@ public class RuntimeDispatcher {
 	}
 
 	public void updateClass(ClassModel classModel) throws ClassLoadException, ClassNotFoundException {
+		
 		if(classModel.getClassAuthor().equals(ClassAuthor.DATA_MODEL)) {
+			JEClassLoader.overrideDataModelInstance(ClassBuilderConfig.generationPackageName + "." + classModel.getClassName());
 			RuleEngineHandler.reloadContainers();
+		}
+		
+		else {
+			JEClassLoader.overrideJeInstance(ClassBuilderConfig.generationPackageName + "." + classModel.getClassName());
 		}
 		addClass(classModel);
 		
@@ -367,11 +377,13 @@ public class RuntimeDispatcher {
 
 	// remove/stop workflow from runner
 	public void removeWorkflow(String projectId, String workflowId) {
+		JELogger.debug("[projectId = " + projectId + "] [workflow = " + workflowId + "]" + JEMessages.REMOVING_WF,
+				LogCategory.RUNTIME, projectId, LogSubModule.WORKFLOW, workflowId);
 
 		try {
 			WorkflowEngineHandler.deleteProcess(projectId, workflowId);
 		} catch (WorkflowRunException e) {
-			JELogger.debug(JEMessages.ERROR_DELETING_A_NON_EXISTING_PROCESS,
+			JELogger.error(JEMessages.ERROR_DELETING_A_NON_EXISTING_PROCESS,
 					LogCategory.RUNTIME, projectId,
 					LogSubModule.WORKFLOW, workflowId);
 		}

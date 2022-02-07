@@ -15,7 +15,7 @@ public class ScriptBlock extends WorkflowBlock {
     String scriptPath;
 
     public String getScript() {
-        return script + "JobEngine.endJob();";
+        return script;
     }
 
     public int getTimeout() {
@@ -38,6 +38,6 @@ public class ScriptBlock extends WorkflowBlock {
     }
 
     public void setScriptPath(String scriptPath) {
-        this.scriptPath = ConfigurationConstants.JAVA_GENERATION_PATH + "\\" + ClassBuilderConfig.CLASS_PACKAGE + "\\" + scriptPath + ".java";
+        this.scriptPath = ConfigurationConstants.JAVA_GENERATION_PATH + "\\" + ClassBuilderConfig.generationPackageName + "\\" + scriptPath + ".java";
     }
 }

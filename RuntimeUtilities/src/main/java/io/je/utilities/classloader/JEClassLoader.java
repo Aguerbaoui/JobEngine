@@ -1,21 +1,19 @@
 package io.je.utilities.classloader;
 
-import io.je.utilities.config.ConfigurationConstants;
 import io.je.utilities.constants.ClassBuilderConfig;
 import io.je.utilities.instances.ClassRepository;
 import io.je.utilities.log.JELogger;
-import utils.files.FileUtilities;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
-import utils.string.StringUtilities;
 
-import java.io.*;
+import java.io.DataInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
-
-import static io.je.utilities.config.ConfigurationConstants.JAVA_GENERATION_PATH;
 
 public class JEClassLoader extends ClassLoader {
 
@@ -23,12 +21,19 @@ public class JEClassLoader extends ClassLoader {
 
     static Set<String> dataModelCustomClasses;
 
+    static Set<String> jeCustomClasses;
+
     static JEClassLoader dataModelInstance;
 
     static JEClassLoader currentRuleEngineClassLoader;
+    
+    static JEClassLoader jeInstance;
 
-    private JEClassLoader(Set<String> dataModelCustomClasses) {
+    private JEClassLoader(Set<String> jeCustomClasses, Set<String> dataModelCustomClasses) {
         super(Thread.currentThread().getContextClassLoader());
+        if (jeCustomClasses != null) {
+            JEClassLoader.jeCustomClasses = jeCustomClasses;
+        }
         if (dataModelCustomClasses != null) {
             JEClassLoader.dataModelCustomClasses = dataModelCustomClasses;
         }
@@ -36,20 +41,35 @@ public class JEClassLoader extends ClassLoader {
 
     public static JEClassLoader getDataModelInstance() {
         if (dataModelInstance == null) {
-            dataModelInstance = new JEClassLoader(new HashSet<>());
+            dataModelInstance = new JEClassLoader(null, new HashSet<>());
 
         }
         return dataModelInstance;
+    }
+
+    public static JEClassLoader getJeInstance() {
+        if (jeInstance == null) {
+            jeInstance = new JEClassLoader(new HashSet<>(), null);
+
+        }
+        return jeInstance;
     }
 
     public static JEClassLoader overrideDataModelInstance() {
         if (dataModelCustomClasses == null) {
             dataModelCustomClasses = new HashSet<>();
         }
-        dataModelInstance = new JEClassLoader(dataModelCustomClasses);
+        dataModelInstance = new JEClassLoader(null, dataModelCustomClasses);
         return dataModelInstance;
     }
 
+    public static JEClassLoader overrideJeInstance() {
+        if (jeCustomClasses == null) {
+            jeCustomClasses = new HashSet<>();
+        }
+        jeInstance = new JEClassLoader(jeCustomClasses, null);
+        return jeInstance;
+    }
 
     public static JEClassLoader overrideDataModelInstance(String newClass) throws ClassNotFoundException {
 
@@ -57,11 +77,11 @@ public class JEClassLoader extends ClassLoader {
             dataModelCustomClasses = new HashSet<>();
         }
         synchronized (dataModelCustomClasses) {
-            dataModelInstance = new JEClassLoader(dataModelCustomClasses);
+            dataModelInstance = new JEClassLoader(null, dataModelCustomClasses);
             dataModelCustomClasses.remove(newClass);
             Set<String> all = dataModelCustomClasses;
             for (String c : all) {
-                ClassRepository.addClass(ClassRepository.getClassIdByName(c), c, dataModelInstance.loadClass(c));
+                ClassRepository.addClass(ClassRepository.getClassIdByName(c), c, dataModelInstance.loadClassInDataModelClassLoader(c));
             }
 
         }
@@ -69,10 +89,43 @@ public class JEClassLoader extends ClassLoader {
         return dataModelInstance;
     }
 
+    public static JEClassLoader overrideJeInstance(String newClass) throws ClassNotFoundException {
 
-    @Override
-    public Class<?> loadClass(String className) throws ClassNotFoundException {
-        if (className.contains(ClassBuilderConfig.CLASS_PACKAGE + ".")
+        if (jeCustomClasses == null) {
+            jeCustomClasses = new HashSet<>();
+        }
+        synchronized (jeCustomClasses) {
+            jeInstance = new JEClassLoader(jeCustomClasses, null);
+            jeCustomClasses.remove(newClass);
+            Set<String> all = jeCustomClasses;
+            for (String c : all) {
+                ClassRepository.addClass(ClassRepository.getClassIdByName(c), c, jeInstance.loadClassInJobEngineClassLoader(c));
+            }
+
+        }
+
+        return jeInstance;
+    }
+
+
+    public Class<?> loadClassInJobEngineClassLoader(String className) throws ClassNotFoundException {
+        if (className.startsWith(ClassBuilderConfig.generationPackageName + ".")
+                && !className.contains("Propagation")) {
+            jeCustomClasses.add(className);
+            try {
+                JELogger.trace("Class Loading by je custom loader Started for " + className, LogCategory.RUNTIME,
+                        null, LogSubModule.CLASS, null);
+                return jeInstance.getClass(className);
+            } catch (Exception e) {
+                // JELogger.debug("Class Loading failed by je custom loader for " + name);
+                JELogger.error(Arrays.toString(e.getStackTrace()));
+            }
+        }
+        return jeInstance.loadClass(className);
+    }
+
+    public Class<?> loadClassInDataModelClassLoader(String className) throws ClassNotFoundException {
+        if (className.startsWith(ClassBuilderConfig.generationPackageName + ".")
                 && !className.contains("Propagation")) {
             dataModelCustomClasses.add(className);
             try {
@@ -81,11 +134,18 @@ public class JEClassLoader extends ClassLoader {
                 Class<?> c = dataModelInstance.getClass(className);
                 return c;
             } catch (Exception e) {
-                JELogger.debug("Class Loading failed by je custom loader for " + className);
+                // JELogger.debug("Class Loading failed by je custom loader for " + name);
                 JELogger.error(Arrays.toString(e.getStackTrace()));
             }
         }
-        return super.loadClass(className);
+
+        return dataModelInstance.loadClass(className);
+
+    }
+
+    @Override
+    public Class<?> loadClass(String name) throws ClassNotFoundException {
+        return super.loadClass(name);
     }
 
     /**
@@ -99,7 +159,7 @@ public class JEClassLoader extends ClassLoader {
      * @throws ClassNotFoundException
      */
     private Class<?> getClass(String name) throws ClassNotFoundException {
-        String file = FileUtilities.getPathPrefix(JAVA_GENERATION_PATH) + name.replace('.', File.separatorChar) + ".class";
+        String file = name.replace('.', File.separatorChar) + ".class";
         byte[] byteArr = null;
         try {
             // This loads the byte code data from the file
@@ -125,7 +185,8 @@ public class JEClassLoader extends ClassLoader {
      */
     private byte[] loadClassData(String name) throws IOException {
 
-        InputStream stream = new FileInputStream(name);
+        InputStream stream = getClass().getClassLoader().getResourceAsStream(
+                name);
         int size = stream.available();
         streams.put(name, stream);
         byte buff[] = new byte[size];
@@ -150,18 +211,31 @@ public class JEClassLoader extends ClassLoader {
 		JEClassLoader.currentRuleEngineClassLoader = currentRuleEngineClassLoader;
 	}
 
+    /*
+     * public static void main(String[] args) throws ClassNotFoundException,
+     * InstantiationException, IllegalAccessException, IllegalArgumentException,
+     * InvocationTargetException, NoSuchMethodException, Exception {
+     * 
+     * // JEClassLoader loader = new JEClassLoader(
+     * // JEClassLoader.class.getClassLoader());
+     * 
+     * // System.out.println("loader name---- "
+     * +loader.getParent().getClass().getName());
+     * 
+     * //This Loads the Class we must always
+     * //provide binary name of the class
+     * // Class<?> clazz =
+     * // loader.loadClass("classes.testScripttScriptt");
+     * 
+     * // System.out.println("Loaded class name: " + clazz.getName());
+     * 
+     * //Create instance Of the Class and invoke the particular method
+     * //Object instance = clazz.newInstance();
+     * 
+     * //clazz.getMethod("printMyName").invoke(instance);
+     * }
+     */
 
-    public static String getJobEnginePackageName(String packageName) {
-        String imp = ConfigurationConstants.JAVA_GENERATION_PATH.replace(FileUtilities.getPathPrefix(ConfigurationConstants.JAVA_GENERATION_PATH), "");
-        imp = imp.replace("\\", ".");
-        imp = imp.replace("//", ".");
-        imp = imp.replace("/", ".");
-        if(StringUtilities.isEmpty(imp)) {
-            imp = packageName;
-        }
-        else {
-            imp = imp + "." + packageName;
-        }
-        return imp.replace("..", ".");
-    }
+    
+    
 }

@@ -2,7 +2,6 @@ package io.je.processes;
 
 //import static io.je.utilities.constants.JEMessages.SENDING_WORKFLOW_MONITORING_DATA_TO_JEMONITOR;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -10,8 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
-import io.je.serviceTasks.ScriptTask;
-import io.je.utilities.execution.CommandExecutioner;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.DynamicBpmnService;
 import org.activiti.engine.HistoryService;
@@ -44,7 +41,6 @@ import io.je.utilities.log.JELogger;
 import io.je.utilities.monitoring.JEMonitor;
 import io.je.utilities.monitoring.MonitoringMessage;
 import io.je.utilities.monitoring.ObjectType;
-import utils.ProcessRunner;
 import utils.files.FileUtilities;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
@@ -149,9 +145,9 @@ public class ProcessManager {
         ResourceBundle.clearCache(Thread.currentThread().getContextClassLoader());
         //repoService.
         try {
-           /* JELogger.debug(JEMessages.DEPLOYING_IN_RUNNER_WORKFLOW_WITH_ID + " = " + key,
+            JELogger.debug(JEMessages.DEPLOYING_IN_RUNNER_WORKFLOW_WITH_ID + " = " + key,
                     LogCategory.RUNTIME, processes.get(key).getProjectId(),
-                    LogSubModule.WORKFLOW, key);*/
+                    LogSubModule.WORKFLOW, key);
             String processXml = FileUtilities.getStringFromFile(processes.get(key).getBpmnPath());
             //DeploymentBuilder deploymentBuilder = processEngine.getRepositoryService().createDeployment().name(key);
             deploymentBuilder = processEngine.getRepositoryService().createDeployment().name("DeploymentBuilder");
@@ -160,8 +156,8 @@ public class ProcessManager {
                 repoService.deleteDeployment(processes.get(key).getDeploymentId());
             }
             /*Deployment*/ deployment = deploymentBuilder.deploy(); //to debug it if needed
-            /*JELogger.debug("id = " + deployment.getId() + " key = " + deployment.getKey() + " category =" + deployment.getCategory() +
-                    " tenant id =" + deployment.getTenantId());*/
+            JELogger.debug("id = " + deployment.getId() + " key = " + deployment.getKey() + " category =" + deployment.getCategory() +
+                    " tenant id =" + deployment.getTenantId());
             processes.get(key).setDeployed(true);
             processes.get(key).setDeploymentId(deployment.getId());
         } catch (Exception e) {
@@ -191,10 +187,7 @@ public class ProcessManager {
             if (!process.isTriggeredByEvent() && (process.isOnProjectBoot() || !runProject)) {
 
                 process.setActiveThread(new Thread(() -> {
-                    try {
-                        ProcessInstance p = runtimeService.startProcessInstanceByKey(id);
-                    }
-                    catch (Exception e) {}
+                    ProcessInstance p = runtimeService.startProcessInstanceByKey(id);
                     //process.setRunning(true);
                 }));
                 process.getActiveThread().start();
@@ -227,10 +220,8 @@ public class ProcessManager {
 
             try {
                 process.setActiveThread(new Thread(() -> {
-                    try {
-                        ProcessInstance p = runtimeService.startProcessInstanceByKey(id, variables);
-                    }
-                    catch (Exception e) {}
+                    ProcessInstance p = runtimeService.startProcessInstanceByKey(id, variables);
+
                     //process.setRunning(true);
                 }));
                 process.getActiveThread().start();
@@ -347,7 +338,6 @@ public class ProcessManager {
         JEMonitor.publish(msg);
         if(!b) {
             if(process.getEndEventId() != null) {
-
                 try {
                     JERunnerAPIHandler.triggerEvent(process.getEndEventId(), process.getProjectId());
                 } catch (JERunnerErrorException e) {
@@ -370,18 +360,6 @@ public class ProcessManager {
                 repoService.deleteDeployment(process.getDeploymentId());
                 if(process.getActiveThread() != null) {
                     process.getActiveThread().interrupt();
-                }
-                HashMap<String, ActivitiTask> tasks = process.getActivitiTasks();
-                for(ActivitiTask task: tasks.values()) {
-                    if (task instanceof ScriptTask && ((ScriptTask) task).getPid() != -1) {
-                        try {
-                            CommandExecutioner.KillProcessByPid(((ScriptTask) task).getPid());
-                            ((ScriptTask) task).setPid(-1);
-                        } catch (Exception e) {
-                            JELogger.error(JEMessages.ERROR_STOPPING_PROCESS, LogCategory.RUNTIME, process.getProjectId(), LogSubModule.WORKFLOW, process.getName());
-
-                        }
-                    }
                 }
                 JELogger.debug(JEMessages.STOPPING_WORKFLOW_FORCED,
                         LogCategory.RUNTIME, process.getProjectId(),

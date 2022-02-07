@@ -6,7 +6,10 @@ import com.squareup.okhttp.Response;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.exceptions.JERunnerErrorException;
+import io.je.utilities.log.JELogger;
 import io.je.utilities.beans.JEResponse;
+import utils.log.LogCategory;
+import utils.log.LogSubModule;
 import utils.network.Network;
 
 import java.io.IOException;
@@ -25,8 +28,8 @@ public class Request {
 
             if (response == null) throw new JERunnerErrorException(JEMessages.JERUNNER_UNREACHABLE);
             if (response.code() != ResponseCodes.CODE_OK) {
-                /*JELogger.error(JEMessages.NETWORK_CALL_ERROR + requestUrl, LogCategory.RUNTIME, null,
-                        LogSubModule.JEBUILDER, null);*/
+                JELogger.error(JEMessages.NETWORK_CALL_ERROR + requestUrl, LogCategory.RUNTIME, null,
+                        LogSubModule.JEBUILDER, null);
                 throw new JERunnerErrorException(JEMessages.JERUNNER_ERROR + " : " + response.body().string());
             }
 
@@ -34,8 +37,8 @@ public class Request {
             ObjectMapper objectMapper = new ObjectMapper();
             return objectMapper.readValue(respBody, JEResponse.class);
         } catch (IOException | InterruptedException | ExecutionException e) {
-            /*JELogger.error(JEMessages.NETWORK_CALL_ERROR + requestUrl, LogCategory.RUNTIME, null,
-                    LogSubModule.JEBUILDER, null);*/
+            JELogger.error(JEMessages.NETWORK_CALL_ERROR + requestUrl, LogCategory.RUNTIME, null,
+                    LogSubModule.JEBUILDER, null);
             throw new JERunnerErrorException(JEMessages.JERUNNER_UNREACHABLE + " Or " + JEMessages.JEBUILDER_UNREACHABLE);
         }
     }
@@ -51,8 +54,8 @@ public class Request {
 
             if (response == null) throw new JERunnerErrorException(JEMessages.JERUNNER_UNREACHABLE);
             if (response.code() != ResponseCodes.CODE_OK) {
-                /*JELogger.error(JEMessages.NETWORK_CALL_ERROR + requestUrl, LogCategory.RUNTIME, null,
-                        LogSubModule.JEBUILDER, null);*/
+                JELogger.error(JEMessages.NETWORK_CALL_ERROR + requestUrl, LogCategory.RUNTIME, null,
+                        LogSubModule.JEBUILDER, null);
                 throw new JERunnerErrorException(JEMessages.JERUNNER_ERROR + " : " + response.body().string());
             }
 
@@ -60,8 +63,8 @@ public class Request {
             ObjectMapper objectMapper = new ObjectMapper();
             return objectMapper.readValue(respBody, JEResponse.class);
         } catch (IOException | InterruptedException | ExecutionException e) {
-            /*JELogger.error(JEMessages.NETWORK_CALL_ERROR + requestUrl, LogCategory.RUNTIME, null,
-                    LogSubModule.JEBUILDER, null);*/
+            JELogger.error(JEMessages.NETWORK_CALL_ERROR + requestUrl, LogCategory.RUNTIME, null,
+                    LogSubModule.JEBUILDER, null);
             throw new JERunnerErrorException(JEMessages.JERUNNER_UNREACHABLE + " Or " + JEMessages.JEBUILDER_UNREACHABLE);
         }
     }
@@ -76,8 +79,8 @@ public class Request {
 
             if (response == null) throw new JERunnerErrorException(JEMessages.JERUNNER_UNREACHABLE);
             if (response.code() != ResponseCodes.CODE_OK) {
-                /*JELogger.error(JEMessages.NETWORK_CALL_ERROR + requestUrl, LogCategory.RUNTIME, null,
-                        LogSubModule.JEBUILDER, null);*/
+                JELogger.error(JEMessages.NETWORK_CALL_ERROR + requestUrl, LogCategory.RUNTIME, null,
+                        LogSubModule.JEBUILDER, null);
                 throw new JERunnerErrorException(JEMessages.JERUNNER_ERROR + " : " + response.body().string());
             }
 
@@ -85,8 +88,8 @@ public class Request {
             ObjectMapper objectMapper = new ObjectMapper();
             return objectMapper.readValue(respBody, JEResponse.class);
         } catch (IOException | InterruptedException | ExecutionException e) {
-            /*JELogger.error(JEMessages.NETWORK_CALL_ERROR + requestUrl, LogCategory.RUNTIME, null,
-                    LogSubModule.JEBUILDER, null);*/
+            JELogger.error(JEMessages.NETWORK_CALL_ERROR + requestUrl, LogCategory.RUNTIME, null,
+                    LogSubModule.JEBUILDER, null);
             throw new JERunnerErrorException(JEMessages.JERUNNER_UNREACHABLE + " Or " + JEMessages.JEBUILDER_UNREACHABLE);
         }
     }
@@ -102,8 +105,8 @@ public class Request {
 
             if (response == null) throw new JERunnerErrorException(JEMessages.JERUNNER_UNREACHABLE);
             if (response.code() != ResponseCodes.CODE_OK) {
-                /*JELogger.error(JEMessages.NETWORK_CALL_ERROR + requestUrl, LogCategory.RUNTIME, null,
-                        LogSubModule.JEBUILDER, null);*/
+                JELogger.error(JEMessages.NETWORK_CALL_ERROR + requestUrl, LogCategory.RUNTIME, null,
+                        LogSubModule.JEBUILDER, null);
                 throw new JERunnerErrorException(JEMessages.JERUNNER_ERROR + " : " + response.message());
             }
 
@@ -111,8 +114,8 @@ public class Request {
             ObjectMapper objectMapper = new ObjectMapper();
             return objectMapper.readValue(respBody, JEResponse.class);
         } catch (IOException | InterruptedException | ExecutionException e) {
-            /*JELogger.error(JEMessages.NETWORK_CALL_ERROR + requestUrl, LogCategory.RUNTIME, null,
-                    LogSubModule.JEBUILDER, null);*/
+            JELogger.error(JEMessages.NETWORK_CALL_ERROR + requestUrl, LogCategory.RUNTIME, null,
+                    LogSubModule.JEBUILDER, null);
             throw new JERunnerErrorException(JEMessages.JERUNNER_UNREACHABLE + " Or " + JEMessages.JEBUILDER_UNREACHABLE);
         }
     }
@@ -128,8 +131,8 @@ public class Request {
             response = Network.makeNetworkCallWithStringObjectBodyWithResponse(requestBody, requestUrl);
             if (response == null) throw new JERunnerErrorException(JEMessages.JERUNNER_UNREACHABLE);
             if (response.code() != ResponseCodes.CODE_OK) {
-               /* JELogger.error(JEMessages.NETWORK_CALL_ERROR + requestUrl, LogCategory.RUNTIME, null,
-                        LogSubModule.JEBUILDER, null);*/
+                JELogger.error(JEMessages.NETWORK_CALL_ERROR + requestUrl, LogCategory.RUNTIME, null,
+                        LogSubModule.JEBUILDER, null);
                 throw new JERunnerErrorException(JEMessages.JERUNNER_ERROR + " : " + response.body().string());
             }
 
@@ -137,8 +140,8 @@ public class Request {
             ObjectMapper objectMapper = new ObjectMapper();
             return objectMapper.readValue(respBody, JEResponse.class);
         } catch (IOException | InterruptedException | ExecutionException e) {
-            /*JELogger.error(JEMessages.NETWORK_CALL_ERROR + requestUrl, LogCategory.RUNTIME, null,
-                    LogSubModule.JEBUILDER, null);*/
+            JELogger.error(JEMessages.NETWORK_CALL_ERROR + requestUrl, LogCategory.RUNTIME, null,
+                    LogSubModule.JEBUILDER, null);
             throw new JERunnerErrorException(JEMessages.JERUNNER_UNREACHABLE + " Or " + JEMessages.JEBUILDER_UNREACHABLE);
         }
     }

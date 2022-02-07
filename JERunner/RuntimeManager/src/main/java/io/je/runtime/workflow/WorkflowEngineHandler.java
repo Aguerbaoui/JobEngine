@@ -61,6 +61,9 @@ public class WorkflowEngineHandler {
      * Launch process without variables
      * */
     public static void launchProcessWithoutVariables(String projectId, String processId, boolean runProject) throws WorkflowNotFoundException, WorkflowAlreadyRunningException, WorkflowBuildException, WorkflowRunException {
+        JELogger.debug("[workflow = "+processId+"]"+JEMessages.REMOVING_WF,
+                LogCategory.RUNTIME, projectId,
+                LogSubModule.WORKFLOW,processId);
         processManagerHashMap.get(projectId).launchProcessByKeyWithoutVariables(processId, runProject);
     }
 
@@ -280,10 +283,6 @@ public class WorkflowEngineHandler {
         mailTask.setStrSMTPServer((String) task.getAttributes().get(SMTP_SERVER));
         mailTask.setStrPassword((String) task.getAttributes().get(PASSWORD));
         mailTask.setStrUserName((String) task.getAttributes().get(USERNAME));
-        mailTask.setLstAttachementPaths((List<String>) task.getAttributes().get(ATTACHEMENT_URLS));
-        mailTask.setLstBCCs((List<String>) task.getAttributes().get(BCC_LIST));
-        mailTask.setLstCCs((List<String>) task.getAttributes().get(CC_LIST));
-        mailTask.setLstUploadedFiles((List<String>) task.getAttributes().get(UPLOADED_FILES_PATHS));
         return mailTask;
     }
 }

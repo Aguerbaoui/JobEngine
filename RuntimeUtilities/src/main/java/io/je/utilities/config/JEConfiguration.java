@@ -1,40 +1,293 @@
-package io.je.utilities.config;
+/*package io.je.utilities.config;
 
-
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
-
-import static io.je.utilities.config.ConfigurationConstants.SIOTH_ENVIRONMENT_VARIABLE;
+import io.je.utilities.apis.JERunnerAPIHandler;
+import io.je.utilities.constants.JEMessages;
+import io.je.utilities.logger.JELogger;
+import io.je.utilities.models.ConfigModel;
 
 /*
  * Singleton class handling JEBuilder Configuration
  */
-public class JEConfiguration {
+/*public class JEConfiguration {
 
-    private static Properties jobEngineProperties = null;
+	static JEConfiguration instance;
+	
+	//datamodelest
+	static String dataDefinitionURL;
+	static int dataDefinitionSubscribePort;
+	static int dataDefinitionRequestPort;
 
-    public static final String APPLICATION_PROPERTIES_PATH = System.getenv(SIOTH_ENVIRONMENT_VARIABLE) + "/JobEngine/jobengine.properties";
+	
+	//data model service
+	static String dataManagerURL;
+	static int subscriberPort;
+	static int requestPort;
+	static String dataModelDateFormat;
 
-    public static void loadProperties() {
-        try (InputStream input = new FileInputStream(APPLICATION_PROPERTIES_PATH)) {
-            jobEngineProperties = new Properties();
-            // load a properties file
-            jobEngineProperties.load(input);
+	//je
+	static String runtimeManagerURL;
+	static String projectBuilderURL;
+	static String droolsDateFormat;
 
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-    }
+	//email
+	static String emailApiUrl;
 
-    public static String getProjectBuilderUrl() {
-        if(jobEngineProperties == null) {
-            loadProperties();
-        }
-        return jobEngineProperties.getProperty("jobenginebuilder.url");
-    }
+	//database
+	static String databaseApiUrl;
+
+
+
+	//logging system
+	static String loggingSystemURL;
+	static int loggingSystemZmqPublishPort;
+	
+	private JEConfiguration() {
+
+	}
+	
+	
+
+	public static ConfigModel getInstance() {
+		if (instance == null) {
+			instance = new JEConfiguration();
+		}
+		ConfigModel configModel = new ConfigModel();
+		configModel.setDataDefinitionURL(dataDefinitionURL);
+		configModel.setDataManagerURL(dataManagerURL);
+		configModel.setRequestPort(requestPort);
+		configModel.setRuntimeManagerURL(runtimeManagerURL);
+		configModel.setSubscriberPort(subscriberPort);
+		configModel.setProjectBuilderURL(projectBuilderURL);
+		configModel.setDroolsDateFormat(droolsDateFormat);
+		configModel.setEmailApiUrl(emailApiUrl);
+		configModel.setDataModelDateFormat(dataModelDateFormat);
+		configModel.setLoggingSystemURL(loggingSystemURL);
+		configModel.setLoggingSystemZmqPublishPort(loggingSystemZmqPublishPort);
+		configModel.setDatabaseApiUrl(databaseApiUrl);
+		configModel.setDataDefinitionRequestPort(dataDefinitionRequestPort);
+		configModel.setDataDefinitionSubscribePort(dataDefinitionSubscribePort);
+		return configModel;
+	}
+	
+	public static void updateConfig(ConfigModel configModel) {
+		JELogger.trace(JEMessages.UPDATING_CONFIGURATION + " = " + configModel.toString());
+		setDataDefinitionURL(configModel.getDataDefinitionURL());
+		setDataManagerURL(configModel.getDataManagerURL());
+		setRequestPort(configModel.getRequestPort());
+		setSubscriberPort(configModel.getSubscriberPort());
+		setRuntimeManagerURL(configModel.getRuntimeManagerURL());
+		setProjectBuilderURL(configModel.getProjectBuilderURL());
+		setDroolsDateFormat(configModel.getDroolsDateFormat());
+		setEmailApiURL(configModel.getEmailApiUrl());
+		setDataModelDateFormat(configModel.getDataModelDateFormat());
+		setLoggingSystemURL(configModel.getLoggingSystemURL());
+		setLoggingSystemZmqPublishPort(configModel.getLoggingSystemZmqPublishPort());
+		setDatabaseApiUrl(configModel.getDatabaseApiUrl());
+		setDataDefinitionRequestPort(configModel.getDataDefinitionRequestPort());
+		setDataDefinitionSubscribePort(configModel.getDataDefinitionSubscribePort());
+	}
+	
+	
+	
+
+
+
+
+	public static String getDroolsDateFormat() {
+		return droolsDateFormat;
+	}
+
+	public static String getEmailApiUrl() {
+		return emailApiUrl;
+	}
+	public static String getDatabaseApiUrl() {
+		return databaseApiUrl;
+	}
+
+	public static void setDatabaseApiUrl(String databaseApiUrl) {
+		if(databaseApiUrl != null) {
+			JEConfiguration.databaseApiUrl = databaseApiUrl;
+		}
+	}
+	
+	public static void setEmailApiUrl(String emailApiUrl) {
+		if(emailApiUrl!=null)
+		{
+			JEConfiguration.emailApiUrl = emailApiUrl;
+		}
+	}
+
+
+
+	public static void setDroolsDateFormat(String droolsDateFormat) {
+		if(droolsDateFormat!=null)
+			JEConfiguration.droolsDateFormat = droolsDateFormat;
+	}
+
+
+
+
+
+	public static String getDataDefinitionURL() {
+		return dataDefinitionURL;
+	}
+
+	public static void setDataDefinitionURL(String dataDefinitionURL) {
+		if (dataDefinitionURL != null)
+		{
+			JELogger.info("updating data defintion url to : " + dataDefinitionURL);
+			JEConfiguration.dataDefinitionURL = dataDefinitionURL;
+
+		}
+	}
+
+	public static String getDataManagerURL() {
+		return dataManagerURL;
+	}
+
+	public static void setDataManagerURL(String dataManagerURL) {
+		if (dataManagerURL != null)
+		{
+			JELogger.info("updating data Manager url to : " + dataManagerURL);
+			JEConfiguration.dataManagerURL = dataManagerURL;
+		}
+	}
+
+	public static String getRuntimeManagerURL() {
+		return runtimeManagerURL;
+	}
+
+	public static void setRuntimeManagerURL(String runtimeManagerURL) {
+		if (runtimeManagerURL != null) {
+			{
+				JEConfiguration.runtimeManagerURL = runtimeManagerURL;
+				JELogger.info("updating runtime Manager url to : " + runtimeManagerURL);
+				JERunnerAPIHandler.setRuntimeManagerBaseApi(runtimeManagerURL);
+			}
+		}
+	}
+
+	public static int getSubscriberPort() {
+		return subscriberPort;
+	}
+
+	public static void setSubscriberPort(int subscriberPort) {
+		if (subscriberPort != 0)
+			JEConfiguration.subscriberPort = subscriberPort;
+	}
+
+	public static int getRequestPort() {
+		return requestPort;
+	}
+
+	public static void setRequestPort(int requestPort) {
+		if (requestPort != 0)
+			JEConfiguration.requestPort = requestPort;
+	}
+	
+	
+
+	
+	
+
+	public static String getProjectBuilderURL() {
+		return projectBuilderURL;
+	}
+
+	public static void setProjectBuilderURL(String projectBuilderURL) {
+		if(projectBuilderURL!=null)
+		{
+			JEConfiguration.projectBuilderURL = projectBuilderURL;
+
+		}
+	}
+
+	public static void setEmailApiURL(String url) {
+		if(url!=null)
+		{
+			JEConfiguration.emailApiUrl = url;
+
+		}
+	}
+
+
+
+	public static String getDataModelDateFormat() {
+		return dataModelDateFormat;
+	}
+
+
+
+	public static void setDataModelDateFormat(String dataModelDateFormat) {
+		if(dataModelDateFormat !=null)
+			{
+			JEConfiguration.dataModelDateFormat = dataModelDateFormat;
+			}
+	}
+
+
+
+	public static String getLoggingSystemURL() {
+		return loggingSystemURL;
+	}
+
+
+
+	public static void setLoggingSystemURL(String loggingSystemURL) {
+		if(loggingSystemURL!=null)
+		{
+			JEConfiguration.loggingSystemURL = loggingSystemURL;
+		}
+	}
+
+
+
+	public static int getLoggingSystemZmqPublishPort() {
+		return loggingSystemZmqPublishPort;
+	}
+
+
+
+	public static void setLoggingSystemZmqPublishPort(int loggingSystemZmqPublishPort) {
+		if(loggingSystemZmqPublishPort!=0)
+		{
+			JEConfiguration.loggingSystemZmqPublishPort = loggingSystemZmqPublishPort;
+		}
+	}
+
+
+
+	public static int getDataDefinitionSubscribePort() {
+		return dataDefinitionSubscribePort;
+	}
+
+
+
+	public static void setDataDefinitionSubscribePort(int dataDefinitionSubscribePort) {
+		if(dataDefinitionSubscribePort !=0)
+		{
+			JEConfiguration.dataDefinitionSubscribePort = dataDefinitionSubscribePort;
+		}
+	}
+
+
+
+	public static int getDataDefinitionRequestPort() {
+		return dataDefinitionRequestPort;
+	}
+
+
+
+	public static void setDataDefinitionRequestPort(int dataDefinitionRequestPort) {
+		if(dataDefinitionRequestPort!=0)
+		{
+			JEConfiguration.dataDefinitionRequestPort = dataDefinitionRequestPort;
+		}
+	}
+
+	
+	
 
 }
 
-
+*/

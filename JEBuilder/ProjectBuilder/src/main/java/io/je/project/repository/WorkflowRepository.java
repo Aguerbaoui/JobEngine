@@ -14,7 +14,6 @@ import models.JEWorkflow;
 public interface WorkflowRepository extends MongoRepository<JEWorkflow,String>{
 	List<JEWorkflow> findByJobEngineProjectID (String projectId);
 	void deleteByJobEngineProjectID (String projectId);
-	List<JEWorkflow> findByJobEngineElementName(String jobEngineElementName);
 
 	
 

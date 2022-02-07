@@ -12,7 +12,6 @@ public class ActivitiTask {
 
     private String processId;
 
-
     public String getProcessId() {
         return processId;
     }
@@ -44,5 +43,4 @@ public class ActivitiTask {
     public void setTaskName(String taskName) {
         this.taskName = taskName;
     }
-
 }

@@ -66,8 +66,6 @@ public class JEMessages {
 
     public static final String CLASS_LOAD_IN_RUNNER_FAILED = "Class load failed in runner";
 
-    public static final String CLASS_LOAD_DENIED_ACCESS = "Class load failed due to denied access";
-
     public static final String INVALID_CLASS_FORMAT = "Class format is not valid, interface cannot inherit from class ";
 
     public static final String UNKNOW_CLASS_TYPE = "Class type cannot be determined. [Class types:  Class/Interface/Enum ] ";
@@ -187,7 +185,6 @@ public class JEMessages {
     public static final String GATEWAY_ID = "Gateway Id";
 
     public static final String JUST_EXECUTED = "just executed";
-
     public static final String TASK_ID = "Task Id";
 
     public static final String PROCESS_HAS_TO_BE_TRIGGERED_BY_EVENT = "Process has to be triggered by event or following a specific schedule";
@@ -225,7 +222,7 @@ public class JEMessages {
 
     public static final String LOADING_RULES = "Getting all rules";
 
-    public static final String ADDING_RULE = "Adding rule ";
+    public static final String ADDING_RULE = "Adding rule";
 
     public static final String UPDATING_RULE = "Updating rule";
 
@@ -542,7 +539,7 @@ public class JEMessages {
 
     public static final String RULE_UPDATE_FAIL = "Failed to update rule";
 
-    public static final String RULE_DELETED = "Rule deleted from rule engine successfully";
+    public static final String RULE_DELETED = "Rule deleted from rule engine";
 
     public static final String RULE_DELETE_FAIL = "Failed to delete rule";
 
@@ -625,7 +622,7 @@ public class JEMessages {
     public static final String INFORM_BLOCK_ERROR = "Failed to execute Inform block";
 
     public static final String BLOCK_NAME_CAN_T_BE_UPDATED_BECAUSE_IT_ALREADY_EXISTS = "Block name cannot be updated because its name already exists";
-    public static final String WORKFLOW_BUILD_ERROR = "Error while deploying the workflow ";
+    public static final String WORKFLOW_BUILD_ERROR = "Error while building the workflow ";
     public static final String WORKFLOW_RUN_ERROR = "Error while running the workflow ";
     public static final String UPLOADED_JAR_TO_PATH = "Uploaded jar to path ";
     public static final String SENDING_VARIABLE_TO_RUNNER = "Sending variable to JERunner";
@@ -714,12 +711,5 @@ public class JEMessages {
 	public static final String ILLEGAL_OPERATION_CLASS_UPDATE_DURING_PROJECT_RUN = "Class updates will only be effective once the project is stopped. Rules using the updated class may be corrupted";
 	
     public static final String READ_INSTANCE_VALUE_FAILED = "Failed to read instance from DataModel service. ";
-
-    public static final String WORKFLOW_STOPPED_SUCCESSFULLY = "Workflow stopped successfully";
-    public static final String ERROR_STOPPING_PROCESS = "Error stopping process by pid";
-    public static final String ERROR_SENDING_INFORM_MESSAGE = "Error sending inform message to user";
-    public static final String SUCCESSFULLY_INFORMED = "Successfully sent inform message";
-
-    public static final String ERROR_BUILDING_JAR_FILE_AFTER_COMPILING_CLASSES_CHECK_ONGOING_PROCESSES = "Error building jar file after compiling classes, check ongoing processes";
 
 }

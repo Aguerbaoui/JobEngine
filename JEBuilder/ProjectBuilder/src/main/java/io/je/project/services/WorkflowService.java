@@ -1,6 +1,5 @@
 package io.je.project.services;
 
-import static io.je.utilities.constants.ClassBuilderConfig.SCRIPTS_PACKAGE;
 import static io.je.utilities.constants.JEMessages.THREAD_INTERRUPTED_WHILE_EXECUTING;
 import static io.je.utilities.constants.WorkflowConstants.*;
 
@@ -21,7 +20,6 @@ import io.je.utilities.beans.JELib;
 import io.je.utilities.exceptions.*;
 import io.je.utilities.models.LibModel;
 import io.siothconfig.SIOTHConfigUtility;
-import io.je.classbuilder.builder.ClassBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.Async;
@@ -179,8 +177,7 @@ public class WorkflowService {
             JELogger.error(JEMessages.FAILED_TO_DELETE_FILES, LogCategory.DESIGN_MODE, projectId, LogSubModule.WORKFLOW,
                     wf.getJobEngineElementID());
         }
-        JELogger.info(JEMessages.WORKFLOW_DELETED_SUCCESSFULLY, LogCategory.DESIGN_MODE, projectId, LogSubModule.WORKFLOW,
-                wf.getJobEngineElementID());
+
         project.removeWorkflow(workflowId);
     }
 
@@ -649,7 +646,7 @@ public class WorkflowService {
      */
     public void updateWorkflowBlock(WorkflowBlockModel block)
             throws WorkflowBlockNotFound, WorkflowNotFoundException, ProjectNotFoundException, EventException,
-            WorkflowBlockException, ClassLoadException, AddClassException, LicenseNotActiveException, IOException, InterruptedException {
+             WorkflowBlockException, ClassLoadException, AddClassException, LicenseNotActiveException {
         LicenseProperties.checkLicenseIsActive();
 
         JEProject project = ProjectService.getProjectById(block.getProjectId());
@@ -820,7 +817,7 @@ public class WorkflowService {
             c.setName(name);
             // True to send directly to JERunner
             try {
-                classService.compileCode(c,  SCRIPTS_PACKAGE);
+                classService.addClass(c, true, true);
             } catch (Exception e) {
                 wf.cleanUpScriptTaskBlock(b);
                 throw e;
@@ -1149,7 +1146,7 @@ public class WorkflowService {
             return CompletableFuture.completedFuture(result);
         }
         JEWorkflow wf = project.getWorkflowByIdOrName(workflowId);
-        JELogger.info(
+        JELogger.debug(
                 "[project=" + project.getProjectName() + " ][workflow = " + wf.getJobEngineElementName() + "]"
                         + JEMessages.STOPPING_WF,
                 LogCategory.DESIGN_MODE, projectId,
@@ -1161,11 +1158,16 @@ public class WorkflowService {
             //wf.setStatus(Status.STOPPING);
 
         } catch (JERunnerErrorException e) {
+            JELogger.debug(
+                    "[project=" + project.getProjectName() + " ][workflow = " + wf.getJobEngineElementName() + "]"
+                            + JEMessages.STOPPING_WF + e.getMessage(),
+                    LogCategory.DESIGN_MODE, projectId,
+                    LogSubModule.WORKFLOW, workflowId);
             result.setOperationSucceeded(false);
             result.setOperationError(JEMessages.ERROR_STOPPING_WORKFLOW);
         }
-        wf.setStatus(Status.STOPPED);
-        workflowRepository.save(wf);
+        //project.getWorkflowByIdOrName(workflowId).setStatus(Status.STOPPING);
+        workflowRepository.save(project.getWorkflowByIdOrName(workflowId));
         return CompletableFuture.completedFuture(result);
     }
 
@@ -1336,7 +1338,7 @@ public class WorkflowService {
     }
 
     public void deleteAttachmentByName(String libName) throws IOException {
-        JELib lib = libraryRepository.findByJobEngineElementName(libName);
+        JELib lib = libraryRepository.findById(libName).get();
         if(lib != null) {
             FileUtilities.deleteFileFromPath(lib.getFilePath());
             libraryRepository.delete(lib);
@@ -1351,9 +1353,5 @@ public class WorkflowService {
         catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    public List<JEWorkflow> getWorkflowByName(String workflowName) {
-        return workflowRepository.findByJobEngineElementName(workflowName);
     }
 }

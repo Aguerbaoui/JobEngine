@@ -1,4 +1,4 @@
-package io.je.utilities.beans;
+package io.je.classbuilder.entity;
 
 import io.je.utilities.beans.ClassAuthor;
 import io.je.utilities.beans.JEMethod;

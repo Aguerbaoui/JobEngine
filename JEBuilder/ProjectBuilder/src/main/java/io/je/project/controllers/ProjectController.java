@@ -4,7 +4,6 @@ import io.je.project.beans.JEProject;
 import io.je.project.exception.JEExceptionHandler;
 import io.je.project.services.ConfigurationService;
 import io.je.project.services.ProjectService;
-import io.je.utilities.beans.InformModel;
 import io.je.utilities.beans.JECustomResponse;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.ResponseCodes;
@@ -13,7 +12,6 @@ import io.je.utilities.log.JELogger;
 import io.je.utilities.models.LibModel;
 import io.je.utilities.ruleutils.OperationStatusDetails;
 import utils.log.LogCategory;
-import utils.log.LogMessage;
 import utils.log.LogSubModule;
 import io.je.utilities.beans.JEResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -331,33 +329,6 @@ public class ProjectController {
 			return JEExceptionHandler.handleException(e);
 		}
 		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, "Updated"));
-	}
-	/*
-	 * Inform message from workflow in runtime
-	 */
-	@PostMapping(value = "/informUser", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> informUser(@RequestBody InformModel informBody) {
-		try {
-			projectService.informUser(informBody);
-			return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.SUCCESSFULLY_INFORMED));
-		} catch (Exception e) {
-			return JEExceptionHandler.handleException(e);
-		}
-
-	}
-
-	/*
-	 * send log message from workflow in runtime
-	 */
-	@PostMapping(value = "/sendLog", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> informUser(@RequestBody LogMessage logMessage) {
-		try {
-			projectService.sendLog(logMessage);
-			return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.SUCCESSFULLY_INFORMED));
-		} catch (Exception e) {
-			return JEExceptionHandler.handleException(e);
-		}
-
 	}
 
 }

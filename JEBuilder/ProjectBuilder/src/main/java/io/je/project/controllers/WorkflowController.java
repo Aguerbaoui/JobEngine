@@ -83,7 +83,7 @@ public class WorkflowController {
 			}
 
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-					.body(new JEResponse(ResponseCodes.WORKFLOW_RUN_ERROR, WORKFLOW_BUILD_ERROR));
+					.body(new JEResponse(ResponseCodes.WORKFLOW_RUN_ERROR, result.getOperationError()));
 
 		} catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
@@ -103,7 +103,7 @@ public class WorkflowController {
 			workflowService.stopWorkflow(projectId, key);
 			OperationStatusDetails result = workflowService.stopWorkflow(projectId, key).get();
 			if (result.isOperationSucceeded()) {
-				return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, WORKFLOW_STOPPED_SUCCESSFULLY));
+				return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, ERROR_STOPPING_WORKFLOW));
 			}
 
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
