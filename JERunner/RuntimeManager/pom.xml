@@ -161,6 +161,8 @@
     </dependencies>
     <build>
         <finalName>RuntimeManager</finalName>
+ 		<directory>../../release/</directory>
+		<outputDirectory>./target/classes/</outputDirectory>        
         
     </build>
 </project>
