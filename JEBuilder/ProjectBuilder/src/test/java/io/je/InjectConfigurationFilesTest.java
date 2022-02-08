@@ -16,7 +16,7 @@ import io.je.utilities.config.ConfigurationConstants;
 import io.siothconfig.SIOTHConfig;
 import io.siothconfig.SIOTHConfigurationConstants;
 import utils.string.StringUtilities;
-
+/*
 public class InjectConfigurationFilesTest {
 
   String envVar = "";
@@ -47,7 +47,7 @@ public class InjectConfigurationFilesTest {
       assertEquals("Exception thrown", true);
     }
   }
-
+*/
   /*@Test
   public void SiothConfigJsonTest() {
     environmentVariableExistsTest();
@@ -65,4 +65,4 @@ public class InjectConfigurationFilesTest {
       assertEquals("Exception thrown for missing json values" + e.getLocalizedMessage(), true);
     }
   }*/
-}
+//}
