@@ -147,5 +147,7 @@
     </dependencies>
     <build>
         <finalName>ProjectBuilder</finalName>
+        <directory>../../release/</directory>
+        
     </build>
 </project>

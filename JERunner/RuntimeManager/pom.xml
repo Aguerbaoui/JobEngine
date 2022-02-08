@@ -161,5 +161,7 @@
     </dependencies>
     <build>
         <finalName>RuntimeManager</finalName>
+        <directory>../../release/</directory>
+        
     </build>
 </project>
