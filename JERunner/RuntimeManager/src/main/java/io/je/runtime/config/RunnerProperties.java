@@ -30,6 +30,9 @@ public class RunnerProperties {
 	@Value("${dev.environment}")
 	boolean dev;
 
+	@Value("${java.prcessdump}")
+	boolean dumpJavaProcessExecution;
+
 	@Value("${jobenginemonitor.url}")
 	String monitorUrl;
 
@@ -120,5 +123,13 @@ public class RunnerProperties {
 
 	public void setRunnerUrl(String runnerUrl) {
 		this.runnerUrl = runnerUrl;
+	}
+
+	public boolean isDumpJavaProcessExecution() {
+		return dumpJavaProcessExecution;
+	}
+
+	public void setDumpJavaProcessExecution(boolean dumpJavaProcessExecution) {
+		this.dumpJavaProcessExecution = dumpJavaProcessExecution;
 	}
 }

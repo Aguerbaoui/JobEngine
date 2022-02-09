@@ -235,11 +235,6 @@ public class JEProject {
 
 
 	public String getConfigurationPath() {
-		if(configurationPath==null || configurationPath.isEmpty())
-		{
-			//TODO: use a default path in sioth config
-			configurationPath =  ConfigurationConstants.PROJECTS_PATH+projectName;
-		}
 		return configurationPath;
 	}
 

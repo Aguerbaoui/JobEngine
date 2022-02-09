@@ -1,6 +1,8 @@
 package utils.files;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -80,7 +82,13 @@ public class FileUtilities {
 		return getFileExtension(fileName).equals("JAR");
 	}
 
-	public String getExtension(String filename) {
+    public static void writeToFile(String filePath, String output) throws IOException {
+		BufferedWriter writer = new BufferedWriter(new FileWriter(filePath, true));
+		writer.append(output);
+		writer.close();
+    }
+
+    public String getExtension(String filename) {
 		return FilenameUtils.getExtension(filename);
 	}
 

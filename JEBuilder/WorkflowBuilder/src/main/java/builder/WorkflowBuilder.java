@@ -146,13 +146,14 @@ public class WorkflowBuilder {
             JEToBpmnMapper.createBpmnFromJEWorkflow(workflow);
         }
         WorkflowModel wf = new WorkflowModel();
-        wf.setId(workflow.getJobEngineElementName().trim());
+        wf.setId(workflow.getJobEngineElementID());
         wf.setPath(ConfigurationConstants.BPMN_PATH + workflow.getJobEngineElementName().trim() + BPMN_EXTENSION);
         wf.setProjectId(workflow.getJobEngineProjectID());
         wf.setTriggeredByEvent(workflow.isTriggeredByEvent());
         wf.setTriggerMessage(workflow.getWorkflowStartBlock().getEventId());
         wf.setOnProjectBoot(workflow.isOnProjectBoot());
         wf.setProjectName(workflow.getJobEngineProjectName());
+        wf.setName(workflow.getJobEngineElementName().trim());
         ArrayList<TaskModel> tasks = new ArrayList<>();
         for (WorkflowBlock block : workflow.getAllBlocks().values()) {
             if (block instanceof WebApiBlock) {

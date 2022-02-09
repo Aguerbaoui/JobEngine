@@ -16,6 +16,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
+import utils.ProcessRunner;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
 import utils.zmq.ZMQSecurity;
@@ -60,6 +61,7 @@ public class JEBuilderInitializingBean implements InitializingBean {
         	}*/
             JEMonitor.setPort(builderProperties.getMonitoringPort());
             ZMQSecurity.setSecure(builderProperties.getUseZmqSecurity());
+            ProcessRunner.setProcessDumpPath(builderProperties.getProcessesDumpPath(), builderProperties.isDumpJavaProcessExecution());
 			configService.init();
             JELogger.control(JEMessages.LOGGER_INITIALIZED,
                     LogCategory.DESIGN_MODE, null,

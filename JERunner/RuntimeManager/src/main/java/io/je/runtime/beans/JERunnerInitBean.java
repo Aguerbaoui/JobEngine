@@ -10,6 +10,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import utils.ProcessRunner;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
 import utils.zmq.ZMQSecurity;
@@ -33,7 +34,8 @@ public class JERunnerInitBean implements InitializingBean {
                     LogSubModule.JERUNNER, null);
             JEMonitor.setPort(runnerProperties.getMonitoringPort());
             System.setProperty("drools.dateformat", ConfigurationConstants.DROOLS_DATE_FORMAT);
-            
+            ProcessRunner.setProcessDumpPath(runnerProperties.getProcessesDumpPath(), runnerProperties.isDumpJavaProcessExecution());
+
         }
         catch (Exception e) {e.printStackTrace();}
     }

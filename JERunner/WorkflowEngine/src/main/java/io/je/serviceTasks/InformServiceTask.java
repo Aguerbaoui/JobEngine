@@ -11,7 +11,7 @@ public class InformServiceTask extends ServiceTask {
     public void execute(DelegateExecution execution) {
         InformTask informTask = (InformTask) ActivitiTaskManager.getTask(execution.getCurrentActivityId());
         JELogger.info(informTask.getMessage(), LogCategory.RUNTIME, informTask.getProjectId(),
-                LogSubModule.WORKFLOW, informTask.getTaskName());
+                LogSubModule.WORKFLOW, informTask.getWorkflowId());
 
     }
 }
