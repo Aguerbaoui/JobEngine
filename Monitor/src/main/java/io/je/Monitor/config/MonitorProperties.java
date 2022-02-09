@@ -26,6 +26,9 @@ public class MonitorProperties {
 	@Value("${sioth.id}")
 	String siothId;
 
+    @Value("${java.prcessdump}")
+    boolean dumpJavaProcessExecution;
+
     @Value("${dev.environment}")
     boolean dev;
 
@@ -110,5 +113,13 @@ public class MonitorProperties {
 
     public void setRunnerUrl(String runnerUrl) {
         this.runnerUrl = runnerUrl;
+    }
+
+    public boolean isDumpJavaProcessExecution() {
+        return dumpJavaProcessExecution;
+    }
+
+    public void setDumpJavaProcessExecution(boolean dumpJavaProcessExecution) {
+        this.dumpJavaProcessExecution = dumpJavaProcessExecution;
     }
 }

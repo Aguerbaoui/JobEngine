@@ -12,6 +12,7 @@ public class ActivitiTask {
 
     private String processId;
 
+    private String workflowId;
 
     public String getProcessId() {
         return processId;
@@ -45,4 +46,11 @@ public class ActivitiTask {
         this.taskName = taskName;
     }
 
+    public String getWorkflowId() {
+        return workflowId;
+    }
+
+    public void setWorkflowId(String workflowId) {
+        this.workflowId = workflowId;
+    }
 }

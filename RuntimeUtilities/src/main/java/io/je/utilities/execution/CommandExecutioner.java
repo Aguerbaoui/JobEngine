@@ -37,7 +37,7 @@ public class CommandExecutioner {
 
     public static void compileCode(String filePath, boolean currentClassPath) throws InterruptedException, IOException, ClassLoadException {
         //currentClassPath = false;
-        String command = !currentClassPath ? JAVAC + " " + CP + " \"" + classpathFolder + getCurrentClassPath() + "\" " + "\"" + filePath + "\" "
+        String command = !currentClassPath ? JAVAC + " " + CP + " \"" + classpathFolder + "\" " + "\"" + filePath + "\" "
                 :
                 JAVAC + " " + CP + " \"" + classpathFolder + "\" " + "\"" + filePath + "\" ";
         String errorTextBuilder =  ProcessRunner.executeCommandWithErrorOutput(command);
@@ -58,7 +58,7 @@ public class CommandExecutioner {
 
     public static void KillProcessByPid(long pid) throws IOException, InterruptedException {
         String command = TASKKILL_PID + pid;
-        ProcessRunner.executeCommandWithProcessOutput(command);
+        ProcessRunner.executeCommandWithPidOutput(command);
     }
 
     public static void buildJar() throws IOException, InterruptedException {
@@ -74,13 +74,17 @@ public class CommandExecutioner {
     }
 
     public static String getCurrentClassPath() {
-        StringBuilder sb = new StringBuilder();
+        return "";
+
+        //If we want to load libraries loaded in tomcat memory
+
+        /*StringBuilder sb = new StringBuilder();
         sb.append(File.pathSeparator);
         URLClassLoader urlClassLoader = (URLClassLoader) Thread.currentThread().getContextClassLoader();
         for (URL url : urlClassLoader.getURLs()){
             //JELogger.info(JEClassLoader.class, url.getFile().substring(1));
             sb.append(url.getFile().substring(1).replace("%20", " ")).append(File.pathSeparator);
         }
-        return sb.toString().replace("/", "\\");
+        return sb.toString().replace("/", "\\");*/
     }
 }

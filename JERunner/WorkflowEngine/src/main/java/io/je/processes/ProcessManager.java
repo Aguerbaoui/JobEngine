@@ -124,7 +124,7 @@ public class ProcessManager {
             processes = new HashMap<String, JEProcess>();
         }
 
-        processes.put(process.getKey(), process);
+        processes.put(process.getName(), process);
     }
 
     /*

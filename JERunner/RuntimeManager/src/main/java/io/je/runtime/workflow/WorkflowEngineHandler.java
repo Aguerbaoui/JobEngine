@@ -164,38 +164,39 @@ public class WorkflowEngineHandler {
     }
 
     //Parse activiti task
-    public static ActivitiTask parseTask(String projectId, String workflowId, TaskModel task) {
+    public static ActivitiTask parseTask(String projectId, String workflowId, String workflowName, TaskModel task) {
         /*JELogger.debug("Parsing activiti task",
                 LogCategory.RUNTIME, projectId,
                 LogSubModule.WORKFLOW,workflowId);*/
         if(task.getType().equals(WorkflowConstants.WEBSERVICETASK_TYPE)) {
-            return parseWebApiTask(projectId, workflowId, task);
+            return parseWebApiTask(projectId, workflowId, workflowName, task);
         }
         else if(task.getType().equals(WorkflowConstants.SCRIPTTASK_TYPE)){
-            return parseScriptTask(projectId, workflowId, task);
+            return parseScriptTask(projectId, workflowId, workflowName, task);
         }
         else if(task.getType().equals(WorkflowConstants.INFORMSERVICETASK_TYPE)) {
-            return parseInformTask(projectId, workflowId, task);
+            return parseInformTask(projectId, workflowId, workflowName, task);
         }
         else if(task.getType().equals(DBREADSERVICETASK_TYPE) ||
                 task.getType().equals(DBWRITESERVICETASK_TYPE) ||
                 task.getType().equals(DBEDITSERVICETASK_TYPE)) {
-            return parseDBTask(projectId, workflowId, task);
+            return parseDBTask(projectId, workflowId, workflowName, task);
         }
         else if(task.getType().equals(WorkflowConstants.MAILSERVICETASK_TYPE)) {
-            return parseMailTask(projectId, workflowId, task);
+            return parseMailTask(projectId, workflowId, workflowName, task);
         }
         else return null;
     }
 
     //parse web api task
-    public static WebApiTask parseWebApiTask(String projectId, String workflowId, TaskModel task) {
+    public static WebApiTask parseWebApiTask(String projectId, String workflowId, String workflowName,TaskModel task) {
         WebApiTask webApiTask = new WebApiTask();
         webApiTask.setBodyType(BodyType.JSON);
         webApiTask.setTaskId(task.getTaskId());
         webApiTask.setTaskName(task.getTaskName());
-        webApiTask.setProcessId(workflowId);
+        webApiTask.setProcessId(workflowName);
         webApiTask.setProjectId(projectId);
+        webApiTask.setWorkflowId(workflowId);
         HashMap<String, Object> attributes = task.getAttributes();
         if (attributes.get(INPUTS) != null) {
             webApiTask.setHasBody(true);
@@ -214,12 +215,13 @@ public class WorkflowEngineHandler {
     }
 
     //parse script task
-    public static ScriptTask parseScriptTask(String projectId, String workflowId, TaskModel task) {
+    public static ScriptTask parseScriptTask(String projectId, String workflowId, String workflowName,TaskModel task) {
         ScriptTask scriptTask = new ScriptTask();
         scriptTask.setTaskName(task.getTaskName());
         scriptTask.setTaskId(task.getTaskId());
         scriptTask.setProjectId(projectId);
-        scriptTask.setProcessId(workflowId);
+        scriptTask.setProcessId(workflowName);
+        scriptTask.setWorkflowId(workflowId);
         HashMap<String, Object> attributes = task.getAttributes();
         if(attributes.containsKey(SCRIPT)) {
             scriptTask.setScript((String) attributes.get(SCRIPT));
@@ -229,12 +231,13 @@ public class WorkflowEngineHandler {
     }
 
     //parse an inform task
-    public static InformTask parseInformTask(String projectId, String workflowId, TaskModel task) {
+    public static InformTask parseInformTask(String projectId, String workflowId, String workflowName,TaskModel task) {
         InformTask informTask = new InformTask();
         informTask.setTaskName(task.getTaskName());
         informTask.setTaskId(task.getTaskId());
         informTask.setProjectId(projectId);
-        informTask.setProcessId(workflowId);
+        informTask.setProcessId(workflowName);
+        informTask.setWorkflowId(workflowId);
         HashMap<String, Object> attributes = task.getAttributes();
         if(attributes.get(MESSAGE) != null) {
             informTask.setMessage((String) attributes.get(MESSAGE));
@@ -243,12 +246,13 @@ public class WorkflowEngineHandler {
     }
 
     //parse database task
-    public static DatabaseTask parseDBTask(String projectId, String workflowId, TaskModel task) {
+    public static DatabaseTask parseDBTask(String projectId, String workflowId, String workflowName,TaskModel task) {
         DatabaseTask databaseTask = new DatabaseTask();
         databaseTask.setTaskName(task.getTaskName());
         databaseTask.setTaskId(task.getTaskId());
         databaseTask.setProjectId(projectId);
-        databaseTask.setProcessId(workflowId);
+        databaseTask.setProcessId(workflowName);
+        databaseTask.setWorkflowId(workflowId);
         HashMap<String, Object> attributes = task.getAttributes();
         if(attributes.get(REQUEST) != null) {
             databaseTask.setRequest((String) attributes.get(REQUEST));
@@ -260,13 +264,13 @@ public class WorkflowEngineHandler {
     }
 
     //parse email task
-    public static MailTask parseMailTask(String projectId, String workflowId, TaskModel task) {
+    public static MailTask parseMailTask(String projectId, String workflowId, String workflowName,TaskModel task) {
         MailTask mailTask = new MailTask();
         mailTask.setTaskId(task.getTaskId());
         mailTask.setTaskName(task.getTaskName());
         mailTask.setProjectId(projectId);
-        mailTask.setProcessId(workflowId);
-
+        mailTask.setProcessId(workflowName);
+        mailTask.setWorkflowId(workflowId);
         HashMap<String, Object> attributes = task.getAttributes();
         if(attributes.containsKey(USE_DEFAULT_CREDENTIALS)) {
             mailTask.setbUseDefaultCredentials((boolean) task.getAttributes().get(USE_DEFAULT_CREDENTIALS));

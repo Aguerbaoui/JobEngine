@@ -147,7 +147,7 @@
     </dependencies>
     <build>
         <finalName>ProjectBuilder</finalName>
-        <directory>../../release/</directory>
+        <directory>../../release/ProjectBuilder/</directory>
 		<outputDirectory>./target/classes/</outputDirectory>        
     </build>
 </project>

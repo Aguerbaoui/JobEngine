@@ -275,6 +275,7 @@ public class ProjectService {
 				project.setRules(ruleService.getAllJERules(projectId));
 				project.setVariables(variableService.getAllJEVariables(projectId));
 				project.setWorkflows(workflowService.getAllJEWorkflows(projectId));
+				project.setConfigurationPath(ConfigurationConstants.PROJECTS_PATH + project.getProjectName());
 				project.setBuilt(false);
 				loadedProjects.put(projectId, project);
 				for (JEEvent event : project.getEvents().values()) {
