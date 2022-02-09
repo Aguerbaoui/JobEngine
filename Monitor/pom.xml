@@ -75,7 +75,7 @@
 	</dependencies>
 	<build>
 		<finalName>JEMonitor</finalName>
-		 <directory>../release/JEMonitor/</directory>
+		 <directory>../release/</directory>
 		<outputDirectory>./target/classes/</outputDirectory>        
 		
 	</build>
