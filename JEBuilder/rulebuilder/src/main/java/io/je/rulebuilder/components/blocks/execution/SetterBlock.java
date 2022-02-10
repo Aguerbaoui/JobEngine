@@ -92,7 +92,7 @@ public class SetterBlock extends ExecutionBlock {
 			destinationClassName = (String) blockModel.getBlockConfiguration().get("destinationClassName");
 			destinationAttributeType = (String) blockModel.getBlockConfiguration().get("destinationAttributeType");		
 			destinationVariableId = (String) blockModel.getBlockConfiguration().get("destinationVariableId");
-
+			destinationClassId= (String) blockModel.getBlockConfiguration().get("destinationClassId");
 			
 			isProperlyConfigured=true;
 		}catch(Exception e) {
@@ -118,62 +118,123 @@ public class SetterBlock extends ExecutionBlock {
 
 	  if(destinationType.equals(ValueType.ATTRIBUTE))
 	  {
-		  switch(sourceType)
-		   {
-		   case STATIC :	
-			   expression = new StringBuilder();
-				for(String instanceId : destinationInstancesId)
-				{
-					expression.append("Executioner.updateInstanceAttributeValueFromStaticValue( "
-						   	  +"\"" + this.jobEngineProjectID  +"\","
-							  +"\"" + this.ruleId  +"\","
-							  +"\"" + this.blockName  +"\","				  
-							  +"\"" + instanceId  +"\","
-							  +"\"" + this.destinationAttributeName  +"\","
-							  +"\"" + this.value  +"\""
-							  +");\r\n");
-					expression.append("\n");
-				}
-				return expression.toString();
-		
-		   case VARIABLE:
-			   expression = new StringBuilder();
-				for(String instanceId : destinationInstancesId)
-				{
-					expression.append("Executioner.updateInstanceAttributeValueFromVariable( "
-							  +"\"" + this.jobEngineProjectID  +"\","
-							  +"\"" + this.ruleId  +"\","
-							   +"\"" + this.blockName  +"\","
-							  +"\"" + instanceId  +"\","
-							  +"\"" + this.destinationAttributeName  +"\","
-							  +"\"" + this.sourceVariableId  +"\""
-							  +");\r\n");
-					expression.append("\n");
-				}
-				return expression.toString();
-		
-		   case ATTRIBUTE :
-			    expression = new StringBuilder();
-				for(String instanceId : destinationInstancesId)
-				{
-					expression.append("Executioner.updateInstanceAttributeValueFromAnotherInstance( "
-							  +"\"" + this.jobEngineProjectID  +"\","
-							  +"\"" + this.ruleId  +"\","
-							   +"\"" + this.blockName  +"\","
-							  +"\"" + this.sourceInstanceId  +"\","
-							  +"\"" + this.sourceAttributeName  +"\","
-							  +"\"" + instanceId  +"\","
-							  +"\"" + this.destinationAttributeName  +"\""
-							  +");\r\n");
-					expression.append("\n");
-				}
-				return expression.toString();
-			  
-			  		
-		  default:
-			  throw new RuleBuildFailedException("INVALID CONFIGURATION");
+		 if(primeJoinId==null)
+		 {
+			 switch(sourceType)
+			   {
+			   case STATIC :	
+				   expression = new StringBuilder();
+					for(String instanceId : destinationInstancesId)
+					{
+						expression.append("Executioner.updateInstanceAttributeValueFromStaticValue( "
+							   	  +"\"" + this.jobEngineProjectID  +"\","
+								  +"\"" + this.ruleId  +"\","
+								  +"\"" + this.blockName  +"\","				  
+								  +"\"" + instanceId  +"\","
+								  +"\"" + this.destinationAttributeName  +"\","
+								  +"\"" + this.value  +"\""
+								  +");\r\n");
+						expression.append("\n");
+					}
+					return expression.toString();
+			
+			   case VARIABLE:
+				   expression = new StringBuilder();
+					for(String instanceId : destinationInstancesId)
+					{
+						expression.append("Executioner.updateInstanceAttributeValueFromVariable( "
+								  +"\"" + this.jobEngineProjectID  +"\","
+								  +"\"" + this.ruleId  +"\","
+								   +"\"" + this.blockName  +"\","
+								  +"\"" + instanceId  +"\","
+								  +"\"" + this.destinationAttributeName  +"\","
+								  +"\"" + this.sourceVariableId  +"\""
+								  +");\r\n");
+						expression.append("\n");
+					}
+					return expression.toString();
+			
+			   case ATTRIBUTE :
+				    expression = new StringBuilder();
+					for(String instanceId : destinationInstancesId)
+					{
+						expression.append("Executioner.updateInstanceAttributeValueFromAnotherInstance( "
+								  +"\"" + this.jobEngineProjectID  +"\","
+								  +"\"" + this.ruleId  +"\","
+								   +"\"" + this.blockName  +"\","
+								  +"\"" + this.sourceInstanceId  +"\","
+								  +"\"" + this.sourceAttributeName  +"\","
+								  +"\"" + instanceId  +"\","
+								  +"\"" + this.destinationAttributeName  +"\""
+								  +");\r\n");
+						expression.append("\n");
+					}
+					return expression.toString();
+				  
+				  		
+			  default:
+				  throw new RuleBuildFailedException("INVALID CONFIGURATION");
 
-		   }
+			   }
+		 }else
+		 {
+			 switch(sourceType)
+			   {
+			   case STATIC :	
+				   expression = new StringBuilder();
+					for(String instanceId : destinationInstancesId)
+					{
+						expression.append("Executioner.updateInstanceAttributeValueFromStaticValue( "
+							   	  +"\"" + this.jobEngineProjectID  +"\","
+								  +"\"" + this.ruleId  +"\","
+								  +"\"" + this.blockName  +"\","				  
+								  +"\"" + instanceId  +"\","
+								  + primeJoinId  +","
+								  +"\"" + this.value  +"\""
+								  +");\r\n");
+						expression.append("\n");
+					}
+					return expression.toString();
+			
+			   case VARIABLE:
+				   expression = new StringBuilder();
+					for(String instanceId : destinationInstancesId)
+					{
+						expression.append("Executioner.updateInstanceAttributeValueFromVariable( "
+								  +"\"" + this.jobEngineProjectID  +"\","
+								  +"\"" + this.ruleId  +"\","
+								   +"\"" + this.blockName  +"\","
+								  +"\"" + instanceId  +"\","
+								  + primeJoinId  +","
+								  +"\"" + this.sourceVariableId  +"\""
+								  +");\r\n");
+						expression.append("\n");
+					}
+					return expression.toString();
+			
+			   case ATTRIBUTE :
+				    expression = new StringBuilder();
+					for(String instanceId : destinationInstancesId)
+					{
+						expression.append("Executioner.updateInstanceAttributeValueFromAnotherInstance( "
+								  +"\"" + this.jobEngineProjectID  +"\","
+								  +"\"" + this.ruleId  +"\","
+								   +"\"" + this.blockName  +"\","
+								  +"\"" + this.sourceInstanceId  +"\","
+								  +"\"" + this.sourceAttributeName  +"\","
+								  +"\"" + instanceId  +"\","
+								  + primeJoinId  
+								  +");\r\n");
+						expression.append("\n");
+					}
+					return expression.toString();
+				  
+				  		
+			  default:
+				  throw new RuleBuildFailedException("INVALID CONFIGURATION");
+
+			   }
+		 }
 		   
 	  }else if(destinationType.equals(ValueType.VARIABLE)) {
 		  
@@ -231,6 +292,16 @@ public class SetterBlock extends ExecutionBlock {
 		this.isGeneric = isGeneric;
 	}
 
+	@Override
+	public  void addSpecificInstance(String instanceId) {
+
+			this.primeJoinId=instanceId;
+		
+	}
+	@Override
+	public  void removeSpecificInstance() {
+		this.primeJoinId=null;
+	}
 
 
 }
