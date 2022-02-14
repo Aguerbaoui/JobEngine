@@ -154,10 +154,40 @@ public class InstanceManager {
 	}
 
 
+	private static boolean isSameValue(Object a , Object b)
+	{
+		boolean result = false;
+		if(a==b || a.equals(b)  )
+		{
+			return true; 
+		}
+		
+		String aStr=String.valueOf(a);
+		String bStr =String.valueOf(b);
+		
+		if(aStr.equals(bStr) || Double.valueOf(aStr).equals( Double.valueOf(bStr) ))
+		{
+			return true;
+		}
+		
+		return result;
+		
+	}
 
 
-	public static void writeToDataModelInstance(String instanceId, String attributeName, Object attribueValue) {
-		String dataReceived = DataModelRequester .writeToInstance(instanceId, attributeName, attribueValue);
+	public static void writeToDataModelInstance(String instanceId, String attributeName, Object attributeValue,boolean ignoreSameValue) {
+
+	
+		if(ignoreSameValue)
+		{
+			Object currentValue = getAttributeValue(instanceId, attributeName);
+			if( isSameValue(currentValue,attributeValue))
+			{
+				return;
+			}
+			
+		}
+		String dataReceived = DataModelRequester .writeToInstance(instanceId, attributeName, attributeValue);
 		if(dataReceived!=null && !dataReceived.isEmpty())
 		{
 			

@@ -62,12 +62,12 @@ public class Executioner {
 	 *********************************************************/
 	/***** SET FROM STATIC VALUE *****/
 	public static void updateInstanceAttributeValueFromStaticValue(String projectId, String ruleId, String blockName,
-			String instanceId, String attributeName, Object value) {
+			String instanceId, String attributeName, Object value,boolean ignoreSameValue) {
 		// Rework to use a callable for exception handling
 
 		try {
 			executor.submit(() -> {
-				InstanceManager.writeToDataModelInstance(instanceId, attributeName, value);
+				InstanceManager.writeToDataModelInstance(instanceId, attributeName, value,ignoreSameValue);
 			});
 		} catch (Exception e) {
 			JELogger.error(JEMessages.WRITE_INSTANCE_FAILED + e.getMessage(), LogCategory.RUNTIME, projectId,
@@ -80,14 +80,14 @@ public class Executioner {
 	 * update instance attribute from variable
 	 */
 	public static void updateInstanceAttributeValueFromVariable(String projectId, String ruleId, String blockName,
-			String instanceId, String attributeName, String variableId) {
+			String instanceId, String attributeName, String variableId,boolean ignoreSameValue) {
 
 		try {
 			executor.submit(() -> {
 				Object attribueValue;
 				try {
 					attribueValue = VariableManager.getVariableValue(projectId, variableId);
-					InstanceManager.writeToDataModelInstance(instanceId, attributeName, attribueValue);
+					InstanceManager.writeToDataModelInstance(instanceId, attributeName, attribueValue, ignoreSameValue);
 
 				} catch (VariableNotFoundException e) {
 					JELogger.error(JEMessages.WRITE_INSTANCE_FAILED + e.getMessage(), LogCategory.RUNTIME, projectId,
@@ -104,7 +104,7 @@ public class Executioner {
 	/***** SET FROM ANOTHER DATAMODEL INSTANCE *****/
 	public static void updateInstanceAttributeValueFromAnotherInstance(String projectId, String ruleId,
 			String blockName, String sourceInstanceId, String sourceAttributeName, String destinationInstanceId,
-			String destinationAttributeName) {
+			String destinationAttributeName,boolean ignoreSameValue) {
 
 		try {
 			executor.submit(() -> {
@@ -117,7 +117,7 @@ public class Executioner {
 					}
 
 					InstanceManager.writeToDataModelInstance(destinationInstanceId, destinationAttributeName,
-							attribueValue);
+							attribueValue, ignoreSameValue);
 
 				} catch (Exception e) {
 					JELogger.error(JEMessages.WRITE_INSTANCE_FAILED + e.getMessage(), LogCategory.RUNTIME, projectId,

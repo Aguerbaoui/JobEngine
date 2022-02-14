@@ -26,12 +26,14 @@ public class LinkedSetterBlock extends ExecutionBlock {
 	String destinationAttributeType;
 
 	List<String> instances ; 
+	boolean  ignoreWriteIfSameValue=true;
 
 	public LinkedSetterBlock(BlockModel blockModel) {
 		super(blockModel);
 		try
 		{
 			isGeneric= (boolean) blockModel.getBlockConfiguration().get("isGeneric");	
+			
 			classId=(String) blockModel.getBlockConfiguration().get(AttributesMapping.CLASSID);
 			classPath = (String) blockModel.getBlockConfiguration().get(AttributesMapping.CLASSNAME);
 			destinationAttributeName = (String) blockModel.getBlockConfiguration().get(AttributesMapping.ATTRIBUTENAME);
@@ -76,7 +78,10 @@ public class LinkedSetterBlock extends ExecutionBlock {
 						  +"\"" + this.blockName  +"\","				  					  
 						  +"\"" + instance  +"\","
 						  +"\"" + this.destinationAttributeName  +"\","
-						  + getInputRefName(0)
+						  + getInputRefName(0) +","
+						  + this.ignoreWriteIfSameValue 
+
+						  
 						  +");\r\n");
 				expression.append("\n");
 			}
@@ -88,7 +93,8 @@ public class LinkedSetterBlock extends ExecutionBlock {
 					  +"\"" + this.blockName  +"\","				  					  
 					  + primeJoinId  +","
 					  +"\"" + this.destinationAttributeName  +"\","
-					  + getInputRefName(0)
+					  + getInputRefName(0)+","
+					  + this.ignoreWriteIfSameValue 
 					  +");\r\n");
 			expression.append("\n");
 		}
