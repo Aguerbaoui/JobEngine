@@ -4,7 +4,9 @@ import org.apache.commons.math3.util.CombinatoricsUtils;
 
 public class MathUtilities {
 
-
+	public static int decimalPrecision = 3;
+	
+	
     /*
      * ln
      */
@@ -15,7 +17,7 @@ public class MathUtilities {
             value = Math.log((double) x);
         }catch(Exception e)
         {
-            value= Math.log((double) x);
+            value= Math.log((float) x);
         }
         return (double) value;
     }
@@ -29,7 +31,7 @@ public class MathUtilities {
             value = Math.ceil((double) x);
         }catch(Exception e)
         {
-            value= Math.ceil((double) x);
+            value= Math.ceil((float) x);
         }
         return (double) value;
     }
@@ -48,7 +50,7 @@ public class MathUtilities {
             value = Math.round((double) x);
         }catch(Exception e)
         {
-            value= Math.round((double) x);
+            value= Math.round((float) x);
         }
         return (double) value;
     }
@@ -63,7 +65,7 @@ public class MathUtilities {
             value = Math.floor((double) x);
         }catch(Exception e)
         {
-            value= Math.floor((double) x);
+            value= Math.floor((float) x);
         }
         return (double) value;	}
 
@@ -77,7 +79,7 @@ public class MathUtilities {
             value = Math.sin((double) x);
         }catch(Exception e)
         {
-            value= Math.sin((double) x);
+            value= Math.sin((float) x);
         }
         return (double) value;
     }
@@ -92,7 +94,7 @@ public class MathUtilities {
             value = Math.cos((double) x);
         }catch(Exception e)
         {
-            value= Math.cos((double) x);
+            value= Math.cos((float) x);
         }
         return (double) value;
     }
@@ -107,7 +109,7 @@ public class MathUtilities {
             value = Math.asin((double) x);
         }catch(Exception e)
         {
-            value= Math.asin((double) x);
+            value= Math.asin((float) x);
         }
         return (double) value;	}
 
@@ -122,7 +124,7 @@ public class MathUtilities {
             value = Math.atan((double) x);
         }catch(Exception e)
         {
-            value= Math.atan((double) x);
+            value= Math.atan((float) x);
         }
         return (double) value;
     }
@@ -138,7 +140,7 @@ public class MathUtilities {
             value = Math.tan((double) x);
         }catch(Exception e)
         {
-            value= Math.tan((double) x);
+            value= Math.tan((float) x);
         }
         return (double) value;
     }
@@ -153,7 +155,7 @@ public class MathUtilities {
             value = Math.pow((double) x,2);
         }catch(Exception e)
         {
-            value= Math.pow((double) x,2);
+            value= Math.pow((float) x,2);
         }
         return (double) value;
     }
@@ -167,7 +169,7 @@ public class MathUtilities {
             value = Math.sqrt((double) x);
         }catch(Exception e)
         {
-            value= Math.sqrt((double) x);
+            value= Math.sqrt((float) x);
         }
         return (double) value;
     }
@@ -181,7 +183,7 @@ public class MathUtilities {
             value = Math.acos((double) x);
         }catch(Exception e)
         {
-            value= Math.acos((double) x);
+            value= Math.acos((float) x);
         }
         return (double) value;
     }/*
@@ -194,10 +196,12 @@ public class MathUtilities {
             value = Math.abs((double) x);
         }catch(Exception e)
         {
-            value= Math.abs((double) x);
+            value= Math.abs((float) x);
         }
         return (double) value;
     }
+
+    
     /*
      * log10
      */
@@ -208,7 +212,7 @@ public class MathUtilities {
             value = Math.log10((double) x);
         }catch(Exception e)
         {
-            value= Math.log10((double) x);
+            value= Math.log10((float) x);
         }
         return (double) value;
     }
@@ -224,7 +228,7 @@ public class MathUtilities {
             value = Math.pow((double) x,i);
         }catch(Exception e)
         {
-            //Tempo fix should revise later
+            //Temp fix should revise later
             try {
                 value = Math.pow((double) x, i);
             }
@@ -267,7 +271,7 @@ public class MathUtilities {
             value = Math.exp((double) x);
         }catch(Exception e)
         {
-            value= Math.exp((double) x);
+            value= Math.exp((float) x);
         }
         return (double) value;
 
