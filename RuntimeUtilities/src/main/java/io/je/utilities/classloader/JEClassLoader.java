@@ -19,7 +19,7 @@ import static io.je.utilities.config.ConfigurationConstants.JAVA_GENERATION_PATH
 
 public class JEClassLoader extends ClassLoader {
 
-    HashMap<String, InputStream> streams = new HashMap<>();
+    HashMap<String, byte[]> streams = new HashMap<>();
 
     static Set<String> dataModelCustomClasses;
 
@@ -126,20 +126,28 @@ public class JEClassLoader extends ClassLoader {
     private byte[] loadClassData(String name) throws IOException {
 
         InputStream stream = new FileInputStream(name);
+        String streamName = name.replace(FileUtilities.getPathPrefix(name), "").replace("\\",".");
         int size = stream.available();
-        streams.put(name, stream);
+
         byte buff[] = new byte[size];
         DataInputStream in = new DataInputStream(stream);
         // Reading the binary data
         in.readFully(buff);
         in.close();
+        streams.put(streamName, buff);
         return buff;
     }
 
     // needed for drools
     @Override
     public InputStream getResourceAsStream(final String name) {
-        return streams.get(name);
+        if(streams.containsKey(name)) {
+            InputStream targetStream = new ByteArrayInputStream(streams.get(name));
+            return targetStream;
+        }
+        
+            return super.getResourceAsStream(name);
+       
     }
 
 	public static JEClassLoader getCurrentRuleEngineClassLoader() {

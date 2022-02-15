@@ -41,7 +41,7 @@ public class AttachedSetterBlock extends ExecutionBlock {
 		super(blockModel);
 		try
 		{
-		
+			ignoreWriteIfSameValue=(boolean) blockModel.getBlockConfiguration().get("ignoreWriteIfSameValue");
 			value = blockModel.getBlockConfiguration().get(AttributesMapping.NEWVALUE);
 			sourceType = ValueType.valueOf((String)blockModel.getBlockConfiguration().get(AttributesMapping.SOURCE_VALUE_TYPE));
 			destinationAttributeName = (String) blockModel.getBlockConfiguration().get(AttributesMapping.DESTINATION_ATTRIBUTE_NAME);

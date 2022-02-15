@@ -38,8 +38,8 @@ public class ConfigurationConstants {
         ConfigurationConstants.dev = isDev;
         ConfigurationConstants.SIOTHID = siothId;
         if(isDev) {
-            PROJECTS_PATH = "D:\\JobEngine\\projects\\";
-            BPMN_PATH = "D:\\JobEngine\\projects\\";
+            PROJECTS_PATH = "F:\\JobEngine\\projects\\";
+            BPMN_PATH = "F:\\JobEngine\\projects\\";
         }
         else {
             BPMN_PATH = System.getenv(ConfigurationConstants.SIOTH_ENVIRONMENT_VARIABLE)+ "\\JobEngine\\projects\\";

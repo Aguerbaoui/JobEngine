@@ -9,6 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import io.je.rulebuilder.components.blocks.getter.AttributeGetterBlock;
 import io.je.rulebuilder.components.blocks.getter.VariableGetterBlock;
 import io.je.utilities.exceptions.RuleBuildFailedException;
+import io.je.utilities.log.JELogger;
 import io.je.utilities.runtimeobject.JEObject;
 
 /*
@@ -28,6 +29,8 @@ public abstract class Block extends JEObject {
    
    @Transient
    protected List<Block> outputBlocks = new ArrayList<>();
+   
+   protected boolean alreadyScripted=false;
 
   
    /*
@@ -51,6 +54,9 @@ public abstract class Block extends JEObject {
 		isProperlyConfigured=false;
 	}
 	this.inputBlockIds= inputBlockIds;
+	JELogger.debug("!!!!! ");
+	JELogger.debug(blockName +" inputs = "+inputBlockIds.toString());
+	JELogger.debug("!!!!! ");
 	this.outputBlockIds = outputBlocksIds;
 	
 }
@@ -288,6 +294,14 @@ public  void addSpecificInstance(String instanceId) {
 public void removeSpecificInstance() {
 	// TODO Auto-generated method stub
 	
+}
+
+public boolean isAlreadyScripted() {
+	return alreadyScripted;
+}
+
+public void setAlreadyScripted(boolean alreadyScripted) {
+	this.alreadyScripted = alreadyScripted;
 }
 
 }

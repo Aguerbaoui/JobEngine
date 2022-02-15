@@ -33,7 +33,7 @@ public class LinkedSetterBlock extends ExecutionBlock {
 		try
 		{
 			isGeneric= (boolean) blockModel.getBlockConfiguration().get("isGeneric");	
-			
+			ignoreWriteIfSameValue=(boolean) blockModel.getBlockConfiguration().get("ignoreWriteIfSameValue");
 			classId=(String) blockModel.getBlockConfiguration().get(AttributesMapping.CLASSID);
 			classPath = (String) blockModel.getBlockConfiguration().get(AttributesMapping.CLASSNAME);
 			destinationAttributeName = (String) blockModel.getBlockConfiguration().get(AttributesMapping.ATTRIBUTENAME);

@@ -64,7 +64,7 @@ public class SetterBlock extends ExecutionBlock {
 		{
 		
 			isGeneric= (boolean) blockModel.getBlockConfiguration().get("isGeneric");	
-			
+			ignoreWriteIfSameValue=(boolean) blockModel.getBlockConfiguration().get("ignoreWriteIfSameValue");
 		//source configuration 
 			
 			//source type
