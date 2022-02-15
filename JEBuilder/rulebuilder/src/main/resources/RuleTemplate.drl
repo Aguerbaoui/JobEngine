@@ -33,7 +33,8 @@ import io.je.project.variables.VariableManager;
 template "JobEngineRuleTemplate"
 
 rule "@{ruleName}"  @Propagation(IMMEDIATE)
-dialect "java" 
+dialect "mvel"
+
 salience @{salience}
 duration (@{duration})
 enabled @{enabled}

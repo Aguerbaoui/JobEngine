@@ -32,7 +32,7 @@ public class AttachedSetterBlock extends ExecutionBlock {
 	String getterName;
 	String destinationAttributeName;
 
-	
+	boolean  ignoreWriteIfSameValue=true;
 	//Constants
 	String executionerMethod= "Executioner.writeToInstance(";
 	
@@ -41,7 +41,7 @@ public class AttachedSetterBlock extends ExecutionBlock {
 		super(blockModel);
 		try
 		{
-		
+			ignoreWriteIfSameValue=(boolean) blockModel.getBlockConfiguration().get("ignoreWriteIfSameValue");
 			value = blockModel.getBlockConfiguration().get(AttributesMapping.NEWVALUE);
 			sourceType = ValueType.valueOf((String)blockModel.getBlockConfiguration().get(AttributesMapping.SOURCE_VALUE_TYPE));
 			destinationAttributeName = (String) blockModel.getBlockConfiguration().get(AttributesMapping.DESTINATION_ATTRIBUTE_NAME);
@@ -83,7 +83,8 @@ public class AttachedSetterBlock extends ExecutionBlock {
 							  +"\"" + this.blockName  +"\","				  
 							  + getterInstanceId  +","
 							  +"\"" + this.destinationAttributeName  +"\","
-							  +"\"" + this.value  +"\""
+							  +"\"" + this.value  +"\","
+							  + this.ignoreWriteIfSameValue 
 							  +");\r\n");
 					expression.append("\n");
 			
@@ -96,7 +97,8 @@ public class AttachedSetterBlock extends ExecutionBlock {
 				  +"\"" + this.blockName  +"\","
 				  + getterInstanceId  +","
 				  +"\"" + this.destinationAttributeName  +"\","
-				  +"\"" + this.sourceVariableId  +"\""
+				  +"\"" + this.sourceVariableId  +"\","
+				  + this.ignoreWriteIfSameValue 
 				  +");\r\n";
 		   case ATTRIBUTE :
 			    expression = new StringBuilder();
@@ -108,7 +110,8 @@ public class AttachedSetterBlock extends ExecutionBlock {
 							  +"\"" + this.sourceInstanceId  +"\","
 							  +"\"" + this.sourceAttributeName  +"\","
 							  + getterInstanceId  +","
-							  +"\"" + this.destinationAttributeName  +"\""
+							  +"\"" + this.destinationAttributeName  +"\","
+							  + this.ignoreWriteIfSameValue 
 							  +");\r\n");
 					expression.append("\n");
 				

@@ -55,6 +55,8 @@ public class SetterBlock extends ExecutionBlock {
 	
 	boolean isGeneric;  //to be added
 	
+	boolean  ignoreWriteIfSameValue=true;
+	
 
 	public SetterBlock(BlockModel blockModel) {
 		super(blockModel);
@@ -62,7 +64,7 @@ public class SetterBlock extends ExecutionBlock {
 		{
 		
 			isGeneric= (boolean) blockModel.getBlockConfiguration().get("isGeneric");	
-			
+			ignoreWriteIfSameValue=(boolean) blockModel.getBlockConfiguration().get("ignoreWriteIfSameValue");
 		//source configuration 
 			
 			//source type
@@ -132,7 +134,8 @@ public class SetterBlock extends ExecutionBlock {
 								  +"\"" + this.blockName  +"\","				  
 								  +"\"" + instanceId  +"\","
 								  +"\"" + this.destinationAttributeName  +"\","
-								  +"\"" + this.value  +"\""
+								  +"\"" + this.value  +"\","
+								  + this.ignoreWriteIfSameValue 
 								  +");\r\n");
 						expression.append("\n");
 					}
@@ -148,7 +151,8 @@ public class SetterBlock extends ExecutionBlock {
 								   +"\"" + this.blockName  +"\","
 								  +"\"" + instanceId  +"\","
 								  +"\"" + this.destinationAttributeName  +"\","
-								  +"\"" + this.sourceVariableId  +"\""
+								  +"\"" + this.sourceVariableId  +"\","
+								  + this.ignoreWriteIfSameValue  
 								  +");\r\n");
 						expression.append("\n");
 					}
@@ -165,7 +169,8 @@ public class SetterBlock extends ExecutionBlock {
 								  +"\"" + this.sourceInstanceId  +"\","
 								  +"\"" + this.sourceAttributeName  +"\","
 								  +"\"" + instanceId  +"\","
-								  +"\"" + this.destinationAttributeName  +"\""
+								  +"\"" + this.destinationAttributeName  +"\","
+								  + this.ignoreWriteIfSameValue 
 								  +");\r\n");
 						expression.append("\n");
 					}
@@ -190,7 +195,8 @@ public class SetterBlock extends ExecutionBlock {
 								  +"\"" + this.blockName  +"\","				  
 								  +"\"" + instanceId  +"\","
 								  + primeJoinId  +","
-								  +"\"" + this.value  +"\""
+								  +"\"" + this.value  +"\","
+								  + this.ignoreWriteIfSameValue 
 								  +");\r\n");
 						expression.append("\n");
 					}
@@ -206,7 +212,8 @@ public class SetterBlock extends ExecutionBlock {
 								   +"\"" + this.blockName  +"\","
 								  +"\"" + instanceId  +"\","
 								  + primeJoinId  +","
-								  +"\"" + this.sourceVariableId  +"\""
+								  +"\"" + this.sourceVariableId  +"\","
+								  + this.ignoreWriteIfSameValue  
 								  +");\r\n");
 						expression.append("\n");
 					}
@@ -223,7 +230,8 @@ public class SetterBlock extends ExecutionBlock {
 								  +"\"" + this.sourceInstanceId  +"\","
 								  +"\"" + this.sourceAttributeName  +"\","
 								  +"\"" + instanceId  +"\","
-								  + primeJoinId  
+								  + primeJoinId  +","
+								  + this.ignoreWriteIfSameValue 
 								  +");\r\n");
 						expression.append("\n");
 					}

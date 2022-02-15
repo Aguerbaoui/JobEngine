@@ -51,7 +51,7 @@ public class BlockManager {
 
 	}
 
-	
+
 	
 	public void init() throws RuleBuildFailedException {
 		if (!blocks.isEmpty()) {
@@ -73,7 +73,7 @@ public class BlockManager {
 
 	private void initBlock(Block block) {
 		
-		
+		block.setAlreadyScripted(false);
 		block.setInputBlocks(new ArrayList<>());
 		block.setOutputBlocks(new ArrayList<>());
 
@@ -86,7 +86,13 @@ public class BlockManager {
 		}
 	}
 
-
+	public void resetAllBlocks() {
+		
+		for(Block block : blocks.values())
+		{
+			block.setAlreadyScripted(false);
+		}
+	}
 
 
 

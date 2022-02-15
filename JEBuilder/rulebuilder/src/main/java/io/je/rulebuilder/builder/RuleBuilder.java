@@ -152,6 +152,7 @@ public class RuleBuilder {
 		Set<Block> rootBlocks = getRootBlocks(uRule);
 		String subRulePrefix = IdManager.generateSubRulePrefix(uRule.getJobEngineElementID());
 		for (Block root : rootBlocks) {
+			uRule.getBlocks().resetAllBlocks();
 			scriptedRuleid = subRulePrefix + uRule.getJobEngineElementName() + ++scriptedRulesCounter;
 			GenericBlockSummary allGenericBlocksByClassId = new GenericBlockSummary(scriptedRuleid);
 			if (eliminateCombinatoryBehaviour) {
