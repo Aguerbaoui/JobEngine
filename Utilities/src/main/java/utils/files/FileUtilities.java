@@ -21,6 +21,11 @@ public class FileUtilities {
 
 
 	}
+	
+	public static boolean fileExists(String path) {
+		   return new File(path).exists();
+	
+	}
 
 	public static String getStringFromFile(String path) throws IOException {
 		String content = null;

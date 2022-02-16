@@ -14,12 +14,20 @@ public class LinkedVariableSetterBlock extends ExecutionBlock {
 	
 	/*******************************Instance definition*******************************/
 	String variableId ; 
+	boolean  ignoreWriteIfSameValue=true;
+
 
 	public LinkedVariableSetterBlock(BlockModel blockModel) {
 		super(blockModel);
+		try {
+			ignoreWriteIfSameValue=(boolean) blockModel.getBlockConfiguration().get("ignoreWriteIfSameValue");
+		}catch (Exception e) {
+			// TODO: handle exception
+		}
 		try
 		{
 			variableId=(String) blockModel.getBlockConfiguration().get("variableId");
+
 			isProperlyConfigured=true;
 			if(inputBlockIds.isEmpty())
 			{
@@ -48,7 +56,8 @@ public class LinkedVariableSetterBlock extends ExecutionBlock {
 				  +"\"" + this.ruleId  +"\","
 				  +"\"" + this.variableId  +"\", "
 				  + getInputRefName(0)
-				  +", "+"\"" + blockName  +"\" "
+				  +", "+"\"" + blockName   +"\","
+				  + this.ignoreWriteIfSameValue
 				  +");\r\n";
 			
 

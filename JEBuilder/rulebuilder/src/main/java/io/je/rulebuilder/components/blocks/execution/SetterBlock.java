@@ -60,11 +60,15 @@ public class SetterBlock extends ExecutionBlock {
 
 	public SetterBlock(BlockModel blockModel) {
 		super(blockModel);
+		try {
+			isGeneric= (boolean) blockModel.getBlockConfiguration().get("isGeneric");	
+			ignoreWriteIfSameValue=(boolean) blockModel.getBlockConfiguration().get("ignoreWriteIfSameValue");
+		}catch (Exception e) {
+			// TODO: handle exception
+		}
 		try
 		{
 		
-			isGeneric= (boolean) blockModel.getBlockConfiguration().get("isGeneric");	
-			ignoreWriteIfSameValue=(boolean) blockModel.getBlockConfiguration().get("ignoreWriteIfSameValue");
 		//source configuration 
 			
 			//source type
@@ -187,54 +191,50 @@ public class SetterBlock extends ExecutionBlock {
 			   {
 			   case STATIC :	
 				   expression = new StringBuilder();
-					for(String instanceId : destinationInstancesId)
-					{
+					
 						expression.append("Executioner.updateInstanceAttributeValueFromStaticValue( "
 							   	  +"\"" + this.jobEngineProjectID  +"\","
 								  +"\"" + this.ruleId  +"\","
 								  +"\"" + this.blockName  +"\","				  
-								  +"\"" + instanceId  +"\","
 								  + primeJoinId  +","
+								  +"\"" + this.destinationAttributeName  +"\","
 								  +"\"" + this.value  +"\","
 								  + this.ignoreWriteIfSameValue 
 								  +");\r\n");
 						expression.append("\n");
-					}
+					
 					return expression.toString();
 			
 			   case VARIABLE:
 				   expression = new StringBuilder();
-					for(String instanceId : destinationInstancesId)
-					{
 						expression.append("Executioner.updateInstanceAttributeValueFromVariable( "
 								  +"\"" + this.jobEngineProjectID  +"\","
 								  +"\"" + this.ruleId  +"\","
 								   +"\"" + this.blockName  +"\","
-								  +"\"" + instanceId  +"\","
 								  + primeJoinId  +","
+								   +"\"" + this.destinationAttributeName  +"\","
 								  +"\"" + this.sourceVariableId  +"\","
 								  + this.ignoreWriteIfSameValue  
 								  +");\r\n");
 						expression.append("\n");
-					}
+					
 					return expression.toString();
 			
 			   case ATTRIBUTE :
 				    expression = new StringBuilder();
-					for(String instanceId : destinationInstancesId)
-					{
+
 						expression.append("Executioner.updateInstanceAttributeValueFromAnotherInstance( "
 								  +"\"" + this.jobEngineProjectID  +"\","
 								  +"\"" + this.ruleId  +"\","
 								   +"\"" + this.blockName  +"\","
 								  +"\"" + this.sourceInstanceId  +"\","
 								  +"\"" + this.sourceAttributeName  +"\","
-								  +"\"" + instanceId  +"\","
 								  + primeJoinId  +","
+								  +"\"" + this.destinationAttributeName  +"\","
 								  + this.ignoreWriteIfSameValue 
 								  +");\r\n");
 						expression.append("\n");
-					}
+					
 					return expression.toString();
 				  
 				  		
@@ -254,7 +254,8 @@ public class SetterBlock extends ExecutionBlock {
 				  +"\"" + this.ruleId  +"\","
 				  +"\"" + this.destinationVariableId  +"\","
 				  +"\"" + this.value  +"\"" +", "
-				  +"\"" + this.blockName  +"\" "
+				  +"\"" + this.blockName   +"\","
+				  + this.ignoreWriteIfSameValue
 				  +");\r\n";
 		   case VARIABLE:
 			   return "Executioner.updateVariableValueFromAnotherVariable( " 
@@ -262,7 +263,8 @@ public class SetterBlock extends ExecutionBlock {
 				  +"\"" + this.ruleId  +"\","
 				  +"\"" + this.sourceVariableId  +"\","
 				  +"\"" + this.destinationVariableId  +"\","
-				  +"\"" + this.blockName  +"\" "
+				  +"\"" + this.blockName   +"\","
+				  + this.ignoreWriteIfSameValue
 				  +");\r\n";
 		   case ATTRIBUTE :
 			   return "Executioner.updateVariableValueFromDataModel( " 
@@ -271,7 +273,8 @@ public class SetterBlock extends ExecutionBlock {
 				  +"\"" + this.destinationVariableId  +"\","
 				  +"\"" + this.sourceInstanceId  +"\","
 				  +"\"" + this.sourceAttributeName  +"\","
-				  +"\"" + this.blockName  +"\" "
+				  +"\"" + this.blockName   +"\","
+				  + this.ignoreWriteIfSameValue
 				  +");\r\n";
 			  		
 		  default:

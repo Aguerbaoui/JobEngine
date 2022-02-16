@@ -441,7 +441,7 @@ public class ProjectContainer {
 			releaseId = kieServices.newReleaseId("io.je", "ruleengine", getReleaseVer());
 			JELogger.debug("release Id = " + releaseId, LogCategory.RUNTIME, projectId, LogSubModule.RULE, null);
 			kieFileSystem.generateAndWritePomXML(releaseId);
-			kieServices.newKieBuilder(kieFileSystem, JEClassLoader.getDataModelInstance()).buildAll();
+			kieServices.newKieBuilder(kieFileSystem, JEClassLoader.getDataModelInstance()).buildAll(null);
 			if (kieContainer == null) {
 				kieContainer = kieServices.newKieContainer(releaseId, JEClassLoader.getDataModelInstance());
 				JEClassLoader.setCurrentRuleEngineClassLoader(JEClassLoader.getDataModelInstance());
@@ -609,7 +609,7 @@ public class ProjectContainer {
 		 * f.getName()); } } catch (ClassNotFoundException e) { e.printStackTrace(); }
 		 */
 		// Thread.currentThread().setContextClassLoader( loader );
-		KieBuilder kieBuilder = kieServices.newKieBuilder(kfsToCompile, JEClassLoader.getDataModelInstance()).buildAll();
+		KieBuilder kieBuilder = kieServices.newKieBuilder(kfsToCompile, JEClassLoader.getDataModelInstance()).buildAll(null);
 
 		Results results = kieBuilder.getResults();
 		if (results.hasMessages(Message.Level.ERROR)) {

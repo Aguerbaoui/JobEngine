@@ -6,6 +6,9 @@ import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.models.VariableModel;
 import io.je.utilities.beans.JEResponse;
+
+import java.util.HashMap;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -55,10 +58,10 @@ public class VariableController {
      * write to variable
      */
     @PostMapping(value = "writeVariableValue/{projectId}/{variableId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> writeVariableValue(@PathVariable("projectId") String projectId,@PathVariable("variableId") String variableId, @RequestBody String value ) {
+    public ResponseEntity<?> writeVariableValue(@PathVariable("projectId") String projectId,@PathVariable("variableId") String variableId, @RequestBody HashMap<String,Object> payload ) {
 
         try {
-        	runtimeDispatcher.writeVariableValue(projectId,variableId, value);
+        	runtimeDispatcher.writeVariableValue(projectId,variableId, String.valueOf(payload.get("value")),(boolean)payload.get("ignoreIfSameValue"));
         } catch (Exception e) {
             return JEExceptionHandler.handleException(e);
         }

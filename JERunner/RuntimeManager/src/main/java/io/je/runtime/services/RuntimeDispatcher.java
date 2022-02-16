@@ -407,10 +407,10 @@ public class RuntimeDispatcher {
 
 	}
 
-	public void writeVariableValue(String projectId, String variableId, String value) {
+	public void writeVariableValue(String projectId, String variableId, String value,boolean ignoreIfSameValue) {
 		//JELogger.debug("[projectId = " + projectId + "] [variable = " + variableId + "]" + JEMessages.UPDATING_VARIABLE,
 			//	LogCategory.RUNTIME, projectId, LogSubModule.VARIABLE, variableId);
-		JEVariable var = VariableManager.updateVariableValue(projectId, variableId, value);
+		JEVariable var = VariableManager.updateVariableValue(projectId, variableId, value,ignoreIfSameValue);
 		if (var != null) {
 			RuleEngineHandler.addVariable(var);
 		}
@@ -438,6 +438,10 @@ public class RuntimeDispatcher {
 		DataModelListener.startListening(topics);
 		//RuleEngineHandler.buildProject(projectId);
 		RuleEngineHandler.runRuleEngineProject(projectId);
+		for (JEVariable variable : VariableManager.getAllVariables(projectId)) {
+			RuleEngineHandler.addVariable(variable);
+
+		}
 		projectStatus.put(projectId, true);
 
 	}

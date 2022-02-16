@@ -139,12 +139,12 @@ public class Executioner {
 	 * update Variable from a static value
 	 */
 	public static void updateVariableValue(String projectId, String ruleId, String variableId, Object value,
-			String blockName) {
+			String blockName,boolean ignoreIfSameValue) {
 
 		try {
 			executor.submit(() -> {
 				try {
-					JERunnerAPIHandler.writeVariableValue(projectId, variableId, value);
+					JERunnerAPIHandler.writeVariableValue(projectId, variableId, value,ignoreIfSameValue);
 				} catch (JERunnerErrorException e) {
 					JELogger.error(JEMessages.UPDATING_VARIABLE_FAILED + e.getMessage(), LogCategory.RUNTIME, projectId,
 							LogSubModule.RULE, ruleId, blockName);
@@ -163,13 +163,13 @@ public class Executioner {
 	 * update Variable from another variable
 	 */
 	public static void updateVariableValueFromAnotherVariable(String projectId, String ruleId, String sourceVariableId,
-			String destinationVariableId, String blockName) {
+			String destinationVariableId, String blockName,boolean ignoreIfSameValue) {
 
 		try {
 			executor.submit(() -> {
 				try {
 					JERunnerAPIHandler.writeVariableValue(projectId, destinationVariableId,
-							VariableManager.getVariableValue(projectId, sourceVariableId));
+							VariableManager.getVariableValue(projectId, sourceVariableId),ignoreIfSameValue);
 				} catch (JERunnerErrorException | VariableNotFoundException e) {
 					JELogger.error(JEMessages.UPDATING_VARIABLE_FAILED + e.getMessage(), LogCategory.RUNTIME, projectId,
 							LogSubModule.RULE, ruleId, blockName);
@@ -188,13 +188,13 @@ public class Executioner {
 	 * update Variable from a data model instance
 	 */
 	public static void updateVariableValueFromDataModel(String projectId, String ruleId, String destinationVariableId,
-			String sourceInstanceId, String sourceAttributeName, String blockName) {
+			String sourceInstanceId, String sourceAttributeName, String blockName,boolean ignoreIfSameValue) {
 
 		try {
 			executor.submit(() -> {
 				try {
 					Object attribueValue = InstanceManager.getAttributeValue(sourceInstanceId, sourceAttributeName);
-					JERunnerAPIHandler.writeVariableValue(projectId, destinationVariableId, attribueValue);
+					JERunnerAPIHandler.writeVariableValue(projectId, destinationVariableId, attribueValue, ignoreIfSameValue);
 				} catch (JERunnerErrorException e) {
 					JELogger.error(JEMessages.UPDATING_VARIABLE_FAILED + e.getMessage(), LogCategory.RUNTIME, projectId,
 							LogSubModule.RULE, ruleId, blockName);

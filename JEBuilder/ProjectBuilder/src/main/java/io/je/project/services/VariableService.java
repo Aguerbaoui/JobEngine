@@ -187,7 +187,7 @@ public class VariableService {
 
 
 		try {
-			JERunnerAPIHandler.writeVariableValue(projectId, variableId, value);
+			JERunnerAPIHandler.writeVariableValue(projectId, variableId, value,true);
 		}
 		catch (JERunnerErrorException e) {
 			throw new VariableException(JEMessages.ERROR_WRITING_VALUE_TO_VARIABLE);
