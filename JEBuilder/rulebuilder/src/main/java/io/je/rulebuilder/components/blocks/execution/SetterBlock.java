@@ -187,54 +187,50 @@ public class SetterBlock extends ExecutionBlock {
 			   {
 			   case STATIC :	
 				   expression = new StringBuilder();
-					for(String instanceId : destinationInstancesId)
-					{
+					
 						expression.append("Executioner.updateInstanceAttributeValueFromStaticValue( "
 							   	  +"\"" + this.jobEngineProjectID  +"\","
 								  +"\"" + this.ruleId  +"\","
 								  +"\"" + this.blockName  +"\","				  
-								  +"\"" + instanceId  +"\","
 								  + primeJoinId  +","
+								  +"\"" + this.destinationAttributeName  +"\","
 								  +"\"" + this.value  +"\","
 								  + this.ignoreWriteIfSameValue 
 								  +");\r\n");
 						expression.append("\n");
-					}
+					
 					return expression.toString();
 			
 			   case VARIABLE:
 				   expression = new StringBuilder();
-					for(String instanceId : destinationInstancesId)
-					{
 						expression.append("Executioner.updateInstanceAttributeValueFromVariable( "
 								  +"\"" + this.jobEngineProjectID  +"\","
 								  +"\"" + this.ruleId  +"\","
 								   +"\"" + this.blockName  +"\","
-								  +"\"" + instanceId  +"\","
 								  + primeJoinId  +","
+								   +"\"" + this.destinationAttributeName  +"\","
 								  +"\"" + this.sourceVariableId  +"\","
 								  + this.ignoreWriteIfSameValue  
 								  +");\r\n");
 						expression.append("\n");
-					}
+					
 					return expression.toString();
 			
 			   case ATTRIBUTE :
 				    expression = new StringBuilder();
-					for(String instanceId : destinationInstancesId)
-					{
+
 						expression.append("Executioner.updateInstanceAttributeValueFromAnotherInstance( "
 								  +"\"" + this.jobEngineProjectID  +"\","
 								  +"\"" + this.ruleId  +"\","
 								   +"\"" + this.blockName  +"\","
 								  +"\"" + this.sourceInstanceId  +"\","
 								  +"\"" + this.sourceAttributeName  +"\","
-								  +"\"" + instanceId  +"\","
 								  + primeJoinId  +","
+								  +"\"" + this.destinationAttributeName  +"\","
 								  + this.ignoreWriteIfSameValue 
 								  +");\r\n");
 						expression.append("\n");
-					}
+					
 					return expression.toString();
 				  
 				  		
