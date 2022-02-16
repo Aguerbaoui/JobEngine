@@ -133,15 +133,20 @@ public class InstanceManager {
 
 	private static boolean isSameValue(Object a, Object b) {
 		boolean result = false;
-		if (a == b || a.equals(b)) {
-			return true;
-		}
+		try {
+			if (a == b || a.equals(b)) {
+				return true;
+			}
 
-		String aStr = String.valueOf(a);
-		String bStr = String.valueOf(b);
+			String aStr = String.valueOf(a);
+			String bStr = String.valueOf(b);
 
-		if (aStr.equals(bStr) || Double.valueOf(aStr).equals(Double.valueOf(bStr))) {
-			return true;
+			if (aStr.equals(bStr) || Double.valueOf(aStr).equals(Double.valueOf(bStr))) {
+				return true;
+			}
+			
+		}catch (Exception e) {
+			e.printStackTrace();
 		}
 
 		return result;
