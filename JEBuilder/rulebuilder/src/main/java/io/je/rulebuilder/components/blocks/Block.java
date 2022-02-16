@@ -54,9 +54,6 @@ public abstract class Block extends JEObject {
 		isProperlyConfigured=false;
 	}
 	this.inputBlockIds= inputBlockIds;
-	JELogger.debug("!!!!! ");
-	JELogger.debug(blockName +" inputs = "+inputBlockIds.toString());
-	JELogger.debug("!!!!! ");
 	this.outputBlockIds = outputBlocksIds;
 	
 }
