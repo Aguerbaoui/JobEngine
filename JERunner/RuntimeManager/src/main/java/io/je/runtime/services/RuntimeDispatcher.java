@@ -252,16 +252,19 @@ public class RuntimeDispatcher {
 	// add class
 	public void addClass(ClassModel classModel) throws ClassLoadException {
 		JELogger.debug(JEMessages.ADDING_CLASS+": "+classModel.getClassName(), LogCategory.RUNTIME, null, LogSubModule.CLASS, null);
-			try {
+		String className = JEClassLoader.getJobEnginePackageName(ClassBuilderConfig.CLASS_PACKAGE) + "." + classModel.getClassName();
+		try {
 				Class<?> c = null;
 				if(classModel.getClassAuthor().equals(ClassAuthor.DATA_MODEL)) {
 					JEClassLoader.overrideDataModelInstance();
+					JEClassLoader.addClassToDataModelClassesSet(className);
 					c = JEClassLoader.getDataModelInstance()
-						.loadClass(JEClassLoader.getJobEnginePackageName(ClassBuilderConfig.CLASS_PACKAGE) + "." + classModel.getClassName());
+						.loadClass(className);
 				}
 				ClassRepository.addClass(classModel.getClassId(), classModel.getClassName(), c);
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
+				JEClassLoader.removeClassFromDataModelClassesSet(className);
 				throw new ClassLoadException(
 						"[class :" + classModel.getClassName() + " ]" + JEMessages.CLASS_LOAD_FAILED);
 			}

@@ -124,12 +124,15 @@ public class ClassManager {
 
         // Load the target class using its binary name
         Class<?> loadedClass;
+        String className = JEClassLoader.getJobEnginePackageName(ClassBuilderConfig.CLASS_PACKAGE) + "." + classDefinition.getName();
         try {
             JEClassLoader.overrideDataModelInstance();
+            JEClassLoader.addClassToDataModelClassesSet(className);
             loadedClass = JEClassLoader.getDataModelInstance()
-                    .loadClass(JEClassLoader.getJobEnginePackageName(ClassBuilderConfig.CLASS_PACKAGE) + "." + classDefinition.getName());
+                    .loadClass(className);
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
+            JEClassLoader.removeClassFromDataModelClassesSet(className);
             throw new ClassLoadException(
                     JEMessages.CLASS_LOAD_FAILED + "[" + classDefinition.getName() + "]" + e.getMessage());
         }
