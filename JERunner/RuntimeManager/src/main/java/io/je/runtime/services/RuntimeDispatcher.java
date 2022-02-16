@@ -435,6 +435,10 @@ public class RuntimeDispatcher {
 		DataModelListener.startListening(topics);
 		//RuleEngineHandler.buildProject(projectId);
 		RuleEngineHandler.runRuleEngineProject(projectId);
+		for (JEVariable variable : VariableManager.getAllVariables(projectId)) {
+			RuleEngineHandler.addVariable(variable);
+
+		}
 		projectStatus.put(projectId, true);
 
 	}
