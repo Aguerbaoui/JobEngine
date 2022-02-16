@@ -27,6 +27,20 @@ public class JEClassLoader extends ClassLoader {
 
     static JEClassLoader currentRuleEngineClassLoader;
 
+    public static void addClassToDataModelClassesSet(String classname) {
+        if(dataModelCustomClasses == null) {
+            dataModelCustomClasses = new HashSet<>();
+        }
+        dataModelCustomClasses.add(classname);
+    }
+
+    public static void removeClassFromDataModelClassesSet(String name) {
+        try {
+            dataModelCustomClasses.remove(name);
+        }
+        catch (Exception ignored) {}
+    }
+
     private JEClassLoader(Set<String> dataModelCustomClasses) {
         super(Thread.currentThread().getContextClassLoader());
         if (dataModelCustomClasses != null) {
@@ -72,9 +86,7 @@ public class JEClassLoader extends ClassLoader {
 
     @Override
     public Class<?> loadClass(String className) throws ClassNotFoundException {
-        if (className.contains(ClassBuilderConfig.CLASS_PACKAGE + ".")
-                && !className.contains("Propagation")) {
-            dataModelCustomClasses.add(className);
+        if (dataModelCustomClasses.contains(className)) {
             try {
                 JELogger.trace("Class Loading by dm custom loader Started for " + className, LogCategory.RUNTIME,
                         null, LogSubModule.CLASS, null);
@@ -110,7 +122,7 @@ public class JEClassLoader extends ClassLoader {
             resolveClass(c);
             return c;
         } catch (IOException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
             return null;
         }
     }
