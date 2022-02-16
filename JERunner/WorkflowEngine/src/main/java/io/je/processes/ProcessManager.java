@@ -297,7 +297,7 @@ public class ProcessManager {
         for (JEProcess process : processes.values()) {
             if (process.getProjectId().equals(projectId) && !process.isRunning()) {
                 try {
-                    launchProcessByKeyWithoutVariables(process.getKey(), runProject);
+                    launchProcessByKeyWithoutVariables(process.getName(), runProject);
                 } catch (WorkflowAlreadyRunningException e) {
                     JELogger.error(JEMessages.WORKFLOW_ALREADY_RUNNING + process.getKey(),
                             LogCategory.RUNTIME, projectId,

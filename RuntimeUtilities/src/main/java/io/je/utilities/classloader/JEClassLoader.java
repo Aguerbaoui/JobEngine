@@ -15,8 +15,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.commons.lang3.StringUtils;
-
 import static io.je.utilities.config.ConfigurationConstants.JAVA_GENERATION_PATH;
 
 public class JEClassLoader extends ClassLoader {
@@ -28,6 +26,20 @@ public class JEClassLoader extends ClassLoader {
     static JEClassLoader dataModelInstance;
 
     static JEClassLoader currentRuleEngineClassLoader;
+
+    public static void addClassToDataModelClassesSet(String classname) {
+        if(dataModelCustomClasses == null) {
+            dataModelCustomClasses = new HashSet<>();
+        }
+        dataModelCustomClasses.add(classname);
+    }
+
+    public static void removeClassFromDataModelClassesSet(String name) {
+        try {
+            dataModelCustomClasses.remove(name);
+        }
+        catch (Exception ignored) {}
+    }
 
     private JEClassLoader(Set<String> dataModelCustomClasses) {
         super(Thread.currentThread().getContextClassLoader());
@@ -74,26 +86,18 @@ public class JEClassLoader extends ClassLoader {
 
     @Override
     public Class<?> loadClass(String className) throws ClassNotFoundException {
-       try {
-    	   if (className.contains(ClassBuilderConfig.CLASS_PACKAGE + ".") //locondition hédhi classpackage = jeclasses donc y3adi féhom kol lénna
-                   && !className.contains("Propagation")) {
-               dataModelCustomClasses.add(className);
-               try {
-                   JELogger.trace("Class Loading by dm custom loader Started for " + className, LogCategory.RUNTIME,
-                           null, LogSubModule.CLASS, null);
-                   Class<?> c = dataModelInstance.getClass(className);
-                   if(c == null) return super.loadClass(className);
-                   return c;
-               } catch (Exception e) {
-                   //JELogger.debug("Class Loading failed by je custom loader for " + className);
-                   //e.printStackTrace();
-            	   //JELogger.error(Arrays.toString(e.getStackTrace()));
-               }
-           }
-           return super.loadClass(className);
-       }catch(Exception e){
-       }
-       return super.loadClass(className);
+        if (dataModelCustomClasses.contains(className)) {
+            try {
+                JELogger.trace("Class Loading by dm custom loader Started for " + className, LogCategory.RUNTIME,
+                        null, LogSubModule.CLASS, null);
+                Class<?> c = dataModelInstance.getClass(className);
+                return c;
+            } catch (Exception e) {
+                JELogger.debug("Class Loading failed by je custom loader for " + className);
+                JELogger.error(Arrays.toString(e.getStackTrace()));
+            }
+        }
+        return super.loadClass(className);
     }
 
     /**
@@ -108,7 +112,6 @@ public class JEClassLoader extends ClassLoader {
      */
     private Class<?> getClass(String name) throws ClassNotFoundException {
         String file = FileUtilities.getPathPrefix(JAVA_GENERATION_PATH) + name.replace('.', File.separatorChar) + ".class";
-        if(!FileUtilities.fileExists(file)) return null; // zid method file exists to test with fibéli zédtha éna but its not here ahh dhaharli mazélt 3andi
         byte[] byteArr = null;
         try {
             // This loads the byte code data from the file
@@ -119,7 +122,7 @@ public class JEClassLoader extends ClassLoader {
             resolveClass(c);
             return c;
         } catch (IOException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
             return null;
         }
     }
