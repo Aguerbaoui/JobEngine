@@ -238,9 +238,14 @@ public class JERunnerAPIHandler {
         return sendRequest(requestUrl);
     }
 
-	public static JEResponse writeVariableValue(String projectId,String variableId, Object value) throws JERunnerErrorException {
+	public static JEResponse writeVariableValue(String projectId,String variableId, Object value, boolean ignoreIfSameValue) throws JERunnerErrorException {
 		 String requestUrl = runtimeManagerBaseApi + WRITE_TO_VARIABLE + projectId + "/" + variableId;
-	       return  sendRequestWithStringBody(requestUrl,String.valueOf(value));
+	     HashMap<String, Object> payload = new HashMap<String, Object>();
+	     payload.put("value", value);
+	     payload.put("ignoreIfSameValue", ignoreIfSameValue);
+		 
+		 return sendRequestWithBody(requestUrl, payload);
+
 		
 	}
 

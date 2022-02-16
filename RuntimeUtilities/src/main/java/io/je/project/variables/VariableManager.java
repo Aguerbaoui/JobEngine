@@ -5,6 +5,7 @@ import io.je.utilities.beans.*;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.VariableNotFoundException;
 import io.je.utilities.log.JELogger;
+import utils.comparator.Comparator;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
 import utils.string.StringSub;
@@ -65,12 +66,16 @@ public class VariableManager {
         }
     }
 
-	public static JEVariable updateVariableValue(String projectId, String variableId, Object value) {
+	public static JEVariable updateVariableValue(String projectId, String variableId, Object value, boolean ignoreIfSameValue) {
 		 if(!variables.containsKey(projectId)) {  
 	            variables.put(projectId, new HashMap<>());
 	        }
 		
 	       JEVariable variable = variables.get(projectId).get(variableId);
+	       if(ignoreIfSameValue && Comparator.isSameValue(variable.getValue(), value))
+	       {
+	    	   return null;
+	       }
 	       
  	       if(variable!=null)
 	       {

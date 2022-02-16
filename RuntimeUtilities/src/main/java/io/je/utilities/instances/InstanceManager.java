@@ -16,6 +16,7 @@ import io.je.utilities.log.JELogger;
 import io.je.utilities.mapping.InstanceModelMapping;
 import io.je.utilities.models.InstanceModel;
 import io.je.utilities.runtimeobject.JEObject;
+import utils.comparator.Comparator;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
 
@@ -131,34 +132,14 @@ public class InstanceManager {
 		return null;
 	}
 
-	private static boolean isSameValue(Object a, Object b) {
-		boolean result = false;
-		try {
-			if (a == b || a.equals(b)) {
-				return true;
-			}
 
-			String aStr = String.valueOf(a);
-			String bStr = String.valueOf(b);
-
-			if (aStr.equals(bStr) || Double.valueOf(aStr).equals(Double.valueOf(bStr))) {
-				return true;
-			}
-			
-		}catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		return result;
-
-	}
 
 	public static void writeToDataModelInstance(String instanceId, String attributeName, Object attributeValue,
 			boolean ignoreSameValue) {
 
 		if (ignoreSameValue) {
 			Object currentValue = getAttributeValue(instanceId, attributeName);
-			if (isSameValue(currentValue, attributeValue)) {
+			if (Comparator.isSameValue(currentValue, attributeValue)) {
 				return;
 			}
 
