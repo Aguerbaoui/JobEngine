@@ -29,7 +29,7 @@ public class Executioner {
 
 	static final int MAX_THREAD_COUNT = 100;
 	public static ObjectMapper objectMapper = new ObjectMapper();
-	static ExecutorService executor = Executors.newFixedThreadPool(MAX_THREAD_COUNT);
+	static ExecutorService executor = Executors.newCachedThreadPool();
 
 	private Executioner() {
 	}
