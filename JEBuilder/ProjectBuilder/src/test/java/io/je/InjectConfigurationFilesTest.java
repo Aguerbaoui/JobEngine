@@ -1,68 +1,57 @@
 package io.je;
-
-import static org.junit.Assert.*;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import java.util.Properties;
-
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import org.junit.Test;
+import io.je.utilities.config.JEConfiguration;
+import io.siothconfig.SIOTHConfigUtility;
 import io.je.utilities.config.ConfigurationConstants;
 import io.siothconfig.SIOTHConfig;
-import io.siothconfig.SIOTHConfigurationConstants;
-import utils.string.StringUtilities;
-/*
-public class InjectConfigurationFilesTest {
+import org.junit.jupiter.api.Test;
 
-  String envVar = "";
+public class InjectConfigurationFilesTest {
 
   @Test
   public void environmentVariableExistsTest() {
-    envVar = System.getenv(ConfigurationConstants.SIOTH_ENVIRONMENT_VARIABLE);
-    System.out.println("Environment variable detected: " + envVar + "\n");
-    assertFalse(StringUtilities.isEmpty(envVar));
+    String envVar = System.getenv(ConfigurationConstants.SIOTH_ENVIRONMENT_VARIABLE);
+    assertNotNull(envVar);
   }
 
   @Test
   public void jobEnginePropertiesExistsTest() {
-    environmentVariableExistsTest();
-    String path = envVar + "\\JobEngine\\jobengine.properties";
-    Properties configProps = new Properties();
-    try {
-      InputStream inputStream = new FileInputStream(path);
-      assertNotNull(inputStream);
-
-      configProps.load(inputStream);
-      System.out.println("Found properties: \n");
-      configProps.forEach((key, value) -> {
-        System.out.println(key + " => " + value);
-      });
-
-    } catch (IOException e) {
-      assertEquals("Exception thrown", true);
-    }
+    Properties properties = JEConfiguration.getJobEngineProperties();
+    assertNotNull(properties);
+    assertNotNull(JEConfiguration.getProjectBuilderUrl());
+    assertNotNull(JEConfiguration.getRunnerUrl());
+    assertNotNull(JEConfiguration.getMonitorUrl());
+    assertNotNull(JEConfiguration.getRunnerLogPath());
+    assertNotNull(JEConfiguration.getRunnerLogLevel());
+    assertNotNull(JEConfiguration.getZmqSecurity());
+    assertNotNull(JEConfiguration.getMonitorPort());
+    assertNotNull(JEConfiguration.getSiothId());
+    assertNotNull(JEConfiguration.getDevEnvironment());
+    assertNotNull(JEConfiguration.getDumpJavaProcess());
+    assertNotNull(JEConfiguration.getJavaDumpPath());
+    assertNotNull(JEConfiguration.getMonitorLogLevel());
+    assertNotNull(JEConfiguration.getMonitorLogPath());
+    assertNotNull(JEConfiguration.getBuilderLogPath());
+    assertNotNull(JEConfiguration.getBuilderLogLevel());
+    assertNotNull(JEConfiguration.getIdentityUrl());
   }
-*/
-  /*@Test
-  public void SiothConfigJsonTest() {
-    environmentVariableExistsTest();
-    String configPath = SIOTHConfigurationConstants.SIOTH_JSON_CONFIG;
-    assertNotNull(configPath);
-    try {
-      ObjectMapper objectMapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-      String file = configPath;
-      String json = new String(Files.readAllBytes(Paths.get(file)));
-      assertNotNull(json);
-      SIOTHConfig siothConfig = objectMapper.readValue(json, SIOTHConfig.class);
-      assertNotNull(siothConfig);
 
-    } catch (Exception e) {
-      assertEquals("Exception thrown for missing json values" + e.getLocalizedMessage(), true);
-    }
-  }*/
-//}
+  @Test
+  public void SiothConfigJsonTest() {
+    String siothId = JEConfiguration.getSiothId();
+    assertNotNull(siothId);
+    SIOTHConfigUtility.setSiothId(siothId);
+    SIOTHConfigUtility.init();
+    SIOTHConfig config = SIOTHConfigUtility.getSiothConfig();
+    assertNotNull(config);
+    assertNotNull(config.getJobEngine());
+    assertNotNull(config.getJobEngine().getGeneratedClassesPath());
+    assertNotEquals(config.getJobEngine().getCheckHealthEveryMs(), 0);
+    assertNotNull(config.getJobEngine().getJeBuilder());
+    assertNotNull(config.getJobEngine().getJeRunner());
+    assertNotEquals(config.getJobEngine().getLibraryMaxFileSize(), 0);
+  }
+
+}

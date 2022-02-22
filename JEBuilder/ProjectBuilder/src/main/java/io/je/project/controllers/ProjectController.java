@@ -39,25 +39,6 @@ public class ProjectController {
 	@Autowired
 	ConfigurationService configService;
 //########################################### **PROJECT** ################################################################
-	/*
-	 * Get the list of all projects
-	 */
-	/*@GetMapping("/getAllProjects")
-	public ResponseEntity<?> getAllProjects() {
-		Collection<?> projects = null;
-		try {
-			projects = projectService.getAllProjects().get();
-			if (projects.isEmpty()) {
-				return ResponseEntity.noContent().build();
-
-			}
-		} catch (Exception e) {
-			return JEExceptionHandler.handleException(e);
-
-		}
-		return ResponseEntity.ok(projects);
-
-	}*/
 
 	/*
 	 * Get project running status
@@ -144,24 +125,6 @@ public class ProjectController {
 		return ResponseEntity.ok(project.isBuilt());
 
 	}
-
-	/*
-	 * Add new project
-	 */
-/*	@PostMapping(value = "/addProject", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> addProject(@RequestBody ProjectModel m) {
-		if (projectService.projectExists(m.getProjectId())) {
-			return ResponseEntity.ok(new JEResponse(ResponseCodes.PROJECT_EXISTS, JEMessages.PROJECT_EXISTS));
-		}
-		try {
-			JEProject p = new JEProject(m.getProjectId(), m.getConfigurationPath());
-			projectService.saveProject(p).get();
-		} catch (Exception e) {
-			return JEExceptionHandler.handleException(e);
-		}
-		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, CREATED_PROJECT_SUCCESSFULLY));
-	}
-*/
 	/*
 	 * Add new project
 	 */
@@ -181,27 +144,6 @@ public class ProjectController {
 		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, PROJECT_DELETED));
 	}
 
-	/*@GetMapping("/getProject/{projectId}")
-	public ResponseEntity<?> getProject(@PathVariable String projectId) {
-	/*	JEProject project = null;
-		try {
-			project = projectService.getProject(projectId);
-			if (project == null) {
-				return ResponseEntity.ok(new JEResponse(ResponseCodes.PROJECT_NOT_FOUND, JEMessages.PROJECT_NOT_FOUND));
-
-			}
-			return ResponseEntity.ok(project);
-			//return ResponseEntity.ok(projects);
-
-		} catch (Exception e) {
-			return JEExceptionHandler.handleException(e);
-
-		}
-		
-*/
-	/*	return ResponseEntity.ok("");
-
-	}*/
 
 	/*
 	 * Build entire project files
@@ -216,7 +158,6 @@ public class ProjectController {
 
 		}
 
-		//return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, BUILT_EVERYTHING_SUCCESSFULLY));
 	}
 
 	/* Run project */
@@ -261,21 +202,6 @@ public class ProjectController {
 
 	}
 
-	/*
-	 * remove project from builder and runner
-	 */
-	/*@GetMapping(value = "/closeProject/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> closeProject(@PathVariable String projectId) {
-		try {
-
-			projectService.closeProject(projectId);
-		} catch (Exception e) {
-			return JEExceptionHandler.handleException(e);
-
-		}
-		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, PROJECT_CLOSED));
-
-	}*/
 	
 	/*
 	 * Add new project
@@ -298,19 +224,6 @@ public class ProjectController {
 		}
 		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.PROJECT_UPDATED));
 	}
-
-	/*@PostMapping("/uploadJar")
-	public ResponseEntity<?> uploadJar(@RequestParam("jarFile") MultipartFile jarFile) {
-
-		try {
-			projectService.addJarToProject(jarFile);
-
-		} catch (Exception e) {
-			return JEExceptionHandler.handleException(e);
-		}
-
-		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.PROJECT_UPDATED));
-	}*/
 
 	@GetMapping(value = "/updateRunner", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> updateRunner() {
