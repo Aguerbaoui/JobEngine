@@ -169,16 +169,14 @@ public class RuleBuilder {
             String consequences = "";
             if (root instanceof ConditionBlock) {
                 consequences = ((ConditionBlock) root).getConsequences();
-                if (root instanceof PersistableBlock) {
-                    duration = ((PersistableBlock) root).getPersistanceExpression();
-                }
+               
 
             } else {
                 consequences = root.getExpression();
             }
             // add time persistence
-
-            String script = generateScript(uRule.getRuleParameters(), scriptedRuleid, duration, condition, consequences);
+            String rootDuration = root.getPersistence();
+            String script = generateScript(uRule.getRuleParameters(), scriptedRuleid, rootDuration, condition, consequences);
 			JELogger.debug(JEMessages.GENERATED_RULE + script,
 					LogCategory.DESIGN_MODE, uRule.getJobEngineProjectID(),
 					LogSubModule.RULE, uRule.getJobEngineElementID());
