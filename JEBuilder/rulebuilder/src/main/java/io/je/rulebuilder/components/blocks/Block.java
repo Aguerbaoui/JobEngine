@@ -315,7 +315,10 @@ public String getPersistence() {
 		}else {
 			for (Block b : inputBlocks)
 			{
-				return b.getPersistence();
+				if(b.getPersistence()!=null)
+				{
+					return b.getPersistence();
+				}
 			}
 		}
 		
