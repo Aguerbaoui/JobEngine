@@ -211,14 +211,6 @@ public class JobEngine {
         int respCode = -1;
 
         try {
-            /*HashMap<String, String> body = new HashMap<>();
-            body.put("message", message);
-            body.put("projectName", projectName);
-            body.put("level", LogLevel.Inform.toString());
-            body.put("objectName", objectName);
-            body.put("logCategory", logCategory.toString());
-            body.put("logSubModule", logSubModule.toString());
-            body.put("logSubModule", logSubModule.toString());*/
             LogMessage logMessage = new LogMessage(level, message,  Instant.now().toString(), projectName, logSubModule,
                     objectName, objectName);
             JEResponse response = JEBuilderApiHandler.sendLogMessage(logMessage);
@@ -229,35 +221,6 @@ public class JobEngine {
 
         return respCode;
     }
-    /*
-     * Send user message
-     * */
-   /* public static int informUser(String message, String projectName) {
-        if(!StringUtilities.isEmpty(message)) {
-            String projectId = projectName;
-            if(projects.containsKey(projectName)){
-                projectId = projects.get(projectName);
-            }
-            JELogger.info( message,  LogCategory.RUNTIME,  projectId,
-                    LogSubModule.WORKFLOW, null);
-        }
-
-        return ResponseCodes.CODE_OK;
-    }*/
-
-    /*
-     * Send user message
-     * */
-   /* public static int informUser(String level, String message, String projectId, String processId, String taskName) {
-        if(!StringUtilities.isEmpty(message)) {
-            JELogger.info( message,  LogCategory.RUNTIME,  projectId,
-                    LogSubModule.WORKFLOW, processId);
-            //send to monitoring when its ready
-        }
-
-        return ResponseCodes.CODE_OK;
-    }*/
-
 
     /*
      * Trigger event from script

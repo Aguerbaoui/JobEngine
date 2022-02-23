@@ -173,7 +173,8 @@ public class LoggerUtils {
 		return lvl;
 	}
 
-	public static void initLogger(String appName, String logPath, String level) {
+	public static void initLogger(String appName, String logPath, String level, boolean isDev) {
+
 		// TODO Remove the old logger context initialization (spring/activiti/drools)
 		String pattern = "[%d] [%p]" + appName + " :: %m%n";
 		ConfigurationBuilder<BuiltConfiguration> builder = ConfigurationBuilderFactory.newConfigurationBuilder();
@@ -181,14 +182,14 @@ public class LoggerUtils {
 		builder.setStatusLevel(getLogLevel(level));
 		builder.setConfigurationName(appName + "Logger");
 		RootLoggerComponentBuilder rootLogger = builder.newRootLogger(getLogLevel(level));
-		// create a console appender
-		AppenderComponentBuilder consoleAppender = builder.newAppender("Console", "CONSOLE").addAttribute("target",
-				ConsoleAppender.Target.SYSTEM_OUT);
-		consoleAppender.add(builder.newLayout("PatternLayout").addAttribute("pattern", pattern));
-		rootLogger.add(builder.newAppenderRef("Console"));
-
-		builder.add(consoleAppender);
-
+		if(isDev) {
+			// create a console appender
+			AppenderComponentBuilder consoleAppender = builder.newAppender("Console", "CONSOLE").addAttribute("target",
+					ConsoleAppender.Target.SYSTEM_OUT);
+			consoleAppender.add(builder.newLayout("PatternLayout").addAttribute("pattern", pattern));
+			rootLogger.add(builder.newAppenderRef("Console"));
+			builder.add(consoleAppender);
+		}
 		// create a rolling file appender
 		LayoutComponentBuilder layoutBuilder = builder.newLayout("PatternLayout").addAttribute("pattern", pattern);
 		ComponentBuilder triggeringPolicy = builder.newComponent("Policies")

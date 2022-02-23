@@ -25,7 +25,7 @@ public class JEMonitorInitializingBean  implements InitializingBean {
     public void afterPropertiesSet() throws Exception {
         try {
             ConfigurationConstants.initConstants(monitorProperties.getSiothId(), monitorProperties.isDev());
-            JELogger.initLogger("JEMonitor", monitorProperties.getJeMonitorLogPath(), monitorProperties.getJeMonitorLogLevel());
+            JELogger.initLogger("JEMonitor", monitorProperties.getJeMonitorLogPath(), monitorProperties.getJeMonitorLogLevel(), monitorProperties.isDev());
             SIOTHConfigUtility.setSiothId(monitorProperties.getSiothId());
             JELogger.control(JEMessages.LOGGER_INITIALIZED,
                     LogCategory.MONITOR, null,
