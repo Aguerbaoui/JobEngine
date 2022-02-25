@@ -301,4 +301,29 @@ public void setAlreadyScripted(boolean alreadyScripted) {
 	this.alreadyScripted = alreadyScripted;
 }
 
+public String getPersistence() {
+	if(this instanceof PersistableBlock )
+	{
+		PersistableBlock pBlock = (PersistableBlock) this;
+		String persistence = pBlock.getPersistanceExpression();
+		if(persistence!=null)
+		{
+			return persistence;
+		}else if(pBlock.inputBlocks.isEmpty()){
+			return null;
+				
+		}else {
+			for (Block b : inputBlocks)
+			{
+				if(b.getPersistence()!=null)
+				{
+					return b.getPersistence();
+				}
+			}
+		}
+		
+	}
+	return null;
+}
+
 }

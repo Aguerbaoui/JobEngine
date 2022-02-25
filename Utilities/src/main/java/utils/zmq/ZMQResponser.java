@@ -14,7 +14,7 @@ public abstract class ZMQResponser implements Runnable {
 
 	protected int repPort;
 
-	protected boolean listening = false;
+	protected volatile boolean listening = false;
 	
 	protected ZMQBind bindType;
 
