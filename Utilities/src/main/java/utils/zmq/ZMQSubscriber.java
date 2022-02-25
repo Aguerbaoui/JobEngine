@@ -16,7 +16,7 @@ public abstract class ZMQSubscriber implements Runnable {
 
 	protected String topic;
 
-	protected boolean listening = false;
+	protected volatile boolean listening = false;
 
 	public ZMQSubscriber(String url, int subPort, String topic) {
 		this.url = url;
