@@ -239,7 +239,7 @@ public class JERunnerAPIHandler {
     }
 
 	public static JEResponse writeVariableValue(String projectId,String variableId, Object value, boolean ignoreIfSameValue) throws JERunnerErrorException {
-		 String requestUrl = runtimeManagerBaseApi + WRITE_TO_VARIABLE + projectId + "/" + variableId;
+		 String requestUrl = runtimeManagerBaseApi + "/variable" + WRITE_TO_VARIABLE + projectId + "/" + variableId;
 	     HashMap<String, Object> payload = new HashMap<String, Object>();
 	     payload.put("value", value);
 	     payload.put("ignoreIfSameValue", ignoreIfSameValue);

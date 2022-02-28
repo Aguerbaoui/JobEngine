@@ -12,6 +12,7 @@ import io.je.utilities.models.WorkflowModel;
 import io.je.utilities.beans.JEResponse;
 import io.je.utilities.ruleutils.OperationStatusDetails;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -31,8 +32,11 @@ import static io.je.utilities.constants.JEMessages.*;
 public class WorkflowController {
 
 	@Autowired
+	@Lazy
 	WorkflowService workflowService;
+
 	@Autowired
+	@Lazy
 	ProjectService projectService;
 
 	@PostMapping(value = "/addWorkflow", produces = MediaType.APPLICATION_JSON_VALUE)

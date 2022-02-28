@@ -64,7 +64,7 @@ public class VariableModel {
     }
 
     public String getValue() {
-        return value;
+        return value != null ? value: initialValue;
     }
 
     public void setValue(String value) {
@@ -122,7 +122,7 @@ public class VariableModel {
 		this.initialValue = initialValue;
 	}
 
-	private VariableModel() {}
+	public VariableModel() {}
 
 	
 

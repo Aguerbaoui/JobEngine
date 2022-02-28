@@ -142,4 +142,30 @@ public class Request {
             throw new JERunnerErrorException(JEMessages.JERUNNER_UNREACHABLE + " Or " + JEMessages.JEBUILDER_UNREACHABLE);
         }
     }
+
+    /*
+     * GET with no body
+     * */
+    static Object sendRequestWithReturnClass(String requestUrl, Class<?> classToCastTo)
+            throws JERunnerErrorException {
+        Response response = null;
+        try {
+            response = Network.makeGetNetworkCallWithResponse(requestUrl);
+
+            if (response == null) throw new JERunnerErrorException(JEMessages.JERUNNER_UNREACHABLE);
+            if (response.code() != ResponseCodes.CODE_OK) {
+                /*JELogger.error(JEMessages.NETWORK_CALL_ERROR + requestUrl, LogCategory.RUNTIME, null,
+                        LogSubModule.JEBUILDER, null);*/
+                throw new JERunnerErrorException(JEMessages.JERUNNER_ERROR + " : " + response.message());
+            }
+
+            String respBody = response.body().string();
+            ObjectMapper objectMapper = new ObjectMapper();
+            return objectMapper.readValue(respBody, classToCastTo);
+        } catch (IOException | InterruptedException | ExecutionException e) {
+            /*JELogger.error(JEMessages.NETWORK_CALL_ERROR + requestUrl, LogCategory.RUNTIME, null,
+                    LogSubModule.JEBUILDER, null);*/
+            throw new JERunnerErrorException(JEMessages.JERUNNER_UNREACHABLE + " Or " + JEMessages.JEBUILDER_UNREACHABLE);
+        }
+    }
 }
