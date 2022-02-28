@@ -51,7 +51,7 @@ public class CommandExecutioner {
     }
 
     public static long runCode(String filePath) throws IOException, InterruptedException {
-        String command = JAVA + " " + CP + " \"" + classpathFolder  + getCurrentClassPath() +  "\" " + filePath;
+        String command = JAVA + " " + CP + " \"" + classpathFolder  + getCurrentClassPath() +  "\" \"" + filePath + "\"";
         return ProcessRunner.executeCommandWithPidOutput(command);
         //return p.pid();
     }

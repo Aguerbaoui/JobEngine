@@ -63,19 +63,27 @@ public class VariableService {
 	
 	public JEVariable getVariable(String projectId, String variableId) throws  ProjectNotFoundException, VariableNotFoundException, LicenseNotActiveException {
     	LicenseProperties.checkLicenseIsActive();
-
-		
 		JEProject project = ProjectService.getProjectById(projectId);
 		if (project == null) {
 			throw new ProjectNotFoundException("[projectId = " + projectId +"]"+JEMessages.PROJECT_NOT_FOUND);
 		}
-		Optional<JEVariable> var=variableRepository.findById(variableId);
-		if(var.isEmpty())
+		JEVariable variable = null;
+		Optional<JEVariable> var = variableRepository.findById(variableId);
+		if(var.isEmpty()) {
+			for(JEVariable jeVariable: variableRepository.findByJobEngineElementName(variableId)) {
+				if(jeVariable.getJobEngineProjectID().equals(project.getProjectId())) {
+					variable = jeVariable;
+					break;
+				}
+			}
+		}
+		else variable = var.get();
+		if(variable == null)
 		{	String strError = JEMessages.VARIABLE_NOT_FOUND+ variableId; 
 			JELogger.error(strError,LogCategory.DESIGN_MODE, projectId,LogSubModule.VARIABLE,variableId);
 			throw new VariableNotFoundException(strError);
 		}
-		return var.get();
+		return variable;
 		
 	}
 	
@@ -182,12 +190,13 @@ public class VariableService {
     }
 
     //TODO: only allowed when project is stopped?
-	public void writeVariableValue(String projectId,String variableId, Object value) throws LicenseNotActiveException, VariableException {
+	public void writeVariableValue(JEVariable variable, Object value) throws LicenseNotActiveException, VariableException {
     	LicenseProperties.checkLicenseIsActive();
 
-
 		try {
-			JERunnerAPIHandler.writeVariableValue(projectId, variableId, value,true);
+			JERunnerAPIHandler.writeVariableValue(variable.getJobEngineProjectID(), variable.getJobEngineElementID(), value,true);
+			variable.setValue(value);
+			variableRepository.save(variable);
 		}
 		catch (JERunnerErrorException e) {
 			throw new VariableException(JEMessages.ERROR_WRITING_VALUE_TO_VARIABLE);
@@ -268,4 +277,21 @@ public class VariableService {
     public void cleanUpHouse() {
 		   variableRepository.deleteAll();
     }
+
+	public VariableModel getVariableModelFromBean(JEVariable jeVariable) {
+		   VariableModel variableModel = new VariableModel();
+		   variableModel.setId(jeVariable.getJobEngineElementID());
+		   variableModel.setName(jeVariable.getJobEngineElementName());
+		   variableModel.setValue((String) jeVariable.getValue());
+		   variableModel.setProjectName(jeVariable.getJobEngineProjectName());
+		   variableModel.setProjectId(jeVariable.getJobEngineProjectID());
+		   variableModel.setDescription(jeVariable.getDescription());
+		   variableModel.setModifiedBy(jeVariable.getJeObjectModifiedBy());
+		   variableModel.setCreatedAt(jeVariable.getJeObjectCreationDate().toString());
+		   variableModel.setCreatedBy(jeVariable.getJeObjectCreatedBy());
+		   variableModel.setLastModifiedAt(jeVariable.getJeObjectLastUpdate().toString());
+		   variableModel.setInitialValue((String) jeVariable.getInitialValue());
+		   variableModel.setType(jeVariable.getType().toString());
+		   return variableModel;
+	}
 }

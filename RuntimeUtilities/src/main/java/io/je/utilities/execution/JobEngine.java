@@ -6,6 +6,7 @@ import io.je.utilities.apis.DatabaseApiHandler;
 import io.je.utilities.apis.JEBuilderApiHandler;
 import io.je.utilities.apis.JERunnerAPIHandler;
 import io.je.utilities.beans.InformModel;
+import io.je.utilities.beans.JEVariable;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.exceptions.JERunnerErrorException;
@@ -36,7 +37,7 @@ public class JobEngine {
     /*
      * Run a workflow from script task
      * */
-    public static int runWorkflow(String projectId, String workflowName) {
+   /* public static int runWorkflow(String projectId, String workflowName) {
 
         try {
             JEResponse response = JEBuilderApiHandler.runWorkflow(projectId, workflowName);
@@ -45,12 +46,12 @@ public class JobEngine {
             sendLogMessage(JEMessages.WORKFLOW_RUN_ERROR, projectId, LogLevel.Error, workflowName, LogCategory.RUNTIME, LogSubModule.WORKFLOW);
             return ResponseCodes.UNKNOWN_ERROR;
         }
-    }
+    }*/
 
     /*
      * Stop a workflow from script task
      * */
-    public static int stopWorkflow(String projectId, String workflowName) {
+    /*public static int stopWorkflow(String projectId, String workflowName) {
 
         try {
             JEResponse response = JEBuilderApiHandler.stopWorkflow(projectId, workflowName);
@@ -60,18 +61,18 @@ public class JobEngine {
             return ResponseCodes.UNKNOWN_ERROR;
         }
 
-    }
+    }*/
 
     /*
      * Add a variable to runner from script task
      * */
-    public static int addIntegerVariable(String varProjectId, String varName, int varValue) {
+    public static int addIntegerVariable(String projectName, String varName, int varValue) {
 
         try {
-            JEResponse response = JEBuilderApiHandler.addVariable(varProjectId, varName, getVariableBody(varName, varProjectId, varName, varValue, "int"));
+            JEResponse response = JEBuilderApiHandler.addVariable(projectName, varName, getVariableBody(varName, projectName, varName, varValue, "int"));
             return response.getCode();
         } catch (Exception e) {
-            sendLogMessage(JEMessages.ERROR_ADDING_VARIABLE_TO_PROJECT, varProjectId, LogLevel.Error, varName, LogCategory.RUNTIME, LogSubModule.VARIABLE);
+            sendLogMessage(JEMessages.ERROR_ADDING_VARIABLE_TO_PROJECT, projectName, LogLevel.Error, varName, LogCategory.RUNTIME, LogSubModule.VARIABLE);
             return ResponseCodes.UNKNOWN_ERROR;
         }
     }
@@ -79,13 +80,13 @@ public class JobEngine {
     /*
      * Add a variable to runner from script task
      * */
-    public static int addLongVariable(String varProjectId, String varName, long varValue) {
+    public static int addLongVariable(String projectName, String varName, long varValue) {
 
         try {
-            JEResponse response = JEBuilderApiHandler.addVariable(varProjectId, varName, getVariableBody(varName, varProjectId, varName, varValue, "long"));
+            JEResponse response = JEBuilderApiHandler.addVariable(projectName, varName, getVariableBody(varName, projectName, varName, varValue, "long"));
             return response.getCode();
         } catch (Exception e) {
-            sendLogMessage(JEMessages.ERROR_ADDING_VARIABLE_TO_PROJECT, varProjectId, LogLevel.Error, varName, LogCategory.RUNTIME, LogSubModule.VARIABLE);
+            sendLogMessage(JEMessages.ERROR_ADDING_VARIABLE_TO_PROJECT, projectName, LogLevel.Error, varName, LogCategory.RUNTIME, LogSubModule.VARIABLE);
             return ResponseCodes.UNKNOWN_ERROR;
         }
     }
@@ -93,28 +94,13 @@ public class JobEngine {
     /*
      * Add a variable to runner from script task
      * */
-    public static int addDoubleVariable(String varProjectId, String varName, double varValue) {
+    public static int addDoubleVariable(String projectName, String varName, double varValue) {
 
         try {
-            JEResponse response = JEBuilderApiHandler.addVariable(varProjectId, varName, getVariableBody(varName, varProjectId, varName, varValue, "double"));
+            JEResponse response = JEBuilderApiHandler.addVariable(projectName, varName, getVariableBody(varName, projectName, varName, varValue, "double"));
             return response.getCode();
         } catch (Exception e) {
-            sendLogMessage(JEMessages.ERROR_ADDING_VARIABLE_TO_PROJECT, varProjectId, LogLevel.Error, varName, LogCategory.RUNTIME, LogSubModule.VARIABLE);
-            return ResponseCodes.UNKNOWN_ERROR;
-        }
-
-    }
-
-    /*
-     * Add a variable to runner from script task
-     * */
-    public static int addStringVariable(String varProjectId, String varName, String varValue) {
-
-        try {
-            JEResponse response = JEBuilderApiHandler.addVariable(varProjectId, varName, getVariableBody(varName, varProjectId, varName, varValue, "string"));
-            return response.getCode();
-        } catch (Exception e) {
-            sendLogMessage(JEMessages.ERROR_ADDING_VARIABLE_TO_PROJECT, varProjectId, LogLevel.Error, varName, LogCategory.RUNTIME, LogSubModule.VARIABLE);
+            sendLogMessage(JEMessages.ERROR_ADDING_VARIABLE_TO_PROJECT, projectName, LogLevel.Error, varName, LogCategory.RUNTIME, LogSubModule.VARIABLE);
             return ResponseCodes.UNKNOWN_ERROR;
         }
 
@@ -123,13 +109,28 @@ public class JobEngine {
     /*
      * Add a variable to runner from script task
      * */
-    public static int addBooleanVariable(String varProjectId, String varName, String varValue) {
+    public static int addStringVariable(String projectName, String varName, String varValue) {
 
         try {
-            JEResponse response = JEBuilderApiHandler.addVariable(varProjectId, varName, getVariableBody(varName, varProjectId, varName, varValue, "boolean"));
+            JEResponse response = JEBuilderApiHandler.addVariable(projectName, varName, getVariableBody(varName, projectName, varName, varValue, "string"));
             return response.getCode();
         } catch (Exception e) {
-            sendLogMessage(JEMessages.ERROR_ADDING_VARIABLE_TO_PROJECT, varProjectId, LogLevel.Error, varName, LogCategory.RUNTIME, LogSubModule.VARIABLE);
+            sendLogMessage(JEMessages.ERROR_ADDING_VARIABLE_TO_PROJECT, projectName, LogLevel.Error, varName, LogCategory.RUNTIME, LogSubModule.VARIABLE);
+            return ResponseCodes.UNKNOWN_ERROR;
+        }
+
+    }
+
+    /*
+     * Add a variable to runner from script task
+     * */
+    public static int addBooleanVariable(String projectName, String varName, String varValue) {
+
+        try {
+            JEResponse response = JEBuilderApiHandler.addVariable(projectName, varName, getVariableBody(varName, projectName, varName, varValue, "boolean"));
+            return response.getCode();
+        } catch (Exception e) {
+            sendLogMessage(JEMessages.ERROR_ADDING_VARIABLE_TO_PROJECT, projectName, LogLevel.Error, varName, LogCategory.RUNTIME, LogSubModule.VARIABLE);
             return ResponseCodes.UNKNOWN_ERROR;
         }
 
@@ -148,10 +149,36 @@ public class JobEngine {
                             variableModel.getId(), LogCategory.RUNTIME, LogSubModule.VARIABLE);
                     return ResponseCodes.UNKNOWN_ERROR;
                 }
-            }
+            }//testKey123456789
         }
 
         return ResponseCodes.CODE_OK;
+    }
+
+    public static Object getVariable(String projectName, String variableName) {
+        try {
+            VariableModel var = JEBuilderApiHandler.getVariable(projectName, variableName);
+            if(var != null) {
+                return var.getValue();
+            }
+            else return null;
+        } catch (Exception e) {
+            sendLogMessage(JEMessages.ERROR_ADDING_VARIABLE_TO_PROJECT, projectName, LogLevel.Error, variableName, LogCategory.RUNTIME, LogSubModule.VARIABLE);
+            return ResponseCodes.UNKNOWN_ERROR;
+        }
+    }
+
+    public static int setVariable(String projectName, String variableName, Object value) {
+        try {
+            JEResponse response = JEBuilderApiHandler.setVariable(projectName, variableName, (String) value);
+            if(response != null) {
+                return response.getCode();
+            }
+            return ResponseCodes.VARIABLE_ERROR;
+        } catch (Exception e) {
+            sendLogMessage(JEMessages.ERROR_ADDING_VARIABLE_TO_PROJECT, projectName, LogLevel.Error, variableName, LogCategory.RUNTIME, LogSubModule.VARIABLE);
+            return ResponseCodes.UNKNOWN_ERROR;
+        }
     }
 
     //Get variable body from parameters
@@ -168,7 +195,7 @@ public class JobEngine {
     /*
      * Add a variable to runner from script task
      * */
-    public static int removeVariable(String projectId, String variableName) {
+   /* public static int removeVariable(String projectId, String variableName) {
         try {
 
             JEResponse response = JEBuilderApiHandler.removeVariable(projectId, variableName);
@@ -179,7 +206,7 @@ public class JobEngine {
             return ResponseCodes.UNKNOWN_ERROR;
         }
 
-    }
+    }*/
 
     /*
      * Inform user of a message with inform level
@@ -240,7 +267,7 @@ public class JobEngine {
     }
 
     //Remove workflow from project
-    public static int removeWorkflow(String projectId, String workflowId) {
+    /*public static int removeWorkflow(String projectId, String workflowId) {
         try {
 
             JEResponse response = JEBuilderApiHandler.removeWorkflow(projectId, workflowId);
@@ -250,9 +277,9 @@ public class JobEngine {
                     workflowId, LogCategory.RUNTIME, LogSubModule.WORKFLOW);
             return ResponseCodes.UNKNOWN_ERROR;
         }
-    }
+    }*/
 
-    public static int removeEvent(String projectId, String eventId) {
+    /*public static int removeEvent(String projectId, String eventId) {
         try {
 
             JEResponse response = JEBuilderApiHandler.removeEvent(projectId, eventId);
@@ -262,10 +289,10 @@ public class JobEngine {
                     eventId, LogCategory.RUNTIME, LogSubModule.WORKFLOW);
             return ResponseCodes.UNKNOWN_ERROR;
         }
-    }
+    }*/
 
     //Remove rule from JobEngine
-    public static int removeRule(String projectId, String ruleId) {
+    /*public static int removeRule(String projectId, String ruleId) {
 
         try {
             JEResponse response = JEBuilderApiHandler.removeRule(projectId, ruleId);
@@ -275,7 +302,7 @@ public class JobEngine {
                     ruleId, LogCategory.RUNTIME, LogSubModule.WORKFLOW);
             return ResponseCodes.UNKNOWN_ERROR;
         }
-    }
+    }*/
 
     //Execute a database sql query
     public static int executeSqlQuery(String projectId, String dbId, String query) {
@@ -296,7 +323,12 @@ public class JobEngine {
     }
 
     public static void main(String... args) {
-
+        String testString = (String) JobEngine.getVariable("test", "testVar");
+        System.out.println(testString);
+        JobEngine.setVariable("test", "testVar", "testValue3");
+        testString = (String) JobEngine.getVariable("test", "testVar");
+        System.out.println(testString);
+/*
         //String requestUrl = SIOTHConfigUtility.getSiothConfig().getJobEngine().getJeBuilder() + INFORM_USER;
         //JobEngine.sendLogMessage("ora", "test", LogLevel.Inform, "none", LogCategory.RUNTIME, LogSubModule.JERUNNER);
         //JobEngine.informUser("ora", "test");
@@ -340,7 +372,7 @@ public class JobEngine {
             }
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
         //System.out.println(requestUrl);
     }
 }

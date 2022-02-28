@@ -19,6 +19,7 @@ import io.je.utilities.log.JELogger;
 import io.je.utilities.models.LibModel;
 import io.je.utilities.ruleutils.OperationStatusDetails;
 import models.JEWorkflow;
+import org.springframework.context.annotation.Lazy;
 import utils.log.LogCategory;
 import utils.log.LogMessage;
 import utils.log.LogSubModule;
@@ -55,18 +56,23 @@ public class ProjectService {
 	ProjectRepository projectRepository;
 
 	@Autowired
+	@Lazy
 	WorkflowService workflowService;
 
 	@Autowired
+	@Lazy
 	RuleService ruleService;
 
 	@Autowired
+	@Lazy
 	EventService eventService;
 
 	@Autowired
+	@Lazy
 	VariableService variableService;
 
 	@Autowired
+	@Lazy
 	ClassService classService;
 
 	/* project management */
@@ -265,43 +271,41 @@ public class ProjectService {
 	public JEProject getProject(String projectId) throws ProjectNotFoundException, LicenseNotActiveException, ProjectLoadException {
 
 		JEProject project = null;
-	//	JELogger.trace("[projectId= " + projectId + "]" + JEMessages.LOADING_PROJECT, LogCategory.DESIGN_MODE,
-			// 	projectId, LogSubModule.JEBUILDER, null);
-		if (!loadedProjects.containsKey(projectId)) {
-			Optional<JEProject> p = projectRepository.findById(projectId);
-			project = p.isEmpty() ? null : p.get();
-			if (project != null) {
-				project.setEvents(eventService.getAllJEEvents(projectId));
-				project.setRules(ruleService.getAllJERules(projectId));
-				project.setVariables(variableService.getAllJEVariables(projectId));
-				project.setWorkflows(workflowService.getAllJEWorkflows(projectId));
-				project.setConfigurationPath(ConfigurationConstants.PROJECTS_PATH + project.getProjectName());
-				project.setBuilt(false);
-				loadedProjects.put(projectId, project);
-				for (JEEvent event : project.getEvents().values()) {
-					try {
-						eventService.registerEvent(event);
-					} catch (EventException e) {
-						throw new ProjectLoadException(JEMessages.PROJECT_LOAD_ERROR);
-					}
+		//	JELogger.trace("[projectId= " + projectId + "]" + JEMessages.LOADING_PROJECT, LogCategory.DESIGN_MODE,
+		// 	projectId, LogSubModule.JEBUILDER, null);
+		Optional<JEProject> p = projectRepository.findById(projectId);
+		project = p.isEmpty() ? projectRepository.findByProjectName(projectId).get(0) : p.get();
+		if (project == null) {
+			throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
+		}
+		if (!loadedProjects.containsKey(project.getProjectId())) {
+			project.setEvents(eventService.getAllJEEvents(project.getProjectId()));
+			project.setRules(ruleService.getAllJERules(project.getProjectId()));
+			project.setVariables(variableService.getAllJEVariables(project.getProjectId()));
+			project.setWorkflows(workflowService.getAllJEWorkflows(project.getProjectId()));
+			project.setConfigurationPath(ConfigurationConstants.PROJECTS_PATH + project.getProjectName());
+			project.setBuilt(false);
+			loadedProjects.put(project.getProjectId(), project);
+			for (JEEvent event : project.getEvents().values()) {
+				try {
+					eventService.registerEvent(event);
+				} catch (EventException e) {
+					throw new ProjectLoadException(JEMessages.PROJECT_LOAD_ERROR);
 				}
-				for (JEVariable variable : project.getVariables().values()) {
-					try {
-						variableService.addVariableToRunner(variable);
-					} catch (JERunnerErrorException e) {
-						throw new ProjectLoadException(JEMessages.PROJECT_LOAD_ERROR);
-					}
-
-				}
-				JELogger.debug("[project= " + project.getProjectName() + "]" + JEMessages.PROJECT_FOUND, LogCategory.DESIGN_MODE, projectId,
-						LogSubModule.JEBUILDER, null);
-			} else {
-				throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
 			}
+			for (JEVariable variable : project.getVariables().values()) {
+				try {
+					variableService.addVariableToRunner(variable);
+				} catch (JERunnerErrorException e) {
+					throw new ProjectLoadException(JEMessages.PROJECT_LOAD_ERROR);
+				}
+
+			}
+			JELogger.debug("[project= " + project.getProjectName() + "]" + JEMessages.PROJECT_FOUND, LogCategory.DESIGN_MODE, project.getProjectId(),
+					LogSubModule.JEBUILDER, null);
 			saveProject(project);
 		}
-		
-		return loadedProjects.get(projectId);
+		return loadedProjects.get(project.getProjectId());
 	}
 
 	@Async

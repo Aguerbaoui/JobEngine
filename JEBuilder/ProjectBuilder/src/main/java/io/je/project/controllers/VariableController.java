@@ -1,5 +1,6 @@
 package io.je.project.controllers;
 
+import io.je.project.beans.JEProject;
 import io.je.project.exception.JEExceptionHandler;
 import io.je.project.services.ProjectService;
 import io.je.project.services.VariableService;
@@ -67,19 +68,17 @@ public class VariableController {
 
 
 		try {
-			projectService.getProject(projectId);
-
-			variable = variableService.getVariable(projectId, variableId);
+			JEProject project = projectService.getProject(projectId);
+			variable = variableService.getVariable(project.getProjectId(), variableId);
 			if (variable == null) {
 				return ResponseEntity.noContent().build();
-
 			}
 		} catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
 
 		}
 
-		return ResponseEntity.ok(new VariableModel(variable));
+		return ResponseEntity.ok(variableService.getVariableModelFromBean(variable));
 
 	}
 
@@ -142,7 +141,6 @@ public class VariableController {
 
         try {
 			projectService.getProject(variableModel.getProjectId());
-
             variableService.updateVariable(variableModel);
         } catch (Exception e) {
             return JEExceptionHandler.handleException(e);
@@ -159,9 +157,9 @@ public class VariableController {
    public ResponseEntity<?> writeVariableValue(@PathVariable("projectId") String projectId,@PathVariable("variableId") String variableId, @RequestBody String value ) {
 
        try {
-			projectService.getProject(projectId);
-
-       variableService.writeVariableValue(projectId,variableId, value);
+			JEProject project = projectService.getProject(projectId);
+            JEVariable jeVariable = variableService.getVariable(project.getProjectId(), variableId);
+            variableService.writeVariableValue(jeVariable, value);
        } catch (Exception e) {
            return JEExceptionHandler.handleException(e);
        }

@@ -57,7 +57,7 @@ public class VariableController {
     /*
      * write to variable
      */
-    @PostMapping(value = "writeVariableValue/{projectId}/{variableId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/writeVariableValue/{projectId}/{variableId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> writeVariableValue(@PathVariable("projectId") String projectId,@PathVariable("variableId") String variableId, @RequestBody HashMap<String,Object> payload ) {
 
         try {
