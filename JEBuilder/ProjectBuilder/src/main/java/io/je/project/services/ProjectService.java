@@ -176,8 +176,8 @@ public class ProjectService {
 	 */
 
 	public List<OperationStatusDetails> buildAll(String projectId)
-			throws ProjectNotFoundException, InterruptedException, ExecutionException, LicenseNotActiveException{
-		JEProject project = projectRepository.findById(projectId).get();
+			throws ProjectNotFoundException, InterruptedException, ExecutionException, LicenseNotActiveException, ProjectLoadException {
+		JEProject project = getProject(projectId);
 		JELogger.info("[project= " + project.getProjectName() + "]" + JEMessages.BUILDING_PROJECT, LogCategory.DESIGN_MODE,
 				projectId, LogSubModule.JEBUILDER, null);
 //CompletableFuture<?> buildRules = ruleService.compileALLRules(projectId);
@@ -274,10 +274,13 @@ public class ProjectService {
 		//	JELogger.trace("[projectId= " + projectId + "]" + JEMessages.LOADING_PROJECT, LogCategory.DESIGN_MODE,
 		// 	projectId, LogSubModule.JEBUILDER, null);
 		Optional<JEProject> p = projectRepository.findById(projectId);
-		project = p.isEmpty() ? projectRepository.findByProjectName(projectId).get(0) : p.get();
-		if (project == null) {
-			throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
+		if(p.isEmpty()) {
+			p = projectRepository.findByProjectName(projectId);
+			if(p.isEmpty()) {
+				throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
+			}
 		}
+		project = p.get();
 		if (!loadedProjects.containsKey(project.getProjectId())) {
 			project.setEvents(eventService.getAllJEEvents(project.getProjectId()));
 			project.setRules(ruleService.getAllJERules(project.getProjectId()));
@@ -396,11 +399,12 @@ public class ProjectService {
 		new Thread(() -> {
 			try {
 				String wfId = null;
-				JEProject p = projectRepository.findByProjectName(informBody.getProjectName()).get(0);
-				if (informBody.getWorkflowName() != null) {
+				Optional<JEProject> p = projectRepository.findByProjectName(informBody.getProjectName());
+				if (informBody.getWorkflowName() != null && p.isPresent()) {
+					JEProject project = p.get();
 					List<JEWorkflow> wfs = workflowService.getWorkflowByName(informBody.getWorkflowName());
 					for (JEWorkflow wf : wfs) {
-						if (wf.getJobEngineProjectID().equals(p.getProjectId())) {
+						if (wf.getJobEngineProjectID().equals(project.getProjectId())) {
 							JELogger.info(informBody.getMessage(), LogCategory.RUNTIME, wf.getJobEngineProjectID(),
 									LogSubModule.WORKFLOW, wf.getJobEngineElementID());
 							break;

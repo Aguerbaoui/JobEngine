@@ -325,8 +325,9 @@ public class JobEngine {
     public static void main(String... args) {
         String testString = (String) JobEngine.getVariable("test", "testVar");
         System.out.println(testString);
-        JobEngine.setVariable("test", "testVar", "testValue3");
+        JobEngine.setVariable("test", "testVar", "testValue4");
         testString = (String) JobEngine.getVariable("test", "testVar");
+        JobEngine.informUser(testString, "test", "Script6");
         System.out.println(testString);
 /*
         //String requestUrl = SIOTHConfigUtility.getSiothConfig().getJobEngine().getJeBuilder() + INFORM_USER;

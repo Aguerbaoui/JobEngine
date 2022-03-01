@@ -307,24 +307,7 @@ public class JEWorkflow extends JEObject {
     }
     
 
-    public static WorkflowModel mapJEWorkflowToModel(JEWorkflow wf) {
-        WorkflowModel model = new WorkflowModel();
-        model.setName(wf.getJobEngineElementName());
-        model.setOnProjectBoot(wf.isOnProjectBoot());
-        model.setModifiedBy(wf.getJeObjectModifiedBy());
-        model.setDescription(wf.getDescription());
-        model.setCreatedBy(wf.getJeObjectCreatedBy());
-        model.setId(wf.getJobEngineElementID());
-        model.setPath(wf.getBpmnPath());
-        model.setProjectId(wf.getJobEngineProjectID());
-        model.setTriggeredByEvent(wf.isTriggeredByEvent());
-        model.setStatus(wf.getStatus().toString());
-        model.setCreatedAt( wf.getJeObjectCreationDate().toString());
-        model.setModifiedAt( wf.getJeObjectLastUpdate().toString());
-        model.setFrontConfig(wf.getFrontConfig());
-        model.setEnabled(wf.isEnabled);
-        return model;
-    }
+
 
     public EndBlock getWorkflowEndBlock() {
         for (WorkflowBlock b: allBlocks.values()) {
