@@ -40,7 +40,7 @@ public class JELogger extends LoggerUtils {
 		// Log in file
 		control(message);
 		// Log in logging service
-		LogMessage logMessage = getLogMessage(LogLevel.Control, message, category, projectId, subModule, objectId);
+		LogMessage logMessage = getLogMessage(LogLevel.CONTROL, message, category, projectId, subModule, objectId);
 		publishLogMessage(logMessage);
 
 	}
@@ -54,7 +54,7 @@ public class JELogger extends LoggerUtils {
 		debug(message);
 
 		// Log in logging service
-		LogMessage logMessage = getLogMessage(LogLevel.Debug, message, category, projectId, subModule, objectId);
+		LogMessage logMessage = getLogMessage(LogLevel.DEBUG, message, category, projectId, subModule, objectId);
 		publishLogMessage(logMessage);
 
 	}
@@ -65,7 +65,7 @@ public class JELogger extends LoggerUtils {
 		debug(message);
 
 //Log in logging service
-		LogMessage logMessage = getLogMessage(LogLevel.Debug, message, category, projectId, subModule, objectId);
+		LogMessage logMessage = getLogMessage(LogLevel.DEBUG, message, category, projectId, subModule, objectId);
 		publishLogMessage(logMessage);
 
 	}
@@ -79,7 +79,7 @@ public class JELogger extends LoggerUtils {
 		debug(message);
 
 		// Log in logging service
-		LogMessage logMessage = getLogMessage(LogLevel.Debug, message, category, projectId, subModule, objectId,
+		LogMessage logMessage = getLogMessage(LogLevel.DEBUG, message, category, projectId, subModule, objectId,
 				blockName);
 		// publishLogMessage(logMessage);
 
@@ -94,7 +94,7 @@ public class JELogger extends LoggerUtils {
 		info(message);
 
 		// Log in logging service
-		LogMessage logMessage = getLogMessage(LogLevel.Inform, message, category, projectId, subModule, objectId);
+		LogMessage logMessage = getLogMessage(LogLevel.INFORM, message, category, projectId, subModule, objectId);
 		publishLogMessage(logMessage);
 	}
 
@@ -107,7 +107,7 @@ public class JELogger extends LoggerUtils {
 		info(message);
 
 		// Log in logging service
-		LogMessage logMessage = getLogMessage(LogLevel.Inform, message, category, projectId, subModule, objectId,
+		LogMessage logMessage = getLogMessage(LogLevel.INFORM, message, category, projectId, subModule, objectId,
 				blockName);
 		publishLogMessage(logMessage);
 	}
@@ -121,7 +121,7 @@ public class JELogger extends LoggerUtils {
 		error(message);
 
 		// Log in logging service
-		LogMessage logMessage = getLogMessage(LogLevel.Error, message, category, projectId, subModule, objectId);
+		LogMessage logMessage = getLogMessage(LogLevel.ERROR, message, category, projectId, subModule, objectId);
 		publishLogMessage(logMessage);
 	}
 
@@ -134,7 +134,7 @@ public class JELogger extends LoggerUtils {
 		error(message);
 
 		// Log in logging service
-		LogMessage logMessage = getLogMessage(LogLevel.Error, message, category, projectId, subModule, objectId,
+		LogMessage logMessage = getLogMessage(LogLevel.ERROR, message, category, projectId, subModule, objectId,
 				blockName);
 		publishLogMessage(logMessage);
 	}
@@ -148,7 +148,7 @@ public class JELogger extends LoggerUtils {
 		warn(message);
 
 		// Log in logging service
-		LogMessage logMessage = getLogMessage(LogLevel.Warning, message, category, projectId, subModule, objectId);
+		LogMessage logMessage = getLogMessage(LogLevel.WARNING, message, category, projectId, subModule, objectId);
 		publishLogMessage(logMessage);
 	}
 
@@ -156,15 +156,15 @@ public class JELogger extends LoggerUtils {
 	public static void sendLog(LogMessage logMessage) {
 		switch(logMessage.getLogLevel()) {
 
-			case Error: { error(logMessage.getMessage().toString()); break; }
+			case ERROR: { error(logMessage.getMessage().toString()); break; }
 
-			case Inform:{ info(logMessage.getMessage().toString());break; }
+			case INFORM:{ info(logMessage.getMessage().toString());break; }
 
-			case Debug:{ debug(logMessage.getMessage().toString());break; }
+			case DEBUG:{ debug(logMessage.getMessage().toString());break; }
 
-			case Control:{ control(logMessage.getMessage().toString());break; }
+			case CONTROL:{ control(logMessage.getMessage().toString());break; }
 
-			case Warning:{ warn(logMessage.getMessage().toString());break; }
+			case WARNING:{ warn(logMessage.getMessage().toString());break; }
 		}
 
 		publishLogMessage(logMessage);
