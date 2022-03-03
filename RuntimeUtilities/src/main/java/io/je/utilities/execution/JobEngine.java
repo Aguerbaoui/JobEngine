@@ -72,7 +72,7 @@ public class JobEngine {
             JEResponse response = JEBuilderApiHandler.addVariable(projectName, varName, getVariableBody(varName, projectName, varName, varValue, "int"));
             return response.getCode();
         } catch (Exception e) {
-            sendLogMessage(JEMessages.ERROR_ADDING_VARIABLE_TO_PROJECT, projectName, LogLevel.Error, varName, LogCategory.RUNTIME, LogSubModule.VARIABLE);
+            sendLogMessage(JEMessages.ERROR_ADDING_VARIABLE_TO_PROJECT, projectName, LogLevel.ERROR, varName, LogCategory.RUNTIME, LogSubModule.VARIABLE);
             return ResponseCodes.UNKNOWN_ERROR;
         }
     }
@@ -86,7 +86,7 @@ public class JobEngine {
             JEResponse response = JEBuilderApiHandler.addVariable(projectName, varName, getVariableBody(varName, projectName, varName, varValue, "long"));
             return response.getCode();
         } catch (Exception e) {
-            sendLogMessage(JEMessages.ERROR_ADDING_VARIABLE_TO_PROJECT, projectName, LogLevel.Error, varName, LogCategory.RUNTIME, LogSubModule.VARIABLE);
+            sendLogMessage(JEMessages.ERROR_ADDING_VARIABLE_TO_PROJECT, projectName, LogLevel.ERROR, varName, LogCategory.RUNTIME, LogSubModule.VARIABLE);
             return ResponseCodes.UNKNOWN_ERROR;
         }
     }
@@ -100,7 +100,7 @@ public class JobEngine {
             JEResponse response = JEBuilderApiHandler.addVariable(projectName, varName, getVariableBody(varName, projectName, varName, varValue, "double"));
             return response.getCode();
         } catch (Exception e) {
-            sendLogMessage(JEMessages.ERROR_ADDING_VARIABLE_TO_PROJECT, projectName, LogLevel.Error, varName, LogCategory.RUNTIME, LogSubModule.VARIABLE);
+            sendLogMessage(JEMessages.ERROR_ADDING_VARIABLE_TO_PROJECT, projectName, LogLevel.ERROR, varName, LogCategory.RUNTIME, LogSubModule.VARIABLE);
             return ResponseCodes.UNKNOWN_ERROR;
         }
 
@@ -115,7 +115,7 @@ public class JobEngine {
             JEResponse response = JEBuilderApiHandler.addVariable(projectName, varName, getVariableBody(varName, projectName, varName, varValue, "string"));
             return response.getCode();
         } catch (Exception e) {
-            sendLogMessage(JEMessages.ERROR_ADDING_VARIABLE_TO_PROJECT, projectName, LogLevel.Error, varName, LogCategory.RUNTIME, LogSubModule.VARIABLE);
+            sendLogMessage(JEMessages.ERROR_ADDING_VARIABLE_TO_PROJECT, projectName, LogLevel.ERROR, varName, LogCategory.RUNTIME, LogSubModule.VARIABLE);
             return ResponseCodes.UNKNOWN_ERROR;
         }
 
@@ -130,7 +130,7 @@ public class JobEngine {
             JEResponse response = JEBuilderApiHandler.addVariable(projectName, varName, getVariableBody(varName, projectName, varName, varValue, "boolean"));
             return response.getCode();
         } catch (Exception e) {
-            sendLogMessage(JEMessages.ERROR_ADDING_VARIABLE_TO_PROJECT, projectName, LogLevel.Error, varName, LogCategory.RUNTIME, LogSubModule.VARIABLE);
+            sendLogMessage(JEMessages.ERROR_ADDING_VARIABLE_TO_PROJECT, projectName, LogLevel.ERROR, varName, LogCategory.RUNTIME, LogSubModule.VARIABLE);
             return ResponseCodes.UNKNOWN_ERROR;
         }
 
@@ -145,7 +145,7 @@ public class JobEngine {
                             variableModel.getId(), getVariableBody(variableModel.getId(), variableModel.getProjectId(),
                                     variableModel.getName(), variableModel.getValue(), variableModel.getType()));
                 } catch (Exception e) {
-                    sendLogMessage(JEMessages.ERROR_ADDING_VARIABLE_TO_PROJECT, variableModel.getProjectId(), LogLevel.Error,
+                    sendLogMessage(JEMessages.ERROR_ADDING_VARIABLE_TO_PROJECT, variableModel.getProjectId(), LogLevel.ERROR,
                             variableModel.getId(), LogCategory.RUNTIME, LogSubModule.VARIABLE);
                     return ResponseCodes.UNKNOWN_ERROR;
                 }
@@ -163,7 +163,7 @@ public class JobEngine {
             }
             else return null;
         } catch (Exception e) {
-            sendLogMessage(JEMessages.ERROR_ADDING_VARIABLE_TO_PROJECT, projectName, LogLevel.Error, variableName, LogCategory.RUNTIME, LogSubModule.VARIABLE);
+            sendLogMessage(JEMessages.ERROR_ADDING_VARIABLE_TO_PROJECT, projectName, LogLevel.ERROR, variableName, LogCategory.RUNTIME, LogSubModule.VARIABLE);
             return ResponseCodes.UNKNOWN_ERROR;
         }
     }
@@ -176,7 +176,7 @@ public class JobEngine {
             }
             return ResponseCodes.VARIABLE_ERROR;
         } catch (Exception e) {
-            sendLogMessage(JEMessages.ERROR_ADDING_VARIABLE_TO_PROJECT, projectName, LogLevel.Error, variableName, LogCategory.RUNTIME, LogSubModule.VARIABLE);
+            sendLogMessage(JEMessages.ERROR_ADDING_VARIABLE_TO_PROJECT, projectName, LogLevel.ERROR, variableName, LogCategory.RUNTIME, LogSubModule.VARIABLE);
             return ResponseCodes.UNKNOWN_ERROR;
         }
     }
@@ -222,7 +222,7 @@ public class JobEngine {
             respCode = response.getCode();
         } catch (JERunnerErrorException e) {
             e.printStackTrace();
-            sendLogMessage(JEMessages.ERROR_SENDING_INFORM_MESSAGE, projectName, LogLevel.Error,
+            sendLogMessage(JEMessages.ERROR_SENDING_INFORM_MESSAGE, projectName, LogLevel.ERROR,
                     "", LogCategory.RUNTIME, LogSubModule.JERUNNER);
         }
 
@@ -260,7 +260,7 @@ public class JobEngine {
         } catch (Exception e) {
             JELogger.error(JEMessages.ERROR_TRIGGERING_EVENT, LogCategory.RUNTIME,
                     projectId, LogSubModule.EVENT, eventName);
-            sendLogMessage(JEMessages.ERROR_TRIGGERING_EVENT, projectId, LogLevel.Error,
+            sendLogMessage(JEMessages.ERROR_TRIGGERING_EVENT, projectId, LogLevel.ERROR,
                     eventName, LogCategory.RUNTIME, LogSubModule.EVENT);
             return ResponseCodes.UNKNOWN_ERROR;
         }
@@ -312,7 +312,7 @@ public class JobEngine {
             responseCode = DatabaseApiHandler.executeCommand(dbId, query);
         } catch (Exception e) {
 
-            sendLogMessage(JEMessages.ERROR_EXECUTING_DB_QUERY, projectId, LogLevel.Error,
+            sendLogMessage(JEMessages.ERROR_EXECUTING_DB_QUERY, projectId, LogLevel.ERROR,
                     null, LogCategory.RUNTIME, LogSubModule.WORKFLOW);
         }
         return responseCode;

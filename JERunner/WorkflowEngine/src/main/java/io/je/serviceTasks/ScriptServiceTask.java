@@ -20,7 +20,7 @@ public class ScriptServiceTask extends ServiceTask {
         //script path generationPath + packageName + "\\" + className +".java" ;
         ScriptTask task = (ScriptTask) ActivitiTaskManager.getTask(execution.getCurrentActivityId());
         String message = "[Task= "+task.getTaskName()+"]Executing script task"  ;
-        LogMessage msg = new LogMessage(LogLevel.Inform,  message,  LocalDateTime.now().toString(),   task.getProjectId(),
+        LogMessage msg = new LogMessage(LogLevel.INFORM,  message,  LocalDateTime.now().toString(),   task.getProjectId(),
                 LogSubModule.WORKFLOW, task.getTaskName()) ;
         try {
             //Executioner.executeScript(execution.getCurrentFlowElement().getName(), execution.getCurrentActivityId(), task.getProjectId(), task.getTimeout());
