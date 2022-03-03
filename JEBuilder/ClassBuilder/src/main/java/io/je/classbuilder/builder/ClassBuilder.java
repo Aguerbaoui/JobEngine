@@ -338,8 +338,8 @@ public class ClassBuilder {
 		case "BYTE" :
 			classType =  byte.class;
 			break;
-		case "SBYTE":
-			classType =  byte.class;
+		case "SHORT[]":
+			classType =  short[].class;
 			break;
 		case "INT":
 			classType =  int.class;
@@ -385,6 +385,9 @@ public class ClassBuilder {
 			break;
 		case "DOUBLE[]":
 			classType =  double[].class;
+			break;
+		case "BYTE[]":
+			classType =  byte[].class;
 			break;
 		case "CHAR[]":
 			classType =  char[].class;

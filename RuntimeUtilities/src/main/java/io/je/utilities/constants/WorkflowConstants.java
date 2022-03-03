@@ -22,9 +22,9 @@ public class WorkflowConstants {
     public static final  String END_TYPE = "end";
     public static final  String EVENTGATEWAY_TYPE = "eventgateway";
     public static final  String MESSAGEINTERMEDIATECATCHEVENT_TYPE = "messageintermediatecatchevent";
-    public static final  String SIGNALINTERMEDIATECATCHEVENT_TYPE = "signalintermediatecatcheventType";
-    public static final  String MESSAGE_THROW_EVENT_TYPE = "messageThrowEventType";
-    public static final  String SIGNAL_THROW_EVENT_TYPE = "signalThrowEventType";
+    public static final  String SIGNALINTERMEDIATECATCHEVENT_TYPE = "signalintermediatecatcheventtype";
+    public static final  String MESSAGE_THROW_EVENT_TYPE = "messagethroweventtype";
+    public static final  String SIGNAL_THROW_EVENT_TYPE = "signalthroweventtype";
     public static final String SEQ_FLOW_TYPE = "sequenceflow";
     public static final String EXCLUSIVEGATEWAY_TYPE = "exclusivegateway";
     public static final String SCRIPTTASK_TYPE = "scripttask";

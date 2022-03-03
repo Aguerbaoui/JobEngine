@@ -184,14 +184,11 @@ public class EventService {
 		
 	}
 
-	public void updateEventType(String projectId, String eventId, String eventType) throws ProjectNotFoundException, EventException, LicenseNotActiveException {
+	public void updateEventType(String projectId, String eventId, String eventType) throws  EventException, LicenseNotActiveException {
     	LicenseProperties.checkLicenseIsActive();
 
 
 		JEProject project = ProjectService.getProjectById(projectId);
-		if (project == null) {
-			throw new ProjectNotFoundException( JEMessages.PROJECT_NOT_FOUND); //cdc47cf6-28e9-ff1d-996f-b6b1732771a2 -> {JEEvent@10436}
-		}
 
 		JEEvent event = project.getEvents().get(eventId);
 

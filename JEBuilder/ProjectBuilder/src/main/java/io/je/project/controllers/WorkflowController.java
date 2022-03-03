@@ -103,8 +103,6 @@ public class WorkflowController {
 	public ResponseEntity<?> stopWorkflow(@PathVariable String projectId, @PathVariable String key) {
 		try {
 			projectService.getProject(projectId);
-
-			workflowService.stopWorkflow(projectId, key);
 			OperationStatusDetails result = workflowService.stopWorkflow(projectId, key).get();
 			if (result.isOperationSucceeded()) {
 				return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, WORKFLOW_STOPPED_SUCCESSFULLY));

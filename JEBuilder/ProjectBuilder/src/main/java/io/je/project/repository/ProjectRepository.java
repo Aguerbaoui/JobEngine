@@ -5,10 +5,11 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ProjectRepository extends MongoRepository<JEProject, String> {
-    List<JEProject> findByProjectName(String jobEngineElementName);
+    Optional<JEProject> findByProjectName(String jobEngineElementName);
 	
 
 }
