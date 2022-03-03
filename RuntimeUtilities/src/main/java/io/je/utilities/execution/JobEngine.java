@@ -1,36 +1,24 @@
 package io.je.utilities.execution;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.squareup.okhttp.Response;
 import io.je.utilities.apis.DatabaseApiHandler;
 import io.je.utilities.apis.JEBuilderApiHandler;
 import io.je.utilities.apis.JERunnerAPIHandler;
 import io.je.utilities.beans.InformModel;
-import io.je.utilities.beans.JEVariable;
+import io.je.utilities.beans.JEResponse;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.exceptions.JERunnerErrorException;
 import io.je.utilities.log.JELogger;
 import io.je.utilities.models.VariableModel;
-import io.je.utilities.beans.JEResponse;
-import io.siothconfig.SIOTHConfigUtility;
 import utils.log.LogCategory;
 import utils.log.LogLevel;
 import utils.log.LogMessage;
 import utils.log.LogSubModule;
-import utils.network.AuthScheme;
-import utils.network.HttpMethod;
-import utils.network.Network;
-import utils.string.StringUtilities;
 
-import java.io.IOException;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.jar.JarFile;
-
-import static io.je.utilities.constants.APIConstants.INFORM_USER;
 
 public class JobEngine {
 
@@ -325,7 +313,7 @@ public class JobEngine {
     public static void main(String... args) {
         String testString = (String) JobEngine.getVariable("test", "testVar");
         System.out.println(testString);
-        JobEngine.setVariable("test", "testVar", "testValue4");
+        JobEngine.setVariable("test", "testVar", "testValue5");
         testString = (String) JobEngine.getVariable("test", "testVar");
         JobEngine.informUser(testString, "test", "Script6");
         System.out.println(testString);

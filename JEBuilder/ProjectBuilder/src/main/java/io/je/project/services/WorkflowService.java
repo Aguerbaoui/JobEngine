@@ -1,40 +1,7 @@
 package io.je.project.services;
 
-import static io.je.utilities.constants.ClassBuilderConfig.SCRIPTS_PACKAGE;
-import static io.je.utilities.constants.JEMessages.THREAD_INTERRUPTED_WHILE_EXECUTING;
-import static io.je.utilities.constants.WorkflowConstants.*;
-
-import java.io.IOException;
-import java.time.Instant;
-import java.util.*;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutionException;
-
-import io.je.project.repository.LibraryRepository;
-import io.je.utilities.apis.JEBuilderApiHandler;
-import io.je.utilities.beans.FileType;
-import io.je.utilities.beans.JELib;
-import io.je.utilities.exceptions.*;
-import io.je.utilities.models.LibModel;
-import io.siothconfig.SIOTHConfigUtility;
-import io.je.classbuilder.builder.ClassBuilder;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.stereotype.Service;
-
 import blocks.WorkflowBlock;
-import blocks.basic.DBEditBlock;
-import blocks.basic.DBReadBlock;
-import blocks.basic.DBWriteBlock;
-import blocks.basic.EndBlock;
-import blocks.basic.InformBlock;
-import blocks.basic.MailBlock;
-import blocks.basic.ScriptBlock;
-import blocks.basic.StartBlock;
-import blocks.basic.SubProcessBlock;
-import blocks.basic.WebApiBlock;
+import blocks.basic.*;
 import blocks.control.EventGatewayBlock;
 import blocks.control.ExclusiveGatewayBlock;
 import blocks.control.InclusiveGatewayBlock;
@@ -47,27 +14,46 @@ import builder.WorkflowBuilder;
 import io.je.classbuilder.models.ClassDefinition;
 import io.je.project.beans.JEProject;
 import io.je.project.config.LicenseProperties;
+import io.je.project.repository.LibraryRepository;
 import io.je.project.repository.WorkflowRepository;
+import io.je.utilities.apis.JEBuilderApiHandler;
 import io.je.utilities.apis.JERunnerAPIHandler;
+import io.je.utilities.beans.JELib;
 import io.je.utilities.beans.Status;
 import io.je.utilities.config.ConfigurationConstants;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.Timers;
 import io.je.utilities.constants.WorkflowConstants;
+import io.je.utilities.exceptions.*;
 import io.je.utilities.log.JELogger;
 import io.je.utilities.models.EventType;
+import io.je.utilities.models.LibModel;
 import io.je.utilities.models.WorkflowBlockModel;
 import io.je.utilities.models.WorkflowModel;
 import io.je.utilities.ruleutils.IdManager;
 import io.je.utilities.ruleutils.OperationStatusDetails;
+import io.siothconfig.SIOTHConfigUtility;
 import models.JEWorkflow;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Service;
 import utils.files.FileUtilities;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
 import utils.network.AuthScheme;
-import utils.network.Network;
 import utils.string.StringUtilities;
-import zmq.socket.pubsub.Sub;
+
+import java.io.IOException;
+import java.time.Instant;
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutionException;
+
+import static io.je.utilities.constants.ClassBuilderConfig.SCRIPTS_PACKAGE;
+import static io.je.utilities.constants.JEMessages.THREAD_INTERRUPTED_WHILE_EXECUTING;
+import static io.je.utilities.constants.WorkflowConstants.*;
 
 @Service
 public class WorkflowService {
@@ -377,8 +363,8 @@ public class WorkflowService {
             eventGatewayBlock.setJobEngineElementID(block.getId());
         }
         else {
-            EventGatewayBlock b = (EventGatewayBlock) wf.getAllBlocks().get(block.getId());
-            b.setJobEngineElementName((String) block.getAttributes().get(NAME));
+            eventGatewayBlock = (EventGatewayBlock) wf.getAllBlocks().get(block.getId());
+            eventGatewayBlock.setJobEngineElementName((String) block.getAttributes().get(NAME));
         }
         return eventGatewayBlock;
     }
