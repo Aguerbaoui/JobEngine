@@ -1,36 +1,24 @@
 package io.je.utilities.execution;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.squareup.okhttp.Response;
 import io.je.utilities.apis.DatabaseApiHandler;
 import io.je.utilities.apis.JEBuilderApiHandler;
 import io.je.utilities.apis.JERunnerAPIHandler;
 import io.je.utilities.beans.InformModel;
-import io.je.utilities.beans.JEVariable;
+import io.je.utilities.beans.JEResponse;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.exceptions.JERunnerErrorException;
 import io.je.utilities.log.JELogger;
 import io.je.utilities.models.VariableModel;
-import io.je.utilities.beans.JEResponse;
-import io.siothconfig.SIOTHConfigUtility;
 import utils.log.LogCategory;
 import utils.log.LogLevel;
 import utils.log.LogMessage;
 import utils.log.LogSubModule;
-import utils.network.AuthScheme;
-import utils.network.HttpMethod;
-import utils.network.Network;
-import utils.string.StringUtilities;
 
-import java.io.IOException;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.jar.JarFile;
-
-import static io.je.utilities.constants.APIConstants.INFORM_USER;
 
 public class JobEngine {
 
@@ -170,7 +158,7 @@ public class JobEngine {
 
     public static int setVariable(String projectName, String variableName, Object value) {
         try {
-            JEResponse response = JEBuilderApiHandler.setVariable(projectName, variableName, (String) value);
+            JEResponse response = JEBuilderApiHandler.setVariable(projectName, variableName,  value.toString());
             if(response != null) {
                 return response.getCode();
             }
@@ -323,12 +311,28 @@ public class JobEngine {
     }
 
     public static void main(String... args) {
-        String testString = (String) JobEngine.getVariable("test", "testVar");
+        /*String testString = (String) JobEngine.getVariable("test", "testBool");
         System.out.println(testString);
-        JobEngine.setVariable("test", "testVar", "testValue4");
-        testString = (String) JobEngine.getVariable("test", "testVar");
-        JobEngine.informUser(testString, "test", "Script6");
+        JobEngine.setVariable("test", "testBool", true);
+        testString = (String) JobEngine.getVariable("test", "testBool");
+        JobEngine.informUser(testString, "test", "testScriptTwo");
         System.out.println(testString);
+
+        String testString = (String) JobEngine.getVariable("test", "testVarInt");
+        System.out.println(testString);
+        JobEngine.setVariable("test", "testVarInt", true);
+        testString = (String) JobEngine.getVariable("test", "testVarInt");
+        JobEngine.informUser(testString, "test", "testScriptTwo");
+        System.out.println(testString);
+        System.exit(0);*/
+
+        String testString = (String) JobEngine.getVariable("test", "testVarLong");
+        System.out.println(testString);
+        JobEngine.setVariable("test", "testVarLong", 12354);
+        testString = (String) JobEngine.getVariable("test", "testVarLong");
+        JobEngine.informUser(testString, "test", "testScriptTwo");
+        System.out.println(testString);
+        System.exit(0);
 /*
         //String requestUrl = SIOTHConfigUtility.getSiothConfig().getJobEngine().getJeBuilder() + INFORM_USER;
         //JobEngine.sendLogMessage("ora", "test", LogLevel.Inform, "none", LogCategory.RUNTIME, LogSubModule.JERUNNER);

@@ -1,19 +1,17 @@
 package utils.network;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.squareup.okhttp.*;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+
 import java.io.*;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
-
-import com.squareup.okhttp.*;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class Network {
 
@@ -126,8 +124,12 @@ public class Network {
      * */
     public static Response makeNetworkCallWithJsonBodyWithResponse(Object json, String url) throws IOException, InterruptedException, ExecutionException {
         String jsonStr = "";
-
+        if(json instanceof String) {
+            jsonStr = (String)json;
+        }
+        else {
             jsonStr = new ObjectMapper().writeValueAsString(json);
+        }
         RequestBody body = RequestBody.create(MediaType.parse("application/json"), jsonStr);
         Request request = new Request.Builder().url(url).post(body).build();
         CompletableFuture<Response> f = CompletableFuture.supplyAsync(() -> {

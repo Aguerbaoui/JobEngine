@@ -282,7 +282,7 @@ public class VariableService {
 		   VariableModel variableModel = new VariableModel();
 		   variableModel.setId(jeVariable.getJobEngineElementID());
 		   variableModel.setName(jeVariable.getJobEngineElementName());
-		   variableModel.setValue((String) jeVariable.getValue());
+		   variableModel.setValue(jeVariable.getValue().toString());
 		   variableModel.setProjectName(jeVariable.getJobEngineProjectName());
 		   variableModel.setProjectId(jeVariable.getJobEngineProjectID());
 		   variableModel.setDescription(jeVariable.getDescription());
@@ -290,7 +290,7 @@ public class VariableService {
 		   variableModel.setCreatedAt(jeVariable.getJeObjectCreationDate().toString());
 		   variableModel.setCreatedBy(jeVariable.getJeObjectCreatedBy());
 		   variableModel.setLastModifiedAt(jeVariable.getJeObjectLastUpdate().toString());
-		   variableModel.setInitialValue((String) jeVariable.getInitialValue());
+		   variableModel.setInitialValue(jeVariable.getInitialValue().toString());
 		   variableModel.setType(jeVariable.getType().toString());
 		   return variableModel;
 	}
