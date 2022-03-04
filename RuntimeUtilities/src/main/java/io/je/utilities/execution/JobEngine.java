@@ -158,7 +158,7 @@ public class JobEngine {
 
     public static int setVariable(String projectName, String variableName, Object value) {
         try {
-            JEResponse response = JEBuilderApiHandler.setVariable(projectName, variableName, (String) value);
+            JEResponse response = JEBuilderApiHandler.setVariable(projectName, variableName,  value.toString());
             if(response != null) {
                 return response.getCode();
             }
@@ -326,10 +326,10 @@ public class JobEngine {
         System.out.println(testString);
         System.exit(0);*/
 
-        String testString = (String) JobEngine.getVariable("test", "testVarFloat");
+        String testString = (String) JobEngine.getVariable("test", "testVarLong");
         System.out.println(testString);
-        JobEngine.setVariable("test", "testVarFloat", true);
-        testString = (String) JobEngine.getVariable("test", "testVarFloat");
+        JobEngine.setVariable("test", "testVarLong", 12354);
+        testString = (String) JobEngine.getVariable("test", "testVarLong");
         JobEngine.informUser(testString, "test", "testScriptTwo");
         System.out.println(testString);
         System.exit(0);
