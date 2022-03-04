@@ -311,12 +311,28 @@ public class JobEngine {
     }
 
     public static void main(String... args) {
-        String testString = (String) JobEngine.getVariable("test", "testVar");
+        /*String testString = (String) JobEngine.getVariable("test", "testBool");
         System.out.println(testString);
-        JobEngine.setVariable("test", "testVar", "testValue5");
-        testString = (String) JobEngine.getVariable("test", "testVar");
-        JobEngine.informUser(testString, "test", "Script6");
+        JobEngine.setVariable("test", "testBool", true);
+        testString = (String) JobEngine.getVariable("test", "testBool");
+        JobEngine.informUser(testString, "test", "testScriptTwo");
         System.out.println(testString);
+
+        String testString = (String) JobEngine.getVariable("test", "testVarInt");
+        System.out.println(testString);
+        JobEngine.setVariable("test", "testVarInt", true);
+        testString = (String) JobEngine.getVariable("test", "testVarInt");
+        JobEngine.informUser(testString, "test", "testScriptTwo");
+        System.out.println(testString);
+        System.exit(0);*/
+
+        String testString = (String) JobEngine.getVariable("test", "testVarFloat");
+        System.out.println(testString);
+        JobEngine.setVariable("test", "testVarFloat", true);
+        testString = (String) JobEngine.getVariable("test", "testVarFloat");
+        JobEngine.informUser(testString, "test", "testScriptTwo");
+        System.out.println(testString);
+        System.exit(0);
 /*
         //String requestUrl = SIOTHConfigUtility.getSiothConfig().getJobEngine().getJeBuilder() + INFORM_USER;
         //JobEngine.sendLogMessage("ora", "test", LogLevel.Inform, "none", LogCategory.RUNTIME, LogSubModule.JERUNNER);

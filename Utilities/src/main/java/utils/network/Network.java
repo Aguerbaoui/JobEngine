@@ -126,8 +126,12 @@ public class Network {
      * */
     public static Response makeNetworkCallWithJsonBodyWithResponse(Object json, String url) throws IOException, InterruptedException, ExecutionException {
         String jsonStr = "";
-
+        if(json instanceof String) {
+            jsonStr = (String)json;
+        }
+        else {
             jsonStr = new ObjectMapper().writeValueAsString(json);
+        }
         RequestBody body = RequestBody.create(MediaType.parse("application/json"), jsonStr);
         Request request = new Request.Builder().url(url).post(body).build();
         CompletableFuture<Response> f = CompletableFuture.supplyAsync(() -> {
