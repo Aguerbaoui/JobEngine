@@ -1,19 +1,17 @@
 package utils.network;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.squareup.okhttp.*;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+
 import java.io.*;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
-
-import com.squareup.okhttp.*;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class Network {
 
