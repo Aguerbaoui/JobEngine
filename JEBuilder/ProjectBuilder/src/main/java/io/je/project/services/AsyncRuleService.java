@@ -3,7 +3,9 @@ package io.je.project.services;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
+import io.je.utilities.exceptions.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -15,11 +17,6 @@ import io.je.rulebuilder.components.JERule;
 import io.je.utilities.apis.JERunnerAPIHandler;
 import io.je.utilities.beans.Status;
 import io.je.utilities.constants.JEMessages;
-import io.je.utilities.exceptions.JERunnerErrorException;
-import io.je.utilities.exceptions.LicenseNotActiveException;
-import io.je.utilities.exceptions.ProjectNotFoundException;
-import io.je.utilities.exceptions.RuleBuildFailedException;
-import io.je.utilities.exceptions.RuleNotFoundException;
 import io.je.utilities.log.JELogger;
 import io.je.utilities.ruleutils.OperationStatusDetails;
 import utils.log.LogCategory;
@@ -30,6 +27,10 @@ public class AsyncRuleService {
 
 	@Autowired
 	RuleRepository ruleRepository;
+
+	@Autowired
+	@Lazy
+	ProjectService projectService;
 
 	private static final LogSubModule RULE = LogSubModule.RULE;
 	private static final LogCategory CATEGORY = LogCategory.DESIGN_MODE;
@@ -72,7 +73,7 @@ public class AsyncRuleService {
 				rule.setCompiled(true);
 				result.setOperationSucceeded(true);
 			}
-		} catch (RuleBuildFailedException | JERunnerErrorException | ProjectNotFoundException e) {
+		} catch (RuleBuildFailedException | JERunnerErrorException | ProjectNotFoundException | ProjectLoadException | LicenseNotActiveException e) {
 			rule.setBuilt(false);
 			result.setOperationSucceeded(false);
 			result.setOperationError(e.getMessage());
@@ -185,8 +186,8 @@ public class AsyncRuleService {
 
 
 
-	private JEProject getProject(String projectId) throws ProjectNotFoundException {
-		JEProject project = ProjectService.getProjectById(projectId);
+	private JEProject getProject(String projectId) throws ProjectNotFoundException, ProjectLoadException, LicenseNotActiveException {
+		JEProject project = projectService.getProjectById(projectId);
 		if (project == null) {
 			JELogger.error(
 					"[projectId = " + projectId + "] " + JEMessages.PROJECT_NOT_FOUND,
@@ -197,7 +198,7 @@ public class AsyncRuleService {
 	}
 
 	public JERule getRule(String projectId, String ruleId)
-			throws ProjectNotFoundException, RuleNotFoundException, LicenseNotActiveException {
+			throws ProjectNotFoundException, RuleNotFoundException, LicenseNotActiveException, ProjectLoadException {
 		LicenseProperties.checkLicenseIsActive();
 
 		JEProject project = getProject(projectId);

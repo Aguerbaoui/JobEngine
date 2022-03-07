@@ -8,7 +8,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
+import io.je.utilities.exceptions.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import io.je.project.beans.JEProject;
@@ -18,12 +20,6 @@ import io.je.utilities.apis.JERunnerAPIHandler;
 import io.je.utilities.beans.JEType;
 import io.je.utilities.beans.JEVariable;
 import io.je.utilities.constants.JEMessages;
-import io.je.utilities.exceptions.JERunnerErrorException;
-import io.je.utilities.exceptions.LicenseNotActiveException;
-import io.je.utilities.exceptions.ProjectNotFoundException;
-import io.je.utilities.exceptions.VariableAlreadyExistsException;
-import io.je.utilities.exceptions.VariableException;
-import io.je.utilities.exceptions.VariableNotFoundException;
 import io.je.utilities.log.JELogger;
 import io.je.utilities.models.VariableModel;
 import utils.log.LogCategory;
@@ -34,12 +30,17 @@ public class VariableService {
 
     @Autowired
 	VariableRepository variableRepository;
-	
-	public Collection<VariableModel> getAllVariables(String projectId) throws ProjectNotFoundException, LicenseNotActiveException {
+
+	@Autowired
+	@Lazy
+	ProjectService projectService;
+
+
+	public Collection<VariableModel> getAllVariables(String projectId) throws ProjectNotFoundException, LicenseNotActiveException, ProjectLoadException {
     	LicenseProperties.checkLicenseIsActive();
 
 
-		JEProject project = ProjectService.getProjectById(projectId);
+		JEProject project = projectService.getProjectById(projectId);
 		if (project == null) {
 			throw new ProjectNotFoundException( JEMessages.PROJECT_NOT_FOUND);
 		}
@@ -61,9 +62,9 @@ public class VariableService {
 	 * retrieve event from project by id
 	 */
 	
-	public JEVariable getVariable(String projectId, String variableId) throws  ProjectNotFoundException, VariableNotFoundException, LicenseNotActiveException {
+	public JEVariable getVariable(String projectId, String variableId) throws ProjectNotFoundException, VariableNotFoundException, LicenseNotActiveException, ProjectLoadException {
     	LicenseProperties.checkLicenseIsActive();
-		JEProject project = ProjectService.getProjectById(projectId);
+		JEProject project = projectService.getProjectById(projectId);
 		if (project == null) {
 			throw new ProjectNotFoundException("[projectId = " + projectId +"]"+JEMessages.PROJECT_NOT_FOUND);
 		}
@@ -103,13 +104,13 @@ public class VariableService {
     /*
     * Add a new variable to the project
     * */
-    public void addVariable(VariableModel variableModel) throws ProjectNotFoundException, VariableAlreadyExistsException, LicenseNotActiveException, VariableException {
+    public void addVariable(VariableModel variableModel) throws ProjectNotFoundException, VariableAlreadyExistsException, LicenseNotActiveException, VariableException, ProjectLoadException {
     	LicenseProperties.checkLicenseIsActive();
 
     	JELogger.debug(JEMessages.ADDING_VARIABLE,
                 LogCategory.DESIGN_MODE, variableModel.getProjectId(),
                 LogSubModule.VARIABLE,variableModel.getId());
-        JEProject project = ProjectService.getProjectById(variableModel.getProjectId());
+        JEProject project = projectService.getProjectById(variableModel.getProjectId());
         if (project == null) {
             throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
         }
@@ -133,13 +134,13 @@ public class VariableService {
     /*
     * Delete a variable from the project
     * */
-    public void deleteVariable(String projectId, String varId) throws ProjectNotFoundException, VariableNotFoundException, LicenseNotActiveException, VariableException {
+    public void deleteVariable(String projectId, String varId) throws ProjectNotFoundException, VariableNotFoundException, LicenseNotActiveException, VariableException, ProjectLoadException {
     	LicenseProperties.checkLicenseIsActive();
 
     	JELogger.debug(JEMessages.DELETING_VARIABLE,
                 LogCategory.DESIGN_MODE, projectId,
                 LogSubModule.VARIABLE,varId);
-        JEProject project = ProjectService.getProjectById(projectId);
+        JEProject project = projectService.getProjectById(projectId);
         if (project == null) {
             throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
         }
@@ -160,13 +161,13 @@ public class VariableService {
     /*
     * Update an existing variable in the project
     * */
-    public void updateVariable(VariableModel variableModel) throws ProjectNotFoundException, VariableNotFoundException,   LicenseNotActiveException, VariableException {
+    public void updateVariable(VariableModel variableModel) throws ProjectNotFoundException, VariableNotFoundException, LicenseNotActiveException, VariableException, ProjectLoadException {
     	LicenseProperties.checkLicenseIsActive();
 
     	JELogger.debug(JEMessages.ADDING_VARIABLE,
                 LogCategory.DESIGN_MODE, variableModel.getProjectId(),
                 LogSubModule.VARIABLE,variableModel.getId());
-        JEProject project = ProjectService.getProjectById(variableModel.getProjectId());
+        JEProject project = projectService.getProjectById(variableModel.getProjectId());
         if (project == null) {
             throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
         }
@@ -238,13 +239,13 @@ public class VariableService {
 		//return true;
 	}
 
-	public void deleteVariables(String projectId, List<String> ids) throws LicenseNotActiveException, ProjectNotFoundException, VariableNotFoundException {
+	public void deleteVariables(String projectId, List<String> ids) throws LicenseNotActiveException, ProjectNotFoundException, VariableNotFoundException, ProjectLoadException {
 		LicenseProperties.checkLicenseIsActive();
 
 		JELogger.debug(JEMessages.DELETING_VARIABLES,
 				LogCategory.DESIGN_MODE, projectId,
 				LogSubModule.VARIABLE,null);
-		JEProject project = ProjectService.getProjectById(projectId);
+		JEProject project = projectService.getProjectById(projectId);
 		if (project == null) {
 			throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
 		}

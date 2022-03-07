@@ -5,6 +5,7 @@ import io.je.utilities.apis.JEBuilderApiHandler;
 import io.je.utilities.apis.JERunnerAPIHandler;
 import io.je.utilities.beans.InformModel;
 import io.je.utilities.beans.JEResponse;
+import io.je.utilities.beans.JEType;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.exceptions.JERunnerErrorException;
@@ -14,6 +15,7 @@ import utils.log.LogCategory;
 import utils.log.LogLevel;
 import utils.log.LogMessage;
 import utils.log.LogSubModule;
+import utils.string.StringUtilities;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -57,7 +59,7 @@ public class JobEngine {
     public static int addIntegerVariable(String projectName, String varName, int varValue) {
 
         try {
-            JEResponse response = JEBuilderApiHandler.addVariable(projectName, varName, getVariableBody(varName, projectName, varName, varValue, "int"));
+            JEResponse response = JEBuilderApiHandler.addVariable(projectName, varName, getVariableBody(StringUtilities.generateUUID(), projectName, varName, varValue, JEType.INT.toString()));
             return response.getCode();
         } catch (Exception e) {
             sendLogMessage(JEMessages.ERROR_ADDING_VARIABLE_TO_PROJECT, projectName, LogLevel.ERROR, varName, LogCategory.RUNTIME, LogSubModule.VARIABLE);
@@ -71,7 +73,7 @@ public class JobEngine {
     public static int addLongVariable(String projectName, String varName, long varValue) {
 
         try {
-            JEResponse response = JEBuilderApiHandler.addVariable(projectName, varName, getVariableBody(varName, projectName, varName, varValue, "long"));
+            JEResponse response = JEBuilderApiHandler.addVariable(projectName, varName, getVariableBody(StringUtilities.generateUUID(), projectName, varName, varValue, JEType.LONG.toString()));
             return response.getCode();
         } catch (Exception e) {
             sendLogMessage(JEMessages.ERROR_ADDING_VARIABLE_TO_PROJECT, projectName, LogLevel.ERROR, varName, LogCategory.RUNTIME, LogSubModule.VARIABLE);
@@ -85,7 +87,7 @@ public class JobEngine {
     public static int addDoubleVariable(String projectName, String varName, double varValue) {
 
         try {
-            JEResponse response = JEBuilderApiHandler.addVariable(projectName, varName, getVariableBody(varName, projectName, varName, varValue, "double"));
+            JEResponse response = JEBuilderApiHandler.addVariable(projectName, varName, getVariableBody(StringUtilities.generateUUID(), projectName, varName, varValue, JEType.DOUBLE.toString()));
             return response.getCode();
         } catch (Exception e) {
             sendLogMessage(JEMessages.ERROR_ADDING_VARIABLE_TO_PROJECT, projectName, LogLevel.ERROR, varName, LogCategory.RUNTIME, LogSubModule.VARIABLE);
@@ -100,7 +102,7 @@ public class JobEngine {
     public static int addStringVariable(String projectName, String varName, String varValue) {
 
         try {
-            JEResponse response = JEBuilderApiHandler.addVariable(projectName, varName, getVariableBody(varName, projectName, varName, varValue, "string"));
+            JEResponse response = JEBuilderApiHandler.addVariable(projectName, varName, getVariableBody(StringUtilities.generateUUID(), projectName, varName, varValue, JEType.STRING.toString()));
             return response.getCode();
         } catch (Exception e) {
             sendLogMessage(JEMessages.ERROR_ADDING_VARIABLE_TO_PROJECT, projectName, LogLevel.ERROR, varName, LogCategory.RUNTIME, LogSubModule.VARIABLE);
@@ -112,10 +114,10 @@ public class JobEngine {
     /*
      * Add a variable to runner from script task
      * */
-    public static int addBooleanVariable(String projectName, String varName, String varValue) {
+    public static int addBooleanVariable(String projectName, String varName, boolean varValue) {
 
         try {
-            JEResponse response = JEBuilderApiHandler.addVariable(projectName, varName, getVariableBody(varName, projectName, varName, varValue, "boolean"));
+            JEResponse response = JEBuilderApiHandler.addVariable(projectName, varName, getVariableBody(StringUtilities.generateUUID(), projectName, varName, varValue, JEType.BOOLEAN.toString()));
             return response.getCode();
         } catch (Exception e) {
             sendLogMessage(JEMessages.ERROR_ADDING_VARIABLE_TO_PROJECT, projectName, LogLevel.ERROR, varName, LogCategory.RUNTIME, LogSubModule.VARIABLE);
@@ -130,7 +132,7 @@ public class JobEngine {
             for (VariableModel variableModel : vars) {
                 try {
                     JEResponse response = JEBuilderApiHandler.addVariable(variableModel.getProjectId(),
-                            variableModel.getId(), getVariableBody(variableModel.getId(), variableModel.getProjectId(),
+                            StringUtilities.generateUUID(), getVariableBody(variableModel.getId(), variableModel.getProjectId(),
                                     variableModel.getName(), variableModel.getValue(), variableModel.getType()));
                 } catch (Exception e) {
                     sendLogMessage(JEMessages.ERROR_ADDING_VARIABLE_TO_PROJECT, variableModel.getProjectId(), LogLevel.ERROR,
@@ -177,6 +179,7 @@ public class JobEngine {
         body.put("name", varName);
         body.put("type", type);
         body.put("value", varValue);
+        body.put("initialValue", varValue);
         return body;
     }
 
@@ -311,6 +314,15 @@ public class JobEngine {
     }
 
     public static void main(String... args) {
+
+        int code = JobEngine.addDoubleVariable("test", "DoubleVar", 3.3);
+        System.out.println(code);
+        code = JobEngine.addLongVariable("test", "LongVar", 333333);
+        System.out.println(code);
+
+        code = JobEngine.addIntegerVariable("test", "IntVar", 3);
+        System.out.println(code);
+
         /*String testString = (String) JobEngine.getVariable("test", "testBool");
         System.out.println(testString);
         JobEngine.setVariable("test", "testBool", true);
@@ -324,7 +336,7 @@ public class JobEngine {
         testString = (String) JobEngine.getVariable("test", "testVarInt");
         JobEngine.informUser(testString, "test", "testScriptTwo");
         System.out.println(testString);
-        System.exit(0);*/
+        System.exit(0);
 
         String testString = (String) JobEngine.getVariable("test", "testVarLong");
         System.out.println(testString);
@@ -332,7 +344,7 @@ public class JobEngine {
         testString = (String) JobEngine.getVariable("test", "testVarLong");
         JobEngine.informUser(testString, "test", "testScriptTwo");
         System.out.println(testString);
-        System.exit(0);
+        System.exit(0);*/
 /*
         //String requestUrl = SIOTHConfigUtility.getSiothConfig().getJobEngine().getJeBuilder() + INFORM_USER;
         //JobEngine.sendLogMessage("ora", "test", LogLevel.Inform, "none", LogCategory.RUNTIME, LogSubModule.JERUNNER);

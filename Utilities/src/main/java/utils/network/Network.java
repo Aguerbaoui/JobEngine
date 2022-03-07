@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
+import java.util.concurrent.TimeUnit;
 
 public class Network {
 
@@ -49,6 +50,9 @@ public class Network {
             executor.setQueueCapacity(150);
             executor.setThreadNamePrefix("NetworkAsyncThread-");
             executor.initialize();
+            client.setReadTimeout(1, TimeUnit.MINUTES);
+            client.setWriteTimeout(1, TimeUnit.MINUTES);
+            client.setConnectTimeout(1, TimeUnit.MINUTES);
         }
         return executor;
     }
@@ -246,6 +250,9 @@ public class Network {
         }
         request = builder.build();
         OkHttpClient client = new OkHttpClient();
+        client.setReadTimeout(1, TimeUnit.MINUTES);
+        client.setWriteTimeout(1, TimeUnit.MINUTES);
+        client.setConnectTimeout(1, TimeUnit.MINUTES);
         return client.newCall(request).execute();
     }
 
