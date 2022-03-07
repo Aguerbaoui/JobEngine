@@ -71,8 +71,7 @@ public class ZMQRequester {
             	requestSocket.setCurveSecretKey(ZMQSecurity.getServerPair().secretKey.getBytes());
             	requestSocket.setCurvePublicKey(ZMQSecurity.getServerPair().publicKey.getBytes());
             }
-            requestSocket.setReceiveTimeOut(1000);
-           
+            requestSocket.setReceiveTimeOut(-1);           
             requestSocket.connect(connectionUrl);
             requestSocket.send(request, 0);
             reply = requestSocket.recvStr(0);
