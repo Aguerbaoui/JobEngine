@@ -41,7 +41,10 @@ public abstract class ZMQSubscriber implements Runnable {
 	public void connectToAddress(ZMQBind bindType) throws ZMQConnectionFailedException {
 		try {
 			this.subSocket = this.context.createSocket(SocketType.SUB);
-			this.subSocket.setReceiveTimeOut(60000);
+			this.subSocket.setHeartbeatTimeout(ZMQConfiguration.HEARTBEAT_TIMEOUT);
+			this.subSocket.setHandshakeIvl(ZMQConfiguration.HEARTBEAT_INTERVAL);
+			this.subSocket.setRcvHWM(ZMQConfiguration.RECEIVE_HIGH_WATERMARK);
+			this.subSocket.setReceiveTimeOut(-1);
 			if (bindType == ZMQBind.CONNECT) {
 				this.subSocket.connect(url + ":" + subPort);
 			} else if (bindType == ZMQBind.BIND) {

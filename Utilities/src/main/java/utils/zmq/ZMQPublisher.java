@@ -20,6 +20,7 @@ public class ZMQPublisher {
 		context = new ZContext();
 		socket = context.createSocket(SocketType.PUB);
 		socket.connect(connectionUrl);
+		socket.setHWM(ZMQConfiguration.SEND_HIGH_WATERMARK);
 		if(ZMQSecurity.isSecure())
 		{
 			socket.setCurveServer(true);
@@ -30,7 +31,6 @@ public class ZMQPublisher {
 
 	public void publish(String msgToBePublished,String topic) {
 		
-		//TODO sockets aren't thread safe, only the context is
 		synchronized(socket)
 		{
 			socket.sendMore(topic);
