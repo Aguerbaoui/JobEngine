@@ -9,7 +9,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
+import io.je.utilities.exceptions.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import io.je.project.beans.JEProject;
@@ -18,10 +20,6 @@ import io.je.project.repository.EventRepository;
 import io.je.utilities.apis.JERunnerAPIHandler;
 import io.je.utilities.beans.JEEvent;
 import io.je.utilities.constants.JEMessages;
-import io.je.utilities.exceptions.EventException;
-import io.je.utilities.exceptions.JERunnerErrorException;
-import io.je.utilities.exceptions.LicenseNotActiveException;
-import io.je.utilities.exceptions.ProjectNotFoundException;
 import io.je.utilities.log.JELogger;
 import io.je.utilities.mapping.EventModelMapping;
 import io.je.utilities.models.EventModel;
@@ -35,7 +33,10 @@ public class EventService {
 	
 	@Autowired
 	EventRepository eventRepository;
-	
+
+	@Autowired
+	@Lazy
+	ProjectService projectService;
 	
 	
 	/*
@@ -87,11 +88,11 @@ public class EventService {
 	/*
 	 * add new event
 	 */
-	public void addEvent(String projectId, EventModel eventModel) throws ProjectNotFoundException,  EventException, LicenseNotActiveException {
+	public void addEvent(String projectId, EventModel eventModel) throws ProjectNotFoundException, EventException, LicenseNotActiveException, ProjectLoadException {
     	LicenseProperties.checkLicenseIsActive();
 
 		
-		JEProject project = ProjectService.getProjectById(projectId);
+		JEProject project = projectService.getProjectById(projectId);
 		if (project == null) {
 			throw new ProjectNotFoundException( JEMessages.PROJECT_NOT_FOUND);
 		}
@@ -122,13 +123,13 @@ public class EventService {
 	/*
 	 * update new event
 	 */
-	public void updateEvent(String projectId, EventModel eventModel) throws ProjectNotFoundException, EventException, LicenseNotActiveException {
+	public void updateEvent(String projectId, EventModel eventModel) throws ProjectNotFoundException, EventException, LicenseNotActiveException, ProjectLoadException {
     	LicenseProperties.checkLicenseIsActive();
 
 		JELogger.debug(UPDATING_EVENT + " [ id="+eventModel.getName()+"] in project id = " + projectId,
 				LogCategory.DESIGN_MODE, projectId,
 				LogSubModule.EVENT, eventModel.getEventId());
-		JEProject project = ProjectService.getProjectById(projectId);
+		JEProject project = projectService.getProjectById(projectId);
 		if (project == null) {
 			throw new ProjectNotFoundException( JEMessages.PROJECT_NOT_FOUND);
 		}
@@ -152,10 +153,10 @@ public class EventService {
 	 * register event in runner
 	 */
 	
-	public void registerEvent( JEEvent event ) throws ProjectNotFoundException, LicenseNotActiveException, EventException {
+	public void registerEvent( JEEvent event ) throws ProjectNotFoundException, LicenseNotActiveException, EventException, ProjectLoadException {
     	LicenseProperties.checkLicenseIsActive();
 
-		JEProject project = ProjectService.getProjectById(event.getJobEngineProjectID());
+		JEProject project = projectService.getProjectById(event.getJobEngineProjectID());
 		if (project == null) {
 			throw new ProjectNotFoundException( JEMessages.PROJECT_NOT_FOUND);
 		}
@@ -184,11 +185,11 @@ public class EventService {
 		
 	}
 
-	public void updateEventType(String projectId, String eventId, String eventType) throws  EventException, LicenseNotActiveException {
+	public void updateEventType(String projectId, String eventId, String eventType) throws EventException, LicenseNotActiveException, ProjectNotFoundException, ProjectLoadException {
     	LicenseProperties.checkLicenseIsActive();
 
 
-		JEProject project = ProjectService.getProjectById(projectId);
+		JEProject project = projectService.getProjectById(projectId);
 
 		JEEvent event = project.getEvents().get(eventId);
 
@@ -224,10 +225,10 @@ public class EventService {
 	 * delete event
 	 */
 	
-	public void deleteEvent(String projectId, String eventId) throws EventException, ProjectNotFoundException, LicenseNotActiveException {
+	public void deleteEvent(String projectId, String eventId) throws EventException, ProjectNotFoundException, LicenseNotActiveException, ProjectLoadException {
     	LicenseProperties.checkLicenseIsActive();
 
-		JEProject project = ProjectService.getProjectById(projectId);
+		JEProject project = projectService.getProjectById(projectId);
 		if (project == null) {
 			throw new ProjectNotFoundException( JEMessages.PROJECT_NOT_FOUND);
 		}
@@ -307,13 +308,13 @@ public class EventService {
 		
 	}*/
 
-	public void deleteEvents(String projectId, List<String> ids) throws LicenseNotActiveException, ProjectNotFoundException {
+	public void deleteEvents(String projectId, List<String> ids) throws LicenseNotActiveException, ProjectNotFoundException, ProjectLoadException {
 		LicenseProperties.checkLicenseIsActive();
 
 		JELogger.debug(JEMessages.DELETING_EVENTS,
 				LogCategory.DESIGN_MODE, projectId,
 				LogSubModule.EVENT,null);
-		JEProject project = ProjectService.getProjectById(projectId);
+		JEProject project = projectService.getProjectById(projectId);
 		if (project == null) {
 			throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
 		}

@@ -90,7 +90,7 @@ public class ProjectContainer {
 	private int releaseVersion = 1;
 	// private KieSessionManagerInterface kieManager;
 	// This attribute is responsible for listening to the engine while it's active.
-	private RuleListener ruleListener;
+	//private RuleListener ruleListener;
 	private boolean  reloadContainer = false;
 	// private boolean isInitialised = false;
 	// JEClassLoader loader = JEClassLoader.getInstance();
@@ -106,7 +106,7 @@ public class ProjectContainer {
 		kieServices = KieServices.Factory.get();
 		kieFileSystem = kieServices.newKieFileSystem();
 		kfsToCompile = kieServices.newKieFileSystem();
-		ruleListener = new RuleListener(projectId);
+		//ruleListener = new RuleListener(projectId);
 
 		// createKModule
 		createKModule();
@@ -192,7 +192,7 @@ public class ProjectContainer {
 			}
 			Runnable runnable = () -> {
 				try {
-					kieSession.addEventListener(ruleListener);
+					//kieSession.addEventListener(ruleListener);
 					// Thread.currentThread().setContextClassLoader(loader);
 					kieSession.fireUntilHalt();
 				} catch (Exception e) {

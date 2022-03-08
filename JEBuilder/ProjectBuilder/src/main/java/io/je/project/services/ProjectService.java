@@ -157,8 +157,8 @@ public class ProjectService {
 	 * Return a project loaded in memory
 	 */
 
-	public static JEProject getProjectById(String id) {
-		return loadedProjects.get(id);
+	public JEProject getProjectById(String id) throws ProjectNotFoundException, ProjectLoadException, LicenseNotActiveException {
+		return loadedProjects.containsKey(id) ? loadedProjects.get(id) : this.getProject(id);
 
 	}
 
@@ -220,7 +220,7 @@ public class ProjectService {
 						ruleService.updateRulesStatus(projectId, true);
 						project.getRuleEngine().setRunning(true);
 
-					} catch (JERunnerErrorException e) {
+					} catch (Exception e) {
 						throw new ProjectRunException(JEMessages.ERROR_RUNNING_PROJECT);
 					}
 					project.setRunning(true);
@@ -256,7 +256,7 @@ public class ProjectService {
 			JERunnerAPIHandler.stopProject(projectId,project.getProjectName());
 			ruleService.stopRules(projectId, null);
 
-		} catch (JERunnerErrorException e) {
+		} catch (Exception e) {
 			throw new ProjectStopException(JEMessages.ERROR_STOPPING_PROJECT);
 		}
 		project.setRunning(false);
