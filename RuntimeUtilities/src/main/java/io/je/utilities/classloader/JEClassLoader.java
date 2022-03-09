@@ -57,11 +57,18 @@ public class JEClassLoader extends ClassLoader {
         return dataModelInstance;
     }
 
-    public static JEClassLoader overrideDataModelInstance() {
+    public static JEClassLoader overrideDataModelInstance() throws ClassNotFoundException {
         if (dataModelCustomClasses == null) {
             dataModelCustomClasses = new HashSet<>();
         }
         dataModelInstance = new JEClassLoader(dataModelCustomClasses);
+        synchronized (dataModelCustomClasses) {
+            Set<String> all = dataModelCustomClasses;
+            for (String c : all) {
+                ClassRepository.addClass(ClassRepository.getClassIdByName(c), c, dataModelInstance.loadClass(c));
+            }
+
+        }
         return dataModelInstance;
     }
 
@@ -78,7 +85,7 @@ public class JEClassLoader extends ClassLoader {
             for (String c : all) {
                 ClassRepository.addClass(ClassRepository.getClassIdByName(c), c, dataModelInstance.loadClass(c));
             }
-
+            
         }
 
         return dataModelInstance;

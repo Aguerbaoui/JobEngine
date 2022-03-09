@@ -255,12 +255,20 @@ public class RuntimeDispatcher {
 		String className = JEClassLoader.getJobEnginePackageName(ClassBuilderConfig.CLASS_PACKAGE) + "." + classModel.getClassName();
 		try {
 				Class<?> c = null;
-				if(classModel.getClassAuthor().equals(ClassAuthor.DATA_MODEL) && (!JEClassLoader.classIsLoaded(className) || update )) {
-					JEClassLoader.overrideDataModelInstance();
+				if(classModel.getClassAuthor().equals(ClassAuthor.DATA_MODEL) && (!JEClassLoader.classIsLoaded(className) )) {
 					JEClassLoader.addClassToDataModelClassesSet(className);
 					c = JEClassLoader.getDataModelInstance()
 						.loadClass(className);
 					ClassRepository.addClass(classModel.getClassId(), classModel.getClassName(), c);
+				}else if(update)
+				{
+					JEClassLoader.overrideDataModelInstance(className);
+					JEClassLoader.addClassToDataModelClassesSet(className);
+					c = JEClassLoader.getDataModelInstance()
+							.loadClass(className);
+					
+						ClassRepository.addClass(classModel.getClassId(), classModel.getClassName(), c);
+
 				}
 
 			} catch (ClassNotFoundException e) {

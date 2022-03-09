@@ -467,7 +467,7 @@ public class ProjectContainer {
 			if (kScanner == null) {
 				kScanner = kieServices.newKieScanner(kieContainer);
 			}
-			kScanner.scanNow();
+			//kScanner.scanNow();
 
 		} catch (Exception e) {
 			e.printStackTrace();
