@@ -27,6 +27,7 @@ public class JEClassLoader extends ClassLoader {
 
     static JEClassLoader currentRuleEngineClassLoader;
 
+    public static boolean classIsLoaded(String name) { return dataModelCustomClasses != null && dataModelCustomClasses.contains(name);}
     public static void addClassToDataModelClassesSet(String classname) {
         if(dataModelCustomClasses == null) {
             dataModelCustomClasses = new HashSet<>();

@@ -42,7 +42,7 @@ public class ClassController {
 		
 	
 			try {
-				runtimeDispatcher.addClass(classModel);
+				runtimeDispatcher.addClass(classModel, false);
 			} catch (Exception e) {
 				return JEExceptionHandler.handleException(e);
 			}
