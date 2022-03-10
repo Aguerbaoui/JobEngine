@@ -150,8 +150,7 @@ public class ClassService {
      */
     public void loadClassFromDataModel(String workspaceId, String classId, boolean sendToRunner)
             throws ClassLoadException, AddClassException{
-      if(!loadedClasses.containsKey(classId))
-      {
+
     	  ClassDefinition classDefinition = ClassManager.loadClassDefinition(workspaceId, classId);
 
           if (classDefinition != null) {
@@ -160,7 +159,7 @@ public class ClassService {
               JELogger.info("Class " + classDefinition.getName() + " loaded successfully.", null, null, null,
                       classDefinition.getName());
           }
-      }
+      
 
     }
 
