@@ -157,6 +157,7 @@ public class RuleController {
 
 			ruleService.updateRule(projectId, ruleModel);
 		} catch (Exception e) {
+			e.printStackTrace();
 			return JEExceptionHandler.handleException(e);
 
 		}
