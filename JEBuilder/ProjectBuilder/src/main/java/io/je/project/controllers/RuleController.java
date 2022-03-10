@@ -18,6 +18,7 @@ import io.je.rulebuilder.models.RuleModel;
 import io.je.rulebuilder.models.ScriptRuleModel;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.ResponseCodes;
+import io.je.utilities.log.JELogger;
 import io.je.utilities.ruleutils.OperationStatusDetails;
 import io.je.utilities.beans.JECustomResponse;
 import io.je.utilities.beans.JEResponse;
@@ -195,6 +196,7 @@ public class RuleController {
 	public ResponseEntity<?> updateBlock(@PathVariable("projectId") String projectId,
 			@PathVariable("ruleId") String ruleId, @RequestBody BlockModel blockModel) {
 		try {
+			JELogger.debug("Updating block");
 			projectService.getProject(projectId);
 
 			blockModel.setRuleId(ruleId);
@@ -202,6 +204,7 @@ public class RuleController {
 			ruleService.updateBlockInRule(blockModel);
 			projectService.saveProject(projectId);
 		} catch (Exception e) {
+			JELogger.debug("Exception occured.");
 			return JEExceptionHandler.handleException(e);
 		}
 
