@@ -80,7 +80,10 @@ public class JEClassLoader extends ClassLoader {
         }
         synchronized (dataModelCustomClasses) {
             dataModelInstance = new JEClassLoader(dataModelCustomClasses);
-            dataModelCustomClasses.remove(newClass);
+           if(dataModelCustomClasses.contains(newClass))
+           {
+        	   dataModelCustomClasses.remove(newClass);
+           }
             Set<String> all = dataModelCustomClasses;
             for (String c : all) {
                 ClassRepository.addClass(ClassRepository.getClassIdByName(c), c, dataModelInstance.loadClass(c));
@@ -94,6 +97,7 @@ public class JEClassLoader extends ClassLoader {
 
     @Override
     public Class<?> loadClass(String className) throws ClassNotFoundException {
+    	JELogger.debug("JECLASSLOADER 100: "+dataModelCustomClasses.toString());
         if (dataModelCustomClasses.contains(className)) {
             try {
                 JELogger.trace("Class Loading by dm custom loader Started for " + className, LogCategory.RUNTIME,

@@ -253,6 +253,7 @@ public class RuntimeDispatcher {
 	public void addClass(ClassModel classModel, boolean update) throws ClassLoadException {
 		JELogger.debug(JEMessages.ADDING_CLASS+": "+classModel.getClassName(), LogCategory.RUNTIME, null, LogSubModule.CLASS, null);
 		String className = JEClassLoader.getJobEnginePackageName(ClassBuilderConfig.CLASS_PACKAGE) + "." + classModel.getClassName();
+		JELogger.debug("Class name = "+className);
 		try {
 				Class<?> c = null;
 				if(classModel.getClassAuthor().equals(ClassAuthor.DATA_MODEL) && (!JEClassLoader.classIsLoaded(className) )) {
