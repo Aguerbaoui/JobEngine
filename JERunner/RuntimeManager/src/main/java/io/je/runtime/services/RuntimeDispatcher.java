@@ -256,6 +256,7 @@ public class RuntimeDispatcher {
 		JELogger.debug("Class name = "+className);
 		try {
 				Class<?> c = null;
+				JEClassLoader.getDataModelInstance();
 				if(classModel.getClassAuthor().equals(ClassAuthor.DATA_MODEL) && (!JEClassLoader.classIsLoaded(className) )) {
 					JEClassLoader.addClassToDataModelClassesSet(className);
 					c = JEClassLoader.getDataModelInstance()
@@ -274,7 +275,7 @@ public class RuntimeDispatcher {
 
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
-				JEClassLoader.removeClassFromDataModelClassesSet(className);
+				//JEClassLoader.removeClassFromDataModelClassesSet(className);
 				throw new ClassLoadException(
 						"[class :" + classModel.getClassName() + " ]" + JEMessages.CLASS_LOAD_FAILED);
 			}

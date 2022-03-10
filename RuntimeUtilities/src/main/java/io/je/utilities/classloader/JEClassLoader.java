@@ -33,6 +33,7 @@ public class JEClassLoader extends ClassLoader {
             dataModelCustomClasses = new HashSet<>();
         }
         dataModelCustomClasses.add(classname);
+        JELogger.debug("added class "+classname +"now list is : " + dataModelCustomClasses);
     }
 
     public static void removeClassFromDataModelClassesSet(String name) {
@@ -61,8 +62,8 @@ public class JEClassLoader extends ClassLoader {
         if (dataModelCustomClasses == null) {
             dataModelCustomClasses = new HashSet<>();
         }
-        dataModelInstance = new JEClassLoader(dataModelCustomClasses);
         synchronized (dataModelCustomClasses) {
+            dataModelInstance = new JEClassLoader(dataModelCustomClasses);
             Set<String> all = dataModelCustomClasses;
             for (String c : all) {
                 ClassRepository.addClass(ClassRepository.getClassIdByName(c), c, dataModelInstance.loadClass(c));
