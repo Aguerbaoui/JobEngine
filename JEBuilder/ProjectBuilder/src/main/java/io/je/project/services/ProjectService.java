@@ -374,6 +374,9 @@ public class ProjectService {
 						{
 							rule.setRunning(false);
 							rule.setBuilt(false);
+							rule.setCompiled(false);
+							rule.setAdded(false);
+							
 							RuleService.updateRuleStatus(rule);
 							ruleService.saveRule(rule);
 						}

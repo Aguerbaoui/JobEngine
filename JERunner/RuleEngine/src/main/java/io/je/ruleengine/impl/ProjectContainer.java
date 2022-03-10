@@ -440,20 +440,34 @@ public class ProjectContainer {
 		try {
 			releaseId = kieServices.newReleaseId("io.je", "ruleengine", getReleaseVer());
 			JELogger.debug("release Id = " + releaseId, LogCategory.RUNTIME, projectId, LogSubModule.RULE, null);
+			//kieFileSystem.generateAndWritePomXML(releaseId);
+			long startTime = System.nanoTime();
 			kieFileSystem.generateAndWritePomXML(releaseId);
+			long endTime = System.nanoTime();
+			long duration = (endTime - startTime)/1000000 ; //divide by 1000000 to get milliseconds.
+			JELogger.debug("kieFileSystem.generateAndWritePomXML : "+duration);
+			//kieServices.newKieBuilder(kieFileSystem, JEClassLoader.getDataModelInstance()).buildAll(null);
+			startTime = System.nanoTime();
 			kieServices.newKieBuilder(kieFileSystem, JEClassLoader.getDataModelInstance()).buildAll(null);
+			endTime = System.nanoTime();
+			duration = (endTime - startTime)/1000000 ; //divide by 1000000 to get milliseconds.
+			JELogger.debug("kieServices.newKieBuilder : "+duration);
 			if (kieContainer == null) {
 				kieContainer = kieServices.newKieContainer(releaseId, JEClassLoader.getDataModelInstance());
 				JEClassLoader.setCurrentRuleEngineClassLoader(JEClassLoader.getDataModelInstance());
 			}
 			// Thread.currentThread().setContextClassLoader(JEClassLoader.getInstance());
 
+			//kieContainer.updateToVersion(releaseId);
+			startTime = System.nanoTime();
 			kieContainer.updateToVersion(releaseId);
-
+			endTime = System.nanoTime();
+			duration = (endTime - startTime)/1000000 ; //divide by 1000000 to get milliseconds.
+			JELogger.debug("kieContainer.updateToVersion : "+duration);
 			if (kScanner == null) {
 				kScanner = kieServices.newKieScanner(kieContainer);
 			}
-			kScanner.scanNow();
+			//kScanner.scanNow();
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -566,7 +580,11 @@ public class ProjectContainer {
 		}
 		// if project is running, update container without interrupting project
 		try {
+			long startTime = System.nanoTime();
 			deleteRuleFromKieFileSystem(allRules.get(ruleId));
+			long endTime = System.nanoTime();
+			long duration = (endTime - startTime)/1000000 ; //divide by 1000000 to get milliseconds.
+			JELogger.debug("deleteRuleFromKieFileSystem : "+duration);
 			// deleteAllRulesFromKieFileSystem();
 			// addAllRulesToKieFileSystem();
 

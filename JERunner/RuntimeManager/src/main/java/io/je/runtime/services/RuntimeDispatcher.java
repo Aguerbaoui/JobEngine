@@ -250,21 +250,32 @@ public class RuntimeDispatcher {
 
 	///////////////////////////// Classes
 	// add class
-	public void addClass(ClassModel classModel) throws ClassLoadException {
+	public void addClass(ClassModel classModel, boolean update) throws ClassLoadException {
 		JELogger.debug(JEMessages.ADDING_CLASS+": "+classModel.getClassName(), LogCategory.RUNTIME, null, LogSubModule.CLASS, null);
 		String className = JEClassLoader.getJobEnginePackageName(ClassBuilderConfig.CLASS_PACKAGE) + "." + classModel.getClassName();
+		JELogger.debug("Class name = "+className);
 		try {
 				Class<?> c = null;
-				if(classModel.getClassAuthor().equals(ClassAuthor.DATA_MODEL)) {
-					JEClassLoader.overrideDataModelInstance();
+				JEClassLoader.getDataModelInstance();
+				if(classModel.getClassAuthor().equals(ClassAuthor.DATA_MODEL) && (!JEClassLoader.classIsLoaded(className) )) {
 					JEClassLoader.addClassToDataModelClassesSet(className);
 					c = JEClassLoader.getDataModelInstance()
 						.loadClass(className);
+					ClassRepository.addClass(classModel.getClassId(), classModel.getClassName(), c);
+				}else if(update)
+				{
+					JEClassLoader.overrideDataModelInstance(className);
+					JEClassLoader.addClassToDataModelClassesSet(className);
+					c = JEClassLoader.getDataModelInstance()
+							.loadClass(className);
+					
+						ClassRepository.addClass(classModel.getClassId(), classModel.getClassName(), c);
+
 				}
-				ClassRepository.addClass(classModel.getClassId(), classModel.getClassName(), c);
+
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
-				JEClassLoader.removeClassFromDataModelClassesSet(className);
+				//JEClassLoader.removeClassFromDataModelClassesSet(className);
 				throw new ClassLoadException(
 						"[class :" + classModel.getClassName() + " ]" + JEMessages.CLASS_LOAD_FAILED);
 			}
@@ -275,7 +286,7 @@ public class RuntimeDispatcher {
 		if(classModel.getClassAuthor().equals(ClassAuthor.DATA_MODEL)) {
 			RuleEngineHandler.reloadContainers();
 		}
-		addClass(classModel);
+		addClass(classModel, true);
 		
 
 	}
