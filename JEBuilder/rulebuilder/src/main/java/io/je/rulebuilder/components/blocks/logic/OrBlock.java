@@ -1,50 +1,32 @@
-package io.je.rulebuilder.components.blocks;
+package io.je.rulebuilder.components.blocks.logic;
 
+
+import io.je.rulebuilder.components.blocks.LogicBlock;
 import io.je.rulebuilder.models.BlockModel;
 import io.je.utilities.exceptions.RuleBuildFailedException;
 
-public  class LogicBlock extends PersistableBlock {
+public  class OrBlock extends LogicBlock {
 
-	protected String operator;
-	public LogicBlock(BlockModel blockModel) {
-		super(blockModel.getBlockId(), blockModel.getProjectId(), blockModel.getRuleId(), 
-				blockModel.getBlockName(), blockModel.getDescription(),blockModel.getTimePersistenceValue(),blockModel.getTimePersistenceUnit(),blockModel.getInputBlocksIds(),blockModel.getOutputBlocksIds());
-		switch(blockModel.getOperationId())
-		{
-		//and
-		case 3001:
-			operator = "";
-			break;
-		
-		//or
-		case 3002 :
-			operator = "or";
-			break;
-		
-		}
+	
+	public OrBlock(BlockModel blockModel) {
+		super(blockModel);	
+		operator = "or";
 	}
 
-	 public LogicBlock() {
+	 public OrBlock() {
 		
 	}
 
 	@Override
 	public String getExpression() throws RuleBuildFailedException {
 		StringBuilder expression = new StringBuilder();
-		expression.append("\n");
-		expression.append("(");
-		expression.append(inputBlocks.get(0).getExpression());
-		expression.append(")");
-		expression.append("\n");
+		
 
-		for(int i=1; i<inputBlocks.size();i++)
+		for(int i=0; i<outputBlocks.size();i++)
 		{
-			expression.append(operator);
+			expression.append(outputBlocks.get(i).getExpression());
 			expression.append("\n");
-			expression.append("(");
-			expression.append(inputBlocks.get(i).getExpression());
-			expression.append(")");
-		}
+		}	
 		return expression.toString();
 	}
 
@@ -99,17 +81,6 @@ public  class LogicBlock extends PersistableBlock {
 		return expression.toString();
 	}
 
-	@Override
-	public String getJoinedExpressionAsFirstOperand(String joinId) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String getJoinExpressionAsFirstOperand() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 
 

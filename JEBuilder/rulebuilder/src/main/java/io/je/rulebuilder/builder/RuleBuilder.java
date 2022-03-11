@@ -29,6 +29,8 @@ import io.je.rulebuilder.components.blocks.PersistableBlock;
 import io.je.rulebuilder.components.blocks.execution.LinkedSetterBlock;
 import io.je.rulebuilder.components.blocks.execution.SetterBlock;
 import io.je.rulebuilder.components.blocks.getter.AttributeGetterBlock;
+import io.je.rulebuilder.components.blocks.logic.JoinBlock;
+import io.je.rulebuilder.components.blocks.logic.OrBlock;
 import io.je.utilities.apis.JERunnerAPIHandler;
 import io.je.utilities.beans.JEResponse;
 import io.je.utilities.config.ConfigurationConstants;
@@ -155,10 +157,10 @@ public class RuleBuilder {
 			uRule.getBlocks().resetAllBlocks();
 			scriptedRuleid = subRulePrefix + uRule.getJobEngineElementName() + ++scriptedRulesCounter;
 			GenericBlockSummary allGenericBlocksByClassId = new GenericBlockSummary(scriptedRuleid);
-			if (eliminateCombinatoryBehaviour) {
+			if (eliminateCombinatoryBehaviour && !(root instanceof JoinBlock )) {
 				allGenericBlocksByClassId = getAllGenericGetterBlocksByClassId(root,allGenericBlocksByClassId );
 				allGenericBlocksByClassId = getAllSetterBlocksByClassId(root, allGenericBlocksByClassId);
-				eliminateCombinatoryBehaviour(allGenericBlocksByClassId);
+				eliminateCombinatoryBehaviour(allGenericBlocksByClassId,root.getInitialJoinBlock());
 			}
 			String condition = "";
 			if (root instanceof ConditionBlock) {
@@ -193,7 +195,7 @@ public class RuleBuilder {
 		return scriptedRules;
 	}
 
-	private static GenericBlockSummary eliminateCombinatoryBehaviour(GenericBlockSummary allGenericBlocks) {
+	private static GenericBlockSummary eliminateCombinatoryBehaviour(GenericBlockSummary allGenericBlocks, String primeJoinId  ) {
 
 		if(allGenericBlocks.getNumberOfClasses()==1 && allGenericBlocks.allBlocksAreGeneric())
 		{
@@ -203,7 +205,6 @@ public class RuleBuilder {
 				Optional<Block> b = set.getIdentifier();
 				if(b.isPresent())
 				{
-					String primeJoinId = set.getBlocks().get(0).getBlockNameAsVariable();
 				    set.getValue().remove(b.get());
 					set.getBlocks().stream().forEach(bl->bl.addSpecificInstance(primeJoinId + ".getJobEngineElementID()"));
 					set.getValue().add(b.get());
@@ -311,8 +312,18 @@ public class RuleBuilder {
             if (ruleBlock instanceof ExecutionBlock) {
                 executionBlockCounter++;
                 for (Block rootBlock : ruleBlock.getInputBlocks()) {
-                    if (rootBlock != null) {
-                        roots.add(uRule.getBlocks().getBlock(rootBlock.getJobEngineElementID()));
+                    if (rootBlock != null ) {
+                        if(!(rootBlock instanceof OrBlock))
+                    	{
+                        	roots.add(uRule.getBlocks().getBlock(rootBlock.getJobEngineElementID()));
+                    	}else
+                    	{
+                    		for(Block b : uRule.getBlocks().getBlock(rootBlock.getJobEngineElementID()).getInputBlocks() )
+                    		{
+                            	roots.add(b);
+
+                    		}
+                    	}
                     }
 
                 }

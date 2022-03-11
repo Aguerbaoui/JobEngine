@@ -93,8 +93,13 @@ public abstract class Block extends JEObject {
 	//get id variable name used in drl ex: $id
 	public  String getJoinId()
 	{
-		if(!inputBlocks.isEmpty() && inputBlocks.get(0)!=null)
+		if(inputBlocks.size()>=2)
 		{
+			return inputBlocks.get(1).getJoinId();
+
+		}
+		if(!inputBlocks.isEmpty() && inputBlocks.get(0)!=null)
+		{			
 			return inputBlocks.get(0).getJoinId();
 		}
 		return null;
@@ -326,4 +331,11 @@ public String getPersistence() {
 	return null;
 }
 
+
+public String getInitialJoinBlock() {
+	if(!inputBlocks.isEmpty()) {
+		return inputBlocks.get(0).getInitialJoinBlock();
+	}else
+		return this.getBlockNameAsVariable();
+}
 }

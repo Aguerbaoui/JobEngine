@@ -17,8 +17,10 @@ import io.je.rulebuilder.components.blocks.execution.LinkedVariableSetterBlock;
 import io.je.rulebuilder.components.blocks.execution.TriggerEventBlock;
 import io.je.rulebuilder.components.blocks.getter.AttributeGetterBlock;
 import io.je.rulebuilder.components.blocks.getter.VariableGetterBlock;
+import io.je.rulebuilder.components.blocks.logic.AndBlock;
 import io.je.rulebuilder.components.blocks.logic.JoinBlock;
 import io.je.rulebuilder.components.blocks.logic.NotBlock;
+import io.je.rulebuilder.components.blocks.logic.OrBlock;
 import io.je.rulebuilder.models.BlockModel;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.AddRuleBlockException;
@@ -100,10 +102,10 @@ public class BlockGenerator {
 
 		// And Block
 		case 3001:
-			return new LogicBlock(blockModel);
+			return new AndBlock(blockModel);
 		// Or Block
 		case 3002:
-			return new LogicBlock(blockModel);
+			return new OrBlock(blockModel);
 		// XOR Block
 		case 3003:
 			//return new XorBlock(blockModel);
