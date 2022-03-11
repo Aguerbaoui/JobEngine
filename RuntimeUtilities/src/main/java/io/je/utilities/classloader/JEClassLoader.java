@@ -33,7 +33,7 @@ public class JEClassLoader extends ClassLoader {
             dataModelCustomClasses = new HashSet<>();
         }
         dataModelCustomClasses.add(classname);
-        JELogger.debug("added class "+classname +"now list is : " + dataModelCustomClasses);
+        //JELogger.debug("added class "+classname +"now list is : " + dataModelCustomClasses);
     }
 
     public static void removeClassFromDataModelClassesSet(String name) {
@@ -98,7 +98,7 @@ public class JEClassLoader extends ClassLoader {
 
     @Override
     public Class<?> loadClass(String className) throws ClassNotFoundException {
-    	JELogger.debug("JECLASSLOADER 100: "+dataModelCustomClasses.toString());
+    //	JELogger.debug("JECLASSLOADER 100: "+dataModelCustomClasses.toString());
         if (dataModelCustomClasses.contains(className)) {
             try {
                 JELogger.trace("Class Loading by dm custom loader Started for " + className, LogCategory.RUNTIME,
