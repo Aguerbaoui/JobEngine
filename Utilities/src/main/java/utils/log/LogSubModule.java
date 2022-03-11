@@ -3,21 +3,21 @@ package utils.log;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public enum LogSubModule {
-	@JsonProperty("Rule")
+	//@JsonProperty("Rule")
 	RULE,
-	@JsonProperty("Workflow")
+	//@JsonProperty("Workflow")
 	WORKFLOW,
-	@JsonProperty("Event")
+	//@JsonProperty("Event")
 	EVENT,
-	@JsonProperty("Variable")
+	//@JsonProperty("Variable")
 	VARIABLE,
-	@JsonProperty("JEBuilder")
+	//@JsonProperty("JEBuilder")
 	JEBUILDER,
-	@JsonProperty("JERunner")
+	//@JsonProperty("JERunner")
 	JERUNNER,
-	@JsonProperty("JEMonitor")
+	//@JsonProperty("JEMonitor")
 	JEMONITOR,
-	@JsonProperty("JEClass")
+	//@JsonProperty("JEClass")
 	CLASS
 
 }

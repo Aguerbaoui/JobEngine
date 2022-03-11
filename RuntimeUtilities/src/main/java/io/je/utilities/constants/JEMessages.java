@@ -722,4 +722,6 @@ public class JEMessages {
 
     public static final String ERROR_BUILDING_JAR_FILE_AFTER_COMPILING_CLASSES_CHECK_ONGOING_PROCESSES = "Error building jar file after compiling classes, check ongoing processes";
 
+	public static final String RULE_RUNNING = "Rule is running";
+
 }

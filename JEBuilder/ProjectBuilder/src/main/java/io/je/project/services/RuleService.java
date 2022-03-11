@@ -147,13 +147,7 @@ public class RuleService {
 		JEProject project = getProject(projectId);
 		UserDefinedRule ruleToUpdate = (UserDefinedRule) project.getRule(ruleModel.getRuleId());
 		ruleToUpdate.setJeObjectLastUpdate(Instant.now());
-		if (ruleToUpdate.isRunning()) {
-			ruleToUpdate.setStatus(Status.RUNNING_NOT_UP_TO_DATE);
-
-		} else {
-			ruleToUpdate.setStatus(Status.NOT_BUILT);
-
-		}
+		updateRuleStatus(ruleToUpdate);
 		JELogger.debug("[project = " + project.getProjectName() + "] [rule = "
 				+ project.getRules().get(ruleModel.getRuleId()).getJobEngineElementName() + "]"
 				+ JEMessages.UPDATING_RULE, CATEGORY, projectId, RULE, ruleModel.getRuleId());
@@ -288,14 +282,8 @@ public class RuleService {
 
 		project.addBlockName(blockModel.getBlockId(), generatedBlockName);
 		project.setBuilt(false);
-		if (rule.isRunning()) {
-			rule.setStatus(Status.RUNNING_NOT_UP_TO_DATE);
-
-		} else {
-			rule.setStatus(Status.NOT_BUILT);
-
-		}
-		ruleRepository.save(rule);
+		rule.setCompiled(false);
+		updateRuleStatus(rule);
 		return generatedBlockName;
 
 	}
@@ -365,13 +353,8 @@ public class RuleService {
 			classService.loadClassFromDataModel(workspaceId, classId, true);
 		}
 		project.setBuilt(false);
-		if (rule.isRunning()) {
-			rule.setStatus(Status.RUNNING_NOT_UP_TO_DATE);
-
-		} else {
-			rule.setStatus(Status.NOT_BUILT);
-
-		}
+		rule.setCompiled(false);
+		updateRuleStatus(rule);
 		ruleRepository.save(rule);
 
 	}
@@ -392,13 +375,9 @@ public class RuleService {
 				CATEGORY, projectId, RULE, ruleId);
 		project.deleteRuleBlock(ruleId, blockId);
 		project.removeBlockName(blockId);
-		if (project.getRule(ruleId).isRunning()) {
-			project.getRule(ruleId).setStatus(Status.RUNNING_NOT_UP_TO_DATE);
-
-		} else {
-			project.getRule(ruleId).setStatus(Status.NOT_BUILT);
-
-		}
+		project.getRule(ruleId).setCompiled(false);
+		updateRuleStatus(project.getRule(ruleId));
+		
 		ruleRepository.save(project.getRule(ruleId));
 	}
 
@@ -487,6 +466,7 @@ public class RuleService {
 		if (!project.ruleExists(ruleId)) {
 			throw new RuleNotFoundException(projectId, ruleId);
 		}
+		RuleService.updateRuleStatus(project.getRule(ruleId));
 		JELogger.debug(
 				"[project = " + project.getProjectName() + "] [rule = "
 						+ project.getRules().get(ruleId).getJobEngineElementName() + "]" + JEMessages.LOADING_RULE,
@@ -690,7 +670,7 @@ public class RuleService {
 		JEProject project = getProject(projectId);
 		if (setRunning) {
 			for (Entry<String, JERule> rule : project.getRules().entrySet()) {
-				if (rule.getValue().isEnabled()) {
+				if (rule.getValue().isEnabled() && !rule.getValue().containsErrors()) {
 					try {
 						rule.getValue().setRunning(true);
 						RuleService.updateRuleStatus(rule.getValue());
@@ -876,6 +856,7 @@ public class RuleService {
 	}
 
 	public static void updateRuleStatus(JERule rule) {
+
 		if (rule.isRunning() || rule.getStatus()== Status.RUNNING_NOT_UP_TO_DATE) {
 			if (rule.isBuilt()) {
 				rule.setStatus(Status.RUNNING);
@@ -883,8 +864,12 @@ public class RuleService {
 				rule.setStatus(Status.RUNNING_NOT_UP_TO_DATE);
 			}
 		} else {
-			
-			if(rule.isCompiled()) {
+
+			if(rule.containsErrors())
+			{
+				rule.setStatus(Status.ERROR);
+			}
+			else if(rule.isCompiled()) {
 				rule.setStatus(Status.STOPPED);
 			}else {
 				rule.setStatus(Status.NOT_BUILT);
