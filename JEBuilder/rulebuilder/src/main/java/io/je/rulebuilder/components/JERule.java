@@ -30,6 +30,9 @@ public abstract class JERule extends JEObject  {
 	
 	boolean enabled = true;
 	
+	@Transient
+	boolean containsErrors = false;
+	
 	Status status = Status.NOT_BUILT;
 	
 	@Transient
@@ -173,6 +176,14 @@ public abstract class JERule extends JEObject  {
 	public void loadTopics() {
 		// TODO Auto-generated method stub
 		
+	}
+
+	public boolean containsErrors() {
+		return containsErrors;
+	}
+
+	public void setContainsErrors(boolean containsErrors) {
+		this.containsErrors = containsErrors;
 	}
 
 
