@@ -2,6 +2,7 @@ package io.je.rulebuilder.components.blocks;
 
 import java.util.List;
 
+import io.je.rulebuilder.components.blocks.logic.OrBlock;
 import io.je.utilities.exceptions.RuleBuildFailedException;
 
 public abstract class ConditionBlock extends Block{
@@ -20,7 +21,7 @@ public abstract class ConditionBlock extends Block{
 		StringBuilder consequences = new StringBuilder();
 		for(Block block : getOutputBlocks())
 		{
-			if(block instanceof ExecutionBlock)
+			if(block instanceof ExecutionBlock || block instanceof OrBlock)
 			{
 				consequences.append(block.getExpression());
 				consequences.append("\n");

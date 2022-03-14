@@ -3,6 +3,8 @@ package io.je.rulebuilder.components.blocks.comparison;
 
 import java.util.List;
 
+import org.springframework.data.annotation.Transient;
+
 import io.je.rulebuilder.components.blocks.PersistableBlock;
 import io.je.rulebuilder.components.blocks.arithmetic.singleinput.SingleInputArithmeticBlock;
 import io.je.rulebuilder.components.blocks.getter.AttributeGetterBlock;
@@ -42,7 +44,6 @@ public  class ComparisonBlock extends PersistableBlock {
 	boolean includeBounds=false;
 	boolean formatToString=false;
 
-	
 	
 	protected ComparisonBlock(String jobEngineElementID, String jobEngineProjectID, String ruleId, String blockName,
 			String blockDescription, int timePersistenceValue, String timePersistenceUnit,List<String> inputBlockIds, List<String> outputBlocksIds) {
@@ -126,7 +127,7 @@ public  class ComparisonBlock extends PersistableBlock {
 
 	
 	protected void setParameters() {
-		if(threshold==null)
+		if(inputBlockIds.size()>1)
 		{
 			threshold=getInputRefName(1);
 		}
@@ -198,22 +199,24 @@ public  class ComparisonBlock extends PersistableBlock {
 			expression.append(inputExpression);
 
 		} else if (inputBlocks.size() == 3) {
-			String firstOperand = inputBlocks.get(1).getJoinedExpression(joinId);
+			joinId = inputBlocks.get(1).getJoinId();
+			String firstOperand = inputBlocks.get(1).getJoinExpression();
 			expression.append(firstOperand);
 			expression.append("\n");
 			String thirdOperand = inputBlocks.get(2).getJoinedExpression(joinId);
 			expression.append(thirdOperand);
 			expression.append("\n");
-			String secondOperand = inputBlocks.get(0).getJoinExpression().replaceAll(Keywords.toBeReplaced,
+			String secondOperand = inputBlocks.get(0).getJoinedExpressionAsFirstOperand(joinId).replaceAll(Keywords.toBeReplaced,
 					getOperationExpression());
 			expression.append(secondOperand);
 
 		} else if (inputBlocks.size() == 2) {
-			String firstOperand = inputBlocks.get(1).getJoinedExpression(joinId);
+			joinId = inputBlocks.get(1).getJoinId();
+			String firstOperand = inputBlocks.get(1).getJoinExpression();
 			expression.append(firstOperand);
 			String secondOperand = "";
 			expression.append("\n");
-			secondOperand = inputBlocks.get(0).getJoinExpression().replaceAll(Keywords.toBeReplaced,
+			secondOperand = inputBlocks.get(0).getJoinedExpressionAsFirstOperand(joinId).replaceAll(Keywords.toBeReplaced,
 					getOperationExpression());
 			expression.append(secondOperand);
 		}
@@ -337,7 +340,14 @@ public  class ComparisonBlock extends PersistableBlock {
 		return formatToString? "\""+ operator +"\"":operator;
 	}
 
-	
+	@Override
+	public String getInitialJoinBlock() {
+		if(inputBlocks.size() >=2)
+		{
+				return inputBlocks.get(1).getInitialJoinBlock();
+		}
+		return super.getInitialJoinBlock();
+	}
 
 }
 
