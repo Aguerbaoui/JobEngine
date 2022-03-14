@@ -79,5 +79,9 @@ public class GenericBlockSet {
 		return blocks.stream().filter(bl->bl instanceof AttributeGetterBlock).findFirst();
 	}
 	
+public Optional<Block> getIdentifier(String id) {
+		
+		return blocks.stream().filter(bl->(bl instanceof AttributeGetterBlock) && bl.blockName.equals(id)).findFirst();
+	}
 	
 }

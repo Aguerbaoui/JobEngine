@@ -202,7 +202,7 @@ public class RuleBuilder {
 			GenericBlockSet set= allGenericBlocks.getSingleBlockSet();
 			if(!set.isAllBlocksAreSetters())
 			{
-				Optional<Block> b = set.getIdentifier();
+				Optional<Block> b = set.getIdentifier(primeJoinId);
 				if(b.isPresent())
 				{
 				    set.getValue().remove(b.get());
@@ -316,6 +316,15 @@ public class RuleBuilder {
                         if(!(rootBlock instanceof OrBlock))
                     	{
                         	roots.add(uRule.getBlocks().getBlock(rootBlock.getJobEngineElementID()));
+                        	for(Block b : uRule.getBlocks().getBlock(rootBlock.getJobEngineElementID()).getInputBlocks() )
+                    		{
+                            	if(b instanceof PersistableBlock)
+                            	{
+                            		((PersistableBlock) b).setTimePersistenceValue(((PersistableBlock) rootBlock).getTimePersistenceValue());
+                            		((PersistableBlock) b).setTimePersistenceUnit(((PersistableBlock) rootBlock).getTimePersistenceUnit());
+                            	}
+
+                    		}
                     	}else
                     	{
                     		for(Block b : uRule.getBlocks().getBlock(rootBlock.getJobEngineElementID()).getInputBlocks() )
