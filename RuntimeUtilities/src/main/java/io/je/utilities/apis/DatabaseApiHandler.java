@@ -11,18 +11,22 @@ import utils.network.HttpMethod;
 import utils.network.Network;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 public class DatabaseApiHandler {
-    public static final String EXECUTE_DATABASE_COMMAND = "/api/DBBridge/Execute";
-    public static String url = SIOTHConfigUtility.getSiothConfig().getApis().getDatabaseAPI().getAddress() + EXECUTE_DATABASE_COMMAND;
+    public static final String EXECUTE_DATABASE_COMMAND = "/nonsense/nonsenseagain/api/database/execute/siothdb";
+    public static String url = "http://njendoubi-pc:14002"/*SIOTHConfigUtility.getSiothConfig().getApis().getDatabaseAPI().getAddress() */+ EXECUTE_DATABASE_COMMAND;
 
     public static int executeCommand(String dbId, String query) throws IOException {
-        Network network = new Network.Builder(url).hasBody(false).hasParameters(true).withParam("DBIdentifier", dbId)
-                .withMethod(HttpMethod.GET).withParam("Command", query)
+        HashMap<String, String> headers = new HashMap<>();
+        headers.put("DBIdentifier", dbId);
+        headers.put("Command", query);
+        Network network = new Network.Builder(url).hasBody(false).hasHeaders(true).withHeaders(headers)
                 .build();
         Response response = network.call();
-        JELogger.info(JEMessages.DB_API_RESPONSE + " = " + response.body().string(), LogCategory.RUNTIME,
-                null, LogSubModule.WORKFLOW, null);
+        System.out.println(response.body().string());
+        /*JELogger.info(JEMessages.DB_API_RESPONSE + " = " + response.body().string(), LogCategory.RUNTIME,
+                null, LogSubModule.WORKFLOW, null);*/
         return response.code();
     }
 

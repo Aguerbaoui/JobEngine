@@ -15,6 +15,7 @@ import io.je.utilities.models.WorkflowModel;
 import models.JEWorkflow;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
+import utils.string.StringUtilities;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -111,13 +112,18 @@ public class WorkflowBuilder {
     /*Get attributes map for email task*/
     private static HashMap<String, Object> getEmailTaskAttributesMap(MailBlock block) {
         HashMap<String, Object> attributes = new HashMap<>();
-        if (block.isbUseDefaultCredentials()) {
+        /*if (block.()) {
             attributes.put(WorkflowConstants.ENABLE_SSL, block.isbEnableSSL());
-            attributes.put(WorkflowConstants.USE_DEFAULT_CREDENTIALS, block.isbUseDefaultCredentials());
+            attributes.put(WorkflowConstants.B_REQUIRE_AUTHENTICATION, block.isbUseDefaultCredentials());
         } else {
             attributes.put(USERNAME, block.getStrUserName());
             attributes.put(PASSWORD, block.getStrPassword());
+        }*/
+        if(!StringUtilities.isEmpty(block.getStrUserName())) {
+            attributes.put(USERNAME, block.getStrUserName());
+            attributes.put(PASSWORD, block.getStrPassword());
         }
+        attributes.put(WorkflowConstants.ENABLE_SSL, block.isbEnableSSL());
         attributes.put(WorkflowConstants.PORT, block.getiPort());
         attributes.put(WorkflowConstants.SENDER_ADDRESS, block.getStrSenderAddress());
         attributes.put(SEND_TIME_OUT, block.getiSendTimeOut());

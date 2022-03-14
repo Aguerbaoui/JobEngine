@@ -87,7 +87,7 @@ public class DataModelListener {
     	{
     		if(!activeThreads.containsKey(id))
     		{
-    			readInitialValues(id);
+    			//readInitialValues(id);
         		ZMQAgent agent = agents.get(id);
         		{
         			if (agent!=null && !agent.isListening())

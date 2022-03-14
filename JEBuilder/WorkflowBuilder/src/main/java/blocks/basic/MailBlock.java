@@ -10,8 +10,6 @@ public class MailBlock extends WorkflowBlock {
 
     private boolean bEnableSSL = false;
 
-    private boolean bUseDefaultCredentials = false;
-
     private String strSenderAddress;
 
     private List<String> lstRecieverAddress;
@@ -42,14 +40,6 @@ public class MailBlock extends WorkflowBlock {
 
     public void setbEnableSSL(boolean bEnableSSL) {
         this.bEnableSSL = bEnableSSL;
-    }
-
-    public boolean isbUseDefaultCredentials() {
-        return bUseDefaultCredentials;
-    }
-
-    public void setbUseDefaultCredentials(boolean bUseDefaultCredentials) {
-        this.bUseDefaultCredentials = bUseDefaultCredentials;
     }
 
     public String getStrSenderAddress() {

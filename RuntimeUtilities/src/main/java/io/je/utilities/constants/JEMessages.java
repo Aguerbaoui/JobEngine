@@ -627,7 +627,7 @@ public class JEMessages {
     public static final String BLOCK_NAME_CAN_T_BE_UPDATED_BECAUSE_IT_ALREADY_EXISTS = "Block name cannot be updated because its name already exists";
     public static final String WORKFLOW_BUILD_ERROR = "Error while deploying the workflow ";
     public static final String WORKFLOW_RUN_ERROR = "Error while running the workflow ";
-    public static final String UPLOADED_JAR_TO_PATH = "Uploaded jar to path ";
+    public static final String UPLOADED_JAR_TO_PATH = "Uploaded file to path ";
     public static final String SENDING_VARIABLE_TO_RUNNER = "Sending variable to JERunner";
     public static final String DELETING_VARIABLE = "Deleting variable ";
     public static final String ERROR_ADDING_VARIABLE_TO_PROJECT = "Error while adding variable to project";
