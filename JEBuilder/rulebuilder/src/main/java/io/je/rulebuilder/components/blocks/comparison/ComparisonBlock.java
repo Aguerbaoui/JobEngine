@@ -127,7 +127,7 @@ public  class ComparisonBlock extends PersistableBlock {
 
 	
 	protected void setParameters() {
-		if(threshold==null)
+		if(inputBlockIds.size()>1)
 		{
 			threshold=getInputRefName(1);
 		}
