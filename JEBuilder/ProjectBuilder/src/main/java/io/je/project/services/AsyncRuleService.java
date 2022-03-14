@@ -72,9 +72,12 @@ public class AsyncRuleService {
 				}
 				rule.setCompiled(true);
 				result.setOperationSucceeded(true);
+				rule.setContainsErrors(false);
+
 			}
 		} catch (RuleBuildFailedException | JERunnerErrorException | ProjectNotFoundException | ProjectLoadException | LicenseNotActiveException e) {
 			rule.setBuilt(false);
+			rule.setContainsErrors(true);
 			result.setOperationSucceeded(false);
 			result.setOperationError(e.getMessage());
 		}
@@ -143,6 +146,14 @@ public class AsyncRuleService {
 			
 		}
 		
+		if(rule.getStatus()==Status.ERROR)
+		{
+			result.setOperationSucceeded(false);
+			result.setOperationError(JEMessages.RULE_CONTAINS_ERRORS);
+			return CompletableFuture.completedFuture(result);
+			
+		}
+		
 		/*if(rule.getStatus()==RuleStatus.RUNNING)
 		{
 			result.setOperationSucceeded(false);
@@ -160,6 +171,8 @@ public class AsyncRuleService {
 			project.getRule(ruleId).setRunning(false);
 			rule.setRunning(true);
 			result.setOperationSucceeded(true);
+			JELogger.control("[rule = "+rule.getJobEngineElementName() +"]"+JEMessages.RULE_RUNNING ,
+					CATEGORY, projectId, RULE, null);
 		} catch (  JERunnerErrorException  e) {
 			
 			result.setOperationSucceeded(false);

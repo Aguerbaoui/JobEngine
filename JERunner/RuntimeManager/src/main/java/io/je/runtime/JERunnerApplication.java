@@ -1,6 +1,7 @@
 package io.je.runtime;
 
 import io.je.utilities.apis.JEBuilderApiHandler;
+import io.je.utilities.classloader.JEClassLoader;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.log.JELogger;
 import io.siothconfig.SIOTHConfigUtility;
@@ -32,6 +33,7 @@ public class JERunnerApplication {
         app.run(args);
         JELogger.debug(JEMessages.RUNNER_STARTED,  LogCategory.RUNTIME,
                 null, LogSubModule.JERUNNER, null);
+        JEClassLoader.getDataModelInstance();
     }
 
     @PreDestroy
