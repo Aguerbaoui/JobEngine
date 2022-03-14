@@ -35,7 +35,7 @@ public class MailServiceTask extends ServiceTask {
         HashMap<String, Object> attributes = new HashMap<>();
         if(task.isbUseDefaultCredentials()) {
             attributes.put(WorkflowConstants.ENABLE_SSL, task.isbEnableSSL());
-            attributes.put(WorkflowConstants.USE_DEFAULT_CREDENTIALS, task.isbUseDefaultCredentials());
+            attributes.put(WorkflowConstants.B_REQUIRE_AUTHENTICATION, task.isbUseDefaultCredentials());
         }
         else {
             attributes.put(USERNAME, task.getStrUserName());
@@ -70,6 +70,7 @@ public class MailServiceTask extends ServiceTask {
             }
         }
         catch(Exception e) {
+            e.printStackTrace();
             JELogger.error(JEMessages.UNEXPECTED_ERROR +  Arrays.toString(e.getStackTrace()), LogCategory.RUNTIME, null,
                     LogSubModule.JERUNNER, null);
             throw new BpmnError(String.valueOf(ResponseCodes.UNKNOWN_ERROR));

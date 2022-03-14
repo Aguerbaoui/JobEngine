@@ -296,14 +296,12 @@ public class JobEngine {
     }*/
 
     //Execute a database sql query
-    public static int executeSqlQuery(String projectId, String dbId, String query) {
+    public static int executeSqlQuery(String dbId, String query) {
         int responseCode = 500;
-
         try {
             responseCode = DatabaseApiHandler.executeCommand(dbId, query);
         } catch (Exception e) {
-
-            sendLogMessage(JEMessages.ERROR_EXECUTING_DB_QUERY, projectId, LogLevel.ERROR,
+            sendLogMessage(JEMessages.ERROR_EXECUTING_DB_QUERY, "", LogLevel.ERROR,
                     null, LogCategory.RUNTIME, LogSubModule.WORKFLOW);
         }
         return responseCode;
@@ -314,8 +312,8 @@ public class JobEngine {
     }
 
     public static void main(String... args) {
-
-        int code = JobEngine.addDoubleVariable("test", "DoubleVar", 3.3);
+        int code = JobEngine.executeSqlQuery("db", "SELECT * FROM siothdatabase.testtable;");
+         /*int code = JobEngine.addDoubleVariable("test", "DoubleVar", 3.3);
         System.out.println(code);
         code = JobEngine.addLongVariable("test", "LongVar", 333333);
         System.out.println(code);
@@ -323,7 +321,7 @@ public class JobEngine {
         code = JobEngine.addIntegerVariable("test", "IntVar", 3);
         System.out.println(code);
 
-        /*String testString = (String) JobEngine.getVariable("test", "testBool");
+       String testString = (String) JobEngine.getVariable("test", "testBool");
         System.out.println(testString);
         JobEngine.setVariable("test", "testBool", true);
         testString = (String) JobEngine.getVariable("test", "testBool");

@@ -661,14 +661,10 @@ public class WorkflowService {
             mailBlock.setLstRecieverAddress((List<String>) block.getAttributes().get(RECEIVER_ADDRESS));
             mailBlock.setEmailMessage((HashMap<String, String>) block.getAttributes().get(EMAIL_MESSAGE));
             mailBlock.setStrSMTPServer((String) block.getAttributes().get(SMTP_SERVER));
-            if ((boolean) block.getAttributes().get(USE_DEFAULT_CREDENTIALS)) {
-                mailBlock.setbUseDefaultCredentials((boolean) block.getAttributes().get(USE_DEFAULT_CREDENTIALS));
-                mailBlock.setbEnableSSL((boolean) block.getAttributes().get(ENABLE_SSL));
-            } else {
+            mailBlock.setbEnableSSL(false);
+            if ((boolean) block.getAttributes().get(B_REQUIRE_AUTHENTICATION)) {
                 mailBlock.setStrPassword((String) block.getAttributes().get(PASSWORD));
                 mailBlock.setStrUserName((String) block.getAttributes().get(USERNAME));
-                mailBlock.setbEnableSSL(false);
-                mailBlock.setbUseDefaultCredentials(false);
             }
         }
         return mailBlock;
@@ -1403,11 +1399,14 @@ public class WorkflowService {
 
     //delete email attachment
     public void deleteAttachmentByName(String libName) throws IOException {
-        JELib lib = libraryRepository.findByJobEngineElementName(libName);
-        if (lib != null) {
-            FileUtilities.deleteFileFromPath(lib.getFilePath());
-            libraryRepository.delete(lib);
+        try {
+            JELib lib = libraryRepository.findByJobEngineElementName(libName);
+            if (lib != null) {
+                FileUtilities.deleteFileFromPath(lib.getFilePath());
+                libraryRepository.delete(lib);
+            }
         }
+        catch (Exception Ignore) {}
     }
 
     //clean up workflow data

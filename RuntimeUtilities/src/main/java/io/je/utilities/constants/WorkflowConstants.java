@@ -54,7 +54,7 @@ public class WorkflowConstants {
     public static final String AUTH_SCHEME = "authscheme";
     public static final String REQUEST = "request";
     public static final String DATABASE_ID = "databaseId";
-    public static final String USE_DEFAULT_CREDENTIALS = "bUseDefaultCredentials";
+    public static final String B_REQUIRE_AUTHENTICATION = "bRequireAuthentication";
     public static final String PORT = "iPort";
     public static final String SENDER_ADDRESS = "strSenderAddress";
     public static final String SEND_TIME_OUT = "iSendTimeOut";

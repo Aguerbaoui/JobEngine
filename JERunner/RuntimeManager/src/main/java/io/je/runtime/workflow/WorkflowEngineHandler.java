@@ -14,19 +14,15 @@ import io.je.serviceTasks.MailTask;
 import io.je.serviceTasks.ScriptTask;
 import io.je.serviceTasks.WebApiTask;
 import io.je.utilities.beans.Status;
-import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.WorkflowConstants;
 import io.je.utilities.exceptions.WorkflowAlreadyRunningException;
 import io.je.utilities.exceptions.WorkflowBuildException;
 import io.je.utilities.exceptions.WorkflowNotFoundException;
 import io.je.utilities.exceptions.WorkflowRunException;
-import io.je.utilities.log.JELogger;
 import io.je.utilities.models.TaskModel;
 import io.je.utilities.monitoring.JEMonitor;
 import io.je.utilities.monitoring.MonitoringMessage;
 import io.je.utilities.monitoring.ObjectType;
-import utils.log.LogCategory;
-import utils.log.LogSubModule;
 import utils.network.AuthScheme;
 import utils.network.BodyType;
 import utils.network.HttpMethod;
@@ -272,10 +268,11 @@ public class WorkflowEngineHandler {
         mailTask.setProcessId(workflowName);
         mailTask.setWorkflowId(workflowId);
         HashMap<String, Object> attributes = task.getAttributes();
-        if(attributes.containsKey(USE_DEFAULT_CREDENTIALS)) {
-            mailTask.setbUseDefaultCredentials((boolean) task.getAttributes().get(USE_DEFAULT_CREDENTIALS));
+        /*if(attributes.containsKey(B_REQUIRE_AUTHENTICATION)) {
+            mailTask.setbUseDefaultCredentials((boolean) task.getAttributes().get(B_REQUIRE_AUTHENTICATION));
             mailTask.setbEnableSSL((boolean) task.getAttributes().get(ENABLE_SSL));
-        }
+        }*/
+        mailTask.setbEnableSSL((boolean) task.getAttributes().get(ENABLE_SSL));
         mailTask.setiPort((Integer) task.getAttributes().get(PORT));
         mailTask.setStrSenderAddress((String) task.getAttributes().get(SENDER_ADDRESS));
         mailTask.setiSendTimeOut((Integer) task.getAttributes().get(SEND_TIME_OUT));

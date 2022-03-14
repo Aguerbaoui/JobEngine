@@ -34,6 +34,8 @@ public class Network {
     private AuthScheme authScheme;
     private HashMap<String, String> authentication;
     private HashMap<String, String> parameters;
+    private boolean hasHeaders;
+    private HashMap<String, String> headers;
 
     private Network() {
     }
@@ -218,23 +220,28 @@ public class Network {
         RequestBody requestBody = null;
         Request request = null;
         Request.Builder builder = null;
-        if (hasBody) {
-            if (bodyType == BodyType.JSON) {
-                body = body.replace("=", ":");
-                requestBody = RequestBody.create(MediaType.parse("application/json"), body);
-            }
-            builder = new Request.Builder().url(url).post(requestBody);
-        } else {
-            if (hasParameters) {
+
+        if (hasParameters) {
                 HttpUrl.Builder httpBuilder = HttpUrl.parse(url).newBuilder();
                 for (Map.Entry<String, String> param : parameters.entrySet()) {
                     httpBuilder.addQueryParameter(param.getKey(), param.getValue());
                 }
                 builder = new Request.Builder().url(httpBuilder.build());
-            } else {
-                builder = new Request.Builder().url(url).get();
-            }
         }
+        else {
+            builder = new Request.Builder().url(url);
+        }
+        if (hasBody) {
+            if (bodyType == BodyType.JSON) {
+                body = body.replace("=", ":");
+                requestBody = RequestBody.create(MediaType.parse("application/json"), body);
+            }
+            builder.post(requestBody);
+        }
+        else {
+            builder.get();
+        }
+
         if(authScheme == AuthScheme.BASIC) {
             String credential = Credentials.basic(authentication.get(USERNAME), authentication.get(PASSWORD));
             builder.header(AUTHORIZATION, credential);
@@ -247,6 +254,12 @@ public class Network {
             String key = authentication.get(KEY);
             String value = authentication.get(VALUE);
             builder.addHeader(key, value);
+        }
+
+        if(hasHeaders) {
+            for(String key: headers.keySet()) {
+                builder.addHeader(key, headers.get(key));
+            }
         }
         request = builder.build();
         OkHttpClient client = new OkHttpClient();
@@ -270,11 +283,22 @@ public class Network {
         private HashMap<String, String> authentication;
         private AuthScheme authScheme;
         private HashMap<String, String> parameters;
+        private boolean hasHeaders;
+        private HashMap<String, String> headers;
 
         public Builder(String url) {
             this.url = url;
         }
 
+        public Builder withHeaders(HashMap<String, String> headers) {
+            if (headers != null) this.headers = headers;
+            return this;
+        }
+
+        public Builder hasHeaders(boolean hasHeaders) {
+            this.hasHeaders = hasHeaders;
+            return this;
+        }
 
         public Builder withAuthentication(HashMap<String, String> authentication) {
             if (authentication != null) this.authentication = authentication;
@@ -332,6 +356,8 @@ public class Network {
             network.parameters = this.parameters;
             network.authScheme = this.authScheme;
             network.authentication = this.authentication;
+            network.headers = this.headers;
+            network.hasHeaders = this.hasHeaders;
             //network.isAuthenticated = this.isAuthenticated;
             return network;
         }
