@@ -647,7 +647,7 @@ public class WorkflowService {
             mailBlock.setiSendTimeOut((Integer) block.getAttributes().get(SEND_TIME_OUT));
             mailBlock.setLstCCs((List<String>) block.getAttributes().get(CC_LIST));
             mailBlock.setLstBCCs((List<String>) block.getAttributes().get(BCC_LIST));
-            mailBlock.setLstAttachementPaths((List<String>) block.getAttributes().get(ATTACHEMENT_URLS));
+            mailBlock.setLstAttachementPaths(null);
             List<String> uploadedFiles = (List<String>) block.getAttributes().get(UPLOADED_FILES_PATHS);
             if (uploadedFiles != null) {
                 for (String fileName : uploadedFiles) {
@@ -657,7 +657,7 @@ public class WorkflowService {
                     }
                 }
             }
-            mailBlock.setLstUploadedFiles((List<String>) block.getAttributes().get(UPLOADED_FILES_PATHS));
+            mailBlock.setLstUploadedFiles((List<String>) block.getAttributes().get(ATTACHEMENT_URLS));
             mailBlock.setLstRecieverAddress((List<String>) block.getAttributes().get(RECEIVER_ADDRESS));
             mailBlock.setEmailMessage((HashMap<String, String>) block.getAttributes().get(EMAIL_MESSAGE));
             mailBlock.setStrSMTPServer((String) block.getAttributes().get(SMTP_SERVER));

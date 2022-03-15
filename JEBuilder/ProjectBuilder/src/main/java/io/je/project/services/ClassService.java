@@ -141,6 +141,7 @@ public class ClassService {
             }
         }
         catch (IOException | InterruptedException e) {
+            e.printStackTrace();
             JELogger.error(CLASS_LOAD_DENIED_ACCESS, LogCategory.DESIGN_MODE, "", LogSubModule.CLASS, "");
         }
     }
