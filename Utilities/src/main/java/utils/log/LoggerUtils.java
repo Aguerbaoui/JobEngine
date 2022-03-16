@@ -48,10 +48,11 @@ public class LoggerUtils {
 	 */
 
 	protected static boolean logLevelIsEnabled(Level lvl) {
-		if (lvl == logger.getLevel() || lvl == Level.ALL || lvl.isMoreSpecificThan(logger.getLevel())) {
-			return true;
+		if(logger != null) {
+			if (lvl == logger.getLevel() || lvl == Level.ALL || lvl.isMoreSpecificThan(logger.getLevel())) {
+				return true;
+			}
 		}
-
 		return false;
 	}
 
@@ -60,8 +61,9 @@ public class LoggerUtils {
 	 * Trace log level
 	 */
 	public static void trace(String message) {
-		logger.trace(message);
-
+		if(logger != null) {
+			logger.trace(message);
+		}
 	
 	}
 
@@ -69,8 +71,10 @@ public class LoggerUtils {
 	 * Control log level
 	 */
 	public static void control(String message) {
-		logger.log(CONTROL, message);
 
+		if(logger != null) {
+			logger.log(CONTROL, message);
+		}
 		
 
 	}
@@ -79,15 +83,11 @@ public class LoggerUtils {
 	 * Debug log level
 	 */
 	public static void debug(String message) {
-		logger.debug(message);
 
+		if(logger != null) {
+			logger.debug(message);
+		}
 		
-
-	}
-
-	public static void debugWithoutPublish(String message) {
-//Log in file
-		logger.debug(message);
 
 	}
 
@@ -97,8 +97,10 @@ public class LoggerUtils {
 	 */
 	public static void info(String message) {
 		// Log in file
-		logger.info(message);
 
+		if(logger != null) {
+			logger.info(message);
+		}
 		
 	}
 
@@ -107,8 +109,10 @@ public class LoggerUtils {
 	 */
 	public static void error(String message) {
 		// Log in file
-		logger.error(message);
 
+		if(logger != null) {
+			logger.error(message);
+		}
 	}
 
 	/*
@@ -116,7 +120,9 @@ public class LoggerUtils {
 	 */
 	public static void warn(String message) {
 		// Log in file
-		logger.warn(message);
+		if(logger != null) {
+			logger.warn(message);
+		}
 
 	}
 
