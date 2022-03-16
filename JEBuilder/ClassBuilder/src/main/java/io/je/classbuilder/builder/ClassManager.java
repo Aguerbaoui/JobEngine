@@ -126,7 +126,7 @@ public class ClassManager {
         Class<?> loadedClass;
         String className = JEClassLoader.getJobEnginePackageName(ClassBuilderConfig.CLASS_PACKAGE) + "." + classDefinition.getName();
         try {
-            JEClassLoader.overrideDataModelInstance();
+            JEClassLoader.overrideDataModelInstance(className);
             JEClassLoader.addClassToDataModelClassesSet(className);
             loadedClass = JEClassLoader.getDataModelInstance()
                     .loadClass(className);

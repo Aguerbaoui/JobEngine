@@ -118,11 +118,15 @@ public class CalculationBlock extends SingleInputArithmeticBlock {
 	protected String evaluateExecution(String...inputs) {
 		switch(operationId) {
 		
+		//factorial x>=0 && x<=20
+		case 1005:
+			return "eval(JEMathUtils.factorialConstraint(\""+this.jobEngineProjectID+"\",\""+this.ruleId+"\",\""+this.blockName+"\","+inputs[0]+"))\n";
+
 		//sqrt x>=0
 		case 1007:
 			return "eval(JEMathUtils.positive(\""+this.jobEngineProjectID+"\",\""+this.ruleId+"\",\""+this.blockName+"\","+inputs[0]+"))\n";
 		//ln x>0
-		case 1025:
+		case 1025 :
 			return "eval(JEMathUtils.strictlyPositive(\""+this.jobEngineProjectID+"\",\""+this.ruleId+"\",\""+this.blockName+"\","+inputs[0]+"))\n";
 		default:
 			return "";
