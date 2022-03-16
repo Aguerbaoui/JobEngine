@@ -56,7 +56,7 @@ public class InstanceManager {
 		}
 
 		objectMapper.setTypeFactory(
-				objectMapper.getTypeFactory().withClassLoader(JEClassLoader.getCurrentRuleEngineClassLoader()));
+				objectMapper.getTypeFactory().withClassLoader(JEClassLoader.getDataModelInstance()));
 
 		// create instance
 		Object instance = null;
