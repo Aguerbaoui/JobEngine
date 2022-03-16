@@ -45,14 +45,14 @@ public class MathUtilities {
      */
     public static double truncate(Object x)
     {
-        Object value ;
+        double value ;
         try{
             value = Math.round((double) x);
         }catch(Exception e)
         {
             value= Math.round((float) x);
         }
-        return (double) value;
+        return  value;
     }
 
     /*
@@ -284,17 +284,16 @@ public class MathUtilities {
      */
     public static double factorial(double x) {
         Double value = x;
-        double a = CombinatoricsUtils.factorial(value.intValue());
-        return a;
+        if(value.intValue()>0 && value <=20) {
+        	return CombinatoricsUtils.factorial(value.intValue());
+
+        }else {
+        	return 1;
+
+        }
     }
 
-    /*
-     * factorial
-     */
-    public static double factorial(Object x) {
-        return CombinatoricsUtils.factorial((int) x);
 
-    }
 
     /*
      * change sign

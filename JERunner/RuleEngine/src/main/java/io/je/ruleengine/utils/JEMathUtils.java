@@ -28,6 +28,17 @@ public class JEMathUtils {
 		return true;
 	}
 	
+	public static boolean factorialConstraint(String projectId, String ruleId, String blockId,double a)
+	{
+		if(a<=0|| a >20)
+    	{
+			JELogger.error(blockId+": Input must be between 0 and 20.", null, projectId, LogSubModule.RULE, ruleId,blockId);
+    		return false;
+    	}
+		return true;
+	}
+	
+	
 	public static boolean strictlyPositive(String projectId, String ruleId, String blockId,double a)
 	{
 		if(a<=0)
