@@ -6,11 +6,17 @@ import io.je.utilities.apis.JERunnerAPIHandler;
 import io.je.utilities.beans.InformModel;
 import io.je.utilities.beans.JEResponse;
 import io.je.utilities.beans.JEType;
+import io.je.utilities.config.JEConfiguration;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.exceptions.JERunnerErrorException;
+import io.je.utilities.instances.DataModelRequester;
+import io.je.utilities.instances.InstanceManager;
 import io.je.utilities.log.JELogger;
 import io.je.utilities.models.VariableModel;
+import io.je.utilities.runtimeobject.JEObject;
+import io.siothconfig.SIOTHConfig;
+import io.siothconfig.SIOTHConfigUtility;
 import utils.log.LogCategory;
 import utils.log.LogLevel;
 import utils.log.LogMessage;
@@ -311,8 +317,21 @@ public class JobEngine {
         System.exit(0);
     }
 
+    public static JEObject getDataModelInstance(String instanceName) {
+        JEConfiguration.loadProperties();
+        JEObject obj = InstanceManager.getInstance(instanceName);
+        return obj;
+    }
+
+    public static void setDataModelInstanceAttribute(String instanceId, String attributeName, Object attributeValue) {
+        JEConfiguration.loadProperties();
+        InstanceManager.writeToDataModelInstance(instanceId, attributeName, attributeValue, false);
+    }
+
     public static void main(String... args) {
-        int code = JobEngine.executeSqlQuery("db", "SELECT * FROM siothdatabase.testtable;");
+
+        setDataModelInstanceAttribute("23aa0c9c-ee34-c9e6-bbeb-7d407f0139b1", "fuelLevel", 110);
+        //int code = JobEngine.executeSqlQuery("db", "SELECT * FROM siothdatabase.testtable;");
          /*int code = JobEngine.addDoubleVariable("test", "DoubleVar", 3.3);
         System.out.println(code);
         code = JobEngine.addLongVariable("test", "LongVar", 333333);

@@ -52,6 +52,23 @@ public class JEProperties {
 	//ZMQ Config
 	@Value("${use.ZMQ.Security}")
 	Boolean useZmqSecurity;
+
+	@Value("${zmq.heartbeat.value}")
+	int zmqHeartbeatValue;
+
+	@Value("${zmq.heartbeat.interval}")
+	int zmqHeartbeatInterval;
+
+	@Value("${zmq.receive.interval}")
+	int zmqReceiveInterval;
+
+	@Value("${zmq.receive.high.watermark}")
+	int zmqReceiveHighWatermark;
+
+	@Value("${zmq.send.high.watermark}")
+	int zmqSendHighWatermark;
+
+
 	
 
 	public String getJeBuilderLogPath() {
@@ -182,6 +199,43 @@ public class JEProperties {
 		this.jeMonitorLogLevel = jeMonitorLogLevel;
 	}
 
-  
-	
+	public int getZmqHeartbeatValue() {
+		return zmqHeartbeatValue;
+	}
+
+	public void setZmqHeartbeatValue(int zmqHeartbeatValue) {
+		this.zmqHeartbeatValue = zmqHeartbeatValue;
+	}
+
+	public int getZmqHeartbeatInterval() {
+		return zmqHeartbeatInterval;
+	}
+
+	public void setZmqHeartbeatInterval(int zmqHeartbeatInterval) {
+		this.zmqHeartbeatInterval = zmqHeartbeatInterval;
+	}
+
+	public int getZmqReceiveInterval() {
+		return zmqReceiveInterval;
+	}
+
+	public void setZmqReceiveInterval(int zmqReceiveInterval) {
+		this.zmqReceiveInterval = zmqReceiveInterval;
+	}
+
+	public int getZmqReceiveHighWatermark() {
+		return zmqReceiveHighWatermark;
+	}
+
+	public void setZmqReceiveHighWatermark(int zmqReceiveHighWatermark) {
+		this.zmqReceiveHighWatermark = zmqReceiveHighWatermark;
+	}
+
+	public int getZmqSendHighWatermark() {
+		return zmqSendHighWatermark;
+	}
+
+	public void setZmqSendHighWatermark(int zmqSendHighWatermark) {
+		this.zmqSendHighWatermark = zmqSendHighWatermark;
+	}
 }
