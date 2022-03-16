@@ -113,12 +113,15 @@ public abstract class JERule extends JEObject  {
 	}
 
 	public void addTopic(String topic,Map<String,Integer> topics) {
-		if(!topics.containsKey(topic))
+		if(topic!=null)
 		{
-			topics.put(topic,1);
-		}
-		else {
-			topics.put(topic,topics.get(topic)+1);
+			if(!topics.containsKey(topic))
+			{
+				topics.put(topic,1);
+			}
+			else {
+				topics.put(topic,topics.get(topic)+1);
+			}
 		}
 
 	}
