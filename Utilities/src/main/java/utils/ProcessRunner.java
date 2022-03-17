@@ -26,13 +26,22 @@ public class ProcessRunner {
         //return output;
     }
 
-    public static long executeCommandWithPidOutput(String command) throws IOException, InterruptedException {
+    public static Thread executeCommandWithPidOutput(String command) throws IOException, InterruptedException {
         Process process = rt.exec(command);
         //process.waitFor(30, TimeUnit.SECONDS);
         long pid = process.pid();
-        dumpProcessOutput(process, command, true, true);
+        //dumpProcessOutput(process, command, true, true);
+        Thread thread = new Thread(() -> {
+            try {
+                dumpProcessOutput(process, command, true, true);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+        thread.setName(String.valueOf(pid));
+        thread.start();
 
-        return pid;
+        return thread;
     }
 
     /*public static Process executeCommandWithProcessOutput(String command) throws IOException, InterruptedException {

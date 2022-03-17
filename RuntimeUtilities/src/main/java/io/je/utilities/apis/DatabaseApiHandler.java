@@ -17,17 +17,18 @@ public class DatabaseApiHandler {
     public static final String EXECUTE_DATABASE_COMMAND = "/nonsense/nonsenseagain/api/database/execute/siothdb";
     public static String url = "http://njendoubi-pc:14002"/*SIOTHConfigUtility.getSiothConfig().getApis().getDatabaseAPI().getAddress() */+ EXECUTE_DATABASE_COMMAND;
 
-    public static int executeCommand(String dbId, String query) throws IOException {
+    public static String executeCommand(String dbId, String query) throws IOException {
         HashMap<String, String> headers = new HashMap<>();
         headers.put("DBIdentifier", dbId);
         headers.put("Command", query);
         Network network = new Network.Builder(url).hasBody(false).hasHeaders(true).withHeaders(headers)
                 .build();
         Response response = network.call();
-        System.out.println(response.body().string());
+        //System.out.println(response.body().string());
         /*JELogger.info(JEMessages.DB_API_RESPONSE + " = " + response.body().string(), LogCategory.RUNTIME,
                 null, LogSubModule.WORKFLOW, null);*/
-        return response.code();
+        String resp = response.body().string();
+        return resp;
     }
 
 }
