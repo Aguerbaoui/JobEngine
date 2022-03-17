@@ -25,8 +25,10 @@ public class ScriptServiceTask extends ServiceTask {
         try {
             //Executioner.executeScript(execution.getCurrentFlowElement().getName(), execution.getCurrentActivityId(), task.getProjectId(), task.getTimeout());
             String filePath = ConfigurationConstants.JAVA_GENERATION_PATH + ClassBuilderConfig.SCRIPTS_PACKAGE + "\\" + execution.getCurrentFlowElement().getName() +".java";
-            long pid = Executioner.executeScript(filePath);
-            task.setPid(pid);
+            Thread runningThread = Executioner.executeScript(filePath);
+            task.setPid(Long.valueOf(runningThread.getName()));
+            runningThread.wait();
+
         } catch (Exception e) {
             throw new BpmnError("Error");
         }

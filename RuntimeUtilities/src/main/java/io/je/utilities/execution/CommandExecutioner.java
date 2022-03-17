@@ -43,14 +43,18 @@ public class CommandExecutioner {
         String errorTextBuilder =  ProcessRunner.executeCommandWithErrorOutput(command);
         if(errorTextBuilder.length() > 0 && errorTextBuilder.indexOf("error:") != -1) {
             String error = errorTextBuilder.substring(errorTextBuilder.indexOf("error:"));
-            ClassLoadException exception = new ClassLoadException(JEMessages.CLASS_LOAD_FAILED);
+            String errorMsg = JEMessages.CLASS_LOAD_FAILED;
+            if(error.indexOf("error: unreachable statement") != -1) {
+                errorMsg += " " + "because of unreachable statement (infinite loop)";
+            }
+            ClassLoadException exception = new ClassLoadException(errorMsg);
             JELogger.debug(error);
             exception.setCompilationErrorMessage(error);
             throw exception;
         }
     }
 
-    public static long runCode(String filePath) throws IOException, InterruptedException {
+    public static Thread runCode(String filePath) throws IOException, InterruptedException {
         String command = JAVA + " " + CP + " \"" + classpathFolder  + getCurrentClassPath() +  "\" \"" + filePath + "\"";
         return ProcessRunner.executeCommandWithPidOutput(command);
         //return p.pid();

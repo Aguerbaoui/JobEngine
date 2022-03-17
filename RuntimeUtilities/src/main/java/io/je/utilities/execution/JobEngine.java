@@ -1,5 +1,6 @@
 package io.je.utilities.execution;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.je.utilities.apis.DatabaseApiHandler;
 import io.je.utilities.apis.JEBuilderApiHandler;
 import io.je.utilities.apis.JERunnerAPIHandler;
@@ -17,6 +18,9 @@ import io.je.utilities.models.VariableModel;
 import io.je.utilities.runtimeobject.JEObject;
 import io.siothconfig.SIOTHConfig;
 import io.siothconfig.SIOTHConfigUtility;
+import netscape.javascript.JSObject;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import utils.log.LogCategory;
 import utils.log.LogLevel;
 import utils.log.LogMessage;
@@ -302,15 +306,32 @@ public class JobEngine {
     }*/
 
     //Execute a database sql query
-    public static int executeSqlQuery(String dbId, String query) {
-        int responseCode = 500;
+    public static HashMap<String, Object> executeSqlQuery(String dbId, String query) {
+       HashMap<String, Object> response = null;
         try {
-            responseCode = DatabaseApiHandler.executeCommand(dbId, query);
+            ObjectMapper mapper = new ObjectMapper();
+            String data = DatabaseApiHandler.executeCommand(dbId, query);
+            response = mapper.readValue(data, HashMap.class);
         } catch (Exception e) {
             sendLogMessage(JEMessages.ERROR_EXECUTING_DB_QUERY, "", LogLevel.ERROR,
                     null, LogCategory.RUNTIME, LogSubModule.WORKFLOW);
         }
-        return responseCode;
+        return response;
+    }
+
+    public static JSONArray executeSelectQuery(String dbId, String query) {
+        JSONArray jsonArray = null;
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            String data = DatabaseApiHandler.executeCommand(dbId, query);
+            JSONObject jsonObject = new JSONObject(data);
+            jsonArray = new JSONArray(jsonObject.getJSONArray("values"));
+        }
+        catch (Exception e) {
+            sendLogMessage(JEMessages.ERROR_EXECUTING_DB_QUERY, "", LogLevel.ERROR,
+                    null, LogCategory.RUNTIME, LogSubModule.WORKFLOW);
+        }
+        return jsonArray;
     }
 
     public static void endJob() {
@@ -330,8 +351,8 @@ public class JobEngine {
 
     public static void main(String... args) {
 
-        setDataModelInstanceAttribute("23aa0c9c-ee34-c9e6-bbeb-7d407f0139b1", "fuelLevel", 110);
-        //int code = JobEngine.executeSqlQuery("db", "SELECT * FROM siothdatabase.testtable;");
+        //setDataModelInstanceAttribute("23aa0c9c-ee34-c9e6-bbeb-7d407f0139b1", "fuelLevel", 110);
+         JobEngine.executeSelectQuery("db", "SELECT * FROM siothdatabase.testtable;");
          /*int code = JobEngine.addDoubleVariable("test", "DoubleVar", 3.3);
         System.out.println(code);
         code = JobEngine.addLongVariable("test", "LongVar", 333333);

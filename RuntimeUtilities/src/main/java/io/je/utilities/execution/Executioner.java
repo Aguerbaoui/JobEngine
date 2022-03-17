@@ -238,7 +238,7 @@ public class Executioner {
 		}
 		return sb.toString().replace("/", "\\");
 	}
-	public static long executeScript(String filePath) throws IOException, InterruptedException {
+	public static Thread executeScript(String filePath) throws IOException, InterruptedException {
 		//String classpathFolder = System.getenv(ConfigurationConstants.SIOTH_ENVIRONMENT_VARIABLE) + "\\..\\Job Engine\\libs\\*";
 		//String command = "java" + " " + "-cp" + " \"" + classpathFolder  + getCurrentClassPath() + "\" " + filePath;
 		return CommandExecutioner.runCode(filePath);
