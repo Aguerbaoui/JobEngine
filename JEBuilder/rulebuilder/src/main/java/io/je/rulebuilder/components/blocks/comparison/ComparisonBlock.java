@@ -81,7 +81,7 @@ public  class ComparisonBlock extends PersistableBlock {
 			}
 			
 			operator = getOperatorByOperationId(blockModel.getOperationId());
-			formatToString = (blockModel.getOperationId()>=2007 && blockModel.getOperationId()<=2015);
+			formatToString = (blockModel.getOperationId()>=2007 && blockModel.getOperationId()<=2015) && inputBlockIds.size() ==1;
 			isProperlyConfigured=true;
 			if(threshold==null && inputBlockIds.size() < 2)
 			{
@@ -320,11 +320,11 @@ public  class ComparisonBlock extends PersistableBlock {
 		case 2010:
 			return " not matches ";
 		case 2011:
-			return " str[startsWith] ";
+			return " soundslike ";
 		case 2012:
-			return " str[endsWith] ";
+			return " str[startsWith] ";
 		case 2013:
-			return "";
+			return " str[endsWith] ";
 		case 2014:
 			return ">";
 		case 2015:
