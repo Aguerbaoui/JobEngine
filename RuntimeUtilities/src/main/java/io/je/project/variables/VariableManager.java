@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.je.utilities.apis.JEBuilderApiHandler;
 import io.je.utilities.beans.*;
 import io.je.utilities.constants.JEMessages;
+import io.je.utilities.exceptions.VariableException;
 import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.exceptions.VariableNotFoundException;
 import io.je.utilities.log.JELogger;
@@ -70,7 +71,7 @@ public class VariableManager {
         }
     }
 
-	public static JEVariable updateVariableValue(String projectId, String variableId, Object value, boolean ignoreIfSameValue) {
+	public static JEVariable updateVariableValue(String projectId, String variableId, Object value, boolean ignoreIfSameValue) throws VariableException {
 		 if(!variables.containsKey(projectId)) {  
 	            variables.put(projectId, new HashMap<>());
 	        }
@@ -99,8 +100,8 @@ public class VariableManager {
 		 		    	   JELogger.error("Failed to persist variable value." , LogCategory.RUNTIME, projectId, LogSubModule.VARIABLE, variableId);
 
 	 	            }
-	   						
-	           
+
+
 	           } catch (Exception e) {
 
 			}
@@ -109,8 +110,8 @@ public class VariableManager {
 	    	   JELogger.error(JEMessages.UPDATING_VARIABLE_FAILED , LogCategory.RUNTIME, projectId, LogSubModule.VARIABLE, variableId);
 	       }
 
- 	    
-	       
+
+
            return variable;
 
 	}
@@ -123,7 +124,7 @@ public class VariableManager {
 		 return variables.get(projectId).values();
 	}
 	
-	public static void resetVariableValues(String projectId) {
+	public static void resetVariableValues(String projectId) throws VariableException {
 		 if(!variables.containsKey(projectId)) {  
 	            variables.put(projectId, new HashMap<>());
 	            return ;

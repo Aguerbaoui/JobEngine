@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 import io.je.utilities.beans.*;
+import io.je.utilities.exceptions.*;
 import io.je.utilities.monitoring.JEMonitor;
 import io.je.utilities.monitoring.MonitoringMessage;
 import io.je.utilities.monitoring.ObjectType;
@@ -31,22 +32,6 @@ import io.je.utilities.classloader.JEClassLoader;
 import io.je.utilities.config.ConfigurationConstants;
 import io.je.utilities.constants.ClassBuilderConfig;
 import io.je.utilities.constants.JEMessages;
-import io.je.utilities.exceptions.ClassLoadException;
-import io.je.utilities.exceptions.DeleteRuleException;
-import io.je.utilities.exceptions.EventException;
-import io.je.utilities.exceptions.InstanceCreationFailed;
-import io.je.utilities.exceptions.JEException;
-import io.je.utilities.exceptions.JEFileNotFoundException;
-import io.je.utilities.exceptions.ProjectNotFoundException;
-import io.je.utilities.exceptions.RuleAlreadyExistsException;
-import io.je.utilities.exceptions.RuleBuildFailedException;
-import io.je.utilities.exceptions.RuleCompilationException;
-import io.je.utilities.exceptions.RuleFormatNotValidException;
-import io.je.utilities.exceptions.RulesNotFiredException;
-import io.je.utilities.exceptions.WorkflowAlreadyRunningException;
-import io.je.utilities.exceptions.WorkflowBuildException;
-import io.je.utilities.exceptions.WorkflowNotFoundException;
-import io.je.utilities.exceptions.WorkflowRunException;
 import io.je.utilities.execution.JobEngine;
 import io.je.utilities.instances.ClassRepository;
 import io.je.utilities.instances.InstanceManager;
@@ -392,7 +377,7 @@ public class RuntimeDispatcher {
 	}
 
 	// add variable to runner
-	public void addVariable(VariableModel variableModel) {
+	public void addVariable(VariableModel variableModel) throws VariableException {
 		JELogger.debug(
 				"[project = " + variableModel.getProjectName() + "] [variable = " + variableModel.getName() + "]"
 						+ JEMessages.ADDING_VARIABLE,
@@ -418,7 +403,7 @@ public class RuntimeDispatcher {
 
 	}
 
-	public void writeVariableValue(String projectId, String variableId, String value,boolean ignoreIfSameValue) {
+	public void writeVariableValue(String projectId, String variableId, String value,boolean ignoreIfSameValue) throws VariableException {
 		//JELogger.debug("[projectId = " + projectId + "] [variable = " + variableId + "]" + JEMessages.UPDATING_VARIABLE,
 			//	LogCategory.RUNTIME, projectId, LogSubModule.VARIABLE, variableId);
 		JEVariable var = VariableManager.updateVariableValue(projectId, variableId, value,ignoreIfSameValue);

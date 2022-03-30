@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -25,7 +26,7 @@ public class DataModelListener {
     /*
      * Map of topic-listener
      * */
-    private static HashMap<String , Thread> activeThreads = new HashMap<>();
+    private static ConcurrentHashMap<String , Thread> activeThreads = new ConcurrentHashMap<>();
     private static HashMap<String, ZMQAgent> agents = new HashMap<>();
     private static ObjectMapper objectMapper = new ObjectMapper();
 	static Map<String,DMTopic> allTopics = new HashMap<>();
@@ -85,8 +86,9 @@ public class DataModelListener {
                 null, LogSubModule.JERUNNER, null);
     	for (String id : topics)
     	{
-    		if(!activeThreads.containsKey(id))
-    		{
+			synchronized (activeThreads) {
+    			if(!activeThreads.containsKey(id))
+				{
     			readInitialValues(id);
         		ZMQAgent agent = agents.get(id);
         		{
@@ -100,6 +102,7 @@ public class DataModelListener {
         		}
     		}
     	}
+		}
     
     }
 
