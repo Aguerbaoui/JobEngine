@@ -1,12 +1,16 @@
 package io.je.project.variables;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import io.je.utilities.apis.JEBuilderApiHandler;
 import io.je.utilities.beans.*;
 import io.je.utilities.constants.JEMessages;
+import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.exceptions.VariableNotFoundException;
 import io.je.utilities.log.JELogger;
 import utils.comparator.Comparator;
 import utils.log.LogCategory;
+import utils.log.LogLevel;
 import utils.log.LogSubModule;
 import utils.string.StringSub;
 
@@ -89,17 +93,23 @@ public class VariableManager {
 		       message.getBlocks().add(blockMessage);
 		       message.getVariables().add(varMessage);
 	           try {
-	   			JELogger.debug("Variable ["+variable.getJobEngineElementName() + "] = " +variable.getValue(), LogCategory.RUNTIME, projectId, LogSubModule.VARIABLE, variableId);
-	   			//JEMonitor.publish(LocalDateTime.now(), variable.getJobEngineElementID(), ObjectType.JEVARIABLE, variable.getJobEngineProjectID(), variable.getValue(), ArchiveOption.AS_SOURCE_DATA, false);
-				//JELogger.debugWithoutPublish(objectMapper.writeValueAsString(message), LogCategory.RUNTIME, projectId, LogSubModule.VARIABLE, variableId);
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+	        	   JELogger.debug("Variable ["+variable.getJobEngineElementName() + "] = " +variable.getValue(), LogCategory.RUNTIME, projectId, LogSubModule.VARIABLE, variableId);
+	        	   JEResponse response = JEBuilderApiHandler.setVariable(projectId, variableId,  value.toString());
+	 	            if(response == null || response.getCode()!=200) {
+		 		    	   JELogger.error("Failed to persist variable value." , LogCategory.RUNTIME, projectId, LogSubModule.VARIABLE, variableId);
+
+	 	            }
+	   						
+	           
+	           } catch (Exception e) {
+
 			}
 	    	   
 	       }else {
 	    	   JELogger.error(JEMessages.UPDATING_VARIABLE_FAILED , LogCategory.RUNTIME, projectId, LogSubModule.VARIABLE, variableId);
 	       }
+
+ 	    
 	       
            return variable;
 
