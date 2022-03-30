@@ -2,6 +2,8 @@ package io.je.utilities.beans;
 
 import java.time.LocalDateTime;
 
+import io.je.utilities.constants.JEMessages;
+import io.je.utilities.exceptions.VariableException;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -9,7 +11,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "JEVariableCollection")
 public class JEVariable extends JEMonitoredData {
 
-    private JEType type;
+	private JEType type;
 
     @Transient //mongo doesn't support this type
     private Class<?> typeClass;
@@ -34,7 +36,7 @@ public class JEVariable extends JEMonitoredData {
     
 
     public JEVariable(String jobEngineElementID, String jobEngineProjectID, String name, String type,
-			String initialValue,String description,String createdBy,String modifiedby) {
+			String initialValue,String description,String createdBy,String modifiedby) throws VariableException {
 		super(jobEngineElementID, jobEngineProjectID, name);
 		this.type = JEType.valueOf(type);
 		this.initialValue = castValue(this.type, initialValue);
@@ -50,7 +52,7 @@ public class JEVariable extends JEMonitoredData {
 
 	public JEVariable(String jobEngineElementID, String jobEngineProjectID, String name, String type,
 			String initialValue,ArchiveOption isArchived,
-			boolean isBroadcasted,String description,String createdBy,String modifiedby) {
+			boolean isBroadcasted,String description,String createdBy,String modifiedby) throws VariableException {
 		super(jobEngineElementID, jobEngineProjectID, name, isArchived, isBroadcasted);
 		this.type = JEType.valueOf(type);
 		this.initialValue = castValue(this.type, initialValue);
@@ -102,7 +104,7 @@ public class JEVariable extends JEMonitoredData {
 
 
 
-	public void setValue(String value) {
+	public void setValue(String value) throws VariableException {
 		this.value = castValue(type, value);
 	}
 
@@ -146,29 +148,33 @@ public class JEVariable extends JEMonitoredData {
 
 
 
-	public static Object castValue(JEType type, String value) {
-		switch(type)
-		{
-		case BYTE:
-			return Byte.valueOf(value);
-		case DOUBLE:
-			return Double.valueOf(value);
-		case FLOAT:
-			return Float.valueOf(value);
-		case INT:
-			return Integer.valueOf(value);
-		case LONG:
-			return Long.valueOf(value);
-		case SHORT:
-			return Short.valueOf(value);
-		case STRING:
-			return value;
-		case BOOLEAN:
-			return Boolean.valueOf(value);
-		default:
-			//JELogger.error("Failed to set variable\""+this.jobEngineElementName+"\" value to "+value+": Incompatible Type", null, this.jobEngineProjectID, LogSubModule.VARIABLE, this.jobEngineElementID);
-			return null;
-		
+	public static Object castValue(JEType type, String value) throws VariableException {
+		try {
+			switch (type) {
+				case BYTE:
+					return Byte.valueOf(value);
+				case DOUBLE:
+					return Double.valueOf(value);
+				case FLOAT:
+					return Float.valueOf(value);
+				case INT:
+					return Integer.valueOf(value);
+				case LONG:
+					return Long.valueOf(value);
+				case SHORT:
+					return Short.valueOf(value);
+				case STRING:
+					return value;
+				case BOOLEAN:
+					return Boolean.valueOf(value);
+				default:
+					//JELogger.error("Failed to set variable\""+this.jobEngineElementName+"\" value to "+value+": Incompatible Type", null, this.jobEngineProjectID, LogSubModule.VARIABLE, this.jobEngineElementID);
+					return null;
+
+			}
+		}
+		catch (Exception e) {
+			throw new VariableException(JEMessages.FAILED_TO_CAST_DATA_CHECK_THE_TYPE_OF_THE_VARIABLE_AND_THE_INCOMING_DATA);
 		}
 	}
 
