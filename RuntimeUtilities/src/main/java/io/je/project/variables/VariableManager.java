@@ -95,11 +95,11 @@ public class VariableManager {
 		       message.getVariables().add(varMessage);
 	           try {
 	        	   JELogger.debug("Variable ["+variable.getJobEngineElementName() + "] = " +variable.getValue(), LogCategory.RUNTIME, projectId, LogSubModule.VARIABLE, variableId);
-	        	   JEResponse response = JEBuilderApiHandler.setVariable(projectId, variableId,  value.toString());
+	        	   /*JEResponse response = JEBuilderApiHandler.setVariable(projectId, variableId,  value.toString());
 	 	            if(response == null || response.getCode()!=200) {
 		 		    	   JELogger.error("Failed to persist variable value." , LogCategory.RUNTIME, projectId, LogSubModule.VARIABLE, variableId);
 
-	 	            }
+	 	            }*/
 
 
 	           } catch (Exception e) {
