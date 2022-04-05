@@ -27,8 +27,8 @@ public class ScriptServiceTask extends ServiceTask {
             String filePath = ConfigurationConstants.JAVA_GENERATION_PATH + ClassBuilderConfig.SCRIPTS_PACKAGE + "\\" + execution.getCurrentFlowElement().getName() +".java";
             Thread runningThread = Executioner.executeScript(filePath);
             task.setPid(Long.valueOf(runningThread.getName()));
-            runningThread.wait();
-
+            runningThread.join();
+            //System.out.println("done waiting for script");
         } catch (Exception e) {
             throw new BpmnError("Error");
         }
