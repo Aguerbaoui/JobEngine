@@ -18,7 +18,6 @@ import io.je.rulebuilder.components.blocks.execution.TriggerEventBlock;
 import io.je.rulebuilder.components.blocks.getter.AttributeGetterBlock;
 import io.je.rulebuilder.components.blocks.getter.VariableGetterBlock;
 import io.je.rulebuilder.components.blocks.logic.AndBlock;
-import io.je.rulebuilder.components.blocks.logic.JoinBlock;
 import io.je.rulebuilder.components.blocks.logic.NotBlock;
 import io.je.rulebuilder.components.blocks.logic.OrBlock;
 import io.je.rulebuilder.models.BlockModel;
@@ -107,12 +106,12 @@ public class BlockGenerator {
 		case 3002:
 			return new OrBlock(blockModel);
 		// XOR Block
-		case 3003:
+		//case 3003:
 			//return new XorBlock(blockModel);
 		// Join Block
-		case 3004:
-			return new JoinBlock(blockModel);
-		// NOT Block
+		//case 3004:
+			
+			// NOT Block
 		case 3005:
 			return new NotBlock(blockModel);
 

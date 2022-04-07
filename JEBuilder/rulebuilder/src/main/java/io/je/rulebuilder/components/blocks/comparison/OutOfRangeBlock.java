@@ -53,7 +53,7 @@ public class OutOfRangeBlock extends ComparisonBlock {
 	
 	@Override
 	protected String getOperationExpression() {
-		String firstOperand = (inputBlocks.get(0) instanceof AttributeGetterBlock) ? inputBlocks.get(0).getRefName()
+		String firstOperand = (inputBlocks.get(0) instanceof AttributeGetterBlock) ? inputBlocks.get(0).getRefName(null)
 				: "doubleValue ";
 
 		if (includeBounds) {

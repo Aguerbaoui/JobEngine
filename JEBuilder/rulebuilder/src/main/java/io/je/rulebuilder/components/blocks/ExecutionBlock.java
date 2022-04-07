@@ -36,28 +36,5 @@ public abstract class ExecutionBlock extends Block {
 		return null;
 	}
 
-	@Override
-	public String getJoinExpression() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String getJoinedExpression(String joindId) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String getJoinedExpressionAsFirstOperand(String joindId) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	@Override
-	public String getJoinExpressionAsFirstOperand() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
+	
 }

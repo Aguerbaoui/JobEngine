@@ -6,7 +6,9 @@ import java.util.List;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import io.je.rulebuilder.components.CustomBlockInput;
 import io.je.rulebuilder.components.blocks.getter.AttributeGetterBlock;
+import io.je.rulebuilder.components.blocks.getter.InstanceGetterBlock;
 import io.je.rulebuilder.components.blocks.getter.VariableGetterBlock;
 import io.je.utilities.exceptions.RuleBuildFailedException;
 import io.je.utilities.log.JELogger;
@@ -29,6 +31,9 @@ public abstract class Block extends JEObject {
    
    @Transient
    protected List<Block> outputBlocks = new ArrayList<>();
+   
+
+   protected List<CustomBlockInput> customInput = new ArrayList<>();
    
    protected boolean alreadyScripted=false;
 
@@ -87,8 +92,10 @@ public abstract class Block extends JEObject {
 	//return drl expression of block as a first operand (used to optimise comparison blocks in order to avoid using eval)
 	public  abstract String getAsOperandExpression() throws RuleBuildFailedException;
 	
-	//get drl expression mapped to id (getter blocks) ex: Person($id == "123")
-	public  abstract String getJoinExpression() throws RuleBuildFailedException;
+    public  String getUnitExpression() throws RuleBuildFailedException
+    {
+    	return getExpression();
+    }
 
 	//get id variable name used in drl ex: $id
 	public  String getJoinId()
@@ -105,12 +112,6 @@ public abstract class Block extends JEObject {
 		return null;
 	}
 	
-	//get a joined expression. example : Person(jobEngineElementID == $id )
-	public  abstract String getJoinedExpression(String joinId) throws RuleBuildFailedException;
-	
-	public  abstract String getJoinedExpressionAsFirstOperand(String joinId) throws RuleBuildFailedException;
-	
-	public  abstract String getJoinExpressionAsFirstOperand() throws RuleBuildFailedException;
 
 
 
@@ -127,7 +128,7 @@ public abstract class Block extends JEObject {
 	/*
 	 * get name of variable holding he value expressed by input number index: ex: $age, $block1 ...
 	 */
-	public String getRefName()
+	public String getRefName(String optional)
 	{
 		String var = ""; 
 		if(this instanceof AttributeGetterBlock)
@@ -155,7 +156,12 @@ public abstract class Block extends JEObject {
 		}else if(inputBlocks.get(index) instanceof VariableGetterBlock)
 		{
 			var = (( VariableGetterBlock )inputBlocks.get(index)).getAttributeVariableName();
+		}else if(inputBlocks.get(index) instanceof InstanceGetterBlock)
+		{
+			//var = (( InstanceGetterBlock )inputBlocks.get(index)).getAttributeVariableName();
+
 		}
+		
 		else 
 		{//get block name as variable
 			var =  inputBlocks.get(index).getBlockNameAsVariable();
@@ -332,10 +338,5 @@ public String getPersistence() {
 }
 
 
-public String getInitialJoinBlock() {
-	if(!inputBlocks.isEmpty()) {
-		return inputBlocks.get(0).getInitialJoinBlock();
-	}else
-		return this.getBlockNameAsVariable();
-}
+
 }

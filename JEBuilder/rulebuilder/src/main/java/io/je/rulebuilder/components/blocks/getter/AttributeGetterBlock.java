@@ -12,10 +12,8 @@ import io.je.utilities.exceptions.RuleBuildFailedException;
 
 public class AttributeGetterBlock extends GetterBlock {
 
-	String classId;
-	String classPath;
+	
 	String attributeName;
-	List<String> specificInstances;
 
 	@Transient
 	String primeJoinId;
@@ -52,18 +50,7 @@ public class AttributeGetterBlock extends GetterBlock {
 				+ ", jeObjectLastUpdate=" + jeObjectLastUpdate + "]";
 	}
 
-	/*
-	 * returns the instances in the following format :
-	 * instance1,instance2...,instancen
-	 */
-	private String getInstances() {
-		String instanceIds = "";
-		instanceIds += "\"" + specificInstances.get(0) + "\"";
-		for (int i = 1; i < specificInstances.size(); i++) {
-			instanceIds += " , " + "\"" + specificInstances.get(i) + "\"";
-		}
-		return instanceIds;
-	}
+	
 
 	@Override
 	// returns variable name holding the join attribute example $myId
@@ -145,122 +132,9 @@ public class AttributeGetterBlock extends GetterBlock {
 		return expression.toString();
 	}
 
-	@Override
-	public String getJoinExpression() throws RuleBuildFailedException {
-		StringBuilder expression = new StringBuilder();
-		if(!alreadyScripted)
-		{
-			// add input blocks
-			if (!inputBlocks.isEmpty()) {
-				expression.append(inputBlocks.get(0).getExpression());
-				expression.append("\n");
+	
 
-			}
-			expression.append(getBlockNameAsVariable() + " : " + classPath);
-			expression.append(" ( ");
 
-			expression.append(getJoinId() + " : jobEngineElementID ,");
-			if (specificInstances != null && !specificInstances.isEmpty()) {
-				expression.append("jobEngineElementID in ( " + getInstances() + ")");
-				expression.append(" , ");
-
-			}
-
-			expression.append(getAttributeVariableName() + " : " + getattributeGetterExpression());
-			expression.append(" ) ");
-			setAlreadyScripted(true);
-		}
-
-		return expression.toString();
-	}
-
-	@Override
-	public String getJoinExpressionAsFirstOperand() throws RuleBuildFailedException {
-		StringBuilder expression = new StringBuilder();
-		if(!alreadyScripted)
-		{
-			// add input blocks
-			if (!inputBlocks.isEmpty()) {
-				expression.append(inputBlocks.get(0).getExpression());
-				expression.append("\n");
-
-			}
-			expression.append(getBlockNameAsVariable() + " : " + classPath);
-			expression.append(" ( ");
-
-			expression.append(getJoinId() + " : jobEngineElementID ,");
-			if (specificInstances != null && !specificInstances.isEmpty()) {
-				expression.append("jobEngineElementID in ( " + getInstances() + ")");
-				expression.append(" , ");
-
-			}
-			expression.append(getAttributeVariableName() + " : " + getattributeGetterExpression());
-			expression.append(" , ");
-			expression.append(Keywords.toBeReplaced); // tbrp
-			expression.append(" ) ");
-			setAlreadyScripted(true);
-		}
-
-		return expression.toString();
-	}
-
-	@Override
-	public String getJoinedExpression(String joindId) throws RuleBuildFailedException {
-		StringBuilder expression = new StringBuilder();
-		if(!alreadyScripted)
-		{
-			if (!inputBlocks.isEmpty()) {
-				expression.append(inputBlocks.get(0).getExpression());
-				expression.append("\n");
-
-			}
-			expression.append(getBlockNameAsVariable() + " : " + classPath);
-			expression.append(" ( ");
-			if (specificInstances != null && !specificInstances.isEmpty()) {
-				expression.append("jobEngineElementID in ( " + getInstances() + ")");
-				expression.append(" , ");
-
-			} else {
-				expression.append("jobEngineElementID == " + joindId);
-				expression.append(" , ");
-
-			}
-			expression.append(getAttributeVariableName() + " : " + getattributeGetterExpression());
-			expression.append(" ) ");
-			setAlreadyScripted(true);
-		}
-		return expression.toString();
-	}
-
-	@Override
-	public String getJoinedExpressionAsFirstOperand(String joindId) throws RuleBuildFailedException {
-		StringBuilder expression = new StringBuilder();
-		if(!alreadyScripted)
-		{
-			if (!inputBlocks.isEmpty()) {
-				expression.append(inputBlocks.get(0).getExpression());
-				expression.append("\n");
-
-			}
-			expression.append(getBlockNameAsVariable() + " : " + classPath);
-			expression.append(" ( ");
-			if (specificInstances != null && !specificInstances.isEmpty()) {
-				expression.append("jobEngineElementID in ( " + getInstances() + ")");
-				expression.append(" , ");
-
-			} else {
-				expression.append("jobEngineElementID == " + joindId);
-				expression.append(" , ");
-
-			}
-			expression.append(getAttributeVariableName() + " : " + getattributeGetterExpression());
-			expression.append(" , ");
-			expression.append(Keywords.toBeReplaced); // tbrp
-			expression.append(" ) ");
-			setAlreadyScripted(true);
-		}
-		return expression.toString();
-	}
 
 	public String getClassPath() {
 		return classPath;

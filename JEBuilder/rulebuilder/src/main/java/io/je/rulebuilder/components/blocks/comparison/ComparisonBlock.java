@@ -8,6 +8,7 @@ import org.springframework.data.annotation.Transient;
 import io.je.rulebuilder.components.blocks.PersistableBlock;
 import io.je.rulebuilder.components.blocks.arithmetic.singleinput.SingleInputArithmeticBlock;
 import io.je.rulebuilder.components.blocks.getter.AttributeGetterBlock;
+import io.je.rulebuilder.components.blocks.getter.InstanceGetterBlock;
 import io.je.rulebuilder.config.AttributesMapping;
 import io.je.rulebuilder.config.Keywords;
 import io.je.rulebuilder.models.BlockModel;
@@ -25,6 +26,8 @@ public  class ComparisonBlock extends PersistableBlock {
 	 * comparison operator
 	 */
 	protected String operator;
+	
+
 	
 	/*
 	 * static operation threshold. 
@@ -99,7 +102,34 @@ public  class ComparisonBlock extends PersistableBlock {
 		String firstOperand = "";
 		if(inputBlocks.get(0) instanceof AttributeGetterBlock)
 		{
-			firstOperand = inputBlocks.get(0).getRefName();
+			firstOperand = inputBlocks.get(0).getRefName(null);
+		}
+		else
+		{
+			if(inputBlocks.get(0) instanceof SingleInputArithmeticBlock)
+			{
+				SingleInputArithmeticBlock input = (SingleInputArithmeticBlock) inputBlocks.get(0);
+				if(input.getDefaultType().equals("string"))
+				{
+					firstOperand = "this ";
+				}
+				else
+				{
+					firstOperand = "doubleValue ";
+				}
+						
+			}
+		}
+		return firstOperand+ getOperator() + formatOperator(threshold);
+
+	}
+	
+	protected String getOperationExpression(String optional1,String optional2)
+	{
+		String firstOperand = "";
+		if(inputBlocks.get(0) instanceof InstanceGetterBlock)
+		{
+			firstOperand = inputBlocks.get(0).getRefName(optional1);
 		}
 		else
 		{
@@ -185,89 +215,6 @@ public  class ComparisonBlock extends PersistableBlock {
 		return operator;
 	}
 
-	@Override
-	public String getJoinExpression() throws RuleBuildFailedException {
-		StringBuilder expression = new StringBuilder();
-		String joinId = inputBlocks.get(0).getJoinId();
-		checkBlockConfiguration();
-		setParameters();
-
-		// single input
-		if (inputBlocks.size() == 1) {
-			String inputExpression = inputBlocks.get(0).getJoinExpressionAsFirstOperand().replaceAll(Keywords.toBeReplaced,
-					getOperationExpression());
-			expression.append(inputExpression);
-
-		} else if (inputBlocks.size() == 3) {
-			joinId = inputBlocks.get(1).getJoinId();
-			String firstOperand = inputBlocks.get(1).getJoinExpression();
-			expression.append(firstOperand);
-			expression.append("\n");
-			String thirdOperand = inputBlocks.get(2).getJoinedExpression(joinId);
-			expression.append(thirdOperand);
-			expression.append("\n");
-			String secondOperand = inputBlocks.get(0).getJoinedExpressionAsFirstOperand(joinId).replaceAll(Keywords.toBeReplaced,
-					getOperationExpression());
-			expression.append(secondOperand);
-
-		} else if (inputBlocks.size() == 2) {
-			joinId = inputBlocks.get(1).getJoinId();
-			String firstOperand = inputBlocks.get(1).getJoinExpression();
-			expression.append(firstOperand);
-			String secondOperand = "";
-			expression.append("\n");
-			secondOperand = inputBlocks.get(0).getJoinedExpressionAsFirstOperand(joinId).replaceAll(Keywords.toBeReplaced,
-					getOperationExpression());
-			expression.append(secondOperand);
-		}
-		return expression.toString();
-	}
-
-	@Override
-	public String getJoinedExpression(String joinId) throws RuleBuildFailedException {
-		StringBuilder expression = new StringBuilder();
-		checkBlockConfiguration();
-		setParameters();
-
-		// single input
-		if (inputBlocks.size() == 1) {
-			String inputExpression = inputBlocks.get(0).getJoinedExpressionAsFirstOperand(joinId).replaceAll(Keywords.toBeReplaced,
-					getOperationExpression());
-			expression.append(inputExpression);
-
-		} else if (inputBlocks.size() == 3) {
-			String firstOperand = inputBlocks.get(1).getJoinedExpression(joinId);
-			expression.append(firstOperand);
-			expression.append("\n");
-			String thirdOperand = inputBlocks.get(2).getJoinedExpression(joinId);
-			expression.append(thirdOperand);
-			expression.append("\n");
-			String secondOperand = inputBlocks.get(0).getJoinedExpressionAsFirstOperand(joinId).replaceAll(Keywords.toBeReplaced,
-					getOperationExpression());
-			expression.append(secondOperand);
-
-		} else if (inputBlocks.size() == 2) {
-			String firstOperand = inputBlocks.get(1).getJoinedExpression(joinId);
-			expression.append(firstOperand);
-			String secondOperand = "";
-			expression.append("\n");
-			secondOperand = inputBlocks.get(0).getJoinedExpressionAsFirstOperand(joinId).replaceAll(Keywords.toBeReplaced,
-					getOperationExpression());
-			expression.append(secondOperand);
-		}
-		return expression.toString();
-	}
-
-	@Override
-	public String getJoinedExpressionAsFirstOperand(String joindId) {
-		return null;
-	}
-
-	@Override
-	public String getJoinExpressionAsFirstOperand() {
-		return null;
-	}
-
 
 	protected String getMaxRange() {
 		return maxRange;
@@ -341,13 +288,15 @@ public  class ComparisonBlock extends PersistableBlock {
 	}
 
 	@Override
-	public String getInitialJoinBlock() {
-		if(inputBlocks.size() >=2)
-		{
-				return inputBlocks.get(1).getInitialJoinBlock();
-		}
-		return super.getInitialJoinBlock();
-	}
+	 public  String getUnitExpression() throws RuleBuildFailedException
+	    {
+	    	StringBuilder expression = new StringBuilder();
+	    	expression.append("");
+	    	return null;
+	    }
+
+	
+	
 
 }
 

@@ -29,7 +29,6 @@ import io.je.rulebuilder.components.blocks.PersistableBlock;
 import io.je.rulebuilder.components.blocks.execution.LinkedSetterBlock;
 import io.je.rulebuilder.components.blocks.execution.SetterBlock;
 import io.je.rulebuilder.components.blocks.getter.AttributeGetterBlock;
-import io.je.rulebuilder.components.blocks.logic.JoinBlock;
 import io.je.rulebuilder.components.blocks.logic.OrBlock;
 import io.je.utilities.apis.JERunnerAPIHandler;
 import io.je.utilities.beans.JEResponse;
@@ -50,7 +49,7 @@ import utils.log.LogSubModule;
  */
 public class RuleBuilder {
 
-	static boolean eliminateCombinatoryBehaviour = true;
+	//static boolean eliminateCombinatoryBehaviour = true;
 
 	/* private constructor */
 	private RuleBuilder() {
@@ -156,12 +155,6 @@ public class RuleBuilder {
 		for (Block root : rootBlocks) {
 			uRule.getBlocks().resetAllBlocks();
 			scriptedRuleid = subRulePrefix + uRule.getJobEngineElementName() + ++scriptedRulesCounter;
-			GenericBlockSummary allGenericBlocksByClassId = new GenericBlockSummary(scriptedRuleid);
-			if (eliminateCombinatoryBehaviour && !(root instanceof JoinBlock )) {
-				allGenericBlocksByClassId = getAllGenericGetterBlocksByClassId(root,allGenericBlocksByClassId );
-				allGenericBlocksByClassId = getAllSetterBlocksByClassId(root, allGenericBlocksByClassId);
-				eliminateCombinatoryBehaviour(allGenericBlocksByClassId,root.getInitialJoinBlock());
-			}
 			String condition = "";
 			if (root instanceof ConditionBlock) {
 				condition = root.getExpression();
@@ -188,9 +181,7 @@ public class RuleBuilder {
 			scriptedRules.add(rule);
 			subRules.add(scriptedRuleid);
 			uRule.setSubRules(subRules);
-			if (eliminateCombinatoryBehaviour) {
-				resetJoinIds(allGenericBlocksByClassId);
-			}
+
 		}
 		return scriptedRules;
 	}

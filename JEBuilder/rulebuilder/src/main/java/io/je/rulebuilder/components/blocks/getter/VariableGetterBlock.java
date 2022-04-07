@@ -47,23 +47,6 @@ public  class VariableGetterBlock extends ConditionBlock {
 		return null;
 	}
 
-	@Override
-	public String getJoinExpression() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String getJoinedExpression(String joindId) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String getJoinedExpressionAsFirstOperand(String joindId) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@Override
 	public String getExpression() {
@@ -73,11 +56,7 @@ public  class VariableGetterBlock extends ConditionBlock {
 
 
 
-	@Override
-	public String getJoinExpressionAsFirstOperand() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+
 
 	public String getAttributeVariableName() {
 		return blockName.replaceAll("\\s+", "")+"Value";
