@@ -85,7 +85,10 @@ public class WorkflowEngineHandler {
      * Trigger event by message
      * */
     public static void throwSignalEventInWorkflow(String projectId, String msg) {
-        processManagerHashMap.get(projectId).throwSignal(msg);
+        try {
+            processManagerHashMap.get(projectId).throwSignal(msg);
+        }
+        catch (NullPointerException Ignore) {}
     }
 
     /*
