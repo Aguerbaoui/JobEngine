@@ -4,9 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.je.utilities.apis.DatabaseApiHandler;
 import io.je.utilities.apis.JEBuilderApiHandler;
 import io.je.utilities.apis.JERunnerAPIHandler;
-import io.je.utilities.beans.InformModel;
-import io.je.utilities.beans.JEResponse;
-import io.je.utilities.beans.JEType;
+import io.je.utilities.apis.JERunnerRequester;
+import io.je.utilities.beans.*;
 import io.je.utilities.config.JEConfiguration;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.ResponseCodes;
@@ -157,9 +156,12 @@ public class JobEngine {
 
     public static Object getVariable(String projectName, String variableName) {
         try {
-            VariableModel var = JEBuilderApiHandler.getVariable(projectName, variableName);
-            if(var != null) {
-                return var.getValue();
+            JEConfiguration.loadProperties();
+            JEZMQResponse var = JERunnerRequester.readVariable(projectName, variableName);
+            if(var != null && !var.getResponse().equals(ZMQResponseType.FAIL)) {
+                ObjectMapper mapper = new ObjectMapper();
+                VariableModel jeVariable = mapper.readValue(var.getResponseObject(), VariableModel.class);
+                return jeVariable.getValue();
             }
             else return null;
         } catch (Exception e) {
@@ -170,9 +172,10 @@ public class JobEngine {
 
     public static int setVariable(String projectName, String variableName, Object value) {
         try {
-            JEResponse response = JEBuilderApiHandler.setVariable(projectName, variableName,  value.toString());
-            if(response != null) {
-                return response.getCode();
+            JEConfiguration.loadProperties();
+            JEZMQResponse response = JERunnerRequester.updateVariable(projectName, variableName,  value.toString(), false);
+            if(response.getResponse().equals(ZMQResponseType.SUCCESS)) {
+                return ResponseCodes.CODE_OK;
             }
             return ResponseCodes.VARIABLE_ERROR;
         } catch (Exception e) {
@@ -350,9 +353,13 @@ public class JobEngine {
     }
 
     public static void main(String... args) {
-
+        String testString = (String) JobEngine.getVariable("DM", "testVar");
+        System.out.println(testString);
+        JobEngine.setVariable("DM", "testVar", 12.0);
+        testString = (String) JobEngine.getVariable("DM", "testVar");
+        System.out.println(testString);
         //setDataModelInstanceAttribute("23aa0c9c-ee34-c9e6-bbeb-7d407f0139b1", "fuelLevel", 110);
-         JobEngine.executeSelectQuery("db", "SELECT * FROM siothdatabase.testtable;");
+         //JobEngine.executeSelectQuery("db", "SELECT * FROM siothdatabase.testtable;");
          /*int code = JobEngine.addDoubleVariable("test", "DoubleVar", 3.3);
         System.out.println(code);
         code = JobEngine.addLongVariable("test", "LongVar", 333333);

@@ -2,6 +2,7 @@ package io.je.runtime.listener;
 
 import java.util.HashMap;
 
+import io.je.utilities.models.VariableModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -105,7 +106,7 @@ public class JERunnerResponser extends ZMQResponser {
 			JEZMQResponse rep = new JEZMQResponse(ZMQResponseType.SUCCESS);
 			var variable = runtimeDispatcher.getVariable((String) test.get(VariableModelMapping.PROJECT_ID),
 					(String) test.get(VariableModelMapping.VARIABLE_ID));
-			rep.setResponseObject(objectMapper.writeValueAsString(variable));
+			rep.setResponseObject(objectMapper.writeValueAsString(new VariableModel(variable)));
 			return rep;
 		} catch (Exception e) {
 			e.printStackTrace();

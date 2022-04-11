@@ -26,18 +26,18 @@ public class VariableManager {
 	/*
 	 * get variable 
 	 */
-	public static Object getVariableValue(String projectId, String variableId) throws VariableNotFoundException {
+	public static JEVariable getVariableValue(String projectId, String variableId) throws VariableNotFoundException {
 
 		try {
 			//by Ids
 			if (variablesByProjectId.containsKey(projectId)) {
-				return variablesByProjectId.get(projectId).get(variableId).getValue();
+				return variablesByProjectId.get(projectId).get(variableId);
 			//by Names	
 			} else if (projectIdsByName.containsKey(projectId)) {
 				String _projectId = projectIdsByName.get(projectId);
 				if(variablesByProjectId.containsKey(_projectId))
 				{
-					return getVariableByName(_projectId, variableId).getValue();
+					return getVariableByName(_projectId, variableId);
 				}
 
 			}
@@ -52,7 +52,7 @@ public class VariableManager {
 	
 	public static JEVariable getVariableByName(String projectId, String variableName) throws VariableNotFoundException
 	{
-		for ( JEVariable variable : getAllVariables(projectIdsByName.get(projectId))) {
+		for ( JEVariable variable : getAllVariables(projectId)) {
 			if(variable.getJobEngineElementName().equals(variableName))
 			{
 				return variable;
@@ -79,9 +79,15 @@ public class VariableManager {
 	/*
 	 * Returns the equialent jevariable
 	 */
-	public static JEVariable getJeVariable(String projectId, String id) {
-		return variablesByProjectId.get(projectId).get(id);
-	}
+	/*public static JEVariable getJeVariable(String projectId, String id) {
+		if(variablesByProjectId.containsKey(projectId)) {
+			return variablesByProjectId.get(projectId).get(id);
+		}
+		else {
+			projectId = projectIdsByName.get(projectId);
+			return variablesByProjectId.get(projectId).get(id);
+		}
+	}*/
 
 	/*
 	 * Remove variable from variable manager
