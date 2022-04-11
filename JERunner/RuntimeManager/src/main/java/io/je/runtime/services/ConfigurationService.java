@@ -14,6 +14,7 @@ import io.siothconfig.SIOTHConfigUtility;
 import utils.ProcessRunner;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
+import utils.log.LoggerUtils;
 import utils.zmq.ZMQBind;
 import utils.zmq.ZMQSecurity;
 
@@ -77,7 +78,7 @@ public class ConfigurationService {
 	}
 	
 	private void initLogger(String logPath, String logLevel ) {
-        JELogger.initLogger("JERunner", logPath,logLevel, ConfigurationConstants.isDev());
+		LoggerUtils.initLogger("JERunner", logPath,logLevel, ConfigurationConstants.isDev());
         JELogger.control(JEMessages.LOGGER_INITIALIZED,
                 LogCategory.DESIGN_MODE, null,
                 LogSubModule.JERUNNER, null);

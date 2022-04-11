@@ -478,4 +478,9 @@ public class RuntimeDispatcher {
 		
 	}
 
+	public JEVariable getVariable(String projetId, String variableId) {
+		return VariableManager.getJeVariable(projetId, variableId);
+		
+	}
+
 }

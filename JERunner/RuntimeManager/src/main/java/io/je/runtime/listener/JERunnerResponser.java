@@ -55,16 +55,21 @@ public class JERunnerResponser extends ZMQResponser {
 					switch (request.getRequest()) {
 					case UPDATE_VARIABLE:
 						response=updateVariable(request.getRequestBody());
+					case GET_VARIABLE:
+						response=readVariable(request.getRequestBody());
+
+						
 						
 						break;
 					default:
 						response.setErrorMessage(JEMessages.UNKNOWN_REQUEST);
 						break;
-
+						
 					}
+					sendResponse(response);
+
 
 				}
-				sendResponse(response);
 			} catch (Exception e) {
 				String errorMsg = JEExceptionHandler.getExceptionMessage(e);
 				JELogger.error(JEMessages.ZMQ_FAILED_TO_RESPOND + errorMsg, null, null, LogSubModule.JERUNNER, null);
@@ -94,6 +99,22 @@ public class JERunnerResponser extends ZMQResponser {
 		
 	}
 
+	private JEZMQResponse readVariable(Object requestBody) {
+		
+		try {		
+			HashMap<String,Object> test = (HashMap<String, Object>) requestBody;
+
+			runtimeDispatcher.getVariable((String)test.get(VariableModelMapping.PROJECT_ID),(String)test.get(VariableModelMapping.VARIABLE_ID));
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new JEZMQResponse(ZMQResponseType.FAIL,e.getMessage());
+		}
+				
+		return new JEZMQResponse(ZMQResponseType.SUCCESS);
+		
+	}
+
+	
 	private void sendResponse(JEZMQResponse response) {
 
 		try {
