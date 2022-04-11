@@ -201,8 +201,6 @@ public class Executioner {
 					if(attribueValue!=null)
 					{
 						JEZMQResponse response = JERunnerRequester.updateVariable(projectId, destinationVariableId, attribueValue, ignoreIfSameValue);
-						JEZMQResponse response1 = JERunnerRequester.readVariable (projectId, destinationVariableId);
-
 						if(response.getResponse()!=ZMQResponseType.SUCCESS)
 						{
 							JELogger.error(JEMessages.UPDATING_VARIABLE_FAILED + response.getErrorMessage() , LogCategory.RUNTIME, projectId,
