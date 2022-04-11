@@ -404,7 +404,7 @@ public class RuntimeDispatcher {
 
 	}
 
-	public void writeVariableValue(String projectId, String variableId, String value,boolean ignoreIfSameValue) throws VariableException {
+	public void writeVariableValue(String projectId, String variableId, String value,boolean ignoreIfSameValue) throws VariableException, VariableNotFoundException {
 		//JELogger.debug("[projectId = " + projectId + "] [variable = " + variableId + "]" + JEMessages.UPDATING_VARIABLE,
 			//	LogCategory.RUNTIME, projectId, LogSubModule.VARIABLE, variableId);
 		JEVariable var = VariableManager.updateVariableValue(projectId, variableId, value,ignoreIfSameValue);

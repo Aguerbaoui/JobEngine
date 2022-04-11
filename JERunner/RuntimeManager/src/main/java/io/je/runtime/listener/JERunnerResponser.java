@@ -105,7 +105,7 @@ public class JERunnerResponser extends ZMQResponser {
 			JEZMQResponse rep = new JEZMQResponse(ZMQResponseType.SUCCESS);
 			var variable = runtimeDispatcher.getVariable((String) body.get(VariableModelMapping.PROJECT_ID),
 					(String) body.get(VariableModelMapping.VARIABLE_ID));
-			rep.setResponseObject(objectMapper.writeValueAsString(variable));
+			rep.setResponseObject(objectMapper.writeValueAsString(new VariableModel(variable)));
 
 			return rep;
 		} catch (Exception e) {

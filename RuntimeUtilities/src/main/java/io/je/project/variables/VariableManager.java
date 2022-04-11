@@ -100,10 +100,9 @@ public class VariableManager {
 	}
 
 	public static JEVariable updateVariableValue(String projectId, String variableId, Object value,
-			boolean ignoreIfSameValue) throws VariableException {
+			boolean ignoreIfSameValue) throws VariableException, VariableNotFoundException {
 		
-		variablesByProjectId.computeIfAbsent(projectId, k -> variablesByProjectId.put(projectId, new HashMap<>()));
-		JEVariable variable = variablesByProjectId.get(projectId).get(variableId);
+		JEVariable variable = getVariableValue(projectId,variableId);
 
 		if (variable != null) {
 			projectIdsByName.put(variable.getJobEngineProjectName(), variable.getJobEngineProjectID());

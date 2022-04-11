@@ -353,11 +353,11 @@ public class JobEngine {
     }
 
     public static void main(String... args) {
-        String testString = (String) JobEngine.getVariable("DM", "testVar");
-        System.out.println(testString);
+
+        System.out.println(JobEngine.getVariable("DM", "testVar"));
         JobEngine.setVariable("DM", "testVar", 12.0);
-        testString = (String) JobEngine.getVariable("DM", "testVar");
-        System.out.println(testString);
+
+        System.out.println(JobEngine.getVariable("DM", "testVar"));
         //setDataModelInstanceAttribute("23aa0c9c-ee34-c9e6-bbeb-7d407f0139b1", "fuelLevel", 110);
          //JobEngine.executeSelectQuery("db", "SELECT * FROM siothdatabase.testtable;");
          /*int code = JobEngine.addDoubleVariable("test", "DoubleVar", 3.3);
