@@ -3,10 +3,14 @@ package io.je.utilities.beans;
 public class JEZMQResponse {
 	 
 	ZMQResponseType response;
-	Object responseObject;
+	String responseObject;
 	String errorMessage;
 	
 	
+	public JEZMQResponse()
+	{
+		
+	}
 	
 	public JEZMQResponse(ZMQResponseType response, String errorMessage) {
 		super();
@@ -23,10 +27,10 @@ public class JEZMQResponse {
 	public void setResponse(ZMQResponseType response) {
 		this.response = response;
 	}
-	public Object getResponseObject() {
+	public String getResponseObject() {
 		return responseObject;
 	}
-	public void setResponseObject(Object responseObject) {
+	public void setResponseObject(String responseObject) {
 		this.responseObject = responseObject;
 	}
 	public String getErrorMessage() {

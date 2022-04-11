@@ -16,6 +16,8 @@ import io.je.project.variables.VariableManager;
 import io.je.utilities.apis.JERunnerAPIHandler;
 import io.je.utilities.apis.JERunnerRequester;
 import io.je.utilities.beans.JEVariable;
+import io.je.utilities.beans.JEZMQResponse;
+import io.je.utilities.beans.ZMQResponseType;
 import io.je.utilities.config.ConfigurationConstants;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.JERunnerErrorException;
@@ -198,9 +200,16 @@ public class Executioner {
 					Object attribueValue =  InstanceManager.getAttributeValue(sourceInstanceId, sourceAttributeName);
 					if(attribueValue!=null)
 					{
-						JERunnerRequester.updateVariable(projectId, destinationVariableId, attribueValue, ignoreIfSameValue);
+						JEZMQResponse response = JERunnerRequester.updateVariable(projectId, destinationVariableId, attribueValue, ignoreIfSameValue);
+						JEZMQResponse response1 = JERunnerRequester.readVariable (projectId, destinationVariableId);
+
+						if(response.getResponse()!=ZMQResponseType.SUCCESS)
+						{
+							JELogger.error(JEMessages.UPDATING_VARIABLE_FAILED + response.getErrorMessage() , LogCategory.RUNTIME, projectId,
+									LogSubModule.RULE, ruleId, blockName);
+						}
 					}else {
-						JELogger.error(JEMessages.UPDATING_VARIABLE_FAILED , LogCategory.RUNTIME, projectId,
+						JELogger.error(JEMessages.UPDATING_VARIABLE_FAILED  , LogCategory.RUNTIME, projectId,
 								LogSubModule.RULE, ruleId, blockName);
 					}
 
