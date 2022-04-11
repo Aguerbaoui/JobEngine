@@ -725,4 +725,15 @@ public class JEMessages {
 	public static final String RULE_RUNNING = "Rule is running";
 
     public static final String FAILED_TO_CAST_DATA_CHECK_THE_TYPE_OF_THE_VARIABLE_AND_THE_INCOMING_DATA = "Failed to cast data check the type of the variable and the incoming data";
+    
+    public static final String ZMQ_REQUEST_RECEIVED = "Received ZMQ request: ";
+    public static final String ZMQ_RESPONSE_STARTED = "Started ZMQ responser on address :  ";
+    public static final String ZMQ_RESPONSE_START_FAIL = "Failed to start ZMQ Responser ";
+    
+    public static final String ZMQ_SENDING_RESPONSE = "Sending response: ";
+    public static final String ZMQ_FAILED_TO_RESPOND = "Failed to send ZMQ response: ";
+    public static final String UNKNOWN_REQUEST = "Unknown Request.";
+
+
+
 }

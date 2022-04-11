@@ -14,6 +14,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.je.project.variables.VariableManager;
 import io.je.utilities.apis.JERunnerAPIHandler;
+import io.je.utilities.apis.JERunnerRequester;
+import io.je.utilities.beans.JEVariable;
 import io.je.utilities.config.ConfigurationConstants;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.JERunnerErrorException;
@@ -30,7 +32,7 @@ public class Executioner {
 	static final int MAX_THREAD_COUNT = 100;
 	public static ObjectMapper objectMapper = new ObjectMapper();
 	static ExecutorService executor = Executors.newCachedThreadPool();
-
+	static int test = 0;
 	private Executioner() {
 	}
 
@@ -144,8 +146,8 @@ public class Executioner {
 		try {
 			executor.submit(() -> {
 				try {
-					JERunnerAPIHandler.writeVariableValue(projectId, variableId, value,ignoreIfSameValue);
-				} catch (JERunnerErrorException e) {
+					JERunnerRequester.updateVariable(projectId, variableId, value,ignoreIfSameValue);
+				} catch (Exception e) {
 					JELogger.error(JEMessages.UPDATING_VARIABLE_FAILED + e.getMessage(), LogCategory.RUNTIME, projectId,
 							LogSubModule.RULE, ruleId, blockName);
 				}
@@ -168,9 +170,9 @@ public class Executioner {
 		try {
 			executor.submit(() -> {
 				try {
-					JERunnerAPIHandler.writeVariableValue(projectId, destinationVariableId,
+					JERunnerRequester.updateVariable(projectId, destinationVariableId,
 							VariableManager.getVariableValue(projectId, sourceVariableId),ignoreIfSameValue);
-				} catch (JERunnerErrorException | VariableNotFoundException e) {
+				} catch (Exception e) {
 					JELogger.error(JEMessages.UPDATING_VARIABLE_FAILED + e.getMessage(), LogCategory.RUNTIME, projectId,
 							LogSubModule.RULE, ruleId, blockName);
 				}
@@ -193,9 +195,16 @@ public class Executioner {
 		try {
 			executor.submit(() -> {
 				try {
-					Object attribueValue = InstanceManager.getAttributeValue(sourceInstanceId, sourceAttributeName);
-					JERunnerAPIHandler.writeVariableValue(projectId, destinationVariableId, attribueValue, ignoreIfSameValue);
-				} catch (JERunnerErrorException e) {
+					Object attribueValue =  InstanceManager.getAttributeValue(sourceInstanceId, sourceAttributeName);
+					if(attribueValue!=null)
+					{
+						JERunnerRequester.updateVariable(projectId, destinationVariableId, attribueValue, ignoreIfSameValue);
+					}else {
+						JELogger.error(JEMessages.UPDATING_VARIABLE_FAILED , LogCategory.RUNTIME, projectId,
+								LogSubModule.RULE, ruleId, blockName);
+					}
+
+				} catch (Exception e) {
 					JELogger.error(JEMessages.UPDATING_VARIABLE_FAILED + e.getMessage(), LogCategory.RUNTIME, projectId,
 							LogSubModule.RULE, ruleId, blockName);
 				}

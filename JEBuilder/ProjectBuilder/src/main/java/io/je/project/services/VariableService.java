@@ -17,6 +17,7 @@ import io.je.project.beans.JEProject;
 import io.je.project.config.LicenseProperties;
 import io.je.project.repository.VariableRepository;
 import io.je.utilities.apis.JERunnerAPIHandler;
+import io.je.utilities.apis.JERunnerRequester;
 import io.je.utilities.beans.JEType;
 import io.je.utilities.beans.JEVariable;
 import io.je.utilities.constants.JEMessages;
@@ -195,11 +196,11 @@ public class VariableService {
     	LicenseProperties.checkLicenseIsActive();
 
 		try {
-			JERunnerAPIHandler.writeVariableValue(variable.getJobEngineProjectID(), variable.getJobEngineElementID(), value,true);
+			JERunnerRequester.updateVariable(variable.getJobEngineProjectID(), variable.getJobEngineElementID(), value,true);
 			variable.setValue(value);
 			variableRepository.save(variable);
 		}
-		catch (JERunnerErrorException e) {
+		catch (Exception e) {
 			throw new VariableException(JEMessages.ERROR_WRITING_VALUE_TO_VARIABLE);
 		}
 

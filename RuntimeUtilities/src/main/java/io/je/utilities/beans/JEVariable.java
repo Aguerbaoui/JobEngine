@@ -18,6 +18,7 @@ public class JEVariable extends JEMonitoredData {
 
     private Object initialValue;
     
+    @Transient
     private Object value;
     
     private String description;

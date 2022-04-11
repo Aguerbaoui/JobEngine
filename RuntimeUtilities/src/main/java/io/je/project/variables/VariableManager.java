@@ -77,13 +77,13 @@ public class VariableManager {
 	        }
 		
 	       JEVariable variable = variables.get(projectId).get(variableId);
-	       if(ignoreIfSameValue && Comparator.isSameValue(variable.getValue(), value))
+	      
+	       
+ 	       if(variable!=null)
+	       { if(ignoreIfSameValue && Comparator.isSameValue(variable.getValue(), value))
 	       {
 	    	   return null;
 	       }
-	       
- 	       if(variable!=null)
-	       {
 	    	   variable.setValue(String.valueOf(value));
 		       JEMessage message = new JEMessage();
 		       message.setExecutionTime(LocalDateTime.now().toString());
