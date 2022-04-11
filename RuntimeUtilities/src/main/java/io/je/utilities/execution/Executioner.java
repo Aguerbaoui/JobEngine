@@ -27,7 +27,7 @@ import utils.log.LogSubModule;
 public class Executioner {
 
 	static final int MAX_THREAD_COUNT = 100;
-	public static ObjectMapper objectMapper = new ObjectMapper();
+	static ObjectMapper objectMapper = new ObjectMapper();
 	static ExecutorService executor = Executors.newCachedThreadPool();
 	static int test = 0;
 	private Executioner() {
@@ -242,7 +242,7 @@ public class Executioner {
 			try {
 				JERunnerAPIHandler.triggerEvent(eventId, projectId);
 			} catch (JERunnerErrorException e) {
-				JELogger.error("Failed to trigger event", LogCategory.RUNTIME, projectId, LogSubModule.RULE, ruleId,
+				JELogger.error(JEMessages.EVENT_TRIGGER_FAIL, LogCategory.RUNTIME, projectId, LogSubModule.RULE, ruleId,
 						triggerSource);
 
 			}

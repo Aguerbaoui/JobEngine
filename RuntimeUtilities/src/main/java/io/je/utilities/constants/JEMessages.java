@@ -733,7 +733,8 @@ public class JEMessages {
     public static final String ZMQ_SENDING_RESPONSE = "Sending response: ";
     public static final String ZMQ_FAILED_TO_RESPOND = "Failed to send ZMQ response: ";
     public static final String UNKNOWN_REQUEST = "Unknown Request.";
-
+    public static final String EVENT_TRIGGER_FAIL = "Failed to trigger event";
+    
 
 
 }

@@ -83,12 +83,12 @@ public class JERunnerResponser extends ZMQResponser {
 	private JEZMQResponse updateVariable(Object requestBody) {
 
 		try {
-			HashMap<String, Object> test = (HashMap<String, Object>) requestBody;
+			HashMap<String, Object> body = (HashMap<String, Object>) requestBody;
 
-			runtimeDispatcher.writeVariableValue((String) test.get(VariableModelMapping.PROJECT_ID),
-					(String) test.get(VariableModelMapping.VARIABLE_ID),
-					String.valueOf(test.get(VariableModelMapping.VALUE)),
-					(boolean) test.get(VariableModelMapping.IGNORE_IF_SAME_VALUE));
+			runtimeDispatcher.writeVariableValue((String) body.get(VariableModelMapping.PROJECT_ID),
+					(String) body.get(VariableModelMapping.VARIABLE_ID),
+					String.valueOf(body.get(VariableModelMapping.VALUE)),
+					(boolean) body.get(VariableModelMapping.IGNORE_IF_SAME_VALUE));
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new JEZMQResponse(ZMQResponseType.FAIL, e.getMessage());
@@ -100,11 +100,10 @@ public class JERunnerResponser extends ZMQResponser {
 
 	private JEZMQResponse readVariable(Object requestBody) {
 		try {
-			HashMap<String, Object> test = (HashMap<String, Object>) requestBody;
-
+			HashMap<String, Object> body = (HashMap<String, Object>) requestBody;
 			JEZMQResponse rep = new JEZMQResponse(ZMQResponseType.SUCCESS);
-			var variable = runtimeDispatcher.getVariable((String) test.get(VariableModelMapping.PROJECT_ID),
-					(String) test.get(VariableModelMapping.VARIABLE_ID));
+			var variable = runtimeDispatcher.getVariable((String) body.get(VariableModelMapping.PROJECT_ID),
+					(String) body.get(VariableModelMapping.VARIABLE_ID));
 			rep.setResponseObject(objectMapper.writeValueAsString(variable));
 			return rep;
 		} catch (Exception e) {
