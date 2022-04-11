@@ -8,24 +8,19 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.je.project.variables.VariableManager;
 import io.je.utilities.apis.JERunnerAPIHandler;
 import io.je.utilities.apis.JERunnerRequester;
-import io.je.utilities.beans.JEVariable;
 import io.je.utilities.beans.JEZMQResponse;
 import io.je.utilities.beans.ZMQResponseType;
-import io.je.utilities.config.ConfigurationConstants;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.JERunnerErrorException;
 import io.je.utilities.exceptions.VariableNotFoundException;
 import io.je.utilities.instances.ClassRepository;
 import io.je.utilities.instances.InstanceManager;
 import io.je.utilities.log.JELogger;
-import utils.ProcessRunner;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
 
@@ -148,7 +143,12 @@ public class Executioner {
 		try {
 			executor.submit(() -> {
 				try {
-					JERunnerRequester.updateVariable(projectId, variableId, value,ignoreIfSameValue);
+					JEZMQResponse response =JERunnerRequester.updateVariable(projectId, variableId, value,ignoreIfSameValue);
+					if(response.getResponse()!=ZMQResponseType.SUCCESS)
+					{
+						JELogger.error(JEMessages.UPDATING_VARIABLE_FAILED + response.getErrorMessage() , LogCategory.RUNTIME, projectId,
+								LogSubModule.RULE, ruleId, blockName);
+					}
 				} catch (Exception e) {
 					JELogger.error(JEMessages.UPDATING_VARIABLE_FAILED + e.getMessage(), LogCategory.RUNTIME, projectId,
 							LogSubModule.RULE, ruleId, blockName);
@@ -172,8 +172,13 @@ public class Executioner {
 		try {
 			executor.submit(() -> {
 				try {
-					JERunnerRequester.updateVariable(projectId, destinationVariableId,
+					JEZMQResponse response =JERunnerRequester.updateVariable(projectId, destinationVariableId,
 							VariableManager.getVariableValue(projectId, sourceVariableId),ignoreIfSameValue);
+					if(response.getResponse()!=ZMQResponseType.SUCCESS)
+					{
+						JELogger.error(JEMessages.UPDATING_VARIABLE_FAILED + response.getErrorMessage() , LogCategory.RUNTIME, projectId,
+								LogSubModule.RULE, ruleId, blockName);
+					}
 				} catch (Exception e) {
 					JELogger.error(JEMessages.UPDATING_VARIABLE_FAILED + e.getMessage(), LogCategory.RUNTIME, projectId,
 							LogSubModule.RULE, ruleId, blockName);
