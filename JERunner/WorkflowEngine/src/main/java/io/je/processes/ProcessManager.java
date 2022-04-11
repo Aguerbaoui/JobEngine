@@ -157,7 +157,10 @@ public class ProcessManager {
             deploymentBuilder = processEngine.getRepositoryService().createDeployment().name("DeploymentBuilder");
             deploymentBuilder.addString(key + ".bpmn", processXml);
             if(processes.get(key).getDeploymentId() != null) {
-                repoService.deleteDeployment(processes.get(key).getDeploymentId());
+                try {
+                    repoService.deleteDeployment(processes.get(key).getDeploymentId());
+                }
+                catch (ActivitiObjectNotFoundException Ignore) {}
             }
             /*Deployment*/ deployment = deploymentBuilder.deploy(); //to debug it if needed
             /*JELogger.debug("id = " + deployment.getId() + " key = " + deployment.getKey() + " category =" + deployment.getCategory() +
