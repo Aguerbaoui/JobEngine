@@ -387,6 +387,7 @@ public class RuntimeDispatcher {
 				variableModel.getCreatedBy(), variableModel.getModifiedBy());
 		var.setJeObjectCreationDate(Instant.now());
 		var.setJeObjectLastUpdate(Instant.now());
+		var.setJobEngineProjectName(variableModel.getProjectName());
 		// JEStringSubstitutor.addVariable(var.getJobEngineProjectID(), var.getName(),
 		// (String) var.getValue());
 		VariableManager.addVariable(var);
@@ -478,8 +479,8 @@ public class RuntimeDispatcher {
 		
 	}
 
-	public JEVariable getVariable(String projetId, String variableId) {
-		return VariableManager.getJeVariable(projetId, variableId);
+	public JEVariable getVariable(String projectId, String variableId) throws VariableNotFoundException{
+		return VariableManager.getVariableValue(projectId, variableId);
 		
 	}
 

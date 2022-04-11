@@ -85,7 +85,7 @@ public class Executioner {
 			executor.submit(() -> {
 				Object attribueValue;
 				try {
-					attribueValue = VariableManager.getVariableValue(projectId, variableId);
+					attribueValue = VariableManager.getVariableValue(projectId, variableId).getValue();
 					InstanceManager.writeToDataModelInstance(instanceId, attributeName, attribueValue, ignoreSameValue);
 
 				} catch (VariableNotFoundException e) {
@@ -172,13 +172,8 @@ public class Executioner {
 		try {
 			executor.submit(() -> {
 				try {
-					JEZMQResponse response =JERunnerRequester.updateVariable(projectId, destinationVariableId,
-							VariableManager.getVariableValue(projectId, sourceVariableId),ignoreIfSameValue);
-					if(response.getResponse()!=ZMQResponseType.SUCCESS)
-					{
-						JELogger.error(JEMessages.UPDATING_VARIABLE_FAILED + response.getErrorMessage() , LogCategory.RUNTIME, projectId,
-								LogSubModule.RULE, ruleId, blockName);
-					}
+					JERunnerRequester.updateVariable(projectId, destinationVariableId,
+							VariableManager.getVariableValue(projectId, sourceVariableId).getValue(),ignoreIfSameValue);
 				} catch (Exception e) {
 					JELogger.error(JEMessages.UPDATING_VARIABLE_FAILED + e.getMessage(), LogCategory.RUNTIME, projectId,
 							LogSubModule.RULE, ruleId, blockName);
