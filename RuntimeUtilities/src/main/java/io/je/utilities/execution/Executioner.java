@@ -235,8 +235,8 @@ public class Executioner {
 
 		executor.submit(() -> {
 			try {
-				JERunnerAPIHandler.triggerEvent(eventId, projectId);
-			} catch (JERunnerErrorException e) {
+				JERunnerRequester.triggerEvent(projectId, eventId);
+			} catch (Exception e) {
 				JELogger.error(JEMessages.EVENT_TRIGGER_FAIL, LogCategory.RUNTIME, projectId, LogSubModule.RULE, ruleId,
 						triggerSource);
 

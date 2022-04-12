@@ -14,22 +14,23 @@ import io.je.utilities.beans.ZMQResponseType;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.log.JELogger;
 import io.je.utilities.mapping.VariableModelMapping;
+import org.springframework.stereotype.Service;
 import utils.log.LogSubModule;
 import utils.zmq.ZMQBind;
 import utils.zmq.ZMQResponser;
 
-public class JERunnerResponser extends ZMQResponser {
+public class JERunnerResponder extends ZMQResponser {
 
 	@Autowired
 	ObjectMapper objectMapper = new ObjectMapper();
 
 	RuntimeDispatcher runtimeDispatcher = new RuntimeDispatcher();
 
-	public JERunnerResponser(String url, int repPort, ZMQBind bind) {
+	public JERunnerResponder(String url, int repPort, ZMQBind bind) {
 		super(url, repPort, bind);
 	}
 
-	public JERunnerResponser() {
+	public JERunnerResponder() {
 		super();
 	}
 
@@ -59,6 +60,15 @@ public class JERunnerResponser extends ZMQResponser {
 					case GET_VARIABLE:
 						response = readVariable(request.getRequestBody());
 						break;
+					case TRIGGER_EVENT:
+						response = triggerEvent(request.getRequestBody());
+						break;
+					/*case INFORM_USER:
+						response = readVariable(request.getRequestBody());
+						break;
+					case SEND_LOG:
+						response = readVariable(request.getRequestBody());
+						break;*/
 					default:
 						response.setErrorMessage(JEMessages.UNKNOWN_REQUEST);
 						break;
@@ -76,6 +86,47 @@ public class JERunnerResponser extends ZMQResponser {
 
 	}
 
+	private JEZMQResponse triggerEvent(Object requestBody) {
+		try {
+			HashMap<String, Object> body = (HashMap<String, Object>) requestBody;
+
+			runtimeDispatcher.triggerEvent((String) body.get(VariableModelMapping.PROJECT_ID),
+					(String) body.get("eventId"));
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new JEZMQResponse(ZMQResponseType.FAIL, e.getMessage());
+		}
+
+		return new JEZMQResponse(ZMQResponseType.SUCCESS);
+	}
+
+	/*private JEZMQResponse informUser(Object requestBody) {
+		try {
+			HashMap<String, Object> body = (HashMap<String, Object>) requestBody;
+
+			runtimeDispatcher.triggerEvent((String) body.get(VariableModelMapping.PROJECT_ID),
+					(String) body.get("eventId"));
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new JEZMQResponse(ZMQResponseType.FAIL, e.getMessage());
+		}
+
+		return new JEZMQResponse(ZMQResponseType.SUCCESS);
+	}
+
+	private JEZMQResponse sendLogMessage(Object requestBody) {
+		try {
+			HashMap<String, Object> body = (HashMap<String, Object>) requestBody;
+
+			runtimeDispatcher.triggerEvent((String) body.get(VariableModelMapping.PROJECT_ID),
+					(String) body.get("eventId"));
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new JEZMQResponse(ZMQResponseType.FAIL, e.getMessage());
+		}
+
+		return new JEZMQResponse(ZMQResponseType.SUCCESS);
+	}*/
 	private JEZMQResponse updateVariable(Object requestBody) {
 
 		try {

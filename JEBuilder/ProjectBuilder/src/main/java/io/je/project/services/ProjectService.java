@@ -423,7 +423,6 @@ public class ProjectService {
 			}
 		}).start();
 
-
 	}
 
 	public void sendLog(LogMessage logMessage) {

@@ -5,13 +5,11 @@ import java.util.Map;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.je.utilities.beans.JEZMQResponse;
-import io.je.utilities.beans.RunnerRequestEnum;
-import io.je.utilities.beans.RunnerRequestObject;
-import io.je.utilities.beans.ZMQResponseType;
+import io.je.utilities.beans.*;
 import io.je.utilities.log.JELogger;
 import io.je.utilities.mapping.VariableModelMapping;
 import io.siothconfig.SIOTHConfigUtility;
+import utils.log.LogMessage;
 import utils.zmq.ZMQRequester;
 
 public class JERunnerRequester {
@@ -38,6 +36,27 @@ public class JERunnerRequester {
 		requestParams.put(VariableModelMapping.PROJECT_ID, projectId);
 		requestParams.put(VariableModelMapping.VALUE, value);
 		requestParams.put(VariableModelMapping.IGNORE_IF_SAME_VALUE, ignoreIfSameValue);
+		request.setRequestBody(requestParams);
+		return sendRequest(request);
+	}
+
+	public static JEZMQResponse informUser(InformModel informModel) {
+		RunnerRequestObject request = new RunnerRequestObject(RunnerRequestEnum.INFORM_USER);
+		request.setRequestBody(informModel);
+		return sendRequest(request);
+	}
+
+	public static JEZMQResponse sendLogMessage(LogMessage logMessage) {
+		RunnerRequestObject request = new RunnerRequestObject(RunnerRequestEnum.SEND_LOG);
+		request.setRequestBody(logMessage);
+		return sendRequest(request);
+	}
+
+	public static JEZMQResponse triggerEvent(String projectId, String eventName) {
+		RunnerRequestObject request = new RunnerRequestObject(RunnerRequestEnum.TRIGGER_EVENT);
+		Map<String, Object> requestParams = new HashMap<>();
+		requestParams.put("eventId", eventName);
+		requestParams.put("projectId", projectId);
 		request.setRequestBody(requestParams);
 		return sendRequest(request);
 	}

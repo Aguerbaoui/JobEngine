@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service;
 
 import io.je.project.exception.JEExceptionHandler;
 import io.je.runtime.config.RunnerProperties;
-import io.je.runtime.listener.JERunnerResponser;
+import io.je.runtime.listener.JERunnerResponder;
 import io.je.utilities.apis.JERunnerRequester;
 import io.je.utilities.config.ConfigurationConstants;
 import io.je.utilities.constants.JEMessages;
@@ -51,7 +51,7 @@ public class ConfigurationService {
 	
 	public void initResponser(int responsePort) {
 		try {
-			JERunnerResponser responser = new JERunnerResponser();
+			JERunnerResponder responser = new JERunnerResponder();
 			 responser.init("tcp://"+SIOTHConfigUtility.getSiothConfig().getNodes().getSiothMasterNode(), responsePort,ZMQBind.BIND);
 			responser.setListening(true);
 			Thread listener = new Thread(responser);
