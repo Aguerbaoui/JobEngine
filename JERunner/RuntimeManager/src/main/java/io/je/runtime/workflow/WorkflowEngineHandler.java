@@ -74,6 +74,9 @@ public class WorkflowEngineHandler {
         ResourceBundle.clearCache(Thread.currentThread().getContextClassLoader());
     }
 
+    public static JEProcess getProcessByID(String projectId, String id) {
+        return processManagerHashMap.get(projectId).getProcessByName(id);
+    }
     /*
      * Trigger event by message
      * */

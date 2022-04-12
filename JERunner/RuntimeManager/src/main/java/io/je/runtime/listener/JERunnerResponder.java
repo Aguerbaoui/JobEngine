@@ -1,7 +1,9 @@
 package io.je.runtime.listener;
 
 import java.util.HashMap;
+import java.util.Locale;
 
+import io.je.utilities.beans.InformModel;
 import io.je.utilities.models.VariableModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -15,6 +17,8 @@ import io.je.utilities.constants.JEMessages;
 import io.je.utilities.log.JELogger;
 import io.je.utilities.mapping.VariableModelMapping;
 import org.springframework.stereotype.Service;
+import utils.log.LogLevel;
+import utils.log.LogMessage;
 import utils.log.LogSubModule;
 import utils.zmq.ZMQBind;
 import utils.zmq.ZMQResponser;
@@ -63,12 +67,12 @@ public class JERunnerResponder extends ZMQResponser {
 					case TRIGGER_EVENT:
 						response = triggerEvent(request.getRequestBody());
 						break;
-					/*case INFORM_USER:
-						response = readVariable(request.getRequestBody());
+					case INFORM_USER:
+						response = informUser(request.getRequestBody());
 						break;
 					case SEND_LOG:
-						response = readVariable(request.getRequestBody());
-						break;*/
+						response = sendLog(request.getRequestBody());
+						break;
 					default:
 						response.setErrorMessage(JEMessages.UNKNOWN_REQUEST);
 						break;
@@ -100,12 +104,10 @@ public class JERunnerResponder extends ZMQResponser {
 		return new JEZMQResponse(ZMQResponseType.SUCCESS);
 	}
 
-	/*private JEZMQResponse informUser(Object requestBody) {
+	private JEZMQResponse informUser(Object requestBody) {
 		try {
-			HashMap<String, Object> body = (HashMap<String, Object>) requestBody;
-
-			runtimeDispatcher.triggerEvent((String) body.get(VariableModelMapping.PROJECT_ID),
-					(String) body.get("eventId"));
+			HashMap<String, String> map = (HashMap<String, String>)requestBody;
+			runtimeDispatcher.informUser(map.get("message"), map.get("projectName"), map.get("workflowName"));
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new JEZMQResponse(ZMQResponseType.FAIL, e.getMessage());
@@ -114,7 +116,23 @@ public class JERunnerResponder extends ZMQResponser {
 		return new JEZMQResponse(ZMQResponseType.SUCCESS);
 	}
 
-	private JEZMQResponse sendLogMessage(Object requestBody) {
+	private JEZMQResponse sendLog(Object requestBody) {
+		try {
+			HashMap<String, String> map = (HashMap<String, String>)requestBody;
+
+			LogMessage logMessage = new LogMessage(LogLevel.valueOf(map.get("LogLevel").toUpperCase(Locale.ROOT)), map.get("Message"), map.get("LogDate"),
+					map.get("ProjectId"), LogSubModule.JERUNNER,
+					map.get("ObjectId"), map.get("ObjectId"));
+			runtimeDispatcher.sendLog(logMessage);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new JEZMQResponse(ZMQResponseType.FAIL, e.getMessage());
+		}
+
+		return new JEZMQResponse(ZMQResponseType.SUCCESS);
+	}
+
+	/*private JEZMQResponse sendLogMessage(Object requestBody) {
 		try {
 			HashMap<String, Object> body = (HashMap<String, Object>) requestBody;
 
