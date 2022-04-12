@@ -41,7 +41,7 @@ public abstract class ZMQResponser implements Runnable {
 	public void connectToAddress() throws ZMQConnectionFailedException {
 		try {
 			this.repSocket = this.context.createSocket(SocketType.REP);
-			this.repSocket.setReceiveTimeOut(10000);
+			this.repSocket.setReceiveTimeOut(30000);
 
 			if (ZMQSecurity.isSecure()) {
 				this.repSocket.setCurveServer(true);

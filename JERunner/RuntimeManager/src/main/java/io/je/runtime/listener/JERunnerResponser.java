@@ -55,9 +55,9 @@ public class JERunnerResponser extends ZMQResponser {
 					switch (request.getRequest()) {
 					case UPDATE_VARIABLE:
 						response = updateVariable(request.getRequestBody());
+						break;
 					case GET_VARIABLE:
 						response = readVariable(request.getRequestBody());
-
 						break;
 					default:
 						response.setErrorMessage(JEMessages.UNKNOWN_REQUEST);
@@ -71,11 +71,6 @@ public class JERunnerResponser extends ZMQResponser {
 				String errorMsg = JEExceptionHandler.getExceptionMessage(e);
 				JELogger.error(JEMessages.ZMQ_FAILED_TO_RESPOND + errorMsg, null, null, LogSubModule.JERUNNER, null);
 
-			}
-			try {
-				Thread.sleep(100);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
 			}
 		}
 
