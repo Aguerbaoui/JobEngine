@@ -48,7 +48,7 @@ public class JERunnerResponser extends ZMQResponser {
 				String data = this.getRepSocket(ZMQBind.BIND).recvStr(0);
 				if (data != null && !data.isEmpty() && !data.equals("null")) {
 
-					JELogger.info(JEMessages.ZMQ_REQUEST_RECEIVED + data, null, null, LogSubModule.JERUNNER, null);
+					JELogger.debug(JEMessages.ZMQ_REQUEST_RECEIVED + data, null, null, LogSubModule.JERUNNER, null);
 
 					request = objectMapper.readValue(data, RunnerRequestObject.class);
 
