@@ -15,7 +15,7 @@ public class VariableModel {
 
     private String name;
 
-    private String value;
+    private Object value;
     
     private String description;
     
@@ -63,11 +63,11 @@ public class VariableModel {
         this.name = name;
     }
 
-    public String getValue() {
+    public Object getValue() {
         return value != null ? value: initialValue;
     }
 
-    public void setValue(String value) {
+    public void setValue(Object value) {
         this.value = value;
     }
 
@@ -144,7 +144,7 @@ public class VariableModel {
 	        this.initialValue = String.valueOf(variable.getInitialValue());
 			this.createdAt = variable.getJeObjectCreationDate().toString();
 			this.lastModifiedAt = variable.getJeObjectLastUpdate().toString();
-	        this.value = null;
+	        this.value =  variable.getValue();
 			this.createdBy = variable.getJeObjectCreatedBy();
 			this.modifiedBy = variable.getJeObjectModifiedBy();
 			this.description = variable.getDescription();

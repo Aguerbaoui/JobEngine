@@ -74,4 +74,11 @@ public class ConfigurationConstants {
             JAVA_GENERATION_PATH = javaGenerationPath;
         }
     }
+
+	public static void setDev(boolean dev) {
+		ConfigurationConstants.dev = dev;
+	}
+    
+    
+    
 }

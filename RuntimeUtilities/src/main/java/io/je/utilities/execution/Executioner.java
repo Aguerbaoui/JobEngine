@@ -8,29 +8,28 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.je.project.variables.VariableManager;
 import io.je.utilities.apis.JERunnerAPIHandler;
-import io.je.utilities.config.ConfigurationConstants;
+import io.je.utilities.apis.JERunnerRequester;
+import io.je.utilities.beans.JEZMQResponse;
+import io.je.utilities.beans.ZMQResponseType;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.JERunnerErrorException;
 import io.je.utilities.exceptions.VariableNotFoundException;
 import io.je.utilities.instances.ClassRepository;
 import io.je.utilities.instances.InstanceManager;
 import io.je.utilities.log.JELogger;
-import utils.ProcessRunner;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
 
 public class Executioner {
 
 	static final int MAX_THREAD_COUNT = 100;
-	public static ObjectMapper objectMapper = new ObjectMapper();
+	static ObjectMapper objectMapper = new ObjectMapper();
 	static ExecutorService executor = Executors.newCachedThreadPool();
-
+	static int test = 0;
 	private Executioner() {
 	}
 
@@ -86,7 +85,7 @@ public class Executioner {
 			executor.submit(() -> {
 				Object attribueValue;
 				try {
-					attribueValue = VariableManager.getVariableValue(projectId, variableId);
+					attribueValue = VariableManager.getVariableValue(projectId, variableId).getValue();
 					InstanceManager.writeToDataModelInstance(instanceId, attributeName, attribueValue, ignoreSameValue);
 
 				} catch (VariableNotFoundException e) {
@@ -144,8 +143,13 @@ public class Executioner {
 		try {
 			executor.submit(() -> {
 				try {
-					JERunnerAPIHandler.writeVariableValue(projectId, variableId, value,ignoreIfSameValue);
-				} catch (JERunnerErrorException e) {
+					JEZMQResponse response =JERunnerRequester.updateVariable(projectId, variableId, value,ignoreIfSameValue);
+					if(response.getResponse()!=ZMQResponseType.SUCCESS)
+					{
+						JELogger.error(JEMessages.UPDATING_VARIABLE_FAILED + response.getErrorMessage() , LogCategory.RUNTIME, projectId,
+								LogSubModule.RULE, ruleId, blockName);
+					}
+				} catch (Exception e) {
 					JELogger.error(JEMessages.UPDATING_VARIABLE_FAILED + e.getMessage(), LogCategory.RUNTIME, projectId,
 							LogSubModule.RULE, ruleId, blockName);
 				}
@@ -168,9 +172,9 @@ public class Executioner {
 		try {
 			executor.submit(() -> {
 				try {
-					JERunnerAPIHandler.writeVariableValue(projectId, destinationVariableId,
-							VariableManager.getVariableValue(projectId, sourceVariableId),ignoreIfSameValue);
-				} catch (JERunnerErrorException | VariableNotFoundException e) {
+					JERunnerRequester.updateVariable(projectId, destinationVariableId,
+							VariableManager.getVariableValue(projectId, sourceVariableId).getValue(),ignoreIfSameValue);
+				} catch (Exception e) {
 					JELogger.error(JEMessages.UPDATING_VARIABLE_FAILED + e.getMessage(), LogCategory.RUNTIME, projectId,
 							LogSubModule.RULE, ruleId, blockName);
 				}
@@ -193,9 +197,21 @@ public class Executioner {
 		try {
 			executor.submit(() -> {
 				try {
-					Object attribueValue = InstanceManager.getAttributeValue(sourceInstanceId, sourceAttributeName);
-					JERunnerAPIHandler.writeVariableValue(projectId, destinationVariableId, attribueValue, ignoreIfSameValue);
-				} catch (JERunnerErrorException e) {
+					Object attribueValue =  InstanceManager.getAttributeValue(sourceInstanceId, sourceAttributeName);
+					if(attribueValue!=null)
+					{
+						JEZMQResponse response = JERunnerRequester.updateVariable(projectId, destinationVariableId, attribueValue, ignoreIfSameValue);
+						if(response.getResponse()!=ZMQResponseType.SUCCESS)
+						{
+							JELogger.error(JEMessages.UPDATING_VARIABLE_FAILED + response.getErrorMessage() , LogCategory.RUNTIME, projectId,
+									LogSubModule.RULE, ruleId, blockName);
+						}
+					}else {
+						JELogger.error(JEMessages.UPDATING_VARIABLE_FAILED  , LogCategory.RUNTIME, projectId,
+								LogSubModule.RULE, ruleId, blockName);
+					}
+
+				} catch (Exception e) {
 					JELogger.error(JEMessages.UPDATING_VARIABLE_FAILED + e.getMessage(), LogCategory.RUNTIME, projectId,
 							LogSubModule.RULE, ruleId, blockName);
 				}
@@ -219,9 +235,9 @@ public class Executioner {
 
 		executor.submit(() -> {
 			try {
-				JERunnerAPIHandler.triggerEvent(eventId, projectId);
-			} catch (JERunnerErrorException e) {
-				JELogger.error("Failed to trigger event", LogCategory.RUNTIME, projectId, LogSubModule.RULE, ruleId,
+				JERunnerRequester.triggerEvent(projectId, eventId);
+			} catch (Exception e) {
+				JELogger.error(JEMessages.EVENT_TRIGGER_FAIL, LogCategory.RUNTIME, projectId, LogSubModule.RULE, ruleId,
 						triggerSource);
 
 			}

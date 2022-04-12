@@ -68,7 +68,8 @@ public class JEProperties {
 	@Value("${zmq.send.high.watermark}")
 	int zmqSendHighWatermark;
 
-
+	@Value("${jobenginerunner.zmq.responsePort}")
+	int jeRunnerZMQResponsePort;
 	
 
 	public String getJeBuilderLogPath() {
@@ -238,4 +239,15 @@ public class JEProperties {
 	public void setZmqSendHighWatermark(int zmqSendHighWatermark) {
 		this.zmqSendHighWatermark = zmqSendHighWatermark;
 	}
+
+	public int getJeRunnerZMQResponsePort() {
+		return jeRunnerZMQResponsePort;
+	}
+
+	public void setJeRunnerZMQResponsePort(int jeRunnerZMQResponsePort) {
+		this.jeRunnerZMQResponsePort = jeRunnerZMQResponsePort;
+	}
+	
+	
+	
 }

@@ -513,4 +513,10 @@ public class ProcessManager {
     }
 
 
+    public JEProcess getProcessByName(String id) {
+        for(JEProcess p: processes.values()) {
+            if(p.getName().equals(id)) return p;
+        }
+        return null;
+    }
 }

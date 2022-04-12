@@ -1,17 +1,12 @@
 package io.je.project.variables;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import io.je.utilities.apis.JEBuilderApiHandler;
 import io.je.utilities.beans.*;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.VariableException;
-import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.exceptions.VariableNotFoundException;
 import io.je.utilities.log.JELogger;
 import utils.comparator.Comparator;
 import utils.log.LogCategory;
-import utils.log.LogLevel;
 import utils.log.LogSubModule;
 import utils.string.StringSub;
 
@@ -23,118 +18,138 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class VariableManager {
 
-    //Project id => VarId => JEVariable
-    public static ConcurrentHashMap<String, HashMap<String, JEVariable>> variables = new ConcurrentHashMap<>();
-    private static 	ObjectMapper objectMapper = new ObjectMapper();
+	// Project id => VarId => JEVariable
+	 static ConcurrentHashMap<String, HashMap<String, JEVariable>> variablesByProjectId = new ConcurrentHashMap<>();
+	 static HashMap<String, String> projectIdsByName = new HashMap<>();
+	 
 
-    /*
-     * Add variable to variable manager
-     * */
-     public static Object getVariableValue(String  projectId, String variableId) throws VariableNotFoundException {
-         try {
-        	 return variables.get(projectId).get(variableId).getValue();       	 
-         }
-         catch(Exception e)
-         {
-        	 throw new VariableNotFoundException(JEMessages.VARIABLE_NOT_FOUND);
-         }
- 	      
-     }
-    
-    
-    /*
-    * Add variable to variable manager
-    * */
-    public static void addVariable(JEVariable variable) {
-        if(!variables.containsKey(variable.getJobEngineProjectID())) {
-            variables.put(variable.getJobEngineProjectID(), new HashMap<>());
-        }
-        variables.get(variable.getJobEngineProjectID()).put(variable.getJobEngineElementID(),variable);
-			StringSub.addVariable(variable.getJobEngineProjectID(), variable.getJobEngineElementName(), variable.getValue());
+	/*
+	 * get variable 
+	 */
+	public static JEVariable getVariableValue(String projectId, String variableId) throws VariableNotFoundException {
 
-    }
-
-    /*
-     * Returns the equialent jevariable
-     * */
-    public static JEVariable getJeVariable(String projectId, String id) {
-        return variables.get(projectId).get(id);
-    }
-
-    /*
-     * Remove variable from variable manager
-     * */
-    public static void removeVariable(String projectId, String id) {
-        if(variables.containsKey(projectId)) {
-            variables.get(projectId).remove(id);
-
-        }
-    }
-
-	public static JEVariable updateVariableValue(String projectId, String variableId, Object value, boolean ignoreIfSameValue) throws VariableException {
-		 if(!variables.containsKey(projectId)) {  
-	            variables.put(projectId, new HashMap<>());
-	        }
-		
-	       JEVariable variable = variables.get(projectId).get(variableId);
-	       if(ignoreIfSameValue && Comparator.isSameValue(variable.getValue(), value))
-	       {
-	    	   return null;
-	       }
-	       
- 	       if(variable!=null)
-	       {
-	    	   variable.setValue(String.valueOf(value));
-		       JEMessage message = new JEMessage();
-		       message.setExecutionTime(LocalDateTime.now().toString());
-		       message.setType("Variable");
-		       JEVariableMessage varMessage = new JEVariableMessage(variable.getJobEngineElementName(), variable.getValue().toString());
-		       //to be removed
-		       JEBlockMessage blockMessage = new JEBlockMessage(variable.getJobEngineElementName(), variable.getValue().toString());
-		       message.getBlocks().add(blockMessage);
-		       message.getVariables().add(varMessage);
-	           try {
-	        	   JELogger.debug("Variable ["+variable.getJobEngineElementName() + "] = " +variable.getValue(), LogCategory.RUNTIME, projectId, LogSubModule.VARIABLE, variableId);
-	        	   /*JEResponse response = JEBuilderApiHandler.setVariable(projectId, variableId,  value.toString());
-	 	            if(response == null || response.getCode()!=200) {
-		 		    	   JELogger.error("Failed to persist variable value." , LogCategory.RUNTIME, projectId, LogSubModule.VARIABLE, variableId);
-
-	 	            }*/
-
-
-	           } catch (Exception e) {
+		try {
+			//by Ids
+			if (variablesByProjectId.containsKey(projectId)) {
+				return variablesByProjectId.get(projectId).get(variableId);
+			//by Names	
+			} else if (projectIdsByName.containsKey(projectId)) {
+				String _projectId = projectIdsByName.get(projectId);
+				if(variablesByProjectId.containsKey(_projectId))
+				{
+					return getVariableByName(_projectId, variableId);
+				}
 
 			}
-	    	   
-	       }else {
-	    	   JELogger.error(JEMessages.UPDATING_VARIABLE_FAILED , LogCategory.RUNTIME, projectId, LogSubModule.VARIABLE, variableId);
-	       }
+
+		} catch (Exception e) {
+			throw new VariableNotFoundException(JEMessages.VARIABLE_NOT_FOUND);
+		}
+		throw new VariableNotFoundException(JEMessages.VARIABLE_NOT_FOUND);
 
 
-
-           return variable;
-
-	}
-
-	public static Collection<JEVariable> getAllVariables(String projectId)
-	{
-		 if(!variables.containsKey(projectId)) {  
-	            variables.put(projectId, new HashMap<>());
-	        }
-		 return variables.get(projectId).values();
 	}
 	
-	public static void resetVariableValues(String projectId) throws VariableException {
-		 if(!variables.containsKey(projectId)) {  
-	            variables.put(projectId, new HashMap<>());
-	            return ;
-	        }
-		for(Map.Entry<String, JEVariable>  variable : variables.get(projectId).entrySet())
-		{
-			variable.getValue().setValue( String.valueOf(variable.getValue().getInitialValue()));
-			
+	public static JEVariable getVariableByName(String projectId, String variableName) throws VariableNotFoundException
+	{
+		for ( JEVariable variable : getAllVariables(projectId)) {
+			if(variable.getJobEngineElementName().equals(variableName))
+			{
+				return variable;
+			}
+	    }
+		throw new VariableNotFoundException(JEMessages.VARIABLE_NOT_FOUND);
+
+	}
+
+	/*
+	 * Add variable to variable manager
+	 */
+	public static void addVariable(JEVariable variable) {
+		if (!variablesByProjectId.containsKey(variable.getJobEngineProjectID())) {
+			variablesByProjectId.put(variable.getJobEngineProjectID(), new HashMap<>());
+		}
+		variablesByProjectId.get(variable.getJobEngineProjectID()).put(variable.getJobEngineElementID(), variable);
+		StringSub.addVariable(variable.getJobEngineProjectID(), variable.getJobEngineElementName(),
+				variable.getValue());
+		projectIdsByName.put(variable.getJobEngineProjectName(), variable.getJobEngineProjectID());
+
+	}
+
+	/*
+	 * Returns the equialent jevariable
+	 */
+	/*public static JEVariable getJeVariable(String projectId, String id) {
+		if(variablesByProjectId.containsKey(projectId)) {
+			return variablesByProjectId.get(projectId).get(id);
+		}
+		else {
+			projectId = projectIdsByName.get(projectId);
+			return variablesByProjectId.get(projectId).get(id);
+		}
+	}*/
+
+	/*
+	 * Remove variable from variable manager
+	 */
+	public static void removeVariable(String projectId, String id) {
+		if (variablesByProjectId.containsKey(projectId)) {
+			variablesByProjectId.get(projectId).remove(id);
+
 		}
 	}
 
+	public static JEVariable updateVariableValue(String projectId, String variableId, Object value,
+			boolean ignoreIfSameValue) throws VariableException, VariableNotFoundException {
+		
+		JEVariable variable = getVariableValue(projectId,variableId);
+
+		if (variable != null) {
+			projectIdsByName.put(variable.getJobEngineProjectName(), variable.getJobEngineProjectID());
+			if (ignoreIfSameValue && Comparator.isSameValue(variable.getValue(), value)) {
+				return null;
+			}
+			variable.setValue(String.valueOf(value));
+			JEMessage message = new JEMessage();
+			message.setExecutionTime(LocalDateTime.now().toString());
+			message.setType("Variable");
+			JEVariableMessage varMessage = new JEVariableMessage(variable.getJobEngineElementName(),
+					variable.getValue().toString());
+			// to be removed
+			JEBlockMessage blockMessage = new JEBlockMessage(variable.getJobEngineElementName(),
+					variable.getValue().toString());
+			message.getBlocks().add(blockMessage);
+			message.getVariables().add(varMessage);
+			try {
+				JELogger.debug("Variable [" + variable.getJobEngineElementName() + "] = " + variable.getValue(),
+						LogCategory.RUNTIME, projectId, LogSubModule.VARIABLE, variableId);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+		} else {
+			JELogger.error(JEMessages.UPDATING_VARIABLE_FAILED, LogCategory.RUNTIME, projectId, LogSubModule.VARIABLE,
+					variableId);
+		}
+
+		return variable;
+
+	}
+
+	public static Collection<JEVariable> getAllVariables(String projectId) {
+		variablesByProjectId.computeIfAbsent(projectId, k -> variablesByProjectId.put(projectId, new HashMap<>()));
+		return variablesByProjectId.get(projectId).values();
+	}
+
+	public static void resetVariableValues(String projectId) throws VariableException {
+		if (!variablesByProjectId.containsKey(projectId)) {
+			variablesByProjectId.put(projectId, new HashMap<>());
+			return;
+		}
+		for (Map.Entry<String, JEVariable> variable : variablesByProjectId.get(projectId).entrySet()) {
+			variable.getValue().setValue(String.valueOf(variable.getValue().getInitialValue()));
+
+		}
+	}
 
 }

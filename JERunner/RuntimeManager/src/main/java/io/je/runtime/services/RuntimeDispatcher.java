@@ -29,10 +29,8 @@ import io.je.runtime.workflow.WorkflowEngineHandler;
 import io.je.serviceTasks.ActivitiTask;
 import io.je.serviceTasks.ActivitiTaskManager;
 import io.je.utilities.classloader.JEClassLoader;
-import io.je.utilities.config.ConfigurationConstants;
 import io.je.utilities.constants.ClassBuilderConfig;
 import io.je.utilities.constants.JEMessages;
-import io.je.utilities.execution.JobEngine;
 import io.je.utilities.instances.ClassRepository;
 import io.je.utilities.instances.InstanceManager;
 import io.je.utilities.log.JELogger;
@@ -43,8 +41,8 @@ import io.je.utilities.models.VariableModel;
 import io.je.utilities.models.WorkflowModel;
 import io.je.utilities.ruleutils.OperationStatusDetails;
 import io.je.utilities.runtimeobject.JEObject;
-import utils.files.FileUtilities;
 import utils.log.LogCategory;
+import utils.log.LogMessage;
 import utils.log.LogSubModule;
 
 /*
@@ -58,7 +56,7 @@ public class RuntimeDispatcher {
 	// projects
 	static Map<String, Boolean> projectStatus = new HashMap<>(); // key: projectId , value : true if project is running,
 																	// false if not
-
+	static Map<String, String> projectNameToId = new HashMap<>();
 	///////////////////////////////// PROJECT
 	// build project
 	/*public void buildProject(String projectId) throws RuleBuildFailedException, WorkflowBuildException {
@@ -191,6 +189,7 @@ public class RuntimeDispatcher {
 				process.setEndEventId(wf.getEndBlockEventId());
 			}
 			WorkflowEngineHandler.addProcess(process);
+			projectNameToId.put(wf.getProjectName(), wf.getProjectId());
 			msg = new MonitoringMessage(LocalDateTime.now(), wf.getName(), ObjectType.JEWORKFLOW,
 					wf.getProjectId(), Status.BUILDING.toString(), Status.STOPPED.toString());
 			JEMonitor.publish(msg);
@@ -387,6 +386,7 @@ public class RuntimeDispatcher {
 				variableModel.getCreatedBy(), variableModel.getModifiedBy());
 		var.setJeObjectCreationDate(Instant.now());
 		var.setJeObjectLastUpdate(Instant.now());
+		var.setJobEngineProjectName(variableModel.getProjectName());
 		// JEStringSubstitutor.addVariable(var.getJobEngineProjectID(), var.getName(),
 		// (String) var.getValue());
 		VariableManager.addVariable(var);
@@ -403,7 +403,7 @@ public class RuntimeDispatcher {
 
 	}
 
-	public void writeVariableValue(String projectId, String variableId, String value,boolean ignoreIfSameValue) throws VariableException {
+	public void writeVariableValue(String projectId, String variableId, String value,boolean ignoreIfSameValue) throws VariableException, VariableNotFoundException {
 		//JELogger.debug("[projectId = " + projectId + "] [variable = " + variableId + "]" + JEMessages.UPDATING_VARIABLE,
 			//	LogCategory.RUNTIME, projectId, LogSubModule.VARIABLE, variableId);
 		JEVariable var = VariableManager.updateVariableValue(projectId, variableId, value,ignoreIfSameValue);
@@ -476,6 +476,27 @@ public class RuntimeDispatcher {
 	         compileRule(runnerRuleModel);
 		}
 		
+	}
+
+	public JEVariable getVariable(String projectId, String variableId) throws VariableNotFoundException{
+		return VariableManager.getVariableValue(projectId, variableId);
+		
+	}
+
+	public static void informUser(String message, String projectName, String workflowName) {
+		new Thread(() -> {
+			String projectId = projectNameToId.get(projectName);
+			JEProcess process = WorkflowEngineHandler.getProcessByID(projectId, workflowName);
+			JELogger.info(message, LogCategory.RUNTIME, projectId,
+					LogSubModule.WORKFLOW, process.getKey());
+		}).start();
+
+	}
+
+	public static void sendLog(LogMessage logMessage) {
+		new Thread(() -> {
+			JELogger.sendLog(logMessage);
+		}).start();
 	}
 
 }

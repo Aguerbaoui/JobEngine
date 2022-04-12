@@ -238,7 +238,7 @@ public class JERunnerAPIHandler {
         return sendRequest(requestUrl);
     }
 
-	public static JEResponse writeVariableValue(String projectId,String variableId, Object value, boolean ignoreIfSameValue) throws JERunnerErrorException {
+/*	public static JEResponse writeVariableValue(String projectId,String variableId, Object value, boolean ignoreIfSameValue) throws JERunnerErrorException {
 		 String requestUrl = runtimeManagerBaseApi + "/variable" + WRITE_TO_VARIABLE + projectId + "/" + variableId;
 	     HashMap<String, Object> payload = new HashMap<String, Object>();
 	     payload.put("value", value);
@@ -248,7 +248,7 @@ public class JERunnerAPIHandler {
 
 		
 	}
-
+*/
 	public static  JEResponse  runProjectRules(String projectId) 
 		   throws JERunnerErrorException{
 		        String requestUrl = runtimeManagerBaseApi + APIConstants.RUN_PROJECT_RULES + projectId;
