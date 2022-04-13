@@ -1,6 +1,5 @@
 package io.je.rulebuilder.components.blocks.comparison;
 
-import io.je.rulebuilder.components.blocks.getter.AttributeGetterBlock;
 import io.je.rulebuilder.models.BlockModel;
 import io.je.utilities.exceptions.RuleBuildFailedException;
 
@@ -29,14 +28,14 @@ public class OutOfRangeBlock extends ComparisonBlock {
 	@Override
 	protected void setParameters() {
 		if (minRange == null && maxRange == null) {
-			minRange = getInputRefName(1);
-			maxRange = getInputRefName(2);
+			minRange = getInputRefName(1,getInputByName(1));
+			maxRange = getInputRefName(2,getInputByName(2));
 			return;
 		} else if (maxRange == null && minRange != null) {
-			maxRange = getInputRefName(1);
+			maxRange = getInputRefName(1,getInputByName(2));
 			return;
 		} else if (minRange == null && maxRange!=null) {
-			minRange = getInputRefName(1);
+			minRange = getInputRefName(1,getInputByName(1));
 		} 
 
 	}
@@ -53,8 +52,7 @@ public class OutOfRangeBlock extends ComparisonBlock {
 	
 	@Override
 	protected String getOperationExpression() {
-		String firstOperand = (inputBlocks.get(0) instanceof AttributeGetterBlock) ? inputBlocks.get(0).getRefName(null)
-				: "doubleValue ";
+		String firstOperand =  inputBlocks.get(0).getRefName(getInputByName(0));
 
 		if (includeBounds) {
 			return "("+firstOperand + "<=" + minRange + "||" + firstOperand + ">=" + maxRange+")";

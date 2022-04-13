@@ -82,10 +82,7 @@ public abstract class PersistableBlock extends ConditionBlock {
 		return null;
 	}
 	
-	@Override
-	public String getAsOperandExpression() {
-		return null;
-	}
+	
 	
 	@Override
 	public String toString() {

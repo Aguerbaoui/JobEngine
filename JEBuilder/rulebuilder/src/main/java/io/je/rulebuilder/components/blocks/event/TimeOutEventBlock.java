@@ -33,11 +33,6 @@ public  class TimeOutEventBlock extends PersistableBlock {
 				+ ", jobEngineProjectID=" + jobEngineProjectID + ", jeObjectLastUpdate=" + jeObjectLastUpdate + "]";
 	}
 	
-	@Override
-	public String getAsOperandExpression() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 
 

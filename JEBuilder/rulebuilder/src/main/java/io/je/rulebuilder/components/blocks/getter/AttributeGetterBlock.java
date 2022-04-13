@@ -52,13 +52,7 @@ public class AttributeGetterBlock extends GetterBlock {
 
 	
 
-	@Override
-	// returns variable name holding the join attribute example $myId
-	// default value is now set to Id
-	public String getJoinId() {
 
-		return getBlockNameAsVariable() + "jobEngineElementID";
-	}
 
 	public String getAttributeVariableName() {
 		return getBlockNameAsVariable() + attributeName.replace(".", "");
@@ -96,45 +90,9 @@ public class AttributeGetterBlock extends GetterBlock {
 
 	}
 
-	/*
-	 * return example $blockName: Person( $age Keywords.toBeReplaced )
-	 */
-	@Override
-	public String getAsOperandExpression() throws RuleBuildFailedException {
-		StringBuilder expression = new StringBuilder();
 
-		if (!alreadyScripted) {
-			// input blocks can be an event block
-			if (!inputBlocks.isEmpty()) {
-				expression.append(inputBlocks.get(0).getExpression());
-				expression.append("\n");
-
-			}
-			expression.append(getBlockNameAsVariable() + " : " + classPath);
-			expression.append(" ( ");
-			if (specificInstances != null && !specificInstances.isEmpty()) {
-				expression.append("jobEngineElementID in ( " + getInstances() + ")");
-				expression.append(" , ");
-
-			}
-			if (this.primeJoinId != null) {
-				expression.append("jobEngineElementID == " + this.primeJoinId);
-				expression.append(" , ");
-
-			}
-			expression.append(getAttributeVariableName() + " : " + getattributeGetterExpression());
-			expression.append(" , ");
-
-			expression.append(Keywords.toBeReplaced); // tbrp
-			expression.append(" ) ");
-			setAlreadyScripted(true);
-		}
-		return expression.toString();
-	}
 
 	
-
-
 
 	public String getClassPath() {
 		return classPath;

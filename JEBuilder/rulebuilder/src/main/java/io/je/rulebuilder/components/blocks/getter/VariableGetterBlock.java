@@ -41,11 +41,6 @@ public  class VariableGetterBlock extends ConditionBlock {
 				+ ", jobEngineProjectID=" + jobEngineProjectID + ", jeObjectLastUpdate=" + jeObjectLastUpdate + "]";
 	}
 	
-	@Override
-	public String getAsOperandExpression() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 
 	@Override

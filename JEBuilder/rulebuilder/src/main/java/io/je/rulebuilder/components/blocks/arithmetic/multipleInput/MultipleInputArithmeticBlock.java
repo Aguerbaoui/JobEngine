@@ -24,13 +24,7 @@ public abstract class MultipleInputArithmeticBlock extends ArithmeticBlock {
 		return expression.toString();
 	}
 
-	@Override
-	public String getAsOperandExpression() throws RuleBuildFailedException {
-		StringBuilder expression = generateAllPreviousBlocksExpressions();
-		expression.append(generateBlockExpression(true));
-
-		return expression.toString();
-	}
+	
 
 	
 

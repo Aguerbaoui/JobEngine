@@ -5,6 +5,7 @@ import java.util.HashMap;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import io.je.rulebuilder.components.InstanceGetterBlockOutputIds;
 import io.je.rulebuilder.config.AttributesMapping;
 
 
@@ -43,6 +44,9 @@ public class BlockModel {
     
     @JsonProperty(AttributesMapping.BLOCKCONFIG)
    	HashMap<String,Object> blockConfiguration;
+    
+    @JsonProperty("custom_output_blocks")
+   	ArrayList<InstanceGetterBlockOutputIds> customOutputs = new ArrayList<InstanceGetterBlockOutputIds>();
     
     
 
@@ -148,6 +152,18 @@ public class BlockModel {
 
 	public void setBlockConfiguration(HashMap<String,Object> blockConfiguration) {
 		this.blockConfiguration = blockConfiguration;
+	}
+
+
+
+	public ArrayList<InstanceGetterBlockOutputIds> getCustomOutputs() {
+		return customOutputs;
+	}
+
+
+
+	public void setCustomOutputs(ArrayList<InstanceGetterBlockOutputIds> customOutputs) {
+		this.customOutputs = customOutputs;
 	}
 
 

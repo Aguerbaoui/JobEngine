@@ -49,11 +49,7 @@ public  class LogicBlock extends PersistableBlock {
 	}
 
 
-	@Override
-	public String getAsOperandExpression() {
-		// not applicable for these blocks
-		return null;
-	}
+
 
 
 

@@ -36,12 +36,7 @@ public  class NotBlock extends LogicBlock {
 	}
 
 
-	@Override
-	public String getAsOperandExpression() {
-		// not applicable for these blocks
-		return null;
-	}
-
+	
 
 
 	

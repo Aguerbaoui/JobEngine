@@ -1,12 +1,14 @@
 package io.je.rulebuilder.components.blocks;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import io.je.rulebuilder.components.CustomBlockInput;
+import io.je.rulebuilder.components.CustomBlockLink;
 import io.je.rulebuilder.components.blocks.getter.AttributeGetterBlock;
 import io.je.rulebuilder.components.blocks.getter.InstanceGetterBlock;
 import io.je.rulebuilder.components.blocks.getter.VariableGetterBlock;
@@ -32,8 +34,9 @@ public abstract class Block extends JEObject {
    @Transient
    protected List<Block> outputBlocks = new ArrayList<>();
    
+   @Transient
+	HashMap<String,CustomBlockLink> customInputs = new HashMap<String, CustomBlockLink>() ;
 
-   protected List<CustomBlockInput> customInput = new ArrayList<>();
    
    protected boolean alreadyScripted=false;
 
@@ -63,16 +66,35 @@ public abstract class Block extends JEObject {
 	
 }
 	
+	protected Block getInput(int i)
+	{
+		for(var entry : customInputs.entrySet())
+		{
+			if(entry.getValue().getOrder()==i)
+				return entry.getValue().getBlock();
+		}
+		return null;
+	}
+	
+	protected String getInputByName(int i)
+	{
+		for(var entry : customInputs.entrySet())
+		{
+			if(entry.getValue().getOrder()==i)
+				return entry.getValue().getAttributeName();
+		}
+		return null;
+	}
+	
 	public Block() {
 		
 	}
 
 	public void addInput(Block block)
 	{
-		if(!inputBlocks.contains(block))
-		{
+
 			inputBlocks.add(block);
-		}
+		
 		
 	}
 	
@@ -85,33 +107,31 @@ public abstract class Block extends JEObject {
 	}
 	
 	
+	public  void addExpression(String additionalData) throws RuleBuildFailedException
+	{
+		
+	}
+
 	
 	//return drl expression of block 
 	public  abstract String getExpression() throws RuleBuildFailedException;
+	
+	public  String getExpression(String[]...config) throws RuleBuildFailedException
+	{
+	
+			return getExpression();  
+					
+		
+	}
 
-	//return drl expression of block as a first operand (used to optimise comparison blocks in order to avoid using eval)
-	public  abstract String getAsOperandExpression() throws RuleBuildFailedException;
+	
 	
     public  String getUnitExpression() throws RuleBuildFailedException
     {
     	return getExpression();
     }
 
-	//get id variable name used in drl ex: $id
-	public  String getJoinId()
-	{
-		if(inputBlocks.size()>=2)
-		{
-			return inputBlocks.get(1).getJoinId();
 
-		}
-		if(!inputBlocks.isEmpty() && inputBlocks.get(0)!=null)
-		{			
-			return inputBlocks.get(0).getJoinId();
-		}
-		return null;
-	}
-	
 
 
 
@@ -135,6 +155,10 @@ public abstract class Block extends JEObject {
 		{//get attribute var name
 			var = (( AttributeGetterBlock )this).getAttributeVariableName();
 		}
+		if(this instanceof InstanceGetterBlock)
+		{//get attribute var name
+			var = (( InstanceGetterBlock )this).getAttributeVariableName(optional);
+		}
 		else 
 		{//get block name as variable
 			var =  this.getBlockNameAsVariable();
@@ -156,10 +180,6 @@ public abstract class Block extends JEObject {
 		}else if(inputBlocks.get(index) instanceof VariableGetterBlock)
 		{
 			var = (( VariableGetterBlock )inputBlocks.get(index)).getAttributeVariableName();
-		}else if(inputBlocks.get(index) instanceof InstanceGetterBlock)
-		{
-			//var = (( InstanceGetterBlock )inputBlocks.get(index)).getAttributeVariableName();
-
 		}
 		
 		else 
@@ -168,6 +188,31 @@ public abstract class Block extends JEObject {
 		}
 		return var;
 	}
+	
+	//get name of input of index i
+		//example : block A has 2 inputs Block B and Block C
+		//blockA.getInputRefName(1) returns "$blockC";
+		public String getInputRefName(int index,String attName)
+		{
+			String var = ""; 
+			if(inputBlocks.get(index) instanceof AttributeGetterBlock)
+			{//get attribute var name
+				var = (( AttributeGetterBlock )inputBlocks.get(index)).getAttributeVariableName();
+			}else if(inputBlocks.get(index) instanceof VariableGetterBlock)
+			{
+				var = (( VariableGetterBlock )inputBlocks.get(index)).getAttributeVariableName();
+			}else if(inputBlocks.get(index) instanceof InstanceGetterBlock)
+			{
+				var = (( InstanceGetterBlock )inputBlocks.get(index)).getAttributeVariableName(attName);
+
+			}
+			
+			else 
+			{//get block name as variable
+				var =  inputBlocks.get(index).getBlockNameAsVariable();
+			}
+			return var;
+		}
 	
 	//getters and setters
 
@@ -336,6 +381,15 @@ public String getPersistence() {
 	}
 	return null;
 }
+
+public HashMap<String, CustomBlockLink> getCustomInputs() {
+	return customInputs;
+}
+
+public void setCustomInputs(HashMap<String, CustomBlockLink> customInputs) {
+	this.customInputs = customInputs;
+}
+
 
 
 

@@ -30,11 +30,7 @@ public  class AcceptEventBlock extends ConditionBlock {
 				+ ", jobEngineProjectID=" + jobEngineProjectID + ", jeObjectLastUpdate=" + jeObjectLastUpdate + "]";
 	}
 	
-	@Override
-	public String getAsOperandExpression() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+
 
 	@Override
 	public String getExpression() {

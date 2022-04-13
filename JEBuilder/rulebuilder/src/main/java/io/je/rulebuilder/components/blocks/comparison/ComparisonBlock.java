@@ -99,57 +99,12 @@ public  class ComparisonBlock extends PersistableBlock {
 	}
 	protected String getOperationExpression()
 	{
-		String firstOperand = "";
-		if(inputBlocks.get(0) instanceof AttributeGetterBlock)
-		{
-			firstOperand = inputBlocks.get(0).getRefName(null);
-		}
-		else
-		{
-			if(inputBlocks.get(0) instanceof SingleInputArithmeticBlock)
-			{
-				SingleInputArithmeticBlock input = (SingleInputArithmeticBlock) inputBlocks.get(0);
-				if(input.getDefaultType().equals("string"))
-				{
-					firstOperand = "this ";
-				}
-				else
-				{
-					firstOperand = "doubleValue ";
-				}
-						
-			}
-		}
+		String firstOperand = inputBlocks.get(0).getRefName(getInputByName(0));
 		return firstOperand+ getOperator() + formatOperator(threshold);
 
 	}
 	
-	protected String getOperationExpression(String optional1,String optional2)
-	{
-		String firstOperand = "";
-		if(inputBlocks.get(0) instanceof InstanceGetterBlock)
-		{
-			firstOperand = inputBlocks.get(0).getRefName(optional1);
-		}
-		else
-		{
-			if(inputBlocks.get(0) instanceof SingleInputArithmeticBlock)
-			{
-				SingleInputArithmeticBlock input = (SingleInputArithmeticBlock) inputBlocks.get(0);
-				if(input.getDefaultType().equals("string"))
-				{
-					firstOperand = "this ";
-				}
-				else
-				{
-					firstOperand = "doubleValue ";
-				}
-						
-			}
-		}
-		return firstOperand+ getOperator() + formatOperator(threshold);
-
-	}
+	
 	
 	public ComparisonBlock() {
 		super();
@@ -159,7 +114,7 @@ public  class ComparisonBlock extends PersistableBlock {
 	protected void setParameters() {
 		if(inputBlockIds.size()>1)
 		{
-			threshold=getInputRefName(1);
+			threshold=getInputRefName(1,getInputByName(1));
 		}
 		
 	}
@@ -172,41 +127,65 @@ public  class ComparisonBlock extends PersistableBlock {
 
 		checkBlockConfiguration();
 		setParameters();
+		
+		for(var input : inputBlocks )
+		{
+			expression.append(input.getExpression());
+			expression.append("\n");
+			
+		}
+		expression.append("eval(");
+		expression.append(getOperationExpression());
+		expression.append(")");
+
 
 		// single input
-		if (inputBlocks.size() == 1) {
+	/*	if (inputBlocks.size() == 1) {
 			String inputExpression = inputBlocks.get(0).getAsOperandExpression().replaceAll(Keywords.toBeReplaced,
 					getOperationExpression());
 			expression.append(inputExpression);
 
 			//in range / out of range blocks
 		} else if (inputBlocks.size() == 3) {
-			String firstOperand = inputBlocks.get(1).getExpression();
-			expression.append(firstOperand);
-			expression.append("\n");
-			String thirdOperand = inputBlocks.get(2).getExpression();
-			expression.append(thirdOperand);
-			expression.append("\n");
-			String secondOperand = inputBlocks.get(0).getAsOperandExpression().replaceAll(Keywords.toBeReplaced,
-					getOperationExpression());
-			expression.append(secondOperand);
+			if(inputBlocks.size()== inputBlocks.stream().distinct().count() )
+			{
+				String firstOperand = inputBlocks.get(1).getExpression();
+				expression.append(firstOperand);
+				expression.append("\n");
+				String thirdOperand = inputBlocks.get(2).getExpression();
+				expression.append(thirdOperand);
+				expression.append("\n");
+				String secondOperand = inputBlocks.get(0).getAsOperandExpression().replaceAll(Keywords.toBeReplaced,
+						getOperationExpression());
+				expression.append(secondOperand);
+			}else {
+				
+			}
 
 			//comparison blocks
 		} else if (inputBlocks.size() == 2) {
-			String firstOperand = inputBlocks.get(1).getExpression();
-			expression.append(firstOperand);
-			String secondOperand = "";
-			expression.append("\n");
-			secondOperand = inputBlocks.get(0).getAsOperandExpression().replaceAll(Keywords.toBeReplaced,
-					getOperationExpression());
-			expression.append(secondOperand);
-		}
+			if(!inputBlocks.get(0).equals(inputBlocks.get(1)))
+			{
+				String firstOperand = inputBlocks.get(1).getExpression();
+				expression.append(firstOperand);
+				String secondOperand = "";
+				expression.append("\n");
+				secondOperand = inputBlocks.get(0).getAsOperandExpression().replaceAll(Keywords.toBeReplaced,
+						getOperationExpression());
+				expression.append(secondOperand);
+			}
+			else {
+				String operation = getInputRefName(0, getInputByName(0)) + operator + getInputRefName(0, getInputByName(1));
+				inputBlocks.get(0).addExpression(operation);
+				expression.append(inputBlocks.get(0).getExpression());
+			}
+		}*/
 		return expression.toString();
 	}
 
 	//check number of inputs
 	protected void checkBlockConfiguration() throws RuleBuildFailedException {
-		if (threshold == null && inputBlocks.size() != 2) {
+		if (threshold == null && inputBlockIds.size() != 2) {
 			throw new RuleBuildFailedException(blockName + " is not configured properly");
 		}
 		

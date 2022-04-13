@@ -33,11 +33,11 @@ public abstract class SingleInputArithmeticBlock extends ArithmeticBlock {
 			switch(level)
 			{
 			case 0:
-				return " Number() from " +  getFormula() ;
+				return " Double() from " +  getFormula() ;
 			case 1:
-				return " Number(" + Keywords.toBeReplaced +") from " + getFormula() ;
+				return " Double(" + Keywords.toBeReplaced +") from " + getFormula() ;
 			default: 
-				return " Number() from " + getFormula() ;
+				return " Double() from " + getFormula() ;
 			
 			}
 		}else if(type.equalsIgnoreCase("string") )
@@ -57,7 +57,7 @@ public abstract class SingleInputArithmeticBlock extends ArithmeticBlock {
 			return "Date() from " + getFormula();
 		}
 		
-		 return " Number() from " + getFormula() ;
+		 return " Double() from " + getFormula() ;
 	}
 
 
@@ -75,20 +75,7 @@ public abstract class SingleInputArithmeticBlock extends ArithmeticBlock {
 		return expression.toString();
 	}
 
-	@Override
-	public String getAsOperandExpression() throws RuleBuildFailedException {
-		StringBuilder expression = new StringBuilder();
-		expression.append("\n");
-		expression.append(inputBlocks.get(0).getExpression());
-		expression.append("\n");
 	
-		expression.append( getBlockNameAsVariable()+" : " +getArithmeticFormula (1,defaultType));
-		if(stopExecutionIfInvalidInput)
-		{
-			expression.append("\n"+evaluateExecution(asDouble(getInputRefName(0))));
-		}
-		return expression.toString();
-	}
 
 
 
