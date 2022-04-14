@@ -153,7 +153,7 @@ public  class ComparisonBlock extends PersistableBlock {
 			expression.append(inputExpression);
 
 			//in range / out of range blocks
-		} else if (inputBlocks.size() == 3) {
+		} else if (inputBlocks.size() == 3 || this instanceof InRangeBlock || this instanceof OutOfRangeBlock) {
 			for(var input : inputBlocks)
 			{
 				expression.append(input.getExpression());
