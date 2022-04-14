@@ -4,6 +4,7 @@ package io.je.rulebuilder.components.blocks.event;
 import io.je.rulebuilder.components.blocks.ConditionBlock;
 import io.je.rulebuilder.config.AttributesMapping;
 import io.je.rulebuilder.models.BlockModel;
+import io.je.utilities.exceptions.RuleBuildFailedException;
 
 public  class AcceptEventBlock extends ConditionBlock {
 	
@@ -37,7 +38,10 @@ public  class AcceptEventBlock extends ConditionBlock {
 		return "$"+blockName.replaceAll("\\s+", "")+" : JEEvent ( jobEngineElementID == \""+eventId +"\", isTriggered() )";
 	}
 
-
+	@Override
+	public String getAsOperandExpression() throws RuleBuildFailedException {
+		throw new RuleBuildFailedException(this.blockName+" cannot be linked to comparison block.");
+	}
 
 
 }

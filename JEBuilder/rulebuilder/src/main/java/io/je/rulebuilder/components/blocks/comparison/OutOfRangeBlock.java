@@ -1,5 +1,6 @@
 package io.je.rulebuilder.components.blocks.comparison;
 
+import io.je.rulebuilder.components.blocks.getter.InstanceGetterBlock;
 import io.je.rulebuilder.models.BlockModel;
 import io.je.utilities.exceptions.RuleBuildFailedException;
 
@@ -52,7 +53,9 @@ public class OutOfRangeBlock extends ComparisonBlock {
 	
 	@Override
 	protected String getOperationExpression() {
-		String firstOperand =  inputBlocks.get(0).getRefName(getInputByName(0));
+
+		String firstOperand = (inputBlocks.get(0) instanceof InstanceGetterBlock) ? inputBlocks.get(0).getRefName(getInputByName(0))
+				: "doubleValue ";
 
 		if (includeBounds) {
 			return "("+firstOperand + "<=" + minRange + "||" + firstOperand + ">=" + maxRange+")";

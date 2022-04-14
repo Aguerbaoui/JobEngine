@@ -67,7 +67,8 @@ public abstract class SingleInputArithmeticBlock extends ArithmeticBlock {
 		expression.append("\n");
 		expression.append(inputBlocks.get(0).getExpression());
 		expression.append("\n");
-		expression.append( getBlockNameAsVariable()+" : " +getArithmeticFormula (0,defaultType));
+		int x = includesOperation? 1:0;
+		expression.append( getBlockNameAsVariable()+" : " +getArithmeticFormula (x,defaultType));
 		if(stopExecutionIfInvalidInput)
 		{
 			expression.append("\n"+evaluateExecution(asDouble(getInputRefName(0))));
@@ -76,7 +77,20 @@ public abstract class SingleInputArithmeticBlock extends ArithmeticBlock {
 	}
 
 	
-
+	@Override
+	public String getAsOperandExpression() throws RuleBuildFailedException {
+		StringBuilder expression = new StringBuilder();
+		expression.append("\n");
+		expression.append(inputBlocks.get(0).getExpression());
+		expression.append("\n");
+	
+		expression.append( getBlockNameAsVariable()+" : " +getArithmeticFormula (1,defaultType));
+		if(stopExecutionIfInvalidInput)
+		{
+			expression.append("\n"+evaluateExecution(asDouble(getInputRefName(0,getInputByName(0)))));
+		}
+		return expression.toString();
+	}
 
 
 	

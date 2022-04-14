@@ -4,7 +4,9 @@ package io.je.rulebuilder.components.blocks.comparison;
 import java.util.List;
 
 import io.je.rulebuilder.components.blocks.PersistableBlock;
+import io.je.rulebuilder.components.blocks.getter.InstanceGetterBlock;
 import io.je.rulebuilder.config.AttributesMapping;
+import io.je.rulebuilder.config.Keywords;
 import io.je.rulebuilder.models.BlockModel;
 import io.je.utilities.exceptions.RuleBuildFailedException;
 import io.je.utilities.log.JELogger;
@@ -115,7 +117,7 @@ public  class ComparisonBlock extends PersistableBlock {
 	
 	
 
-	@Override
+	/*@Override
 	public String getExpression() throws RuleBuildFailedException {
 		StringBuilder expression = new StringBuilder();
 
@@ -133,34 +135,46 @@ public  class ComparisonBlock extends PersistableBlock {
 		expression.append(")");
 
 
+		return expression.toString();
+	}*/
+	
+	
+	@Override
+	public String getExpression() throws RuleBuildFailedException {
+		StringBuilder expression = new StringBuilder();
+
+		checkBlockConfiguration();
+		setParameters();
+
 		// single input
-	/*	if (inputBlocks.size() == 1) {
+		if (inputBlocks.size() == 1) {
 			String inputExpression = inputBlocks.get(0).getAsOperandExpression().replaceAll(Keywords.toBeReplaced,
 					getOperationExpression());
 			expression.append(inputExpression);
 
 			//in range / out of range blocks
 		} else if (inputBlocks.size() == 3) {
-			if(inputBlocks.size()== inputBlocks.stream().distinct().count() )
+			for(var input : inputBlocks)
 			{
-				String firstOperand = inputBlocks.get(1).getExpression();
-				expression.append(firstOperand);
+				expression.append(input.getExpression());
 				expression.append("\n");
-				String thirdOperand = inputBlocks.get(2).getExpression();
-				expression.append(thirdOperand);
-				expression.append("\n");
-				String secondOperand = inputBlocks.get(0).getAsOperandExpression().replaceAll(Keywords.toBeReplaced,
-						getOperationExpression());
-				expression.append(secondOperand);
-			}else {
-				
+
 			}
+			expression.append("eval(");
+			expression.append(getOperationExpression());
+			expression.append(")");
 
 			//comparison blocks
 		} else if (inputBlocks.size() == 2) {
-			if(!inputBlocks.get(0).equals(inputBlocks.get(1)))
+			
+			if(inputBlocks.get(0).equals(inputBlocks.get(1)) && inputBlocks.get(0) instanceof InstanceGetterBlock )
 			{
-				String firstOperand = inputBlocks.get(1).getExpression();
+				expression.append(inputBlocks.get(0).getAsOperandExpression().replaceAll(Keywords.toBeReplaced,
+						getOperationExpression()));
+			}else {
+				inputBlocks.get(1).setIncludeOperation(true);
+				String firstOperand = inputBlocks.get(1).getExpression().replaceAll(Keywords.toBeReplaced,
+						getOperationExpression());
 				expression.append(firstOperand);
 				String secondOperand = "";
 				expression.append("\n");
@@ -168,12 +182,9 @@ public  class ComparisonBlock extends PersistableBlock {
 						getOperationExpression());
 				expression.append(secondOperand);
 			}
-			else {
-				String operation = getInputRefName(0, getInputByName(0)) + operator + getInputRefName(0, getInputByName(1));
-				inputBlocks.get(0).addExpression(operation);
-				expression.append(inputBlocks.get(0).getExpression());
-			}
-		}*/
+			
+			
+		}
 		return expression.toString();
 	}
 
@@ -261,14 +272,9 @@ public  class ComparisonBlock extends PersistableBlock {
 	}
 
 	@Override
-	 public  String getUnitExpression() throws RuleBuildFailedException
-	    {
-	    	StringBuilder expression = new StringBuilder();
-	    	expression.append("");
-	    	return null;
-	    }
-
-	
+	public String getAsOperandExpression() throws RuleBuildFailedException {
+		throw new RuleBuildFailedException(this.blockName+" cannot be linked to comparison block");
+	}
 	
 
 }

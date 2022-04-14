@@ -146,6 +146,7 @@ public class RuleBuilder {
 		Set<Block> rootBlocks = getRootBlocks(uRule);
 		String subRulePrefix = IdManager.generateSubRulePrefix(uRule.getJobEngineElementID());
 		for (Block root : rootBlocks) {
+			root.setIncludeOperation(false);
 			uRule.getBlocks().resetAllBlocks();
 			scriptedRuleid = subRulePrefix + uRule.getJobEngineElementName() + ++scriptedRulesCounter;
 			String condition = "";

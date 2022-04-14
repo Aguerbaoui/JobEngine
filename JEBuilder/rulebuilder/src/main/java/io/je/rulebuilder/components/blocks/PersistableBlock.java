@@ -3,6 +3,7 @@ package io.je.rulebuilder.components.blocks;
 import java.util.List;
 
 import io.je.rulebuilder.components.enumerations.TimePersistenceUnit;
+import io.je.utilities.exceptions.RuleBuildFailedException;
 
 /*
  * blocks that can be persisted in time
@@ -82,7 +83,10 @@ public abstract class PersistableBlock extends ConditionBlock {
 		return null;
 	}
 	
-	
+	@Override
+	public String getAsOperandExpression() throws RuleBuildFailedException {
+		return null;
+	}
 	
 	@Override
 	public String toString() {

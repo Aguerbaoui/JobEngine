@@ -3,6 +3,7 @@ package io.je.rulebuilder.components.blocks.getter;
 
 import io.je.rulebuilder.components.blocks.ConditionBlock;
 import io.je.rulebuilder.models.BlockModel;
+import io.je.utilities.exceptions.RuleBuildFailedException;
 
 /*
  * operation Id 4005
@@ -55,6 +56,12 @@ public  class VariableGetterBlock extends ConditionBlock {
 
 	public String getAttributeVariableName() {
 		return blockName.replaceAll("\\s+", "")+"Value";
+	}
+
+	@Override
+	public String getAsOperandExpression() throws RuleBuildFailedException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

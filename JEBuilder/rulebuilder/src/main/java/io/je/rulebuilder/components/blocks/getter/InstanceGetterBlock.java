@@ -28,8 +28,8 @@ public class InstanceGetterBlock extends GetterBlock{
 	@Transient
 	ObjectMapper mapper = new ObjectMapper();
 	
-	@Transient 
-	List<String> additionalExpressions = new ArrayList<String>();
+
+
 	
 	public InstanceGetterBlock()
 	{
@@ -57,19 +57,58 @@ public class InstanceGetterBlock extends GetterBlock{
 		}
 
 	}
+	
+	
+	
+	/*
+	 * return example $blockName: Person( $age Keywords.toBeReplaced )
+	 */
+	@Override
+	public String getAsOperandExpression() throws RuleBuildFailedException {
+		StringBuilder expression = new StringBuilder();
+
+		if (!alreadyScripted) {
+			// input blocks can be an event block
+			if (!inputBlocks.isEmpty()) {
+				expression.append(inputBlocks.get(0).getExpression());
+				expression.append("\n");
+
+			}
+			expression.append(getBlockNameAsVariable() + " : " + classPath);
+			expression.append(" ( ");
+			if (specificInstances != null && !specificInstances.isEmpty()) {
+				expression.append("jobEngineElementID in ( " + getInstances() + ")");
+				expression.append(" , ");
+
+			}
+			
+			for(String attributeName : attributeNames)
+			{
+				expression.append(getAttributeVariableName(attributeName));
+				expression.append(" : ");
+				expression.append(attributeName);
+				expression.append(" , ");
+
+
+			}
+			expression.replace(expression.length()-3, expression.length()-1, "");
+
+			expression.append(" , ");
+
+			expression.append(Keywords.toBeReplaced); // tbrp
+			expression.append(" ) ");
+			setAlreadyScripted(true);
+		}
+		return expression.toString();
+	}
+	
+	
 
 	public String getAttributeVariableName(String attributeName) {
 		return getBlockNameAsVariable() + attributeName.replace(".", "");
 	}
 	
-	@Override
-	public  void addExpression(String additionalData) throws RuleBuildFailedException
-	{
-		if(additionalData!=null && !additionalData.equals(""))
-		{
-			additionalExpressions.add(additionalData);
-		}
-	}
+	
 	
 	
 	@Override
@@ -85,6 +124,7 @@ public class InstanceGetterBlock extends GetterBlock{
 			expression.append(" ( ");
 			if (specificInstances != null && !specificInstances.isEmpty()) {
 				expression.append("jobEngineElementID in ( " + getInstances() + ")");
+				expression.append(" , ");
 
 			}
 			
@@ -100,11 +140,7 @@ public class InstanceGetterBlock extends GetterBlock{
 
 				}
 				expression.replace(expression.length()-3, expression.length()-1, "");
-				for (String exp : additionalExpressions)
-				{
-					expression.append(" , ");
-					expression.append(exp);
-				}
+				
 
 				
 			

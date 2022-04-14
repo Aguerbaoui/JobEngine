@@ -34,6 +34,8 @@ public abstract class Block extends JEObject {
    @Transient
 	HashMap<String,CustomBlockLink> customInputs = new HashMap<String, CustomBlockLink>() ;
 
+	@Transient
+	protected boolean includesOperation = false;
    
    protected boolean alreadyScripted=false;
 
@@ -104,29 +106,17 @@ public abstract class Block extends JEObject {
 	}
 	
 	
-	public  void addExpression(String additionalData) throws RuleBuildFailedException
-	{
-		
-	}
+
 
 	
 	//return drl expression of block 
 	public  abstract String getExpression() throws RuleBuildFailedException;
 	
-	public  String getExpression(String[]...config) throws RuleBuildFailedException
-	{
-	
-			return getExpression();  
-					
-		
-	}
+	public  abstract String getAsOperandExpression() throws RuleBuildFailedException;
 
 	
 	
-    public  String getUnitExpression() throws RuleBuildFailedException
-    {
-    	return getExpression();
-    }
+
 
 
 
@@ -377,6 +367,20 @@ public HashMap<String, CustomBlockLink> getCustomInputs() {
 public void setCustomInputs(HashMap<String, CustomBlockLink> customInputs) {
 	this.customInputs = customInputs;
 }
+
+public void setIncludeOperation(boolean includeOperation) {
+	if(this.inputBlocks.isEmpty())
+	{
+		this.includesOperation=includeOperation;
+		return;
+	}
+	for(Block  b : this.inputBlocks)
+	{
+		this.includesOperation=includeOperation;
+		b.setIncludeOperation(includeOperation);
+	}
+}
+
 
 
 

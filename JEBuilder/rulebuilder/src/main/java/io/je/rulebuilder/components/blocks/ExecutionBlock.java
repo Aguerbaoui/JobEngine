@@ -31,6 +31,9 @@ public abstract class ExecutionBlock extends Block {
 	}
 	
 	
-
+	@Override
+	public String getAsOperandExpression() {
+		return null;
+	}
 	
 }
