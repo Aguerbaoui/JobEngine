@@ -42,9 +42,7 @@ public class InstanceGetterBlock extends GetterBlock{
 		try {
 			classId = (String) blockModel.getBlockConfiguration().get(AttributesMapping.CLASSID);
 			classPath = (String) blockModel.getBlockConfiguration().get(AttributesMapping.CLASSNAME);
-			attributeNames = new ArrayList<String>();
-			attributeNames.add("att1");
-			attributeNames.add("att2");
+			attributeNames = (List<String>) blockModel.getBlockConfiguration().get("attribute_name");
 			customOutputsIds = blockModel.getCustomOutputs();
 			specificInstances = (List<String>) blockModel.getBlockConfiguration()
 					.get(AttributesMapping.SPECIFICINSTANCES);
@@ -143,6 +141,15 @@ public class InstanceGetterBlock extends GetterBlock{
 		this.customOutputs = customOutputs;
 	}
 
+	public List<String> getSpecificInstances() {
+		return specificInstances;
+	}
+
+	public void setSpecificInstances(List<String> specificInstances) {
+		this.specificInstances = specificInstances;
+	}
+
+	
 
 	
 	

@@ -7,13 +7,10 @@ import java.util.List;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import io.je.rulebuilder.components.CustomBlockInput;
 import io.je.rulebuilder.components.CustomBlockLink;
-import io.je.rulebuilder.components.blocks.getter.AttributeGetterBlock;
 import io.je.rulebuilder.components.blocks.getter.InstanceGetterBlock;
 import io.je.rulebuilder.components.blocks.getter.VariableGetterBlock;
 import io.je.utilities.exceptions.RuleBuildFailedException;
-import io.je.utilities.log.JELogger;
 import io.je.utilities.runtimeobject.JEObject;
 
 /*
@@ -151,10 +148,7 @@ public abstract class Block extends JEObject {
 	public String getRefName(String optional)
 	{
 		String var = ""; 
-		if(this instanceof AttributeGetterBlock)
-		{//get attribute var name
-			var = (( AttributeGetterBlock )this).getAttributeVariableName();
-		}
+		
 		if(this instanceof InstanceGetterBlock)
 		{//get attribute var name
 			var = (( InstanceGetterBlock )this).getAttributeVariableName(optional);
@@ -174,10 +168,7 @@ public abstract class Block extends JEObject {
 	public String getInputRefName(int index)
 	{
 		String var = ""; 
-		if(inputBlocks.get(index) instanceof AttributeGetterBlock)
-		{//get attribute var name
-			var = (( AttributeGetterBlock )inputBlocks.get(index)).getAttributeVariableName();
-		}else if(inputBlocks.get(index) instanceof VariableGetterBlock)
+		if(inputBlocks.get(index) instanceof VariableGetterBlock)
 		{
 			var = (( VariableGetterBlock )inputBlocks.get(index)).getAttributeVariableName();
 		}
@@ -195,10 +186,7 @@ public abstract class Block extends JEObject {
 		public String getInputRefName(int index,String attName)
 		{
 			String var = ""; 
-			if(inputBlocks.get(index) instanceof AttributeGetterBlock)
-			{//get attribute var name
-				var = (( AttributeGetterBlock )inputBlocks.get(index)).getAttributeVariableName();
-			}else if(inputBlocks.get(index) instanceof VariableGetterBlock)
+			if(inputBlocks.get(index) instanceof VariableGetterBlock)
 			{
 				var = (( VariableGetterBlock )inputBlocks.get(index)).getAttributeVariableName();
 			}else if(inputBlocks.get(index) instanceof InstanceGetterBlock)

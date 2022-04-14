@@ -1,4 +1,4 @@
-package io.je.rulebuilder.components.blocks.getter;
+/*package io.je.rulebuilder.components.blocks.getter;
 
 import java.util.List;
 
@@ -61,7 +61,7 @@ public class AttributeGetterBlock extends GetterBlock {
 	/*
 	 * returns drl expression example : $blockname : Person(id==2, $age:age)
 	 */
-	@Override
+/*	@Override
 	public String getExpression() throws RuleBuildFailedException {
 		StringBuilder expression = new StringBuilder();
 		if (!alreadyScripted) {
@@ -122,7 +122,7 @@ public class AttributeGetterBlock extends GetterBlock {
 		 * + a[a.length - 1].substring(1); a[a.length - 1] = "get" + a[a.length - 1] +
 		 * "()"; s = s + a[a.length - 1]; return s;
 		 */
-	}
+/*	}
 
 	public String getClassId() {
 		return classId;
@@ -153,3 +153,4 @@ public class AttributeGetterBlock extends GetterBlock {
 	}
 
 }
+*/

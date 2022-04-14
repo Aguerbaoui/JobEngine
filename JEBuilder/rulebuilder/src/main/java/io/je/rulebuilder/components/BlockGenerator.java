@@ -15,7 +15,6 @@ import io.je.rulebuilder.components.blocks.execution.AttachedSetterBlock;
 import io.je.rulebuilder.components.blocks.execution.LinkedSetterBlock;
 import io.je.rulebuilder.components.blocks.execution.LinkedVariableSetterBlock;
 import io.je.rulebuilder.components.blocks.execution.TriggerEventBlock;
-import io.je.rulebuilder.components.blocks.getter.AttributeGetterBlock;
 import io.je.rulebuilder.components.blocks.getter.InstanceGetterBlock;
 import io.je.rulebuilder.components.blocks.getter.VariableGetterBlock;
 import io.je.rulebuilder.components.blocks.logic.AndBlock;

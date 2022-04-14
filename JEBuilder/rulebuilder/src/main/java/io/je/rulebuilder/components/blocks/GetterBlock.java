@@ -40,4 +40,30 @@ public abstract class GetterBlock extends ConditionBlock {
 				+ jobEngineProjectID + ", jeObjectLastUpdate=" + jeObjectLastUpdate + "]";
 	}
 
+	public String getClassId() {
+		return classId;
+	}
+
+	public void setClassId(String classId) {
+		this.classId = classId;
+	}
+
+	public String getClassPath() {
+		return classPath;
+	}
+
+	public void setClassPath(String classPath) {
+		this.classPath = classPath;
+	}
+
+	public List<String> getSpecificInstances() {
+		return specificInstances;
+	}
+
+	public void setSpecificInstances(List<String> specificInstances) {
+		this.specificInstances = specificInstances;
+	}
+	
+	
+
 }

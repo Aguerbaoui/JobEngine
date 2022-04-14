@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 import io.je.rulebuilder.components.blocks.Block;
-import io.je.rulebuilder.components.blocks.getter.AttributeGetterBlock;
+import io.je.rulebuilder.components.blocks.getter.InstanceGetterBlock;
 
 /*
  * Rules defined graphically by the user.
@@ -67,9 +67,9 @@ public class UserDefinedRule extends JERule {
 		{
 			
 			
-			if(block instanceof AttributeGetterBlock)
+			if(block instanceof InstanceGetterBlock)
 			{
-				AttributeGetterBlock b = (AttributeGetterBlock)block;
+				InstanceGetterBlock b = (InstanceGetterBlock)block;
 				if(b.getSpecificInstances().isEmpty())
 				{
 					addTopic(b.getClassId(),this.getTopics());

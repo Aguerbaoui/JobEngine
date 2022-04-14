@@ -9,14 +9,11 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Optional;
 import java.util.Set;
 
 import org.apache.commons.text.StringSubstitutor;
 import org.drools.template.ObjectDataCompiler;
 
-import io.je.rulebuilder.components.GenericBlockSummary;
 import io.je.rulebuilder.components.JERule;
 import io.je.rulebuilder.components.RuleParameters;
 import io.je.rulebuilder.components.ScriptedRule;
@@ -24,11 +21,7 @@ import io.je.rulebuilder.components.UserDefinedRule;
 import io.je.rulebuilder.components.blocks.Block;
 import io.je.rulebuilder.components.blocks.ConditionBlock;
 import io.je.rulebuilder.components.blocks.ExecutionBlock;
-import io.je.rulebuilder.components.blocks.GenericBlockSet;
 import io.je.rulebuilder.components.blocks.PersistableBlock;
-import io.je.rulebuilder.components.blocks.execution.LinkedSetterBlock;
-import io.je.rulebuilder.components.blocks.execution.SetterBlock;
-import io.je.rulebuilder.components.blocks.getter.AttributeGetterBlock;
 import io.je.rulebuilder.components.blocks.logic.OrBlock;
 import io.je.utilities.apis.JERunnerAPIHandler;
 import io.je.utilities.beans.JEResponse;
@@ -186,74 +179,11 @@ public class RuleBuilder {
 		return scriptedRules;
 	}
 
-	private static GenericBlockSummary eliminateCombinatoryBehaviour(GenericBlockSummary allGenericBlocks, String primeJoinId  ) {
+	
 
-		if(allGenericBlocks.getNumberOfClasses()==1 && allGenericBlocks.allBlocksAreGeneric())
-		{
-			GenericBlockSet set= allGenericBlocks.getSingleBlockSet();
-			if(!set.isAllBlocksAreSetters())
-			{
-				Optional<Block> b = set.getIdentifier(primeJoinId);
-				if(b.isPresent())
-				{
-				    set.getValue().remove(b.get());
-					set.getBlocks().stream().forEach(bl->bl.addSpecificInstance(primeJoinId + ".getJobEngineElementID()"));
-					set.getValue().add(b.get());
-				}
-			}
-		}
+	
 
 
-		return allGenericBlocks;
-
-	}
-
-	private static void resetJoinIds(GenericBlockSummary allGenericBlocks) {
-
-		if(allGenericBlocks.getNumberOfClasses()==1 && allGenericBlocks.allBlocksAreGeneric())
-		{
-			GenericBlockSet set= allGenericBlocks.getSingleBlockSet();
-			if(!set.isAllBlocksAreSetters())
-			{
-				set.getBlocks().stream().forEach(bl->bl.removeSpecificInstance());
-			}
-		}
-
-	}
-
-	/*
-	 * Group all the getter blocks by Id
-	 */
-	private static GenericBlockSummary getAllGenericGetterBlocksByClassId(Block root,
-			GenericBlockSummary allAttributeBlocks) {
-
-		for (Block input : root.getInputBlocks()) {
-			if (input instanceof AttributeGetterBlock) {
-				AttributeGetterBlock getter = (AttributeGetterBlock) input;
-				allAttributeBlocks.addGetterBlock(getter);
-			} else {
-				allAttributeBlocks = getAllGenericGetterBlocksByClassId(input, allAttributeBlocks);
-			}
-		}
-		return allAttributeBlocks;
-	}
-
-	/*
-	 * Group all the setter blocks by Id
-	 */
-	private static GenericBlockSummary getAllSetterBlocksByClassId(Block root,
-			GenericBlockSummary allAttributeBlocks) {
-
-		for (Block output : root.getOutputBlocks()) {
-			if (output instanceof SetterBlock  ) {
-				allAttributeBlocks.addSetterBlock((SetterBlock)output);
-			}
-			if (output instanceof LinkedSetterBlock  ) {
-				allAttributeBlocks.addSetterBlock((LinkedSetterBlock)output);
-			}
-		}
-		return allAttributeBlocks;
-	}
 
 	/* generate DRL for this rule */
 

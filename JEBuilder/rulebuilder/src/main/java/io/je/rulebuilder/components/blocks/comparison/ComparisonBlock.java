@@ -3,14 +3,8 @@ package io.je.rulebuilder.components.blocks.comparison;
 
 import java.util.List;
 
-import org.springframework.data.annotation.Transient;
-
 import io.je.rulebuilder.components.blocks.PersistableBlock;
-import io.je.rulebuilder.components.blocks.arithmetic.singleinput.SingleInputArithmeticBlock;
-import io.je.rulebuilder.components.blocks.getter.AttributeGetterBlock;
-import io.je.rulebuilder.components.blocks.getter.InstanceGetterBlock;
 import io.je.rulebuilder.config.AttributesMapping;
-import io.je.rulebuilder.config.Keywords;
 import io.je.rulebuilder.models.BlockModel;
 import io.je.utilities.exceptions.RuleBuildFailedException;
 import io.je.utilities.log.JELogger;
