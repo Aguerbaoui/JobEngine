@@ -102,42 +102,42 @@ public class ProjectService {
 
 		try {
 			stopProject(id);
-		} catch ( ProjectNotFoundException | ProjectStopException | LicenseNotActiveException  | ExecutionException e) {
+		} catch (ProjectNotFoundException | ProjectStopException | LicenseNotActiveException | ExecutionException e) {
 		} catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
 		}
-		JELogger.info("[project= " + loadedProjects.get(id).getProjectName() + "]" + JEMessages.DELETING_PROJECT, LogCategory.DESIGN_MODE, id,
-				LogSubModule.JEBUILDER, null);
+		JELogger.info("[project= " + loadedProjects.get(id).getProjectName() + "]" + JEMessages.DELETING_PROJECT,
+				LogCategory.DESIGN_MODE, id, LogSubModule.JEBUILDER, null);
 		try {
 			JERunnerAPIHandler.cleanProjectDataFromRunner(id);
-		} catch ( JERunnerErrorException e) {
+		} catch (JERunnerErrorException e) {
 		}
-
 
 		try {
 			ruleService.deleteAll(id);
 		} catch (Exception e) {
-			JELogger.error("Error deleting rules",LogCategory.DESIGN_MODE,id, LogSubModule.JEBUILDER, id);
+			JELogger.error("Error deleting rules", LogCategory.DESIGN_MODE, id, LogSubModule.JEBUILDER, id);
 		}
 		try {
 			workflowService.deleteAll(id);
 		} catch (Exception e) {
-			JELogger.error("Error deleting workflows",LogCategory.DESIGN_MODE,id, LogSubModule.JEBUILDER, id);
+			JELogger.error("Error deleting workflows", LogCategory.DESIGN_MODE, id, LogSubModule.JEBUILDER, id);
 		}
 		try {
 			eventService.deleteEvents(id, null);
 		} catch (Exception e) {
-			JELogger.error("Error deleting events",LogCategory.DESIGN_MODE,id, LogSubModule.JEBUILDER, id);
+			JELogger.error("Error deleting events", LogCategory.DESIGN_MODE, id, LogSubModule.JEBUILDER, id);
 		}
 		try {
 			variableService.deleteVariables(id, null);
 		} catch (Exception e) {
-			JELogger.error("Error deleting variables",LogCategory.DESIGN_MODE,id, LogSubModule.JEBUILDER, id);
+			JELogger.error("Error deleting variables", LogCategory.DESIGN_MODE, id, LogSubModule.JEBUILDER, id);
 		}
 		try {
 			projectRepository.deleteById(id);
 		} catch (Exception e) {
-			JELogger.error("Error deleting project from database",LogCategory.DESIGN_MODE,id, LogSubModule.JEBUILDER, id);
+			JELogger.error("Error deleting project from database", LogCategory.DESIGN_MODE, id, LogSubModule.JEBUILDER,
+					id);
 		}
 
 		loadedProjects.remove(id);
@@ -157,7 +157,8 @@ public class ProjectService {
 	 * Return a project loaded in memory
 	 */
 
-	public JEProject getProjectById(String id) throws ProjectNotFoundException, ProjectLoadException, LicenseNotActiveException {
+	public JEProject getProjectById(String id)
+			throws ProjectNotFoundException, ProjectLoadException, LicenseNotActiveException {
 		return loadedProjects.containsKey(id) ? loadedProjects.get(id) : this.getProject(id);
 
 	}
@@ -175,16 +176,15 @@ public class ProjectService {
 	 * Builds all the rules and workflows
 	 */
 
-	public List<OperationStatusDetails> buildAll(String projectId)
-			throws ProjectNotFoundException, InterruptedException, ExecutionException, LicenseNotActiveException, ProjectLoadException {
+	public List<OperationStatusDetails> buildAll(String projectId) throws ProjectNotFoundException,
+			InterruptedException, ExecutionException, LicenseNotActiveException, ProjectLoadException {
 		JEProject project = getProject(projectId);
-		JELogger.info("[project= " + project.getProjectName() + "]" + JEMessages.BUILDING_PROJECT, LogCategory.DESIGN_MODE,
-				projectId, LogSubModule.JEBUILDER, null);
+		JELogger.info("[project= " + project.getProjectName() + "]" + JEMessages.BUILDING_PROJECT,
+				LogCategory.DESIGN_MODE, projectId, LogSubModule.JEBUILDER, null);
 //CompletableFuture<?> buildRules = ruleService.compileALLRules(projectId);
 		CompletableFuture<List<OperationStatusDetails>> buildWorkflows = workflowService.buildWorkflows(projectId,
 				null);
-		CompletableFuture<List<OperationStatusDetails>> buildRules = ruleService.compileRules(projectId,
-				null);
+		CompletableFuture<List<OperationStatusDetails>> buildRules = ruleService.compileRules(projectId, null);
 		List<OperationStatusDetails> results = new ArrayList<>();
 		buildWorkflows.thenApply(operationStatusDetails -> {
 			results.addAll(operationStatusDetails);
@@ -216,7 +216,7 @@ public class ProjectService {
 							LogCategory.DESIGN_MODE, projectId, LogSubModule.JEBUILDER, null);
 					try {
 						ruleService.buildRules(projectId);
-						JERunnerAPIHandler.runProject(projectId,project.getProjectName());
+						JERunnerAPIHandler.runProject(projectId, project.getProjectName());
 						ruleService.updateRulesStatus(projectId, true);
 						project.getRuleEngine().setRunning(true);
 
@@ -240,8 +240,8 @@ public class ProjectService {
 	/*
 	 * Stop a running project
 	 */
-	public void stopProject(String projectId) throws ProjectNotFoundException,
-			InterruptedException, ExecutionException, ProjectStopException, LicenseNotActiveException {
+	public void stopProject(String projectId) throws ProjectNotFoundException, InterruptedException, ExecutionException,
+			ProjectStopException, LicenseNotActiveException {
 		LicenseProperties.checkLicenseIsActive();
 
 		if (!loadedProjects.containsKey(projectId)) {
@@ -253,7 +253,7 @@ public class ProjectService {
 				LogCategory.DESIGN_MODE, projectId, LogSubModule.JEBUILDER, null);
 
 		try {
-			JERunnerAPIHandler.stopProject(projectId,project.getProjectName());
+			JERunnerAPIHandler.stopProject(projectId, project.getProjectName());
 			ruleService.stopRules(projectId, null);
 
 		} catch (Exception e) {
@@ -268,15 +268,17 @@ public class ProjectService {
 	 * Return project by id
 	 */
 
-	public JEProject getProject(String projectId) throws ProjectNotFoundException, LicenseNotActiveException, ProjectLoadException {
+	public JEProject getProject(String projectId)
+			throws ProjectNotFoundException, LicenseNotActiveException, ProjectLoadException {
 
 		JEProject project = null;
-		//	JELogger.trace("[projectId= " + projectId + "]" + JEMessages.LOADING_PROJECT, LogCategory.DESIGN_MODE,
-		// 	projectId, LogSubModule.JEBUILDER, null);
+		// JELogger.trace("[projectId= " + projectId + "]" + JEMessages.LOADING_PROJECT,
+		// LogCategory.DESIGN_MODE,
+		// projectId, LogSubModule.JEBUILDER, null);
 		Optional<JEProject> p = projectRepository.findById(projectId);
-		if(p.isEmpty()) {
+		if (p.isEmpty()) {
 			p = projectRepository.findByProjectName(projectId);
-			if(p.isEmpty()) {
+			if (p.isEmpty()) {
 				throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
 			}
 		}
@@ -304,8 +306,8 @@ public class ProjectService {
 				}
 
 			}
-			JELogger.debug("[project= " + project.getProjectName() + "]" + JEMessages.PROJECT_FOUND, LogCategory.DESIGN_MODE, project.getProjectId(),
-					LogSubModule.JEBUILDER, null);
+			JELogger.debug("[project= " + project.getProjectName() + "]" + JEMessages.PROJECT_FOUND,
+					LogCategory.DESIGN_MODE, project.getProjectId(), LogSubModule.JEBUILDER, null);
 			saveProject(project);
 		}
 		return loadedProjects.get(project.getProjectId());
@@ -332,10 +334,8 @@ public class ProjectService {
 		return true;
 	}
 
-
-
 	@Async
-	public CompletableFuture<Void> loadAllProjects()  {
+	public CompletableFuture<Void> loadAllProjects() {
 
 		JELogger.info(JEMessages.LOADING_PROJECTS, LogCategory.DESIGN_MODE, null, LogSubModule.JEBUILDER, null);
 		List<JEProject> projects = projectRepository.findAll();
@@ -364,31 +364,34 @@ public class ProjectService {
 							throw new ProjectLoadException(JEMessages.PROJECT_LOAD_ERROR);
 						}
 					}
-					
-					
-					
-					if (!project.isAutoReload()) {
-						project.setBuilt(false);
-						project.setRunning(false);
-						for(JERule rule : project.getRules().values())
-						{
-							rule.setRunning(false);
-							rule.setBuilt(false);
-							rule.setCompiled(false);
-							rule.setAdded(false);
-							if(rule.getStatus()!=Status.ERROR)
-							{
-								rule.setStatus(Status.NOT_BUILT);
-							}
-							ruleService.saveRule(rule);
-						}
-						saveProject(project);
 
+					boolean runStatus = project.isRunning();
+
+					project.setBuilt(false);
+					project.setRunning(false);
+					for (JERule rule : project.getRules().values()) {
+						rule.setRunning(false);
+						rule.setBuilt(false);
+						rule.setCompiled(false);
+						rule.setAdded(false);
+						if (rule.getStatus() != Status.ERROR) {
+							rule.setStatus(Status.NOT_BUILT);
+						}
+						ruleService.saveRule(rule);
 					}
-				}	
-			}catch(Exception e)
-			{
-				JELogger.warn("[project = "+project.getProjectName() +"]"+JEMessages.FAILED_TO_LOAD_PROJECT, LogCategory.DESIGN_MODE, project.getProjectId(), LogSubModule.JEBUILDER, null);
+					saveProject(project);
+					
+					if(project.isAutoReload() && runStatus)
+					{
+						buildAll(project.getProjectId());
+						runAll(project.getProjectId());	
+							
+					}
+
+				}
+			} catch (Exception e) {
+				JELogger.warn("[project = " + project.getProjectName() + "]" + JEMessages.FAILED_TO_LOAD_PROJECT,
+						LogCategory.DESIGN_MODE, project.getProjectId(), LogSubModule.JEBUILDER, null);
 
 			}
 
@@ -398,8 +401,8 @@ public class ProjectService {
 	}
 
 	/*
-	* inform message from workflow in runtime
-	* */
+	 * inform message from workflow in runtime
+	 */
 	public void informUser(InformModel informBody) {
 		new Thread(() -> {
 			try {
@@ -416,10 +419,9 @@ public class ProjectService {
 						}
 					}
 				}
-			}
-			catch (Exception e) {
-				JELogger.error("Failed to send inform message to tracker", LogCategory.RUNTIME, informBody.getProjectName(),
-						LogSubModule.WORKFLOW, informBody.getWorkflowName());
+			} catch (Exception e) {
+				JELogger.error("Failed to send inform message to tracker", LogCategory.RUNTIME,
+						informBody.getProjectName(), LogSubModule.WORKFLOW, informBody.getWorkflowName());
 			}
 		}).start();
 
@@ -432,13 +434,13 @@ public class ProjectService {
 
 	}
 
-
-	/** Clean up job engine data
-	* */
+	/**
+	 * Clean up job engine data
+	 */
 	public void cleanUpHouse() {
 		List<JEProject> projects = projectRepository.findAll();
 		try {
-			for(JEProject project: projects) {
+			for (JEProject project : projects) {
 				stopProject(project.getProjectId());
 			}
 			eventService.cleanUpHouse();
@@ -448,16 +450,14 @@ public class ProjectService {
 			classService.cleanUpHouse();
 			projectRepository.deleteAll();
 			FileUtilities.deleteDirectory(ConfigurationConstants.PROJECTS_PATH);
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-
-    public JELib addFile(LibModel libModel) throws LibraryException {
-		JELogger.control(JEMessages.ADDING_FILE_TO_PROJECT,
-				LogCategory.DESIGN_MODE, null, LogSubModule.JEBUILDER, libModel.getFileName());
+	public JELib addFile(LibModel libModel) throws LibraryException {
+		JELogger.control(JEMessages.ADDING_FILE_TO_PROJECT, LogCategory.DESIGN_MODE, null, LogSubModule.JEBUILDER,
+				libModel.getFileName());
 		try {
 			MultipartFile file = libModel.getFile();
 			String orgName = file.getOriginalFilename();
@@ -466,9 +466,10 @@ public class ProjectService {
 				throw new LibraryException(JEMessages.FILE_TOO_LARGE);
 			}
 			if (!file.isEmpty()) {
-				/*if (!FileUtilities.fileIsJar(orgName)) {
-					throw new LibraryException(JEMessages.JOB_ENGINE_ACCEPTS_JAR_FILES_ONLY);
-				}*/
+				/*
+				 * if (!FileUtilities.fileIsJar(orgName)) { throw new
+				 * LibraryException(JEMessages.JOB_ENGINE_ACCEPTS_JAR_FILES_ONLY); }
+				 */
 				String uploadsDir = ConfigurationConstants.EXTERNAL_LIB_PATH;
 				if (!new File(uploadsDir).exists()) {
 					new File(uploadsDir).mkdir();
@@ -478,11 +479,11 @@ public class ProjectService {
 				File dest = new File(filePath);
 				if (dest.exists()) {
 					FileUtilities.deleteFileFromPath(filePath);
-					//throw new LibraryException(JEMessages.LIBRARY_EXISTS);
+					// throw new LibraryException(JEMessages.LIBRARY_EXISTS);
 				}
 				file.transferTo(dest);
-				JELogger.debug(JEMessages.UPLOADED_JAR_TO_PATH + dest,
-						LogCategory.DESIGN_MODE, null, LogSubModule.JEBUILDER, null);
+				JELogger.debug(JEMessages.UPLOADED_JAR_TO_PATH + dest, LogCategory.DESIGN_MODE, null,
+						LogSubModule.JEBUILDER, null);
 				JELib jeLib = new JELib();
 				jeLib.setFilePath(dest.getAbsolutePath());
 				jeLib.setJobEngineElementName(orgName);
@@ -492,16 +493,14 @@ public class ProjectService {
 				jeLib.setJeObjectCreationDate(Instant.now());
 				jeLib.setJobEngineElementID(StringUtilities.generateUUID());
 				jeLib.setFileType(FileType.valueOf(FileUtilities.getFileExtension(orgName)));
-				//libraryRepository.save(jeLib);
+				// libraryRepository.save(jeLib);
 				return jeLib;
 			}
 		} catch (Exception e) {
-			throw new LibraryException(JEMessages.ERROR_IMPORTING_FILE + ":"+e.getMessage());
+			throw new LibraryException(JEMessages.ERROR_IMPORTING_FILE + ":" + e.getMessage());
 		}
 
 		return null;
-    }
-
-
+	}
 
 }
