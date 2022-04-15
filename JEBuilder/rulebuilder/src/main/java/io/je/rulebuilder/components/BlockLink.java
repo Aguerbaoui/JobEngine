@@ -6,7 +6,7 @@ import io.je.utilities.exceptions.RuleBuildFailedException;
 public class BlockLink {
 	Block block;
 	int order;
-	String variableName;
+	String variableName="";
 	
 	
 	

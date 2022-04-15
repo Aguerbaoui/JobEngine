@@ -3,7 +3,7 @@ package io.je.rulebuilder.components;
 public class BlockLinkModel {
 	String blockId;
 	int order;
-	String variableName;
+	String variableName="";
 	
 	
 	public BlockLinkModel(String blockId) {
