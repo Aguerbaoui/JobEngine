@@ -93,7 +93,7 @@ public class JEProject {
 
 	
 	
-     private boolean autoReload = false;
+     private boolean autoReload = true;
 
 
      private boolean isRunning=false;
@@ -119,7 +119,7 @@ public class JEProject {
         variables= new ConcurrentHashMap<>();
         this.projectId = projectId;
         isBuilt = false;
-        autoReload = false;
+        autoReload = true;
 
 
     }
