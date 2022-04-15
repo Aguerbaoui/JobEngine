@@ -19,6 +19,7 @@ import org.springframework.stereotype.Component;
 import utils.ProcessRunner;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
+import utils.zmq.ZMQConfiguration;
 import utils.zmq.ZMQSecurity;
 
 @Component
@@ -61,6 +62,10 @@ public class JEBuilderInitializingBean implements InitializingBean {
         	}*/
             JEMonitor.setPort(builderProperties.getMonitoringPort());
             ZMQSecurity.setSecure(builderProperties.getUseZmqSecurity());
+            ZMQConfiguration.setHeartbeatTimeout(builderProperties.getZmqHeartbeatValue());
+            ZMQConfiguration.setHeartbeatInterval(builderProperties.getZmqHeartbeatInterval());
+            ZMQConfiguration.setReceiveHighWatermark(builderProperties.getZmqReceiveHighWatermark());
+            ZMQConfiguration.setSendHighWatermark(builderProperties.getZmqSendHighWatermark());
             ProcessRunner.setProcessDumpPath(builderProperties.getProcessesDumpPath(), builderProperties.isDumpJavaProcessExecution());
 			configService.init();
             JELogger.control(JEMessages.LOGGER_INITIALIZED,

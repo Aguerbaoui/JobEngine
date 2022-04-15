@@ -48,6 +48,7 @@ public class ConfigurationService {
 		try{
 				JELogger.debug(JEMessages.INITILIZING_BUILDER,  LogCategory.DESIGN_MODE,
 					null, LogSubModule.JEBUILDER, null);
+
 				updateRunner();
 				classService.initClassUpdateListener();
 		}catch (Exception e) {
