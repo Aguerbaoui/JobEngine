@@ -32,7 +32,7 @@ public abstract class Block extends JEObject {
    @Transient
    protected List<Block> outputBlocks = new ArrayList<>();
    
-  // @Transient
+   @Transient
 	HashMap<String,CustomBlockLink> customInputs = new HashMap<String, CustomBlockLink>() ;
 
 	@Transient
