@@ -3,6 +3,7 @@ package io.je.rulebuilder.components.blocks;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map.Entry;
 
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -31,7 +32,7 @@ public abstract class Block extends JEObject {
    @Transient
    protected List<Block> outputBlocks = new ArrayList<>();
    
-   @Transient
+  // @Transient
 	HashMap<String,CustomBlockLink> customInputs = new HashMap<String, CustomBlockLink>() ;
 
 	@Transient
@@ -49,6 +50,8 @@ public abstract class Block extends JEObject {
    protected List<String> outputBlockIds = new ArrayList<>();
    
    
+   
+   
 	public Block(String jobEngineElementID, String jobEngineProjectID, String ruleId, String blockName,
 		String blockDescription,List<String> inputBlockIds, List<String> outputBlocksIds) {
 	super(jobEngineElementID, jobEngineProjectID, blockName);
@@ -64,6 +67,19 @@ public abstract class Block extends JEObject {
 	this.outputBlockIds = outputBlocksIds;
 	
 }
+	
+	
+	protected List<String> getCustomInputsByRefName()
+	{
+		List<String> result = new ArrayList<>();
+		int i=0;
+		for(Entry<String,CustomBlockLink> entry : customInputs.entrySet())
+		{
+			result.add(entry.getValue().getBlock().getInputByName(i++));
+		}
+		return result;
+	}
+	
 	
 	protected Block getInput(int i)
 	{

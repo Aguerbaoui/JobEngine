@@ -117,28 +117,6 @@ public  class ComparisonBlock extends PersistableBlock {
 	
 	
 
-	/*@Override
-	public String getExpression() throws RuleBuildFailedException {
-		StringBuilder expression = new StringBuilder();
-
-		checkBlockConfiguration();
-		setParameters();
-		
-		for(var input : inputBlocks )
-		{
-			expression.append(input.getExpression());
-			expression.append("\n");
-			
-		}
-		expression.append("eval(");
-		expression.append(getOperationExpression());
-		expression.append(")");
-
-
-		return expression.toString();
-	}*/
-	
-	
 	@Override
 	public String getExpression() throws RuleBuildFailedException {
 		StringBuilder expression = new StringBuilder();

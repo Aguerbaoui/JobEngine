@@ -67,8 +67,8 @@ public abstract class SingleInputArithmeticBlock extends ArithmeticBlock {
 		expression.append("\n");
 		expression.append(inputBlocks.get(0).getExpression());
 		expression.append("\n");
-		int x = includesOperation? 1:0;
-		expression.append( getBlockNameAsVariable()+" : " +getArithmeticFormula (x,defaultType));
+		//int x = includesOperation? 1:0;
+		expression.append( getBlockNameAsVariable()+" : " +getArithmeticFormula (0,defaultType));
 		if(stopExecutionIfInvalidInput)
 		{
 			expression.append("\n"+evaluateExecution(asDouble(getInputRefName(0))));
