@@ -11,6 +11,7 @@ import io.je.utilities.constants.JEMessages;
 import io.je.utilities.log.JELogger;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
+import utils.zmq.ZMQConfiguration;
 
 @Component
 public class JEMonitorInitializingBean  implements InitializingBean {
@@ -30,6 +31,10 @@ public class JEMonitorInitializingBean  implements InitializingBean {
             JELogger.control(JEMessages.LOGGER_INITIALIZED,
                     LogCategory.MONITOR, null,
                     LogSubModule.JEMONITOR, null);
+            ZMQConfiguration.setHeartbeatTimeout(monitorProperties.getZmqHeartbeatValue());
+            ZMQConfiguration.setHeartbeatInterval(monitorProperties.getZmqHeartbeatInterval());
+            ZMQConfiguration.setReceiveHighWatermark(monitorProperties.getZmqReceiveHighWatermark());
+            ZMQConfiguration.setSendHighWatermark(monitorProperties.getZmqSendHighWatermark());
             subscriber.initSubscriber();
         }
         catch (Exception e) {e.printStackTrace();}

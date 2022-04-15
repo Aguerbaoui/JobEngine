@@ -5,6 +5,7 @@ import io.je.runtime.services.ConfigurationService;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import utils.zmq.ZMQConfiguration;
 
 @Component
 public class JERunnerInitBean implements InitializingBean {
@@ -19,7 +20,10 @@ public class JERunnerInitBean implements InitializingBean {
     public void afterPropertiesSet() throws Exception {
         try {
         	configurationService.init(runnerProperties);
-         
+            ZMQConfiguration.setHeartbeatTimeout(runnerProperties.getZmqHeartbeatValue());
+            ZMQConfiguration.setHeartbeatInterval(runnerProperties.getZmqHeartbeatInterval());
+            ZMQConfiguration.setReceiveHighWatermark(runnerProperties.getZmqReceiveHighWatermark());
+            ZMQConfiguration.setSendHighWatermark(runnerProperties.getZmqSendHighWatermark());
         }
         catch (Exception e) {e.printStackTrace();}
     }
