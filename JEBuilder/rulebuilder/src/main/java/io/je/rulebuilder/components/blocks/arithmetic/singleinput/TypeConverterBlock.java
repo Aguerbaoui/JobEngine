@@ -41,14 +41,14 @@ public class TypeConverterBlock extends SingleInputArithmeticBlock {
 	protected String getFormula() {
 		if(typeToConvertTo.equalsIgnoreCase("string"))
 		{
-			return "String.valueOf("+getInputRefName(0)+")";
+			return "String.valueOf("+inputBlocks.get(0).getReference()+")";
 		}else if(typeToConvertTo.equalsIgnoreCase("date"))
 		{
-			return "ConversionUtilities.convertTypeDate(\""+dateFormat+"\","+getInputRefName(0)+")";
+			return "ConversionUtilities.convertTypeDate(\""+dateFormat+"\","+inputBlocks.get(0).getReference()+")";
 		}
 		else
 		{
-			return "Double.valueOf("+ getInputRefName(0)+")";
+			return "Double.valueOf("+ inputBlocks.get(0).getReference()+")";
 		}
 	}
 

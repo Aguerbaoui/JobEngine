@@ -2,6 +2,7 @@ package io.je.rulebuilder.components.blocks;
 
 import java.util.List;
 
+import io.je.rulebuilder.components.BlockLinkModel;
 import io.je.rulebuilder.components.enumerations.TimePersistenceUnit;
 import io.je.utilities.exceptions.RuleBuildFailedException;
 
@@ -18,7 +19,7 @@ public abstract class PersistableBlock extends ConditionBlock {
 
 	public PersistableBlock(String jobEngineElementID, String jobEngineProjectID, String ruleId, String blockName,
 			String blockDescription, int timePersistenceValue,
-			String timePersistenceUnit,List<String> inputBlockIds, List<String> outputBlocksIds) {
+			String timePersistenceUnit,List<BlockLinkModel> inputBlockIds, List<BlockLinkModel> outputBlocksIds) {
 		super(jobEngineElementID, jobEngineProjectID, ruleId, blockName, blockDescription,inputBlockIds,outputBlocksIds);
 		this.timePersistenceValue = timePersistenceValue;
 		switch(timePersistenceUnit)

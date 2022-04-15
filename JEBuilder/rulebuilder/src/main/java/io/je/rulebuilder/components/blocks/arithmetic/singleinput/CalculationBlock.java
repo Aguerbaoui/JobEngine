@@ -40,74 +40,74 @@ public class CalculationBlock extends SingleInputArithmeticBlock {
 				// Factorial
 				case 1005:
 					
-					return calculatorReference+"factorial( " + getInputRefName(0,getInputByName(0))+ ")";
+					return calculatorReference+"factorial( " + inputBlocks.get(0).getReference()+ ")";
 				// Square
 				case 1006:
-					return calculatorReference+"square( " +getInputRefName(0,getInputByName(0)) +")";
+					return calculatorReference+"square( " +inputBlocks.get(0).getReference() +")";
 				// SquareRoot
 				case 1007:
-					return calculatorReference+"sqrt( " + getInputRefName(0,getInputByName(0))+ ")";
+					return calculatorReference+"sqrt( " + inputBlocks.get(0).getReference()+ ")";
 				// Power
 				case 1008:
-					return calculatorReference+"power( "  + getInputRefName(0,getInputByName(0))+ ", " +  value +")";
+					return calculatorReference+"power( "  + inputBlocks.get(0).getReference()+ ", " +  value +")";
 				// change sign
 				case 1009:
-					return calculatorReference+"changeSign( " + getInputRefName(0,getInputByName(0))+ ")";
+					return calculatorReference+"changeSign( " + inputBlocks.get(0).getReference()+ ")";
 				//Bias	
 				case 1010:
-					//return calculatorReference+"bias( " + getInputRefName(0,getInputByName(0))+ ","+value+")";
+					//return calculatorReference+"bias( " + inputBlocks.get(0).getReference()+ ","+value+")";
 
-					return getInputRefName(0,getInputByName(0))+ " + " + value ;
+					return inputBlocks.get(0).getReference()+ " + " + value ;
 				//gain
 				case 1011:
-					return getInputRefName(0,getInputByName(0))+ " * " + value ;
+					return inputBlocks.get(0).getReference()+ " * " + value ;
 				//multiplicative inverse	
 				case 1012:
-					return calculatorReference+"multiplicativeInverse( " + getInputRefName(0,getInputByName(0))+ ")" ;
+					return calculatorReference+"multiplicativeInverse( " + inputBlocks.get(0).getReference()+ ")" ;
 				//abs
 				case 1013:
-					return calculatorReference+"abs( " +getInputRefName(0,getInputByName(0)) + ")";
+					return calculatorReference+"abs( " +inputBlocks.get(0).getReference() + ")";
 				//exp	
 				case 1014:
-					return calculatorReference+"exp( " + getInputRefName(0,getInputByName(0))+ ")";
+					return calculatorReference+"exp( " + inputBlocks.get(0).getReference()+ ")";
 				//log10	
 				case 1015:
-					return calculatorReference+"log10( " + getInputRefName(0,getInputByName(0))+ ")";
+					return calculatorReference+"log10( " + inputBlocks.get(0).getReference()+ ")";
 				//tan	
 				case 1016:
-					return calculatorReference+"tan( " + getInputRefName(0,getInputByName(0))+ ")";
+					return calculatorReference+"tan( " + inputBlocks.get(0).getReference()+ ")";
 				//atan	
 				case 1017:
-					return calculatorReference+"atan( " + getInputRefName(0,getInputByName(0))+ ")";
+					return calculatorReference+"atan( " + inputBlocks.get(0).getReference()+ ")";
 				//acos	
 				case 1018:
-					return calculatorReference+"acos( " + getInputRefName(0,getInputByName(0))+ ")";
+					return calculatorReference+"acos( " + inputBlocks.get(0).getReference()+ ")";
 				//asin
 				case 1019:
-					return calculatorReference+"asin( " + getInputRefName(0,getInputByName(0))+ ")";
+					return calculatorReference+"asin( " + inputBlocks.get(0).getReference()+ ")";
 				//floor	
 				case 1020:
-					return calculatorReference+"floor( " + getInputRefName(0,getInputByName(0))+ ")";
+					return calculatorReference+"floor( " + inputBlocks.get(0).getReference()+ ")";
 				//truncate (round)	
 				case 1021:
-					return calculatorReference+"truncate( " + getInputRefName(0,getInputByName(0))+ ")";
+					return calculatorReference+"truncate( " + inputBlocks.get(0).getReference()+ ")";
 				//ceiling	
 				case 1022:
-					return calculatorReference+"ceil( " + getInputRefName(0,getInputByName(0))+ ")";
+					return calculatorReference+"ceil( " + inputBlocks.get(0).getReference()+ ")";
 				//sin	
 				case 1023:
-					return calculatorReference+"sin( " + getInputRefName(0,getInputByName(0))+ ")";
+					return calculatorReference+"sin( " + inputBlocks.get(0).getReference()+ ")";
 				//cos	
 				case 1024:
-					return calculatorReference+"cos( " + getInputRefName(0,getInputByName(0))+ ")";
+					return calculatorReference+"cos( " + inputBlocks.get(0).getReference()+ ")";
 				//ln	
 				case 1025:
-					return calculatorReference+"ln( " + getInputRefName(0,getInputByName(0))+ ")";
+					return calculatorReference+"ln( " + inputBlocks.get(0).getReference()+ ")";
 				//length	
 				case 1026:
-					return getInputRefName(0,getInputByName(0))+".length()" ;
+					return inputBlocks.get(0).getReference()+".length()" ;
 				default :
-					return getInputRefName(0,getInputByName(0));
+					return inputBlocks.get(0).getReference();
 
 		}
 

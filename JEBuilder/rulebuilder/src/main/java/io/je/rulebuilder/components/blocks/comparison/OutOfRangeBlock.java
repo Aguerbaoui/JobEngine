@@ -29,14 +29,14 @@ public class OutOfRangeBlock extends ComparisonBlock {
 	@Override
 	protected void setParameters() {
 		if (minRange == null && maxRange == null) {
-			minRange = getInputRefName(1,getInputByName(1));
-			maxRange = getInputRefName(2,getInputByName(2));
+			minRange = inputBlocks.get(1).getReference();
+			maxRange = inputBlocks.get(2).getReference();
 			return;
 		} else if (maxRange == null && minRange != null) {
-			maxRange = getInputRefName(1,getInputByName(2));
+			maxRange = inputBlocks.get(2).getReference();
 			return;
 		} else if (minRange == null && maxRange!=null) {
-			minRange = getInputRefName(1,getInputByName(1));
+			minRange = inputBlocks.get(1).getReference();
 		} 
 
 	}
@@ -54,7 +54,7 @@ public class OutOfRangeBlock extends ComparisonBlock {
 	@Override
 	protected String getOperationExpression() {
 
-		String firstOperand = (inputBlocks.get(0) instanceof InstanceGetterBlock) ? inputBlocks.get(0).getRefName(getInputByName(0))
+		String firstOperand = (inputBlocks.get(0).getBlock() instanceof InstanceGetterBlock) ? inputBlocks.get(0).getReference()
 				: "doubleValue ";
 
 		if (includeBounds) {

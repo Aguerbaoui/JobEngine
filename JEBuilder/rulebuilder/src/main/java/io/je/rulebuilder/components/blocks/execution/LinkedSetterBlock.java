@@ -82,7 +82,7 @@ public class LinkedSetterBlock extends ExecutionBlock {
 						  +"\"" + this.blockName  +"\","				  					  
 						  +"\"" + instance  +"\","
 						  +"\"" + this.destinationAttributeName  +"\","
-						  + getInputRefName(0) +","
+						  + inputBlocks.get(0).getReference() +","
 						  + this.ignoreWriteIfSameValue 
 
 						  
@@ -97,7 +97,7 @@ public class LinkedSetterBlock extends ExecutionBlock {
 					  +"\"" + this.blockName  +"\","				  					  
 					  + primeJoinId  +","
 					  +"\"" + this.destinationAttributeName  +"\","
-					  + getInputRefName(0)+","
+					  + inputBlocks.get(0).getReference()+","
 					  + this.ignoreWriteIfSameValue 
 					  +");\r\n");
 			expression.append("\n");
@@ -132,6 +132,8 @@ public class LinkedSetterBlock extends ExecutionBlock {
 	public  void removeSpecificInstance() {
 		this.primeJoinId=null;
 	}
+
+
 
 
 }

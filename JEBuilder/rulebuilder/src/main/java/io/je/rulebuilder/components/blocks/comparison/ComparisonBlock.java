@@ -3,6 +3,7 @@ package io.je.rulebuilder.components.blocks.comparison;
 
 import java.util.List;
 
+import io.je.rulebuilder.components.BlockLinkModel;
 import io.je.rulebuilder.components.blocks.PersistableBlock;
 import io.je.rulebuilder.components.blocks.getter.InstanceGetterBlock;
 import io.je.rulebuilder.config.AttributesMapping;
@@ -45,7 +46,7 @@ public  class ComparisonBlock extends PersistableBlock {
 
 	
 	protected ComparisonBlock(String jobEngineElementID, String jobEngineProjectID, String ruleId, String blockName,
-			String blockDescription, int timePersistenceValue, String timePersistenceUnit,List<String> inputBlockIds, List<String> outputBlocksIds) {
+			String blockDescription, int timePersistenceValue, String timePersistenceUnit,List<BlockLinkModel> inputBlockIds, List<BlockLinkModel> outputBlocksIds) {
 		super(jobEngineElementID, jobEngineProjectID, ruleId, blockName, blockDescription, timePersistenceValue,
 				timePersistenceUnit,inputBlockIds,outputBlocksIds);
 	}
@@ -93,9 +94,10 @@ public  class ComparisonBlock extends PersistableBlock {
 		
 		
 	}
+
 	protected String getOperationExpression()
 	{
-		String firstOperand = inputBlocks.get(0).getRefName(getInputByName(0));
+		String firstOperand = inputBlocks.get(0).getReference();
 		return firstOperand+ getOperator() + formatOperator(threshold);
 
 	}
@@ -110,12 +112,15 @@ public  class ComparisonBlock extends PersistableBlock {
 	protected void setParameters() {
 		if(inputBlockIds.size()>1)
 		{
-			threshold=getInputRefName(1,getInputByName(1));
+			threshold=inputBlocks.get(1).getReference();
 		}
 		
 	}
 	
-	
+	@Override
+	public String getReference(String optional) {
+		return getBlockNameAsVariable();
+	}
 
 	@Override
 	public String getExpression() throws RuleBuildFailedException {
@@ -126,7 +131,7 @@ public  class ComparisonBlock extends PersistableBlock {
 
 		// single input
 		if (inputBlocks.size() == 1) {
-			String inputExpression = inputBlocks.get(0).getAsOperandExpression().replaceAll(Keywords.toBeReplaced,
+			String inputExpression = inputBlocks.get(0).getBlock().getAsOperandExpression().replaceAll(Keywords.toBeReplaced,
 					getOperationExpression());
 			expression.append(inputExpression);
 
@@ -134,7 +139,7 @@ public  class ComparisonBlock extends PersistableBlock {
 		} else if (inputBlocks.size() == 3 || this instanceof InRangeBlock || this instanceof OutOfRangeBlock) {
 			for(var input : inputBlocks)
 			{
-				expression.append(input.getExpression());
+				expression.append(input.getBlock().getExpression());
 				expression.append("\n");
 
 			}
@@ -145,18 +150,18 @@ public  class ComparisonBlock extends PersistableBlock {
 			//comparison blocks
 		} else if (inputBlocks.size() == 2) {
 			
-			if(inputBlocks.get(0).equals(inputBlocks.get(1)) && inputBlocks.get(0) instanceof InstanceGetterBlock )
+			if(inputBlocks.get(0).equals(inputBlocks.get(1)) && inputBlocks.get(0).getBlock() instanceof InstanceGetterBlock )
 			{
-				expression.append(inputBlocks.get(0).getAsOperandExpression().replaceAll(Keywords.toBeReplaced,
+				expression.append(inputBlocks.get(0).getBlock().getAsOperandExpression().replaceAll(Keywords.toBeReplaced,
 						getOperationExpression()));
 			}else {
-				inputBlocks.get(1).setIncludeOperation(true);
-				String firstOperand = inputBlocks.get(1).getExpression().replaceAll(Keywords.toBeReplaced,
+				inputBlocks.get(1).getBlock().setIncludeOperation(true);
+				String firstOperand = inputBlocks.get(1).getBlock().getExpression().replaceAll(Keywords.toBeReplaced,
 						getOperationExpression());
 				expression.append(firstOperand);
 				String secondOperand = "";
 				expression.append("\n");
-				secondOperand = inputBlocks.get(0).getAsOperandExpression().replaceAll(Keywords.toBeReplaced,
+				secondOperand = inputBlocks.get(0).getBlock().getAsOperandExpression().replaceAll(Keywords.toBeReplaced,
 						getOperationExpression());
 				expression.append(secondOperand);
 			}

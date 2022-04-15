@@ -20,6 +20,11 @@ public  class AcceptEventBlock extends ConditionBlock {
 		}
 
 	}
+	
+	@Override
+	public String getReference(String optional) {
+		return getBlockNameAsVariable();
+	}
 
 	public AcceptEventBlock() {
 		super();

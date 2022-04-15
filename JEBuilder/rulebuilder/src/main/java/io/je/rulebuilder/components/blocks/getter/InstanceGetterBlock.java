@@ -29,6 +29,10 @@ public class InstanceGetterBlock extends GetterBlock{
 	ObjectMapper mapper = new ObjectMapper();
 	
 
+	@Override
+	public String getReference(String optional) {
+		return getBlockNameAsVariable() + optional ;
+	}
 
 	
 	public InstanceGetterBlock()

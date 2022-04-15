@@ -12,10 +12,7 @@ import io.je.utilities.exceptions.RuleBuildFailedException;
 
 public abstract class MultipleInputArithmeticBlock extends ArithmeticBlock {
 
-	
-	@Transient
-	int counter = 0;
-	
+
 	public MultipleInputArithmeticBlock(BlockModel blockModel) {
 		super(blockModel);
 	}
@@ -25,6 +22,12 @@ public abstract class MultipleInputArithmeticBlock extends ArithmeticBlock {
 	{
 		
 	}
+	
+	@Override
+	public String getReference(String optional) {
+		return getBlockNameAsVariable();
+	}
+	
 	
 	@Override
 	public String getExpression() throws RuleBuildFailedException {
@@ -47,7 +50,7 @@ public abstract class MultipleInputArithmeticBlock extends ArithmeticBlock {
 		StringBuilder expression = new StringBuilder();
 		expression.append("\n");
 		for (int i = 0; i < inputBlocks.size(); i++) {
-			expression.append(inputBlocks.get(i).getExpression());
+			expression.append(inputBlocks.get(i).getBlock().getExpression());
 			expression.append("\n");
 
 		}
@@ -64,38 +67,21 @@ public abstract class MultipleInputArithmeticBlock extends ArithmeticBlock {
 		StringBuilder expression = new StringBuilder();
 		
 		expression.append(getBlockNameAsVariable() + comparableExpression);
-		expression.append(getArithmeticFormula(0,"number") + asDouble(getInputBlockReferenceName(0)));
+		expression.append(getArithmeticFormula(0,"number") + asDouble(inputBlocks.get(0).getReference()));
 		for (int i = 1; i < inputBlocks.size(); i++) {
-			expression.append(" , " + asDouble(getInputBlockReferenceName(i)));
+			expression.append(" , " + asDouble(inputBlocks.get(i).getReference()));
 		}
 		expression.append(")");
 		if(stopExecutionIfInvalidInput)
 		{
-			expression.append("\n"+evaluateExecution(asDouble(getInputBlockReferenceName(1))));
+			expression.append("\n"+evaluateExecution(asDouble(inputBlocks.get(1).getReference())));
 		}
-		counter = 0;
 		return expression.toString();
 		
 		
 	}
 	
-	private String getInputBlockReferenceName(int index)
-	{
-		try {
-			if(index >= inputBlocks.size()) return "";
-			if(inputBlocks.get(index) instanceof InstanceGetterBlock)
-			{
-				String attName = new ArrayList<String>(getCustomInputs().keySet()).get(counter);
-				counter++;
-				return inputBlocks.get(index).getRefName(attName);
-			}else 
-			{
-				return inputBlocks.get(index).getRefName(null) ;
-			}
-		}catch(Exception e){
-			return "";
-		}
-	}
+	
 	
 
 }

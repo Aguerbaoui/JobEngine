@@ -8,6 +8,8 @@ import java.util.Map.Entry;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import io.je.rulebuilder.components.BlockLink;
+import io.je.rulebuilder.components.BlockLinkModel;
 import io.je.rulebuilder.components.CustomBlockLink;
 import io.je.rulebuilder.components.blocks.getter.InstanceGetterBlock;
 import io.je.rulebuilder.components.blocks.getter.VariableGetterBlock;
@@ -27,13 +29,11 @@ public abstract class Block extends JEObject {
    protected boolean isProperlyConfigured=true;
    
    @Transient
-   protected List<Block> inputBlocks = new ArrayList<>();
+   protected List<BlockLink> inputBlocks = new ArrayList<>();
    
    @Transient
-   protected List<Block> outputBlocks = new ArrayList<>();
+   protected List<BlockLink> outputBlocks = new ArrayList<>();
    
-   @Transient
-	HashMap<String,CustomBlockLink> customInputs = new HashMap<String, CustomBlockLink>() ;
 
 	@Transient
 	protected boolean includesOperation = false;
@@ -44,16 +44,16 @@ public abstract class Block extends JEObject {
    /*
     * to be persisted in mongo
     */
-   protected List<String> inputBlockIds = new ArrayList<>();
+   protected List<BlockLinkModel> inputBlockIds = new ArrayList<>();
    
    
-   protected List<String> outputBlockIds = new ArrayList<>();
+   protected List<BlockLinkModel> outputBlockIds = new ArrayList<>();
    
    
    
    
 	public Block(String jobEngineElementID, String jobEngineProjectID, String ruleId, String blockName,
-		String blockDescription,List<String> inputBlockIds, List<String> outputBlocksIds) {
+		String blockDescription,List<BlockLinkModel> inputBlockIds, List<BlockLinkModel> outputBlocksIds) {
 	super(jobEngineElementID, jobEngineProjectID, blockName);
 	this.ruleId = ruleId;
 	this.blockName = blockName;
@@ -69,56 +69,28 @@ public abstract class Block extends JEObject {
 }
 	
 	
-	protected List<String> getCustomInputsByRefName()
-	{
-		List<String> result = new ArrayList<>();
-		int i=0;
-		for(Entry<String,CustomBlockLink> entry : customInputs.entrySet())
-		{
-			result.add(entry.getValue().getBlock().getInputByName(i++));
-		}
-		return result;
-	}
-	
-	
-	protected Block getInput(int i)
-	{
-		for(var entry : customInputs.entrySet())
-		{
-			if(entry.getValue().getOrder()==i)
-				return entry.getValue().getBlock();
-		}
-		return null;
-	}
-	
-	protected String getInputByName(int i)
-	{
-		for(var entry : customInputs.entrySet())
-		{
-			if(entry.getValue().getOrder()==i)
-				return entry.getValue().getAttributeName();
-		}
-		return null;
-	}
+
 	
 	public Block() {
 		
 	}
 
+	public abstract String getReference(String optional);
+	
+	
 	public void addInput(Block block)
 	{
 
-			inputBlocks.add(block);
+			inputBlocks.add(new BlockLink(block));
 		
 		
 	}
 	
 	public void addOutput(Block block)
 	{
-		if(!outputBlocks.contains(block))
-		{
-			outputBlocks.add(block);
-		}
+
+			outputBlocks.add(new BlockLink(block));
+		
 	}
 	
 	
@@ -168,49 +140,6 @@ public abstract class Block extends JEObject {
 	
 	
 	
-	//get name of input of index i
-	//example : block A has 2 inputs Block B and Block C
-	//blockA.getInputRefName(1) returns "$blockC";
-	public String getInputRefName(int index)
-	{
-		String var = ""; 
-		if(inputBlocks.get(index) instanceof VariableGetterBlock)
-		{
-			var = (( VariableGetterBlock )inputBlocks.get(index)).getAttributeVariableName();
-		}
-		
-		else 
-		{//get block name as variable
-			var =  inputBlocks.get(index).getBlockNameAsVariable();
-		}
-		return var;
-	}
-	
-	//get name of input of index i
-		//example : block A has 2 inputs Block B and Block C
-		//blockA.getInputRefName(1) returns "$blockC";
-		public String getInputRefName(int index,String attName)
-		{
-			String var = ""; 
-			if(inputBlocks.get(index) instanceof VariableGetterBlock)
-			{
-				var = (( VariableGetterBlock )inputBlocks.get(index)).getAttributeVariableName();
-			}else if(inputBlocks.get(index) instanceof InstanceGetterBlock)
-			{
-				var = (( InstanceGetterBlock )inputBlocks.get(index)).getAttributeVariableName(attName);
-
-			}
-			
-			else 
-			{//get block name as variable
-				var =  inputBlocks.get(index).getBlockNameAsVariable();
-			}
-			return var;
-		}
-	
-	//getters and setters
-
-	
 	
 
 	public String getRuleId() {
@@ -240,33 +169,34 @@ public abstract class Block extends JEObject {
 
 
 
-
-	public List<Block> getOutputBlocks() {
-		return outputBlocks;
-	}
-
-
-
-
-	public void setOutputBlocks(List<Block> outputBlocks) {
-		this.outputBlocks = outputBlocks;
-	}
-
-
-
-
-	public List<Block> getInputBlocks() {
+	public List<BlockLink> getInputBlocks() {
 		return inputBlocks;
 	}
 
 
-
-
-	public void setInputBlocks(List<Block> inputBlocks) {
+	public void setInputBlocks(List<BlockLink> inputBlocks) {
 		this.inputBlocks = inputBlocks;
 	}
 
 
+	public List<BlockLink> getOutputBlocks() {
+		return outputBlocks;
+	}
+
+
+	public void setOutputBlocks(List<BlockLink> outputBlocks) {
+		this.outputBlocks = outputBlocks;
+	}
+
+
+	public boolean isIncludesOperation() {
+		return includesOperation;
+	}
+
+
+	public void setIncludesOperation(boolean includesOperation) {
+		this.includesOperation = includesOperation;
+	}
 
 
 	public String getBlockDescription() {
@@ -280,33 +210,33 @@ public abstract class Block extends JEObject {
 		this.blockDescription = blockDescription;
 	}
 
-	public List<String> getInputBlockIds() {
+	public List<BlockLinkModel> getInputBlockIds() {
 		return inputBlockIds;
 	}
 
-	public void setInputBlockIds(List<String> inputBlockIds) {
+	public void setInputBlockIds(List<BlockLinkModel> inputBlockIds) {
 		this.inputBlockIds = inputBlockIds;
 	}
 
-	public List<String> getOutputBlockIds() {
+	public List<BlockLinkModel> getOutputBlockIds() {
 		return outputBlockIds;
 	}
 
-	public void setOutputBlockIds(List<String> outputBlockIds) {
+	public void setOutputBlockIds(List<BlockLinkModel> outputBlockIds) {
 		this.outputBlockIds = outputBlockIds;
 	}
 
 	//ignore block 
 	public void ignoreBlock()
 	{
-		for(Block inputBlock : inputBlocks)
+		for(var inputBlock : inputBlocks)
 		{
-			inputBlock.outputBlocks.addAll(outputBlocks);
+			inputBlock.getBlock().outputBlocks.addAll(outputBlocks);
 		}
 		
-		for(Block outputBlock : outputBlocks)
+		for(var outputBlock : outputBlocks)
 		{
-			outputBlock.inputBlocks.addAll(inputBlocks);
+			outputBlock.getBlock().inputBlocks.addAll(inputBlocks);
 		}
 	}
 
@@ -320,17 +250,7 @@ public boolean isProperlyConfigured() {
 		this.isProperlyConfigured = isProperlyConfigured;
 	}
 
-public Block getInputById(String id)
-{
-	for(Block inputBlock : inputBlocks)
-	{
-		if (inputBlock.jobEngineElementID.equals(id))
-		{
-			return inputBlock;
-		}
-	}
-	return null;
-}
+
 
 public  void addSpecificInstance(String instanceId) {
 	
@@ -363,11 +283,11 @@ public String getPersistence() {
 			return null;
 				
 		}else {
-			for (Block b : inputBlocks)
+			for (var  b : inputBlocks)
 			{
-				if(b.getPersistence()!=null)
+				if(b.getBlock().getPersistence()!=null)
 				{
-					return b.getPersistence();
+					return b.getBlock().getPersistence();
 				}
 			}
 		}
@@ -376,13 +296,7 @@ public String getPersistence() {
 	return null;
 }
 
-public HashMap<String, CustomBlockLink> getCustomInputs() {
-	return customInputs;
-}
 
-public void setCustomInputs(HashMap<String, CustomBlockLink> customInputs) {
-	this.customInputs = customInputs;
-}
 
 public void setIncludeOperation(boolean includeOperation) {
 	if(this.inputBlocks.isEmpty())
@@ -390,10 +304,10 @@ public void setIncludeOperation(boolean includeOperation) {
 		this.includesOperation=includeOperation;
 		return;
 	}
-	for(Block  b : this.inputBlocks)
+	for(var  b : this.inputBlocks)
 	{
 		this.includesOperation=includeOperation;
-		b.setIncludeOperation(includeOperation);
+		b.getBlock().setIncludeOperation(includeOperation);
 	}
 }
 

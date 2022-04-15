@@ -18,6 +18,10 @@ public abstract class SingleInputArithmeticBlock extends ArithmeticBlock {
 		}
 	}
 	
+	@Override
+	public String getReference(String optional) {
+		return getBlockNameAsVariable();
+	}
 
 	protected SingleInputArithmeticBlock() {
 	}
@@ -71,7 +75,7 @@ public abstract class SingleInputArithmeticBlock extends ArithmeticBlock {
 		expression.append( getBlockNameAsVariable()+" : " +getArithmeticFormula (0,defaultType));
 		if(stopExecutionIfInvalidInput)
 		{
-			expression.append("\n"+evaluateExecution(asDouble(getInputRefName(0))));
+			expression.append("\n"+evaluateExecution(asDouble(inputBlocks.get(0).getReference())));
 		}
 		return expression.toString();
 	}
@@ -87,7 +91,7 @@ public abstract class SingleInputArithmeticBlock extends ArithmeticBlock {
 		expression.append( getBlockNameAsVariable()+" : " +getArithmeticFormula (1,defaultType));
 		if(stopExecutionIfInvalidInput)
 		{
-			expression.append("\n"+evaluateExecution(asDouble(getInputRefName(0,getInputByName(0)))));
+			expression.append("\n"+evaluateExecution(asDouble(inputBlocks.get(0).getReference())));
 		}
 		return expression.toString();
 	}
