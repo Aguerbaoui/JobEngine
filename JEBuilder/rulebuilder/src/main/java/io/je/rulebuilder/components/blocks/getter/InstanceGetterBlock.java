@@ -1,15 +1,11 @@
 package io.je.rulebuilder.components.blocks.getter;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.data.annotation.Transient;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.je.rulebuilder.components.CustomBlockLink;
-import io.je.rulebuilder.components.InstanceGetterBlockOutputIds;
 import io.je.rulebuilder.components.blocks.GetterBlock;
 import io.je.rulebuilder.config.AttributesMapping;
 import io.je.rulebuilder.config.Keywords;
@@ -20,15 +16,16 @@ public class InstanceGetterBlock extends GetterBlock{
 	
 
 	List<String> attributeNames;
-	ArrayList<InstanceGetterBlockOutputIds> customOutputsIds ; //{ {speed:greaterBlock},{name:equalBlock} }
-	
-	@Transient
-	HashMap<String,CustomBlockLink> customOutputs ; //{ {speed:greaterBlock},{name:equalBlock} }
+
 	
 	@Transient
 	ObjectMapper mapper = new ObjectMapper();
 	
 
+	@Override
+	public String getReference(String optional) {
+		return getBlockNameAsVariable() + optional ;
+	}
 
 	
 	public InstanceGetterBlock()
@@ -43,7 +40,6 @@ public class InstanceGetterBlock extends GetterBlock{
 			classId = (String) blockModel.getBlockConfiguration().get(AttributesMapping.CLASSID);
 			classPath = (String) blockModel.getBlockConfiguration().get(AttributesMapping.CLASSNAME);
 			attributeNames = (List<String>) blockModel.getBlockConfiguration().get("attribute_name");
-			customOutputsIds = blockModel.getCustomOutputs();
 			specificInstances = (List<String>) blockModel.getBlockConfiguration()
 					.get(AttributesMapping.SPECIFICINSTANCES);
 			isProperlyConfigured = true;
@@ -161,21 +157,7 @@ public class InstanceGetterBlock extends GetterBlock{
 
 
 
-	public ArrayList<InstanceGetterBlockOutputIds> getCustomOutputsIds() {
-		return customOutputsIds;
-	}
-
-	public void setCustomOutputsIds(ArrayList<InstanceGetterBlockOutputIds> customOutputsIds) {
-		this.customOutputsIds = customOutputsIds;
-	}
-
-	public HashMap<String, CustomBlockLink> getCustomOutputs() {
-		return customOutputs;
-	}
-
-	public void setCustomOutputs(HashMap<String, CustomBlockLink> customOutputs) {
-		this.customOutputs = customOutputs;
-	}
+	
 
 	public List<String> getSpecificInstances() {
 		return specificInstances;

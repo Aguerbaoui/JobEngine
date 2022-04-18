@@ -2,6 +2,7 @@ package io.je.rulebuilder.components.blocks;
 
 import java.util.List;
 
+import io.je.rulebuilder.components.BlockLinkModel;
 import io.je.rulebuilder.models.BlockModel;
 
 public abstract class ExecutionBlock extends Block {
@@ -12,9 +13,15 @@ public abstract class ExecutionBlock extends Block {
 	}
 
 	
+	@Override
+	public String getReference(String optional) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
 	
 	public ExecutionBlock(String jobEngineElementID, String jobEngineProjectID, String ruleId, String blockName,
-			String blockDescription,List<String> inputBlockIds, List<String> outputBlocksIds) {
+			String blockDescription,List<BlockLinkModel> inputBlockIds, List<BlockLinkModel> outputBlocksIds) {
 		super(jobEngineElementID, jobEngineProjectID, ruleId, blockName, blockDescription,inputBlockIds,outputBlocksIds);
 	}
 

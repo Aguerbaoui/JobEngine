@@ -29,14 +29,14 @@ public class InRangeBlock extends ComparisonBlock {
 	@Override
 	protected void setParameters() {
 		if (minRange == null && maxRange == null) {
-			minRange = getInputRefName(1,getInputByName(1));
-			maxRange = getInputRefName(2,getInputByName(2));
+			minRange = getInputReferenceByOrder(2);
+			maxRange = getInputReferenceByOrder(1);
 			return;
-		} else if (maxRange == null && minRange != null) {
-			maxRange = getInputRefName(1,getInputByName(2));
+		} else if (maxRange == null ) {
+			maxRange = getInputReferenceByOrder(1);
 			return;
-		} else if (minRange == null && maxRange!=null) {
-			minRange = getInputRefName(1,getInputByName(1));
+		} else if (minRange == null ) {
+			minRange = getInputReferenceByOrder(2);
 		} 
 
 	}
@@ -53,7 +53,7 @@ public class InRangeBlock extends ComparisonBlock {
 	
 	@Override
 	protected String getOperationExpression() {
-		String firstOperand =  inputBlocks.get(0).getRefName(getInputByName(0));
+		String firstOperand =   getInputReferenceByOrder(0);
 
 		if (includeBounds) {
 			return firstOperand + ">=" + minRange + " && " + firstOperand + "<=" + maxRange;

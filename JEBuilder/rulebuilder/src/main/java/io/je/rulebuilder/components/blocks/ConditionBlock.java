@@ -2,13 +2,14 @@ package io.je.rulebuilder.components.blocks;
 
 import java.util.List;
 
+import io.je.rulebuilder.components.BlockLinkModel;
 import io.je.rulebuilder.components.blocks.logic.OrBlock;
 import io.je.utilities.exceptions.RuleBuildFailedException;
 
 public abstract class ConditionBlock extends Block{
 
 	public ConditionBlock(String jobEngineElementID, String jobEngineProjectID, String ruleId, String blockName,
-			String blockDescription,List<String> inputBlockIds, List<String> outputBlocksIds) {
+			String blockDescription,List<BlockLinkModel> inputBlockIds, List<BlockLinkModel> outputBlocksIds) {
 		super(jobEngineElementID, jobEngineProjectID, ruleId, blockName, blockDescription,inputBlockIds,outputBlocksIds);
 		
 	}
@@ -19,11 +20,11 @@ public abstract class ConditionBlock extends Block{
 
 	public String getConsequences() throws RuleBuildFailedException {
 		StringBuilder consequences = new StringBuilder();
-		for(Block block : getOutputBlocks())
+		for(var block : getOutputBlocks())
 		{
-			if(block instanceof ExecutionBlock || block instanceof OrBlock)
+			if(block.getBlock() instanceof ExecutionBlock || block.getBlock() instanceof OrBlock)
 			{
-				consequences.append(block.getExpression());
+				consequences.append(block.getBlock().getExpression());
 				consequences.append("\n");
 			}
 		}

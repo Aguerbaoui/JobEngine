@@ -233,25 +233,25 @@ public class RuleBuilder {
         for (Block ruleBlock : uRule.getBlocks().getAll()) {
             if (ruleBlock instanceof ExecutionBlock) {
                 executionBlockCounter++;
-                for (Block rootBlock : ruleBlock.getInputBlocks()) {
+                for (var rootBlock : ruleBlock.getInputBlocks()) {
                     if (rootBlock != null ) {
-                        if(!(rootBlock instanceof OrBlock))
+                        if(!(rootBlock.getBlock() instanceof OrBlock))
                     	{
-                        	roots.add(uRule.getBlocks().getBlock(rootBlock.getJobEngineElementID()));
-                        	for(Block b : uRule.getBlocks().getBlock(rootBlock.getJobEngineElementID()).getInputBlocks() )
+                        	roots.add(uRule.getBlocks().getBlock(rootBlock.getBlock().getJobEngineElementID()));
+                        	for(var b : uRule.getBlocks().getBlock(rootBlock.getBlock().getJobEngineElementID()).getInputBlocks() )
                     		{
-                            	if(b instanceof PersistableBlock)
+                            	if(b.getBlock() instanceof PersistableBlock)
                             	{
-                            		((PersistableBlock) b).setTimePersistenceValue(((PersistableBlock) rootBlock).getTimePersistenceValue());
-                            		((PersistableBlock) b).setTimePersistenceUnit(((PersistableBlock) rootBlock).getTimePersistenceUnit());
+                            		((PersistableBlock) b.getBlock()).setTimePersistenceValue(((PersistableBlock) rootBlock.getBlock()).getTimePersistenceValue());
+                            		((PersistableBlock) b.getBlock()).setTimePersistenceUnit(((PersistableBlock) rootBlock.getBlock()).getTimePersistenceUnit());
                             	}
 
                     		}
                     	}else
                     	{
-                    		for(Block b : uRule.getBlocks().getBlock(rootBlock.getJobEngineElementID()).getInputBlocks() )
+                    		for(var b : uRule.getBlocks().getBlock(rootBlock.getBlock().getJobEngineElementID()).getInputBlocks() )
                     		{
-                            	roots.add(b);
+                            	roots.add(b.getBlock());
 
                     		}
                     	}

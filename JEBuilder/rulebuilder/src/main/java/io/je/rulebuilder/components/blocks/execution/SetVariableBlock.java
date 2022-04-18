@@ -47,7 +47,7 @@ public class SetVariableBlock extends ExecutionBlock {
 	 
 	@Override
 	public String getExpression() {		
-	   return "Executioner.updateVariable("+variableId+", "+getInputRefName(0)+");";
+	   return "Executioner.updateVariable("+variableId+", "+inputBlocks.get(0).getReference()+");";
 
 	}
 

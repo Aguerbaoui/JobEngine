@@ -48,7 +48,10 @@ public  class LogicBlock extends PersistableBlock {
 		return expression.toString();
 	}
 
-
+	@Override
+	public String getReference(String optional) {
+		return getBlockNameAsVariable();
+	}
 	@Override
 	public String getAsOperandExpression() {
 		// not applicable for these blocks

@@ -5,7 +5,7 @@ import java.util.HashMap;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import io.je.rulebuilder.components.InstanceGetterBlockOutputIds;
+import io.je.rulebuilder.components.BlockLinkModel;
 import io.je.rulebuilder.config.AttributesMapping;
 
 
@@ -34,10 +34,10 @@ public class BlockModel {
 	int operationId;
     
     @JsonProperty(AttributesMapping.INPUTBLOCK)
-	ArrayList<String> inputBlocksIds = new ArrayList<String>();
+	ArrayList<BlockLinkModel> inputBlocksIds = new ArrayList<>();
     
     @JsonProperty(AttributesMapping.OUTPUTBLOCK)
-   	ArrayList<String> outputBlocksIds = new ArrayList<>();
+   	ArrayList<BlockLinkModel> outputBlocksIds = new ArrayList<>();
     
    // @JsonProperty(AttributesMapping.BLOCKCONFIG)
 	//BlockConfigurationModel blockConfiguration;
@@ -45,8 +45,7 @@ public class BlockModel {
     @JsonProperty(AttributesMapping.BLOCKCONFIG)
    	HashMap<String,Object> blockConfiguration;
     
-    @JsonProperty("custom_output_blocks")
-   	ArrayList<InstanceGetterBlockOutputIds> customOutputs = new ArrayList<InstanceGetterBlockOutputIds>();
+
     
     
 
@@ -130,19 +129,19 @@ public class BlockModel {
 	
 	
 
-	public ArrayList<String> getOutputBlocksIds() {
+	public ArrayList<BlockLinkModel> getOutputBlocksIds() {
 		return outputBlocksIds;
 	}
 
-	public void setOutputBlocksIds(ArrayList<String> outputBlocksIds) {
+	public void setOutputBlocksIds(ArrayList<BlockLinkModel> outputBlocksIds) {
 		this.outputBlocksIds = outputBlocksIds;
 	}
 
-	public ArrayList<String> getInputBlocksIds() {
+	public ArrayList<BlockLinkModel> getInputBlocksIds() {
 		return inputBlocksIds;
 	}
 
-	public void setInputBlocksIds(ArrayList<String> inputBlocksIds) {
+	public void setInputBlocksIds(ArrayList<BlockLinkModel> inputBlocksIds) {
 		this.inputBlocksIds = inputBlocksIds;
 	}
 
@@ -156,15 +155,6 @@ public class BlockModel {
 
 
 
-	public ArrayList<InstanceGetterBlockOutputIds> getCustomOutputs() {
-		return customOutputs;
-	}
-
-
-
-	public void setCustomOutputs(ArrayList<InstanceGetterBlockOutputIds> customOutputs) {
-		this.customOutputs = customOutputs;
-	}
 
 
 

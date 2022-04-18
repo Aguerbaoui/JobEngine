@@ -2,12 +2,10 @@ package io.je.rulebuilder.components;
 
 import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 import io.je.rulebuilder.components.blocks.Block;
-import io.je.rulebuilder.components.blocks.getter.InstanceGetterBlock;
 import io.je.utilities.exceptions.RuleBuildFailedException;
 import io.je.utilities.log.JELogger;
 import utils.log.LogCategory;
@@ -79,24 +77,15 @@ public class BlockManager {
 		block.setInputBlocks(new ArrayList<>());
 		block.setOutputBlocks(new ArrayList<>());
 
-		for (String inputId : block.getInputBlockIds()) {
-			block.addInput(blocks.get(inputId));
+		for (var inputId : block.getInputBlockIds()) {
+			block.addInputLink(blocks.get(inputId.getBlockId()),inputId.getConnectionName(),inputId.getOrder());
 		}
 
-		for (String outputId : block.getOutputBlockIds()) {
-			block.addOutput(blocks.get(outputId));
+		for (var outputId : block.getOutputBlockIds()) {
+			block.addOutputLink(blocks.get(outputId.getBlockId()),outputId.getConnectionName(),outputId.getOrder());
 		}
 		
-		if(block instanceof InstanceGetterBlock)
-		{
-			InstanceGetterBlock b = (InstanceGetterBlock)block;
-			b.setCustomOutputs(new HashMap<>());
-			for (InstanceGetterBlockOutputIds entry : b.getCustomOutputsIds()) {
-				b.getCustomOutputs().put(entry.getAttributeName(), new CustomBlockLink(entry.getAttributeName(),blocks.get(entry.getBlockId()),entry.getOrder()) );
-				blocks.get(entry.getBlockId()).getCustomInputs().put(entry.getAttributeName(), new CustomBlockLink(entry.getAttributeName(),block,entry.getOrder()));
-			}
-			
-		}
+		
 	}
 
 	public void resetAllBlocks() {
