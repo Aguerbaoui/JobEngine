@@ -98,11 +98,15 @@ public  class ComparisonBlock extends PersistableBlock {
 	protected String getOperationExpression()
 	{
 		String firstOperand =getInputReferenceByOrder(0);
-		return firstOperand+ getOperator() + formatOperator(threshold);
+		return firstOperand+ getOperator() + asDouble(  formatOperator(threshold));
 
 	}
 	
-	
+	public String asDouble(String val)
+	{
+		return"JEMathUtils.castToDouble("+val+" )"; //" Double.valueOf( "+val+" )";
+	}
+
 	
 	public ComparisonBlock() {
 		super();

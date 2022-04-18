@@ -17,8 +17,7 @@ public class LinkedSetterBlock extends ExecutionBlock {
 	
 
 	boolean isGeneric;
-	@Transient
-	String primeJoinId;
+
 	/*******************************Instance definition*******************************/
 	String classId;
 	String classPath;
@@ -72,8 +71,7 @@ public class LinkedSetterBlock extends ExecutionBlock {
 	@Override
 	public String getExpression() {		
 		StringBuilder expression = new StringBuilder();
-		if(primeJoinId==null)
-		{
+	
 			for(String instance : instances)
 			{
 				expression.append(  "Executioner.updateInstanceAttributeValueFromStaticValue( "
@@ -89,19 +87,7 @@ public class LinkedSetterBlock extends ExecutionBlock {
 						  +");\r\n");
 				expression.append("\n");
 			}
-		}else
-		{
-			expression.append(  "Executioner.updateInstanceAttributeValueFromStaticValue( "
-					 +"\"" + this.jobEngineProjectID  +"\","
-					  +"\"" + this.ruleId  +"\","
-					  +"\"" + this.blockName  +"\","				  					  
-					  + primeJoinId  +","
-					  +"\"" + this.destinationAttributeName  +"\","
-					  + inputBlocks.get(0).getReference()+","
-					  + this.ignoreWriteIfSameValue 
-					  +");\r\n");
-			expression.append("\n");
-		}
+		
 		
 	   return expression.toString();
 

@@ -55,7 +55,10 @@ public  class VariableGetterBlock extends ConditionBlock {
 		return getBlockNameAsVariable()+".getValue()";
 	}
 
-
+	public String asDouble(String val)
+	{
+		return"JEMathUtils.castToDouble("+val+" )"; //" Double.valueOf( "+val+" )";
+	}
 
 	public String getAttributeVariableName() {
 		return blockName.replaceAll("\\s+", "")+"Value";
