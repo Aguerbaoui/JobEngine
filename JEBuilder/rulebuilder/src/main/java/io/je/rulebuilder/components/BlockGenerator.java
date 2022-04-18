@@ -12,6 +12,7 @@ import io.je.rulebuilder.components.blocks.event.AcceptEventBlock;
 import io.je.rulebuilder.components.blocks.execution.LogBlock;
 import io.je.rulebuilder.components.blocks.execution.SetterBlock;
 import io.je.rulebuilder.components.blocks.execution.AttachedSetterBlock;
+import io.je.rulebuilder.components.blocks.execution.LinkedAttachedSetterBlock;
 import io.je.rulebuilder.components.blocks.execution.LinkedSetterBlock;
 import io.je.rulebuilder.components.blocks.execution.LinkedVariableSetterBlock;
 import io.je.rulebuilder.components.blocks.execution.TriggerEventBlock;
@@ -145,6 +146,8 @@ public class BlockGenerator {
 			return new SetterBlock(blockModel);
 		case 5007:
 			return new LinkedVariableSetterBlock(blockModel);
+		case 5008:
+			return new LinkedAttachedSetterBlock(blockModel);
 		case 6001:
 			return new AcceptEventBlock(blockModel);
 		// no operation with such id
