@@ -53,8 +53,7 @@ public class InRangeBlock extends ComparisonBlock {
 	
 	@Override
 	protected String getOperationExpression() {
-		String firstOperand =   (getInputBlockByOrder(0) instanceof InstanceGetterBlock) ? getInputReferenceByOrder(0)
-				: "doubleValue ";
+		String firstOperand =   getInputReferenceByOrder(0);
 
 		if (includeBounds) {
 			return firstOperand + ">=" + minRange + " && " + firstOperand + "<=" + maxRange;

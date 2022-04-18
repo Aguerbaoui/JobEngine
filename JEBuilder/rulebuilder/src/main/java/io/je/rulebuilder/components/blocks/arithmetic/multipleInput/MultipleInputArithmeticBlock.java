@@ -31,9 +31,15 @@ public abstract class MultipleInputArithmeticBlock extends ArithmeticBlock {
 	
 	@Override
 	public String getExpression() throws RuleBuildFailedException {
-		StringBuilder expression = generateAllPreviousBlocksExpressions();
-		expression.append(generateBlockExpression(false));
-		return expression.toString();
+		if(!alreadyScripted)
+		{
+			StringBuilder expression = generateAllPreviousBlocksExpressions();
+			expression.append(generateBlockExpression(false));
+			alreadyScripted=true;
+			return expression.toString();
+			
+		}
+		return "";
 	}
 
 	@Override
@@ -74,7 +80,7 @@ public abstract class MultipleInputArithmeticBlock extends ArithmeticBlock {
 		expression.append(")");
 		if(stopExecutionIfInvalidInput)
 		{
-			expression.append("\n"+evaluateExecution(asDouble(inputBlocks.get(1).getReference())));
+			expression.append("\n"+evaluateExecution(asDouble(inputBlocks.get(0).getReference())));
 		}
 		return expression.toString();
 		

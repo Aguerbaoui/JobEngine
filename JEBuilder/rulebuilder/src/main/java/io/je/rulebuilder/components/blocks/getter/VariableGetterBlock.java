@@ -52,7 +52,7 @@ public  class VariableGetterBlock extends ConditionBlock {
 
 	@Override
 	public String getReference(String optional) {
-		return getBlockNameAsVariable()+"getValue()";
+		return getBlockNameAsVariable()+".getValue()";
 	}
 
 
