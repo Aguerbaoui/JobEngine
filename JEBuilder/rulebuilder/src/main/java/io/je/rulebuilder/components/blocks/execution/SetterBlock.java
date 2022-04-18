@@ -303,16 +303,7 @@ public class SetterBlock extends ExecutionBlock {
 		this.isGeneric = isGeneric;
 	}
 
-	@Override
-	public  void addSpecificInstance(String instanceId) {
-
-			this.primeJoinId=instanceId;
-		
-	}
-	@Override
-	public  void removeSpecificInstance() {
-		this.primeJoinId=null;
-	}
+	
 
 
 }

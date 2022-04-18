@@ -78,11 +78,11 @@ public class BlockManager {
 		block.setOutputBlocks(new ArrayList<>());
 
 		for (var inputId : block.getInputBlockIds()) {
-			block.addInput(blocks.get(inputId.getBlockId()));
+			block.addInputLink(blocks.get(inputId.getBlockId()),inputId.getConnectionName(),inputId.getOrder());
 		}
 
 		for (var outputId : block.getOutputBlockIds()) {
-			block.addOutput(blocks.get(outputId.getBlockId()));
+			block.addOutputLink(blocks.get(outputId.getBlockId()),outputId.getConnectionName(),outputId.getOrder());
 		}
 		
 		

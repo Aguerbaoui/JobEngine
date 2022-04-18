@@ -3,9 +3,15 @@ package io.je.rulebuilder.components;
 public class BlockLinkModel {
 	String blockId;
 	int order;
-	String variableName="";
+	String connectionName;
 	
 	
+	
+	
+	public BlockLinkModel() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
 	public BlockLinkModel(String blockId) {
 		super();
 		this.blockId = blockId;
@@ -22,11 +28,11 @@ public class BlockLinkModel {
 	public void setOrder(int order) {
 		this.order = order;
 	}
-	public String getVariableName() {
-		return variableName;
+	public String getConnectionName() {
+		return connectionName;
 	}
-	public void setVariableName(String variableName) {
-		this.variableName = variableName;
+	public void setConnectionName(String variableName) {
+		this.connectionName = variableName;
 	}
 	
 	

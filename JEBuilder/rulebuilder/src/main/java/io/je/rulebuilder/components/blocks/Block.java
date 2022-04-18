@@ -1,18 +1,15 @@
 package io.je.rulebuilder.components.blocks;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import io.je.rulebuilder.components.BlockLink;
 import io.je.rulebuilder.components.BlockLinkModel;
-import io.je.rulebuilder.components.CustomBlockLink;
 import io.je.rulebuilder.components.blocks.getter.InstanceGetterBlock;
-import io.je.rulebuilder.components.blocks.getter.VariableGetterBlock;
 import io.je.utilities.exceptions.RuleBuildFailedException;
 import io.je.utilities.runtimeobject.JEObject;
 
@@ -78,18 +75,18 @@ public abstract class Block extends JEObject {
 	public abstract String getReference(String optional);
 	
 	
-	public void addInput(Block block)
+	public void addInputLink(Block block, String connectionName , int order )
 	{
 
-			inputBlocks.add(new BlockLink(block));
+			inputBlocks.add(new BlockLink(block,order,connectionName));
 		
 		
 	}
 	
-	public void addOutput(Block block)
+	public void addOutputLink(Block block, String connectionName , int order )
 	{
 
-			outputBlocks.add(new BlockLink(block));
+			outputBlocks.add(new BlockLink(block,order,connectionName));
 		
 	}
 	
@@ -252,16 +249,9 @@ public boolean isProperlyConfigured() {
 
 
 
-public  void addSpecificInstance(String instanceId) {
 	
-}
 
 
-
-public void removeSpecificInstance() {
-	// TODO Auto-generated method stub
-	
-}
 
 public boolean isAlreadyScripted() {
 	return alreadyScripted;
@@ -279,7 +269,7 @@ public String getPersistence() {
 		if(persistence!=null)
 		{
 			return persistence;
-		}else if(pBlock.inputBlocks.isEmpty()){
+		}else if(pBlock.getInputBlocks().isEmpty()){
 			return null;
 				
 		}else {
@@ -311,8 +301,24 @@ public void setIncludeOperation(boolean includeOperation) {
 	}
 }
 
+public Block getInputBlockByOrder(int order)
+{
+	 var input= inputBlocks.stream().filter(x->x.getOrder()==order).findFirst();
+	 if(input.isPresent()) return  input.get().getBlock();
+	 else return null;
+}
+
+public String getInputReferenceByOrder(int order)
+{
+	 var input= inputBlocks.stream().filter(x->x.getOrder()==order).findFirst();
+	 if(input.isPresent()) return  input.get().getReference();
+	 else return null;
+}
 
 
-
+public List<Block> getInputsByOrder(int order)
+{
+	return inputBlocks.stream().filter(x->x.getOrder()==order).map(BlockLink::getBlock).collect(Collectors.toList());
+}
 
 }

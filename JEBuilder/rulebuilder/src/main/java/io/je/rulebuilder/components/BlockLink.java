@@ -17,7 +17,19 @@ public class BlockLink {
 	
 	
 	
+
 	
+	public BlockLink(Block block, int order, String variableName) {
+		super();
+		this.block = block;
+		this.order = order;
+		this.variableName = variableName;
+	}
+
+
+
+
+
 	public BlockLink(Block block) {
 		super();
 		this.block = block;

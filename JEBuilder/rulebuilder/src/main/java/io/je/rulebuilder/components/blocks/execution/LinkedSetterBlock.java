@@ -122,16 +122,7 @@ public class LinkedSetterBlock extends ExecutionBlock {
 	public void setClassId(String classId) {
 		this.classId = classId;
 	}
-	@Override
-	public  void addSpecificInstance(String instanceId) {
-
-			this.primeJoinId=instanceId;
-		
-	}
-	@Override
-	public  void removeSpecificInstance() {
-		this.primeJoinId=null;
-	}
+	
 
 
 

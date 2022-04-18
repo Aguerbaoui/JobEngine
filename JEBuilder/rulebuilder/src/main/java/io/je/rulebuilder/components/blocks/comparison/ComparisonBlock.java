@@ -97,7 +97,7 @@ public  class ComparisonBlock extends PersistableBlock {
 
 	protected String getOperationExpression()
 	{
-		String firstOperand = inputBlocks.get(0).getReference();
+		String firstOperand =getInputReferenceByOrder(0);
 		return firstOperand+ getOperator() + formatOperator(threshold);
 
 	}
@@ -112,7 +112,7 @@ public  class ComparisonBlock extends PersistableBlock {
 	protected void setParameters() {
 		if(inputBlockIds.size()>1)
 		{
-			threshold=inputBlocks.get(1).getReference();
+			threshold=getInputReferenceByOrder(1);
 		}
 		
 	}
@@ -131,7 +131,7 @@ public  class ComparisonBlock extends PersistableBlock {
 
 		// single input
 		if (inputBlocks.size() == 1) {
-			String inputExpression = inputBlocks.get(0).getBlock().getAsOperandExpression().replaceAll(Keywords.toBeReplaced,
+			String inputExpression = getInputBlockByOrder(0).getAsOperandExpression().replaceAll(Keywords.toBeReplaced,
 					getOperationExpression());
 			expression.append(inputExpression);
 
@@ -150,18 +150,18 @@ public  class ComparisonBlock extends PersistableBlock {
 			//comparison blocks
 		} else if (inputBlocks.size() == 2) {
 			
-			if(inputBlocks.get(0).equals(inputBlocks.get(1)) && inputBlocks.get(0).getBlock() instanceof InstanceGetterBlock )
+			if( getInputBlockByOrder(0).equals(getInputBlockByOrder(1)) && getInputBlockByOrder(0) instanceof InstanceGetterBlock )
 			{
-				expression.append(inputBlocks.get(0).getBlock().getAsOperandExpression().replaceAll(Keywords.toBeReplaced,
+				expression.append(getInputBlockByOrder(0).getAsOperandExpression().replaceAll(Keywords.toBeReplaced,
 						getOperationExpression()));
 			}else {
-				inputBlocks.get(1).getBlock().setIncludeOperation(true);
-				String firstOperand = inputBlocks.get(1).getBlock().getExpression().replaceAll(Keywords.toBeReplaced,
+				getInputBlockByOrder(1).setIncludeOperation(true);
+				String firstOperand = getInputBlockByOrder(1).getExpression().replaceAll(Keywords.toBeReplaced,
 						getOperationExpression());
 				expression.append(firstOperand);
 				String secondOperand = "";
 				expression.append("\n");
-				secondOperand = inputBlocks.get(0).getBlock().getAsOperandExpression().replaceAll(Keywords.toBeReplaced,
+				secondOperand = getInputBlockByOrder(0).getAsOperandExpression().replaceAll(Keywords.toBeReplaced,
 						getOperationExpression());
 				expression.append(secondOperand);
 			}
