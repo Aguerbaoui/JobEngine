@@ -291,12 +291,15 @@ public String getPersistence() {
 public void setIncludeOperation(boolean includeOperation) {
 	if(this.inputBlocks.isEmpty())
 	{
-		this.includesOperation=includeOperation;
 		return;
+	}
+	if(this instanceof InstanceGetterBlock)
+	{
+		this.includesOperation=includeOperation;
+
 	}
 	for(var  b : this.inputBlocks)
 	{
-		this.includesOperation=includeOperation;
 		b.getBlock().setIncludeOperation(includeOperation);
 	}
 }
@@ -319,6 +322,30 @@ public String getInputReferenceByOrder(int order)
 public List<Block> getInputsByOrder(int order)
 {
 	return inputBlocks.stream().filter(x->x.getOrder()==order).map(BlockLink::getBlock).collect(Collectors.toList());
+}
+
+
+
+
+public boolean hasPrecedent(Block block) {
+	if(inputBlocks.isEmpty())
+	{
+		return false;
+	}else {
+		if( inputBlocks.stream().anyMatch(x->x.getBlock().equals(block)) )
+		{
+			return true;
+		}
+		for(var b : inputBlocks)
+		{		
+			if(b.getBlock().hasPrecedent(block))
+			{
+				return true;
+			}
+		}
+	}
+	
+	return false;
 }
 
 }

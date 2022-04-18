@@ -128,51 +128,64 @@ public  class ComparisonBlock extends PersistableBlock {
 
 	@Override
 	public String getExpression() throws RuleBuildFailedException {
-		StringBuilder expression = new StringBuilder();
+		try {
+			StringBuilder expression = new StringBuilder();
 
-		checkBlockConfiguration();
-		setParameters();
+			checkBlockConfiguration();
+			setParameters();
 
-		// single input
-		if (inputBlocks.size() == 1) {
-			String inputExpression = getInputBlockByOrder(0).getAsOperandExpression().replaceAll(Keywords.toBeReplaced,
-					getOperationExpression());
-			expression.append(inputExpression);
-
-			//in range / out of range blocks
-		} else if (inputBlocks.size() == 3 || this instanceof InRangeBlock || this instanceof OutOfRangeBlock) {
-			for(var input : inputBlocks)
-			{
-				expression.append(input.getBlock().getExpression());
-				expression.append("\n");
-
-			}
-			expression.append("eval(");
-			expression.append(getOperationExpression());
-			expression.append(")");
-
-			//comparison blocks
-		} else if (inputBlocks.size() == 2) {
-			
-			if( getInputBlockByOrder(0).equals(getInputBlockByOrder(1)) && getInputBlockByOrder(0) instanceof InstanceGetterBlock )
-			{
-				expression.append(getInputBlockByOrder(0).getAsOperandExpression().replaceAll(Keywords.toBeReplaced,
-						getOperationExpression()));
-			}else {
-				getInputBlockByOrder(1).setIncludeOperation(true);
-				String firstOperand = getInputBlockByOrder(1).getExpression().replaceAll(Keywords.toBeReplaced,
+			// single input
+			if (inputBlocks.size() == 1) {
+				String inputExpression = getInputBlockByOrder(0).getAsOperandExpression().replaceAll(Keywords.toBeReplaced,
 						getOperationExpression());
-				expression.append(firstOperand);
-				String secondOperand = "";
-				expression.append("\n");
-				secondOperand = getInputBlockByOrder(0).getAsOperandExpression().replaceAll(Keywords.toBeReplaced,
-						getOperationExpression());
-				expression.append(secondOperand);
+				expression.append(inputExpression);
+
+				//in range / out of range blocks
+			} else if (inputBlocks.size() == 3 || this instanceof InRangeBlock || this instanceof OutOfRangeBlock) {
+				for(var input : inputBlocks)
+				{
+					expression.append(input.getBlock().getExpression());
+					expression.append("\n");
+
+				}
+				expression.append("eval(");
+				expression.append(getOperationExpression());
+				expression.append(")");
+
+				//comparison blocks
+			} else if (inputBlocks.size() == 2) {
+				
+				if( getInputBlockByOrder(0).equals(getInputBlockByOrder(1)) && getInputBlockByOrder(0) instanceof InstanceGetterBlock )
+				{
+					expression.append(getInputBlockByOrder(0).getAsOperandExpression().replaceAll(Keywords.toBeReplaced,
+							getOperationExpression()));
+				}else {
+					if(getInputBlockByOrder(0).hasPrecedent(getInputBlockByOrder(1)))
+					{
+						String firstOperand = getInputBlockByOrder(0).getAsOperandExpression().replaceAll(Keywords.toBeReplaced,
+								getOperationExpression());
+						expression.append(firstOperand);
+
+					}else {
+						String firstOperand = getInputBlockByOrder(0).getExpression().replaceAll(Keywords.toBeReplaced,
+								getOperationExpression());
+						expression.append(firstOperand);
+						String secondOperand = "";
+						expression.append("\n");
+						secondOperand = getInputBlockByOrder(1).getAsOperandExpression().replaceAll(Keywords.toBeReplaced,
+								getOperationExpression());
+						expression.append(secondOperand);
+					}
+					
+					
+				}
+				
+				
 			}
-			
-			
+			return expression.toString();
+		}catch (Exception e) {
+			throw new RuleBuildFailedException(blockName + " is not configured properly");
 		}
-		return expression.toString();
 	}
 
 	//check number of inputs

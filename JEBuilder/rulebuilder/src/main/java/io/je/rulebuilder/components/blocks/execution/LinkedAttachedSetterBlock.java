@@ -36,7 +36,6 @@ public class LinkedAttachedSetterBlock extends ExecutionBlock {
 		try {
 			ignoreWriteIfSameValue=(boolean) blockModel.getBlockConfiguration().get("ignoreWriteIfSameValue");
 		}catch (Exception e) {
-			// TODO: handle exception
 		}		
 		try
 		{
@@ -44,6 +43,11 @@ public class LinkedAttachedSetterBlock extends ExecutionBlock {
 			destinationAttributeName = (String) blockModel.getBlockConfiguration().get(AttributesMapping.DESTINATION_ATTRIBUTE_NAME);			
 			getterName =  (String) blockModel.getBlockConfiguration().get(AttributesMapping.LINKED_GETTER_NAME);
 			isProperlyConfigured=true;
+			if(inputBlockIds.size()!=1)
+			{
+				isProperlyConfigured=false;
+
+			}
 		}catch(Exception e) {
 			isProperlyConfigured=false;
 		
