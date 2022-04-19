@@ -32,8 +32,7 @@ public abstract class Block extends JEObject {
    protected List<BlockLink> outputBlocks = new ArrayList<>();
    
 
-	@Transient
-	protected boolean includesOperation = false;
+
    
    protected boolean alreadyScripted=false;
 
@@ -186,14 +185,7 @@ public abstract class Block extends JEObject {
 	}
 
 
-	public boolean isIncludesOperation() {
-		return includesOperation;
-	}
 
-
-	public void setIncludesOperation(boolean includesOperation) {
-		this.includesOperation = includesOperation;
-	}
 
 
 	public String getBlockDescription() {
@@ -288,21 +280,7 @@ public String getPersistence() {
 
 
 
-public void setIncludeOperation(boolean includeOperation) {
-	if(this.inputBlocks.isEmpty())
-	{
-		return;
-	}
-	if(this instanceof InstanceGetterBlock)
-	{
-		this.includesOperation=includeOperation;
 
-	}
-	for(var  b : this.inputBlocks)
-	{
-		b.getBlock().setIncludeOperation(includeOperation);
-	}
-}
 
 public Block getInputBlockByOrder(int order)
 {
