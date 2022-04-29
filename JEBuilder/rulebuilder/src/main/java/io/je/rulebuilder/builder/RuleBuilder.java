@@ -67,12 +67,13 @@ public class RuleBuilder {
                 LogCategory.DESIGN_MODE, jeRule.getJobEngineProjectID(),
                 LogSubModule.RULE, jeRule.getJobEngineElementID());
         if (jeRule instanceof UserDefinedRule) {
-            List<ScriptedRule> unitRules = scriptRule(((UserDefinedRule) jeRule));
-            for (ScriptedRule rule : unitRules) {
-                // generate drl
-                rulePath = rule.generateDRL(buildPath);
-                sendDRLToJeRunner(rule, rulePath,compileOnly);
-            }
+
+	            List<ScriptedRule> unitRules = jeRule.isCompiled()? ((UserDefinedRule) jeRule).getUnitRules(): scriptRule(((UserDefinedRule) jeRule));
+	            for (ScriptedRule rule : unitRules) {
+	                // generate drl
+	                rulePath = rule.generateDRL(buildPath);
+	                sendDRLToJeRunner(rule, rulePath,compileOnly);
+	            }
         }
         if (jeRule instanceof ScriptedRule) {
             rulePath = ((ScriptedRule) jeRule).generateDRL(buildPath);
@@ -150,7 +151,7 @@ public class RuleBuilder {
 		String duration = null;
 		int scriptedRulesCounter = 0;
 		String scriptedRuleid = "";
-		List<ScriptedRule> scriptedRules = new ArrayList<>();
+		uRule.setUnitRules( new ArrayList<>());
 		Set<Block> rootBlocks = getRootBlocks(uRule);
 		String subRulePrefix = IdManager.generateSubRulePrefix(uRule.getJobEngineElementID());
 		for (Block root : rootBlocks) {
@@ -185,14 +186,14 @@ public class RuleBuilder {
 			ScriptedRule rule = new ScriptedRule(uRule.getJobEngineProjectID(), scriptedRuleid, script,
 					uRule.getJobEngineElementName() + scriptedRulesCounter);
 			rule.setTopics(uRule.getTopics());
-			scriptedRules.add(rule);
+			uRule.getUnitRules().add(rule);
 			subRules.add(scriptedRuleid);
 			uRule.setSubRules(subRules);
 			if (eliminateCombinatoryBehaviour) {
 				resetJoinIds(allGenericBlocksByClassId);
 			}
 		}
-		return scriptedRules;
+		return uRule.getUnitRules();
 	}
 
 	private static GenericBlockSummary eliminateCombinatoryBehaviour(GenericBlockSummary allGenericBlocks, String primeJoinId  ) {
