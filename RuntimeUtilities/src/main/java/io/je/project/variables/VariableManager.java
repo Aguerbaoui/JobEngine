@@ -137,7 +137,9 @@ public class VariableManager {
 	}
 
 	public static Collection<JEVariable> getAllVariables(String projectId) {
-		variablesByProjectId.computeIfAbsent(projectId, k -> variablesByProjectId.put(projectId, new HashMap<>()));
+		if (!variablesByProjectId.containsKey(projectId)) {
+			variablesByProjectId.put(projectId, new HashMap<>());
+		}
 		return variablesByProjectId.get(projectId).values();
 	}
 
