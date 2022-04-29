@@ -25,7 +25,7 @@ import io.je.rulebuilder.models.BlockModel;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.AddRuleBlockException;
 
-public class BlockGenerator {
+public class BlockFactory {
 
 	
 	/**

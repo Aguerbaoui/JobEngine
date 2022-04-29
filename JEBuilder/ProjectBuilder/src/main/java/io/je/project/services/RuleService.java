@@ -262,7 +262,7 @@ public class RuleService {
 		blockModel.setBlockName(generatedBlockName);
 
 		// create block
-		Block block = BlockGenerator.createBlock(blockModel);
+		Block block = BlockFactory.createBlock(blockModel);
 
 		// add block to rule
 		rule.addBlock(block);
@@ -325,7 +325,7 @@ public class RuleService {
 				+ blockModel.getRuleId() + "]", CATEGORY, blockModel.getProjectId(), RULE, blockModel.getBlockId());
 
 		// create block
-		Block block = BlockGenerator.createBlock(blockModel);
+		Block block = BlockFactory.createBlock(blockModel);
 
 		// check block name is valid
 		if (!oldblock.getBlockName().equals(block.getBlockName())) {
