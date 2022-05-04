@@ -66,7 +66,7 @@ public class RuleService {
 
 	public void createRule(String projectId, RuleModel ruleModel) throws ProjectNotFoundException,
 			RuleAlreadyExistsException, RuleNotAddedException, LicenseNotActiveException, ProjectLoadException {
-		LicenseProperties.checkLicenseIsActive();
+		//LicenseProperties.checkLicenseIsActive();
 		JEProject project = projectService.getProjectById(projectId);
 		if (project == null) {
 			throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
@@ -643,7 +643,7 @@ public class RuleService {
 	 */
 	public void runRule(String projectId, String ruleId)
 			throws LicenseNotActiveException, RuleBuildFailedException, InterruptedException, ExecutionException {
-		LicenseProperties.checkLicenseIsActive();
+		//LicenseProperties.checkLicenseIsActive();
 		OperationStatusDetails result = asyncRuleService.runRule(projectId, ruleId).get();
 		if (!result.isOperationSucceeded()) {
 			throw new RuleBuildFailedException(result.getOperationError());

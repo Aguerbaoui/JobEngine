@@ -89,7 +89,7 @@ public class EventService {
 	 * add new event
 	 */
 	public void addEvent(String projectId, EventModel eventModel) throws ProjectNotFoundException, EventException, LicenseNotActiveException, ProjectLoadException {
-    	LicenseProperties.checkLicenseIsActive();
+    	//LicenseProperties.checkLicenseIsActive();
 
 		
 		JEProject project = projectService.getProjectById(projectId);
@@ -154,7 +154,7 @@ public class EventService {
 	 */
 	
 	public void registerEvent( JEEvent event ) throws ProjectNotFoundException, LicenseNotActiveException, EventException, ProjectLoadException {
-    	LicenseProperties.checkLicenseIsActive();
+    	//LicenseProperties.checkLicenseIsActive();
 
 		JEProject project = projectService.getProjectById(event.getJobEngineProjectID());
 		if (project == null) {

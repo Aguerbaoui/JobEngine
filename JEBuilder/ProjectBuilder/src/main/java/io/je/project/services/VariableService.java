@@ -106,7 +106,7 @@ public class VariableService {
     * Add a new variable to the project
     * */
     public void addVariable(VariableModel variableModel) throws ProjectNotFoundException, VariableAlreadyExistsException, LicenseNotActiveException, VariableException, ProjectLoadException {
-    	LicenseProperties.checkLicenseIsActive();
+    	//LicenseProperties.checkLicenseIsActive();
 
     	JELogger.debug(JEMessages.ADDING_VARIABLE,
                 LogCategory.DESIGN_MODE, variableModel.getProjectId(),

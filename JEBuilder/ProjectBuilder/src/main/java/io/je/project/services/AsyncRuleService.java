@@ -105,7 +105,7 @@ public class AsyncRuleService {
 	 */
 	public CompletableFuture<OperationStatusDetails> runRule(String projectId, String ruleId)
 			throws LicenseNotActiveException {
-		LicenseProperties.checkLicenseIsActive();
+		//LicenseProperties.checkLicenseIsActive();
 		OperationStatusDetails result = new OperationStatusDetails(ruleId);
 
 		JEProject project = null;
