@@ -14,8 +14,11 @@ import io.je.project.exception.JEExceptionHandler;
 import io.je.project.services.ProjectService;
 import io.je.utilities.log.JELogger;
 
+/*
+* Project management api ZMQ Responder
+* */
 @Component
-public class ProjectZMQResponser extends ZMQResponser {
+public class ProjectZMQResponder extends ZMQResponser {
 
 	@Autowired
 	ProjectService projectService;
@@ -27,12 +30,12 @@ public class ProjectZMQResponser extends ZMQResponser {
 	
 	
 	
-	public ProjectZMQResponser(String url, int repPort,ZMQBind bind) {
+	public ProjectZMQResponder(String url, int repPort, ZMQBind bind) {
 		super(url, repPort,bind);
 	}
 
 	
-	public ProjectZMQResponser() {
+	public ProjectZMQResponder() {
 		super();
 	}
 

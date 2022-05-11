@@ -428,6 +428,9 @@ public class ClassBuilder {
 		return classType;
 	}
 
+	/*
+	* Generate field
+	* */
 	private static VariableSourceGenerator generateField(FieldModel fieldModel) throws ClassLoadException {
 		// TODO: if field not valid throw exception
 

@@ -16,7 +16,9 @@ import static io.je.utilities.apis.Request.*;
 import static io.je.utilities.constants.APIConstants.*;
 
 public class JEBuilderApiHandler {
-
+/*
+* Most of these methods are deprecated
+* */
 
 	//run workflow
 	public static JEResponse runWorkflow(String projectId, String workflowName) throws JERunnerErrorException{

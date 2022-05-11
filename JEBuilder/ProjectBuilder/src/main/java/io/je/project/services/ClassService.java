@@ -202,6 +202,9 @@ public class ClassService {
 
     }
 
+    /*
+    * Load all classes
+    * */
     public void loadAllClasses() {
         JELogger.debug(JEMessages.LOADING_ALL_CLASSES_FROM_DB,
                 LogCategory.DESIGN_MODE, null,
@@ -210,6 +213,9 @@ public class ClassService {
         loadDataModelClasses();
     }
 
+    /*
+    * Load DM classes
+    * */
     private void loadDataModelClasses() {
         List<JEClass> classes = classRepository.findByClassAuthor(DATA_MODEL.toString());
         for (JEClass clazz : classes) {
@@ -222,6 +228,9 @@ public class ClassService {
         }
     }
 
+    /*
+     * Load SIOTHProcedure class
+     * */
     private void loadSIOTHProcedures() {
         JEClass jeClass = getNewJEProcedureClass();
         try {
@@ -657,7 +666,9 @@ public class ClassService {
     public void removeClass(String className) {
         classRepository.deleteByClassName(className);
     }
-
+    /*
+     * Delete all classes
+     * */
     public void cleanUpHouse() {
         try {
             classRepository.deleteAll();

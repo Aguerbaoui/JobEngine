@@ -93,6 +93,9 @@ public class AsyncRuleService {
 
 	}
 
+	/*
+	* Build rule
+	* */
 	@Async
 	public CompletableFuture<OperationStatusDetails> buildRule(String projectId, String ruleId) {
 		return compileRule(projectId, ruleId, false);
@@ -198,7 +201,6 @@ public class AsyncRuleService {
 	}
 
 
-
 	private JEProject getProject(String projectId) throws ProjectNotFoundException, ProjectLoadException, LicenseNotActiveException {
 		JEProject project = projectService.getProjectById(projectId);
 		if (project == null) {
@@ -210,6 +212,9 @@ public class AsyncRuleService {
 		return project;
 	}
 
+	/*
+	* Get rule bean
+	* */
 	public JERule getRule(String projectId, String ruleId)
 			throws ProjectNotFoundException, RuleNotFoundException, LicenseNotActiveException, ProjectLoadException {
 		LicenseProperties.checkLicenseIsActive();

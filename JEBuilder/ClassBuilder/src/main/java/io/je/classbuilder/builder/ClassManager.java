@@ -154,6 +154,9 @@ public class ClassManager {
 
     }
 
+    /*
+    * Get method model from bean
+    * */
     public static JEMethod getMethodFromModel(MethodModel m) {
         JEMethod method = new JEMethod();
         method.setCode(m.getCode());
@@ -174,6 +177,9 @@ public class ClassManager {
         return method;
     }
 
+    /*
+     * Get bean from model
+     * */
     public static JEField getFieldFromModel(FieldModel f) {
         JEField field = new JEField();
         field.setComment("");
@@ -257,10 +263,16 @@ public class ClassManager {
         return response;
     }
 
+    /*
+     * Check if class exists
+     * */
     public static boolean classExistsByName(String className) {
         return classNames.containsKey(className);
     }
 
+    /*
+    * Get class by name
+    * */
     public static Class<?> getClassByName(String className) {
         return builtClasses.get(classNames.get(className));
     }
@@ -298,11 +310,17 @@ public class ClassManager {
 
     }
 
+    /*
+     * Get class type
+     * */
     public static ClassType getClassType(String classId) {
         return jeClasses.get(classId).getClassType();
 
     }
 
+    /*
+     * Get class by id
+     * */
     public static Class<?> getClassById(String id) {
         return builtClasses.get(id);
     }

@@ -23,6 +23,9 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.auth0.jwt.interfaces.JWTVerifier;
 
 
+/*
+* oauth 2.0 authentication flow interceptor
+* */
 public class AuthenticationInterceptor implements HandlerInterceptor {
 
     private static String jwksUrl;
@@ -40,7 +43,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
             return true;
         }
 
-       /* HandlerMethod handlerMethod = (HandlerMethod) handler;
+        HandlerMethod handlerMethod = (HandlerMethod) handler;
         Method method = handlerMethod.getMethod();
         String originToken = request.getHeader("Authorization");
         String uri = request.getRequestURI();
@@ -69,7 +72,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
             writer.write(exception.getMessage());
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return false;
-        }*/
+        }
         return true;
     }
 

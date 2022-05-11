@@ -458,6 +458,9 @@ public class RuleService {
 		return rules;
 	}
 
+	/*
+	* Get rule
+	* */
 	public RuleModel getRule(String projectId, String ruleId)
 			throws ProjectNotFoundException, RuleNotFoundException, LicenseNotActiveException, ProjectLoadException {
 		LicenseProperties.checkLicenseIsActive();
@@ -477,7 +480,6 @@ public class RuleService {
 	/*
 	 * add scripted rule
 	 */
-
 	public void addScriptedRule(String projectId, ScriptRuleModel ruleModel)
 			throws ProjectNotFoundException, RuleAlreadyExistsException, LicenseNotActiveException, ProjectLoadException {
 		LicenseProperties.checkLicenseIsActive();
@@ -498,7 +500,6 @@ public class RuleService {
 	 * update scripted rule
 	 *
 	 */
-
 	public void updateScriptedRule(String projectId, ScriptRuleModel ruleModel)
 			throws ProjectNotFoundException, RuleNotFoundException, ProjectLoadException, LicenseNotActiveException {
 
@@ -514,6 +515,9 @@ public class RuleService {
 		ruleRepository.save(rule);
 	}
 
+	/*
+	* Save front config
+	* */
 	public void saveRuleFrontConfig(String projectId, String ruleId, String config)
 			throws ProjectNotFoundException, RuleNotFoundException, LicenseNotActiveException, ProjectLoadException {
 		LicenseProperties.checkLicenseIsActive();
@@ -530,6 +534,9 @@ public class RuleService {
 		ruleRepository.save(project.getRule(ruleId));
 	}
 
+	/*
+	 * Check if block format is valid
+	 * */
 	public void verifyBlockFormatIsValid(BlockModel blockModel)
 			throws AddRuleBlockException, LicenseNotActiveException {
 		LicenseProperties.checkLicenseIsActive();
@@ -613,6 +620,9 @@ public class RuleService {
 
 	}
 
+	/*
+	 * Delete all rule block names in project
+	 * */
 	private void removeAllRuleBlockNames(String projectId, String ruleId) throws LicenseNotActiveException, ProjectNotFoundException, ProjectLoadException {
 		LicenseProperties.checkLicenseIsActive();
 
@@ -623,11 +633,17 @@ public class RuleService {
 		}
 	}
 
+	/*
+	 * Delete all rules in project
+	 * */
 	public void deleteAll(String projectId) {
 		ruleRepository.deleteByJobEngineProjectID(projectId);
 
 	}
 
+	/*
+	* Get all rule beans in project
+	* */
 	public ConcurrentHashMap<String, JERule> getAllJERules(String projectId) throws LicenseNotActiveException {
 		LicenseProperties.checkLicenseIsActive();
 		List<JERule> rules = ruleRepository.findByJobEngineProjectID(projectId);
@@ -651,6 +667,9 @@ public class RuleService {
 
 	}
 
+	/*
+	* Get Project by id
+	* */
 	private JEProject getProject(String projectId) throws ProjectNotFoundException, ProjectLoadException, LicenseNotActiveException {
 		JEProject project = projectService.getProjectById(projectId);
 		if (project == null) {
@@ -659,6 +678,9 @@ public class RuleService {
 		return project;
 	}
 
+	/*
+	* Get rule
+	* */
 	private UserDefinedRule getRule(JEProject project, String ruleId) throws RuleNotFoundException {
 		if (!project.ruleExists(ruleId)) {
 			throw new RuleNotFoundException(project.getProjectId(), ruleId);
@@ -666,6 +688,9 @@ public class RuleService {
 		return (UserDefinedRule) project.getRule(ruleId);
 	}
 
+	/*
+	 * Update rules status
+	 * */
 	public void updateRulesStatus(String projectId, boolean setRunning) throws ProjectNotFoundException, ProjectLoadException, LicenseNotActiveException {
 		JEProject project = getProject(projectId);
 		if (setRunning) {
@@ -699,6 +724,9 @@ public class RuleService {
 
 	}
 
+	/*
+	* Rune list of rules in project
+	* */
 	public List<OperationStatusDetails> runRules(String projectId, List<String> ruleIds)
 			throws LicenseNotActiveException {
 		LicenseProperties.checkLicenseIsActive();
@@ -716,6 +744,9 @@ public class RuleService {
 
 	}
 
+	/*
+	* Stop rule
+	* */
 	public OperationStatusDetails stopRule(String projectId, String ruleId) {
 
 		JEProject project = null;
@@ -791,6 +822,9 @@ public class RuleService {
 		
 	}
 
+	/*
+	* Stop list of rules
+	* */
 	public List<OperationStatusDetails> stopRules(String projectId, List<String> ruleIds)
 			throws ProjectNotFoundException, LicenseNotActiveException, ProjectLoadException {
 		LicenseProperties.checkLicenseIsActive();
@@ -833,6 +867,9 @@ public class RuleService {
 	 * }
 	 */
 
+	/*
+	* Compile list of rules
+	* */
 	public CompletableFuture<List<OperationStatusDetails>> compileRules(String projectId, List<String> ruleIds)
 			throws LicenseNotActiveException, ProjectNotFoundException, ProjectLoadException {
 		LicenseProperties.checkLicenseIsActive();
@@ -855,6 +892,9 @@ public class RuleService {
 
 	}
 
+	/*
+	* Update rule status
+	* */
 	public static void updateRuleStatus(JERule rule) {
 
 		if (rule.isRunning() || rule.getStatus()== Status.RUNNING_NOT_UP_TO_DATE) {
@@ -897,11 +937,17 @@ public class RuleService {
 		return project.getRule(ruleId);
 	}*/
 
+	/*
+	* Save rule
+	* */
 	public void saveRule(JERule rule) {
 		ruleRepository.save(rule);
 
 	}
 
+	/*
+	* Clear all rule data
+	* */
     public void cleanUpHouse() {
 		ruleRepository.deleteAll();
     }

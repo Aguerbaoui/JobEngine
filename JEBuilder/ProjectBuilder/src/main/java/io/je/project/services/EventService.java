@@ -42,7 +42,6 @@ public class EventService {
 	/*
 	 * Retrieve list of all events that exist in a project.
 	 */
-	
 	public Collection<EventModel> getAllEvents(String projectId) throws LicenseNotActiveException {
     	LicenseProperties.checkLicenseIsActive();
 
@@ -57,7 +56,10 @@ public class EventService {
 				LogSubModule.EVENT, null);
 		return eventModels;
 	}
-	
+
+	/*
+	* Get all JE event beans
+	* */
 	public ConcurrentHashMap<String, JEEvent> getAllJEEvents(String projectId) throws LicenseNotActiveException {
     	LicenseProperties.checkLicenseIsActive();
 
@@ -152,7 +154,6 @@ public class EventService {
 	/*
 	 * register event in runner
 	 */
-	
 	public void registerEvent( JEEvent event ) throws ProjectNotFoundException, LicenseNotActiveException, EventException, ProjectLoadException {
     	//LicenseProperties.checkLicenseIsActive();
 
@@ -185,6 +186,9 @@ public class EventService {
 		
 	}
 
+	/*
+	* Update event type
+	* */
 	public void updateEventType(String projectId, String eventId, String eventType) throws EventException, LicenseNotActiveException, ProjectNotFoundException, ProjectLoadException {
     	LicenseProperties.checkLicenseIsActive();
 
@@ -308,6 +312,9 @@ public class EventService {
 		
 	}*/
 
+	/*
+	* Delete events
+	* */
 	public void deleteEvents(String projectId, List<String> ids) throws LicenseNotActiveException, ProjectNotFoundException, ProjectLoadException {
 		LicenseProperties.checkLicenseIsActive();
 
@@ -344,6 +351,9 @@ public class EventService {
 		}
 	}
 
+	/*
+	* Clear all events
+	* */
     public void cleanUpHouse() {
 		eventRepository.deleteAll();
     }

@@ -112,7 +112,7 @@ public class WorkflowService {
             throws WorkflowNotFoundException, LicenseNotActiveException, WorkflowException, ProjectNotFoundException, ProjectLoadException {
 
         //check if license is valid
-        LicenseProperties.checkLicenseIsActive();
+        //LicenseProperties.checkLicenseIsActive();
 
         //get project
         JEProject project = projectService.getProjectById(projectId);

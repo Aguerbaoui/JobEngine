@@ -62,7 +62,6 @@ public class VariableService {
 	/*
 	 * retrieve event from project by id
 	 */
-	
 	public JEVariable getVariable(String projectId, String variableId) throws ProjectNotFoundException, VariableNotFoundException, LicenseNotActiveException, ProjectLoadException {
     	LicenseProperties.checkLicenseIsActive();
 		JEProject project = projectService.getProjectById(projectId);
@@ -89,7 +88,9 @@ public class VariableService {
 		
 	}
 	
-	
+	/*
+	* Add variable to JERunner
+	* */
 	public void addVariableToRunner(JEVariable variable) throws JERunnerErrorException, LicenseNotActiveException
 	{
     	LicenseProperties.checkLicenseIsActive();
@@ -191,7 +192,7 @@ public class VariableService {
         variableRepository.save(var);
     }
 
-    //TODO: only allowed when project is stopped?
+    //TODO: only allowed when project is stopped? to be confirmed
 	public void writeVariableValue(JEVariable variable, Object value) throws LicenseNotActiveException, VariableException {
     	LicenseProperties.checkLicenseIsActive();
 
@@ -213,8 +214,7 @@ public class VariableService {
 		variableRepository.deleteByJobEngineProjectID(projectId);
 		
 	}*/
-	
-	   public ConcurrentHashMap<String, JEVariable> getAllJEVariables(String projectId) throws  LicenseNotActiveException {
+	public ConcurrentHashMap<String, JEVariable> getAllJEVariables(String projectId) throws  LicenseNotActiveException {
 	    	LicenseProperties.checkLicenseIsActive();
 
 		   List<JEVariable> variables = variableRepository.findByJobEngineProjectID(projectId);
@@ -226,6 +226,9 @@ public class VariableService {
 			return map;
 		}
 
+	/*
+	* Validate variable type
+	* */
 	public boolean validateType(HashMap<String, String> model) {
 		try {
 			JEType type = JEType.valueOf(model.get("type"));
@@ -240,6 +243,9 @@ public class VariableService {
 		//return true;
 	}
 
+	/*
+	* Delete list of variables
+	* */
 	public void deleteVariables(String projectId, List<String> ids) throws LicenseNotActiveException, ProjectNotFoundException, VariableNotFoundException, ProjectLoadException {
 		LicenseProperties.checkLicenseIsActive();
 
@@ -276,10 +282,16 @@ public class VariableService {
 		}
 	}
 
+	/*
+	* Delete all variables
+	* */
     public void cleanUpHouse() {
 		   variableRepository.deleteAll();
     }
 
+	/*
+	* Get model from bean
+	* */
 	public VariableModel getVariableModelFromBean(JEVariable jeVariable) {
 		   VariableModel variableModel = new VariableModel();
 		   variableModel.setId(jeVariable.getJobEngineElementID());

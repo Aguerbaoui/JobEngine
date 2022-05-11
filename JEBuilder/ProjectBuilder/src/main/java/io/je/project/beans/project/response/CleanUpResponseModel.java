@@ -1,5 +1,9 @@
 package io.je.project.beans.project.response;
 
+
+/*
+* Model class for CleanUp request response
+* */
 public class CleanUpResponseModel {
 
 	public String componentName;

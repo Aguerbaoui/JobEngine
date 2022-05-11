@@ -7,6 +7,9 @@ import io.siothconfig.SIOTHConfigUtility;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
 
+/*
+* License properties
+* */
 public class LicenseProperties {
 
 	private static String licenseManagerUrl =  "tcp://" + SIOTHConfigUtility.getSiothConfig().getNodes().getSiothMasterNode()
@@ -14,6 +17,9 @@ public class LicenseProperties {
 	static SIOTHLicenseStatus licenseStatus = null;
 	private static int jobEngineFeatureCode = 4920;
 
+	/*
+	* Initialize license configuration
+	* */
 	public static void init() {
 
 		/*JELogger.info("Checking License Status..", LogCategory.SIOTH_APPLICATION, "", LogSubModule.JEBUILDER, "");
@@ -30,6 +36,9 @@ public class LicenseProperties {
 
 	}
 
+	/*
+	* Check if license is active
+	* */
 	public static boolean licenseIsActive() {
 
 		if (licenseStatus == null) {
@@ -42,6 +51,9 @@ public class LicenseProperties {
 		return true;
 	}
 
+	/*
+	 * Check if license is active
+	 * */
 	public static void checkLicenseIsActive() throws LicenseNotActiveException {
 
 		if (!licenseIsActive()) {
@@ -51,6 +63,9 @@ public class LicenseProperties {
 		}
 	}
 
+	/*
+	 * Set license status
+	 * */
 	public static void setLicenseStatus(SIOTHLicenseStatus status) {
 
 		JELogger.control("License Status changed to " + status + ".", LogCategory.SIOTH_APPLICATION, "",

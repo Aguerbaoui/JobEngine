@@ -16,6 +16,10 @@ import com.mongodb.client.MongoClients;
 import io.siothconfig.SIOTHConfigUtility;
 import utils.string.StringUtilities;
 
+
+/*
+* MongoDB configuration 
+* */
 @Configuration
 @EnableMongoRepositories(basePackages = "io.je.project.repository")
 @Lazy

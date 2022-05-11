@@ -40,11 +40,15 @@ public class JEBuilderInitializingBean implements InitializingBean {
     @Override
     public void afterPropertiesSet() {
         try {
+            //Initialize SIOTHConfig.json
             ConfigurationConstants.initConstants(builderProperties.getSiothId(), builderProperties.isDev());
             SIOTHConfigUtility.setSiothId(builderProperties.getSiothId());
+            //Initialize logger
             JELogger.initLogger("JEBuilder", builderProperties.getJeBuilderLogPath(),builderProperties.getJeBuilderLogLevel(), builderProperties.isDev());
             ConfigurationConstants.setJavaGenerationPath(SIOTHConfigUtility.getSiothConfig().getJobEngine().getGeneratedClassesPath());
+            //Initialize authentication interceptor
             AuthenticationInterceptor.init(builderProperties.getIssuer());
+            //Initialize License
             LicenseProperties.init();
            // JEMonitor.setPort(builderProperties.getMonitoringPort());
         	/*while(!LicenseProperties.licenseIsActive())
@@ -67,13 +71,14 @@ public class JEBuilderInitializingBean implements InitializingBean {
             ZMQConfiguration.setReceiveHighWatermark(builderProperties.getZmqReceiveHighWatermark());
             ZMQConfiguration.setSendHighWatermark(builderProperties.getZmqSendHighWatermark());
             ProcessRunner.setProcessDumpPath(builderProperties.getProcessesDumpPath(), builderProperties.isDumpJavaProcessExecution());
-			configService.init();
+			//Initialize JE configurations
+            configService.init();
             JELogger.control(JEMessages.LOGGER_INITIALIZED,
                     LogCategory.DESIGN_MODE, null,
                     LogSubModule.JEBUILDER, null);
             JELogger.control(JEMessages.BUILDER_STARTED,  LogCategory.DESIGN_MODE,
                     null, LogSubModule.JEBUILDER, null);
-            configService.initResponser();
+            configService.initResponder();
 
         } catch (  Exception   e) {
             JELogger.error(JEMessages.UNEXPECTED_ERROR , LogCategory.DESIGN_MODE, null,

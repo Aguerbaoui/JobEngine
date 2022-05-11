@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import io.je.project.exception.JEExceptionHandler;
-import io.je.project.listener.ProjectZMQResponser;
+import io.je.project.listener.ProjectZMQResponder;
 import io.je.utilities.apis.JERunnerAPIHandler;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.log.JELogger;
@@ -27,7 +27,7 @@ public class ConfigurationService {
 	ProjectService projectService;
 	
 	@Autowired
-	ProjectZMQResponser responser;
+    ProjectZMQResponder responser;
 
 	@Autowired
 	ClassService classService;
@@ -59,7 +59,10 @@ public class ConfigurationService {
 	}
 
 
-	public void initResponser() {
+	/*
+	* Initialize JE ZMQ responder
+	* */
+	public void initResponder() {
 		try {
 			 responser.init("tcp://"+SIOTHConfigUtility.getSiothConfig().getNodes().getSiothMasterNode(), SIOTHConfigUtility.getSiothConfig().getPorts().getJeResponsePort(),ZMQBind.BIND);
 			responser.setListening(true);
@@ -77,7 +80,9 @@ public class ConfigurationService {
 
 
 
-	
+	/*
+	* Update JERunner with projects and classes data
+	* */
 	public void updateRunner(){
 		new Thread(() -> {
 			try {
@@ -117,6 +122,9 @@ public class ConfigurationService {
 
 	}
 
+	/*
+	* check JERunner health
+	* */
 	private static boolean checkRunnerHealth() {
 		try {
 			runnerStatus = JERunnerAPIHandler.checkRunnerHealth();
@@ -127,10 +135,16 @@ public class ConfigurationService {
 		return runnerStatus;
 	}
 
+	/*
+	* Returns JERunner status
+	* */
 	public static boolean isRunnerStatus() {
 		return runnerStatus;
 	}
 
+	/*
+	 * Set JERunner status
+	 * */
 	public static void setRunnerStatus(boolean status) {
 		runnerStatus = status;
 	}

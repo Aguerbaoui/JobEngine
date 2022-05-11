@@ -2,9 +2,6 @@ package io.je.project.services;
 
 import io.je.project.beans.JEProject;
 import io.je.project.config.LicenseProperties;
-import io.je.project.exception.JEExceptionHandler;
-import io.je.project.listener.ProjectZMQResponser;
-import io.je.project.repository.LibraryRepository;
 import io.je.project.repository.ProjectRepository;
 import io.je.rulebuilder.components.JERule;
 import io.je.utilities.apis.JERunnerAPIHandler;
@@ -29,9 +26,6 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import utils.files.FileUtilities;
-import utils.log.LogCategory;
-import utils.log.LogSubModule;
-import utils.zmq.ZMQBind;
 import utils.string.StringUtilities;
 
 import java.io.File;
@@ -313,6 +307,9 @@ public class ProjectService {
 		return loadedProjects.get(project.getProjectId());
 	}
 
+	/*
+	* Save project in DB
+	* */
 	@Async
 	public CompletableFuture<Void> saveProject(String projectId) {
 		synchronized (projectRepository) {
@@ -325,6 +322,9 @@ public class ProjectService {
 	// ########################################### **BUILDER**
 	// ################################################################
 
+	/*
+	* Check if project exists
+	* */
 	public boolean projectExists(String projectId) {
 		if (!loadedProjects.containsKey(projectId)) {
 			Optional<JEProject> p = projectRepository.findById(projectId);
@@ -334,6 +334,9 @@ public class ProjectService {
 		return true;
 	}
 
+	/*
+	* Load all projects
+	* */
 	@Async
 	public CompletableFuture<Void> loadAllProjects() {
 
@@ -427,6 +430,9 @@ public class ProjectService {
 
 	}
 
+	/*
+	* Send log message to tracker
+	* */
 	public void sendLog(LogMessage logMessage) {
 		new Thread(() -> {
 			JELogger.sendLog(logMessage);
@@ -455,6 +461,9 @@ public class ProjectService {
 		}
 	}
 
+	/*
+	* Upload file
+	* */
 	public JELib addFile(LibModel libModel) throws LibraryException {
 		JELogger.control(JEMessages.ADDING_FILE_TO_PROJECT, LogCategory.DESIGN_MODE, null, LogSubModule.JEBUILDER,
 				libModel.getFileName());
