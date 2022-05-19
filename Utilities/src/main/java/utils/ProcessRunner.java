@@ -55,7 +55,7 @@ public class ProcessRunner {
     private static String dumpProcessOutput(Process process, String command, boolean executionOutput, boolean errorOutput) throws IOException {
         String output = "Executing command = " + command + "\n";
 
-        if(executionOutput) {
+        if (executionOutput) {
             StringBuilder textBuilder = new StringBuilder();
             try (Reader reader = new BufferedReader(new InputStreamReader
                     (process.getInputStream(), Charset.forName(StandardCharsets.UTF_8.name())))) {
@@ -69,7 +69,7 @@ public class ProcessRunner {
                 output += textBuilder.toString() + "\n";
             }
         }
-        if(errorOutput) {
+        if (errorOutput) {
             StringBuilder errorTextBuilder = new StringBuilder();
 
             try (Reader reader = new BufferedReader(new InputStreamReader
@@ -81,18 +81,20 @@ public class ProcessRunner {
             }
             if (errorTextBuilder.length() > 0) {
                 output += errorTextBuilder.toString() + "\n";
-                //System.out.println(output);
+                System.out.println(output);
+
             }
         }
         /**/
-        if(dumpOutput) {
+        if (dumpOutput) {
             try {
                 FileUtilities.writeToFile(processDumpPath, output);
+            } catch (Exception ignored) {
             }
-            catch (Exception ignored) {}
         }
         return output;
     }
+
     public static String getProcessDumpPath() {
         return processDumpPath;
     }

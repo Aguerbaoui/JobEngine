@@ -1,57 +1,30 @@
 package io.je.project.services;
 
-import static io.je.classbuilder.builder.ClassManager.getClassModel;
-import static io.je.classbuilder.builder.ClassManager.getLibModel;
-import static io.je.utilities.beans.ClassAuthor.DATA_MODEL;
-import static io.je.utilities.constants.ClassBuilderConfig.CLASS_PACKAGE;
-import static io.je.utilities.constants.JEMessages.*;
-
-import java.io.File;
-import java.io.IOException;
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
-import javax.servlet.http.HttpServletRequest;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.je.classbuilder.builder.ClassBuilder;
-import io.je.classbuilder.models.*;
-import io.je.utilities.beans.*;
-import io.je.utilities.exceptions.*;
-import io.je.utilities.execution.CommandExecutioner;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-
 import io.je.classbuilder.builder.ClassManager;
-import io.je.utilities.beans.ClassType;
-import io.je.utilities.beans.JEClass;
+import io.je.classbuilder.models.*;
 import io.je.project.repository.ClassRepository;
 import io.je.project.repository.LibraryRepository;
 import io.je.project.repository.MethodRepository;
 import io.je.utilities.apis.JERunnerAPIHandler;
-import io.je.utilities.beans.ClassAuthor;
-import io.je.utilities.beans.JEField;
-import io.je.utilities.beans.JELib;
-import io.je.utilities.beans.JEMethod;
-import io.je.utilities.beans.JEResponse;
-import io.je.utilities.beans.LibScope;
+import io.je.utilities.beans.*;
 import io.je.utilities.classloader.JEClassLoader;
 import io.je.utilities.config.ConfigurationConstants;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.constants.WorkflowConstants;
+import io.je.utilities.exceptions.*;
+import io.je.utilities.execution.CommandExecutioner;
 import io.je.utilities.log.JELogger;
 import io.je.utilities.models.LibModel;
 import io.siothconfig.SIOTHConfigUtility;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import utils.files.FileUtilities;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
@@ -59,8 +32,20 @@ import utils.string.StringUtilities;
 import utils.zmq.ZMQBind;
 import utils.zmq.ZMQSubscriber;
 
-/*
- * Service class to handle classes
+import javax.servlet.http.HttpServletRequest;
+import java.io.File;
+import java.io.IOException;
+import java.time.Instant;
+import java.util.*;
+
+import static io.je.classbuilder.builder.ClassManager.getClassModel;
+import static io.je.classbuilder.builder.ClassManager.getLibModel;
+import static io.je.utilities.beans.ClassAuthor.DATA_MODEL;
+import static io.je.utilities.constants.ClassBuilderConfig.CLASS_PACKAGE;
+import static io.je.utilities.constants.JEMessages.*;
+
+/**
+ * Service class to handle classes from datamodel
  */
 @Service
 public class ClassService {
@@ -97,15 +82,18 @@ public class ClassService {
      * Class Listener
      ***********************************************************************/
 
-    /*
-     * Init a thread that listens to the DataModelRestApi for class definition
-     * updates
+    /**
+     * Init a thread that listens to the DataModelRestApi for class definition updates
      */
     public void initClassUpdateListener() {
         // TODO make runnable static
         ClassUpdateListener runnable = new ClassUpdateListener(
-                "tcp://" + SIOTHConfigUtility.getSiothConfig().getNodes().getSiothMasterNode(),
-                SIOTHConfigUtility.getSiothConfig().getDataModelPORTS().getDmRestAPI_ConfigurationPubAddress(),
+                "tcp://" + SIOTHConfigUtility.getSiothConfig()
+                        .getNodes()
+                        .getSiothMasterNode(),
+                SIOTHConfigUtility.getSiothConfig()
+                        .getDataModelPORTS()
+                        .getDmRestAPI_ConfigurationPubAddress(),
                 MODEL_TOPIC);
         runnable.setListening(true);
         Thread listener = new Thread(runnable);
@@ -121,7 +109,7 @@ public class ClassService {
      * Add Class from Class definition
      */
     public void addClass(ClassDefinition classDefinition, boolean sendToRunner, boolean reloadClassDefinition)
-            throws AddClassException, ClassLoadException{
+            throws AddClassException, ClassLoadException {
         try {
             List<JEClass> builtClasses = ClassManager.buildClass(classDefinition, CLASS_PACKAGE);
             for (JEClass _class : builtClasses) {
@@ -139,8 +127,7 @@ public class ClassService {
                 }
 
             }
-        }
-        catch (IOException | InterruptedException e) {
+        } catch (IOException | InterruptedException e) {
             e.printStackTrace();
             JELogger.error(CLASS_LOAD_DENIED_ACCESS, LogCategory.DESIGN_MODE, "", LogSubModule.CLASS, "");
         }
@@ -150,20 +137,19 @@ public class ClassService {
      * Add class to runner from datamodel
      */
     public void loadClassFromDataModel(String workspaceId, String classId, boolean sendToRunner)
-            throws ClassLoadException, AddClassException{
-    
-    if(!loadedClasses.containsKey(classId))
-      {
-    	 
-    	  ClassDefinition classDefinition = ClassManager.loadClassDefinition(workspaceId, classId);
+            throws ClassLoadException, AddClassException {
 
-          if (classDefinition != null) {
-              classDefinition.setWorkspaceId(workspaceId);
-              addClass(classDefinition, sendToRunner, false);
-              JELogger.info("Class " + classDefinition.getName() + " loaded successfully.", null, null, null,
-                      classDefinition.getName());
-          }
-      }
+        if (!loadedClasses.containsKey(classId)) {
+
+            ClassDefinition classDefinition = ClassManager.loadClassDefinition(workspaceId, classId);
+
+            if (classDefinition != null) {
+                classDefinition.setWorkspaceId(workspaceId);
+                addClass(classDefinition, sendToRunner, false);
+                JELogger.info("Class " + classDefinition.getName() + " loaded successfully.", null, null, null,
+                        classDefinition.getName());
+            }
+        }
 
     }
 
@@ -177,7 +163,8 @@ public class ClassService {
         classMap.put(CLASS_NAME, clazz.getClassName());
         classMap.put(CLASS_PATH, clazz.getClassPath());
         classMap.put(CLASS_ID, clazz.getClassId());
-        classMap.put(CLASS_AUTHOR, clazz.getClassAuthor().toString());
+        classMap.put(CLASS_AUTHOR, clazz.getClassAuthor()
+                .toString());
         JELogger.debug("[class=" + clazz.getClassName() + "]" + JEMessages.ADDING_CLASS_TO_RUNNER_FROM_BUILDER,
                 LogCategory.DESIGN_MODE, null, LogSubModule.CLASS, clazz.getClassName());
         JEResponse jeRunnerResp;
@@ -203,8 +190,8 @@ public class ClassService {
     }
 
     /*
-    * Load all classes
-    * */
+     * Load all classes
+     * */
     public void loadAllClasses() {
         JELogger.debug(JEMessages.LOADING_ALL_CLASSES_FROM_DB,
                 LogCategory.DESIGN_MODE, null,
@@ -214,8 +201,8 @@ public class ClassService {
     }
 
     /*
-    * Load DM classes
-    * */
+     * Load DM classes
+     * */
     private void loadDataModelClasses() {
         List<JEClass> classes = classRepository.findByClassAuthor(DATA_MODEL.toString());
         for (JEClass clazz : classes) {
@@ -252,8 +239,8 @@ public class ClassService {
     }
 
     /*
-    * Load user defined methods
-    * */
+     * Load user defined methods
+     * */
     private void loadMethods(JEClass c) {
         List<JEMethod> methods = methodRepository.findAll();
         HashMap<String, JEMethod> methodHashMap = new HashMap<>();
@@ -329,12 +316,14 @@ public class ClassService {
         // loadedClasses.get(WorkflowConstants.JEPROCEDURES).getMethods();
         JEMethod method = methodRepository.findByJobEngineElementName(name);
         if (method == null) {
-            method = methodRepository.findById(name).isPresent() ? methodRepository.findById(name).get() : null;
+            method = methodRepository.findById(name)
+                    .isPresent() ? methodRepository.findById(name)
+                    .get() : null;
         }
         if (method != null) {
             return ClassManager.getMethodModel(method);
-        } 
-            throw new MethodException(JEMessages.METHOD_MISSING);
+        }
+        throw new MethodException(JEMessages.METHOD_MISSING);
 
     }
 
@@ -353,9 +342,11 @@ public class ClassService {
         method.setJeObjectCreationDate(Instant.now());
         method.setInputs(new ArrayList<>());
         method.setScope(WorkflowConstants.STATIC);
-        if (!m.getInputs().isEmpty()) {
+        if (!m.getInputs()
+                .isEmpty()) {
             for (FieldModel f : m.getInputs()) {
-                method.getInputs().add(getFieldFromModel(f));
+                method.getInputs()
+                        .add(getFieldFromModel(f));
             }
         }
         method.setImports(m.getImports());
@@ -387,18 +378,25 @@ public class ClassService {
      */
     public void addProcedure(MethodModel m) throws ClassLoadException, AddClassException, MethodException, IOException, InterruptedException {
 
-        if (m.getCode().isEmpty())
+        if (m.getCode()
+                .isEmpty())
             throw new MethodException(PROCEDURE_SHOULD_CONTAIN_CODE);
 
         JEMethod method = methodRepository.findByJobEngineElementName(m.getMethodName());
         if (method != null) {
             boolean sameInputs = true;
             if (m.getInputs() != null) {
-                if (method.getInputs().size() != m.getInputs().size()) {
+                if (method.getInputs()
+                        .size() != m.getInputs()
+                        .size()) {
                     sameInputs = false;
                 } else {
-                    for (int i = 0; i < method.getInputs().size(); i++) {
-                        if (!method.getInputs().get(i).equals(m.getInputs().get(i))) {
+                    for (int i = 0; i < method.getInputs()
+                            .size(); i++) {
+                        if (!method.getInputs()
+                                .get(i)
+                                .equals(m.getInputs()
+                                        .get(i))) {
                             sameInputs = false;
                         }
                     }
@@ -412,21 +410,23 @@ public class ClassService {
         boolean compiled = true;
         try {
             compileCode(m, CLASS_PACKAGE);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             compiled = false;
         }
         // TODO cleanup classes
         method = getMethodFromModel(m);
         method.setCompiled(compiled);
         if (compiled) {
-            JEClass clazz = classRepository.findById(WorkflowConstants.JEPROCEDURES).get();
+            JEClass clazz = classRepository.findById(WorkflowConstants.JEPROCEDURES)
+                    .get();
             if (clazz == null) {
                 clazz = getNewJEProcedureClass();
             }
-            clazz.getMethods().put(m.getId(), method);
+            clazz.getMethods()
+                    .put(m.getId(), method);
             ClassDefinition c = getClassModel(clazz);
-            c.getImports().addAll(m.getImports());
+            c.getImports()
+                    .addAll(m.getImports());
             //addClass(c, true, true);
             String filePath = ClassBuilder.buildClass(c, ConfigurationConstants.JAVA_GENERATION_PATH, JEClassLoader.getJobEnginePackageName(CLASS_PACKAGE));
             CommandExecutioner.compileCode(clazz.getClassPath(), ConfigurationConstants.isDev());
@@ -473,7 +473,9 @@ public class ClassService {
         try {
             MultipartFile file = libModel.getFile();
             String orgName = file.getOriginalFilename();
-            if (file.getSize() > SIOTHConfigUtility.getSiothConfig().getJobEngine().getLibraryMaxFileSize()) {
+            if (file.getSize() > SIOTHConfigUtility.getSiothConfig()
+                    .getJobEngine()
+                    .getLibraryMaxFileSize()) {
                 JELogger.trace("File size = " + file.getSize());
                 throw new LibraryException(JEMessages.FILE_TOO_LARGE);
             }
@@ -513,7 +515,7 @@ public class ClassService {
             }
         } catch (IOException e) {
 
-            throw new LibraryException(JEMessages.ERROR_IMPORTING_FILE + ":"+e.getMessage());
+            throw new LibraryException(JEMessages.ERROR_IMPORTING_FILE + ":" + e.getMessage());
         }
     }
 
@@ -538,7 +540,8 @@ public class ClassService {
         List<JELib> libraries = libraryRepository.findAll();
         List<LibModel> models = new ArrayList<>();
         for (JELib lib : libraries) {
-            if(lib.getFileType() != null && lib.getFileType().equals(FileType.JAR))
+            if (lib.getFileType() != null && lib.getFileType()
+                    .equals(FileType.JAR))
                 models.add(getLibModel(lib));
         }
         return models;
@@ -549,7 +552,8 @@ public class ClassService {
      */
     public LibModel getLibraryById(String id) {
         Optional<JELib> lib = libraryRepository.findById(id);
-        return lib.map(ClassManager::getLibModel).orElse(null);
+        return lib.map(ClassManager::getLibModel)
+                .orElse(null);
     }
 
     /*
@@ -560,9 +564,10 @@ public class ClassService {
         Optional<JELib> lib = libraryRepository.findById(id);
         if (lib.isPresent()) {
             try {
-                FileUtilities.deleteFileFromPath(lib.get().getFilePath());
+                FileUtilities.deleteFileFromPath(lib.get()
+                        .getFilePath());
             } catch (Exception e) {
-                JELogger.error(JEMessages.FAILED_TO_DELETE_FILES + ":"+e.getMessage(), LogCategory.DESIGN_MODE, "", LogSubModule.CLASS, id);
+                JELogger.error(JEMessages.FAILED_TO_DELETE_FILES + ":" + e.getMessage(), LogCategory.DESIGN_MODE, "", LogSubModule.CLASS, id);
             }
 
             libraryRepository.deleteById(id);
@@ -580,29 +585,30 @@ public class ClassService {
             // delete method from DB
             JEMethod method = methodRepository.findByJobEngineElementName(name);
             if (method == null) {
-            	Optional<JEMethod> m = methodRepository.findById(name); 
-               if(!m.isPresent())
-               {
-            	   JELogger.error(JEMessages.ERROR_REMOVING_LIBRARY + ": Not Found.\n " ,
-                           LogCategory.DESIGN_MODE, "", LogSubModule.CLASS, name);
-            	   return;
-               }
-            	   
-               method=m.get();
-            }
-                methodRepository.delete(method);
-            
-            // updated existent SIOTHProcedures
-                JEClass clazz = classRepository.findById(WorkflowConstants.JEPROCEDURES).get();
-                clazz.getMethods().remove(method.getJobEngineElementID());
-                ClassDefinition c = getClassModel(clazz);
-                try {
-                    CommandExecutioner.compileCode(clazz.getClassPath(), ConfigurationConstants.isDev());
-                    CommandExecutioner.buildJar();
+                Optional<JEMethod> m = methodRepository.findById(name);
+                if (!m.isPresent()) {
+                    JELogger.error(JEMessages.ERROR_REMOVING_LIBRARY + ": Not Found.\n ",
+                            LogCategory.DESIGN_MODE, "", LogSubModule.CLASS, name);
+                    return;
                 }
-                catch (Exception e) {}
-                //addClass(c, true, true);
-                classRepository.save(clazz);
+
+                method = m.get();
+            }
+            methodRepository.delete(method);
+
+            // updated existent SIOTHProcedures
+            JEClass clazz = classRepository.findById(WorkflowConstants.JEPROCEDURES)
+                    .get();
+            clazz.getMethods()
+                    .remove(method.getJobEngineElementID());
+            ClassDefinition c = getClassModel(clazz);
+            try {
+                CommandExecutioner.compileCode(clazz.getClassPath(), ConfigurationConstants.isDev());
+                CommandExecutioner.buildJar();
+            } catch (Exception e) {
+            }
+            //addClass(c, true, true);
+            classRepository.save(clazz);
 
 
         } catch (Exception e) {
@@ -617,7 +623,8 @@ public class ClassService {
      */
     public void updateProcedure(MethodModel m) throws MethodException, AddClassException, ClassLoadException, IOException, InterruptedException {
 
-        if (m.getCode().isEmpty())
+        if (m.getCode()
+                .isEmpty())
             throw new MethodException(PROCEDURE_SHOULD_CONTAIN_CODE);
 
         Optional<JEMethod> methodOptional = methodRepository.findById(m.getId());
@@ -628,32 +635,35 @@ public class ClassService {
         boolean compiled = true;
         try {
             compileCode(m, CLASS_PACKAGE);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             compiled = false;
         }
         JEMethod method = getMethodFromModel(m);
         method.setCompiled(compiled);
-        JEClass clazz = classRepository.findById(WorkflowConstants.JEPROCEDURES).get();
+        JEClass clazz = classRepository.findById(WorkflowConstants.JEPROCEDURES)
+                .get();
         if (clazz == null) {
             clazz = getNewJEProcedureClass();
         }
         if (!compiled) {
-            clazz.getMethods().remove(m.getId());
+            clazz.getMethods()
+                    .remove(m.getId());
         } else {
-            clazz.getMethods().put(m.getId(), method);
+            clazz.getMethods()
+                    .put(m.getId(), method);
         }
 
         // try {
         ClassDefinition c = getClassModel(clazz);
-        c.getImports().addAll(m.getImports());
+        c.getImports()
+                .addAll(m.getImports());
         // load new SIOTHProcedures in runner and in Db
         String filePath = ClassBuilder.buildClass(c, ConfigurationConstants.JAVA_GENERATION_PATH, JEClassLoader.getJobEnginePackageName(CLASS_PACKAGE));
         try {
             CommandExecutioner.compileCode(clazz.getClassPath(), ConfigurationConstants.isDev());
             CommandExecutioner.buildJar();
+        } catch (Exception e) {
         }
-        catch (Exception e) {}
         //addClass(c, true, true);
         // save updated method in db
         methodRepository.save(method);
@@ -666,6 +676,7 @@ public class ClassService {
     public void removeClass(String className) {
         classRepository.deleteByClassName(className);
     }
+
     /*
      * Delete all classes
      * */
@@ -677,9 +688,9 @@ public class ClassService {
             FileUtilities.deleteDirectory(ConfigurationConstants.JAVA_GENERATION_PATH);
             //FileUtilities.deleteDirectory(ConfigurationConstants.EXTERNAL_LIB_PATH);
 
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        catch (Exception e) {
-            e.printStackTrace();}
     }
 
 
@@ -694,23 +705,22 @@ public class ClassService {
 
         @Override
         public void run() {
-            while(listening)
-            {
+            while (listening) {
 
                 //  JELogger.info(ClassUpdateListener.class, "--------------------------------------");
 
                 String data = null;
                 try {
-                    data = this.getSubSocket(ZMQBind.CONNECT).recvStr();
-                }catch (Exception e) {
+                    data = this.getSubSocket(ZMQBind.CONNECT)
+                            .recvStr();
+                } catch (Exception e) {
                     e.printStackTrace();
                     continue;
                 }
 
                 try {
-                    if( data !=null && !data.equals(topic))
-                    {
-                        JELogger.debug(JEMessages.DATA_RECEIVED + data,  LogCategory.RUNTIME,
+                    if (data != null && !data.equals(topic)) {
+                        JELogger.debug(JEMessages.DATA_RECEIVED + data, LogCategory.RUNTIME,
                                 null, LogSubModule.CLASS, null);
                         List<ModelUpdate> updates = null;
                         try {
@@ -722,22 +732,22 @@ public class ClassService {
 
                         }
 
-                        for(ModelUpdate update : updates )
-                        {
-                            update.getModel().setClassAuthor(ClassAuthor.DATA_MODEL);
-                            if(update.getAction()== DataModelAction.UPDATE || update.getAction()== DataModelAction.ADD)
-                            {
-                                addClass(update.getModel(), true,true);
+                        for (ModelUpdate update : updates) {
+                            update.getModel()
+                                    .setClassAuthor(ClassAuthor.DATA_MODEL);
+                            if (update.getAction() == DataModelAction.UPDATE || update.getAction() == DataModelAction.ADD) {
+                                addClass(update.getModel(), true, true);
                             }
-                            if(update.getAction()==DataModelAction.DELETE)
-                            {
-                                removeClass(update.getModel().getName());
+                            if (update.getAction() == DataModelAction.DELETE) {
+                                removeClass(update.getModel()
+                                        .getName());
                             }
                         }
 
 
                     }
                 } catch (Exception e) {
+                    e.printStackTrace();
                     JELogger.error(JEMessages.ERROR_GETTING_CLASS_UPDATES, LogCategory.DESIGN_MODE, null,
                             LogSubModule.CLASS, null);
                 }

@@ -5,66 +5,64 @@ import io.je.rulebuilder.components.blocks.ConditionBlock;
 import io.je.rulebuilder.config.AttributesMapping;
 import io.je.rulebuilder.models.BlockModel;
 
-public  class AcceptEventBlock extends ConditionBlock {
-	
-	String eventId = null;
+public class AcceptEventBlock extends ConditionBlock {
+
+    String eventId = null;
 
 
-	public AcceptEventBlock(BlockModel blockModel) {
-		super(blockModel.getBlockId(), blockModel.getProjectId(), blockModel.getRuleId(), blockModel.getBlockName(),
-				blockModel.getDescription(),blockModel.getInputBlocksIds(),blockModel.getOutputBlocksIds());
-		if(blockModel.getBlockConfiguration()!=null && blockModel.getBlockConfiguration().get(AttributesMapping.VALUE)!=null)
-		{
-			eventId = (String) blockModel.getBlockConfiguration().get(AttributesMapping.VALUE);
-		}
+    public AcceptEventBlock(BlockModel blockModel) {
+        super(blockModel.getBlockId(), blockModel.getProjectId(), blockModel.getRuleId(), blockModel.getBlockName(),
+                blockModel.getDescription(), blockModel.getInputBlocksIds(), blockModel.getOutputBlocksIds());
+        if (blockModel.getBlockConfiguration() != null && blockModel.getBlockConfiguration().get(AttributesMapping.VALUE) != null) {
+            eventId = (String) blockModel.getBlockConfiguration().get(AttributesMapping.VALUE);
+        }
 
-	}
+    }
 
-	public AcceptEventBlock() {
-		super();
-	}
+    public AcceptEventBlock() {
+        super();
+    }
 
-	@Override
-	public String toString() {
-		return "ExecutionBlock [ruleId=" + ruleId + ", jobEngineElementID=" + jobEngineElementID
-				+ ", jobEngineProjectID=" + jobEngineProjectID + ", jeObjectLastUpdate=" + jeObjectLastUpdate + "]";
-	}
-	
-	@Override
-	public String getAsOperandExpression() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public String toString() {
+        return "ExecutionBlock [ruleId=" + ruleId + ", jobEngineElementID=" + jobEngineElementID
+                + ", jobEngineProjectID=" + jobEngineProjectID + ", jeObjectLastUpdate=" + jeObjectLastUpdate + "]";
+    }
 
-	@Override
-	public String getJoinExpression() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public String getAsOperandExpression() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	@Override
-	public String getJoinedExpression(String joindId) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public String getJoinExpression() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	@Override
-	public String getJoinedExpressionAsFirstOperand(String joindId) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public String getJoinedExpression(String joindId) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	@Override
-	public String getExpression() {
-		return "$"+blockName.replaceAll("\\s+", "")+" : JEEvent ( jobEngineElementID == \""+eventId +"\", isTriggered() )";
-	}
+    @Override
+    public String getJoinedExpressionAsFirstOperand(String joindId) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	@Override
-	public String getJoinExpressionAsFirstOperand() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public String getExpression() {
+        return "$" + blockName.replaceAll("\\s+", "") + " : JEEvent ( jobEngineElementID == \"" + eventId + "\", isTriggered() )";
+    }
 
+    @Override
+    public String getJoinExpressionAsFirstOperand() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
 
 }

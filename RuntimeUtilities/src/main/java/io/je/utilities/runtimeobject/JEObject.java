@@ -1,11 +1,12 @@
 package io.je.utilities.runtimeobject;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.Instant;
 
-@Document(collection="JEObject")
+@Document(collection = "JEObject")
 public abstract class JEObject {
 
 
@@ -13,21 +14,28 @@ public abstract class JEObject {
     protected String jobEngineElementID;
 
     protected String jobEngineProjectID;
-    
-    protected String jobEngineProjectName;
-    
-    protected String jobEngineElementName;
 
+    protected String jobEngineProjectName;
+
+    protected String jobEngineElementName;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
     protected Instant jeObjectLastUpdate;
-    
+
     protected Instant jeObjectCreationDate;
-    
+
     protected String jeObjectCreatedBy;
 
     protected String jeObjectModifiedBy;
 
+    public String getClassName() {
+        return className;
+    }
 
+    public void setClassName(String className) {
+        this.className = className;
+    }
 
+    protected String className;
 
     public JEObject(String jobEngineElementID, String jobEngineProjectID, String jobEngineElementName) {
         super();
@@ -39,8 +47,8 @@ public abstract class JEObject {
         //TODO: add time config (format, timezone, etc ..)
         //set update time
     }
-    
-    public JEObject(String jobEngineElementID, String jobEngineProjectID, String jobEngineElementName,String jobEngineProjectName) {
+
+    public JEObject(String jobEngineElementID, String jobEngineProjectID, String jobEngineElementName, String jobEngineProjectName) {
         super();
         this.jobEngineElementID = jobEngineElementID;
         this.jobEngineProjectID = jobEngineProjectID;
@@ -81,8 +89,8 @@ public abstract class JEObject {
     }
 
     public void setJeObjectLastUpdate(Instant jeObjectLastUpdate) {
-        if(jeObjectLastUpdate != null)
-            this.jeObjectLastUpdate = jeObjectLastUpdate;
+        /*      if (jeObjectLastUpdate != null)*/
+        this.jeObjectLastUpdate = jeObjectLastUpdate;
     }
 
     // Overriding equals() to compare two JEObjects
@@ -118,64 +126,60 @@ public abstract class JEObject {
     }
 
 
-	public Instant getJeObjectCreationDate() {
-		return jeObjectCreationDate;
-	}
+    public Instant getJeObjectCreationDate() {
+        return jeObjectCreationDate;
+    }
 
 
-	public void setJeObjectCreationDate(Instant jeObjectCreationDate) {
-		this.jeObjectCreationDate = jeObjectCreationDate;
-	}
+    public void setJeObjectCreationDate(Instant jeObjectCreationDate) {
+        this.jeObjectCreationDate = jeObjectCreationDate;
+    }
 
 
-	public String getJobEngineElementName() {
-		return jobEngineElementName;
-	}
+    public String getJobEngineElementName() {
+        return jobEngineElementName;
+    }
 
 
-	public void setJobEngineElementName(String jobEngineElementName) {
-		this.jobEngineElementName = jobEngineElementName;
-	}
+    public void setJobEngineElementName(String jobEngineElementName) {
+        this.jobEngineElementName = jobEngineElementName;
+    }
 
 
-	public String getJeObjectCreatedBy() {
-		return jeObjectCreatedBy;
-	}
+    public String getJeObjectCreatedBy() {
+        return jeObjectCreatedBy;
+    }
 
 
-	public void setJeObjectCreatedBy(String jeObjectCreatedBy) {
-        if(jeObjectCreatedBy != null)
-        {
+    public void setJeObjectCreatedBy(String jeObjectCreatedBy) {
+        if (jeObjectCreatedBy != null) {
             this.jeObjectCreatedBy = jeObjectCreatedBy;
         }
-	}
+    }
 
 
-	public String getJeObjectModifiedBy() {
-		return jeObjectModifiedBy;
-	}
+    public String getJeObjectModifiedBy() {
+        return jeObjectModifiedBy;
+    }
 
 
-	public void setJeObjectModifiedBy(String jeObjectModifiedBy) {
-        if(jeObjectModifiedBy != null) {
+    public void setJeObjectModifiedBy(String jeObjectModifiedBy) {
+        if (jeObjectModifiedBy != null) {
             this.jeObjectModifiedBy = jeObjectModifiedBy;
         }
-	}
+    }
 
 
-	public String getJobEngineProjectName() {
-		return jobEngineProjectName;
-	}
+    public String getJobEngineProjectName() {
+        return jobEngineProjectName;
+    }
 
 
-	public void setJobEngineProjectName(String jobEngineProjectName) {
-		this.jobEngineProjectName = jobEngineProjectName;
-	}
+    public void setJobEngineProjectName(String jobEngineProjectName) {
+        this.jobEngineProjectName = jobEngineProjectName;
+    }
 
-	
-	
-    
-    
+
 } 
 	
 

@@ -55,7 +55,7 @@ public class RuntimeDispatcher {
 
 	// projects
 	static Map<String, Boolean> projectStatus = new HashMap<>(); // key: projectId , value : true if project is running,
-																	// false if not
+	// false if not
 	static Map<String, String> projectNameToId = new HashMap<>();
 	///////////////////////////////// PROJECT
 	// build project
@@ -67,7 +67,7 @@ public class RuntimeDispatcher {
 	}*/
 
 	// run project
-	public void runProject(String projectId,String projectName) throws JEException {
+	public void runProject(String projectId, String projectName) throws JEException {
 
 		projectStatus.put(projectId, true);
 		List<String> topics = DataModelListener.getTopicsByProjectId(projectId);
@@ -103,7 +103,7 @@ public class RuntimeDispatcher {
 
 	// stop project
 	// run project
-	public void stopProject(String projectId,String projectName) {
+	public void stopProject(String projectId, String projectName) {
 
 		// stop workflows
 		JELogger.control("[project = " + projectName + "]" + JEMessages.STOPPING_PROJECT, LogCategory.RUNTIME, projectId,
@@ -120,14 +120,14 @@ public class RuntimeDispatcher {
 	 * Set<String> projects = projectsByTopic.get(topic); for (String projectId :
 	 * projects) { if (Boolean.TRUE.equals(projectStatus.get(projectId))) {
 	 * counter++; } }
-	 * 
+	 *
 	 * return counter; }
 	 */
 	// ***********************************RULES********************************************************
 
 	// add rule
 	public void addRule(RunnerRuleModel runnerRuleModel) throws RuleAlreadyExistsException, RuleCompilationException,
-			 JEFileNotFoundException, RuleFormatNotValidException {
+			JEFileNotFoundException, RuleFormatNotValidException {
 
 		JELogger.debug(JEMessages.ADDING_RULE + " : " + runnerRuleModel.getRuleName(), LogCategory.RUNTIME,
 				runnerRuleModel.getProjectId(), LogSubModule.RULE, runnerRuleModel.getRuleId());
@@ -193,8 +193,7 @@ public class RuntimeDispatcher {
 			msg = new MonitoringMessage(LocalDateTime.now(), wf.getName(), ObjectType.JEWORKFLOW,
 					wf.getProjectId(), Status.BUILDING.toString(), Status.STOPPED.toString());
 			JEMonitor.publish(msg);
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			MonitoringMessage msg = new MonitoringMessage(LocalDateTime.now(), wf.getName(), ObjectType.JEWORKFLOW,
 					wf.getProjectId(), Status.STOPPED.toString(), Status.STOPPED.toString());
 			JEMonitor.publish(msg);
@@ -205,7 +204,7 @@ public class RuntimeDispatcher {
 	 * Launch a workflow without variables
 	 */
 	public void launchProcessWithoutVariables(String projectId, String key, boolean runProject)
-			throws WorkflowNotFoundException,  WorkflowAlreadyRunningException,
+			throws WorkflowNotFoundException, WorkflowAlreadyRunningException,
 			WorkflowBuildException, WorkflowRunException {
 		/*JELogger.debug("[projectId = " + projectId + "] [workflow = " + key + "]" + JEMessages.RUNNING_WF,
 				LogCategory.RUNTIME, projectId, LogSubModule.WORKFLOW, key);*/
@@ -235,50 +234,52 @@ public class RuntimeDispatcher {
 	///////////////////////////// Classes
 	// add class
 	public void addClass(ClassModel classModel, boolean update) throws ClassLoadException {
-		JELogger.debug(JEMessages.ADDING_CLASS+": "+classModel.getClassName(), LogCategory.RUNTIME, null, LogSubModule.CLASS, null);
+		JELogger.debug(JEMessages.ADDING_CLASS + ": " + classModel.getClassName(), LogCategory.RUNTIME, null, LogSubModule.CLASS, null);
 		String className = JEClassLoader.getJobEnginePackageName(ClassBuilderConfig.CLASS_PACKAGE) + "." + classModel.getClassName();
-		JELogger.debug("Class name = "+className);
+		JELogger.debug("Class name = " + className);
 		try {
-				Class<?> c = null;
-				JEClassLoader.getDataModelInstance();
-				if(classModel.getClassAuthor().equals(ClassAuthor.DATA_MODEL) && (!JEClassLoader.classIsLoaded(className) )) {
-					JEClassLoader.addClassToDataModelClassesSet(className);
-					c = JEClassLoader.getDataModelInstance()
+			Class<?> c = null;
+			JEClassLoader.getDataModelInstance();
+			if (classModel.getClassAuthor()
+					.equals(ClassAuthor.DATA_MODEL) && (!JEClassLoader.classIsLoaded(className))) {
+				JEClassLoader.addClassToDataModelClassesSet(className);
+				c = JEClassLoader.getDataModelInstance()
 						.loadClass(className);
-					ClassRepository.addClass(classModel.getClassId(), classModel.getClassName(), c);
-				}else if(update)
-				{
-					JEClassLoader.overrideDataModelInstance(className);
-					JEClassLoader.addClassToDataModelClassesSet(className);
-					c = JEClassLoader.getDataModelInstance()
-							.loadClass(className);
-					
-						ClassRepository.addClass(classModel.getClassId(), classModel.getClassName(), c);
+				ClassRepository.addClass(classModel.getClassId(), classModel.getClassName(), c);
+			} else if (update) {
+				JEClassLoader.overrideDataModelInstance(className);
+				JEClassLoader.addClassToDataModelClassesSet(className);
+				c = JEClassLoader.getDataModelInstance()
+						.loadClass(className);
 
-				}
+				ClassRepository.addClass(classModel.getClassId(), classModel.getClassName(), c);
 
-			} catch (ClassNotFoundException e) {
-				e.printStackTrace();
-				//JEClassLoader.removeClassFromDataModelClassesSet(className);
-				throw new ClassLoadException(
-						"[class :" + classModel.getClassName() + " ]" + JEMessages.CLASS_LOAD_FAILED);
 			}
+
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+			//JEClassLoader.removeClassFromDataModelClassesSet(className);
+			throw new ClassLoadException(
+					"[class :" + classModel.getClassName() + " ]" + JEMessages.CLASS_LOAD_FAILED);
+		}
 
 	}
 
 	public void updateClass(ClassModel classModel) throws ClassLoadException, ClassNotFoundException {
-		if(classModel.getClassAuthor().equals(ClassAuthor.DATA_MODEL)) {
+		if (classModel.getClassAuthor()
+				.equals(ClassAuthor.DATA_MODEL)) {
 			RuleEngineHandler.reloadContainers();
 		}
 		addClass(classModel, true);
-		
+
 
 	}
 
 
-
-	// inject data into the rule/workflow engine
-	public static void injectData(JEData jeData)  {
+	/**
+	 * inject data into the rule/workflow engine according to the topics they are subscribed to (to prevent duplication)
+	 */
+	public static void injectData(JEData jeData) {
 		JELogger.trace(JEMessages.INJECTING_DATA, LogCategory.RUNTIME, null, LogSubModule.JERUNNER, null);
 		try {
 			CompletableFuture.runAsync(() -> {
@@ -294,7 +295,7 @@ public class RuntimeDispatcher {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				
+
 			});
 		} catch (Exception e) {
 			JELogger.error(JEMessages.FAILED_TO_INJECT_DATA + e.getMessage(), LogCategory.RUNTIME, null,
@@ -326,7 +327,7 @@ public class RuntimeDispatcher {
 				eventModel.getTimeoutUnit(), eventModel.getCreatedBy(), eventModel.getModifiedBy());
 		e.setJobEngineProjectName(eventModel.getProjectName());
 		JELogger.debug(
-				"[project = " + e.getJobEngineProjectName() + "] [event = " + e.getJobEngineElementName()+ "]"
+				"[project = " + e.getJobEngineProjectName() + "] [event = " + e.getJobEngineElementName() + "]"
 						+ JEMessages.ADDING_EVENT,
 				LogCategory.RUNTIME, eventModel.getProjectId(), LogSubModule.EVENT, eventModel.getEventId());
 
@@ -403,10 +404,10 @@ public class RuntimeDispatcher {
 
 	}
 
-	public void writeVariableValue(String projectId, String variableId, String value,boolean ignoreIfSameValue) throws VariableException, VariableNotFoundException {
+	public void writeVariableValue(String projectId, String variableId, String value, boolean ignoreIfSameValue) throws VariableException, VariableNotFoundException {
 		//JELogger.debug("[projectId = " + projectId + "] [variable = " + variableId + "]" + JEMessages.UPDATING_VARIABLE,
-			//	LogCategory.RUNTIME, projectId, LogSubModule.VARIABLE, variableId);
-		JEVariable var = VariableManager.updateVariableValue(projectId, variableId, value,ignoreIfSameValue);
+		//	LogCategory.RUNTIME, projectId, LogSubModule.VARIABLE, variableId);
+		JEVariable var = VariableManager.updateVariableValue(projectId, variableId, value, ignoreIfSameValue);
 		if (var != null) {
 			RuleEngineHandler.addVariable(var);
 		}
@@ -450,15 +451,14 @@ public class RuntimeDispatcher {
 
 	}
 
-	public List<OperationStatusDetails> updateRules(List<RunnerRuleModel> runnerRuleModels)  {
-		
+	public List<OperationStatusDetails> updateRules(List<RunnerRuleModel> runnerRuleModels) {
+
 		List<OperationStatusDetails> updateResult = new ArrayList<>();
-		for (RunnerRuleModel runnerRuleModel : runnerRuleModels)
-		{
+		for (RunnerRuleModel runnerRuleModel : runnerRuleModels) {
 			OperationStatusDetails details = new OperationStatusDetails(runnerRuleModel.getRuleId());
-			 removeRuleTopics(runnerRuleModel.getProjectId(), runnerRuleModel.getRuleId());
-	         addTopics(runnerRuleModel.getProjectId(), runnerRuleModel.getRuleId(),"rule",runnerRuleModel.getTopics());
-	         try {
+			removeRuleTopics(runnerRuleModel.getProjectId(), runnerRuleModel.getRuleId());
+			addTopics(runnerRuleModel.getProjectId(), runnerRuleModel.getRuleId(), "rule", runnerRuleModel.getTopics());
+			try {
 				updateRule(runnerRuleModel);
 				details.setOperationSucceeded(true);
 			} catch (RuleCompilationException | JEFileNotFoundException | RuleFormatNotValidException e) {
@@ -467,20 +467,19 @@ public class RuntimeDispatcher {
 			}
 		}
 		return updateResult;
-		
+
 	}
 
 	public void compileRules(List<RunnerRuleModel> runnerRuleModels) throws RuleFormatNotValidException, RuleCompilationException, JEFileNotFoundException {
-		for (RunnerRuleModel runnerRuleModel : runnerRuleModels)
-		{
-	         compileRule(runnerRuleModel);
+		for (RunnerRuleModel runnerRuleModel : runnerRuleModels) {
+			compileRule(runnerRuleModel);
 		}
-		
+
 	}
 
-	public JEVariable getVariable(String projectId, String variableId) throws VariableNotFoundException{
+	public JEVariable getVariable(String projectId, String variableId) throws VariableNotFoundException {
 		return VariableManager.getVariableValue(projectId, variableId);
-		
+
 	}
 
 	public static void informUser(String message, String projectName, String workflowName) {
