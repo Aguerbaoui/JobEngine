@@ -1,6 +1,5 @@
 package io.je.ruleengine.impl;
 
-import io.je.ruleengine.listener.RuleListener;
 import io.je.ruleengine.loader.RuleLoader;
 import io.je.ruleengine.models.Rule;
 import io.je.utilities.classloader.JEClassLoader;
@@ -9,9 +8,6 @@ import io.je.utilities.exceptions.*;
 import io.je.utilities.log.JELogger;
 import io.je.utilities.ruleutils.IdManager;
 import io.je.utilities.runtimeobject.JEObject;
-import utils.log.LogCategory;
-import utils.log.LogSubModule;
-
 import org.apache.commons.lang3.StringUtils;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
@@ -26,6 +22,8 @@ import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.runtime.rule.FactHandle;
+import utils.log.LogCategory;
+import utils.log.LogSubModule;
 
 import java.util.Arrays;
 import java.util.List;
@@ -625,6 +623,7 @@ public class ProjectContainer {
                 .buildAll(null);
 
         Results results = kieBuilder.getResults();
+        kfsToCompile.delete(filename);
         if (results.hasMessages(Message.Level.ERROR)) {
             JELogger.error(results.getMessages()
                             .toString(), LogCategory.RUNTIME, projectId, LogSubModule.RULE,
@@ -633,7 +632,7 @@ public class ProjectContainer {
                     .get(0)
                     .getText());
         }
-        kfsToCompile.delete(filename);
+
 
     }
 

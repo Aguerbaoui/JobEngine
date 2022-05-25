@@ -22,9 +22,12 @@ public class AttributeGetterBlock extends GetterBlock {
     public AttributeGetterBlock(BlockModel blockModel) {
         super(blockModel);
         try {
-            classId = (String) blockModel.getBlockConfiguration().get(AttributesMapping.CLASSID);
-            classPath = "jobengine.jeclasses." + (String) blockModel.getBlockConfiguration().get(AttributesMapping.CLASSNAME);
-            attributeName = (String) blockModel.getBlockConfiguration().get(AttributesMapping.ATTRIBUTENAME);
+            classId = (String) blockModel.getBlockConfiguration()
+                    .get(AttributesMapping.CLASSID);
+            classPath = (String) blockModel.getBlockConfiguration()
+                    .get(AttributesMapping.CLASSNAME);
+            attributeName = (String) blockModel.getBlockConfiguration()
+                    .get(AttributesMapping.ATTRIBUTENAME);
             specificInstances = (List<String>) blockModel.getBlockConfiguration()
                     .get(AttributesMapping.SPECIFICINSTANCES);
             isProperlyConfigured = true;
@@ -84,7 +87,8 @@ public class AttributeGetterBlock extends GetterBlock {
         StringBuilder expression = new StringBuilder();
         if (!alreadyScripted) {
             if (!inputBlocks.isEmpty()) {
-                expression.append(inputBlocks.get(0).getExpression());
+                expression.append(inputBlocks.get(0)
+                        .getExpression());
                 expression.append("\n");
 
             }
@@ -118,7 +122,8 @@ public class AttributeGetterBlock extends GetterBlock {
         if (!alreadyScripted) {
             // input blocks can be an event block
             if (!inputBlocks.isEmpty()) {
-                expression.append(inputBlocks.get(0).getExpression());
+                expression.append(inputBlocks.get(0)
+                        .getExpression());
                 expression.append("\n");
 
             }
@@ -150,7 +155,8 @@ public class AttributeGetterBlock extends GetterBlock {
         if (!alreadyScripted) {
             // add input blocks
             if (!inputBlocks.isEmpty()) {
-                expression.append(inputBlocks.get(0).getExpression());
+                expression.append(inputBlocks.get(0)
+                        .getExpression());
                 expression.append("\n");
 
             }
@@ -178,7 +184,8 @@ public class AttributeGetterBlock extends GetterBlock {
         if (!alreadyScripted) {
             // add input blocks
             if (!inputBlocks.isEmpty()) {
-                expression.append(inputBlocks.get(0).getExpression());
+                expression.append(inputBlocks.get(0)
+                        .getExpression());
                 expression.append("\n");
 
             }
@@ -206,7 +213,8 @@ public class AttributeGetterBlock extends GetterBlock {
         StringBuilder expression = new StringBuilder();
         if (!alreadyScripted) {
             if (!inputBlocks.isEmpty()) {
-                expression.append(inputBlocks.get(0).getExpression());
+                expression.append(inputBlocks.get(0)
+                        .getExpression());
                 expression.append("\n");
 
             }
@@ -233,7 +241,8 @@ public class AttributeGetterBlock extends GetterBlock {
         StringBuilder expression = new StringBuilder();
         if (!alreadyScripted) {
             if (!inputBlocks.isEmpty()) {
-                expression.append(inputBlocks.get(0).getExpression());
+                expression.append(inputBlocks.get(0)
+                        .getExpression());
                 expression.append("\n");
 
             }

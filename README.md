@@ -229,3 +229,5 @@ class1 => class2 > class1 boucle infinie
 why no await for process execution
 script task buggy
 class loader
+![img_2.png](img_2.png)
+

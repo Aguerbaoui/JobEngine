@@ -8,6 +8,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.util.concurrent.TimeUnit;
 
 public class ProcessRunner {
 
@@ -20,7 +21,7 @@ public class ProcessRunner {
     public static String executeCommandWithErrorOutput(String command) throws IOException, InterruptedException {
         String output = "";
         Process process = rt.exec(command);
-        int exitCode = process.waitFor();
+        process.waitFor(30, TimeUnit.SECONDS);
         return dumpProcessOutput(process, command, false, true);
 
         //return output;
@@ -31,6 +32,7 @@ public class ProcessRunner {
         //process.waitFor(30, TimeUnit.SECONDS);
         long pid = process.pid();
         //dumpProcessOutput(process, command, true, true);
+
         Thread thread = new Thread(() -> {
             try {
                 dumpProcessOutput(process, command, true, true);
@@ -67,6 +69,7 @@ public class ProcessRunner {
 
             if (textBuilder.length() > 0) {
                 output += textBuilder.toString() + "\n";
+
             }
         }
         if (errorOutput) {
@@ -92,6 +95,7 @@ public class ProcessRunner {
             } catch (Exception ignored) {
             }
         }
+        System.out.println("testing **************" + command);
         return output;
     }
 

@@ -1,7 +1,6 @@
 package io.je.utilities.classloader;
 
 import io.je.utilities.config.ConfigurationConstants;
-import io.je.utilities.constants.ClassBuilderConfig;
 import io.je.utilities.instances.ClassRepository;
 import io.je.utilities.log.JELogger;
 import utils.files.FileUtilities;
@@ -85,13 +84,17 @@ public class JEClassLoader extends ClassLoader {
         }
         synchronized (dataModelCustomClasses) {
             dataModelInstance = new JEClassLoader(dataModelCustomClasses);
-            if (dataModelCustomClasses.contains(newClass)) {
+            //! HA: removed after discussion with Kais 24/05/2022
+       /*     if (dataModelCustomClasses.contains(newClass)) {
                 dataModelCustomClasses.remove(newClass);
-            }
+
+            }*/
             Set<String> all = dataModelCustomClasses;
             for (String c : all) {
                 ClassRepository.addClass(ClassRepository.getClassIdByName(c), c, dataModelInstance.loadClass(c));
+
             }
+
 
         }
 
@@ -102,7 +105,8 @@ public class JEClassLoader extends ClassLoader {
     @Override
     public Class<?> loadClass(String className) throws ClassNotFoundException {
         //	JELogger.debug("JECLASSLOADER 100: "+dataModelCustomClasses.toString());
-
+        Class<?> foundClass = this.findLoadedClass(className);
+        if (foundClass != null) return foundClass;
         if (dataModelCustomClasses.contains(className)) {
             try {
                 JELogger.trace("Class Loading by dm custom loader Started for " + className, LogCategory.RUNTIME,
@@ -128,6 +132,7 @@ public class JEClassLoader extends ClassLoader {
      * @throws ClassNotFoundException
      */
     private Class<?> getClass(String name) throws ClassNotFoundException {
+
         String file = FileUtilities.getPathPrefix(JAVA_GENERATION_PATH) + name.replace('.', File.separatorChar) + ".class";
         byte[] byteArr = null;
         try {

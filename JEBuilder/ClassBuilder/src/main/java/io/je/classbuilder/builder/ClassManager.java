@@ -72,7 +72,7 @@ public class ClassManager {
         ClassType classType = getClassType(classDefinition);
 
         // build inherited classes
-        if (classDefinition.getBaseTypes() != null && !classDefinition.getBaseTypes()
+  /*      if (classDefinition.getBaseTypes() != null && !classDefinition.getBaseTypes()
                 .isEmpty()) {
             for (String baseTypeId : classDefinition.getBaseTypes()) {
                 try {
@@ -90,7 +90,7 @@ public class ClassManager {
                 }
             }
 
-        }
+        }*/
 
         // build dependent classes
         if (classDefinition.getDependentEntities() != null && !classDefinition.getDependentEntities()
@@ -116,9 +116,13 @@ public class ClassManager {
 
         // load .java -> .class
         //JEClassCompiler.compileClass(filePath, FileUtilities.getPathPrefix(generationPath));
-
-
+        JELogger.debug(JEMessages.BUILDING_CLASS + "Compiling Code " + "[className = " + classDefinition.getName() + "]",
+                LogCategory.DESIGN_MODE, null,
+                LogSubModule.CLASS, null);
         CommandExecutioner.compileCode(filePath, true);
+        JELogger.debug(JEMessages.BUILDING_CLASS + "JAR " + "[className = " + classDefinition.getName() + "]",
+                LogCategory.DESIGN_MODE, null,
+                LogSubModule.CLASS, null);
         CommandExecutioner.buildJar();
 
         // Load the target class using its binary name
