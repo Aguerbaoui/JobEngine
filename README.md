@@ -28,7 +28,6 @@
 
 # RoadMap
 
-- [ ] 
 - [ ] Improve development environment (independent from SIOTH installation)
 - [ ] Check Identity Vs Equality in drools( Review Project Container code / remove facts hashMap ?)
 - [ ] Refactor blocks attribute mapping
@@ -219,15 +218,9 @@ return
 
 ```
 
-if the injected data is of type JEObject how does drools get the type of the class to be evaluated??
-why would u load only classes used if the user is gonna need them when writing script task
-class loading twice issue
-class loader
-ZMQ not working constantly
-nested inheritance produces duplication of the class
-class1 => class2 > class1 boucle infinie
-why no await for process execution
-script task buggy
-class loader
-![img_2.png](img_2.png)
+# Workflow
+
+* The execution listeners used in workflows are for debugging and mainly not used
+
+
 

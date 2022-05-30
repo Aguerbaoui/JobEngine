@@ -301,26 +301,19 @@ public class RuleBuilder {
             if (ruleBlock instanceof ExecutionBlock) {
                 executionBlockCounter++;
                 for (Block rootBlock : ruleBlock.getInputBlocks()) {
-                    if (rootBlock != null) {
-                        if (true) {
-                            roots.add(uRule.getBlocks()
-                                    .getBlock(rootBlock.getJobEngineElementID()));
-                            for (Block b : uRule.getBlocks()
-                                    .getBlock(rootBlock.getJobEngineElementID())
-                                    .getInputBlocks()) {
-                                if (b instanceof PersistableBlock) {
-                                    ((PersistableBlock) b).setTimePersistenceValue(((PersistableBlock) rootBlock).getTimePersistenceValue());
-                                    ((PersistableBlock) b).setTimePersistenceUnit(((PersistableBlock) rootBlock).getTimePersistenceUnit());
-                                }
-
+                    if (rootBlock != null)
+                    // HA 05/25/2022 removed and add explicit or     if(!(rootBlock instanceof OrBlock))
+                    {
+                        roots.add(uRule.getBlocks()
+                                .getBlock(rootBlock.getJobEngineElementID()));
+                        for (Block b : uRule.getBlocks()
+                                .getBlock(rootBlock.getJobEngineElementID())
+                                .getInputBlocks()) {
+                            if (b instanceof PersistableBlock) {
+                                ((PersistableBlock) b).setTimePersistenceValue(((PersistableBlock) rootBlock).getTimePersistenceValue());
+                                ((PersistableBlock) b).setTimePersistenceUnit(((PersistableBlock) rootBlock).getTimePersistenceUnit());
                             }
-                        } else {
-                            for (Block b : uRule.getBlocks()
-                                    .getBlock(rootBlock.getJobEngineElementID())
-                                    .getInputBlocks()) {
-                                roots.add(b);
 
-                            }
                         }
                     }
 

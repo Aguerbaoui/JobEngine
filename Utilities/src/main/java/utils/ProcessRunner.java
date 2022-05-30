@@ -95,7 +95,7 @@ public class ProcessRunner {
             } catch (Exception ignored) {
             }
         }
-        System.out.println("testing **************" + command);
+        // System.out.println("testing **************" + command);
         return output;
     }
 

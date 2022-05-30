@@ -16,6 +16,9 @@ import utils.string.StringUtilities;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ *
+ */
 public class ModelBuilder {
 
     public static final String BPMN = "bpmn";
@@ -64,7 +67,7 @@ public class ModelBuilder {
         serviceTask.setImplementation(implementation);
         //serviceTask.setAsynchronous(true);
         serviceTask.setImplementationType(ImplementationType.IMPLEMENTATION_TYPE_CLASS);
-        ArrayList<ActivitiListener> listeners = new ArrayList<ActivitiListener>();
+        ArrayList<ActivitiListener> listeners = new ArrayList<>();
         listeners.add(getListener(WorkflowConstants.TASKS_LISTENER_IMPLEMENTATION, WorkflowConstants.START_PROCESS, ImplementationType.IMPLEMENTATION_TYPE_CLASS));
         serviceTask.setExecutionListeners(listeners);
         return serviceTask;
@@ -289,7 +292,7 @@ public class ModelBuilder {
     }
 
     /**
-     * Create activit error event
+     * Create activiti error event
      */
     public static ErrorEventDefinition createErrorEventDefinition(String errorRef) {
         ErrorEventDefinition errorEventDefinition = new ErrorEventDefinition();

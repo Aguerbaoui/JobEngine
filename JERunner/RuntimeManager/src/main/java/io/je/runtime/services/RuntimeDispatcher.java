@@ -40,7 +40,7 @@ import java.util.concurrent.CompletableFuture;
 
 import static io.je.utilities.constants.JEMessages.ADDING_JAR_FILE_TO_RUNNER;
 
-/*
+/**
  * Service class to handle JERunner inputs
  */
 @Service
@@ -110,12 +110,12 @@ public class RuntimeDispatcher {
 
     }
 
-    /*
+    /**
      * private int numberOfActiveProjectsByTopic(String topic) { int counter = 0;
      * Set<String> projects = projectsByTopic.get(topic); for (String projectId :
      * projects) { if (Boolean.TRUE.equals(projectStatus.get(projectId))) {
      * counter++; } }
-     *
+     * <p>
      * return counter; }
      */
     // ***********************************RULES********************************************************
@@ -158,7 +158,8 @@ public class RuntimeDispatcher {
     }
 
     // ***********************************WORKFLOW********************************************************
-    /*
+
+    /**
      * Add a workflow to the engine
      */
     public void addWorkflow(WorkflowModel wf) {
@@ -195,7 +196,7 @@ public class RuntimeDispatcher {
         }
     }
 
-    /*
+    /**
      * Launch a workflow without variables
      */
     public void launchProcessWithoutVariables(String projectId, String key, boolean runProject)
@@ -208,7 +209,7 @@ public class RuntimeDispatcher {
 
     }
 
-    /*
+    /**
      * Run all workflows deployed in the engine without project specification
      */
     public void runAllWorkflows(String projectId) throws WorkflowNotFoundException {
@@ -217,7 +218,7 @@ public class RuntimeDispatcher {
         WorkflowEngineHandler.runAllWorkflows(projectId, false);
     }
 
-    /*
+    /**
      * Deploy a workflow to the engine
      */
     public void buildWorkflow(String projectId, String key) throws WorkflowBuildException {
@@ -299,7 +300,7 @@ public class RuntimeDispatcher {
 
     }
 
-    /*
+    /**
      * add a topic
      */
     public void addTopics(String projectId, String listenerId, String listenerType, List<String> topics) {

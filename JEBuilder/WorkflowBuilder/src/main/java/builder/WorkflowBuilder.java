@@ -22,9 +22,9 @@ import java.util.HashMap;
 
 import static io.je.utilities.constants.WorkflowConstants.*;
 
-/*
+/**
  * Workflow Builder class
- * */
+ */
 public class WorkflowBuilder {
 
 
@@ -82,7 +82,9 @@ public class WorkflowBuilder {
         return attributes;
     }
 
-    /*Get attributes map for inform task*/
+    /**
+     * Get attributes map for inform task
+     */
     private static HashMap<String, Object> getInformAttributesMap(InformBlock block) {
         HashMap<String, Object> attributes = new HashMap<>();
         attributes.put(MESSAGE, block.getMessage());

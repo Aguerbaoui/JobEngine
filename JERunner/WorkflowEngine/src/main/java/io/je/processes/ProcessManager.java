@@ -34,57 +34,57 @@ import java.util.*;
 public class ProcessManager {
 
 
-    /*
+    /**
      * Activiti Workflow engine
-     * */
+     */
     private ProcessEngine processEngine;
 
-    /*
+    /**
      * Runtime service for Activiti
-     * */
+     */
     private RuntimeService runtimeService;
 
-    /*
+    /**
      * Task service for Activiti
-     * */
+     */
     private TaskService taskService;
 
 
-    /*
+    /**
      * Management service for Activiti
-     * */
+     */
     private ManagementService managementService;
 
-    /*
+    /**
      * Dynamic service for Activiti
-     * */
+     */
     private DynamicBpmnService dyService;
 
     private HistoryService historyService;
 
-    /*
+    /**
      * Repository service for activiti
-     * */
+     */
     private RepositoryService repoService;
 
 
-    /*
+    /**
      * List of all active processes
-     * */
+     */
     private static HashMap<String, JEProcess> processes = new HashMap<>();
 
 
-    /*
+    /**
      * List of all possible workflow task executions
-     * */
+     */
     private HashMap<String, OnExecuteOperation> allCallbacks = new HashMap<String, OnExecuteOperation>();
 
     DeploymentBuilder deploymentBuilder;
     Deployment deployment;
 
-    /*
+    /**
      * Initialize the workflow engine
-     * */
+     */
     public ProcessManager() {
         // Create Activiti process engine
         processEngine = ProcessEngines.getDefaultProcessEngine();
@@ -99,9 +99,11 @@ public class ProcessManager {
         //taskService.createTaskQuery().taskId(id); not the same as execution.id this has to be the original task id from the bpmn so we can map them
     }
 
-    /*
-     * Add a process to engine
-     * */
+    /**
+     * Add a JE process to engine
+     *
+     * @param process
+     */
     public void addProcess(JEProcess process) {
 
         if (processes == null) {
@@ -111,9 +113,12 @@ public class ProcessManager {
         processes.put(process.getName(), process);
     }
 
-    /*
+    /**
      * Register workflow execution callback
-     * */
+     *
+     * @param id
+     * @param callback
+     */
     public void registerWorkflowCallback(String id, OnExecuteOperation callback) {
         allCallbacks.put(id, callback);
     }
@@ -185,7 +190,7 @@ public class ProcessManager {
             if (process.isRunning()) {
                 throw new WorkflowAlreadyRunningException(JEMessages.WORKFLOW_ALREADY_RUNNING);
             }
-            //TODO add support for scheduled workflows
+
             if (!process.isTriggeredByEvent() && (process.isOnProjectBoot() || !runProject)) {
 
                 process.setActiveThread(new Thread(() -> {
@@ -201,7 +206,6 @@ public class ProcessManager {
                 /*JELogger.error(JEMessages.PROCESS_HAS_TO_BE_TRIGGERED_BY_EVENT,
                         LogCategory.RUNTIME, processes.get(id).getProjectId(),
                         LogSubModule.WORKFLOW, id);*/
-                //TODO blocking exception to be removed forget not
                 throw new WorkflowRunException(JEMessages.PROCESS_HAS_TO_BE_TRIGGERED_BY_EVENT);
             }
         }
@@ -367,7 +371,7 @@ public class ProcessManager {
     }
 
 
-    //Stopr/remove workflow
+    //Stop/remove workflow
     public void removeProcess(String workflowId) throws WorkflowRunException {
         JEProcess process = processes.get(workflowId);
         if (process != null && (!process.isRunning() && !process.isTriggeredByEvent())) {
@@ -410,26 +414,26 @@ public class ProcessManager {
 
     }
 
-    /*
+    /**
      * Throw signal in engine
-     * */
+     */
     public void throwSignal(String signalId) {
        /* String executionId = runtimeService.createExecutionQuery()
                 .signalEventSubscriptionName(signalId).singleResult().getId();*/
         runtimeService.signalEventReceived(signalId);
     }
 
-    /*
+    /**
      * Throw signal in workflow
      * */
-    /*public void throwSignalInProcess(String signalId, String executionId) {
+    /**public void throwSignalInProcess(String signalId, String executionId) {
 
-        runtimeService.signalEventReceived(signalId, executionId);
-    }
-*/
-    /*
+     runtimeService.signalEventReceived(signalId, executionId);
+     }
+     */
+    /**
      * Returns a list of all signal event subscriptions
-     * */
+     */
     public List<Execution> getAllSignalEventSubscriptions(String signalId) {
 
         return runtimeService.createExecutionQuery()
@@ -437,17 +441,17 @@ public class ProcessManager {
                 .list();
     }
 
-    /*
+    /**
      * Throw a message event in workflow
-     * */
+     */
     public void throwMessageEvent(String messageId, String executionId) {
 
         runtimeService.messageEventReceived(messageId, executionId);
     }
 
-    /*
+    /**
      * Throw a message event
-     * */
+     */
     public void throwMessageEvent(String messageId) {
 
         String executionId = runtimeService.createExecutionQuery()
@@ -461,9 +465,9 @@ public class ProcessManager {
         }
     }
 
-    /*
+    /**
      * Returns the process execution subscribed to message event
-     * */
+     */
     public Execution getMessageEventSubscription(String messageId) {
 
         return runtimeService.createExecutionQuery()
@@ -473,51 +477,51 @@ public class ProcessManager {
     }
 
 
-    /*
+    /**
      * Get workflow Engine
-     * */
+     */
     public ProcessEngine getProcessEngine() {
         return processEngine;
     }
 
-    /*
+    /**
      * Get runtime service
-     * */
+     */
     public RuntimeService getRuntimeService() {
         return runtimeService;
     }
 
-    /*
+    /**
      * Get the engine task service
-     * */
+     */
     public TaskService getTaskService() {
         return taskService;
     }
 
-    /*
-     *Get the engine management service
-     * */
+    /**
+     * Get the engine management service
+     */
     public ManagementService getManagementService() {
         return managementService;
     }
 
-    /*
+    /**
      * Get the engine dynamic service
-     * */
+     */
     public DynamicBpmnService getDyService() {
         return dyService;
     }
 
-    /*
+    /**
      * Get the engine repository service
-     * */
+     */
     public RepositoryService getRepoService() {
         return repoService;
     }
 
-    /*
+    /**
      * Get all deployed processes
-     * */
+     */
     public HashMap<String, JEProcess> getProcesses() {
         return processes;
     }

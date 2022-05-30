@@ -83,6 +83,7 @@ public class JEClassLoader extends ClassLoader {
             dataModelCustomClasses = new HashSet<>();
         }
         synchronized (dataModelCustomClasses) {
+
             dataModelInstance = new JEClassLoader(dataModelCustomClasses);
             //! HA: removed after discussion with Kais 24/05/2022
        /*     if (dataModelCustomClasses.contains(newClass)) {

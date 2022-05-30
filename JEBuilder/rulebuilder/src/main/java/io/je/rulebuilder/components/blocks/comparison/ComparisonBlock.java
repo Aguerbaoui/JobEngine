@@ -135,9 +135,11 @@ public class ComparisonBlock extends PersistableBlock {
 
         checkBlockConfiguration();
         setParameters();
-
+      /*  Boolean hasOrBlock = outputBlocks.stream()
+                .anyMatch(OrBlock.class::isInstance);*/
         // single input
         if (inputBlocks.size() == 1) {
+
             String inputExpression = inputBlocks.get(0)
                     .getAsOperandExpression()
                     .replaceAll(Keywords.toBeReplaced,

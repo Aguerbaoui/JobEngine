@@ -187,9 +187,15 @@ public class ProjectContainer {
         try {
             if (kieSession == null) {
                 kieSession = kieBase.newKieSession();
+
             }
             Runnable runnable = () -> {
                 try {
+                    //https://docs.drools.org/7.70.0.Final/drools-docs/html_single/index.html#_event_model
+          /*          kieSession.addEventListener(new DebugAgendaEventListener());
+                    kieSession.addEventListener(new DebugRuleRuntimeEventListener());*/
+
+
                     //kieSession.addEventListener(ruleListener);
                     // Thread.currentThread().setContextClassLoader(loader);
                     kieSession.fireUntilHalt();
