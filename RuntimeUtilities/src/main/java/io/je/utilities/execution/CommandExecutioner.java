@@ -9,10 +9,7 @@ import utils.files.FileUtilities;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
 
-import java.io.File;
 import java.io.IOException;
-import java.net.URL;
-import java.net.URLClassLoader;
 
 import static io.je.utilities.config.ConfigurationConstants.JAVA_GENERATION_PATH;
 import static io.je.utilities.constants.JEMessages.ERROR_BUILDING_JAR_FILE_AFTER_COMPILING_CLASSES_CHECK_ONGOING_PROCESSES;
@@ -40,11 +37,11 @@ public class CommandExecutioner {
         String command = !currentClassPath ? JAVAC + " " + CP + " \"" + classpathFolder + "\" " + "\"" + filePath + "\" "
                 :
                 JAVAC + " " + CP + " \"" + classpathFolder + "\" " + "\"" + filePath + "\" ";
-        String errorTextBuilder =  ProcessRunner.executeCommandWithErrorOutput(command);
-        if(errorTextBuilder.length() > 0 && errorTextBuilder.indexOf("error:") != -1) {
+        String errorTextBuilder = ProcessRunner.executeCommandWithErrorOutput(command);
+        if (errorTextBuilder.length() > 0 && errorTextBuilder.indexOf("error:") != -1) {
             String error = errorTextBuilder.substring(errorTextBuilder.indexOf("error:"));
             String errorMsg = JEMessages.CLASS_LOAD_FAILED;
-            if(error.indexOf("error: unreachable statement") != -1) {
+            if (error.indexOf("error: unreachable statement") != -1) {
                 errorMsg += " " + "because of unreachable statement (infinite loop)";
             }
             ClassLoadException exception = new ClassLoadException(errorMsg);
@@ -55,7 +52,7 @@ public class CommandExecutioner {
     }
 
     public static Thread runCode(String filePath) throws IOException, InterruptedException {
-        String command = JAVA + " " + CP + " \"" + classpathFolder  + getCurrentClassPath() +  "\" \"" + filePath + "\"";
+        String command = JAVA + " " + CP + " \"" + classpathFolder + getCurrentClassPath() + "\" \"" + filePath + "\"";
         return ProcessRunner.executeCommandWithPidOutput(command);
         //return p.pid();
     }
@@ -67,14 +64,17 @@ public class CommandExecutioner {
 
     public static void buildJar() throws IOException, InterruptedException {
         StringBuilder command = new StringBuilder(JAR + " " + CVF + " \"" + ConfigurationConstants.EXTERNAL_LIB_PATH + "JEUtils.jar\"");
-        command.append(" \"").append(JAVA_GENERATION_PATH).append("\\jeclasses\"");
+        command.append(" \"")
+                .append(JAVA_GENERATION_PATH)
+                .append("\\jeclasses\"");
         try {
             FileUtilities.deleteFileFromPath(ConfigurationConstants.EXTERNAL_LIB_PATH + "JEUtils.jar");
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             JELogger.error(ERROR_BUILDING_JAR_FILE_AFTER_COMPILING_CLASSES_CHECK_ONGOING_PROCESSES, LogCategory.DESIGN_MODE, "", LogSubModule.JEBUILDER, "");
         }
-        ProcessRunner.executeCommandWithPidOutput(command.toString());
+        ProcessRunner.executeCommandWithPidOutput(command.toString())
+                .join(50000);
+
     }
 
     public static String getCurrentClassPath() {

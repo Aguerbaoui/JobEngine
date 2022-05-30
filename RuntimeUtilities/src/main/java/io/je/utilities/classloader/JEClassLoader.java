@@ -1,7 +1,6 @@
 package io.je.utilities.classloader;
 
 import io.je.utilities.config.ConfigurationConstants;
-import io.je.utilities.constants.ClassBuilderConfig;
 import io.je.utilities.instances.ClassRepository;
 import io.je.utilities.log.JELogger;
 import utils.files.FileUtilities;
@@ -27,9 +26,12 @@ public class JEClassLoader extends ClassLoader {
 
     static JEClassLoader currentRuleEngineClassLoader;
 
-    public static boolean classIsLoaded(String name) { return dataModelCustomClasses != null && dataModelCustomClasses.contains(name);}
+    public static boolean classIsLoaded(String name) {
+        return dataModelCustomClasses != null && dataModelCustomClasses.contains(name);
+    }
+
     public static void addClassToDataModelClassesSet(String classname) {
-        if(dataModelCustomClasses == null) {
+        if (dataModelCustomClasses == null) {
             dataModelCustomClasses = new HashSet<>();
         }
         dataModelCustomClasses.add(classname);
@@ -39,12 +41,13 @@ public class JEClassLoader extends ClassLoader {
     public static void removeClassFromDataModelClassesSet(String name) {
         try {
             dataModelCustomClasses.remove(name);
+        } catch (Exception ignored) {
         }
-        catch (Exception ignored) {}
     }
 
     private JEClassLoader(Set<String> dataModelCustomClasses) {
-        super(Thread.currentThread().getContextClassLoader());
+        super(Thread.currentThread()
+                .getContextClassLoader());
         if (dataModelCustomClasses != null) {
             JEClassLoader.dataModelCustomClasses = dataModelCustomClasses;
         }
@@ -80,16 +83,20 @@ public class JEClassLoader extends ClassLoader {
             dataModelCustomClasses = new HashSet<>();
         }
         synchronized (dataModelCustomClasses) {
+
             dataModelInstance = new JEClassLoader(dataModelCustomClasses);
-           if(dataModelCustomClasses.contains(newClass))
-           {
-        	   dataModelCustomClasses.remove(newClass);
-           }
+            //! HA: removed after discussion with Kais 24/05/2022
+       /*     if (dataModelCustomClasses.contains(newClass)) {
+                dataModelCustomClasses.remove(newClass);
+
+            }*/
             Set<String> all = dataModelCustomClasses;
             for (String c : all) {
                 ClassRepository.addClass(ClassRepository.getClassIdByName(c), c, dataModelInstance.loadClass(c));
+
             }
-            
+
+
         }
 
         return dataModelInstance;
@@ -98,7 +105,9 @@ public class JEClassLoader extends ClassLoader {
 
     @Override
     public Class<?> loadClass(String className) throws ClassNotFoundException {
-    //	JELogger.debug("JECLASSLOADER 100: "+dataModelCustomClasses.toString());
+        //	JELogger.debug("JECLASSLOADER 100: "+dataModelCustomClasses.toString());
+        Class<?> foundClass = this.findLoadedClass(className);
+        if (foundClass != null) return foundClass;
         if (dataModelCustomClasses.contains(className)) {
             try {
                 JELogger.trace("Class Loading by dm custom loader Started for " + className, LogCategory.RUNTIME,
@@ -118,12 +127,13 @@ public class JEClassLoader extends ClassLoader {
      * happens here You Can modify logic of
      * this method to load Class
      * from Network or any other source
-     * 
+     *
      * @param name
      * @return
      * @throws ClassNotFoundException
      */
     private Class<?> getClass(String name) throws ClassNotFoundException {
+
         String file = FileUtilities.getPathPrefix(JAVA_GENERATION_PATH) + name.replace('.', File.separatorChar) + ".class";
         byte[] byteArr = null;
         try {
@@ -143,7 +153,7 @@ public class JEClassLoader extends ClassLoader {
     /**
      * Loads a given file and converts
      * it into a Byte Array
-     * 
+     *
      * @param name
      * @return
      * @throws IOException
@@ -151,7 +161,8 @@ public class JEClassLoader extends ClassLoader {
     private byte[] loadClassData(String name) throws IOException {
 
         InputStream stream = new FileInputStream(name);
-        String streamName = name.replace(FileUtilities.getPathPrefix(name), "").replace("\\",".");
+        String streamName = name.replace(FileUtilities.getPathPrefix(name), "")
+                .replace("\\", ".");
         int size = stream.available();
 
         byte buff[] = new byte[size];
@@ -166,22 +177,22 @@ public class JEClassLoader extends ClassLoader {
     // needed for drools
     @Override
     public InputStream getResourceAsStream(final String name) {
-        if(streams.containsKey(name)) {
+        if (streams.containsKey(name)) {
             InputStream targetStream = new ByteArrayInputStream(streams.get(name));
             return targetStream;
         }
-        
-            return super.getResourceAsStream(name);
-       
+
+        return super.getResourceAsStream(name);
+
     }
 
-	public static JEClassLoader getCurrentRuleEngineClassLoader() {
-		return currentRuleEngineClassLoader;
-	}
+    public static JEClassLoader getCurrentRuleEngineClassLoader() {
+        return currentRuleEngineClassLoader;
+    }
 
-	public static void setCurrentRuleEngineClassLoader(JEClassLoader currentRuleEngineClassLoader) {
-		JEClassLoader.currentRuleEngineClassLoader = currentRuleEngineClassLoader;
-	}
+    public static void setCurrentRuleEngineClassLoader(JEClassLoader currentRuleEngineClassLoader) {
+        JEClassLoader.currentRuleEngineClassLoader = currentRuleEngineClassLoader;
+    }
 
 
     public static String getJobEnginePackageName(String packageName) {
@@ -189,10 +200,9 @@ public class JEClassLoader extends ClassLoader {
         imp = imp.replace("\\", ".");
         imp = imp.replace("//", ".");
         imp = imp.replace("/", ".");
-        if(StringUtilities.isEmpty(imp)) {
+        if (StringUtilities.isEmpty(imp)) {
             imp = packageName;
-        }
-        else {
+        } else {
             imp = imp + "." + packageName;
         }
         return imp.replace("..", ".");

@@ -7,5 +7,6 @@ public enum RunnerRequestEnum {
     GET_VARIABLE,
     INFORM_USER,
     SEND_LOG,
-    TRIGGER_EVENT
+    TRIGGER_EVENT,
+    GET_CLASS
 }

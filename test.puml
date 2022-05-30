@@ -1,0 +1,162 @@
+@startuml
+participant Actor
+Actor -> DataModelListener : startListening
+activate DataModelListener
+DataModelListener -> JELogger : debug
+activate JELogger
+JELogger -> LoggerUtils : debug
+activate LoggerUtils
+LoggerUtils --> JELogger
+deactivate LoggerUtils
+JELogger -> LoggerUtils : getLogMessage
+activate LoggerUtils
+create LogMessage
+LoggerUtils -> LogMessage : new
+activate LogMessage
+LogMessage --> LoggerUtils
+deactivate LogMessage
+LoggerUtils --> JELogger
+deactivate LoggerUtils
+JELogger -> JELogger : publishLogMessage
+activate JELogger
+JELogger -> LoggerUtils : getLogLevel
+activate LoggerUtils
+LoggerUtils --> JELogger
+deactivate LoggerUtils
+JELogger -> LoggerUtils : logLevelIsEnabled
+activate LoggerUtils
+LoggerUtils --> JELogger
+deactivate LoggerUtils
+JELogger -> ZMQLogPublisher : publish
+activate ZMQLogPublisher
+ZMQLogPublisher --> JELogger
+deactivate ZMQLogPublisher
+JELogger --> JELogger
+deactivate JELogger
+JELogger --> DataModelListener
+deactivate JELogger
+DataModelListener -> DataModelListener : readInitialValues
+activate DataModelListener
+DataModelListener -> DataModelRequester : readInitialValues
+activate DataModelRequester
+DataModelRequester -> JELogger : trace
+activate JELogger
+JELogger --> DataModelRequester
+deactivate JELogger
+DataModelRequester -> ZMQRequester : sendRequest
+activate ZMQRequester
+ZMQRequester --> DataModelRequester
+deactivate ZMQRequester
+DataModelRequester -> JELogger : trace
+activate JELogger
+JELogger --> DataModelRequester
+deactivate JELogger
+DataModelRequester -> JELogger : error
+activate JELogger
+JELogger --> DataModelRequester
+deactivate JELogger
+DataModelRequester --> DataModelListener
+deactivate DataModelRequester
+create JEData
+DataModelListener -> JEData : new
+activate JEData
+create JEObject
+JEData -> JEObject : new
+activate JEObject
+JEObject --> JEData
+deactivate JEObject
+JEData --> DataModelListener
+deactivate JEData
+DataModelListener -> RuntimeDispatcher : injectData
+activate RuntimeDispatcher
+RuntimeDispatcher -> JELogger : trace
+activate JELogger
+JELogger --> RuntimeDispatcher
+deactivate JELogger
+RuntimeDispatcher -> RuntimeDispatcher : λ→
+activate RuntimeDispatcher
+RuntimeDispatcher -> InstanceManager : createInstance
+activate InstanceManager
+InstanceManager -> InstanceManager : getInstanceModel
+activate InstanceManager
+create InstanceModel
+InstanceManager -> InstanceModel : new
+activate InstanceModel
+InstanceModel --> InstanceManager
+deactivate InstanceModel
+InstanceManager --> InstanceManager
+deactivate InstanceManager
+InstanceManager -> ClassRepository : getClassById
+activate ClassRepository
+ClassRepository --> InstanceManager
+deactivate ClassRepository
+create InstanceCreationFailed
+InstanceManager -> InstanceCreationFailed : new
+activate InstanceCreationFailed
+create JEException
+InstanceCreationFailed -> JEException : new
+activate JEException
+JEException --> InstanceCreationFailed
+deactivate JEException
+InstanceCreationFailed --> InstanceManager
+deactivate InstanceCreationFailed
+create InstanceCreationFailed
+InstanceManager -> InstanceCreationFailed : new
+activate InstanceCreationFailed
+create JEException
+InstanceCreationFailed -> JEException : new
+activate JEException
+JEException --> InstanceCreationFailed
+deactivate JEException
+InstanceCreationFailed --> InstanceManager
+deactivate InstanceCreationFailed
+InstanceManager --> RuntimeDispatcher
+deactivate InstanceManager
+RuntimeDispatcher -> DataModelListener : getProjectsSubscribedToTopic
+activate DataModelListener
+DataModelListener --> RuntimeDispatcher
+deactivate DataModelListener
+RuntimeDispatcher -> RuleEngineHandler : injectData
+activate RuleEngineHandler
+RuleEngineHandler -> RuleEngine : assertFact
+activate RuleEngine
+RuleEngine -> ProjectContainerRepository : getProjectContainer
+activate ProjectContainerRepository
+ProjectContainerRepository --> RuleEngine
+deactivate ProjectContainerRepository
+RuleEngine -> ProjectContainer : insertFact
+activate ProjectContainer
+ProjectContainer --> RuleEngine
+deactivate ProjectContainer
+RuleEngine --> RuleEngineHandler
+deactivate RuleEngine
+RuleEngineHandler -> JELogger : warn
+activate JELogger
+JELogger -> LoggerUtils : warn
+activate LoggerUtils
+LoggerUtils --> JELogger
+deactivate LoggerUtils
+JELogger -> LoggerUtils : getLogMessage
+activate LoggerUtils
+LoggerUtils --> JELogger
+deactivate LoggerUtils
+JELogger -> JELogger : publishLogMessage
+activate JELogger
+JELogger --> JELogger
+deactivate JELogger
+JELogger --> RuleEngineHandler
+deactivate JELogger
+RuleEngineHandler --> RuntimeDispatcher
+deactivate RuleEngineHandler
+RuntimeDispatcher --> RuntimeDispatcher
+deactivate RuntimeDispatcher
+RuntimeDispatcher -> JELogger : error
+activate JELogger
+JELogger --> RuntimeDispatcher
+deactivate JELogger
+RuntimeDispatcher --> DataModelListener
+deactivate RuntimeDispatcher
+DataModelListener --> DataModelListener
+deactivate DataModelListener
+return
+@enduml
