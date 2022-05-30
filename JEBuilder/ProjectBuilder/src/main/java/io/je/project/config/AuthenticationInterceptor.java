@@ -1,17 +1,5 @@
 package io.je.project.config;
 
-import java.io.PrintWriter;
-import java.lang.reflect.Method;
-import java.net.URL;
-import java.security.interfaces.RSAPublicKey;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.springframework.web.method.HandlerMethod;
-import org.springframework.web.servlet.HandlerInterceptor;
-import org.springframework.web.servlet.ModelAndView;
-
 import com.auth0.jwk.GuavaCachedJwkProvider;
 import com.auth0.jwk.Jwk;
 import com.auth0.jwk.JwkProvider;
@@ -21,8 +9,21 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.auth0.jwt.interfaces.JWTVerifier;
+import org.springframework.web.method.HandlerMethod;
+import org.springframework.web.servlet.HandlerInterceptor;
+import org.springframework.web.servlet.ModelAndView;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.PrintWriter;
+import java.lang.reflect.Method;
+import java.net.URL;
+import java.security.interfaces.RSAPublicKey;
 
 
+/*
+ * oauth 2.0 authentication flow interceptor
+ * */
 public class AuthenticationInterceptor implements HandlerInterceptor {
 
     private static String jwksUrl;
@@ -30,7 +31,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
     private static String issuer;
 
     public static void init(String issueUrl) {
-        jwksUrl = issueUrl + "/.well-known/openid-configuration/jwks";
+        jwksUrl = (issueUrl + "/.well-known/openid-configuration/jwks");
         issuer = issueUrl;
     }
 
@@ -40,12 +41,12 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
             return true;
         }
 
-       /* HandlerMethod handlerMethod = (HandlerMethod) handler;
+        HandlerMethod handlerMethod = (HandlerMethod) handler;
         Method method = handlerMethod.getMethod();
         String originToken = request.getHeader("Authorization");
         String uri = request.getRequestURI();
-        if(uri.contains("/jeproject/updateRunner")) return true;
-        if(uri.contains("/workflow/updateStatus")) return true;
+        if (uri.contains("/jeproject/updateRunner")) return true;
+        if (uri.contains("/workflow/updateStatus")) return true;
         //return true;
         if (originToken == null || originToken.isEmpty()) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
@@ -69,7 +70,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
             writer.write(exception.getMessage());
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return false;
-        }*/
+        }
         return true;
     }
 

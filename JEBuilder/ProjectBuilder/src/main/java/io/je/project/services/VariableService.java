@@ -17,6 +17,7 @@ import io.je.project.beans.JEProject;
 import io.je.project.config.LicenseProperties;
 import io.je.project.repository.VariableRepository;
 import io.je.utilities.apis.JERunnerAPIHandler;
+import io.je.utilities.apis.JERunnerRequester;
 import io.je.utilities.beans.JEType;
 import io.je.utilities.beans.JEVariable;
 import io.je.utilities.constants.JEMessages;
@@ -61,7 +62,6 @@ public class VariableService {
 	/*
 	 * retrieve event from project by id
 	 */
-	
 	public JEVariable getVariable(String projectId, String variableId) throws ProjectNotFoundException, VariableNotFoundException, LicenseNotActiveException, ProjectLoadException {
     	LicenseProperties.checkLicenseIsActive();
 		JEProject project = projectService.getProjectById(projectId);
@@ -88,7 +88,9 @@ public class VariableService {
 		
 	}
 	
-	
+	/*
+	* Add variable to JERunner
+	* */
 	public void addVariableToRunner(JEVariable variable) throws JERunnerErrorException, LicenseNotActiveException
 	{
     	LicenseProperties.checkLicenseIsActive();
@@ -105,7 +107,7 @@ public class VariableService {
     * Add a new variable to the project
     * */
     public void addVariable(VariableModel variableModel) throws ProjectNotFoundException, VariableAlreadyExistsException, LicenseNotActiveException, VariableException, ProjectLoadException {
-    	LicenseProperties.checkLicenseIsActive();
+    	//LicenseProperties.checkLicenseIsActive();
 
     	JELogger.debug(JEMessages.ADDING_VARIABLE,
                 LogCategory.DESIGN_MODE, variableModel.getProjectId(),
@@ -190,16 +192,16 @@ public class VariableService {
         variableRepository.save(var);
     }
 
-    //TODO: only allowed when project is stopped?
+    //TODO: only allowed when project is stopped? to be confirmed
 	public void writeVariableValue(JEVariable variable, Object value) throws LicenseNotActiveException, VariableException {
     	LicenseProperties.checkLicenseIsActive();
 
 		try {
-			JERunnerAPIHandler.writeVariableValue(variable.getJobEngineProjectID(), variable.getJobEngineElementID(), value,true);
+			JERunnerRequester.updateVariable(variable.getJobEngineProjectID(), variable.getJobEngineElementID(), value,true);
 			variable.setValue(value);
 			variableRepository.save(variable);
 		}
-		catch (JERunnerErrorException e) {
+		catch (Exception e) {
 			throw new VariableException(JEMessages.ERROR_WRITING_VALUE_TO_VARIABLE);
 		}
 
@@ -212,8 +214,7 @@ public class VariableService {
 		variableRepository.deleteByJobEngineProjectID(projectId);
 		
 	}*/
-	
-	   public ConcurrentHashMap<String, JEVariable> getAllJEVariables(String projectId) throws  LicenseNotActiveException {
+	public ConcurrentHashMap<String, JEVariable> getAllJEVariables(String projectId) throws  LicenseNotActiveException {
 	    	LicenseProperties.checkLicenseIsActive();
 
 		   List<JEVariable> variables = variableRepository.findByJobEngineProjectID(projectId);
@@ -225,6 +226,9 @@ public class VariableService {
 			return map;
 		}
 
+	/*
+	* Validate variable type
+	* */
 	public boolean validateType(HashMap<String, String> model) {
 		try {
 			JEType type = JEType.valueOf(model.get("type"));
@@ -239,6 +243,9 @@ public class VariableService {
 		//return true;
 	}
 
+	/*
+	* Delete list of variables
+	* */
 	public void deleteVariables(String projectId, List<String> ids) throws LicenseNotActiveException, ProjectNotFoundException, VariableNotFoundException, ProjectLoadException {
 		LicenseProperties.checkLicenseIsActive();
 
@@ -275,10 +282,16 @@ public class VariableService {
 		}
 	}
 
+	/*
+	* Delete all variables
+	* */
     public void cleanUpHouse() {
 		   variableRepository.deleteAll();
     }
 
+	/*
+	* Get model from bean
+	* */
 	public VariableModel getVariableModelFromBean(JEVariable jeVariable) {
 		   VariableModel variableModel = new VariableModel();
 		   variableModel.setId(jeVariable.getJobEngineElementID());

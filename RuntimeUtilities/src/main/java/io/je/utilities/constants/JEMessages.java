@@ -54,7 +54,7 @@ public class JEMessages {
 
     public static final String CLASS_UNKNOWN = "Class unknown";
 
-    public static final String CLASS_NOT_LOADED ="Loaded classes list does not recognize this Id: ";
+    public static final String CLASS_NOT_LOADED = "Loaded classes list does not recognize this Id: ";
 
     public static final String TYPE_UNKNOWN = "Type unknown";
 
@@ -329,7 +329,7 @@ public class JEMessages {
 
     public static final String WORKFLOW_TRIGGERED_BY_EVENT = "Workflow cannot be started manually";
 
-    public static final String EVENT_ALREADY_EXISTS = "An event with this Id already exists";
+    public static final String EVENT_ALREADY_EXISTS = "An event with this name already exists";
 
 
     public static final String JEBUILDER_UNREACHABLE = "JEBuilder unreachable";
@@ -456,7 +456,6 @@ public class JEMessages {
     public static final String UPDATING_VARIABLE = "Updating variable ";
 
     public static final String UPDATING_VARIABLE_FAILED = "Failed to update variable. ";
-
 
 
     // ****************************************RuleBuilder**************************************************
@@ -661,7 +660,7 @@ public class JEMessages {
 
     public static final String UPDATING_INSTANCE_VALUE = "Updating instance value...";
 
-    public static final String INSTANCE_UPDATE_SUCCESS ="Instance was updated successfully";
+    public static final String INSTANCE_UPDATE_SUCCESS = "Instance was updated successfully";
 
     public static final String ADD_INSTANCE_FAILED = "Failed to create instance: ";
 
@@ -685,7 +684,7 @@ public class JEMessages {
 
     public static final String RULE_NOT_BUILT = "Rule is not built.";
     public static final String FAILED_TO_STOP_RULE = "Failed to stop rule: ";
-    public static final String  STATUS_UPDATE_FAILED = "Failed to update status. ";
+    public static final String STATUS_UPDATE_FAILED = "Failed to update status. ";
 
     public static final String FAILED_TO_DELETE_RULE = "Failed to delete rule";
     public static final String FAILED_TO_STOP_THE_WORKFLOW_BECAUSE_IT_ALREADY_IS_STOPPED = "Failed to stop the workflow because it already is stopped";
@@ -710,9 +709,9 @@ public class JEMessages {
     public static final String PROCEDURE_SHOULD_CONTAIN_CODE = "Procedure should contain code";
     public static final String FAILED_TO_DELETE_FILES = "Failed to delete files ";
 
-	public static final String FAILED_TO_LOAD_PROJECT = "Failed to load project from database";
-	public static final String ILLEGAL_OPERATION_CLASS_UPDATE_DURING_PROJECT_RUN = "Class updates will only be effective once the project is stopped. Rules using the updated class may be corrupted";
-	
+    public static final String FAILED_TO_LOAD_PROJECT = "Failed to load project from database";
+    public static final String ILLEGAL_OPERATION_CLASS_UPDATE_DURING_PROJECT_RUN = "Class updates will only be effective once the project is stopped. Rules using the updated class may be corrupted";
+
     public static final String READ_INSTANCE_VALUE_FAILED = "Failed to read instance from DataModel service. ";
 
     public static final String WORKFLOW_STOPPED_SUCCESSFULLY = "Workflow stopped successfully";
@@ -722,7 +721,18 @@ public class JEMessages {
 
     public static final String ERROR_BUILDING_JAR_FILE_AFTER_COMPILING_CLASSES_CHECK_ONGOING_PROCESSES = "Error building jar file after compiling classes, check ongoing processes";
 
-	public static final String RULE_RUNNING = "Rule is running";
+    public static final String RULE_RUNNING = "Rule is running";
 
     public static final String FAILED_TO_CAST_DATA_CHECK_THE_TYPE_OF_THE_VARIABLE_AND_THE_INCOMING_DATA = "Failed to cast data check the type of the variable and the incoming data";
+
+    public static final String ZMQ_REQUEST_RECEIVED = "Received ZMQ request: ";
+    public static final String ZMQ_RESPONSE_STARTED = "Started ZMQ responser on address :  ";
+    public static final String ZMQ_RESPONSE_START_FAIL = "Failed to start ZMQ Responser ";
+
+    public static final String ZMQ_SENDING_RESPONSE = "Sending response: ";
+    public static final String ZMQ_FAILED_TO_RESPOND = "Failed to send ZMQ response: ";
+    public static final String UNKNOWN_REQUEST = "Unknown Request.";
+    public static final String EVENT_TRIGGER_FAIL = "Failed to trigger event";
+
+
 }

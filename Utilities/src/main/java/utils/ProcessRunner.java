@@ -8,6 +8,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.util.concurrent.TimeUnit;
 
 public class ProcessRunner {
 
@@ -20,7 +21,7 @@ public class ProcessRunner {
     public static String executeCommandWithErrorOutput(String command) throws IOException, InterruptedException {
         String output = "";
         Process process = rt.exec(command);
-        int exitCode = process.waitFor();
+        process.waitFor(30, TimeUnit.SECONDS);
         return dumpProcessOutput(process, command, false, true);
 
         //return output;
@@ -31,6 +32,7 @@ public class ProcessRunner {
         //process.waitFor(30, TimeUnit.SECONDS);
         long pid = process.pid();
         //dumpProcessOutput(process, command, true, true);
+
         Thread thread = new Thread(() -> {
             try {
                 dumpProcessOutput(process, command, true, true);
@@ -55,7 +57,7 @@ public class ProcessRunner {
     private static String dumpProcessOutput(Process process, String command, boolean executionOutput, boolean errorOutput) throws IOException {
         String output = "Executing command = " + command + "\n";
 
-        if(executionOutput) {
+        if (executionOutput) {
             StringBuilder textBuilder = new StringBuilder();
             try (Reader reader = new BufferedReader(new InputStreamReader
                     (process.getInputStream(), Charset.forName(StandardCharsets.UTF_8.name())))) {
@@ -67,9 +69,10 @@ public class ProcessRunner {
 
             if (textBuilder.length() > 0) {
                 output += textBuilder.toString() + "\n";
+
             }
         }
-        if(errorOutput) {
+        if (errorOutput) {
             StringBuilder errorTextBuilder = new StringBuilder();
 
             try (Reader reader = new BufferedReader(new InputStreamReader
@@ -81,18 +84,21 @@ public class ProcessRunner {
             }
             if (errorTextBuilder.length() > 0) {
                 output += errorTextBuilder.toString() + "\n";
-                //System.out.println(output);
+                System.out.println(output);
+
             }
         }
         /**/
-        if(dumpOutput) {
+        if (dumpOutput) {
             try {
                 FileUtilities.writeToFile(processDumpPath, output);
+            } catch (Exception ignored) {
             }
-            catch (Exception ignored) {}
         }
+        // System.out.println("testing **************" + command);
         return output;
     }
+
     public static String getProcessDumpPath() {
         return processDumpPath;
     }

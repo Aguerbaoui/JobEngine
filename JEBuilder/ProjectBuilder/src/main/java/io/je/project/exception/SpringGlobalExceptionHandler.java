@@ -15,6 +15,9 @@ import io.je.utilities.beans.JEResponse;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.ResponseCodes;
 
+/*
+* Spring global exception handler
+* */
 @ControllerAdvice
 public class SpringGlobalExceptionHandler {
 

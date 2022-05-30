@@ -1,5 +1,6 @@
 package io.je.rulebuilder.components;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,6 +33,7 @@ public abstract class JERule extends JEObject  {
 	
 	@Transient
 	boolean containsErrors = false;
+	 
 	
 	Status status = Status.NOT_BUILT;
 	

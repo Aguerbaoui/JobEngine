@@ -1,24 +1,23 @@
 package io.je.utilities.execution;
 
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.je.utilities.apis.DatabaseApiHandler;
 import io.je.utilities.apis.JEBuilderApiHandler;
 import io.je.utilities.apis.JERunnerAPIHandler;
-import io.je.utilities.beans.InformModel;
-import io.je.utilities.beans.JEResponse;
-import io.je.utilities.beans.JEType;
+import io.je.utilities.apis.JERunnerRequester;
+import io.je.utilities.beans.*;
+import io.je.utilities.config.ConfigurationConstants;
 import io.je.utilities.config.JEConfiguration;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.ResponseCodes;
-import io.je.utilities.exceptions.JERunnerErrorException;
-import io.je.utilities.instances.DataModelRequester;
 import io.je.utilities.instances.InstanceManager;
 import io.je.utilities.log.JELogger;
 import io.je.utilities.models.VariableModel;
 import io.je.utilities.runtimeobject.JEObject;
-import io.siothconfig.SIOTHConfig;
 import io.siothconfig.SIOTHConfigUtility;
-import netscape.javascript.JSObject;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import utils.log.LogCategory;
@@ -27,10 +26,20 @@ import utils.log.LogMessage;
 import utils.log.LogSubModule;
 import utils.string.StringUtilities;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
+import static io.je.utilities.config.ConfigurationConstants.JAVA_GENERATION_PATH;
+
 
 public class JobEngine {
 
@@ -157,11 +166,14 @@ public class JobEngine {
 
     public static Object getVariable(String projectName, String variableName) {
         try {
-            VariableModel var = JEBuilderApiHandler.getVariable(projectName, variableName);
-            if(var != null) {
-                return var.getValue();
-            }
-            else return null;
+            JEConfiguration.loadProperties();
+            JEZMQResponse var = JERunnerRequester.readVariable(projectName, variableName);
+            if (var != null && !var.getResponse()
+                    .equals(ZMQResponseType.FAIL)) {
+                ObjectMapper mapper = new ObjectMapper();
+                VariableModel jeVariable = mapper.readValue((String) var.getResponseObject(), VariableModel.class);
+                return jeVariable.getValue();
+            } else return null;
         } catch (Exception e) {
             sendLogMessage(JEMessages.ERROR_ADDING_VARIABLE_TO_PROJECT, projectName, LogLevel.ERROR, variableName, LogCategory.RUNTIME, LogSubModule.VARIABLE);
             return ResponseCodes.UNKNOWN_ERROR;
@@ -170,9 +182,11 @@ public class JobEngine {
 
     public static int setVariable(String projectName, String variableName, Object value) {
         try {
-            JEResponse response = JEBuilderApiHandler.setVariable(projectName, variableName,  value.toString());
-            if(response != null) {
-                return response.getCode();
+            JEConfiguration.loadProperties();
+            JEZMQResponse response = JERunnerRequester.updateVariable(projectName, variableName, value.toString(), false);
+            if (response.getResponse()
+                    .equals(ZMQResponseType.SUCCESS)) {
+                return ResponseCodes.CODE_OK;
             }
             return ResponseCodes.VARIABLE_ERROR;
         } catch (Exception e) {
@@ -216,12 +230,17 @@ public class JobEngine {
 
         //Network.makeGetNetworkCallWithResponse()
         int respCode = -1;
-
+        JEConfiguration.loadProperties();
         try {
             InformModel informModel = new InformModel(message, projectName, workflowName);
-            JEResponse response = JEBuilderApiHandler.informUser(informModel);
-            respCode = response.getCode();
-        } catch (JERunnerErrorException e) {
+            JEZMQResponse response = JERunnerRequester.informUser(informModel);
+            if (response.getResponse()
+                    .equals(ZMQResponseType.SUCCESS)) return ResponseCodes.CODE_OK;
+            else {
+                sendLogMessage(JEMessages.ERROR_SENDING_INFORM_MESSAGE, projectName, LogLevel.ERROR,
+                        "", LogCategory.RUNTIME, LogSubModule.JERUNNER);
+            }
+        } catch (Exception e) {
             e.printStackTrace();
             sendLogMessage(JEMessages.ERROR_SENDING_INFORM_MESSAGE, projectName, LogLevel.ERROR,
                     "", LogCategory.RUNTIME, LogSubModule.JERUNNER);
@@ -237,12 +256,15 @@ public class JobEngine {
                                      LogCategory logCategory, LogSubModule logSubModule) {
         //Network.makeGetNetworkCallWithResponse()
         int respCode = -1;
-
+        JEConfiguration.loadProperties();
         try {
-            LogMessage logMessage = new LogMessage(level, message,  Instant.now().toString(), projectName, logSubModule,
+            LogMessage logMessage = new LogMessage(level, message, Instant.now()
+                    .toString(), projectName, logSubModule,
                     objectName, objectName);
-            JEResponse response = JEBuilderApiHandler.sendLogMessage(logMessage);
-            respCode = response.getCode();
+            JEZMQResponse response = JERunnerRequester.sendLogMessage(logMessage);
+            if (response.getResponse()
+                    .equals(ZMQResponseType.SUCCESS)) return ResponseCodes.CODE_OK;
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -255,7 +277,7 @@ public class JobEngine {
      * */
     public static int triggerEvent(String projectId, String eventName) {
         try {
-
+            JEConfiguration.loadProperties();
             JEResponse response = JERunnerAPIHandler.triggerEvent(eventName, projectId);
             return response.getCode();
         } catch (Exception e) {
@@ -307,7 +329,8 @@ public class JobEngine {
 
     //Execute a database sql query
     public static HashMap<String, Object> executeSqlQuery(String dbId, String query) {
-       HashMap<String, Object> response = null;
+        JEConfiguration.loadProperties();
+        HashMap<String, Object> response = null;
         try {
             ObjectMapper mapper = new ObjectMapper();
             String data = DatabaseApiHandler.executeCommand(dbId, query);
@@ -320,14 +343,14 @@ public class JobEngine {
     }
 
     public static JSONArray executeSelectQuery(String dbId, String query) {
+        JEConfiguration.loadProperties();
         JSONArray jsonArray = null;
         try {
             ObjectMapper mapper = new ObjectMapper();
             String data = DatabaseApiHandler.executeCommand(dbId, query);
             JSONObject jsonObject = new JSONObject(data);
             jsonArray = new JSONArray(jsonObject.getJSONArray("values"));
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             sendLogMessage(JEMessages.ERROR_EXECUTING_DB_QUERY, "", LogLevel.ERROR,
                     null, LogCategory.RUNTIME, LogSubModule.WORKFLOW);
         }
@@ -338,10 +361,64 @@ public class JobEngine {
         System.exit(0);
     }
 
-    public static JEObject getDataModelInstance(String instanceName) {
+    public static void display1() {
+        System.out.println("step 7");
+    }
+
+    public static JEObject getDataModelInstance(String instanceName) throws IOException {
+        System.out.println("step 1");
         JEConfiguration.loadProperties();
-        JEObject obj = InstanceManager.getInstance(instanceName);
-        return obj;
+        ConfigurationConstants.setJavaGenerationPath(SIOTHConfigUtility.getSiothConfig()
+                .getJobEngine()
+                .getGeneratedClassesPath());
+        JEZMQResponse var = JERunnerRequester.readClass(instanceName);
+        JEObject instance = null;
+        if (var != null && !var.getResponse()
+                .equals(ZMQResponseType.FAIL)) {
+            ObjectMapper mapper = new ObjectMapper();
+            File file = new File(ConfigurationConstants.getJavaGenerationPath());
+
+            Class<?> cls = null;
+            HashMap<String, String> a = null;
+            try {
+                // Convert File to a URL
+                URL url = file.toURI()
+                        .toURL();          // file:/c:/myclasses/
+                URL[] urls = new URL[]{url};
+
+                // Create a new class loader with the directory
+                ClassLoader cl = new URLClassLoader(urls);
+
+                // Load in the class; MyClass.class should be located in
+                // the directory file:/c:/myclasses/com/mycompany
+                a = (HashMap<String, String>) var.getResponseObject();
+                cls = cl.loadClass(a.get("className"));
+                mapper.registerModule(new JavaTimeModule());
+                mapper.findAndRegisterModules();
+
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+            if (a != null) {
+                instance = (JEObject) mapper.readValue(a.get("instance"), cls);
+            }
+            //instance = mapper.readValue((String) var.getResponseObject(), cls.class);
+            System.out.println(instance);
+            // instance = (JEObject) var.getResponseObject();
+
+
+        } else return null;
+        System.out.println(instance);
+
+        //  JEObject obj = InstanceManager.getInstance(instanceName);
+        // System.out.println("step 2" + obj.toString());
+    /*    if (obj == null) {
+            JELogger.error("Failed to load instance from dataModel" + ClassRepository.loadedClasses.toString(), LogCategory.RUNTIME,
+                    null, LogSubModule.JERUNNER, null);
+        }*/
+        return instance;
     }
 
     public static void setDataModelInstanceAttribute(String instanceId, String attributeName, Object attributeValue) {
@@ -349,10 +426,22 @@ public class JobEngine {
         InstanceManager.writeToDataModelInstance(instanceId, attributeName, attributeValue, false);
     }
 
-    public static void main(String... args) {
 
-        //setDataModelInstanceAttribute("23aa0c9c-ee34-c9e6-bbeb-7d407f0139b1", "fuelLevel", 110);
-         JobEngine.executeSelectQuery("db", "SELECT * FROM siothdatabase.testtable;");
+    public static void main(String... args) throws IOException {
+        sendLogMessage("testtt", "DM", LogLevel.INFORM, "testwf",
+                LogCategory.RUNTIME, LogSubModule.WORKFLOW);
+        JobEngine.informUser("testtt", "DM", "testwf")
+        ;
+        setDataModelInstanceAttribute("23aa0c9c-ee34-c9e6-bbeb-7d407f0139b1", "fuelLevel", 110);
+        JEObject a = JobEngine.getDataModelInstance("azerty");
+        /*while(true) {
+            informUser("test message", "DM", "testwf");
+        }*/
+        /*System.out.println(JobEngine.getVariable("DM", "testVar"));
+        JobEngine.setVariabl   e("DM", "testVar", 12132.0);
+        System.out.println(JobEngine.getVariable("DM", "testVar"));*
+        setDataModelInstanceAttribute("23aa0c9c-ee34-c9e6-bbeb-7d407f0139b1", "fuelLevel", 110);
+         //JobEngine.executeSelectQuery("db", "SELECT * FROM siothdatabase.testtable;");
          /*int code = JobEngine.addDoubleVariable("test", "DoubleVar", 3.3);
         System.out.println(code);
         code = JobEngine.addLongVariable("test", "LongVar", 333333);
@@ -431,3 +520,5 @@ public class JobEngine {
         //System.out.println(requestUrl);
     }
 }
+
+

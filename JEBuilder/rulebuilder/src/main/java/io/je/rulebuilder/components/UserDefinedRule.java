@@ -5,6 +5,8 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.springframework.data.annotation.Transient;
+
 import io.je.rulebuilder.components.blocks.Block;
 import io.je.rulebuilder.components.blocks.getter.InstanceGetterBlock;
 
@@ -30,6 +32,9 @@ public class UserDefinedRule extends JERule {
 	 * the subRules
 	 */
 
+	@Transient
+	List<ScriptedRule> unitRules = new ArrayList<ScriptedRule>();
+	
 	List<String> subRules = new ArrayList<String>();
 
 	public UserDefinedRule() {
@@ -143,4 +148,18 @@ public class UserDefinedRule extends JERule {
 		return blocks.containsBlock(blockId);
 	}
 
+
+
+	public List<ScriptedRule> getUnitRules() {
+		return unitRules;
+	}
+
+
+
+	public void setUnitRules(List<ScriptedRule> unitRules) {
+		this.unitRules = unitRules;
+	}
+
+	
+	
 }

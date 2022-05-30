@@ -15,7 +15,7 @@ import java.util.HashMap;
 
 public class DatabaseApiHandler {
     public static final String EXECUTE_DATABASE_COMMAND = "/nonsense/nonsenseagain/api/database/execute/siothdb";
-    public static String url = "http://njendoubi-pc:14002"/*SIOTHConfigUtility.getSiothConfig().getApis().getDatabaseAPI().getAddress() */+ EXECUTE_DATABASE_COMMAND;
+    public static String url = /*"http://njendoubi-pc:14002"*/SIOTHConfigUtility.getSiothConfig().getApis().getDatabaseAPI().getAddress() + EXECUTE_DATABASE_COMMAND;
 
     public static String executeCommand(String dbId, String query) throws IOException {
         HashMap<String, String> headers = new HashMap<>();

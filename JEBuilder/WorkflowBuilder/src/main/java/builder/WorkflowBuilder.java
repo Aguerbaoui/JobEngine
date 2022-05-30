@@ -22,9 +22,9 @@ import java.util.HashMap;
 
 import static io.je.utilities.constants.WorkflowConstants.*;
 
-/*
+/**
  * Workflow Builder class
- * */
+ */
 public class WorkflowBuilder {
 
 
@@ -39,21 +39,24 @@ public class WorkflowBuilder {
         t.setTaskDescription(taskDescription);
         t.setTaskId(taskId);
         t.setType(taskType);
-        return  t;
+        return t;
     }
 
     /*Get attributes map for web api task*/
-    private static HashMap<String, Object > getWebApiAttributesMap(WebApiBlock webApiBlock) {
+    private static HashMap<String, Object> getWebApiAttributesMap(WebApiBlock webApiBlock) {
         HashMap<String, Object> attributes = new HashMap<>();
         attributes.put(URL, webApiBlock.getUrl());
         attributes.put(METHOD, webApiBlock.getMethod());
         if (webApiBlock.getBody() != null) {
             attributes.put(BODY, webApiBlock.getBody());
         } else {
-            if (webApiBlock.getInputs() != null && webApiBlock.getInputs().size() > 0) {
+            if (webApiBlock.getInputs() != null && webApiBlock.getInputs()
+                    .size() > 0) {
                 HashMap<String, Object> inputs = new HashMap<>();
-                for (String key : webApiBlock.getInputs().keySet()) {
-                    ArrayList<Object> input = webApiBlock.getInputs().get(key);
+                for (String key : webApiBlock.getInputs()
+                        .keySet()) {
+                    ArrayList<Object> input = webApiBlock.getInputs()
+                            .get(key);
                     if (input.size() == 1) {
                         inputs.put(key, input.get(0));
                     } else {
@@ -64,7 +67,7 @@ public class WorkflowBuilder {
             }
         }
         attributes.put(OUTPUTS, webApiBlock.getOutputs());
-        if(webApiBlock.getAuthScheme() != null) {
+        if (webApiBlock.getAuthScheme() != null) {
             attributes.put(AUTH_SCHEME, webApiBlock.getAuthScheme());
             attributes.put(AUTHENTICATION, webApiBlock.getAuthentication());
         }
@@ -72,22 +75,24 @@ public class WorkflowBuilder {
     }
 
     /*Get attributes map for script task*/
-    private static HashMap<String, Object > getScriptAttributesMap(ScriptBlock block) {
+    private static HashMap<String, Object> getScriptAttributesMap(ScriptBlock block) {
         HashMap<String, Object> attributes = new HashMap<>();
-        attributes.put(SCRIPT,  block.getScript());
-        attributes.put(TIMEOUT,  block.getTimeout());
+        attributes.put(SCRIPT, block.getScript());
+        attributes.put(TIMEOUT, block.getTimeout());
         return attributes;
     }
 
-    /*Get attributes map for inform task*/
-    private static HashMap<String, Object > getInformAttributesMap(InformBlock block) {
+    /**
+     * Get attributes map for inform task
+     */
+    private static HashMap<String, Object> getInformAttributesMap(InformBlock block) {
         HashMap<String, Object> attributes = new HashMap<>();
         attributes.put(MESSAGE, block.getMessage());
         return attributes;
     }
 
     /*Get attributes map for inform task*/
-    private static HashMap<String, Object > getDBReadTaskAttributesMap(DBReadBlock block) {
+    private static HashMap<String, Object> getDBReadTaskAttributesMap(DBReadBlock block) {
         HashMap<String, Object> attributes = new HashMap<>();
         attributes.put(REQUEST, block.getRequest());
         attributes.put(DATABASE_ID, block.getDatabaseId());
@@ -95,7 +100,7 @@ public class WorkflowBuilder {
     }
 
     /*Get attributes map for inform task*/
-    private static HashMap<String, Object > getDBWriteTaskAttributesMap(DBWriteBlock block) {
+    private static HashMap<String, Object> getDBWriteTaskAttributesMap(DBWriteBlock block) {
         HashMap<String, Object> attributes = new HashMap<>();
         attributes.put(REQUEST, block.getRequest());
         attributes.put(DATABASE_ID, block.getDatabaseId());
@@ -103,12 +108,13 @@ public class WorkflowBuilder {
     }
 
     /*Get attributes map for inform task*/
-    private static HashMap<String, Object > getDBEditTaskAttributesMap(DBEditBlock block) {
+    private static HashMap<String, Object> getDBEditTaskAttributesMap(DBEditBlock block) {
         HashMap<String, Object> attributes = new HashMap<>();
         attributes.put(REQUEST, block.getRequest());
         attributes.put(DATABASE_ID, block.getDatabaseId());
         return attributes;
     }
+
     /*Get attributes map for email task*/
     private static HashMap<String, Object> getEmailTaskAttributesMap(MailBlock block) {
         HashMap<String, Object> attributes = new HashMap<>();
@@ -119,7 +125,7 @@ public class WorkflowBuilder {
             attributes.put(USERNAME, block.getStrUserName());
             attributes.put(PASSWORD, block.getStrPassword());
         }*/
-        if(!StringUtilities.isEmpty(block.getStrUserName())) {
+        if (!StringUtilities.isEmpty(block.getStrUserName())) {
             attributes.put(USERNAME, block.getStrUserName());
             attributes.put(PASSWORD, block.getStrPassword());
         }
@@ -138,14 +144,15 @@ public class WorkflowBuilder {
     }
 
 
-    /*
+    /**
      * Build pbpmn and Deploy it in engine
-     * */
+     */
     public static boolean buildWorkflow(JEWorkflow workflow) {
         if (workflow.getWorkflowEndBlock() == null ||
                 workflow.getWorkflowStartBlock() == null ||
                 workflow.getAllBlocks() == null ||
-                workflow.getAllBlocks().size() == 0 ||
+                workflow.getAllBlocks()
+                        .size() == 0 ||
                 workflow.isHasErrors())
             return false;
         if (!workflow.isScript()) {
@@ -153,15 +160,19 @@ public class WorkflowBuilder {
         }
         WorkflowModel wf = new WorkflowModel();
         wf.setId(workflow.getJobEngineElementID());
-        wf.setPath(ConfigurationConstants.BPMN_PATH + workflow.getJobEngineElementName().trim() + BPMN_EXTENSION);
+        wf.setPath(ConfigurationConstants.BPMN_PATH + workflow.getJobEngineElementName()
+                .trim() + BPMN_EXTENSION);
         wf.setProjectId(workflow.getJobEngineProjectID());
         wf.setTriggeredByEvent(workflow.isTriggeredByEvent());
-        wf.setTriggerMessage(workflow.getWorkflowStartBlock().getEventId());
+        wf.setTriggerMessage(workflow.getWorkflowStartBlock()
+                .getEventId());
         wf.setOnProjectBoot(workflow.isOnProjectBoot());
         wf.setProjectName(workflow.getJobEngineProjectName());
-        wf.setName(workflow.getJobEngineElementName().trim());
+        wf.setName(workflow.getJobEngineElementName()
+                .trim());
         ArrayList<TaskModel> tasks = new ArrayList<>();
-        for (WorkflowBlock block : workflow.getAllBlocks().values()) {
+        for (WorkflowBlock block : workflow.getAllBlocks()
+                .values()) {
             if (block instanceof WebApiBlock) {
                 TaskModel t = getTaskModel(block.getJobEngineElementID(), block.getJobEngineElementName(), block.getDescription(), WorkflowConstants.WEBSERVICETASK_TYPE);
                 t.setAttributes(getWebApiAttributesMap((WebApiBlock) block));
@@ -177,17 +188,17 @@ public class WorkflowBuilder {
                 t.setAttributes(getInformAttributesMap((InformBlock) block));
                 tasks.add(t);
             }
-            if(block instanceof DBReadBlock) {
+            if (block instanceof DBReadBlock) {
                 TaskModel t = getTaskModel(block.getJobEngineElementID(), block.getJobEngineElementName(), block.getDescription(), WorkflowConstants.DBREADSERVICETASK_TYPE);
                 t.setAttributes(getDBReadTaskAttributesMap((DBReadBlock) block));
                 tasks.add(t);
             }
-            if(block instanceof DBWriteBlock) {
+            if (block instanceof DBWriteBlock) {
                 TaskModel t = getTaskModel(block.getJobEngineElementID(), block.getJobEngineElementName(), block.getDescription(), WorkflowConstants.DBWRITESERVICETASK_TYPE);
                 t.setAttributes(getDBWriteTaskAttributesMap((DBWriteBlock) block));
                 tasks.add(t);
             }
-            if(block instanceof DBEditBlock) {
+            if (block instanceof DBEditBlock) {
                 TaskModel t = getTaskModel(block.getJobEngineElementID(), block.getJobEngineElementName(), block.getDescription(), WorkflowConstants.DBEDITSERVICETASK_TYPE);
                 t.setAttributes(getDBEditTaskAttributesMap((DBEditBlock) block));
                 tasks.add(t);
@@ -201,17 +212,18 @@ public class WorkflowBuilder {
         }
         wf.setTasks(tasks);
         workflow.setStatus(Status.BUILDING);
-        String endEventId = workflow.getWorkflowEndBlock().getEventId();
-        if(endEventId != null) {
+        String endEventId = workflow.getWorkflowEndBlock()
+                .getEventId();
+        if (endEventId != null) {
             wf.setEndBlockEventId(endEventId);
         }
-        JELogger.debug( JEMessages.DEPLOYING_IN_RUNNER_WORKFLOW_WITH_ID + " = " + workflow.getJobEngineElementID(),
+        JELogger.debug(JEMessages.DEPLOYING_IN_RUNNER_WORKFLOW_WITH_ID + " = " + workflow.getJobEngineElementID(),
                 LogCategory.DESIGN_MODE, workflow.getJobEngineProjectID(),
                 LogSubModule.WORKFLOW, workflow.getJobEngineElementID());
         try {
             JERunnerAPIHandler.addWorkflow(wf);
         } catch (JERunnerErrorException e) {
-            JELogger.error( JEMessages.FAILED_TO_DEPLOY_IN_RUNNER_WORKFLOW_WITH_ID + " = " + workflow.getJobEngineElementID(),
+            JELogger.error(JEMessages.FAILED_TO_DEPLOY_IN_RUNNER_WORKFLOW_WITH_ID + " = " + workflow.getJobEngineElementID(),
                     LogCategory.DESIGN_MODE, workflow.getJobEngineProjectID(),
                     LogSubModule.WORKFLOW, workflow.getJobEngineElementID());
             workflow.setStatus(Status.NOT_BUILT);
@@ -230,8 +242,7 @@ public class WorkflowBuilder {
     public static void runWorkflow(String projectId, String key) throws WorkflowRunException {
         try {
             JERunnerAPIHandler.runWorkflow(projectId, key);
-        }
-        catch(JERunnerErrorException e) {
+        } catch (JERunnerErrorException e) {
             throw new WorkflowRunException(JEMessages.WORKFLOW_RUN_ERROR + e.getMessage());
         }
 
@@ -239,8 +250,8 @@ public class WorkflowBuilder {
     }
 
     /*
-    * Saving bpmn into a temp file
-    * */
+     * Saving bpmn into a temp file
+     * */
     public static void saveBpmn(JEWorkflow wf, String bpmn) {
         ModelBuilder.saveModel(bpmn, wf.getBpmnPath());
     }

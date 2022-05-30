@@ -8,19 +8,25 @@ import org.kie.api.conf.EqualityBehaviorOption;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.runtime.conf.ClockTypeOption;
 
+/**
+ * Work in progress to refactor the project container
+ **/
 public class KieModuleGenerator {
     KieServices ks = KieServices.Factory.get();
 
     public void generateKieModule(EqualityBehaviorOption equalityBehaviorOption, EventProcessingOption eventProcessingOption, KieSessionType kieSessionType, ClockTypeOption clockTypeOption) {
         KieModuleModel kproj = ks.newKieModuleModel();
 
-        KieBaseModel kieBaseModel1 = kproj.newKieBaseModel("kie-base").setDefault(true)
+        KieBaseModel kieBaseModel1 = kproj.newKieBaseModel("kie-base")
+                .setDefault(true)
                 .setEqualsBehavior(equalityBehaviorOption)
                 .setEventProcessingMode(eventProcessingOption);
 
-        kieBaseModel1.newKieSessionModel("kie-session").setDefault(true)
+        kieBaseModel1.newKieSessionModel("kie-session")
+                .setDefault(true)
 
-                .setType(kieSessionType).setClockType(clockTypeOption);
+                .setType(kieSessionType)
+                .setClockType(clockTypeOption);
         //kfs.writeKModuleXML(kproj.toXML());
     }
 

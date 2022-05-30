@@ -6,6 +6,9 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
 
 import io.siothconfig.SIOTHConfigUtility;
 
+/*
+* Tomcat ServletInitializer
+* */
 public class ServletInitializer extends SpringBootServletInitializer {
 
 	@Override

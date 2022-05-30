@@ -80,7 +80,7 @@ public class WorkflowService {
     // @Async
     public void addWorkflow(WorkflowModel m)
             throws LicenseNotActiveException, ProjectNotFoundException, ProjectLoadException {
-        LicenseProperties.checkLicenseIsActive();
+        //LicenseProperties.checkLicenseIsActive();
         JEProject project = projectService.getProjectById(m.getProjectId());
         JEWorkflow wf = mapWorkflowModelToJEWorkflow(m);
         wf.setJeObjectLastUpdate(Instant.now());
@@ -112,7 +112,7 @@ public class WorkflowService {
             throws WorkflowNotFoundException, LicenseNotActiveException, WorkflowException, ProjectNotFoundException, ProjectLoadException {
 
         //check if license is valid
-        LicenseProperties.checkLicenseIsActive();
+        //LicenseProperties.checkLicenseIsActive();
 
         //get project
         JEProject project = projectService.getProjectById(projectId);
@@ -818,7 +818,7 @@ public class WorkflowService {
     @Async
     public CompletableFuture<OperationStatusDetails> buildWorkflow(String projectId, String workflowId)
             throws LicenseNotActiveException, ProjectNotFoundException, ProjectLoadException {
-        LicenseProperties.checkLicenseIsActive();
+        //LicenseProperties.checkLicenseIsActive();
 
         JEProject project = projectService.getProjectById(projectId);
         OperationStatusDetails result = new OperationStatusDetails(workflowId);
@@ -898,7 +898,7 @@ public class WorkflowService {
     @Async
     public CompletableFuture<OperationStatusDetails> runWorkflow(String projectId, String workflowId)
             throws LicenseNotActiveException, ProjectNotFoundException, ProjectLoadException {
-        LicenseProperties.checkLicenseIsActive();
+        //LicenseProperties.checkLicenseIsActive();
 
         JEProject project = projectService.getProjectById(projectId);
         OperationStatusDetails result = new OperationStatusDetails(workflowId);
