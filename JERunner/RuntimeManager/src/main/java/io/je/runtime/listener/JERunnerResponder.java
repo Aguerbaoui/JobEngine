@@ -1,7 +1,6 @@
 package io.je.runtime.listener;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import io.je.project.exception.JEExceptionHandler;
 import io.je.runtime.services.RuntimeDispatcher;
 import io.je.utilities.beans.JEZMQResponse;
@@ -20,9 +19,6 @@ import utils.log.LogSubModule;
 import utils.zmq.ZMQBind;
 import utils.zmq.ZMQResponser;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.time.Instant;
 import java.util.HashMap;
 import java.util.Locale;
 
@@ -192,7 +188,7 @@ public class JERunnerResponder extends ZMQResponser {
         try {
             HashMap<String, Object> body = (HashMap<String, Object>) requestBody;
             JEZMQResponse rep = new JEZMQResponse(ZMQResponseType.SUCCESS);
-            String data = DataModelRequester.getLastInstanceValue((String) body.get("instanceId"));
+            String data = DataModelRequester.getLastInstanceValue((String) body.get("instanceId"), true);
             JEObject instance = null;
             if (data != null && !data.isEmpty()) {
                 instance = createInstance(data);

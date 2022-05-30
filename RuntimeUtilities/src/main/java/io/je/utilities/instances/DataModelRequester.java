@@ -83,7 +83,7 @@ public class DataModelRequester {
     /*
      * ZMQ Request to DataModel to read last values for specific instance(by InstanceId)
      */
-    public static String getLastInstanceValue(String instanceId) {
+    public static String getLastInstanceValue(String instanceId, Boolean... isName) {
 
         try {
 
@@ -91,7 +91,8 @@ public class DataModelRequester {
             //ZMQRequester requester = new ZMQRequester("tcp://192.168.4.169"/*+SIOTHConfigUtility.getSiothConfig().getMachineCredentials().getIpAddress()*/, SIOTHConfigUtility.getSiothConfig().getDataModelPORTS().getDmService_ReqAddress());
             HashMap<String, String> requestMap = new HashMap<>();
             requestMap.put("Type", "ReadInstance");
-            requestMap.put("InstanceName", instanceId);
+
+            requestMap.put(Boolean.TRUE.equals(isName[0]) ? "InstanceName" : "instanceId", instanceId);
             String data = requester.sendRequest(objectMapper.writeValueAsString(requestMap));
             JELogger.trace(JEMessages.DATA_RECEIVED + " : " + data, LogCategory.RUNTIME,
                     null, LogSubModule.JERUNNER, null);
