@@ -1,15 +1,10 @@
 package io.je.utilities.log;
 
 import org.apache.logging.log4j.Level;
-
-import utils.log.LogCategory;
-import utils.log.LogLevel;
-import utils.log.LogMessage;
-import utils.log.LogSubModule;
-import utils.log.LoggerUtils;
+import utils.log.*;
 
 public class JELogger extends LoggerUtils {
-	
+
 	/*
 	 * Publish log message to SIOTHTracker
 	 */
@@ -25,7 +20,7 @@ public class JELogger extends LoggerUtils {
 	 * Trace log level
 	 */
 	public static void trace(String message, LogCategory category, String projectId, LogSubModule subModule,
-			String objectId) {
+							 String objectId) {
 		trace(message);
 
 	}
@@ -33,9 +28,10 @@ public class JELogger extends LoggerUtils {
 	/*
 	 * Control log level
 	 */
+
 	public static void control(String message, LogCategory category, String projectId, LogSubModule subModule,
-							 String objectId) {
-	
+							   String objectId) {
+
 
 		// Log in file
 		control(message);
@@ -49,7 +45,7 @@ public class JELogger extends LoggerUtils {
 	 * Debug log level
 	 */
 	public static void debug(String message, LogCategory category, String projectId, LogSubModule subModule,
-			String objectId) {
+							 String objectId) {
 		// Log in file
 		debug(message);
 
@@ -60,7 +56,7 @@ public class JELogger extends LoggerUtils {
 	}
 
 	public static void debugWithoutPublish(String message, LogCategory category, String projectId, LogSubModule subModule,
-			String objectId) {
+										   String objectId) {
 //Log in file
 		debug(message);
 
@@ -74,7 +70,7 @@ public class JELogger extends LoggerUtils {
 	 * Debug log level
 	 */
 	public static void debug(String message, LogCategory category, String projectId, LogSubModule subModule,
-			String objectId, String blockName) {
+							 String objectId, String blockName) {
 		// Log in file
 		debug(message);
 
@@ -89,7 +85,7 @@ public class JELogger extends LoggerUtils {
 	 * Inform log level
 	 */
 	public static void info(String message, LogCategory category, String projectId, LogSubModule subModule,
-			String objectId) {
+							String objectId) {
 		// Log in file
 		info(message);
 
@@ -102,7 +98,7 @@ public class JELogger extends LoggerUtils {
 	 * Block Inform log
 	 */
 	public static void info(String message, LogCategory category, String projectId, LogSubModule subModule,
-			String objectId, String blockName) {
+							String objectId, String blockName) {
 		// Log in file
 		info(message);
 
@@ -113,10 +109,24 @@ public class JELogger extends LoggerUtils {
 	}
 
 	/*
+	 * Block Control log
+	 */
+	public static void control(String message, LogCategory category, String projectId, LogSubModule subModule,
+							   String objectId, String blockName) {
+		// Log in file
+		control(message);
+
+		// Log in logging service
+		LogMessage logMessage = getLogMessage(LogLevel.CONTROL, message, category, projectId, subModule, objectId,
+				blockName);
+		publishLogMessage(logMessage);
+	}
+
+	/*
 	 * Error log level
 	 */
 	public static void error(String message, LogCategory category, String projectId, LogSubModule subModule,
-			String objectId) {
+							 String objectId) {
 		// Log in file
 		error(message);
 
@@ -129,7 +139,7 @@ public class JELogger extends LoggerUtils {
 	 * Error log level
 	 */
 	public static void error(String message, LogCategory category, String projectId, LogSubModule subModule,
-			String objectId, String blockName) {
+							 String objectId, String blockName) {
 		// Log in file
 		error(message);
 
@@ -143,7 +153,7 @@ public class JELogger extends LoggerUtils {
 	 * Warning log level
 	 */
 	public static void warn(String message, LogCategory category, String projectId, LogSubModule subModule,
-			String objectId) {
+							String objectId) {
 		// Log in file
 		warn(message);
 
@@ -154,17 +164,37 @@ public class JELogger extends LoggerUtils {
 
 
 	public static void sendLog(LogMessage logMessage) {
-		switch(logMessage.getLogLevel()) {
+		switch (logMessage.getLogLevel()) {
 
-			case ERROR: { error(logMessage.getMessage().toString()); break; }
+			case ERROR: {
+				error(logMessage.getMessage()
+						.toString());
+				break;
+			}
 
-			case INFORM:{ info(logMessage.getMessage().toString());break; }
+			case INFORM: {
+				info(logMessage.getMessage()
+						.toString());
+				break;
+			}
 
-			case DEBUG:{ debug(logMessage.getMessage().toString());break; }
+			case DEBUG: {
+				debug(logMessage.getMessage()
+						.toString());
+				break;
+			}
 
-			case CONTROL:{ control(logMessage.getMessage().toString());break; }
+			case CONTROL: {
+				control(logMessage.getMessage()
+						.toString());
+				break;
+			}
 
-			case WARNING:{ warn(logMessage.getMessage().toString());break; }
+			case WARNING: {
+				warn(logMessage.getMessage()
+						.toString());
+				break;
+			}
 		}
 
 		publishLogMessage(logMessage);

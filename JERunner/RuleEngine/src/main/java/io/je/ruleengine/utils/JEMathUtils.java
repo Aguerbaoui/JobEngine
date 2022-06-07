@@ -53,7 +53,7 @@ public class JEMathUtils {
     }
 
     public static void main(String[] args) {
-        System.out.println(castToDouble(0));
+        System.out.println("a");
     }
 }
 

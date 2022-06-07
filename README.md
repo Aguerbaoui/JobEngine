@@ -2,6 +2,8 @@
 
 ### ⚠ Always run editor as admin
 
+### Install Lombok
+
 ### 1. Add Workflow Block
 
 1. Add block implementation inherited from

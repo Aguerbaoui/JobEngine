@@ -4,250 +4,249 @@ import org.springframework.beans.factory.annotation.Value;
 
 public class JEProperties {
 
-	@Value("${jobenginebuilder.log.path}")
-	String jeBuilderLogPath;
+    @Value("${jobenginebuilder.log.path}")
+    String jeBuilderLogPath;
 
-	@Value("${jobenginebuilder.log.level}")
-	String jeBuilderLogLevel;
+    @Value("${jobenginebuilder.log.level}")
+    String jeBuilderLogLevel;
 
-	@Value("${ids4.issuer}")
-	String issuer;
+    @Value("${ids4.issuer}")
+    String issuer;
 
-	@Value("${monitoring.port}")
-	int monitoringPort;
-	
-	@Value("${sioth.id}")
-	String siothId;
+    @Value("${monitoring.port}")
+    int monitoringPort;
 
-	@Value("${dev.environment}")
-	boolean dev;
+    @Value("${sioth.id}")
+    String siothId;
 
-	@Value("${java.prcessdump}")
-	boolean dumpJavaProcessExecution;
+    @Value("${dev.environment}")
+    boolean dev;
 
-	@Value("${jobenginemonitor.url}")
-	String monitorUrl;
+    @Value("${java.prcessdump}")
+    boolean dumpJavaProcessExecution;
 
-	@Value("${jobengine.processesdump.path}")
-	String processesDumpPath;
+    @Value("${jobenginemonitor.url}")
+    String monitorUrl;
 
-	@Value("${jobenginebuilder.url}")
-	String builderUrl;
+    @Value("${jobengine.processesdump.path}")
+    String processesDumpPath;
 
-	@Value("${jobenginerunner.url}")
-	String runnerUrl;
+    @Value("${jobenginebuilder.url}")
+    String builderUrl;
 
-	@Value("${jobenginerunner.log.path}")
-	String jeRunnerLogPath;
+    @Value("${jobenginerunner.url}")
+    String runnerUrl;
 
-	@Value("${jobenginerunner.log.level}")
-	String jeRunnerLogLevel;
-	
+    @Value("${jobenginerunner.log.path}")
+    String jeRunnerLogPath;
+
+    @Value("${jobenginerunner.log.level}")
+    String jeRunnerLogLevel;
+
     @Value("${jobenginemonitor.log.path}")
     String jeMonitorLogPath;
 
     @Value("${jobenginemonitor.log.level}")
     String jeMonitorLogLevel;
-	
-	//ZMQ Config
-	@Value("${use.ZMQ.Security}")
-	Boolean useZmqSecurity;
 
-	@Value("${zmq.heartbeat.value}")
-	int zmqHeartbeatValue;
+    //ZMQ Config
+    @Value("${use.ZMQ.Security}")
+    Boolean useZmqSecurity;
 
-	@Value("${zmq.heartbeat.interval}")
-	int zmqHeartbeatInterval;
+    @Value("${zmq.heartbeat.value}")
+    int zmqHeartbeatValue;
 
-	@Value("${zmq.receive.interval}")
-	int zmqReceiveInterval;
+    @Value("${zmq.heartbeat.interval}")
+    int zmqHeartbeatInterval;
 
-	@Value("${zmq.receive.high.watermark}")
-	int zmqReceiveHighWatermark;
+    @Value("${zmq.receive.interval}")
+    int zmqReceiveInterval;
 
-	@Value("${zmq.send.high.watermark}")
-	int zmqSendHighWatermark;
+    @Value("${zmq.receive.high.watermark}")
+    int zmqReceiveHighWatermark;
 
-	@Value("${jobenginerunner.zmq.responsePort}")
-	int jeRunnerZMQResponsePort;
-	
+    @Value("${zmq.send.high.watermark}")
+    int zmqSendHighWatermark;
 
-	public String getJeBuilderLogPath() {
-		return jeBuilderLogPath;
-	}
+    @Value("${jobenginerunner.zmq.responsePort}")
+    int jeRunnerZMQResponsePort;
 
-	public void setJeBuilderLogPath(String jeBuilderLogPath) {
-		this.jeBuilderLogPath = jeBuilderLogPath;
-	}
 
-	public String getJeBuilderLogLevel() {
-		return jeBuilderLogLevel;
-	}
+    public String getJeBuilderLogPath() {
+        return jeBuilderLogPath;
+    }
 
-	public void setJeBuilderLogLevel(String jeBuilderLogLevel) {
-		this.jeBuilderLogLevel = jeBuilderLogLevel;
-	}
+    public void setJeBuilderLogPath(String jeBuilderLogPath) {
+        this.jeBuilderLogPath = jeBuilderLogPath;
+    }
 
-	public Boolean getUseZmqSecurity() {
-		return useZmqSecurity;
-	}
+    public String getJeBuilderLogLevel() {
+        return jeBuilderLogLevel;
+    }
 
-	public void setUseZmqSecurity(Boolean useZmqSecurity) {
-		this.useZmqSecurity = useZmqSecurity;
-	}
+    public void setJeBuilderLogLevel(String jeBuilderLogLevel) {
+        this.jeBuilderLogLevel = jeBuilderLogLevel;
+    }
 
-	public String getIssuer() {
-		return issuer;
-	}
+    public Boolean getUseZmqSecurity() {
+        return useZmqSecurity;
+    }
 
-	public void setIssuer(String issuer) {
-		this.issuer = issuer;
-	}
+    public void setUseZmqSecurity(Boolean useZmqSecurity) {
+        this.useZmqSecurity = useZmqSecurity;
+    }
 
-	public int getMonitoringPort() {
-		return monitoringPort;
-	}
+    public String getIssuer() {
+        return issuer.toLowerCase(); //?HA: fixing auth problem with machine name?
+    }
 
-	public void setMonitoringPort(int monitoringPort) {
-		this.monitoringPort = monitoringPort;
-	}
+    public void setIssuer(String issuer) {
+        this.issuer = issuer;
+    }
 
-	public String getSiothId() {
-		return siothId;
-	}
+    public int getMonitoringPort() {
+        return monitoringPort;
+    }
 
-	public void setSiothId(String siothId) {
-		this.siothId = siothId;
-	}
+    public void setMonitoringPort(int monitoringPort) {
+        this.monitoringPort = monitoringPort;
+    }
 
-	public boolean isDev() {
-		return dev;
-	}
+    public String getSiothId() {
+        return siothId;
+    }
 
-	public void setDev(boolean dev) {
-		this.dev = dev;
-	}
+    public void setSiothId(String siothId) {
+        this.siothId = siothId;
+    }
 
-	public boolean isDumpJavaProcessExecution() {
-		return dumpJavaProcessExecution;
-	}
+    public boolean isDev() {
+        return dev;
+    }
 
-	public void setDumpJavaProcessExecution(boolean dumpJavaProcessExecution) {
-		this.dumpJavaProcessExecution = dumpJavaProcessExecution;
-	}
+    public void setDev(boolean dev) {
+        this.dev = dev;
+    }
 
-	public String getMonitorUrl() {
-		return monitorUrl;
-	}
+    public boolean isDumpJavaProcessExecution() {
+        return dumpJavaProcessExecution;
+    }
 
-	public void setMonitorUrl(String monitorUrl) {
-		this.monitorUrl = monitorUrl;
-	}
+    public void setDumpJavaProcessExecution(boolean dumpJavaProcessExecution) {
+        this.dumpJavaProcessExecution = dumpJavaProcessExecution;
+    }
 
-	public String getProcessesDumpPath() {
-		return processesDumpPath;
-	}
+    public String getMonitorUrl() {
+        return monitorUrl;
+    }
 
-	public void setProcessesDumpPath(String processesDumpPath) {
-		this.processesDumpPath = processesDumpPath;
-	}
+    public void setMonitorUrl(String monitorUrl) {
+        this.monitorUrl = monitorUrl;
+    }
 
-	public String getBuilderUrl() {
-		return builderUrl;
-	}
+    public String getProcessesDumpPath() {
+        return processesDumpPath;
+    }
 
-	public void setBuilderUrl(String builderUrl) {
-		this.builderUrl = builderUrl;
-	}
+    public void setProcessesDumpPath(String processesDumpPath) {
+        this.processesDumpPath = processesDumpPath;
+    }
 
-	public String getRunnerUrl() {
-		return runnerUrl;
-	}
+    public String getBuilderUrl() {
+        return builderUrl;
+    }
 
-	public void setRunnerUrl(String runnerUrl) {
-		this.runnerUrl = runnerUrl;
-	}
+    public void setBuilderUrl(String builderUrl) {
+        this.builderUrl = builderUrl;
+    }
 
-	public String getJeRunnerLogPath() {
-		return jeRunnerLogPath;
-	}
+    public String getRunnerUrl() {
+        return runnerUrl;
+    }
 
-	public void setJeRunnerLogPath(String jeRunnerLogPath) {
-		this.jeRunnerLogPath = jeRunnerLogPath;
-	}
+    public void setRunnerUrl(String runnerUrl) {
+        this.runnerUrl = runnerUrl;
+    }
 
-	public String getJeRunnerLogLevel() {
-		return jeRunnerLogLevel;
-	}
+    public String getJeRunnerLogPath() {
+        return jeRunnerLogPath;
+    }
 
-	public void setJeRunnerLogLevel(String jeRunnerLogLevel) {
-		this.jeRunnerLogLevel = jeRunnerLogLevel;
-	}
+    public void setJeRunnerLogPath(String jeRunnerLogPath) {
+        this.jeRunnerLogPath = jeRunnerLogPath;
+    }
 
-	public String getJeMonitorLogPath() {
-		return jeMonitorLogPath;
-	}
+    public String getJeRunnerLogLevel() {
+        return jeRunnerLogLevel;
+    }
 
-	public void setJeMonitorLogPath(String jeMonitorLogPath) {
-		this.jeMonitorLogPath = jeMonitorLogPath;
-	}
+    public void setJeRunnerLogLevel(String jeRunnerLogLevel) {
+        this.jeRunnerLogLevel = jeRunnerLogLevel;
+    }
 
-	public String getJeMonitorLogLevel() {
-		return jeMonitorLogLevel;
-	}
+    public String getJeMonitorLogPath() {
+        return jeMonitorLogPath;
+    }
 
-	public void setJeMonitorLogLevel(String jeMonitorLogLevel) {
-		this.jeMonitorLogLevel = jeMonitorLogLevel;
-	}
+    public void setJeMonitorLogPath(String jeMonitorLogPath) {
+        this.jeMonitorLogPath = jeMonitorLogPath;
+    }
 
-	public int getZmqHeartbeatValue() {
-		return zmqHeartbeatValue;
-	}
+    public String getJeMonitorLogLevel() {
+        return jeMonitorLogLevel;
+    }
 
-	public void setZmqHeartbeatValue(int zmqHeartbeatValue) {
-		this.zmqHeartbeatValue = zmqHeartbeatValue;
-	}
+    public void setJeMonitorLogLevel(String jeMonitorLogLevel) {
+        this.jeMonitorLogLevel = jeMonitorLogLevel;
+    }
 
-	public int getZmqHeartbeatInterval() {
-		return zmqHeartbeatInterval;
-	}
+    public int getZmqHeartbeatValue() {
+        return zmqHeartbeatValue;
+    }
 
-	public void setZmqHeartbeatInterval(int zmqHeartbeatInterval) {
-		this.zmqHeartbeatInterval = zmqHeartbeatInterval;
-	}
+    public void setZmqHeartbeatValue(int zmqHeartbeatValue) {
+        this.zmqHeartbeatValue = zmqHeartbeatValue;
+    }
 
-	public int getZmqReceiveInterval() {
-		return zmqReceiveInterval;
-	}
+    public int getZmqHeartbeatInterval() {
+        return zmqHeartbeatInterval;
+    }
 
-	public void setZmqReceiveInterval(int zmqReceiveInterval) {
-		this.zmqReceiveInterval = zmqReceiveInterval;
-	}
+    public void setZmqHeartbeatInterval(int zmqHeartbeatInterval) {
+        this.zmqHeartbeatInterval = zmqHeartbeatInterval;
+    }
 
-	public int getZmqReceiveHighWatermark() {
-		return zmqReceiveHighWatermark;
-	}
+    public int getZmqReceiveInterval() {
+        return zmqReceiveInterval;
+    }
 
-	public void setZmqReceiveHighWatermark(int zmqReceiveHighWatermark) {
-		this.zmqReceiveHighWatermark = zmqReceiveHighWatermark;
-	}
+    public void setZmqReceiveInterval(int zmqReceiveInterval) {
+        this.zmqReceiveInterval = zmqReceiveInterval;
+    }
 
-	public int getZmqSendHighWatermark() {
-		return zmqSendHighWatermark;
-	}
+    public int getZmqReceiveHighWatermark() {
+        return zmqReceiveHighWatermark;
+    }
 
-	public void setZmqSendHighWatermark(int zmqSendHighWatermark) {
-		this.zmqSendHighWatermark = zmqSendHighWatermark;
-	}
+    public void setZmqReceiveHighWatermark(int zmqReceiveHighWatermark) {
+        this.zmqReceiveHighWatermark = zmqReceiveHighWatermark;
+    }
 
-	public int getJeRunnerZMQResponsePort() {
-		return jeRunnerZMQResponsePort;
-	}
+    public int getZmqSendHighWatermark() {
+        return zmqSendHighWatermark;
+    }
 
-	public void setJeRunnerZMQResponsePort(int jeRunnerZMQResponsePort) {
-		this.jeRunnerZMQResponsePort = jeRunnerZMQResponsePort;
-	}
-	
-	
-	
+    public void setZmqSendHighWatermark(int zmqSendHighWatermark) {
+        this.zmqSendHighWatermark = zmqSendHighWatermark;
+    }
+
+    public int getJeRunnerZMQResponsePort() {
+        return jeRunnerZMQResponsePort;
+    }
+
+    public void setJeRunnerZMQResponsePort(int jeRunnerZMQResponsePort) {
+        this.jeRunnerZMQResponsePort = jeRunnerZMQResponsePort;
+    }
+
+
 }

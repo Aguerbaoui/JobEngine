@@ -7,14 +7,18 @@ import io.je.rulebuilder.components.blocks.getter.InstanceGetterBlock;
 import io.je.rulebuilder.config.AttributesMapping;
 import io.je.rulebuilder.config.Keywords;
 import io.je.rulebuilder.models.BlockModel;
+import io.je.rulebuilder.models.Operator;
+import io.je.utilities.exceptions.AddRuleBlockException;
 import io.je.utilities.exceptions.RuleBuildFailedException;
 import io.je.utilities.log.JELogger;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
 
 import java.util.List;
+import java.util.Optional;
 
-/*
+
+/**
  * Comparison Block is a class that represents the comparison elements in a rule.
  */
 public class ComparisonBlock extends PersistableBlock {
@@ -43,7 +47,7 @@ public class ComparisonBlock extends PersistableBlock {
      */
     boolean includeBounds = false;
     boolean formatToString = false;
-
+    boolean isOperatorString = false;
 
     protected ComparisonBlock(String jobEngineElementID, String jobEngineProjectID, String ruleId, String blockName,
                               String blockDescription, int timePersistenceValue, String timePersistenceUnit, List<BlockLinkModel> inputBlockIds, List<BlockLinkModel> outputBlocksIds) {
@@ -83,6 +87,7 @@ public class ComparisonBlock extends PersistableBlock {
             }
 
             operator = getOperatorByOperationId(blockModel.getOperationId());
+            //block is "not our of range" and "in range"
             formatToString = (blockModel.getOperationId() >= 2007 && blockModel.getOperationId() <= 2015) && inputBlockIds.size() == 1;
             isProperlyConfigured = true;
             if (threshold == null && inputBlockIds.size() < 2) {
@@ -97,6 +102,11 @@ public class ComparisonBlock extends PersistableBlock {
     }
 
     protected String getOperationExpression() {
+        if (isOperatorString) {
+            String firstOperand = "(String) " + getInputReferenceByOrder(0);
+
+            return firstOperand + getOperator() + " (String) " + formatOperator(threshold);
+        }
         String firstOperand = "(double) " + getInputReferenceByOrder(0);
         return firstOperand + getOperator() + asDouble(formatOperator(threshold));
 
@@ -228,41 +238,16 @@ public class ComparisonBlock extends PersistableBlock {
     }
 
 
-    public String getOperatorByOperationId(int operationId) {
-        switch (operationId) {
-            case 2001:
-                return "==";
-            case 2002:
-                return "!=";
-            case 2003:
-                return ">";
-            case 2004:
-                return ">=";
-            case 2005:
-                return "<";
-            case 2006:
-                return "<=";
-            case 2007:
-                return " contains ";
-            case 2008:
-                return " not contains ";
-            case 2009:
-                return " matches ";
-            case 2010:
-                return " not matches ";
-            case 2011:
-                return " soundslike ";
-            case 2012:
-                return " str[startsWith] ";
-            case 2013:
-                return " str[endsWith] ";
-            case 2014:
-                return ">";
-            case 2015:
-                return "<";
-            default:
-                return null;
-        }
+    public String getOperatorByOperationId(int operationId) throws AddRuleBlockException {
+        Optional<Operator> operation = Operator.getOperatorByCode(operationId);
+        isOperatorString = Operator.isStringOperator(operationId);
+        if (operation
+                .isPresent()) {
+            return operation
+                    .get()
+                    .getFullName();
+        } else throw new AddRuleBlockException("Operation ID not found " + operationId);
+
 
     }
 

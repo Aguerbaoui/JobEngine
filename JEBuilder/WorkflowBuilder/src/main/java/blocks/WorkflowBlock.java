@@ -106,6 +106,7 @@ public class WorkflowBlock extends JEObject {
      * */
     public List<SequenceFlow> generateBpmnOutflows(JEWorkflow wf) {
         List<SequenceFlow> l = new ArrayList<SequenceFlow>();
+
         for (String id : outFlows.values()) {
             WorkflowBlock block = wf.getBlockById(id);
             l.add(ModelBuilder.createSequenceFlow(this.getJobEngineElementID(), block.getJobEngineElementID(), ""));

@@ -232,18 +232,16 @@ public abstract class Block extends JEObject {
         var input = inputBlocks.stream()
                 .filter(x -> x.getOrder() == order)
                 .findFirst();
-        if (input.isPresent()) return input.get()
-                .getBlock();
-        else return null;
+        return input.map(BlockLink::getBlock)
+                .orElse(null);
     }
 
     public String getInputReferenceByOrder(int order) {
         var input = inputBlocks.stream()
                 .filter(x -> x.getOrder() == order)
                 .findFirst();
-        if (input.isPresent()) return input.get()
-                .getReference();
-        else return null;
+        return input.map(BlockLink::getReference)
+                .orElse(null);
     }
 
 
