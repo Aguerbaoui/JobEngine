@@ -407,8 +407,9 @@ public class ProcessManager {
                     LogCategory.RUNTIME, processes.get(workflowId).getProjectId(),
                     LogSubModule.WORKFLOW, workflowId);*/
         } catch (Exception e) {
-            /*JELogger.error(JEMessages.ERROR_DELETING_A_PROCESS + "\n" + Arrays.toString(e.getStackTrace()),
-                    LogCategory.RUNTIME, processes.get(workflowId).getProjectId(),
+         /*   JELogger.error(JEMessages.ERROR_DELETING_A_PROCESS + "\n" + Arrays.toString(e.getStackTrace()),
+                    LogCategory.RUNTIME, processes.get(workflowId)
+                            .getProjectId(),
                     LogSubModule.WORKFLOW, workflowId);*/
         }
 

@@ -12,6 +12,10 @@
         <property name="jdbcPassword" value=""/>
         <property name="databaseSchemaUpdate" value="true"/>
         <property name="asyncExecutorActivate" value="true"/>
+        <!-->
+        <property name="asyncExecutorDefaultAsyncJobAcquireWaitTime" value="1000"/>
+        <property name="asyncExecutorDefaultTimerJobAcquireWaitTime" value="1000"/>
+        <!-->
     </bean>
 
 </beans>
