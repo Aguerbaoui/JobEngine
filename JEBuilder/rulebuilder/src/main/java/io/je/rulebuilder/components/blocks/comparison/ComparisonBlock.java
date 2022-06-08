@@ -8,7 +8,6 @@ import io.je.rulebuilder.config.AttributesMapping;
 import io.je.rulebuilder.config.Keywords;
 import io.je.rulebuilder.models.BlockModel;
 import io.je.rulebuilder.models.Operator;
-import io.je.utilities.exceptions.AddRuleBlockException;
 import io.je.utilities.exceptions.RuleBuildFailedException;
 import io.je.utilities.log.JELogger;
 import utils.log.LogCategory;
@@ -107,7 +106,7 @@ public class ComparisonBlock extends PersistableBlock {
 
             return firstOperand + getOperator() + " (String) " + formatOperator(threshold);
         }
-        String firstOperand = "(double) " + getInputReferenceByOrder(0);
+        String firstOperand = /*"(double) " +*/ getInputReferenceByOrder(0);
         return firstOperand + getOperator() + asDouble(formatOperator(threshold));
 
     }
@@ -238,7 +237,7 @@ public class ComparisonBlock extends PersistableBlock {
     }
 
 
-    public String getOperatorByOperationId(int operationId) throws AddRuleBlockException {
+    public String getOperatorByOperationId(int operationId) {
         Optional<Operator> operation = Operator.getOperatorByCode(operationId);
         isOperatorString = Operator.isStringOperator(operationId);
         if (operation
@@ -246,7 +245,7 @@ public class ComparisonBlock extends PersistableBlock {
             return operation
                     .get()
                     .getFullName();
-        } else throw new AddRuleBlockException("Operation ID not found " + operationId);
+        } else return "";
 
 
     }
