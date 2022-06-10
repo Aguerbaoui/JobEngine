@@ -77,13 +77,15 @@ public class BlockManager {
 		block.setInputBlocks(new ArrayList<>());
 		block.setOutputBlocks(new ArrayList<>());
 
-		for (String inputId : block.getInputBlockIds()) {
-			block.addInput(blocks.get(inputId));
+		for (var inputId : block.getInputBlockIds()) {
+			block.addInputLink(blocks.get(inputId.getBlockId()),inputId.getConnectionName(),inputId.getOrder());
 		}
 
-		for (String outputId : block.getOutputBlockIds()) {
-			block.addOutput(blocks.get(outputId));
+		for (var outputId : block.getOutputBlockIds()) {
+			block.addOutputLink(blocks.get(outputId.getBlockId()),outputId.getConnectionName(),outputId.getOrder());
 		}
+		
+		
 	}
 
 	public void resetAllBlocks() {

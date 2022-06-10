@@ -42,28 +42,6 @@ public class VariableGetterBlock extends ConditionBlock {
                 + ", jobEngineProjectID=" + jobEngineProjectID + ", jeObjectLastUpdate=" + jeObjectLastUpdate + "]";
     }
 
-    @Override
-    public String getAsOperandExpression() {
-        return blockName.replaceAll("\\s+", "") + " : JEVariable ( jobEngineElementID == \"" + variableId + "\"," + getAttributeVariableName() + " : value,  " + Keywords.toBeReplaced + " )";
-    }
-
-    @Override
-    public String getJoinExpression() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public String getJoinedExpression(String joindId) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public String getJoinedExpressionAsFirstOperand(String joindId) {
-        // TODO Auto-generated method stub
-        return null;
-    }
 
     @Override
     public String getExpression() {
@@ -72,13 +50,21 @@ public class VariableGetterBlock extends ConditionBlock {
 
 
     @Override
-    public String getJoinExpressionAsFirstOperand() {
-        // TODO Auto-generated method stub
-        return null;
+    public String getReference(String optional) {
+        return getBlockNameAsVariable() + ".getValue()";
+    }
+
+    public String asDouble(String val) {
+        return "JEMathUtils.castToDouble(" + val + " )"; //" Double.valueOf( "+val+" )";
     }
 
     public String getAttributeVariableName() {
         return blockName.replaceAll("\\s+", "") + "Value";
+    }
+
+    @Override
+    public String getAsOperandExpression() {
+        return blockName.replaceAll("\\s+", "") + " : JEVariable ( jobEngineElementID == \"" + variableId + "\"," + getAttributeVariableName() + " : value,  " + Keywords.toBeReplaced + " )";
     }
 
 }

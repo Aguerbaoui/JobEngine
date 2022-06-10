@@ -1,6 +1,8 @@
 package io.je.rulebuilder.components.blocks;
 
-import io.je.rulebuilder.components.blocks.getter.AttributeGetterBlock;
+import io.je.rulebuilder.components.BlockLink;
+import io.je.rulebuilder.components.BlockLinkModel;
+import io.je.rulebuilder.components.blocks.getter.InstanceGetterBlock;
 import io.je.rulebuilder.components.blocks.getter.VariableGetterBlock;
 import io.je.utilities.exceptions.RuleBuildFailedException;
 import io.je.utilities.runtimeobject.JEObject;
@@ -9,6 +11,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /*
  * Job Engine block
@@ -23,10 +26,11 @@ public abstract class Block extends JEObject {
     protected boolean isProperlyConfigured = true;
 
     @Transient
-    protected List<Block> inputBlocks = new ArrayList<>();
+    protected List<BlockLink> inputBlocks = new ArrayList<>();
 
     @Transient
-    protected List<Block> outputBlocks = new ArrayList<>();
+    protected List<BlockLink> outputBlocks = new ArrayList<>();
+
 
     protected boolean alreadyScripted = false;
 
@@ -34,14 +38,14 @@ public abstract class Block extends JEObject {
     /*
      * to be persisted in mongo
      */
-    protected List<String> inputBlockIds = new ArrayList<>();
+    protected List<BlockLinkModel> inputBlockIds = new ArrayList<>();
 
 
-    protected List<String> outputBlockIds = new ArrayList<>();
+    protected List<BlockLinkModel> outputBlockIds = new ArrayList<>();
 
 
     public Block(String jobEngineElementID, String jobEngineProjectID, String ruleId, String blockName,
-                 String blockDescription, List<String> inputBlockIds, List<String> outputBlocksIds) {
+                 String blockDescription, List<BlockLinkModel> inputBlockIds, List<BlockLinkModel> outputBlocksIds) {
         super(jobEngineElementID, jobEngineProjectID, blockName);
         this.ruleId = ruleId;
         this.blockName = blockName;
@@ -55,58 +59,34 @@ public abstract class Block extends JEObject {
 
     }
 
+
     public Block() {
 
     }
 
-    public void addInput(Block block) {
-        if (!inputBlocks.contains(block)) {
-            inputBlocks.add(block);
-        }
+    public abstract String getReference(String optional);
+
+
+    public void addInputLink(Block block, String connectionName, int order) {
+
+        inputBlocks.add(new BlockLink(block, order, connectionName));
+
 
     }
 
-    public void addOutput(Block block) {
-        if (!outputBlocks.contains(block)) {
-            outputBlocks.add(block);
-        }
+    public void addOutputLink(Block block, String connectionName, int order) {
+
+        outputBlocks.add(new BlockLink(block, order, connectionName));
+
     }
 
 
     //return drl expression of block
     public abstract String getExpression() throws RuleBuildFailedException;
 
-    //return drl expression of block as a first operand (used to optimise comparison blocks in order to avoid using eval)
     public abstract String getAsOperandExpression() throws RuleBuildFailedException;
 
-    //get drl expression mapped to id (getter blocks) ex: Person($id == "123")
-    public abstract String getJoinExpression() throws RuleBuildFailedException;
 
-    //get id variable name used in drl ex: $id
-    public String getJoinId() {
-        if (inputBlocks.size() >= 2) {
-            return inputBlocks.get(1)
-                    .getJoinId();
-
-        }
-        if (!inputBlocks.isEmpty() && inputBlocks.get(0) != null) {
-            return inputBlocks.get(0)
-                    .getJoinId();
-        }
-        return null;
-    }
-
-    //get a joined expression. example : Person(jobEngineElementID == $id )
-    public abstract String getJoinedExpression(String joinId) throws RuleBuildFailedException;
-
-    public abstract String getJoinedExpressionAsFirstOperand(String joinId) throws RuleBuildFailedException;
-
-    public abstract String getJoinExpressionAsFirstOperand() throws RuleBuildFailedException;
-
-
-    /*
-     * returns "blockName"
-     */
     public String getBlockNameAsVariable() {
         return blockName.replaceAll("\\s+", "");
     }
@@ -115,36 +95,18 @@ public abstract class Block extends JEObject {
     /*
      * get name of variable holding he value expressed by input number index: ex: $age, $block1 ...
      */
-    public String getRefName() {
+    public String getRefName(String optional) {
         String var = "";
-        if (this instanceof AttributeGetterBlock) {//get attribute var name
-            var = ((AttributeGetterBlock) this).getAttributeVariableName();
-        } else if (this instanceof VariableGetterBlock) {//get variable var name
+
+        if (this instanceof InstanceGetterBlock) {//get attribute var name
+            var = ((InstanceGetterBlock) this).getAttributeVariableName(optional);
+        } else if (this instanceof VariableGetterBlock) {
             var = ((VariableGetterBlock) this).getAttributeVariableName();
         } else {//get block name as variable
             var = this.getBlockNameAsVariable();
         }
         return var;
     }
-
-
-    //get name of input of index i
-    //example : block A has 2 inputs Block B and Block C
-    //blockA.getInputRefName(1) returns "$blockC";
-    public String getInputRefName(int index) {
-        String var = "";
-        if (inputBlocks.get(index) instanceof AttributeGetterBlock) {//get attribute var name
-            var = ((AttributeGetterBlock) inputBlocks.get(index)).getAttributeVariableName();
-        } else if (inputBlocks.get(index) instanceof VariableGetterBlock) {
-            var = ((VariableGetterBlock) inputBlocks.get(index)).getAttributeVariableName();
-        } else {//get block name as variable
-            var = inputBlocks.get(index)
-                    .getBlockNameAsVariable();
-        }
-        return var;
-    }
-
-    //getters and setters
 
 
     public String getRuleId() {
@@ -167,23 +129,23 @@ public abstract class Block extends JEObject {
     }
 
 
-    public List<Block> getOutputBlocks() {
-        return outputBlocks;
-    }
-
-
-    public void setOutputBlocks(List<Block> outputBlocks) {
-        this.outputBlocks = outputBlocks;
-    }
-
-
-    public List<Block> getInputBlocks() {
+    public List<BlockLink> getInputBlocks() {
         return inputBlocks;
     }
 
 
-    public void setInputBlocks(List<Block> inputBlocks) {
+    public void setInputBlocks(List<BlockLink> inputBlocks) {
         this.inputBlocks = inputBlocks;
+    }
+
+
+    public List<BlockLink> getOutputBlocks() {
+        return outputBlocks;
+    }
+
+
+    public void setOutputBlocks(List<BlockLink> outputBlocks) {
+        this.outputBlocks = outputBlocks;
     }
 
 
@@ -196,30 +158,30 @@ public abstract class Block extends JEObject {
         this.blockDescription = blockDescription;
     }
 
-    public List<String> getInputBlockIds() {
+    public List<BlockLinkModel> getInputBlockIds() {
         return inputBlockIds;
     }
 
-    public void setInputBlockIds(List<String> inputBlockIds) {
+    public void setInputBlockIds(List<BlockLinkModel> inputBlockIds) {
         this.inputBlockIds = inputBlockIds;
     }
 
-    public List<String> getOutputBlockIds() {
+    public List<BlockLinkModel> getOutputBlockIds() {
         return outputBlockIds;
     }
 
-    public void setOutputBlockIds(List<String> outputBlockIds) {
+    public void setOutputBlockIds(List<BlockLinkModel> outputBlockIds) {
         this.outputBlockIds = outputBlockIds;
     }
 
     //ignore block
     public void ignoreBlock() {
-        for (Block inputBlock : inputBlocks) {
-            inputBlock.outputBlocks.addAll(outputBlocks);
+        for (var inputBlock : inputBlocks) {
+            inputBlock.getBlock().outputBlocks.addAll(outputBlocks);
         }
 
-        for (Block outputBlock : outputBlocks) {
-            outputBlock.inputBlocks.addAll(inputBlocks);
+        for (var outputBlock : outputBlocks) {
+            outputBlock.getBlock().inputBlocks.addAll(inputBlocks);
         }
     }
 
@@ -232,24 +194,6 @@ public abstract class Block extends JEObject {
         this.isProperlyConfigured = isProperlyConfigured;
     }
 
-    public Block getInputById(String id) {
-        for (Block inputBlock : inputBlocks) {
-            if (inputBlock.jobEngineElementID.equals(id)) {
-                return inputBlock;
-            }
-        }
-        return null;
-    }
-
-    public void addSpecificInstance(String instanceId) {
-
-    }
-
-
-    public void removeSpecificInstance() {
-        // TODO Auto-generated method stub
-
-    }
 
     public boolean isAlreadyScripted() {
         return alreadyScripted;
@@ -265,13 +209,16 @@ public abstract class Block extends JEObject {
             String persistence = pBlock.getPersistanceExpression();
             if (persistence != null) {
                 return persistence;
-            } else if (pBlock.inputBlocks.isEmpty()) {
+            } else if (pBlock.getInputBlocks()
+                    .isEmpty()) {
                 return null;
 
             } else {
-                for (Block b : inputBlocks) {
-                    if (b.getPersistence() != null) {
-                        return b.getPersistence();
+                for (var b : inputBlocks) {
+                    if (b.getBlock()
+                            .getPersistence() != null) {
+                        return b.getBlock()
+                                .getPersistence();
                     }
                 }
             }
@@ -281,11 +228,49 @@ public abstract class Block extends JEObject {
     }
 
 
-    public String getInitialJoinBlock() {
-        if (!inputBlocks.isEmpty()) {
-            return inputBlocks.get(0)
-                    .getInitialJoinBlock();
-        } else
-            return this.getBlockNameAsVariable();
+    public Block getInputBlockByOrder(int order) {
+        var input = inputBlocks.stream()
+                .filter(x -> x.getOrder() == order)
+                .findFirst();
+        return input.map(BlockLink::getBlock)
+                .orElse(null);
     }
+
+    public String getInputReferenceByOrder(int order) {
+        var input = inputBlocks.stream()
+                .filter(x -> x.getOrder() == order)
+                .findFirst();
+        return input.map(BlockLink::getReference)
+                .orElse(null);
+    }
+
+
+    public List<Block> getInputsByOrder(int order) {
+        return inputBlocks.stream()
+                .filter(x -> x.getOrder() == order)
+                .map(BlockLink::getBlock)
+                .collect(Collectors.toList());
+    }
+
+
+    public boolean hasPrecedent(Block block) {
+        if (inputBlocks.isEmpty()) {
+            return false;
+        } else {
+            if (inputBlocks.stream()
+                    .anyMatch(x -> x.getBlock()
+                            .equals(block))) {
+                return true;
+            }
+            for (var b : inputBlocks) {
+                if (b.getBlock()
+                        .hasPrecedent(block)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
 }

@@ -17,8 +17,7 @@ public class LinkedSetterBlock extends ExecutionBlock {
 	
 
 	boolean isGeneric;
-	@Transient
-	String primeJoinId;
+
 	/*******************************Instance definition*******************************/
 	String classId;
 	String classPath;
@@ -72,8 +71,7 @@ public class LinkedSetterBlock extends ExecutionBlock {
 	@Override
 	public String getExpression() {		
 		StringBuilder expression = new StringBuilder();
-		if(primeJoinId==null)
-		{
+	
 			for(String instance : instances)
 			{
 				expression.append(  "Executioner.updateInstanceAttributeValueFromStaticValue( "
@@ -82,26 +80,14 @@ public class LinkedSetterBlock extends ExecutionBlock {
 						  +"\"" + this.blockName  +"\","				  					  
 						  +"\"" + instance  +"\","
 						  +"\"" + this.destinationAttributeName  +"\","
-						  + getInputRefName(0) +","
+						  + inputBlocks.get(0).getReference() +","
 						  + this.ignoreWriteIfSameValue 
 
 						  
 						  +");\r\n");
 				expression.append("\n");
 			}
-		}else
-		{
-			expression.append(  "Executioner.updateInstanceAttributeValueFromStaticValue( "
-					 +"\"" + this.jobEngineProjectID  +"\","
-					  +"\"" + this.ruleId  +"\","
-					  +"\"" + this.blockName  +"\","				  					  
-					  + primeJoinId  +","
-					  +"\"" + this.destinationAttributeName  +"\","
-					  + getInputRefName(0)+","
-					  + this.ignoreWriteIfSameValue 
-					  +");\r\n");
-			expression.append("\n");
-		}
+		
 		
 	   return expression.toString();
 
@@ -122,16 +108,9 @@ public class LinkedSetterBlock extends ExecutionBlock {
 	public void setClassId(String classId) {
 		this.classId = classId;
 	}
-	@Override
-	public  void addSpecificInstance(String instanceId) {
+	
 
-			this.primeJoinId=instanceId;
-		
-	}
-	@Override
-	public  void removeSpecificInstance() {
-		this.primeJoinId=null;
-	}
+
 
 
 }

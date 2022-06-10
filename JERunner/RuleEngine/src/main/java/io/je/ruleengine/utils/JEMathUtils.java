@@ -12,6 +12,8 @@ public class JEMathUtils {
     public static double castToDouble(Object x) {
         if (x instanceof Float) {
             return ((Float) x).doubleValue();
+        } else if (x instanceof Integer) {
+            return ((Integer) x).doubleValue();
         }
         return (double) x;
     }
@@ -50,5 +52,8 @@ public class JEMathUtils {
         return true;
     }
 
-
+    public static void main(String[] args) {
+        System.out.println("a");
+    }
 }
+

@@ -30,40 +30,5 @@ public class AndBlock extends LogicBlock {
         return expression.toString();
     }
 
-    @Override
-    public String getJoinExpression() throws RuleBuildFailedException {
-        StringBuilder expression = new StringBuilder();
-        String joinId = inputBlocks.get(0)
-                .getJoinId();
-
-        expression.append(inputBlocks.get(0)
-                .getJoinExpression());
-        expression.append("\n");
-
-        for (int i = 1; i < inputBlocks.size(); i++) {
-            expression.append(inputBlocks.get(i)
-                    .getJoinedExpression(joinId));
-            expression.append("\n");
-
-        }
-        return expression.toString();
-
-    }
-
-    @Override
-    public String getJoinedExpression(String joinId) throws RuleBuildFailedException {
-        StringBuilder expression = new StringBuilder();
-        expression.append("\n");
-        expression.append(inputBlocks.get(0)
-                .getJoinedExpressionAsFirstOperand(joinId));
-        expression.append("\n");
-        for (int i = 1; i < inputBlocks.size(); i++) {
-            expression.append(inputBlocks.get(i)
-                    .getJoinedExpression(joinId));
-            expression.append("\n");
-        }
-        return expression.toString();
-    }
-
 
 }

@@ -1,6 +1,6 @@
 package io.je.rulebuilder.components.blocks.comparison;
 
-import io.je.rulebuilder.components.blocks.getter.AttributeGetterBlock;
+import io.je.rulebuilder.components.blocks.getter.InstanceGetterBlock;
 import io.je.rulebuilder.models.BlockModel;
 import io.je.utilities.exceptions.RuleBuildFailedException;
 
@@ -29,14 +29,14 @@ public class InRangeBlock extends ComparisonBlock {
 	@Override
 	protected void setParameters() {
 		if (minRange == null && maxRange == null) {
-			minRange = getInputRefName(1);
-			maxRange = getInputRefName(2);
+			minRange = getInputReferenceByOrder(2);
+			maxRange = getInputReferenceByOrder(1);
 			return;
-		} else if (maxRange == null && minRange != null) {
-			maxRange = getInputRefName(1);
+		} else if (maxRange == null ) {
+			maxRange = getInputReferenceByOrder(1);
 			return;
-		} else if (minRange == null && maxRange!=null) {
-			minRange = getInputRefName(1);
+		} else if (minRange == null ) {
+			minRange = getInputReferenceByOrder(2);
 		} 
 
 	}
@@ -53,13 +53,12 @@ public class InRangeBlock extends ComparisonBlock {
 	
 	@Override
 	protected String getOperationExpression() {
-		String firstOperand = (inputBlocks.get(0) instanceof AttributeGetterBlock) ? inputBlocks.get(0).getRefName()
-				: "doubleValue ";
+		String firstOperand =   getInputReferenceByOrder(0);
 
 		if (includeBounds) {
-			return firstOperand + ">=" + minRange + "," + firstOperand + "<=" + maxRange;
+			return firstOperand + ">=" + minRange + " && " + firstOperand + "<=" + maxRange;
 		}
-			return firstOperand + ">" + minRange + "," + firstOperand + "<" + maxRange;
+			return firstOperand + ">" + minRange + " && " + firstOperand + "<" + maxRange;
 		
 
 	}

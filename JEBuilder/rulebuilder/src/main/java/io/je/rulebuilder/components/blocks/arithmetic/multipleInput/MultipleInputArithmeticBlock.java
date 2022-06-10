@@ -1,11 +1,17 @@
 package io.je.rulebuilder.components.blocks.arithmetic.multipleInput;
 
+import java.util.ArrayList;
+
+import org.springframework.data.annotation.Transient;
+
 import io.je.rulebuilder.components.blocks.ArithmeticBlock;
+import io.je.rulebuilder.components.blocks.getter.InstanceGetterBlock;
 import io.je.rulebuilder.config.Keywords;
 import io.je.rulebuilder.models.BlockModel;
 import io.je.utilities.exceptions.RuleBuildFailedException;
 
 public abstract class MultipleInputArithmeticBlock extends ArithmeticBlock {
+
 
 	public MultipleInputArithmeticBlock(BlockModel blockModel) {
 		super(blockModel);
@@ -18,10 +24,22 @@ public abstract class MultipleInputArithmeticBlock extends ArithmeticBlock {
 	}
 	
 	@Override
+	public String getReference(String optional) {
+		return getBlockNameAsVariable();
+	}
+	
+	
+	@Override
 	public String getExpression() throws RuleBuildFailedException {
-		StringBuilder expression = generateAllPreviousBlocksExpressions();
-		expression.append(generateBlockExpression(false));
-		return expression.toString();
+		if(!alreadyScripted)
+		{
+			StringBuilder expression = generateAllPreviousBlocksExpressions();
+			expression.append(generateBlockExpression(false));
+			alreadyScripted=true;
+			return expression.toString();
+			
+		}
+		return "";
 	}
 
 	@Override
@@ -32,74 +50,13 @@ public abstract class MultipleInputArithmeticBlock extends ArithmeticBlock {
 		return expression.toString();
 	}
 
-	@Override
-	public String getJoinExpression() throws RuleBuildFailedException {
-		StringBuilder expression = new StringBuilder();
-		expression.append("\n");
-		expression.append(inputBlocks.get(0).getJoinExpression());
-		String joinId = inputBlocks.get(0).getJoinId();
-		expression.append("\n");
-		for (int i=1;i<inputBlocks.size();i++)
-		{
-			expression.append(inputBlocks.get(i).getJoinedExpression(joinId));
-			expression.append("\n");
-
-		}
-		expression.append(generateBlockExpression(false));
-
-		return expression.toString();
-	}
-
-	@Override
-	public String getJoinedExpression(String joinId) throws RuleBuildFailedException {
-		StringBuilder expression = new StringBuilder();
-		expression.append("\n");
-		for (int i=0;i<inputBlocks.size();i++)
-		{
-			expression.append(inputBlocks.get(i).getJoinedExpression(joinId));
-			expression.append("\n");
-
-		}
-		expression.append(generateBlockExpression(false));
-		return expression.toString();
-	}
-
-	@Override
-	public String getJoinedExpressionAsFirstOperand(String joinId) throws RuleBuildFailedException {
-		StringBuilder expression = new StringBuilder();
-		expression.append("\n");
-		for (int i=0;i<inputBlocks.size();i++)
-		{
-			expression.append(inputBlocks.get(i).getJoinedExpression(joinId));
-			expression.append("\n");
-
-		}
-		expression.append(generateBlockExpression(true));
-		return expression.toString();
-	}
-
-	@Override
-	public String getJoinExpressionAsFirstOperand() throws RuleBuildFailedException {
-		StringBuilder expression = new StringBuilder();
-		expression.append("\n");
-		expression.append(inputBlocks.get(0).getJoinExpression());
-		String joinId = inputBlocks.get(0).getJoinId();
-		expression.append("\n");
-		for (int i=1;i<inputBlocks.size();i++)
-		{
-			expression.append(inputBlocks.get(i).getJoinedExpression(joinId));
-			expression.append("\n");
-
-		}
-		expression.append(generateBlockExpression(true));
-		return expression.toString();
-	}
+	
 
 	private StringBuilder generateAllPreviousBlocksExpressions() throws RuleBuildFailedException {
 		StringBuilder expression = new StringBuilder();
 		expression.append("\n");
 		for (int i = 0; i < inputBlocks.size(); i++) {
-			expression.append(inputBlocks.get(i).getExpression());
+			expression.append(inputBlocks.get(i).getBlock().getExpression());
 			expression.append("\n");
 
 		}
@@ -111,23 +68,26 @@ public abstract class MultipleInputArithmeticBlock extends ArithmeticBlock {
 		String comparableExpression = " : Number() from ";
 		if(comparable)
 		{
-			comparableExpression = " : Number(doubleValue " + Keywords.toBeReplaced + ") from ";
+			comparableExpression = " : Number("+ Keywords.toBeReplaced + ") from ";
 		}
 		StringBuilder expression = new StringBuilder();
 		
 		expression.append(getBlockNameAsVariable() + comparableExpression);
-		expression.append(getArithmeticFormula(0,"number") + asDouble(getInputRefName(0)));
+		expression.append(getArithmeticFormula(0,"number") + asDouble(inputBlocks.get(0).getReference()));
 		for (int i = 1; i < inputBlocks.size(); i++) {
-			expression.append(" , " + asDouble(getInputRefName(i)));
+			expression.append(" , " + asDouble(inputBlocks.get(i).getReference()));
 		}
 		expression.append(")");
 		if(stopExecutionIfInvalidInput)
 		{
-			expression.append("\n"+evaluateExecution(asDouble(getInputRefName(1))));
+			expression.append("\n"+evaluateExecution(asDouble(inputBlocks.get(0).getReference())));
 		}
 		return expression.toString();
 		
 		
 	}
+	
+	
+	
 
 }

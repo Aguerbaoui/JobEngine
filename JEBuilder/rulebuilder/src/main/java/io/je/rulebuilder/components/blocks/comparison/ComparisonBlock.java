@@ -1,21 +1,23 @@
 package io.je.rulebuilder.components.blocks.comparison;
 
 
+import io.je.rulebuilder.components.BlockLinkModel;
 import io.je.rulebuilder.components.blocks.PersistableBlock;
-import io.je.rulebuilder.components.blocks.arithmetic.singleinput.SingleInputArithmeticBlock;
-import io.je.rulebuilder.components.blocks.getter.AttributeGetterBlock;
-import io.je.rulebuilder.components.blocks.getter.VariableGetterBlock;
+import io.je.rulebuilder.components.blocks.getter.InstanceGetterBlock;
 import io.je.rulebuilder.config.AttributesMapping;
 import io.je.rulebuilder.config.Keywords;
 import io.je.rulebuilder.models.BlockModel;
+import io.je.rulebuilder.models.Operator;
 import io.je.utilities.exceptions.RuleBuildFailedException;
 import io.je.utilities.log.JELogger;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
 
 import java.util.List;
+import java.util.Optional;
 
-/*
+
+/**
  * Comparison Block is a class that represents the comparison elements in a rule.
  */
 public class ComparisonBlock extends PersistableBlock {
@@ -24,6 +26,8 @@ public class ComparisonBlock extends PersistableBlock {
      * comparison operator
      */
     protected String operator;
+
+
 
     /*
      * static operation threshold.
@@ -42,10 +46,10 @@ public class ComparisonBlock extends PersistableBlock {
      */
     boolean includeBounds = false;
     boolean formatToString = false;
-
+    boolean isOperatorString = false;
 
     protected ComparisonBlock(String jobEngineElementID, String jobEngineProjectID, String ruleId, String blockName,
-                              String blockDescription, int timePersistenceValue, String timePersistenceUnit, List<String> inputBlockIds, List<String> outputBlocksIds) {
+                              String blockDescription, int timePersistenceValue, String timePersistenceUnit, List<BlockLinkModel> inputBlockIds, List<BlockLinkModel> outputBlocksIds) {
         super(jobEngineElementID, jobEngineProjectID, ruleId, blockName, blockDescription, timePersistenceValue,
                 timePersistenceUnit, inputBlockIds, outputBlocksIds);
     }
@@ -82,6 +86,7 @@ public class ComparisonBlock extends PersistableBlock {
             }
 
             operator = getOperatorByOperationId(blockModel.getOperationId());
+            //block is "not our of range" and "in range"
             formatToString = (blockModel.getOperationId() >= 2007 && blockModel.getOperationId() <= 2015) && inputBlockIds.size() == 1;
             isProperlyConfigured = true;
             if (threshold == null && inputBlockIds.size() < 2) {
@@ -96,25 +101,20 @@ public class ComparisonBlock extends PersistableBlock {
     }
 
     protected String getOperationExpression() {
-        String firstOperand = "";
-        if (inputBlocks.get(0) instanceof AttributeGetterBlock || inputBlocks.get(0) instanceof VariableGetterBlock) {
-            firstOperand = inputBlocks.get(0)
-                    .getRefName();
-        } else {
-            if (inputBlocks.get(0) instanceof SingleInputArithmeticBlock) {
-                SingleInputArithmeticBlock input = (SingleInputArithmeticBlock) inputBlocks.get(0);
-                if (input.getDefaultType()
-                        .equals("string")) {
-                    firstOperand = "this ";
-                } else {
-                    firstOperand = "doubleValue ";
-                }
+        if (isOperatorString) {
+            String firstOperand = "(String) " + getInputReferenceByOrder(0);
 
-            }
+            return firstOperand + getOperator() + " (String) " + formatOperator(threshold);
         }
-        return firstOperand + getOperator() + formatOperator(threshold);
+        String firstOperand = /*"(double) " +*/ getInputReferenceByOrder(0);
+        return firstOperand + getOperator() + asDouble(formatOperator(threshold));
 
     }
+
+    public String asDouble(String val) {
+        return "JEMathUtils.castToDouble(" + val + " )"; //" Double.valueOf( "+val+" )";
+    }
+
 
     public ComparisonBlock() {
         super();
@@ -123,64 +123,85 @@ public class ComparisonBlock extends PersistableBlock {
 
     protected void setParameters() {
         if (inputBlockIds.size() > 1) {
-            threshold = getInputRefName(1);
+            threshold = getInputReferenceByOrder(1);
         }
 
     }
 
+    @Override
+    public String getReference(String optional) {
+        return getBlockNameAsVariable();
+    }
 
     @Override
     public String getExpression() throws RuleBuildFailedException {
-        StringBuilder expression = new StringBuilder();
+        try {
+            StringBuilder expression = new StringBuilder();
 
-        checkBlockConfiguration();
-        setParameters();
-      /*  Boolean hasOrBlock = outputBlocks.stream()
-                .anyMatch(OrBlock.class::isInstance);*/
-        // single input
-        if (inputBlocks.size() == 1) {
+            checkBlockConfiguration();
+            setParameters();
 
-            String inputExpression = inputBlocks.get(0)
-                    .getAsOperandExpression()
-                    .replaceAll(Keywords.toBeReplaced,
-                            getOperationExpression());
-            expression.append(inputExpression);
+            // single input
+            if (inputBlocks.size() == 1) {
+                String inputExpression = getInputBlockByOrder(0).getAsOperandExpression()
+                        .replaceAll(Keywords.toBeReplaced,
+                                getOperationExpression());
+                expression.append(inputExpression);
 
-            //in range / out of range blocks
-        } else if (inputBlocks.size() == 3) {
-            String firstOperand = inputBlocks.get(1)
-                    .getExpression();
-            expression.append(firstOperand);
-            expression.append("\n");
-            String thirdOperand = inputBlocks.get(2)
-                    .getExpression();
-            expression.append(thirdOperand);
-            expression.append("\n");
-            String secondOperand = inputBlocks.get(0)
-                    .getAsOperandExpression()
-                    .replaceAll(Keywords.toBeReplaced,
-                            getOperationExpression());
-            expression.append(secondOperand);
+                //in range / out of range blocks
+            } else if (inputBlocks.size() == 3 || this instanceof InRangeBlock || this instanceof OutOfRangeBlock) {
+                for (var input : inputBlocks) {
+                    expression.append(input.getBlock()
+                            .getExpression());
+                    expression.append("\n");
 
-            //comparison blocks
-        } else if (inputBlocks.size() == 2) {
-            String firstOperand = inputBlocks.get(1)
-                    .getExpression();
-            expression.append(firstOperand);
-            String secondOperand = "";
-            expression.append("\n");
-            secondOperand = inputBlocks.get(0)
-                    .getAsOperandExpression()
-                    .replaceAll(Keywords.toBeReplaced,
-                            getOperationExpression());
-            expression.append(secondOperand);
+                }
+                expression.append("eval(");
+                expression.append(getOperationExpression());
+                expression.append(")");
+
+                //comparison blocks
+            } else if (inputBlocks.size() == 2) {
+
+                if (getInputBlockByOrder(0).equals(getInputBlockByOrder(1)) && getInputBlockByOrder(0) instanceof InstanceGetterBlock) {
+                    expression.append(getInputBlockByOrder(0).getAsOperandExpression()
+                            .replaceAll(Keywords.toBeReplaced,
+                                    getOperationExpression()));
+                } else {
+                    if (getInputBlockByOrder(0).hasPrecedent(getInputBlockByOrder(1))) {
+                        String firstOperand = getInputBlockByOrder(0).getAsOperandExpression()
+                                .replaceAll(Keywords.toBeReplaced,
+                                        getOperationExpression());
+                        expression.append(firstOperand);
+
+                    } else {
+                        String firstOperand = getInputBlockByOrder(0).getExpression()
+                                .replaceAll(Keywords.toBeReplaced,
+                                        getOperationExpression());
+                        expression.append(firstOperand);
+                        String secondOperand = "";
+                        expression.append("\n");
+                        secondOperand = getInputBlockByOrder(1).getAsOperandExpression()
+                                .replaceAll(Keywords.toBeReplaced,
+                                        getOperationExpression());
+                        expression.append(secondOperand);
+                    }
+
+
+                }
+
+
+            }
+            return expression.toString();
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuleBuildFailedException(blockName + " is not configured properly");
         }
-        return expression.toString();
     }
 
     //check number of inputs
     protected void checkBlockConfiguration() throws RuleBuildFailedException {
-        if (threshold == null && inputBlocks.size() != 2) {
+        if (threshold == null && inputBlockIds.size() != 2) {
             throw new RuleBuildFailedException(blockName + " is not configured properly");
         }
 
@@ -188,110 +209,6 @@ public class ComparisonBlock extends PersistableBlock {
 
     public String getOperator() {
         return operator;
-    }
-
-    @Override
-    public String getJoinExpression() throws RuleBuildFailedException {
-        StringBuilder expression = new StringBuilder();
-        String joinId = inputBlocks.get(0)
-                .getJoinId();
-        checkBlockConfiguration();
-        setParameters();
-
-        // single input
-        if (inputBlocks.size() == 1) {
-            String inputExpression = inputBlocks.get(0)
-                    .getJoinExpressionAsFirstOperand()
-                    .replaceAll(Keywords.toBeReplaced,
-                            getOperationExpression());
-            expression.append(inputExpression);
-
-        } else if (inputBlocks.size() == 3) {
-            joinId = inputBlocks.get(1)
-                    .getJoinId();
-            String firstOperand = inputBlocks.get(1)
-                    .getJoinExpression();
-            expression.append(firstOperand);
-            expression.append("\n");
-            String thirdOperand = inputBlocks.get(2)
-                    .getJoinedExpression(joinId);
-            expression.append(thirdOperand);
-            expression.append("\n");
-            String secondOperand = inputBlocks.get(0)
-                    .getJoinedExpressionAsFirstOperand(joinId)
-                    .replaceAll(Keywords.toBeReplaced,
-                            getOperationExpression());
-            expression.append(secondOperand);
-
-        } else if (inputBlocks.size() == 2) {
-            joinId = inputBlocks.get(1)
-                    .getJoinId();
-            String firstOperand = inputBlocks.get(1)
-                    .getJoinExpression();
-            expression.append(firstOperand);
-            String secondOperand = "";
-            expression.append("\n");
-            secondOperand = inputBlocks.get(0)
-                    .getJoinedExpressionAsFirstOperand(joinId)
-                    .replaceAll(Keywords.toBeReplaced,
-                            getOperationExpression());
-            expression.append(secondOperand);
-        }
-        return expression.toString();
-    }
-
-    @Override
-    public String getJoinedExpression(String joinId) throws RuleBuildFailedException {
-        StringBuilder expression = new StringBuilder();
-        checkBlockConfiguration();
-        setParameters();
-
-        // single input
-        if (inputBlocks.size() == 1) {
-            String inputExpression = inputBlocks.get(0)
-                    .getJoinedExpressionAsFirstOperand(joinId)
-                    .replaceAll(Keywords.toBeReplaced,
-                            getOperationExpression());
-            expression.append(inputExpression);
-
-        } else if (inputBlocks.size() == 3) {
-            String firstOperand = inputBlocks.get(1)
-                    .getJoinedExpression(joinId);
-            expression.append(firstOperand);
-            expression.append("\n");
-            String thirdOperand = inputBlocks.get(2)
-                    .getJoinedExpression(joinId);
-            expression.append(thirdOperand);
-            expression.append("\n");
-            String secondOperand = inputBlocks.get(0)
-                    .getJoinedExpressionAsFirstOperand(joinId)
-                    .replaceAll(Keywords.toBeReplaced,
-                            getOperationExpression());
-            expression.append(secondOperand);
-
-        } else if (inputBlocks.size() == 2) {
-            String firstOperand = inputBlocks.get(1)
-                    .getJoinedExpression(joinId);
-            expression.append(firstOperand);
-            String secondOperand = "";
-            expression.append("\n");
-            secondOperand = inputBlocks.get(0)
-                    .getJoinedExpressionAsFirstOperand(joinId)
-                    .replaceAll(Keywords.toBeReplaced,
-                            getOperationExpression());
-            expression.append(secondOperand);
-        }
-        return expression.toString();
-    }
-
-    @Override
-    public String getJoinedExpressionAsFirstOperand(String joindId) {
-        return null;
-    }
-
-    @Override
-    public String getJoinExpressionAsFirstOperand() {
-        return null;
     }
 
 
@@ -321,40 +238,15 @@ public class ComparisonBlock extends PersistableBlock {
 
 
     public String getOperatorByOperationId(int operationId) {
-        switch (operationId) {
-            case 2001:
-                return "==";
-            case 2002:
-                return "!=";
-            case 2003:
-                return ">";
-            case 2004:
-                return ">=";
-            case 2005:
-                return "<";
-            case 2006:
-                return "<=";
-            case 2007:
-                return " contains ";
-            case 2008:
-                return " not contains ";
-            case 2009:
-                return " matches ";
-            case 2010:
-                return " not matches ";
-            case 2011:
-                return " soundslike ";
-            case 2012:
-                return " str[startsWith] ";
-            case 2013:
-                return " str[endsWith] ";
-            case 2014:
-                return ">";
-            case 2015:
-                return "<";
-            default:
-                return null;
-        }
+        Optional<Operator> operation = Operator.getOperatorByCode(operationId);
+        isOperatorString = Operator.isStringOperator(operationId);
+        if (operation
+                .isPresent()) {
+            return operation
+                    .get()
+                    .getFullName();
+        } else return "";
+
 
     }
 
@@ -364,13 +256,10 @@ public class ComparisonBlock extends PersistableBlock {
     }
 
     @Override
-    public String getInitialJoinBlock() {
-        if (inputBlocks.size() >= 2) {
-            return inputBlocks.get(1)
-                    .getInitialJoinBlock();
-        }
-        return super.getInitialJoinBlock();
+    public String getAsOperandExpression() throws RuleBuildFailedException {
+        throw new RuleBuildFailedException(this.blockName + " cannot be linked to comparison block");
     }
+
 
 }
 

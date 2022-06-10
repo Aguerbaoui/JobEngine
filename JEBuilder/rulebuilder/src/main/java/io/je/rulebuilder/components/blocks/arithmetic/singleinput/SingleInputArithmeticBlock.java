@@ -18,6 +18,10 @@ public abstract class SingleInputArithmeticBlock extends ArithmeticBlock {
 		}
 	}
 	
+	@Override
+	public String getReference(String optional) {
+		return getBlockNameAsVariable();
+	}
 
 	protected SingleInputArithmeticBlock() {
 	}
@@ -33,11 +37,11 @@ public abstract class SingleInputArithmeticBlock extends ArithmeticBlock {
 			switch(level)
 			{
 			case 0:
-				return " Number() from " +  getFormula() ;
+				return " Double() from " +  getFormula() ;
 			case 1:
-				return " Number(" + Keywords.toBeReplaced +") from " + getFormula() ;
+				return " Double(" + Keywords.toBeReplaced +") from " + getFormula() ;
 			default: 
-				return " Number() from " + getFormula() ;
+				return " Double() from " + getFormula() ;
 			
 			}
 		}else if(type.equalsIgnoreCase("string") )
@@ -57,7 +61,7 @@ public abstract class SingleInputArithmeticBlock extends ArithmeticBlock {
 			return "Date() from " + getFormula();
 		}
 		
-		 return " Number() from " + getFormula() ;
+		 return " Double() from " + getFormula() ;
 	}
 
 
@@ -67,14 +71,16 @@ public abstract class SingleInputArithmeticBlock extends ArithmeticBlock {
 		expression.append("\n");
 		expression.append(inputBlocks.get(0).getExpression());
 		expression.append("\n");
+		//int x = includesOperation? 1:0;
 		expression.append( getBlockNameAsVariable()+" : " +getArithmeticFormula (0,defaultType));
 		if(stopExecutionIfInvalidInput)
 		{
-			expression.append("\n"+evaluateExecution(asDouble(getInputRefName(0))));
+			expression.append("\n"+evaluateExecution(asDouble(inputBlocks.get(0).getReference())));
 		}
 		return expression.toString();
 	}
 
+	
 	@Override
 	public String getAsOperandExpression() throws RuleBuildFailedException {
 		StringBuilder expression = new StringBuilder();
@@ -85,71 +91,13 @@ public abstract class SingleInputArithmeticBlock extends ArithmeticBlock {
 		expression.append( getBlockNameAsVariable()+" : " +getArithmeticFormula (1,defaultType));
 		if(stopExecutionIfInvalidInput)
 		{
-			expression.append("\n"+evaluateExecution(asDouble(getInputRefName(0))));
-		}
-		return expression.toString();
-	}
-
-	@Override
-	public String getJoinExpression() throws RuleBuildFailedException {
-		StringBuilder expression = new StringBuilder();
-		expression.append("\n");
-		expression.append(inputBlocks.get(0).getJoinExpression());
-		expression.append("\n");
-		expression.append( getBlockNameAsVariable()+" : " +getArithmeticFormula (0,defaultType));
-		if(stopExecutionIfInvalidInput)
-		{
-			expression.append("\n"+evaluateExecution(asDouble(getInputRefName(0))));
+			expression.append("\n"+evaluateExecution(asDouble(inputBlocks.get(0).getReference())));
 		}
 		return expression.toString();
 	}
 
 
-
-	@Override
-	public String getJoinedExpression(String joinId) throws RuleBuildFailedException {
-		StringBuilder expression = new StringBuilder();
-		expression.append("\n");
-		expression.append(inputBlocks.get(0).getJoinedExpression(joinId));
-		expression.append("\n");
-		expression.append( getBlockNameAsVariable()+" : " +getArithmeticFormula (0,defaultType));
-		if(stopExecutionIfInvalidInput)
-		{
-			expression.append("\n"+evaluateExecution(asDouble(getInputRefName(0))));
-		}
-		return expression.toString();
-	}
-
-	@Override
-	public String getJoinedExpressionAsFirstOperand(String joinId) throws RuleBuildFailedException {
-		StringBuilder expression = new StringBuilder();
-		expression.append("\n");
-		expression.append(inputBlocks.get(0).getJoinedExpression(joinId));
-		expression.append("\n");
 	
-		expression.append( getBlockNameAsVariable()+" : " +getArithmeticFormula (1,defaultType));
-		if(stopExecutionIfInvalidInput)
-		{
-			expression.append("\n"+evaluateExecution(asDouble(getInputRefName(0))));
-		}
-		return expression.toString();
-	}
-
-	@Override
-	public String getJoinExpressionAsFirstOperand() throws RuleBuildFailedException {
-		StringBuilder expression = new StringBuilder();
-		expression.append("\n");
-		expression.append(inputBlocks.get(0).getJoinExpression());
-		expression.append("\n");
-	
-		expression.append( getBlockNameAsVariable()+" : " +getArithmeticFormula (1,defaultType));
-		if(stopExecutionIfInvalidInput)
-		{
-			expression.append("\n"+evaluateExecution(asDouble(getInputRefName(0))));
-		}
-		return expression.toString();
-	}
-
 
 	public String getDefaultType() {
 		return defaultType;

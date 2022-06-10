@@ -629,6 +629,7 @@ public class ProjectContainer {
                 .buildAll(null);
 
         Results results = kieBuilder.getResults();
+        //TODO to check utility
         kfsToCompile.delete(filename);
         if (results.hasMessages(Message.Level.ERROR)) {
             JELogger.error(results.getMessages()

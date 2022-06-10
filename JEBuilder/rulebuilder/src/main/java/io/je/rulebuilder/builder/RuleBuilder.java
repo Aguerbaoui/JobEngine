@@ -1,11 +1,14 @@
 package io.je.rulebuilder.builder;
 
-import io.je.rulebuilder.components.*;
-import io.je.rulebuilder.components.blocks.*;
-import io.je.rulebuilder.components.blocks.execution.LinkedSetterBlock;
-import io.je.rulebuilder.components.blocks.execution.SetterBlock;
-import io.je.rulebuilder.components.blocks.getter.AttributeGetterBlock;
-import io.je.rulebuilder.components.blocks.logic.JoinBlock;
+import io.je.rulebuilder.components.JERule;
+import io.je.rulebuilder.components.RuleParameters;
+import io.je.rulebuilder.components.ScriptedRule;
+import io.je.rulebuilder.components.UserDefinedRule;
+import io.je.rulebuilder.components.blocks.Block;
+import io.je.rulebuilder.components.blocks.ConditionBlock;
+import io.je.rulebuilder.components.blocks.ExecutionBlock;
+import io.je.rulebuilder.components.blocks.PersistableBlock;
+import io.je.rulebuilder.components.blocks.logic.OrBlock;
 import io.je.utilities.apis.JERunnerAPIHandler;
 import io.je.utilities.beans.JEResponse;
 import io.je.utilities.config.ConfigurationConstants;
@@ -32,7 +35,7 @@ import java.util.*;
  */
 public class RuleBuilder {
 
-    static boolean eliminateCombinatoryBehaviour = true;
+    //static boolean eliminateCombinatoryBehaviour = true;
 
     /* private constructor */
     private RuleBuilder() {
@@ -49,8 +52,7 @@ public class RuleBuilder {
                 LogCategory.DESIGN_MODE, jeRule.getJobEngineProjectID(),
                 LogSubModule.RULE, jeRule.getJobEngineElementID());
         if (jeRule instanceof UserDefinedRule) {
-
-            List<ScriptedRule> unitRules = jeRule.isCompiled() ? ((UserDefinedRule) jeRule).getUnitRules() : scriptRule(((UserDefinedRule) jeRule));
+            List<ScriptedRule> unitRules = scriptRule(((UserDefinedRule) jeRule));
             for (ScriptedRule rule : unitRules) {
                 // generate drl
                 rulePath = rule.generateDRL(buildPath);
@@ -75,10 +77,10 @@ public class RuleBuilder {
 
         HashMap<String, Object> ruleMap = new HashMap<>();
         ruleMap.put(JERunnerRuleMapping.PROJECT_ID, rule.getJobEngineProjectID());
-        ruleMap.put(JERunnerRuleMapping.PROJECT_NAME, rule.getJobEngineProjectName());
+        ruleMap.put(JERunnerRuleMapping.PROJECT_NAME, rule.getJobEngineElementName());
         ruleMap.put(JERunnerRuleMapping.PATH, path);
         ruleMap.put(JERunnerRuleMapping.RULE_ID, rule.getJobEngineElementID());
-        ruleMap.put(JERunnerRuleMapping.RULE_NAME, rule.getJobEngineElementName());
+
         // TODO: remove hard-coded rule format
         ruleMap.put(JERunnerRuleMapping.FORMAT, "DRL");
         ruleMap.put(JERunnerRuleMapping.TOPICS, rule.getTopics()
@@ -132,19 +134,13 @@ public class RuleBuilder {
         String duration = null;
         int scriptedRulesCounter = 0;
         String scriptedRuleid = "";
-        uRule.setUnitRules(new ArrayList<>());
+        List<ScriptedRule> scriptedRules = new ArrayList<>();
         Set<Block> rootBlocks = getRootBlocks(uRule);
         String subRulePrefix = IdManager.generateSubRulePrefix(uRule.getJobEngineElementID());
         for (Block root : rootBlocks) {
             uRule.getBlocks()
                     .resetAllBlocks();
             scriptedRuleid = subRulePrefix + uRule.getJobEngineElementName() + ++scriptedRulesCounter;
-            GenericBlockSummary allGenericBlocksByClassId = new GenericBlockSummary(scriptedRuleid);
-            if (eliminateCombinatoryBehaviour && !(root instanceof JoinBlock)) {
-                allGenericBlocksByClassId = getAllGenericGetterBlocksByClassId(root, allGenericBlocksByClassId);
-                allGenericBlocksByClassId = getAllSetterBlocksByClassId(root, allGenericBlocksByClassId);
-                eliminateCombinatoryBehaviour(allGenericBlocksByClassId, root.getInitialJoinBlock());
-            }
             String condition = "";
             if (root instanceof ConditionBlock) {
                 condition = root.getExpression();
@@ -168,86 +164,19 @@ public class RuleBuilder {
             ScriptedRule rule = new ScriptedRule(uRule.getJobEngineProjectID(), scriptedRuleid, script,
                     uRule.getJobEngineElementName() + scriptedRulesCounter, uRule.getJobEngineProjectName());
             rule.setTopics(uRule.getTopics());
-            uRule.getUnitRules()
-                    .add(rule);
+            scriptedRules.add(rule);
             subRules.add(scriptedRuleid);
             uRule.setSubRules(subRules);
-            if (eliminateCombinatoryBehaviour) {
-                resetJoinIds(allGenericBlocksByClassId);
-            }
+
         }
-        return uRule.getUnitRules();
+        return scriptedRules;
     }
 
-    private static GenericBlockSummary eliminateCombinatoryBehaviour(GenericBlockSummary allGenericBlocks, String primeJoinId) {
-
-        if (allGenericBlocks.getNumberOfClasses() == 1 && allGenericBlocks.allBlocksAreGeneric()) {
-            GenericBlockSet set = allGenericBlocks.getSingleBlockSet();
-            if (!set.isAllBlocksAreSetters()) {
-                Optional<Block> b = set.getIdentifier(primeJoinId);
-                if (b.isPresent()) {
-                    set.getValue()
-                            .remove(b.get());
-                    set.getBlocks()
-                            .stream()
-                            .forEach(bl -> bl.addSpecificInstance(primeJoinId + ".getJobEngineElementID()"));
-                    set.getValue()
-                            .add(b.get());
-                }
-            }
-        }
 
 
-        return allGenericBlocks;
 
-    }
 
-    private static void resetJoinIds(GenericBlockSummary allGenericBlocks) {
 
-        if (allGenericBlocks.getNumberOfClasses() == 1 && allGenericBlocks.allBlocksAreGeneric()) {
-            GenericBlockSet set = allGenericBlocks.getSingleBlockSet();
-            if (!set.isAllBlocksAreSetters()) {
-                set.getBlocks()
-                        .stream()
-                        .forEach(bl -> bl.removeSpecificInstance());
-            }
-        }
-
-    }
-
-    /*
-     * Group all the getter blocks by Id
-     */
-    private static GenericBlockSummary getAllGenericGetterBlocksByClassId(Block root,
-                                                                          GenericBlockSummary allAttributeBlocks) {
-
-        for (Block input : root.getInputBlocks()) {
-            if (input instanceof AttributeGetterBlock) {
-                AttributeGetterBlock getter = (AttributeGetterBlock) input;
-                allAttributeBlocks.addGetterBlock(getter);
-            } else {
-                allAttributeBlocks = getAllGenericGetterBlocksByClassId(input, allAttributeBlocks);
-            }
-        }
-        return allAttributeBlocks;
-    }
-
-    /*
-     * Group all the setter blocks by Id
-     */
-    private static GenericBlockSummary getAllSetterBlocksByClassId(Block root,
-                                                                   GenericBlockSummary allAttributeBlocks) {
-
-        for (Block output : root.getOutputBlocks()) {
-            if (output instanceof SetterBlock) {
-                allAttributeBlocks.addSetterBlock((SetterBlock) output);
-            }
-            if (output instanceof LinkedSetterBlock) {
-                allAttributeBlocks.addSetterBlock((LinkedSetterBlock) output);
-            }
-        }
-        return allAttributeBlocks;
-    }
 
     /* generate DRL for this rule */
 
@@ -300,20 +229,30 @@ public class RuleBuilder {
                 .getAll()) {
             if (ruleBlock instanceof ExecutionBlock) {
                 executionBlockCounter++;
-                for (Block rootBlock : ruleBlock.getInputBlocks()) {
-                    if (rootBlock != null)
-                    // HA 05/25/2022 removed and add explicit or     if(!(rootBlock instanceof OrBlock))
-                    {
-                        roots.add(uRule.getBlocks()
-                                .getBlock(rootBlock.getJobEngineElementID()));
-                        for (Block b : uRule.getBlocks()
-                                .getBlock(rootBlock.getJobEngineElementID())
-                                .getInputBlocks()) {
-                            if (b instanceof PersistableBlock) {
-                                ((PersistableBlock) b).setTimePersistenceValue(((PersistableBlock) rootBlock).getTimePersistenceValue());
-                                ((PersistableBlock) b).setTimePersistenceUnit(((PersistableBlock) rootBlock).getTimePersistenceUnit());
-                            }
+                for (var rootBlock : ruleBlock.getInputBlocks()) {
+                    if (rootBlock != null) {
+                        if (!(rootBlock.getBlock() instanceof OrBlock)) {
+                            roots.add(uRule.getBlocks()
+                                    .getBlock(rootBlock.getBlock()
+                                            .getJobEngineElementID()));
+                            for (var b : uRule.getBlocks()
+                                    .getBlock(rootBlock.getBlock()
+                                            .getJobEngineElementID())
+                                    .getInputBlocks()) {
+                                if (b.getBlock() instanceof PersistableBlock) {
+                                    ((PersistableBlock) b.getBlock()).setTimePersistenceValue(((PersistableBlock) rootBlock.getBlock()).getTimePersistenceValue());
+                                    ((PersistableBlock) b.getBlock()).setTimePersistenceUnit(((PersistableBlock) rootBlock.getBlock()).getTimePersistenceUnit());
+                                }
 
+                            }
+                        } else {
+                            for (var b : uRule.getBlocks()
+                                    .getBlock(rootBlock.getBlock()
+                                            .getJobEngineElementID())
+                                    .getInputBlocks()) {
+                                roots.add(b.getBlock());
+
+                            }
                         }
                     }
 

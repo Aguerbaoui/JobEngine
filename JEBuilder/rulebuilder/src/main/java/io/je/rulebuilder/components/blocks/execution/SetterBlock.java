@@ -20,8 +20,7 @@ import io.je.utilities.exceptions.RuleBuildFailedException;
 public class SetterBlock extends ExecutionBlock {
 		
 	
-	@Transient
-	String primeJoinId;
+	
 	
 	//SOURCE
 	ValueType sourceType; //ATTRIBUTE/STATIC/VARIBLE
@@ -124,8 +123,7 @@ public class SetterBlock extends ExecutionBlock {
 
 	  if(destinationType.equals(ValueType.ATTRIBUTE))
 	  {
-		 if(primeJoinId==null)
-		 {
+		 
 			 switch(sourceType)
 			   {
 			   case STATIC :	
@@ -185,64 +183,8 @@ public class SetterBlock extends ExecutionBlock {
 				  throw new RuleBuildFailedException("INVALID CONFIGURATION");
 
 			   }
-		 }else
-		 {
-			 switch(sourceType)
-			   {
-			   case STATIC :	
-				   expression = new StringBuilder();
-					
-						expression.append("Executioner.updateInstanceAttributeValueFromStaticValue( "
-							   	  +"\"" + this.jobEngineProjectID  +"\","
-								  +"\"" + this.ruleId  +"\","
-								  +"\"" + this.blockName  +"\","				  
-								  + primeJoinId  +","
-								  +"\"" + this.destinationAttributeName  +"\","
-								  +"\"" + this.value  +"\","
-								  + this.ignoreWriteIfSameValue 
-								  +");\r\n");
-						expression.append("\n");
-					
-					return expression.toString();
-			
-			   case VARIABLE:
-				   expression = new StringBuilder();
-						expression.append("Executioner.updateInstanceAttributeValueFromVariable( "
-								  +"\"" + this.jobEngineProjectID  +"\","
-								  +"\"" + this.ruleId  +"\","
-								   +"\"" + this.blockName  +"\","
-								  + primeJoinId  +","
-								   +"\"" + this.destinationAttributeName  +"\","
-								  +"\"" + this.sourceVariableId  +"\","
-								  + this.ignoreWriteIfSameValue  
-								  +");\r\n");
-						expression.append("\n");
-					
-					return expression.toString();
-			
-			   case ATTRIBUTE :
-				    expression = new StringBuilder();
-
-						expression.append("Executioner.updateInstanceAttributeValueFromAnotherInstance( "
-								  +"\"" + this.jobEngineProjectID  +"\","
-								  +"\"" + this.ruleId  +"\","
-								   +"\"" + this.blockName  +"\","
-								  +"\"" + this.sourceInstanceId  +"\","
-								  +"\"" + this.sourceAttributeName  +"\","
-								  + primeJoinId  +","
-								  +"\"" + this.destinationAttributeName  +"\","
-								  + this.ignoreWriteIfSameValue 
-								  +");\r\n");
-						expression.append("\n");
-					
-					return expression.toString();
-				  
-				  		
-			  default:
-				  throw new RuleBuildFailedException("INVALID CONFIGURATION");
-
-			   }
-		 }
+		 
+		 
 		   
 	  }else if(destinationType.equals(ValueType.VARIABLE)) {
 		  
@@ -303,16 +245,7 @@ public class SetterBlock extends ExecutionBlock {
 		this.isGeneric = isGeneric;
 	}
 
-	@Override
-	public  void addSpecificInstance(String instanceId) {
-
-			this.primeJoinId=instanceId;
-		
-	}
-	@Override
-	public  void removeSpecificInstance() {
-		this.primeJoinId=null;
-	}
+	
 
 
 }

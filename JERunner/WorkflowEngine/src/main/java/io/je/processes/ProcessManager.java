@@ -226,7 +226,7 @@ public class ProcessManager {
                     .getActivitiTasks()
                     .values()) {
                 if (task instanceof InformTask) {
-                    variables.put(task.getTaskId(), ((InformTask) task).getMessage());
+                    variables.put("hhh", ((InformTask) task).getMessage());
                 }
             }
 
@@ -407,8 +407,9 @@ public class ProcessManager {
                     LogCategory.RUNTIME, processes.get(workflowId).getProjectId(),
                     LogSubModule.WORKFLOW, workflowId);*/
         } catch (Exception e) {
-            /*JELogger.error(JEMessages.ERROR_DELETING_A_PROCESS + "\n" + Arrays.toString(e.getStackTrace()),
-                    LogCategory.RUNTIME, processes.get(workflowId).getProjectId(),
+         /*   JELogger.error(JEMessages.ERROR_DELETING_A_PROCESS + "\n" + Arrays.toString(e.getStackTrace()),
+                    LogCategory.RUNTIME, processes.get(workflowId)
+                            .getProjectId(),
                     LogSubModule.WORKFLOW, workflowId);*/
         }
 
