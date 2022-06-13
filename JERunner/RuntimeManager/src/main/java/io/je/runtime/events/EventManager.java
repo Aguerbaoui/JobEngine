@@ -6,6 +6,7 @@ import io.je.utilities.beans.JEEvent;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.EventException;
 import io.je.utilities.exceptions.ProjectNotFoundException;
+import io.je.utilities.exceptions.WorkflowBuildException;
 import io.je.utilities.log.JELogger;
 import io.je.utilities.models.EventType;
 import utils.log.LogCategory;
@@ -31,7 +32,12 @@ public class EventManager {
      * */
     public static void startProcessInstanceByMessage(String projectId, String messageEvent) {
         Thread thread = new Thread(() -> {
-            WorkflowEngineHandler.startProcessInstanceByMessage(projectId, messageEvent);
+            try {
+                WorkflowEngineHandler.startProcessInstanceByMessage(projectId, messageEvent);
+            } catch (WorkflowBuildException ex) {
+                JELogger.error(messageEvent, LogCategory.RUNTIME, projectId,
+                        LogSubModule.WORKFLOW, ex.getMessage(), ex.toString());
+            }
         });
 
         thread.start();
@@ -42,7 +48,12 @@ public class EventManager {
      * */
     public static void startProcessInstanceBySignal(String projectId, String messageEvent) {
         Thread thread = new Thread(() -> {
-            WorkflowEngineHandler.throwSignalEventInWorkflow(projectId, messageEvent);
+            try {
+                WorkflowEngineHandler.throwSignalEventInWorkflow(projectId, messageEvent);
+            } catch (WorkflowBuildException ex) {
+                JELogger.error(messageEvent, LogCategory.RUNTIME, projectId,
+                        LogSubModule.WORKFLOW, ex.getMessage(), ex.toString());
+            }
         });
 
         thread.start();
@@ -53,7 +64,12 @@ public class EventManager {
      * */
     public static void throwMessageEventInWorkflow(String projectId, String event) {
         Thread thread = new Thread(() -> {
-            WorkflowEngineHandler.throwMessageEventInWorkflow(projectId, event);
+            try {
+                WorkflowEngineHandler.throwMessageEventInWorkflow(projectId, event);
+            } catch (WorkflowBuildException ex) {
+                JELogger.error(event, LogCategory.RUNTIME, projectId,
+                        LogSubModule.WORKFLOW, ex.getMessage(), ex.toString());
+            }
         });
 
         thread.start();
@@ -64,7 +80,12 @@ public class EventManager {
      * */
     public static void throwSignalEventInWorkflow(String projectId, String event) {
         Thread thread = new Thread(() -> {
-            WorkflowEngineHandler.throwSignalEventInWorkflow(projectId, event);
+            try {
+                WorkflowEngineHandler.throwSignalEventInWorkflow(projectId, event);
+            } catch (WorkflowBuildException ex) {
+                JELogger.error(event, LogCategory.RUNTIME, projectId,
+                        LogSubModule.WORKFLOW, ex.getMessage(), ex.toString());
+            }
         });
         thread.start();
     }

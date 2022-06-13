@@ -7,6 +7,7 @@ import io.je.utilities.beans.JEZMQResponse;
 import io.je.utilities.beans.RunnerRequestObject;
 import io.je.utilities.beans.ZMQResponseType;
 import io.je.utilities.constants.JEMessages;
+import io.je.utilities.exceptions.WorkflowBuildException;
 import io.je.utilities.instances.DataModelRequester;
 import io.je.utilities.log.JELogger;
 import io.je.utilities.mapping.VariableModelMapping;
@@ -108,7 +109,7 @@ public class JERunnerResponder extends ZMQResponser {
         return new JEZMQResponse(ZMQResponseType.SUCCESS);
     }
 
-    private JEZMQResponse informUser(Object requestBody) {
+    private JEZMQResponse informUser(Object requestBody) throws WorkflowBuildException {
         try {
             HashMap<String, String> map = (HashMap<String, String>) requestBody;
             runtimeDispatcher.informUser(map.get("message"), map.get("projectName"), map.get("workflowName"));
