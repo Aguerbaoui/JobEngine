@@ -226,7 +226,7 @@ public class ProcessManager {
                     .getActivitiTasks()
                     .values()) {
                 if (task instanceof InformTask) {
-                    variables.put("hhh", ((InformTask) task).getMessage());
+                    variables.put(task.getTaskId(), ((InformTask) task).getMessage());
                 }
             }
 

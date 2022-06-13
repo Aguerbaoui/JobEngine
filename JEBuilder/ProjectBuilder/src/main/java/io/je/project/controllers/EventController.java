@@ -1,28 +1,19 @@
 package io.je.project.controllers;
 
-import java.util.Collection;
-import java.util.List;
-
 import io.je.project.exception.JEExceptionHandler;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
-
 import io.je.project.services.EventService;
 import io.je.project.services.ProjectService;
+import io.je.utilities.beans.JEResponse;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.models.EventModel;
-import io.je.utilities.beans.JEResponse;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Collection;
+import java.util.List;
 
 /*
  * Project Rest Controller
@@ -33,10 +24,9 @@ import io.je.utilities.beans.JEResponse;
 public class EventController {
 
 
-
 	@Autowired
 	EventService eventService;
-	
+
 	@Autowired
 	ProjectService projectService;
 
@@ -47,6 +37,7 @@ public class EventController {
 	@ResponseBody
 	public ResponseEntity<?> getAllEvents(@PathVariable("projectId") String projectId) {
 		Collection<?> events = null;
+		System.out.println("aaa");
 		try {
 			projectService.getProject(projectId);
 
@@ -70,14 +61,15 @@ public class EventController {
 	@GetMapping(value = "{projectId}/getEvent/{eventId}")
 	@ResponseBody
 	public ResponseEntity<?> getEvent(@PathVariable("projectId") String projectId,
-			@PathVariable("eventId") String eventId) {
+									  @PathVariable("eventId") String eventId) {
 		EventModel event = null;
 
 		try {
 			projectService.getProject(projectId);
 			event = eventService.getEvent(projectId, eventId);
 			if (event == null) {
-				return ResponseEntity.noContent().build();
+				return ResponseEntity.noContent()
+						.build();
 
 			}
 		} catch (Exception e) {
@@ -106,12 +98,7 @@ public class EventController {
 		}
 		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.EVENT_ADDED));
 	}
-	
-	
-	
 
-	
-	
 
 	/*
 	 * update event
@@ -137,7 +124,7 @@ public class EventController {
 	 */
 	@DeleteMapping(value = "{projectId}/deleteEvent/{eventId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> deleteEvent(@PathVariable("projectId") String projectId,
-			@PathVariable("eventId") String eventId) {
+										 @PathVariable("eventId") String eventId) {
 
 		try {
 			projectService.getProject(projectId);
@@ -145,7 +132,7 @@ public class EventController {
 
 		} catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
-			
+
 		}
 		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.EVENT_DELETED));
 	}
@@ -164,16 +151,16 @@ public class EventController {
 		}
 		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.EVENTS_DELETED));
 	}
-	
-	
-	
-	
+
+
+
+
 	/*
-	 * to be deleted 
+	 * to be deleted
 	 */
-	
-	
-	
+
+
+
 	/*
 	 * trigger event
 	 */
@@ -191,6 +178,5 @@ public class EventController {
 		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.EVENT_ADDED));
 	}*/
 
-	
-	
+
 }

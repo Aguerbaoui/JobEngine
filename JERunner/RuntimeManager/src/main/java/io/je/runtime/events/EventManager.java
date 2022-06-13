@@ -106,7 +106,7 @@ public class EventManager {
 
             //Update Event in WorkflowEngine
             //TODO make this visible to the user that the event will have ONLY one type
-            // It can't trigger a worklow and a block at the same time
+            // It can't trigger a workflow and a block at the same time
             if (event.getType()
                     .equals(EventType.MESSAGE_EVENT)) {
                 throwMessageEventInWorkflow(projectId, event.getJobEngineElementName());
@@ -122,7 +122,7 @@ public class EventManager {
                 setEventTimeOut(event);
             }
 
-            //update event in workflow engine
+            //update event in rule engine
             RuleEngineHandler.addEvent(event);
 
 

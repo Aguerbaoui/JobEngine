@@ -92,7 +92,7 @@ public class DataModelRequester {
             HashMap<String, String> requestMap = new HashMap<>();
             requestMap.put("Type", "ReadInstance");
 
-            requestMap.put(Boolean.TRUE.equals(isName[0]) ? "InstanceName" : "instanceId", instanceId);
+            requestMap.put(isName.length > 0 && Boolean.TRUE.equals(isName[0]) ? "InstanceName" : "InstanceId", instanceId);
             String data = requester.sendRequest(objectMapper.writeValueAsString(requestMap));
             JELogger.trace(JEMessages.DATA_RECEIVED + " : " + data, LogCategory.RUNTIME,
                     null, LogSubModule.JERUNNER, null);
