@@ -209,9 +209,11 @@ public class RuntimeDispatcher {
     public void launchProcessWithoutVariables(String projectId, String key, boolean runProject)
             throws WorkflowNotFoundException, WorkflowAlreadyRunningException,
             WorkflowBuildException, WorkflowRunException {
-		/*JELogger.debug("[projectId = " + projectId + "] [workflow = " + key + "]" + JEMessages.RUNNING_WF,
-				LogCategory.RUNTIME, projectId, LogSubModule.WORKFLOW, key);*/
+
+		/**/JELogger.debug("[projectId = " + projectId + "] [workflow = " + key + "] " + JEMessages.RUNNING_WF,
+				LogCategory.RUNTIME, projectId, LogSubModule.WORKFLOW, key);
         //buildWorkflow(projectId, key);
+
         WorkflowEngineHandler.launchProcessWithoutVariables(projectId, key, runProject);
 
     }
@@ -274,7 +276,7 @@ public class RuntimeDispatcher {
 
     }
 
-    public void updateClass(ClassModel classModel) throws ClassLoadException, ClassNotFoundException {
+    public void updateClass(ClassModel classModel) throws ClassLoadException {
         if (classModel.getClassAuthor()
                 .equals(ClassAuthor.DATA_MODEL)) {
             RuleEngineHandler.reloadContainers();

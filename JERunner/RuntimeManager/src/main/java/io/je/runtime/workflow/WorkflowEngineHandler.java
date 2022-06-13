@@ -37,10 +37,13 @@ public class WorkflowEngineHandler {
 
     private static void checkProcessManager (String projectId) throws WorkflowBuildException {
         if (!processManagerHashMap.containsKey(projectId)) {
-            throw new WorkflowBuildException("Workflow Engine Handler has not the project Id : " + projectId);
+            throw new WorkflowBuildException("Process manager does not contains the project Id : " + projectId);
         }
-        if (!processManagerHashMap.containsValue(projectId)) {
-            throw new WorkflowBuildException("Process manager not found for project Id : " + projectId);
+        if (processManagerHashMap.get(projectId) == null) {
+            throw new WorkflowBuildException("Process manager null for project Id : " + projectId);
+        }
+        if (processManagerHashMap.get(projectId).getProcesses() == null) {
+            throw new WorkflowBuildException("Process manager has null processes for project Id : " + projectId);
         }
     }
 
@@ -76,11 +79,12 @@ public class WorkflowEngineHandler {
      * Add new process
      * */
     public static void addProcess(JEProcess process) {
+        String projectId = process.getProjectId();
 
-        if (!processManagerHashMap.containsKey(process.getProjectId())) {
-            processManagerHashMap.put(process.getProjectId(), new ProcessManager());
+        if (!processManagerHashMap.containsKey(projectId)) {
+            processManagerHashMap.put(projectId, new ProcessManager());
         }
-        processManagerHashMap.get(process.getProjectId())
+        processManagerHashMap.get(projectId)
                 .addProcess(process);
         //registerWorkflow(process.getProjectId(), process.getKey());
         //! In case we load BPMN files from resources

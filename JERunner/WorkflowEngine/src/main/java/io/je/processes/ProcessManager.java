@@ -229,7 +229,7 @@ public class ProcessManager {
                     .values()) {
                 if (task instanceof InformTask) {
                     // FIXME
-                    variables.put("hhh", ((InformTask) task).getMessage());
+                    variables.put("Inform Task message", ((InformTask) task).getMessage());
                 }
             }
 
@@ -237,7 +237,8 @@ public class ProcessManager {
                 process.setActiveThread(new Thread(() -> {
                     try {
                         ProcessInstance p = runtimeService.startProcessInstanceByKey(id, variables);
-                    } catch (Exception e) {
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
                     }
                     //process.setRunning(true);
                 }));
