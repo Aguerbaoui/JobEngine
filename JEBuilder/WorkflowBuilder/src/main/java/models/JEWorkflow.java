@@ -147,6 +147,13 @@ public class JEWorkflow extends JEObject {
      * Return workflow start block
      */
     public StartBlock getWorkflowStartBlock() {
+        if (workflowStartBlock == null) {
+            for (WorkflowBlock block : allBlocks.values()) {
+                if (block instanceof StartBlock) {
+                    workflowStartBlock = (StartBlock) block;
+                }
+            }
+        }
         return workflowStartBlock;
     }
 
@@ -206,9 +213,7 @@ public class JEWorkflow extends JEObject {
         if (block instanceof StartBlock) {
             workflowStartBlock = (StartBlock) block;
             workflowStartBlock.setProcessed(false);
-            if (((StartBlock) block).getEventId() != null || ((StartBlock) block).getTimerEvent() != null ) {
-                this.setTriggeredByEvent(true);
-            } else this.setTriggeredByEvent(false);
+            this.setTriggeredByEvent(((StartBlock) block).getEventId() != null || ((StartBlock) block).getTimerEvent() != null);
         }
         allBlocks.put(block.getJobEngineElementID(), block);
         status = Status.NOT_BUILT;
@@ -277,7 +282,6 @@ public class JEWorkflow extends JEObject {
             }
             allBlocks.remove(id);
             if (allBlocks.size() == 0) workflowStartBlock = null;
-            b = null;
             status = Status.NOT_BUILT;
         }
     }

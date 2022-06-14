@@ -7,6 +7,7 @@ import io.je.rulebuilder.components.UserDefinedRule;
 import io.je.rulebuilder.components.blocks.Block;
 import io.je.utilities.beans.JEEvent;
 import io.je.utilities.beans.JEVariable;
+import io.je.utilities.beans.Status;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.*;
 import models.JEWorkflow;
@@ -586,6 +587,8 @@ public class JEProject {
 		if (wf.getWorkflowStartBlock() == null || wf.getAllBlocks()
 				.isEmpty()) {
 			wf.setHasErrors(true);
+			// FIXME
+			wf.setStatus(Status.ERROR);
 			return true;
 		}
 
