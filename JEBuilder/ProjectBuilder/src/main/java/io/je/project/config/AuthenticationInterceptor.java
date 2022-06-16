@@ -47,9 +47,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
         String uri = request.getRequestURI();
         if (uri.contains("/jeproject/updateRunner")) return true;
         if (uri.contains("/workflow/updateStatus")) return true;
-        if (uri.contains("doc")) return true;
-        if (uri.contains("api-docs")) return true;
-        if (uri.contains("swagger-resources")) return true;
+
         //return true;
         if (originToken == null || originToken.isEmpty()) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
