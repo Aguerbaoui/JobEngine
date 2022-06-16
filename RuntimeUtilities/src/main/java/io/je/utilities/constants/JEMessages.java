@@ -210,6 +210,7 @@ public class JEMessages {
 
     public static final String MAIL_SERVICE_TASK_RESPONSE = "Email service task response";
 
+    public static final String EMAIL_SENT_SUCCESSFULLY = "Email sent successfully";
     public static final String DB_SERVICE_TASK_RESPONSE = "Database service task response";
 
     public static final String DB_API_RESPONSE = "Database API response";
@@ -532,6 +533,8 @@ public class JEMessages {
     public static final String STOPPING_PROJECT_CONTAINER_SUCCESSFULLY = "Project container stopped";
 
     public static final String STOPPING_PROJECT_CONTAINER_FAILED = "Failed to stop project container";
+
+    public static final String RELOADING_PROJECT_CONTAINER = "Reloading project container..";
 
     public static final String UNEXPECTED_ERROR = "An unexpected error occurred ";
 
