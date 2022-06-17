@@ -587,7 +587,7 @@ public class JEProject {
 		if (wf.getWorkflowStartBlock() == null || wf.getAllBlocks()
 				.isEmpty()) {
 			wf.setHasErrors(true);
-			// FIXME
+			// FIXME check JE Monitoring
 			wf.setStatus(Status.ERROR);
 			return true;
 		}

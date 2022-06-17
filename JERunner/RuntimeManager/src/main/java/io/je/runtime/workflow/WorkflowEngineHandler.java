@@ -36,6 +36,7 @@ public class WorkflowEngineHandler {
     private static final HashMap<String, ProcessManager> processManagerHashMap = new HashMap<>();
 
     private static void checkProcessManager (String projectId) throws WorkflowBuildException {
+        // FIXME add suitable Exceptions for process manager
         if (!processManagerHashMap.containsKey(projectId)) {
             throw new WorkflowBuildException("Process manager does not contains the project Id : " + projectId);
         }
@@ -194,7 +195,8 @@ public class WorkflowEngineHandler {
 
     //Parse activiti task
     public static ActivitiTask parseTask(String projectId, String workflowId, String workflowName, TaskModel task) {
-        /**/JELogger.debug("Parsing activiti task",
+        /* FIXME check if it spams */
+        JELogger.debug("Parsing activiti task",
                 LogCategory.RUNTIME, projectId,
                 LogSubModule.WORKFLOW,workflowId);
         if (task.getType()

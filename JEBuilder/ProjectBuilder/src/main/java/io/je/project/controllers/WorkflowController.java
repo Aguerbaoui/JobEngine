@@ -239,7 +239,6 @@ public class WorkflowController {
 
         } catch (Exception e) {
             return JEExceptionHandler.handleException(e);
-
         }
         return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, WORKFLOW_UPDATED_SUCCESS));
     }

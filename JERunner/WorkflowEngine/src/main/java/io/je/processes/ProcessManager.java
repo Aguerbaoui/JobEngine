@@ -160,6 +160,7 @@ public class ProcessManager {
             /*Deployment*/
             deployment = deploymentBuilder.deploy();
             //to debug it if needed
+            JELogger.trace("Test trace");
             JELogger.debug("id = " + deployment.getId() + " key = " + deployment.getKey() + " category =" + deployment.getCategory() +
                     " tenant id =" + deployment.getTenantId());
 
