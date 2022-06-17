@@ -1,27 +1,26 @@
 package io.je.project.controllers;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
 import io.je.project.exception.JEExceptionHandler;
 import io.je.project.services.ProjectService;
-
+import io.je.project.services.RuleService;
+import io.je.rulebuilder.models.BlockModel;
+import io.je.rulebuilder.models.RuleModel;
+import io.je.rulebuilder.models.ScriptRuleModel;
+import io.je.utilities.beans.JECustomResponse;
+import io.je.utilities.beans.JEResponse;
+import io.je.utilities.constants.JEMessages;
+import io.je.utilities.constants.ResponseCodes;
+import io.je.utilities.log.JELogger;
+import io.je.utilities.ruleutils.OperationStatusDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import io.je.project.services.RuleService;
-import io.je.rulebuilder.models.BlockModel;
-import io.je.rulebuilder.models.RuleModel;
-import io.je.rulebuilder.models.ScriptRuleModel;
-import io.je.utilities.constants.JEMessages;
-import io.je.utilities.constants.ResponseCodes;
-import io.je.utilities.log.JELogger;
-import io.je.utilities.ruleutils.OperationStatusDetails;
-import io.je.utilities.beans.JECustomResponse;
-import io.je.utilities.beans.JEResponse;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
 
 /*
  * Rule Builder Rest Controller

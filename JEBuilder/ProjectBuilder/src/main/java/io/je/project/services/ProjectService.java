@@ -266,9 +266,10 @@ public class ProjectService {
 			throws ProjectNotFoundException, LicenseNotActiveException, ProjectLoadException {
 
 		JEProject project = null;
-		// JELogger.trace("[projectId= " + projectId + "]" + JEMessages.LOADING_PROJECT,
-		// LogCategory.DESIGN_MODE,
-		// projectId, LogSubModule.JEBUILDER, null);
+
+		JELogger.trace("[projectId= " + projectId + "]" + JEMessages.LOADING_PROJECT,
+		 	LogCategory.DESIGN_MODE, projectId, LogSubModule.JEBUILDER, null);
+
 		Optional<JEProject> p = projectRepository.findById(projectId);
 		if (p.isEmpty()) {
 			p = projectRepository.findByProjectName(projectId);
@@ -276,7 +277,9 @@ public class ProjectService {
 				throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
 			}
 		}
+
 		project = p.get();
+
 		if (!loadedProjects.containsKey(project.getProjectId())) {
 			project.setEvents(eventService.getAllJEEvents(project.getProjectId()));
 			project.setRules(ruleService.getAllJERules(project.getProjectId()));
@@ -300,8 +303,9 @@ public class ProjectService {
 				}
 
 			}
-			JELogger.debug("[project= " + project.getProjectName() + "]" + JEMessages.PROJECT_FOUND,
+			JELogger.debug("[project= " + project.getProjectName() + "] " + JEMessages.PROJECT_FOUND,
 					LogCategory.DESIGN_MODE, project.getProjectId(), LogSubModule.JEBUILDER, null);
+
 			saveProject(project);
 		}
 		return loadedProjects.get(project.getProjectId());

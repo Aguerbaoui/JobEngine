@@ -158,9 +158,12 @@ public class ProcessManager {
                 }
             }
             /*Deployment*/
-            deployment = deploymentBuilder.deploy(); //to debug it if needed
-            /*JELogger.debug("id = " + deployment.getId() + " key = " + deployment.getKey() + " category =" + deployment.getCategory() +
-                    " tenant id =" + deployment.getTenantId());*/
+            deployment = deploymentBuilder.deploy();
+            //to debug it if needed
+            JELogger.trace("Test trace");
+            JELogger.debug("id = " + deployment.getId() + " key = " + deployment.getKey() + " category =" + deployment.getCategory() +
+                    " tenant id =" + deployment.getTenantId());
+
             processes.get(key)
                     .setDeployed(true);
             processes.get(key)
@@ -203,9 +206,9 @@ public class ProcessManager {
                 process.getActiveThread()
                         .start();
             } else {
-                /*JELogger.error(JEMessages.PROCESS_HAS_TO_BE_TRIGGERED_BY_EVENT,
+                JELogger.error(JEMessages.PROCESS_HAS_TO_BE_TRIGGERED_BY_EVENT,
                         LogCategory.RUNTIME, processes.get(id).getProjectId(),
-                        LogSubModule.WORKFLOW, id);*/
+                        LogSubModule.WORKFLOW, id);
                 throw new WorkflowRunException(JEMessages.PROCESS_HAS_TO_BE_TRIGGERED_BY_EVENT);
             }
         }
@@ -226,7 +229,8 @@ public class ProcessManager {
                     .getActivitiTasks()
                     .values()) {
                 if (task instanceof InformTask) {
-                    variables.put("hhh", ((InformTask) task).getMessage());
+                    // FIXME
+                    variables.put("Inform Task message", ((InformTask) task).getMessage());
                 }
             }
 
@@ -234,7 +238,8 @@ public class ProcessManager {
                 process.setActiveThread(new Thread(() -> {
                     try {
                         ProcessInstance p = runtimeService.startProcessInstanceByKey(id, variables);
-                    } catch (Exception e) {
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
                     }
                     //process.setRunning(true);
                 }));
@@ -248,9 +253,9 @@ public class ProcessManager {
                 throw new WorkflowBuildException(JEMessages.WORKFLOW_RUN_ERROR);
             }
         } else {
-            /*JELogger.error(JEMessages.PROCESS_HAS_TO_BE_TRIGGERED_BY_EVENT,
+            /**/JELogger.error(JEMessages.PROCESS_HAS_TO_BE_TRIGGERED_BY_EVENT,
                     LogCategory.RUNTIME, processes.get(id).getProjectId(),
-                    LogSubModule.WORKFLOW, id);*/
+                    LogSubModule.WORKFLOW, id);
         }
 
 
@@ -403,14 +408,16 @@ public class ProcessManager {
             }
 
         } catch (ActivitiObjectNotFoundException e) {
-            /*JELogger.error(JEMessages.ERROR_DELETING_A_NON_EXISTING_PROCESS,
+            /**/
+            JELogger.error(JEMessages.ERROR_DELETING_A_NON_EXISTING_PROCESS,
                     LogCategory.RUNTIME, processes.get(workflowId).getProjectId(),
-                    LogSubModule.WORKFLOW, workflowId);*/
+                    LogSubModule.WORKFLOW, workflowId);
         } catch (Exception e) {
-         /*   JELogger.error(JEMessages.ERROR_DELETING_A_PROCESS + "\n" + Arrays.toString(e.getStackTrace()),
+            /**/
+            JELogger.error(JEMessages.ERROR_DELETING_A_PROCESS + "\n" + Arrays.toString(e.getStackTrace()),
                     LogCategory.RUNTIME, processes.get(workflowId)
                             .getProjectId(),
-                    LogSubModule.WORKFLOW, workflowId);*/
+                    LogSubModule.WORKFLOW, workflowId);
         }
 
     }

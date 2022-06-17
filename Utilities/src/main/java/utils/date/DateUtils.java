@@ -52,6 +52,8 @@ public class DateUtils {
 
     public static String parseUTCStringToLocalTimeString(String utcStr)
     {
+        if (utcStr == null) return null;
+
     	return LocalDateTime.ofInstant(Instant.parse(utcStr), ZoneOffset.systemDefault()).toString();
     }
     

@@ -4,15 +4,19 @@ import io.je.JEProcess;
 import io.je.processes.ProcessManager;
 import io.je.serviceTasks.*;
 import io.je.utilities.beans.Status;
+import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.WorkflowConstants;
 import io.je.utilities.exceptions.WorkflowAlreadyRunningException;
 import io.je.utilities.exceptions.WorkflowBuildException;
 import io.je.utilities.exceptions.WorkflowNotFoundException;
 import io.je.utilities.exceptions.WorkflowRunException;
+import io.je.utilities.log.JELogger;
 import io.je.utilities.models.TaskModel;
 import io.je.utilities.monitoring.JEMonitor;
 import io.je.utilities.monitoring.MonitoringMessage;
 import io.je.utilities.monitoring.ObjectType;
+import utils.log.LogCategory;
+import utils.log.LogSubModule;
 import utils.network.AuthScheme;
 import utils.network.BodyType;
 import utils.network.HttpMethod;
@@ -31,11 +35,24 @@ public class WorkflowEngineHandler {
 
     private static final HashMap<String, ProcessManager> processManagerHashMap = new HashMap<>();
 
+    private static void checkProcessManager (String projectId) throws WorkflowBuildException {
+        // FIXME add suitable Exceptions for process manager
+        if (!processManagerHashMap.containsKey(projectId)) {
+            throw new WorkflowBuildException("Process manager does not contains the project Id : " + projectId);
+        }
+        if (processManagerHashMap.get(projectId) == null) {
+            throw new WorkflowBuildException("Process manager null for project Id : " + projectId);
+        }
+        if (processManagerHashMap.get(projectId).getProcesses() == null) {
+            throw new WorkflowBuildException("Process manager has null processes for project Id : " + projectId);
+        }
+    }
 
     /*
      * Deploy bpmn process
      * */
     public static void deployBPMN(String projectId, String key) throws WorkflowBuildException {
+        checkProcessManager(projectId);
         processManagerHashMap.get(projectId)
                 .deployProcess(key);
     }
@@ -43,7 +60,8 @@ public class WorkflowEngineHandler {
     /*
      * Register workflow callbacks
      * */
-    public static void registerWorkflow(String projectId, String processId) {
+    public static void registerWorkflow(String projectId, String processId) throws WorkflowBuildException {
+        checkProcessManager(projectId);
         processManagerHashMap.get(projectId)
                 .registerWorkflowCallback(processId, new WorkflowCallback());
 
@@ -53,6 +71,7 @@ public class WorkflowEngineHandler {
      * Launch process without variables
      * */
     public static void launchProcessWithoutVariables(String projectId, String processId, boolean runProject) throws WorkflowNotFoundException, WorkflowAlreadyRunningException, WorkflowBuildException, WorkflowRunException {
+        checkProcessManager(projectId);
         processManagerHashMap.get(projectId)
                 .launchProcessByKeyWithoutVariables(processId, runProject);
     }
@@ -61,18 +80,20 @@ public class WorkflowEngineHandler {
      * Add new process
      * */
     public static void addProcess(JEProcess process) {
+        String projectId = process.getProjectId();
 
-        if (!processManagerHashMap.containsKey(process.getProjectId())) {
-            processManagerHashMap.put(process.getProjectId(), new ProcessManager());
+        if (!processManagerHashMap.containsKey(projectId)) {
+            processManagerHashMap.put(projectId, new ProcessManager());
         }
-        processManagerHashMap.get(process.getProjectId())
+        processManagerHashMap.get(projectId)
                 .addProcess(process);
         //registerWorkflow(process.getProjectId(), process.getKey());
         //! In case we load BPMN files from resources
         //  ResourceBundle.clearCache(Thread.currentThread().getContextClassLoader());
     }
 
-    public static JEProcess getProcessByID(String projectId, String id) {
+    public static JEProcess getProcessByID(String projectId, String id) throws WorkflowBuildException {
+        checkProcessManager(projectId);
         return processManagerHashMap.get(projectId)
                 .getProcessByName(id);
     }
@@ -80,7 +101,8 @@ public class WorkflowEngineHandler {
     /*
      * Trigger event by message
      * */
-    public static void throwMessageEventInWorkflow(String projectId, String msg) {
+    public static void throwMessageEventInWorkflow(String projectId, String msg) throws WorkflowBuildException {
+        checkProcessManager(projectId);
         processManagerHashMap.get(projectId)
                 .throwMessageEvent(msg);
     }
@@ -88,11 +110,13 @@ public class WorkflowEngineHandler {
     /*
      * Trigger event by message
      * */
-    public static void throwSignalEventInWorkflow(String projectId, String msg) {
+    public static void throwSignalEventInWorkflow(String projectId, String msg) throws WorkflowBuildException {
+        checkProcessManager(projectId);
         try {
             processManagerHashMap.get(projectId)
                     .throwSignal(msg);
-        } catch (NullPointerException Ignore) {
+        } catch (NullPointerException ex) {
+            ex.printStackTrace();
         }
     }
 
@@ -105,11 +129,10 @@ public class WorkflowEngineHandler {
     /*
      * Run all deployed workflows
      * */
-    public static void runAllWorkflows(String projectId, boolean runProject) throws WorkflowNotFoundException {
-        if (processManagerHashMap.containsKey(projectId)) {
-            processManagerHashMap.get(projectId)
+    public static void runAllWorkflows(String projectId, boolean runProject) throws WorkflowNotFoundException, WorkflowBuildException {
+        checkProcessManager(projectId);
+        processManagerHashMap.get(projectId)
                     .runAll(projectId, runProject);
-        }
     }
 
     /*
@@ -122,57 +145,60 @@ public class WorkflowEngineHandler {
     /*
      * Stop project workflows
      * */
-    public static void stopProjectWorkflows(String projectId) {
-        if (processManagerHashMap.containsKey(projectId)) {
-            /*JELogger.debug("[projectId = " + projectId +"]"+JEMessages.STOPPING_WORKFLOW,
-                    LogCategory.RUNTIME, projectId,
-                    LogSubModule.WORKFLOW,null);*/
-            processManagerHashMap.get(projectId)
-                    .stopProjectWorkflows();
+    public static void stopProjectWorkflows(String projectId) throws WorkflowBuildException {
+        checkProcessManager(projectId);
 
-        }
+        /**/
+        JELogger.debug("[projectId = " + projectId +"]"+ JEMessages.STOPPING_WORKFLOW,
+                LogCategory.RUNTIME, projectId,
+                LogSubModule.WORKFLOW,null);
+
+        processManagerHashMap.get(projectId)
+                .stopProjectWorkflows();
+
     }
 
     /*
      * Start workflow by message id
      * */
-    public static void startProcessInstanceByMessage(String projectId, String messageEvent) {
-        if (processManagerHashMap.containsKey(projectId)) {
-            processManagerHashMap.get(projectId)
+    public static void startProcessInstanceByMessage(String projectId, String messageEvent) throws WorkflowBuildException {
+        checkProcessManager(projectId);
+
+        processManagerHashMap.get(projectId)
                     .launchProcessByMessageWithoutVariables(messageEvent);
 
-        }
     }
 
     /**/
-    public static void deleteProjectProcesses(String projectId) {
-      /*  JELogger.debug("[projectId = " + projectId +"]"+JEMessages.REMOVING_WFS,
+    public static void deleteProjectProcesses(String projectId) throws WorkflowBuildException {
+        /**/  JELogger.debug("[projectId = " + projectId +"]"+JEMessages.REMOVING_WFS,
                 LogCategory.RUNTIME, projectId,
-                LogSubModule.WORKFLOW,null);*/
-        if (processManagerHashMap.containsKey(projectId)) {
-            stopProjectWorkflows(projectId);
-            processManagerHashMap.remove(projectId);
-        }
+                LogSubModule.WORKFLOW,null);
 
+        checkProcessManager(projectId);
+
+        stopProjectWorkflows(projectId);
+        processManagerHashMap.remove(projectId);
 
     }
 
     //remove/stop workflow from runner
-    public static void deleteProcess(String projectId, String workflowId) throws WorkflowRunException {
-        if (processManagerHashMap.containsKey(projectId)) {
-            MonitoringMessage msg = new MonitoringMessage(LocalDateTime.now(), workflowId, ObjectType.JEWORKFLOW,
-                    projectId, workflowId, Status.STOPPED.toString());
-            JEMonitor.publish(msg);
-            processManagerHashMap.get(projectId)
-                    .removeProcess(workflowId);
-        }
+    public static void deleteProcess(String projectId, String workflowId) throws WorkflowBuildException, WorkflowRunException {
+        checkProcessManager(projectId);
+
+        MonitoringMessage msg = new MonitoringMessage(LocalDateTime.now(), workflowId, ObjectType.JEWORKFLOW,
+                projectId, workflowId, Status.STOPPED.toString());
+        JEMonitor.publish(msg);
+        processManagerHashMap.get(projectId)
+                .removeProcess(workflowId);
     }
 
     //Parse activiti task
     public static ActivitiTask parseTask(String projectId, String workflowId, String workflowName, TaskModel task) {
-        /*JELogger.debug("Parsing activiti task",
+        /* FIXME check if it spams */
+        JELogger.debug("Parsing activiti task",
                 LogCategory.RUNTIME, projectId,
-                LogSubModule.WORKFLOW,workflowId);*/
+                LogSubModule.WORKFLOW,workflowId);
         if (task.getType()
                 .equals(WorkflowConstants.WEBSERVICETASK_TYPE)) {
             return parseWebApiTask(projectId, workflowId, workflowName, task);
