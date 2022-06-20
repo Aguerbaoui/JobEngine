@@ -158,6 +158,15 @@
             <version>1.7.4</version>
             <scope>test</scope>
         </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-devtools -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+            <version>2.7.0</version>
+            <optional>true</optional>
+        </dependency>
+
     </dependencies>
     <build>
         <finalName>RuntimeManager</finalName>
