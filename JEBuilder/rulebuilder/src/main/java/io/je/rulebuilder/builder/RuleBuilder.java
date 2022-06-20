@@ -99,7 +99,6 @@ public class RuleBuilder {
 
             jeRunnerResp = JERunnerAPIHandler.compileRule(ruleMap);
 
-
         } else {
             try {
                 jeRunnerResp = JERunnerAPIHandler.updateRule(ruleMap);
@@ -112,15 +111,15 @@ public class RuleBuilder {
             }
         }
 
-
         if (jeRunnerResp == null || jeRunnerResp.getCode() != ResponseCodes.CODE_OK) {
             String response = jeRunnerResp == null ? JEMessages.JERUNNER_UNREACHABLE : jeRunnerResp.getMessage();
-            JELogger.error("[project = " + rule.getJobEngineProjectName() + "][rule =" + rule.getJobEngineElementName() + " ]" + JEMessages.RULE_BUILD_FAILED + response,
+            JELogger.error("[project = " + rule.getJobEngineProjectName()
+                            + "][rule =" + rule.getJobEngineElementName() + " ]"
+                            + JEMessages.RULE_BUILD_FAILED + response,
                     LogCategory.DESIGN_MODE, rule.getJobEngineProjectID(),
                     LogSubModule.RULE, rule.getJobEngineElementID());
             throw new RuleBuildFailedException(response);
         }
-
 
     }
 
@@ -173,13 +172,7 @@ public class RuleBuilder {
     }
 
 
-
-
-
-
-
     /* generate DRL for this rule */
-
     private static String generateScript(RuleParameters ruleParameters, String ruleId, String duration, String condition, String consequences)
             throws RuleBuildFailedException {
 
@@ -225,16 +218,19 @@ public class RuleBuilder {
         // number of execution blocks
         int executionBlockCounter = 0;
         // get root blocks
-        for (Block ruleBlock : uRule.getBlocks()
-                .getAll()) {
+        for (Block ruleBlock : uRule.getBlocks().getAll()) {
             if (ruleBlock instanceof ExecutionBlock) {
                 executionBlockCounter++;
                 for (var rootBlock : ruleBlock.getInputBlocks()) {
+
                     if (rootBlock != null) {
-                        if (!(rootBlock.getBlock() instanceof OrBlock)) {
-                            roots.add(uRule.getBlocks()
-                                    .getBlock(rootBlock.getBlock()
-                                            .getJobEngineElementID()));
+                        // FIXME
+                        //if (!(rootBlock.getBlock() instanceof OrBlock)) {
+                            if (uRule.getBlocks() != null) {
+                                roots.add(uRule.getBlocks()
+                                        .getBlock(rootBlock.getBlock()
+                                                .getJobEngineElementID()));
+                            }
                             for (var b : uRule.getBlocks()
                                     .getBlock(rootBlock.getBlock()
                                             .getJobEngineElementID())
@@ -243,17 +239,17 @@ public class RuleBuilder {
                                     ((PersistableBlock) b.getBlock()).setTimePersistenceValue(((PersistableBlock) rootBlock.getBlock()).getTimePersistenceValue());
                                     ((PersistableBlock) b.getBlock()).setTimePersistenceUnit(((PersistableBlock) rootBlock.getBlock()).getTimePersistenceUnit());
                                 }
-
                             }
-                        } else {
+                        /*} else {
                             for (var b : uRule.getBlocks()
                                     .getBlock(rootBlock.getBlock()
                                             .getJobEngineElementID())
                                     .getInputBlocks()) {
+
                                 roots.add(b.getBlock());
 
                             }
-                        }
+                        }*/
                     }
 
                 }
