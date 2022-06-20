@@ -67,11 +67,10 @@ public class UserDefinedRule extends JERule {
 	@Override
 	public void loadTopics()
 	{
-		this.setTopics(new ConcurrentHashMap());
+		resetAllTopics();
+
 		for(Block block : blocks.getAll())
 		{
-			
-			
 			if(block instanceof InstanceGetterBlock)
 			{
 				InstanceGetterBlock b = (InstanceGetterBlock)block;
@@ -87,8 +86,8 @@ public class UserDefinedRule extends JERule {
 				}
 			}
 		}
-		
-		//for specific instance topics, they are only added if there isn't already a generic topic that inludes their class
+
+		//for specific instance topics, they are only added if there isn't already a generic topic that includes their class
 		for(String instanceTopic : instanceTopics.keySet())
 		{
 			if(!this.getTopics().containsKey(instanceTopic.split("#")[0])) {
