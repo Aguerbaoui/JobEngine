@@ -10,84 +10,91 @@ public class ZMQRequester {
     private ZContext context = null;
 
 
-
     private String url;
 
     private int requestPort;
 
-    private String connectionUrl ;
+    private String connectionUrl;
 
     public ZMQRequester(String url, int requestPort) {
-    	connectionUrl = url+":"+requestPort;
+        connectionUrl = url + ":" + requestPort;
 
         this.context = new ZContext();
-        
+
     }
-    
+
     public ZMQRequester(String url) {
-    	connectionUrl = url;
+        connectionUrl = url;
         this.context = new ZContext();
-        
+        //kais
+        this.context.setSndHWM(100000000);
+        this.context.setRcvHWM(100000000);
     }
 
 
-    
-    
     public String sendRequest(String request, int timeout) {
         String reply = "";
         try {
-        	ZMQ.Socket  requestSocket = context.createSocket(SocketType.REQ);
-            if(ZMQSecurity.isSecure())
-            {
-            	requestSocket.setCurveServerKey(ZMQSecurity.getServerPair().publicKey.getBytes());
-            	requestSocket.setCurveSecretKey(ZMQSecurity.getServerPair().secretKey.getBytes());
-            	requestSocket.setCurvePublicKey(ZMQSecurity.getServerPair().publicKey.getBytes());
+            ZMQ.Socket requestSocket = context.createSocket(SocketType.REQ);
+            if (ZMQSecurity.isSecure()) {
+                requestSocket.setCurveServerKey(ZMQSecurity.getServerPair().publicKey.getBytes());
+                requestSocket.setCurveSecretKey(ZMQSecurity.getServerPair().secretKey.getBytes());
+                requestSocket.setCurvePublicKey(ZMQSecurity.getServerPair().publicKey.getBytes());
             }
             requestSocket.setReceiveTimeOut(timeout);
-           
+
             requestSocket.connect(connectionUrl);
             requestSocket.send(request, 0);
             reply = requestSocket.recvStr(0);
-  
-        	 requestSocket.close();
-          	context.destroySocket(requestSocket);
-             // requestSocket = null;
-          
+
+            requestSocket.close();
+            context.destroySocket(requestSocket);
+            // requestSocket = null;
+
             return reply;
         } catch (Exception e) {
-        	e.printStackTrace();
+            e.printStackTrace();
         }
         return reply;
     }
 
-    
+
     public String sendRequest(String request) {
         String reply = "";
+        ZMQ.Socket requestSocket = null;
         try {
-        	ZMQ.Socket  requestSocket = context.createSocket(SocketType.REQ);
-            if(ZMQSecurity.isSecure())
-            {
-            	requestSocket.setCurveServerKey(ZMQSecurity.getServerPair().publicKey.getBytes());
-            	requestSocket.setCurveSecretKey(ZMQSecurity.getServerPair().secretKey.getBytes());
-            	requestSocket.setCurvePublicKey(ZMQSecurity.getServerPair().publicKey.getBytes());
+            requestSocket = context.createSocket(SocketType.REQ);
+
+
+            if (ZMQSecurity.isSecure()) {
+
+                requestSocket.setCurveServerKey(ZMQSecurity.getServerPair().publicKey.getBytes());
+                requestSocket.setCurveSecretKey(ZMQSecurity.getServerPair().secretKey.getBytes());
+                requestSocket.setCurvePublicKey(ZMQSecurity.getServerPair().publicKey.getBytes());
             }
-            requestSocket.setReceiveTimeOut(-1);           
+            requestSocket.setReceiveTimeOut(-1);
+
             requestSocket.connect(connectionUrl);
             requestSocket.send(request, 0);
             reply = requestSocket.recvStr(0);
-  
-        	 requestSocket.close();
-          	context.destroySocket(requestSocket);
-             // requestSocket = null;
-          
+
+            requestSocket.close();
+            context.destroySocket(requestSocket);
+            // requestSocket = null;
+
             return reply;
         } catch (Exception e) {
-        	e.printStackTrace();
+            e.printStackTrace();
+        } finally {
+            if (requestSocket != null) {
+                requestSocket.close();
+                context.destroySocket(requestSocket);
+            }
         }
         return reply;
     }
 
-  
+
     public ZContext getContext() {
         return context;
     }
@@ -95,8 +102,6 @@ public class ZMQRequester {
     public void setContext(ZContext context) {
         this.context = context;
     }
-
-
 
 
     public String getUrl() {
@@ -117,5 +122,4 @@ public class ZMQRequester {
     }
 
 
- 
 }
