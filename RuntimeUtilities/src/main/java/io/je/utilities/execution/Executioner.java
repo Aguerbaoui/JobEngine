@@ -10,8 +10,11 @@ import io.je.utilities.exceptions.VariableNotFoundException;
 import io.je.utilities.instances.ClassRepository;
 import io.je.utilities.instances.InstanceManager;
 import io.je.utilities.log.JELogger;
+import io.siothconfig.SIOTHConfigUtility;
+import org.springframework.http.HttpStatus;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
+import utils.network.Network;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,6 +22,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -28,6 +33,7 @@ public class Executioner {
     static ObjectMapper objectMapper = new ObjectMapper();
     static ExecutorService executor = Executors.newCachedThreadPool();
     static int test = 0;
+    public static final String SEND_EMAIL_AUTH = "SendEmailAuth";
 
     private Executioner() {
     }
@@ -266,6 +272,47 @@ public class Executioner {
         //return ProcessRunner.executeCommandWithPidOutput(command);
 
         //long pid = ProcessRunner.executeCommandWithPidOutput(command);
+
+    }
+
+    /**
+     * Send email
+     */
+    public static void sendEmail(String projectId, String ruleId, String blockName, Map body) {
+        try {
+
+            executor.submit(() -> {
+                String url = SIOTHConfigUtility.getSiothConfig()
+                        .getApis()
+                        .getEmailAPI()
+                        .getAddress() + SEND_EMAIL_AUTH;
+                try {
+                    String json = new ObjectMapper().writeValueAsString(body);
+
+                    HashMap<String, Object> response = Network.makePostWebClientRequest(url, json);
+                    HttpStatus code = (HttpStatus) response.get("code");
+
+
+                    if (code.isError()) {
+                        JELogger.error(JEMessages.MAIL_SERVICE_TASK_RESPONSE + ": \n" + response.get("message"), LogCategory.RUNTIME, projectId,
+                                LogSubModule.JERUNNER, ruleId, blockName);
+
+                    } else {
+                        JELogger.control(JEMessages.EMAIL_SENT_SUCCESSFULLY, LogCategory.RUNTIME, projectId,
+                                LogSubModule.JERUNNER, ruleId, blockName);
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    JELogger.error(JEMessages.UNEXPECTED_ERROR + e.getMessage(), LogCategory.RUNTIME, projectId,
+                            LogSubModule.JERUNNER, ruleId, blockName);
+
+                }
+            });
+        } catch (Exception e) {
+            JELogger.error(JEMessages.EMAIL_BLOCK_ERROR, LogCategory.RUNTIME, projectId, LogSubModule.RULE, ruleId);
+
+        }
 
     }
 
