@@ -72,20 +72,15 @@ public class ProjectController {
 				data.put("ruleCount",  project.getRules().size());
 				data.put("workflowCount",  project.getWorkflows().size());
 				data.put("eventCount",  project.getEvents().size());
-			}else
+			}
+			else
 			{
 				return  JEExceptionHandler.handleException(new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND));
 			}
-
-		
-			
-
 		} catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
-
 		}
 		return ResponseEntity.ok(data);
-
 	}
 	
 	

@@ -158,9 +158,12 @@ public class ProcessManager {
                 }
             }
             /*Deployment*/
-            deployment = deploymentBuilder.deploy(); //to debug it if needed
-            /*JELogger.debug("id = " + deployment.getId() + " key = " + deployment.getKey() + " category =" + deployment.getCategory() +
-                    " tenant id =" + deployment.getTenantId());*/
+            deployment = deploymentBuilder.deploy();
+            //to debug it if needed
+            JELogger.trace("Test trace");
+            JELogger.debug("id = " + deployment.getId() + " key = " + deployment.getKey() + " category =" + deployment.getCategory() +
+                    " tenant id =" + deployment.getTenantId());
+
             processes.get(key)
                     .setDeployed(true);
             processes.get(key)
@@ -203,9 +206,10 @@ public class ProcessManager {
                 process.getActiveThread()
                         .start();
             } else {
-                /*JELogger.error(JEMessages.PROCESS_HAS_TO_BE_TRIGGERED_BY_EVENT,
-                        LogCategory.RUNTIME, processes.get(id).getProjectId(),
-                        LogSubModule.WORKFLOW, id);*/
+                JELogger.error(JEMessages.PROCESS_HAS_TO_BE_TRIGGERED_BY_EVENT,
+                        LogCategory.RUNTIME, processes.get(id)
+                                .getProjectId(),
+                        LogSubModule.WORKFLOW, id);
                 throw new WorkflowRunException(JEMessages.PROCESS_HAS_TO_BE_TRIGGERED_BY_EVENT);
             }
         }
@@ -234,23 +238,25 @@ public class ProcessManager {
                 process.setActiveThread(new Thread(() -> {
                     try {
                         ProcessInstance p = runtimeService.startProcessInstanceByKey(id, variables);
-                    } catch (Exception e) {
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
                     }
                     //process.setRunning(true);
                 }));
                 process.getActiveThread()
                         .start();
             } catch (BpmnError e) {
-                JELogger.error("Error to be removed after dev = " + Arrays.toString(e.getStackTrace()),
+                JELogger.error("Error" + Arrays.toString(e.getStackTrace()),
                         LogCategory.RUNTIME, processes.get(id)
                                 .getProjectId(),
                         LogSubModule.WORKFLOW, id);
                 throw new WorkflowBuildException(JEMessages.WORKFLOW_RUN_ERROR);
             }
         } else {
-            /*JELogger.error(JEMessages.PROCESS_HAS_TO_BE_TRIGGERED_BY_EVENT,
-                    LogCategory.RUNTIME, processes.get(id).getProjectId(),
-                    LogSubModule.WORKFLOW, id);*/
+            JELogger.error(JEMessages.PROCESS_HAS_TO_BE_TRIGGERED_BY_EVENT,
+                    LogCategory.RUNTIME, processes.get(id)
+                            .getProjectId(),
+                    LogSubModule.WORKFLOW, id);
         }
 
 
@@ -403,14 +409,17 @@ public class ProcessManager {
             }
 
         } catch (ActivitiObjectNotFoundException e) {
-            /*JELogger.error(JEMessages.ERROR_DELETING_A_NON_EXISTING_PROCESS,
-                    LogCategory.RUNTIME, processes.get(workflowId).getProjectId(),
-                    LogSubModule.WORKFLOW, workflowId);*/
-        } catch (Exception e) {
-         /*   JELogger.error(JEMessages.ERROR_DELETING_A_PROCESS + "\n" + Arrays.toString(e.getStackTrace()),
+
+            JELogger.error(JEMessages.ERROR_DELETING_A_NON_EXISTING_PROCESS,
                     LogCategory.RUNTIME, processes.get(workflowId)
                             .getProjectId(),
-                    LogSubModule.WORKFLOW, workflowId);*/
+                    LogSubModule.WORKFLOW, workflowId);
+        } catch (Exception e) {
+
+            JELogger.error(JEMessages.ERROR_DELETING_A_PROCESS + "\n" + Arrays.toString(e.getStackTrace()),
+                    LogCategory.RUNTIME, processes.get(workflowId)
+                            .getProjectId(),
+                    LogSubModule.WORKFLOW, workflowId);
         }
 
     }

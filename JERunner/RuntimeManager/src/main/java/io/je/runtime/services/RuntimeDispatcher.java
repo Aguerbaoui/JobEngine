@@ -100,10 +100,17 @@ public class RuntimeDispatcher {
     // run project
     public void stopProject(String projectId, String projectName) {
 
+        String msg = "[project = " + projectName + "]";
         // stop workflows
-        JELogger.control("[project = " + projectName + "]" + JEMessages.STOPPING_PROJECT, LogCategory.RUNTIME, projectId,
+        JELogger.control(msg + JEMessages.STOPPING_PROJECT, LogCategory.RUNTIME, projectId,
                 LogSubModule.JERUNNER, null);
-        WorkflowEngineHandler.stopProjectWorkflows(projectId);
+        try {
+            WorkflowEngineHandler.stopProjectWorkflows(projectId);
+        } catch (WorkflowBuildException ex) {
+            JELogger.error(msg, LogCategory.RUNTIME, projectId,
+                    LogSubModule.WORKFLOW, ex.getMessage(), ex.toString());
+        }
+
         List<String> topics = DataModelListener.getTopicsByProjectId(projectId);
         DataModelListener.stopListening(topics);
         projectStatus.put(projectId, false);
@@ -202,9 +209,11 @@ public class RuntimeDispatcher {
     public void launchProcessWithoutVariables(String projectId, String key, boolean runProject)
             throws WorkflowNotFoundException, WorkflowAlreadyRunningException,
             WorkflowBuildException, WorkflowRunException {
-		/*JELogger.debug("[projectId = " + projectId + "] [workflow = " + key + "]" + JEMessages.RUNNING_WF,
-				LogCategory.RUNTIME, projectId, LogSubModule.WORKFLOW, key);*/
+
+		/**/JELogger.debug("[projectId = " + projectId + "] [workflow = " + key + "] " + JEMessages.RUNNING_WF,
+				LogCategory.RUNTIME, projectId, LogSubModule.WORKFLOW, key);
         //buildWorkflow(projectId, key);
+
         WorkflowEngineHandler.launchProcessWithoutVariables(projectId, key, runProject);
 
     }
@@ -213,9 +222,15 @@ public class RuntimeDispatcher {
      * Run all workflows deployed in the engine without project specification
      */
     public void runAllWorkflows(String projectId) throws WorkflowNotFoundException {
-        JELogger.debug("[projectId = " + projectId + "]" + JEMessages.RUNNING_WFS, LogCategory.RUNTIME, projectId,
+        String msg = "[projectId = " + projectId + "]";
+        JELogger.debug(msg + JEMessages.RUNNING_WFS, LogCategory.RUNTIME, projectId,
                 LogSubModule.WORKFLOW, null);
-        WorkflowEngineHandler.runAllWorkflows(projectId, false);
+        try {
+            WorkflowEngineHandler.runAllWorkflows(projectId, false);
+        } catch (WorkflowBuildException ex) {
+            JELogger.error(msg, LogCategory.RUNTIME, projectId,
+                    LogSubModule.WORKFLOW, ex.getMessage(), ex.toString());
+        }
     }
 
     /**
@@ -261,7 +276,7 @@ public class RuntimeDispatcher {
 
     }
 
-    public void updateClass(ClassModel classModel) throws ClassLoadException, ClassNotFoundException {
+    public void updateClass(ClassModel classModel) throws ClassLoadException {
         if (classModel.getClassAuthor()
                 .equals(ClassAuthor.DATA_MODEL)) {
             RuleEngineHandler.reloadContainers();
@@ -346,10 +361,16 @@ public class RuntimeDispatcher {
     // clean project data from runner
     // Remove events, topics to listen to, rules and workflows
     public void removeProjectData(String projectId) {
-        JELogger.debug("[projectId = " + projectId + "]" + JEMessages.DELETING_PROJECT, LogCategory.RUNTIME, projectId,
+        String msg = "[projectId = " + projectId + "]";
+        JELogger.debug(msg + JEMessages.DELETING_PROJECT, LogCategory.RUNTIME, projectId,
                 LogSubModule.JERUNNER, null);
         EventManager.deleteProjectEvents(projectId);
-        WorkflowEngineHandler.deleteProjectProcesses(projectId);
+        try {
+            WorkflowEngineHandler.deleteProjectProcesses(projectId);
+        } catch (WorkflowBuildException ex) {
+            JELogger.error(msg, LogCategory.RUNTIME, projectId,
+                    LogSubModule.WORKFLOW, ex.getMessage(), ex.toString());
+        }
         RuleEngineHandler.deleteProjectRules(projectId);
         DataModelListener.removeDMListener(projectId);
     }
@@ -369,6 +390,9 @@ public class RuntimeDispatcher {
             JELogger.debug(JEMessages.ERROR_DELETING_A_NON_EXISTING_PROCESS,
                     LogCategory.RUNTIME, projectId,
                     LogSubModule.WORKFLOW, workflowId);
+        } catch (WorkflowBuildException ex) {
+            JELogger.error(workflowId, LogCategory.RUNTIME, projectId,
+                    LogSubModule.WORKFLOW, ex.getMessage(), ex.toString());
         }
     }
 
@@ -481,9 +505,14 @@ public class RuntimeDispatcher {
     public static void informUser(String message, String projectName, String workflowName) {
         new Thread(() -> {
             String projectId = projectNameToId.get(projectName);
-            JEProcess process = WorkflowEngineHandler.getProcessByID(projectId, workflowName);
-            JELogger.info(message, LogCategory.RUNTIME, projectId,
-                    LogSubModule.WORKFLOW, process.getKey());
+            try {
+                JEProcess process = WorkflowEngineHandler.getProcessByID(projectId, workflowName);
+                JELogger.info(message, LogCategory.RUNTIME, projectId,
+                        LogSubModule.WORKFLOW, process.getKey());
+            } catch (WorkflowBuildException ex) {
+                JELogger.error(message, LogCategory.RUNTIME, projectId,
+                        LogSubModule.WORKFLOW, ex.getMessage(), ex.toString());
+            }
         }).start();
 
     }

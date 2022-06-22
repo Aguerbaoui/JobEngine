@@ -59,8 +59,7 @@ public class WorkflowController {
 
         try {
             projectService.getProject(projectId);
-            OperationStatusDetails result = workflowService.buildWorkflow(projectId, key)
-                    .get();
+            OperationStatusDetails result = workflowService.buildWorkflow(projectId, key).get();
             if (result.isOperationSucceeded()) {
                 return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, WORKFLOW_BUILT_SUCCESSFULLY));
             }
@@ -240,7 +239,6 @@ public class WorkflowController {
 
         } catch (Exception e) {
             return JEExceptionHandler.handleException(e);
-
         }
         return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, WORKFLOW_UPDATED_SUCCESS));
     }

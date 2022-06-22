@@ -925,7 +925,7 @@ public class WorkflowService {
      */
     @Async
     public CompletableFuture<OperationStatusDetails> buildWorkflow(String projectId, String workflowId)
-            throws LicenseNotActiveException, ProjectNotFoundException, ProjectLoadException {
+            throws LicenseNotActiveException, ProjectNotFoundException, ProjectLoadException, WorkflowBuildException {
         //LicenseProperties.checkLicenseIsActive();
 
         JEProject project = projectService.getProjectById(projectId);
@@ -938,25 +938,31 @@ public class WorkflowService {
 
         JEWorkflow workflow = project.getWorkflowByIdOrName(workflowId);
         result.setItemName(workflow.getJobEngineElementName());
-        result.setItemName(workflow.getJobEngineElementName());
         result.setItemId(workflowId);
+
         if (!workflow.isEnabled()) {
             result.setOperationSucceeded(false);
             result.setOperationError(JEMessages.WORKFLOW_IS_DISABLED);
             return CompletableFuture.completedFuture(result);
         }
         JELogger.control(
-                "[project=" + project.getProjectName() + " ][workflow = " + workflow.getJobEngineElementName() + "]"
+                "[project=" + project.getProjectName() + " ] [workflow = " + workflow.getJobEngineElementName() + "] "
                         + JEMessages.BUILDING_WF,
                 LogCategory.DESIGN_MODE, projectId,
                 LogSubModule.WORKFLOW, workflowId);
 
         if (project.workflowHasError(workflow) || !WorkflowBuilder.buildWorkflow(workflow)) {
+            String msg = "[project=" + project.getProjectName() + " ] [workflow = " + workflow.getJobEngineElementName() + "] "
+                            + JEMessages.WORKFLOW_BUILD_ERROR;
+
+            result.setOperationError(msg);
             result.setOperationSucceeded(false);
-            result.setOperationError(JEMessages.WORKFLOW_BUILD_ERROR + " " + workflow.getJobEngineElementName());
-            // throw new WorkflowBuildException(JEMessages.WORKFLOW_BUILD_ERROR + " " +
-            // workflow.getJobEngineElementName());
+
+            JELogger.error(msg, LogCategory.DESIGN_MODE, projectId, LogSubModule.WORKFLOW, workflowId);
+
+            throw new WorkflowBuildException(msg);
         }
+
         workflowRepository.save(workflow);
         return CompletableFuture.completedFuture(result);
     }
