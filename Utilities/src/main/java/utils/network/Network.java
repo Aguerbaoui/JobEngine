@@ -2,11 +2,18 @@ package utils.network;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.squareup.okhttp.*;
+import io.netty.resolver.DefaultAddressResolverGroup;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
+import reactor.netty.http.client.HttpClient;
 
-import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -41,8 +48,8 @@ public class Network {
     }
 
     /*
-    * Async executor for network calls
-    * */
+     * Async executor for network calls
+     * */
     public static Executor getAsyncExecutor() {
 
         if (executor == null) {
@@ -62,11 +69,14 @@ public class Network {
     /*
      * Get with response
      * */
-    public static Response makeGetNetworkCallWithResponse(String url) throws  InterruptedException, ExecutionException {
-        Request request = new Request.Builder().url(url).get().build();
+    public static Response makeGetNetworkCallWithResponse(String url) throws InterruptedException, ExecutionException {
+        Request request = new Request.Builder().url(url)
+                .get()
+                .build();
         CompletableFuture<Response> f = CompletableFuture.supplyAsync(() -> {
             try {
-                return client.newCall(request).execute();
+                return client.newCall(request)
+                        .execute();
             } catch (IOException e) {
                 return null;
             }
@@ -88,7 +98,8 @@ public class Network {
                 .post(requestBody)
                 .build();
 
-        return client.newCall(request).execute();
+        return client.newCall(request)
+                .execute();
 
         /*RequestBody requestBody = new MultipartBuilder()
                 .type(MultipartBuilder.FORM)
@@ -113,11 +124,14 @@ public class Network {
         //return resp[0];
     }
 
-    public static Response makeDeleteNetworkCallWithResponse(String url) throws  InterruptedException, ExecutionException {
-        Request request = new Request.Builder().url(url).delete().build();
+    public static Response makeDeleteNetworkCallWithResponse(String url) throws InterruptedException, ExecutionException {
+        Request request = new Request.Builder().url(url)
+                .delete()
+                .build();
         CompletableFuture<Response> f = CompletableFuture.supplyAsync(() -> {
             try {
-                return client.newCall(request).execute();
+                return client.newCall(request)
+                        .execute();
             } catch (IOException e) {
                 return null;
             }
@@ -130,17 +144,19 @@ public class Network {
      * */
     public static Response makeNetworkCallWithJsonBodyWithResponse(Object json, String url) throws IOException, InterruptedException, ExecutionException {
         String jsonStr = "";
-        if(json instanceof String) {
-            jsonStr = (String)json;
-        }
-        else {
+        if (json instanceof String) {
+            jsonStr = (String) json;
+        } else {
             jsonStr = new ObjectMapper().writeValueAsString(json);
         }
         RequestBody body = RequestBody.create(MediaType.parse("application/json"), jsonStr);
-        Request request = new Request.Builder().url(url).post(body).build();
+        Request request = new Request.Builder().url(url)
+                .post(body)
+                .build();
         CompletableFuture<Response> f = CompletableFuture.supplyAsync(() -> {
             try {
-                return client.newCall(request).execute();
+                return client.newCall(request)
+                        .execute();
             } catch (IOException e) {
                 return null;
             }
@@ -149,17 +165,20 @@ public class Network {
     }
 
     /*
-    * Patch with json body
-    * */
+     * Patch with json body
+     * */
     public static Response makePatchNetworkCallWithJsonBodyWithResponse(Object json, String url) throws IOException, InterruptedException, ExecutionException {
         String jsonStr = "";
 
         jsonStr = new ObjectMapper().writeValueAsString(json);
         RequestBody body = RequestBody.create(MediaType.parse("application/json"), jsonStr);
-        Request request = new Request.Builder().url(url).patch(body).build();
+        Request request = new Request.Builder().url(url)
+                .patch(body)
+                .build();
         CompletableFuture<Response> f = CompletableFuture.supplyAsync(() -> {
             try {
-                return client.newCall(request).execute();
+                return client.newCall(request)
+                        .execute();
             } catch (IOException e) {
                 return null;
             }
@@ -168,14 +187,17 @@ public class Network {
     }
 
     /*
-    * Post with string body
-    * */
-    public static Response makeNetworkCallWithStringObjectBodyWithResponse(String json, String url) throws  ExecutionException, InterruptedException {
+     * Post with string body
+     * */
+    public static Response makeNetworkCallWithStringObjectBodyWithResponse(String json, String url) throws ExecutionException, InterruptedException {
         RequestBody body = RequestBody.create(MediaType.parse("application/json"), json);
-        Request request = new Request.Builder().url(url).post(body).build();
+        Request request = new Request.Builder().url(url)
+                .post(body)
+                .build();
         CompletableFuture<Response> f = CompletableFuture.supplyAsync(() -> {
             try {
-                return client.newCall(request).execute();
+                return client.newCall(request)
+                        .execute();
             } catch (IOException e) {
                 return null;
             }
@@ -184,33 +206,48 @@ public class Network {
     }
 
     /*
-    * Execute network call
-    * */
-    public static HashMap<String, Object> makePrimitiveNetworkCallWithJson(String url, String json) throws IOException {
-        URL uri = new URL (url);
-        HttpURLConnection con = (HttpURLConnection)uri.openConnection();
-        con.setRequestMethod("POST");
-        con.setRequestProperty("Content-Type", "application/json; utf-8");
-        con.setRequestProperty("Accept", "application/json");
-        con.setDoOutput(true);
-        try(OutputStream os = con.getOutputStream()) {
-            byte[] input = json.getBytes("utf-8");
-            os.write(input, 0, input.length);
-        }
-        int code = con.getResponseCode();
-        //System.out.println(code);
-        StringBuilder response = new StringBuilder();
-        try(BufferedReader br = new BufferedReader(
-                new InputStreamReader(con.getInputStream(), "utf-8"))) {
-            String responseLine = null;
-            while ((responseLine = br.readLine()) != null) {
-                response.append(responseLine.trim());
-            }
-            //System.out.println(response.toString());
-        }
+     * Execute network call
+     * */
+    public static HashMap<String, Object> makePostWebClientRequest(String url, String json) throws IOException {
+
+        HttpClient httpClient = HttpClient.create()
+                .resolver(DefaultAddressResolverGroup.INSTANCE);
+
+        WebClient webClient = WebClient.builder()
+                .clientConnector(new ReactorClientHttpConnector(httpClient))
+                .baseUrl(url)
+                .defaultHeader(HttpHeaders.CONTENT_TYPE, "application/json; utf-8")
+                .build();
+
         HashMap<String, Object> responseMap = new HashMap<>();
-        responseMap.put("code", con.getResponseCode());
-        responseMap.put("message", response.toString());
+        ResponseEntity<Void> emailResponse;
+        try {
+            emailResponse = webClient.post()
+
+                    .header(HttpHeaders.CONTENT_TYPE, "application/json; utf-8")
+                    .bodyValue(json)
+                    .retrieve()
+
+                    // error body as String or other class
+                    .onStatus(HttpStatus::isError, response -> response.bodyToMono(String.class)
+                            .flatMap(res -> {
+                                responseMap.put("code", response.statusCode());
+                                return Mono.error(new RuntimeException(res));
+                            }))
+
+                    .toBodilessEntity()
+                    .block();
+        } catch (Exception e) {
+            responseMap.put("message", e.getMessage());
+            return responseMap;
+        }
+
+        if (emailResponse != null) {
+            responseMap.put("message", emailResponse);
+            responseMap.put("code", emailResponse.getStatusCode());
+        }
+/*        responseMap.put("code", con.getResponseCode());
+        responseMap.put("message", response.toString());*/
         return responseMap;
     }
 
@@ -222,13 +259,13 @@ public class Network {
         Request.Builder builder = null;
 
         if (hasParameters) {
-                HttpUrl.Builder httpBuilder = HttpUrl.parse(url).newBuilder();
-                for (Map.Entry<String, String> param : parameters.entrySet()) {
-                    httpBuilder.addQueryParameter(param.getKey(), param.getValue());
-                }
-                builder = new Request.Builder().url(httpBuilder.build());
-        }
-        else {
+            HttpUrl.Builder httpBuilder = HttpUrl.parse(url)
+                    .newBuilder();
+            for (Map.Entry<String, String> param : parameters.entrySet()) {
+                httpBuilder.addQueryParameter(param.getKey(), param.getValue());
+            }
+            builder = new Request.Builder().url(httpBuilder.build());
+        } else {
             builder = new Request.Builder().url(url);
         }
         if (hasBody) {
@@ -237,27 +274,24 @@ public class Network {
                 requestBody = RequestBody.create(MediaType.parse("application/json"), body);
             }
             builder.post(requestBody);
-        }
-        else {
+        } else {
             builder.get();
         }
 
-        if(authScheme == AuthScheme.BASIC) {
+        if (authScheme == AuthScheme.BASIC) {
             String credential = Credentials.basic(authentication.get(USERNAME), authentication.get(PASSWORD));
             builder.header(AUTHORIZATION, credential);
-        }
-        else if(authScheme == AuthScheme.BEARER){
+        } else if (authScheme == AuthScheme.BEARER) {
             String token = BEARER + authentication.get(TOKEN);
             builder.addHeader(AUTHORIZATION, token);
-        }
-        else if(authScheme == AuthScheme.API_KEY){
+        } else if (authScheme == AuthScheme.API_KEY) {
             String key = authentication.get(KEY);
             String value = authentication.get(VALUE);
             builder.addHeader(key, value);
         }
 
-        if(hasHeaders) {
-            for(String key: headers.keySet()) {
+        if (hasHeaders) {
+            for (String key : headers.keySet()) {
                 builder.addHeader(key, headers.get(key));
             }
         }
@@ -266,7 +300,8 @@ public class Network {
         client.setReadTimeout(1, TimeUnit.MINUTES);
         client.setWriteTimeout(1, TimeUnit.MINUTES);
         client.setConnectTimeout(1, TimeUnit.MINUTES);
-        return client.newCall(request).execute();
+        return client.newCall(request)
+                .execute();
     }
 
     /*

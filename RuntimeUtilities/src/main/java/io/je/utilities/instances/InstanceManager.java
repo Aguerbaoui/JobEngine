@@ -13,9 +13,7 @@ import utils.comparator.Comparator;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 /*
@@ -86,16 +84,21 @@ public class InstanceManager {
             String dataReceived = DataModelRequester.getLastInstanceValue(instanceId);
 
             if (dataReceived != null) {
-                List<HashMap<String, Object>> attributes = objectMapper.readValue(dataReceived,
-                        objectMapper.getTypeFactory()
-                                .constructCollectionType(ArrayList.class, HashMap.class));
-                for (HashMap<String, Object> attribute : attributes) {
+                var instance = objectMapper.readValue(dataReceived,
+                        HashMap.class);
+                var instanceAttributes = (HashMap) instance.get("Payload");
+                //System.out.println(instanceAttributes);
+                return instanceAttributes.get(attributeName)
+                        .toString();
+                //! old method not working anymore with new datamodel service changes
+                //? HA: 13/06/2022
+           /*     for (String attribute : (HashMap<String, Object>) ) {
                     if (attribute.get("attributeName")
                             .equals(attributeName)) {
                         return attribute.get("value")
                                 .toString();
                     }
-                }
+                }*/
 
             } else {
                 JELogger.error(JEMessages.READ_INSTANCE_FAILED + instanceId, null, "", LogSubModule.JERUNNER,

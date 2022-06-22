@@ -106,6 +106,7 @@ public class ComparisonBlock extends PersistableBlock {
 
             return firstOperand + getOperator() + " (String) " + formatOperator(threshold);
         }
+        //FIXME: check implementation to handle variables case using getInputBlockByOrder
         String firstOperand = /*"(double) " +*/ getInputReferenceByOrder(0);
         return firstOperand + getOperator() + asDouble(formatOperator(threshold));
 
