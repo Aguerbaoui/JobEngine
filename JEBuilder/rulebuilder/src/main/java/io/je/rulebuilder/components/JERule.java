@@ -3,6 +3,7 @@ package io.je.rulebuilder.components;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -154,6 +155,12 @@ public abstract class JERule extends JEObject  {
 		this.topics = topics;
 	}
 
+	public void resetAllTopics() {
+		this.topics = new ConcurrentHashMap();
+		this.classTopics = new ConcurrentHashMap();
+		this.instanceTopics = new ConcurrentHashMap();
+	}
+
 	public boolean isEnabled() {
 		return enabled;
 	}
@@ -191,14 +198,5 @@ public abstract class JERule extends JEObject  {
 		this.containsErrors = containsErrors;
 	}
 
-
-	
-		
-
-
-
-
-	
-	
 
 }
