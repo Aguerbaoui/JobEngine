@@ -112,6 +112,8 @@ public class ProjectContainer {
     }
 
     public void resetContainer() {
+        JELogger.debug(JEMessages.RELOADING_PROJECT_CONTAINER, LogCategory.RUNTIME, projectId, LogSubModule.RULE,
+                null);
         if (kieContainer != null && reloadContainer) {
             initKieBase();
             if (status == Status.RUNNING) {
@@ -195,7 +197,7 @@ public class ProjectContainer {
           /*          kieSession.addEventListener(new DebugAgendaEventListener());
                     kieSession.addEventListener(new DebugRuleRuntimeEventListener());*/
 
-
+                    //  kieSession.addEventListener(new RuleListener(projectId));
                     //kieSession.addEventListener(ruleListener);
                     // Thread.currentThread().setContextClassLoader(loader);
                     kieSession.fireUntilHalt();

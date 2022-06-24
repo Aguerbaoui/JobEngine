@@ -1,9 +1,7 @@
 package io.je.ruleengine.impl;
 
 import io.je.ruleengine.models.Rule;
-import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.*;
-import io.je.utilities.log.JELogger;
 import io.je.utilities.runtimeobject.JEObject;
 
 import java.util.List;
@@ -50,7 +48,7 @@ public class RuleEngine {
 	public static boolean stopRuleExecution(String projectId) {
 
 		ProjectContainer project = projectManager.getProjectContainer(projectId);
-		return project.stopRuleExecution(true,false);
+		return project.stopRuleExecution(true, false);
 	}
 
 	public static boolean fireRules(String projectId, List<Rule> rules, boolean removePreviouslyAddedRules) {
@@ -80,7 +78,7 @@ public class RuleEngine {
 		String projectID = rule.getJobEngineProjectID();
 		ProjectContainer project = projectManager.getProjectContainer(projectID);
 		project.compileRule(rule);
-		
+
 	}
 
 
@@ -100,7 +98,6 @@ public class RuleEngine {
     } */
 
 
-
 	public boolean compileRules(List<Rule> rules) throws RuleCompilationException, JEFileNotFoundException {
 
 		for (Rule rule : rules) {
@@ -109,7 +106,7 @@ public class RuleEngine {
 		return true;
 	}
 
-	public static void deleteRule(String projectId,String ruleId) throws DeleteRuleException {
+	public static void deleteRule(String projectId, String ruleId) throws DeleteRuleException {
 		ProjectContainer project = projectManager.getProjectContainer(projectId);
 		project.deleteRule(ruleId);
 	}
@@ -156,7 +153,7 @@ public class RuleEngine {
 	public static void assertFact(String projectId, JEObject fact) {
 		ProjectContainer project = projectManager.getProjectContainer(projectId);
 		project.insertFact(fact);
-		
+
 	}
 
 	public static Rule getRule(String projectId, String ruleId) {
@@ -167,25 +164,26 @@ public class RuleEngine {
 	public static void deleteFact(String projectId, String factId) {
 		ProjectContainer project = projectManager.getProjectContainer(projectId);
 		project.retractFact(factId);
-		
+
 	}
 
 	public static void reloadContainers() {
-		for(ProjectContainer project : ProjectContainerRepository.getAllProjects().values())
-		{
-			if(project.getStatus()==Status.RUNNING)
-			{
-				JELogger.error(JEMessages.ILLEGAL_OPERATION_CLASS_UPDATE_DURING_PROJECT_RUN, null, null, null, null);
-				project.setReloadContainer(true);	
-			}else {
+		for (ProjectContainer project : ProjectContainerRepository.getAllProjects()
+				.values()) {
+			if (project.getStatus() == Status.RUNNING) {
+				// JELogger.error(JEMessages.ILLEGAL_OPERATION_CLASS_UPDATE_DURING_PROJECT_RUN, null, null, null, null);
+				//https://softok.integrationobjects.com/system/modules/Issue/Ticket_Details.aspx?code=14654
+				//! forced reset container
+				project.setReloadContainer(true);
+				project.resetContainer();
+			} else {
 				project.resetContainer();
 			}
-				
+
 
 		}
-		
-	}
 
+	}
 
 
 }
