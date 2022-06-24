@@ -7,24 +7,27 @@ public class WorkflowConstants {
     public static final String MESSAGE = "message";
     public static final String SCRIPT = "script";
     public static final String TIMEOUT = "timeout";
+    public static final String IMPORT_DATAMODEL = "importDataModelClasses";
     public static final String ERROR_REF = "errorRef";
     public static final String EVENT_TYPE = "eventType";
 
-    private WorkflowConstants() {}
-    public static final  String PROCESS_LISTENER_IMPLEMENTATION = "io.je.executionListeners.ProcessListener";
-    public static final  String GATEWAYS_LISTENER_IMPLEMENTATION = "io.je.executionListeners.GatewaysListener";
-    public static final  String TASKS_LISTENER_IMPLEMENTATION = "io.je.executionListeners.TasksListener";
-    public static final  String START_PROCESS = "start";
-    public static final  String END_PROCESS = "end";
-    public static final  String DB_TASK_IMPLEMENTATION = "io.je.serviceTasks.DatabaseServiceTask";
-    public static final  String MAIL_TASK_IMPLEMENTATION = "io.je.serviceTasks.MailServiceTask";
-    public static final  String START_TYPE = "start";
-    public static final  String END_TYPE = "end";
-    public static final  String EVENTGATEWAY_TYPE = "eventgateway";
-    public static final  String MESSAGEINTERMEDIATECATCHEVENT_TYPE = "messageintermediatecatchevent";
-    public static final  String SIGNALINTERMEDIATECATCHEVENT_TYPE = "signalintermediatecatcheventtype";
-    public static final  String MESSAGE_THROW_EVENT_TYPE = "messagethroweventtype";
-    public static final  String SIGNAL_THROW_EVENT_TYPE = "signalthroweventtype";
+    private WorkflowConstants() {
+    }
+
+    public static final String PROCESS_LISTENER_IMPLEMENTATION = "io.je.executionListeners.ProcessListener";
+    public static final String GATEWAYS_LISTENER_IMPLEMENTATION = "io.je.executionListeners.GatewaysListener";
+    public static final String TASKS_LISTENER_IMPLEMENTATION = "io.je.executionListeners.TasksListener";
+    public static final String START_PROCESS = "start";
+    public static final String END_PROCESS = "end";
+    public static final String DB_TASK_IMPLEMENTATION = "io.je.serviceTasks.DatabaseServiceTask";
+    public static final String MAIL_TASK_IMPLEMENTATION = "io.je.serviceTasks.MailServiceTask";
+    public static final String START_TYPE = "start";
+    public static final String END_TYPE = "end";
+    public static final String EVENTGATEWAY_TYPE = "eventgateway";
+    public static final String MESSAGEINTERMEDIATECATCHEVENT_TYPE = "messageintermediatecatchevent";
+    public static final String SIGNALINTERMEDIATECATCHEVENT_TYPE = "signalintermediatecatcheventtype";
+    public static final String MESSAGE_THROW_EVENT_TYPE = "messagethroweventtype";
+    public static final String SIGNAL_THROW_EVENT_TYPE = "signalthroweventtype";
     public static final String SEQ_FLOW_TYPE = "sequenceflow";
     public static final String EXCLUSIVEGATEWAY_TYPE = "exclusivegateway";
     public static final String SCRIPTTASK_TYPE = "scripttask";
@@ -68,7 +71,7 @@ public class WorkflowConstants {
     public static final String PASSWORD = "strPassword";
     public static final String USERNAME = "strUserName";
     public static final String ENABLE_SSL = "bEnableSSL";
-    public static final  String WEB_TASK_IMPLEMENTATION = "io.je.serviceTasks.WebApiServiceTask";
+    public static final String WEB_TASK_IMPLEMENTATION = "io.je.serviceTasks.WebApiServiceTask";
     public static final String SCRIPT_TASK_IMPLEMENTATION = "io.je.serviceTasks.ScriptServiceTask";
     public static final String INFORM_TASK_IMPLEMENTATION = "io.je.serviceTasks.InformServiceTask";
     public static final String PUBLIC = "PUBLIC";

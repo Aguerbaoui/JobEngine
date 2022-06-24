@@ -507,6 +507,8 @@ public class WorkflowService {
             // update to an existent class, no longer temporary class
             c.setImports(imports);
             c.setName(name);
+            c.setImportDataModelClasses((Boolean) block.getAttributes()
+                    .get(IMPORT_DATAMODEL));
             // True to send directly to JERunner
             try {
                 classService.compileCode(c, SCRIPTS_PACKAGE);
@@ -953,7 +955,7 @@ public class WorkflowService {
 
         if (project.workflowHasError(workflow) || !WorkflowBuilder.buildWorkflow(workflow)) {
             String msg = "[project=" + project.getProjectName() + " ] [workflow = " + workflow.getJobEngineElementName() + "] "
-                            + JEMessages.WORKFLOW_BUILD_ERROR;
+                    + JEMessages.WORKFLOW_BUILD_ERROR;
 
             result.setOperationError(msg);
             result.setOperationSucceeded(false);
