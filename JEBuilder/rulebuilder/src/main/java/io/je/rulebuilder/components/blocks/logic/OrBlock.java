@@ -9,8 +9,8 @@ public  class OrBlock extends LogicBlock {
 
 	
 	public OrBlock(BlockModel blockModel) {
-		super(blockModel);	
-		operator = " || ";
+		super(blockModel);
+		operator = " or ";
 	}
 
 	 public OrBlock() {
@@ -21,6 +21,7 @@ public  class OrBlock extends LogicBlock {
 	public String getExpression() throws RuleBuildFailedException {
 		StringBuilder expression = new StringBuilder();
 
+		// FIXME fires executions as much as true conditions
 		expression.append(" ( ");
 		for(int i=0; i<inputBlocks.size();i++)
 		{
@@ -28,7 +29,7 @@ public  class OrBlock extends LogicBlock {
 			expression.append(inputBlocks.get(i).getExpression());
 			expression.append(" ) ");
 			if (i < inputBlocks.size() - 1) { //&& !inputBlocks.get(i).getExpression().isEmpty()) {
-				expression.append(operator);
+				expression.append(" or "); // FIXME operator / Or operation
 			}
 		}
 		expression.append(" ) ");
