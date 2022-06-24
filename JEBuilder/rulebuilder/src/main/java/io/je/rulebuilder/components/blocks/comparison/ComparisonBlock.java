@@ -4,6 +4,7 @@ package io.je.rulebuilder.components.blocks.comparison;
 import io.je.rulebuilder.components.BlockLinkModel;
 import io.je.rulebuilder.components.blocks.PersistableBlock;
 import io.je.rulebuilder.components.blocks.getter.InstanceGetterBlock;
+import io.je.rulebuilder.components.blocks.getter.VariableGetterBlock;
 import io.je.rulebuilder.config.AttributesMapping;
 import io.je.rulebuilder.config.Keywords;
 import io.je.rulebuilder.models.BlockModel;
@@ -107,7 +108,7 @@ public class ComparisonBlock extends PersistableBlock {
             return firstOperand + getOperator() + " (String) " + formatOperator(threshold);
         }
         //FIXME: check implementation to handle variables case using getInputBlockByOrder
-        String firstOperand = /*"(double) " +*/ getInputReferenceByOrder(0);
+        String firstOperand = (getInputBlockByOrder(0) instanceof VariableGetterBlock ? "(double) " : "") + getInputReferenceByOrder(0);
         return firstOperand + getOperator() + asDouble(formatOperator(threshold));
 
     }
