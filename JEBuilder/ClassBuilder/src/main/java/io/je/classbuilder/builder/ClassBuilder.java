@@ -1,36 +1,28 @@
 package io.je.classbuilder.builder;
 
-import java.io.File;
-import java.lang.reflect.Modifier;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-
-import io.je.utilities.beans.ClassAuthor;
-import io.je.utilities.config.ConfigurationConstants;
-import org.burningwave.core.assembler.ComponentContainer;
-import org.burningwave.core.assembler.ComponentSupplier;
-import org.burningwave.core.classes.AnnotationSourceGenerator;
-import org.burningwave.core.classes.ClassFactory;
-import org.burningwave.core.classes.ClassSourceGenerator;
-import org.burningwave.core.classes.FunctionSourceGenerator;
-import org.burningwave.core.classes.TypeDeclarationSourceGenerator;
-import org.burningwave.core.classes.UnitSourceGenerator;
-import org.burningwave.core.classes.VariableSourceGenerator;
-
-import io.je.utilities.beans.ClassType;
 import io.je.classbuilder.models.ClassDefinition;
 import io.je.classbuilder.models.FieldModel;
 import io.je.classbuilder.models.MethodModel;
+import io.je.utilities.beans.ClassAuthor;
+import io.je.utilities.beans.ClassType;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.AddClassException;
 import io.je.utilities.exceptions.ClassLoadException;
 import io.je.utilities.log.JELogger;
 import io.je.utilities.runtimeobject.JEObject;
+import org.burningwave.core.assembler.ComponentContainer;
+import org.burningwave.core.assembler.ComponentSupplier;
+import org.burningwave.core.classes.*;
 import utils.files.FileUtilities;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
 import utils.string.StringUtilities;
+
+import java.io.File;
+import java.lang.reflect.Modifier;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import static io.je.utilities.config.ConfigurationConstants.getJobEngineCustomImport;
 import static io.je.utilities.constants.ClassBuilderConfig.CLASS_PACKAGE;
@@ -75,7 +67,7 @@ public class ClassBuilder {
     }
 
     /* add imports */
-    private static void addImports(List<String> imports, UnitSourceGenerator unitSG, ClassAuthor classAuthor) {
+    private static void addImports(List<String> imports, UnitSourceGenerator unitSG, ClassAuthor classAuthor, Boolean importDataModelClasses) {
         //TODO : remove harcoded imports
         unitSG.addImport("com.fasterxml.jackson.annotation.JsonProperty");
         unitSG.addImport("com.fasterxml.jackson.annotation.JsonFormat");
@@ -91,7 +83,7 @@ public class ClassBuilder {
         unitSG.addImport("javax.sql.*");
         unitSG.addImport("io.je.utilities.execution.*");
         unitSG.addImport("io.je.utilities.models.*");
-        if (!classAuthor.equals(ClassAuthor.DATA_MODEL)) {
+        if (!classAuthor.equals(ClassAuthor.DATA_MODEL) && Boolean.TRUE.equals(importDataModelClasses)) {
             unitSG.addImport(getJobEngineCustomImport());
         }
         //TODO: add job engine api
@@ -113,7 +105,7 @@ public class ClassBuilder {
     private static String generateInterface(ClassDefinition classDefinition, String generationPath) throws ClassLoadException {
         UnitSourceGenerator unitSG = UnitSourceGenerator.create(CLASS_PACKAGE);
         //add imports
-        addImports(classDefinition.getImports(), unitSG, classDefinition.getClassAuthor());
+        addImports(classDefinition.getImports(), unitSG, classDefinition.getClassAuthor(), classDefinition.isImportDataModelClasses());
         // class name
         String interfaceName = classDefinition.getName();
         TypeDeclarationSourceGenerator type = TypeDeclarationSourceGenerator.create(interfaceName);
@@ -171,7 +163,7 @@ public class ClassBuilder {
     private static String generateClass(ClassDefinition classDefinition, String generationPath, String packageName) throws ClassLoadException {
         UnitSourceGenerator unitSG = UnitSourceGenerator.create(packageName);
         //add imports
-        addImports(classDefinition.getImports(), unitSG, classDefinition.getClassAuthor());
+        addImports(classDefinition.getImports(), unitSG, classDefinition.getClassAuthor(), classDefinition.isImportDataModelClasses());
 
 
         // class name
