@@ -461,7 +461,8 @@ public class RuleService {
 
             }
         }
-        result = ruleFuture.stream()
+        //TODO: check if it improves speed
+        result = ruleFuture.parallelStream()
                 .map(CompletableFuture::join)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
