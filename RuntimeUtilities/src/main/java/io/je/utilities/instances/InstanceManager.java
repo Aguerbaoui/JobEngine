@@ -33,7 +33,7 @@ public class InstanceManager {
         instanceModel.setInstanceId(instanceJson.getString(InstanceModelMapping.INSTANCEID));
         instanceModel.setModelId(instanceJson.getString(InstanceModelMapping.MODELID));
         instanceModel.setModelName(instanceJson.getString(InstanceModelMapping.MODELNAME));
-
+        instanceModel.setInstanceName(instanceJson.getString(InstanceModelMapping.INSTANCENAME));
         instanceModel.setPayload(instanceJson.getJSONObject(InstanceModelMapping.PAYLOAD));
         return instanceModel;
     }
@@ -62,6 +62,7 @@ public class InstanceManager {
 
         payload.put("jobEngineElementID", instanceModel.getInstanceId());
         payload.put("className", instanceClass.getName());
+        payload.put("jobEngineElementName", instanceModel.getInstanceName());
         // instanceJson.put("jobEngineElementName", instanceModel.getInstanceName());
 
         try {

@@ -625,7 +625,6 @@ public class JEMessages {
     public static final String RULE_EXECUTION_ERROR = "Rule execution error: ";
     public static final String ERROR_DELETING_A_PROCESS = "Error deleting a process";
     public static final String INFORM_BLOCK_ERROR = "Failed to execute Inform block";
-
     public static final String EMAIL_BLOCK_ERROR = "Failed to execute Email block";
     public static final String BLOCK_NAME_CAN_T_BE_UPDATED_BECAUSE_IT_ALREADY_EXISTS = "Block name cannot be updated because its name already exists";
     public static final String WORKFLOW_BUILD_ERROR = "Error while deploying the workflow ";
