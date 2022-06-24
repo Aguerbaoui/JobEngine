@@ -10,7 +10,7 @@ public  class OrBlock extends LogicBlock {
 	
 	public OrBlock(BlockModel blockModel) {
 		super(blockModel);	
-		operator = "or";
+		operator = " || ";
 	}
 
 	 public OrBlock() {
@@ -20,30 +20,36 @@ public  class OrBlock extends LogicBlock {
 	@Override
 	public String getExpression() throws RuleBuildFailedException {
 		StringBuilder expression = new StringBuilder();
-		
 
-		for(int i=0; i<outputBlocks.size();i++)
+		expression.append(" ( ");
+		for(int i=0; i<inputBlocks.size();i++)
 		{
-			expression.append(outputBlocks.get(i).getExpression());
-			expression.append("\n");
-		}	
+			expression.append(" ( ");
+			expression.append(inputBlocks.get(i).getExpression());
+			expression.append(" ) ");
+			if (i < inputBlocks.size() - 1) { //&& !inputBlocks.get(i).getExpression().isEmpty()) {
+				expression.append(operator);
+			}
+		}
+		expression.append(" ) ");
+
+
+/*
+		// not (not A and not B)
+		expression.append(" not ( ");
+		for(int i=0; i<inputBlocks.size();i++)
+		{
+			expression.append(" not ( ");
+			expression.append(inputBlocks.get(i).getExpression());
+			expression.append(" ) ");
+			if (i < inputBlocks.size() - 1) {
+				expression.append(" and ");
+			}
+		}
+		expression.append(" ) ");
+*/
+
 		return expression.toString();
 	}
-
-
-	
-
-
-	
-
-
-
-
-
-
-
-
-
-
 
 }

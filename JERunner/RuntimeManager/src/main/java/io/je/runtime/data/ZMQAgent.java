@@ -25,8 +25,9 @@ public class ZMQAgent extends ZMQSubscriber {
 			String data = null;
 			try {
 				data = this.getSubSocket(ZMQBind.CONNECT).recvStr();
-			} catch (Exception e) {
+			} catch (Exception ex) {
 				closeSocket();
+				JELogger.trace(ex.getMessage(), LogCategory.RUNTIME, null, LogSubModule.JERUNNER, topic);
 				continue;
 			}
 
@@ -42,10 +43,6 @@ public class ZMQAgent extends ZMQSubscriber {
 						LogSubModule.JERUNNER, null);
 			}
 
-			try {
-			} catch (Exception e) {
-				JELogger.error(JEMessages.THREAD_INTERRUPTED, LogCategory.RUNTIME, null, LogSubModule.JERUNNER, null);
-			}
 		}
 
 		closeSocket();
