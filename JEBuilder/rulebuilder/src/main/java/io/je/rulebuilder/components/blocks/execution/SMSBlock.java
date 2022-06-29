@@ -65,8 +65,8 @@ public class SMSBlock extends ExecutionBlock {
                     .get(SMS_MESSAGE);
             receiverPhoneNumbers = (List<String>) blockModel.getBlockConfiguration()
                     .get(RECEIVER_PHONE_NUMBERS);
+            isProperlyConfigured = serverType != null;
 
-            isProperlyConfigured = true;
 
         } catch (Exception e) {
             isProperlyConfigured = false;
