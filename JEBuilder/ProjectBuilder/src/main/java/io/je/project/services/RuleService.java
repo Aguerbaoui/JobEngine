@@ -1,5 +1,8 @@
 package io.je.project.services;
 
+import com.twilio.Twilio;
+import com.twilio.base.ResourceSet;
+import com.twilio.rest.api.v2010.account.OutgoingCallerId;
 import io.je.project.beans.JEProject;
 import io.je.project.config.LicenseProperties;
 import io.je.project.repository.RuleRepository;
@@ -1031,6 +1034,28 @@ public class RuleService {
         ruleRepository.deleteAll();
     }
 
+    /**
+     * Temporary method
+     *
+     * @param accountSID account SID from twilio platform
+     * @param token      token from twilio platform
+     * @return List<String> of users
+     */
+    public List<HashMap<String, String>> getTwilioVerifiedUsers(String accountSID, String token) {
+        Twilio.init(accountSID, token);
+        ResourceSet<OutgoingCallerId> outgoingCallerIds =
+                OutgoingCallerId.reader()
+                        .limit(100)
+                        .read();
+        List<HashMap<String, String>> users = new ArrayList<>();
+        for (OutgoingCallerId record : outgoingCallerIds) {
+            HashMap<String, String> user = new HashMap<>();
+            user.put("name", record.getFriendlyName());
+            user.put("phoneNumber", String.valueOf(record.getPhoneNumber()));
+            users.add(user);
+        }
+        return users;
+    }
     /*
      * public List<OperationStatusDetails> compileRules3(String projectId,
      * List<String> ruleIds) throws LicenseNotActiveException,

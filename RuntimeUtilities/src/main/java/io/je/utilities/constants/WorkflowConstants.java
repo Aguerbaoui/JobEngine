@@ -71,6 +71,15 @@ public class WorkflowConstants {
     public static final String PASSWORD = "strPassword";
     public static final String USERNAME = "strUserName";
     public static final String ENABLE_SSL = "bEnableSSL";
+
+    //region SMS
+    public static final String SERVER_TYPE = "serverType";
+    public static final String RECEIVER_PHONE_NUMBERS = "receiverPhoneNumbers";
+    public static final String TWILIO_ACCOUNT_SID = "accountSID";
+    public static final String TWILIO_ACCOUNT_TOKEN = "accountToken";
+    public static final String TWILIO_SENDER_PHONE_NUMBER = "senderPhoneNumber";
+    public static final String SMS_MESSAGE = "message";
+    //endregion
     public static final String WEB_TASK_IMPLEMENTATION = "io.je.serviceTasks.WebApiServiceTask";
     public static final String SCRIPT_TASK_IMPLEMENTATION = "io.je.serviceTasks.ScriptServiceTask";
     public static final String INFORM_TASK_IMPLEMENTATION = "io.je.serviceTasks.InformServiceTask";

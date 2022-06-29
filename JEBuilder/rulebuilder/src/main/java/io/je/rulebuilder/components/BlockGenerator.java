@@ -143,6 +143,8 @@ public class BlockGenerator {
                 return new LinkedAttachedSetterBlock(blockModel);
             case 5009:
                 return new EmailBlock(blockModel);
+            case 5010:
+                return new SMSBlock(blockModel);
             case 6001:
                 return new AcceptEventBlock(blockModel);
             // no operation with such id
