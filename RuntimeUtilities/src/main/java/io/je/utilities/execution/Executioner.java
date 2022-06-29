@@ -1,6 +1,9 @@
 package io.je.utilities.execution;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.twilio.Twilio;
+import com.twilio.rest.api.v2010.account.Message;
+import com.twilio.type.PhoneNumber;
 import io.je.project.variables.VariableManager;
 import io.je.utilities.apis.JERunnerRequester;
 import io.je.utilities.beans.JEZMQResponse;
@@ -23,13 +26,19 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import static io.je.utilities.constants.JEMessages.ERROR_OCCURRED_WHEN_SENDING_MESSAGE_TO;
+import static io.je.utilities.constants.JEMessages.SENT_MESSAGE_SUCCESSFULLY_TO;
+import static io.je.utilities.constants.WorkflowConstants.*;
+
 public class Executioner {
 
     static final int MAX_THREAD_COUNT = 100;
+
     static ObjectMapper objectMapper = new ObjectMapper();
     static ExecutorService executor = Executors.newCachedThreadPool();
     static int test = 0;
@@ -311,6 +320,47 @@ public class Executioner {
             });
         } catch (Exception e) {
             JELogger.error(JEMessages.EMAIL_BLOCK_ERROR, LogCategory.RUNTIME, projectId, LogSubModule.RULE, ruleId);
+
+        }
+
+    }
+
+    /**
+     * Send sms using twilio or another server
+     */
+    public static void sendSMS(String projectId, String ruleId, String blockName, Map body, String messageBody) {
+        try {
+
+            executor.submit(() -> {
+
+                Twilio.init((String) body.get(TWILIO_ACCOUNT_SID), (String) body.get(TWILIO_ACCOUNT_TOKEN));
+                List<String> phoneNumbers = (List<String>) body.get(RECEIVER_PHONE_NUMBERS);
+                String twilioPhoneNumber = (String) body.get(TWILIO_SENDER_PHONE_NUMBER);
+
+                phoneNumbers.forEach(number -> {
+
+
+                    try {
+                        Message message = Message.creator(
+                                        new PhoneNumber(number),
+                                        new PhoneNumber(twilioPhoneNumber),
+                                        messageBody)
+                                .create();
+                        JELogger.control(SENT_MESSAGE_SUCCESSFULLY_TO + new PhoneNumber(number), LogCategory.RUNTIME, projectId,
+                                LogSubModule.JERUNNER, ruleId, blockName);
+                    } catch (Exception e) {
+                        JELogger.error(ERROR_OCCURRED_WHEN_SENDING_MESSAGE_TO + new PhoneNumber(number) + ": " + e.getMessage(), LogCategory.RUNTIME, projectId,
+                                LogSubModule.JERUNNER, ruleId, blockName);
+
+                    }
+
+
+                });
+
+            });
+
+        } catch (Exception e) {
+            JELogger.error(JEMessages.SMS_BLOCK_ERROR, LogCategory.RUNTIME, projectId, LogSubModule.RULE, ruleId);
 
         }
 
