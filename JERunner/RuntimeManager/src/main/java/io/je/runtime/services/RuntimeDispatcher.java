@@ -32,10 +32,7 @@ import utils.log.LogSubModule;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 import static io.je.utilities.constants.JEMessages.ADDING_JAR_FILE_TO_RUNNER;
@@ -275,7 +272,7 @@ public class RuntimeDispatcher {
 
     }
 
-    public void updateClass(ClassModel classModel) throws ClassLoadException, ClassNotFoundException {
+    public void updateClass(ClassModel classModel) throws ClassLoadException {
         //https://softok.integrationobjects.com/system/modules/Issue/Ticket_Details.aspx?code=14654
         //? reversed adding class with reloading container
         addClass(classModel, true);
@@ -321,7 +318,7 @@ public class RuntimeDispatcher {
     public void addTopics(String projectId, String listenerId, String listenerType, List<String> topics) {
         if (topics != null && !topics.isEmpty()) {
             DMListener dMListener = new DMListener(listenerId, projectId, listenerType);
-            DataModelListener.addDMListener(dMListener, topics);
+            DataModelListener.addDMListener(dMListener, new HashSet<>(topics));
         }
     }
 
@@ -464,7 +461,6 @@ public class RuntimeDispatcher {
     }
 
     public void shutDownRuleEngine(String projectId) {
-
 
         RuleEngineHandler.stopRuleEngineProjectExecution(projectId);
         projectStatus.put(projectId, false);

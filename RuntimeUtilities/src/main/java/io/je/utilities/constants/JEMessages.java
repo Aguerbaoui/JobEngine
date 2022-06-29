@@ -103,7 +103,7 @@ public class JEMessages {
 
     public static final String STOPPED_LISTENING_ON_TOPICS = "Stopping listening to topics: ";
 
-    public static final String INTERRUPT_TOPIC_ERROR = "Error interrupting thread for topic: ";
+    public static final String INTERRUPT_TOPIC_ERROR = "Error interrupting thread for topics: ";
 
     public static final String DATA_RECEIVED = "Data received  ";
 

@@ -17,11 +17,11 @@ public class JERunnerInitBean implements InitializingBean {
 	ConfigurationService configurationService;
 
     @Override
-    public void afterPropertiesSet() throws Exception {
+    public void afterPropertiesSet() {
         try {
         	configurationService.init(runnerProperties);
             ZMQConfiguration.setHeartbeatTimeout(runnerProperties.getZmqHeartbeatValue());
-            ZMQConfiguration.setHeartbeatInterval(runnerProperties.getZmqHeartbeatInterval());
+            ZMQConfiguration.setHandshakeInterval(runnerProperties.getZmqHeartbeatInterval());
             ZMQConfiguration.setReceiveHighWatermark(runnerProperties.getZmqReceiveHighWatermark());
             ZMQConfiguration.setSendHighWatermark(runnerProperties.getZmqSendHighWatermark());
         }

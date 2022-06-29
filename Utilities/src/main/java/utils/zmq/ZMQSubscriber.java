@@ -4,6 +4,9 @@ import org.zeromq.SocketType;
 import org.zeromq.ZContext;
 import org.zeromq.ZMQ;
 
+import java.util.List;
+import java.util.Set;
+
 public abstract class ZMQSubscriber implements Runnable {
 
 	protected ZContext context = null;
@@ -14,14 +17,14 @@ public abstract class ZMQSubscriber implements Runnable {
 
 	protected int subPort;
 
-	protected String topic;
+	protected Set<String> topics;
 
 	protected volatile boolean listening = false;
 
-	public ZMQSubscriber(String url, int subPort, String topic) {
+	public ZMQSubscriber(String url, int subPort, Set<String> topics) {
 		this.url = url;
 		this.subPort = subPort;
-		this.topic = topic;
+		this.topics = topics;
 		this.context = new ZContext();
 	}
 
@@ -31,27 +34,35 @@ public abstract class ZMQSubscriber implements Runnable {
 	}
 
 	public void closeSocket() {
-		if (this.subSocket != null) {
-			this.subSocket.close();
-			this.context.destroySocket(subSocket);
-			this.subSocket = null;
+
+		if (subSocket != null) {
+			subSocket.close();
+			context.destroySocket(subSocket);
+			subSocket = null;
 		}
+
 	}
 
 	public void connectToAddress(ZMQBind bindType) throws ZMQConnectionFailedException {
 		try {
-			this.subSocket = this.context.createSocket(SocketType.SUB);
-			this.subSocket.setHeartbeatTimeout(ZMQConfiguration.HEARTBEAT_TIMEOUT);
-			this.subSocket.setHandshakeIvl(ZMQConfiguration.HEARTBEAT_INTERVAL);
-			this.subSocket.setRcvHWM(ZMQConfiguration.RECEIVE_HIGH_WATERMARK);
-			this.subSocket.setReceiveTimeOut(-1);
-			if (bindType == ZMQBind.CONNECT) {
-				this.subSocket.connect(url + ":" + subPort);
-			} else if (bindType == ZMQBind.BIND) {
-				this.subSocket.bind(url + ":" + subPort);
+			if (subSocket == null) {
+				subSocket = this.context.createSocket(SocketType.SUB);
+				subSocket.setHeartbeatTimeout(ZMQConfiguration.HEARTBEAT_TIMEOUT);
+				subSocket.setHandshakeIvl(ZMQConfiguration.HANDSHAKE_INTERVAL);
+				subSocket.setRcvHWM(ZMQConfiguration.RECEIVE_HIGH_WATERMARK);
+				subSocket.setReceiveTimeOut(-1);
 
+				if (bindType == ZMQBind.CONNECT) {
+					subSocket.connect(url + ":" + subPort);
+				} else if (bindType == ZMQBind.BIND) {
+					subSocket.bind(url + ":" + subPort);
+				}
 			}
-			this.subSocket.subscribe(topic.getBytes());
+
+			for (String topic : topics) {
+				subSocket.subscribe(topic.getBytes());
+			}
+
 			if (ZMQSecurity.isSecure()) {
 				subSocket.setCurveServerKey(ZMQSecurity.getServerPair().publicKey.getBytes());
 				subSocket.setCurveSecretKey(ZMQSecurity.getServerPair().secretKey.getBytes());
@@ -64,12 +75,22 @@ public abstract class ZMQSubscriber implements Runnable {
 	}
 
 	public ZMQ.Socket getSubSocket(ZMQBind bindType) throws ZMQConnectionFailedException {
-		if (subSocket == null) {
+		//if (subSocket == null) {
 
 			connectToAddress(bindType);
 
-		}
+		//}
 		return subSocket;
+	}
+
+	public void removeTopics(List<String> topics) {
+		for (String topic : topics) {
+			subSocket.unsubscribe(topic.getBytes());
+			this.topics.remove(topic);
+		}
+		if (this.topics.isEmpty()) {
+			setListening(false);
+		}
 	}
 
 	public boolean isListening() {
@@ -88,8 +109,8 @@ public abstract class ZMQSubscriber implements Runnable {
 		this.context = context;
 	}
 
-	public void setSubSocket(ZMQ.Socket subSocket) {
-		this.subSocket = subSocket;
+	public void setSubSocket(ZMQ.Socket _subSocket) {
+		subSocket = _subSocket;
 	}
 
 	public String getUrl() {
@@ -108,12 +129,12 @@ public abstract class ZMQSubscriber implements Runnable {
 		this.subPort = subPort;
 	}
 
-	public String getTopic() {
-		return topic;
+	public Set<String> getTopics() {
+		return topics;
 	}
 
-	public void setTopic(String topic) {
-		this.topic = topic;
+	public void setTopics(Set<String> topics) {
+		this.topics = topics;
 	}
 
 	// public abstract void handleConnectionFail();
