@@ -11,10 +11,7 @@ import io.siothconfig.SIOTHConfigUtility;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -26,16 +23,16 @@ public class DataModelListener {
     /*
      * Map of topic-listener
      * */
-    private static ConcurrentHashMap<String , Thread> activeThreads = new ConcurrentHashMap<>();
-    private static HashMap<String, ZMQAgent> agents = new HashMap<>();
+    private static Thread activeThread = null;
+    private static ZMQAgent agent = null;
     private static ObjectMapper objectMapper = new ObjectMapper();
-	static Map<String,DMTopic> allTopics = new HashMap<>();
+	static Map<String,DMTopic> allDMTopics = new HashMap<>();
 	
 	
 	
 	public static List<String> getTopicsByProjectId(String projectId){
 		List<String> topics = new ArrayList<>();
-		for(DMTopic topic : allTopics.values())
+		for(DMTopic topic : allDMTopics.values())
 		{
 			if(topic.getProjects().contains(projectId))
 			{
@@ -47,7 +44,7 @@ public class DataModelListener {
 	
 	public static List<String> getRuleTopicsByProjectId(String projectId){
 		List<String> topics = new ArrayList<>();
-		for(DMTopic topic : allTopics.values())
+		for(DMTopic topic : allDMTopics.values())
 		{
 			if(topic.getProjects().contains(projectId) )
 			{
@@ -62,22 +59,11 @@ public class DataModelListener {
 		}
 		return topics;
 	}
-	
 
-    
-   /* public static void subscribeToTopic(String topic )
-    {
-    	createNewZmqAgent(topic);
-    }
-*/
-    private static void createNewZmqAgent(String topic) {
-       
-            if(!agents.containsKey(topic))
-            {
-            	ZMQAgent agent = new ZMQAgent("tcp://"+SIOTHConfigUtility.getSiothConfig().getNodes().getSiothMasterNode(), SIOTHConfigUtility.getSiothConfig().getDataModelPORTS().getDmService_PubAddress(), topic);
-                agents.put(topic, agent);
-            }
-        
+    private static void createNewZmqAgent(Set<String> topics) {
+
+		agent = new ZMQAgent("tcp://"+SIOTHConfigUtility.getSiothConfig().getNodes().getSiothMasterNode(),
+						SIOTHConfigUtility.getSiothConfig().getDataModelPORTS().getDmService_PubAddress(), topics);
 
     }
 
@@ -86,24 +72,19 @@ public class DataModelListener {
                 null, LogSubModule.JERUNNER, null);
     	for (String id : topics)
     	{
-			synchronized (activeThreads) {
-    			if(!activeThreads.containsKey(id))
-				{
-    			readInitialValues(id);
-        		ZMQAgent agent = agents.get(id);
-        		{
-        			if (agent!=null && !agent.isListening())
-        			{
-        				agent.setListening(true);
-        	    		Thread thread = new Thread(agent);
-        	    		activeThreads.put(id, thread);
-        	    		thread.start();
-        			}
-        		}
-    		}
-    	}
+			readInitialValues(id);
 		}
-    
+
+		if (agent!=null && !agent.isListening())
+		{
+			agent.setListening(true);
+			if (activeThread != null) {
+				activeThread.interrupt();
+				activeThread = null;
+			}
+			activeThread = new Thread(agent);
+			activeThread.start();
+		}
     }
 
     private static void readInitialValues(String modelId) {
@@ -113,57 +94,40 @@ public class DataModelListener {
      		 try {				
 				RuntimeDispatcher.injectData(new JEData(modelId, objectMapper.writeValueAsString(value)));
 				
-			} catch (  JsonProcessingException e) {
+			} catch (JsonProcessingException e) {
 				e.printStackTrace();
-			
 			}
-
 		}
-		
-		
 	}
 
 	public static void stopListening(List<String> topics) {
         JELogger.control(JEMessages.STOPPED_LISTENING_ON_TOPICS + topics,  LogCategory.RUNTIME,
                 null, LogSubModule.JERUNNER, null);
-        for (String id : topics)
-        {
-        	 if(agents.containsKey(id))
-        	 {
-        		 agents.get(id).setListening(false);
-        	 }
+
             try {
-            	
-                activeThreads.remove(id);
+				agent.removeTopics(topics);
             }
             catch (Exception e) {
-                JELogger.error(JEMessages.INTERRUPT_TOPIC_ERROR + id,  LogCategory.RUNTIME,
-                        null, LogSubModule.JERUNNER, null);
+                JELogger.error(JEMessages.INTERRUPT_TOPIC_ERROR + topics.toString(),  LogCategory.RUNTIME,
+                        null, LogSubModule.JERUNNER, e.getMessage());
             }
-        }
     }
 
-	public static String getTopics() {
-		return agents.keySet().toString();
-		
-	}
+	public static void addDMListener(DMListener dMListener, Set<String> topics) {
+		createNewZmqAgent(topics);
 
-	public static void addDMListener(DMListener dMListener, List<String> topics) {
 		for(String topic : topics)
 		{
-			if(!allTopics.containsKey(topic))
+			if(!allDMTopics.containsKey(topic))
 			{
-				allTopics.put(topic, new DMTopic(topic)) ;
-				createNewZmqAgent(topic);
+				allDMTopics.put(topic, new DMTopic(topic)) ;
 			}
-			allTopics.get(topic).addListener(dMListener);
-			
+			allDMTopics.get(topic).addListener(dMListener);
 		}
-		
 	}
 	
 	public static void removeDMListener(String listenerId) {
-		for(Entry<String, DMTopic> topic : allTopics.entrySet())
+		for(Entry<String, DMTopic> topic : allDMTopics.entrySet())
 		{
 			if(topic.getValue().hasListener(listenerId))
 			{
@@ -176,7 +140,7 @@ public class DataModelListener {
 	}
 
 	public static void removeListenersByProjectId(String projectId) {
-		for(Entry<String, DMTopic> topic : allTopics.entrySet())
+		for(Entry<String, DMTopic> topic : allDMTopics.entrySet())
 		{
 			topic.getValue().removeAllProjectListeners(projectId);
 			stopListeningOnTopicIfNoSubscribers(topic.getValue());
@@ -197,7 +161,7 @@ public class DataModelListener {
 
 	public static List<String> getProjectsSubscribedToTopic(String topic) {
 		
-		return allTopics.get(topic).getProjects();
+		return allDMTopics.get(topic).getProjects();
 		
 	}
 

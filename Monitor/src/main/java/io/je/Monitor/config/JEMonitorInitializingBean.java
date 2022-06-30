@@ -23,7 +23,7 @@ public class JEMonitorInitializingBean  implements InitializingBean {
     MonitorProperties monitorProperties;
 
     @Override
-    public void afterPropertiesSet() throws Exception {
+    public void afterPropertiesSet() {
         try {
             ConfigurationConstants.initConstants(monitorProperties.getSiothId(), monitorProperties.isDev());
             JELogger.initLogger("JEMonitor", monitorProperties.getJeMonitorLogPath(), monitorProperties.getJeMonitorLogLevel(), monitorProperties.isDev());
@@ -32,7 +32,7 @@ public class JEMonitorInitializingBean  implements InitializingBean {
                     LogCategory.MONITOR, null,
                     LogSubModule.JEMONITOR, null);
             ZMQConfiguration.setHeartbeatTimeout(monitorProperties.getZmqHeartbeatValue());
-            ZMQConfiguration.setHeartbeatInterval(monitorProperties.getZmqHeartbeatInterval());
+            ZMQConfiguration.setHandshakeInterval(monitorProperties.getZmqHeartbeatInterval());
             ZMQConfiguration.setReceiveHighWatermark(monitorProperties.getZmqReceiveHighWatermark());
             ZMQConfiguration.setSendHighWatermark(monitorProperties.getZmqSendHighWatermark());
             subscriber.initSubscriber();

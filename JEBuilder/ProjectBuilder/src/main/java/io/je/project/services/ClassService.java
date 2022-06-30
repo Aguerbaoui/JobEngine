@@ -93,8 +93,7 @@ public class ClassService {
                         .getSiothMasterNode(),
                 SIOTHConfigUtility.getSiothConfig()
                         .getDataModelPORTS()
-                        .getDmRestAPI_ConfigurationPubAddress(),
-                MODEL_TOPIC);
+                        .getDmRestAPI_ConfigurationPubAddress());
         runnable.setListening(true);
         Thread listener = new Thread(runnable);
         listener.start();
@@ -662,6 +661,7 @@ public class ClassService {
             CommandExecutioner.compileCode(clazz.getClassPath(), ConfigurationConstants.isDev());
             CommandExecutioner.buildJar();
         } catch (Exception e) {
+            e.printStackTrace();
         }
         //addClass(c, true, true);
         // save updated method in db
@@ -697,30 +697,42 @@ public class ClassService {
 
         ObjectMapper objectMapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
-        public ClassUpdateListener(String url, int subPort, String topic) {
-            super(url, subPort, topic);
+        public ClassUpdateListener(String url, int subPort) {
+            super(url, subPort, new HashSet<>(Arrays.asList(MODEL_TOPIC)));
 
         }
 
         @Override
         public void run() {
+
+            String last_topic = null;
+
             while (listening) {
 
                 //  JELogger.info(ClassUpdateListener.class, "--------------------------------------");
 
                 String data = null;
                 try {
-                    data = this.getSubSocket(ZMQBind.CONNECT)
-                            .recvStr();
+                    data = this.getSubSocket(ZMQBind.CONNECT).recvStr();
                 } catch (Exception e) {
                     e.printStackTrace();
                     continue;
                 }
 
                 try {
-                    if (data != null && !data.equals(topic)) {
+                    if (data == null) continue;
+
+                    if (last_topic == null) {
+                        for (String topic : topics) {
+                            if (data.equals(topic)) {
+                                last_topic = topic;
+                                break;
+                            }
+                        }
+                    } else {
                         JELogger.debug(JEMessages.DATA_RECEIVED + data, LogCategory.RUNTIME,
-                                null, LogSubModule.CLASS, null);
+                                null, LogSubModule.CLASS, last_topic);
+
                         List<ModelUpdate> updates = null;
                         try {
                             updates = Arrays.asList(objectMapper.readValue(data, ModelUpdate[].class));
@@ -743,8 +755,9 @@ public class ClassService {
                             }
                         }
 
-
+                        last_topic = null;
                     }
+
                 } catch (Exception e) {
                     e.printStackTrace();
                     JELogger.error(JEMessages.ERROR_GETTING_CLASS_UPDATES, LogCategory.DESIGN_MODE, null,
@@ -759,7 +772,10 @@ public class ClassService {
                 }
             }
 
+            closeSocket();
+
         }
 
     }
+
 }

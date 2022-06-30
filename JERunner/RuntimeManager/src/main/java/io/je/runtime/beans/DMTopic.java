@@ -12,9 +12,7 @@ public class DMTopic {
 	String id;
 	Map<String,DMListener> dMListeners;
 	List<String> projects;
-	
-	
-	
+
 	
 	public DMTopic(String id) {
 		super();
@@ -102,10 +100,4 @@ public class DMTopic {
 		
 	}
 
-
-
-	
-
-	
-	
 }

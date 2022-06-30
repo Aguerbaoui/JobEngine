@@ -4,119 +4,139 @@ import org.zeromq.SocketType;
 import org.zeromq.ZContext;
 import org.zeromq.ZMQ;
 
+import java.util.List;
+import java.util.Set;
+
 public abstract class ZMQSubscriber implements Runnable {
 
-    protected ZContext context = null;
+	protected ZContext context = null;
 
-    protected ZMQ.Socket subSocket = null;
+	protected ZMQ.Socket subSocket = null;
 
-    protected String url;
+	protected String url;
 
-    protected int subPort;
+	protected int subPort;
 
-    protected String topic;
+	protected Set<String> topics;
 
-    protected volatile boolean listening = false;
+	protected volatile boolean listening = false;
 
-    public ZMQSubscriber(String url, int subPort, String topic) {
-        this.url = url;
-        this.subPort = subPort;
-        this.topic = topic;
-        this.context = new ZContext();
-    }
+	public ZMQSubscriber(String url, int subPort, Set<String> topics) {
+		this.url = url;
+		this.subPort = subPort;
+		this.topics = topics;
+		this.context = new ZContext();
+	}
 
-    public ZMQSubscriber() {
-        super();
-        this.context = new ZContext();
-    }
+	public ZMQSubscriber() {
+		super();
+		this.context = new ZContext();
+	}
 
-    public void closeSocket() {
-        if (this.subSocket != null) {
-            this.subSocket.close();
-            this.context.destroySocket(subSocket);
-            this.subSocket = null;
-        }
-    }
+	public void connectToAddress(ZMQBind bindType) throws ZMQConnectionFailedException {
+		try {
+			if (subSocket == null) {
+				subSocket = this.context.createSocket(SocketType.SUB);
+				subSocket.setHeartbeatTimeout(ZMQConfiguration.HEARTBEAT_TIMEOUT);
+				subSocket.setHandshakeIvl(ZMQConfiguration.HANDSHAKE_INTERVAL);
+				subSocket.setRcvHWM(ZMQConfiguration.RECEIVE_HIGH_WATERMARK);
+				subSocket.setReceiveTimeOut(-1);
 
-    public void connectToAddress(ZMQBind bindType) throws ZMQConnectionFailedException {
-        try {
-            this.subSocket = this.context.createSocket(SocketType.SUB);
-            this.subSocket.setHeartbeatTimeout(ZMQConfiguration.HEARTBEAT_TIMEOUT);
-            this.subSocket.setHandshakeIvl(ZMQConfiguration.HEARTBEAT_INTERVAL);
-            this.subSocket.setRcvHWM(ZMQConfiguration.RECEIVE_HIGH_WATERMARK);
-            this.subSocket.setReceiveTimeOut(-1);
-            if (bindType == ZMQBind.CONNECT) {
-                this.subSocket.connect(url + ":" + subPort);
-            } else if (bindType == ZMQBind.BIND) {
-                this.subSocket.bind(url + ":" + subPort);
+				if (bindType == ZMQBind.CONNECT) {
+					subSocket.connect(url + ":" + subPort);
+				} else if (bindType == ZMQBind.BIND) {
+					subSocket.bind(url + ":" + subPort);
+				}
+			}
 
-            }
-            this.subSocket.subscribe(topic.getBytes());
+			for (String topic : topics) {
+				subSocket.subscribe(topic.getBytes());
+			}
 
-            if (ZMQSecurity.isSecure()) {
-                subSocket.setCurveServerKey(ZMQSecurity.getServerPair().publicKey.getBytes());
-                subSocket.setCurveSecretKey(ZMQSecurity.getServerPair().secretKey.getBytes());
-                subSocket.setCurvePublicKey(ZMQSecurity.getServerPair().publicKey.getBytes());
-            }
-        } catch (Exception e) {
-            closeSocket();
-            throw new ZMQConnectionFailedException(0, "Failed to connect to address [ " + url + ":" + subPort + "]: " + e.toString());
-        }
-    }
+			if (ZMQSecurity.isSecure()) {
+				subSocket.setCurveServerKey(ZMQSecurity.getServerPair().publicKey.getBytes());
+				subSocket.setCurveSecretKey(ZMQSecurity.getServerPair().secretKey.getBytes());
+				subSocket.setCurvePublicKey(ZMQSecurity.getServerPair().publicKey.getBytes());
+			}
+		} catch (Exception exp) {
+			closeSocket();
+			throw new ZMQConnectionFailedException(0,"Failed to connect to address [ "+url + ":" + subPort+"]: "+ exp);
+		}
+	}
 
-    public ZMQ.Socket getSubSocket(ZMQBind bindType) throws ZMQConnectionFailedException {
-        if (subSocket == null) {
+	public void closeSocket() {
 
-            connectToAddress(bindType);
+		if (subSocket != null) {
+			subSocket.close();
+			context.destroySocket(subSocket);
+			subSocket = null;
+		}
 
-        }
-        return subSocket;
-    }
+	}
 
-    public boolean isListening() {
-        return listening;
-    }
+	public ZMQ.Socket getSubSocket(ZMQBind bindType) throws ZMQConnectionFailedException {
+		//if (subSocket == null) {
 
-    public void setListening(boolean listening) {
-        this.listening = listening;
-    }
+			connectToAddress(bindType);
 
-    public ZContext getContext() {
-        return context;
-    }
+		//}
+		return subSocket;
+	}
 
-    public void setContext(ZContext context) {
-        this.context = context;
-    }
+	public void removeTopics(List<String> topics) {
+		for (String topic : topics) {
+			subSocket.unsubscribe(topic.getBytes());
+			this.topics.remove(topic);
+		}
+		if (this.topics.isEmpty()) {
+			setListening(false);
+		}
+	}
 
-    public void setSubSocket(ZMQ.Socket subSocket) {
-        this.subSocket = subSocket;
-    }
+	public boolean isListening() {
+		return listening;
+	}
 
-    public String getUrl() {
-        return url;
-    }
+	public void setListening(boolean listening) {
+		this.listening = listening;
+	}
 
-    public void setUrl(String url) {
-        this.url = url;
-    }
+	public ZContext getContext() {
+		return context;
+	}
 
-    public int getSubPort() {
-        return subPort;
-    }
+	public void setContext(ZContext context) {
+		this.context = context;
+	}
 
-    public void setSubPort(int subPort) {
-        this.subPort = subPort;
-    }
+	public void setSubSocket(ZMQ.Socket _subSocket) {
+		subSocket = _subSocket;
+	}
 
-    public String getTopic() {
-        return topic;
-    }
+	public String getUrl() {
+		return url;
+	}
 
-    public void setTopic(String topic) {
-        this.topic = topic;
-    }
+	public void setUrl(String url) {
+		this.url = url;
+	}
 
-    // public abstract void handleConnectionFail();
+	public int getSubPort() {
+		return subPort;
+	}
+
+	public void setSubPort(int subPort) {
+		this.subPort = subPort;
+	}
+
+	public Set<String> getTopics() {
+		return topics;
+	}
+
+	public void setTopics(Set<String> topics) {
+		this.topics = topics;
+	}
+
+	// public abstract void handleConnectionFail();
 
 }

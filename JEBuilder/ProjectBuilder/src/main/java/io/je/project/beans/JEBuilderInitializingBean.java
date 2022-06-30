@@ -67,7 +67,7 @@ public class JEBuilderInitializingBean implements InitializingBean {
             JEMonitor.setPort(builderProperties.getMonitoringPort());
             ZMQSecurity.setSecure(builderProperties.getUseZmqSecurity());
             ZMQConfiguration.setHeartbeatTimeout(builderProperties.getZmqHeartbeatValue());
-            ZMQConfiguration.setHeartbeatInterval(builderProperties.getZmqHeartbeatInterval());
+            ZMQConfiguration.setHandshakeInterval(builderProperties.getZmqHeartbeatInterval());
             ZMQConfiguration.setReceiveHighWatermark(builderProperties.getZmqReceiveHighWatermark());
             ZMQConfiguration.setSendHighWatermark(builderProperties.getZmqSendHighWatermark());
             ProcessRunner.setProcessDumpPath(builderProperties.getProcessesDumpPath(), builderProperties.isDumpJavaProcessExecution());

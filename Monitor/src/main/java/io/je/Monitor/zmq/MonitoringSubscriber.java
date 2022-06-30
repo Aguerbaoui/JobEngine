@@ -2,6 +2,8 @@ package io.je.Monitor.zmq;
 
 import static io.je.utilities.constants.JEMessages.STARTED_LISTENING_FOR_MONITORING_DATA_FROM_THE_JOB_ENGINE;
 
+import io.je.utilities.beans.JEData;
+import io.je.utilities.constants.JEMessages;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.zeromq.ZMQ;
@@ -13,24 +15,21 @@ import utils.log.LogSubModule;
 import utils.zmq.ZMQBind;
 import utils.zmq.ZMQSubscriber;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
 @Component
 public class MonitoringSubscriber extends ZMQSubscriber {
 
 	@Autowired
 	WebSocketService service;
 
-	public MonitoringSubscriber(String url, int subPort, String topic) {
-		super(url, subPort, topic);
-	}
 
-	public void setConfig(String url, int subPort, String topic) {
+	public void setConfig(String url, int subPort, Set<String> topics) {
 		this.url = url;
 		this.subPort = subPort;
-		this.topic = topic;
-	}
-
-	public MonitoringSubscriber() {
-
+		this.topics = topics;
 	}
 
 	@Override
@@ -83,22 +82,39 @@ public class MonitoringSubscriber extends ZMQSubscriber {
 	@Override
 	public void run() {
 
+		String last_topic = null;
+
 		while (listening) {
 			String data = null;
 
 			try {
 				data = this.getSubSocket(ZMQBind.BIND).recvStr();
-				if (data != null && !data.equals(topic) && !data.startsWith(topic)) {
+
+				if (data == null) continue;
+
+				if (last_topic == null) {
+					for (String topic : topics) {
+						if (data.equals(topic)) {
+							last_topic = topic;
+							break;
+						}
+					}
+				} else {
+
 					JELogger.debug(data);
 					service.sendUpdates(data);
 
+					last_topic = null;
 				}
 			} catch (Exception e) {
 				JELogger.error(e.toString(), null, "", null, "");
-				closeSocket();
+				// Do not close socket on exceptions
+				//closeSocket();
 			}
 
 		}
+
+		closeSocket();
 
 	}
 
