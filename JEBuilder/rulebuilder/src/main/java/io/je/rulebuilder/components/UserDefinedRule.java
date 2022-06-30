@@ -1,14 +1,12 @@
 package io.je.rulebuilder.components;
 
+import io.je.rulebuilder.components.blocks.Block;
+import io.je.rulebuilder.components.blocks.getter.InstanceGetterBlock;
+import org.springframework.data.annotation.Transient;
+
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
-
-import org.springframework.data.annotation.Transient;
-
-import io.je.rulebuilder.components.blocks.Block;
-import io.je.rulebuilder.components.blocks.getter.InstanceGetterBlock;
 
 /*
  * Rules defined graphically by the user.

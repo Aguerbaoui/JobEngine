@@ -1,12 +1,11 @@
 package io.je.project.repository;
 
 
-import java.util.List;
-
+import io.je.rulebuilder.components.JERule;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
-import io.je.rulebuilder.components.JERule;
+import java.util.List;
 
 
 @Repository

@@ -2,7 +2,6 @@ package io.je.Monitor.config;
 
 import io.je.utilities.config.JEProperties;
 import io.siothconfig.SIOTHConfigurationConstants;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;

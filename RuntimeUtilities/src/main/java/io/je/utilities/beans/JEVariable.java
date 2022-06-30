@@ -1,11 +1,11 @@
 package io.je.utilities.beans;
 
-import java.time.LocalDateTime;
-
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.VariableException;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.time.LocalDateTime;
 
 
 @Document(collection = "JEVariableCollection")

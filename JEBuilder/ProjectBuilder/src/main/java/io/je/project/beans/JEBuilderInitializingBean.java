@@ -1,6 +1,7 @@
 package io.je.project.beans;
 
 //import io.je.project.config.AuthenticationInterceptor;
+
 import io.je.project.config.AuthenticationInterceptor;
 import io.je.project.config.BuilderProperties;
 import io.je.project.config.LicenseProperties;
@@ -10,7 +11,6 @@ import io.je.utilities.config.ConfigurationConstants;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.log.JELogger;
 import io.je.utilities.monitoring.JEMonitor;
-
 import io.siothconfig.SIOTHConfigUtility;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;

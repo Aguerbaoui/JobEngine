@@ -1,6 +1,5 @@
 package io.je.Monitor;
 
-import io.siothconfig.SIOTHConfigUtility;
 import org.springframework.boot.Banner;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;

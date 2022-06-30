@@ -1,15 +1,13 @@
 package io.je.utilities.monitoring;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import io.je.utilities.log.JELogger;
 import io.siothconfig.SIOTHConfigUtility;
-
-import java.util.Arrays;
-
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
 import utils.zmq.ZMQPublisher;
+
+import java.util.Arrays;
 
 public class JEMonitor  {
 

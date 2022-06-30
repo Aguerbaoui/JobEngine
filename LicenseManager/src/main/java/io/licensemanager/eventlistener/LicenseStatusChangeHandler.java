@@ -1,9 +1,9 @@
 package io.licensemanager.eventlistener;
 
+import io.licensemanager.common.enums.SIOTHLicenseStatus;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import io.licensemanager.common.enums.SIOTHLicenseStatus;
 
 public class LicenseStatusChangeHandler {
 

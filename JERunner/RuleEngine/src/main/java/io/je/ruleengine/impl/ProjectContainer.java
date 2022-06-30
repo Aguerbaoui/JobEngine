@@ -612,12 +612,15 @@ public class ProjectContainer {
         // load rule content from rule path
 
         JELogger.debugWithoutPublish(
-                "[projectId =" + projectId + "]" + JEMessages.COMPILING_RULE + " [" + rule.getJobEngineElementName()
-                        + "]..",
+                "[projectId =" + projectId + "] " + JEMessages.COMPILING_RULE_WITH_ID + rule.getJobEngineElementID(),
                 LogCategory.DESIGN_MODE, rule.getJobEngineProjectID(), LogSubModule.RULE, rule.getJobEngineElementID());
+
         RuleLoader.loadRuleContent(rule);
+
         String filename = generateResourceName(ResourceType.DRL, rule.getJobEngineElementName());
+
         kfsToCompile.write(filename, rule.getContent());
+
         // JEClassLoader loader = new
         // JEClassLoader(ProjectContainer.class.getClassLoader());
         /*

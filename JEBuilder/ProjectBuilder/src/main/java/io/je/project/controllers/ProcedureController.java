@@ -3,7 +3,6 @@ package io.je.project.controllers;
 import io.je.classbuilder.models.MethodModel;
 import io.je.project.exception.JEExceptionHandler;
 import io.je.project.services.ClassService;
-import io.je.project.services.ProjectService;
 import io.je.utilities.beans.JEResponse;
 import io.je.utilities.constants.ClassBuilderConfig;
 import io.je.utilities.constants.JEMessages;
@@ -18,7 +17,8 @@ import utils.string.StringUtilities;
 
 import java.util.List;
 
-import static io.je.utilities.constants.JEMessages.*;
+import static io.je.utilities.constants.JEMessages.CODE_COMPILATION_SUCCESSFUL;
+import static io.je.utilities.constants.JEMessages.PROCEDURE_ADDED_SUCCESSFULLY;
 
 
 /*

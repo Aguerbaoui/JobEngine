@@ -1,22 +1,21 @@
 package io.je.project.exception;
 
+import com.mongodb.MongoTimeoutException;
+import io.je.utilities.beans.JEResponse;
+import io.je.utilities.constants.JEMessages;
+import io.je.utilities.constants.ResponseCodes;
+import io.je.utilities.exceptions.JEException;
+import io.je.utilities.log.JELogger;
+import org.springframework.dao.DataAccessResourceFailureException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import utils.log.LogCategory;
+import utils.log.LogSubModule;
+
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.ExecutionException;
-
-import com.mongodb.MongoTimeoutException;
-import io.je.utilities.constants.JEMessages;
-
-import org.springframework.dao.DataAccessResourceFailureException;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import io.je.utilities.constants.ResponseCodes;
-import io.je.utilities.exceptions.JEException;
-import io.je.utilities.log.JELogger;
-import utils.log.LogCategory;
-import utils.log.LogSubModule;
-import io.je.utilities.beans.JEResponse;
 
 public class JEExceptionHandler {
 

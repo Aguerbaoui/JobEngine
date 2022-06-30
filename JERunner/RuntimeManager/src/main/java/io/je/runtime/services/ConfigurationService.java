@@ -1,7 +1,5 @@
 package io.je.runtime.services;
 
-import org.springframework.stereotype.Service;
-
 import io.je.project.exception.JEExceptionHandler;
 import io.je.runtime.config.RunnerProperties;
 import io.je.runtime.listener.JERunnerResponder;
@@ -11,6 +9,7 @@ import io.je.utilities.constants.JEMessages;
 import io.je.utilities.log.JELogger;
 import io.je.utilities.monitoring.JEMonitor;
 import io.siothconfig.SIOTHConfigUtility;
+import org.springframework.stereotype.Service;
 import utils.ProcessRunner;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;

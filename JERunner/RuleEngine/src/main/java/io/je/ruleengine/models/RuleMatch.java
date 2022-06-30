@@ -1,11 +1,11 @@
 package io.je.ruleengine.models;
 
+import io.je.utilities.runtimeobject.JEObject;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import io.je.utilities.runtimeobject.JEObject;
 
 public class RuleMatch extends JEObject{
 	

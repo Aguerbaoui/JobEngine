@@ -2,7 +2,7 @@ package io.je.utilities.apis;
 
 
 import com.squareup.okhttp.Response;
-
+import io.je.utilities.beans.JEResponse;
 import io.je.utilities.constants.APIConstants;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.ResponseCodes;
@@ -10,7 +10,6 @@ import io.je.utilities.exceptions.JERunnerErrorException;
 import io.je.utilities.log.JELogger;
 import io.je.utilities.models.WorkflowModel;
 import io.siothconfig.SIOTHConfigUtility;
-import io.je.utilities.beans.JEResponse;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
 import utils.network.Network;

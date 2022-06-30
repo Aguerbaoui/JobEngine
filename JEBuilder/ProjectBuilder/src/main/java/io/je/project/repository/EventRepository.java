@@ -1,11 +1,10 @@
 package io.je.project.repository;
 
-import java.util.List;
-
+import io.je.utilities.beans.JEEvent;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
-import io.je.utilities.beans.JEEvent;
+import java.util.List;
 
 @Repository
 public interface EventRepository extends MongoRepository<JEEvent,String>{

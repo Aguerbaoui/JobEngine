@@ -8,7 +8,6 @@ import io.je.rulebuilder.components.blocks.Block;
 import io.je.rulebuilder.components.blocks.ConditionBlock;
 import io.je.rulebuilder.components.blocks.ExecutionBlock;
 import io.je.rulebuilder.components.blocks.PersistableBlock;
-import io.je.rulebuilder.components.blocks.logic.OrBlock;
 import io.je.utilities.apis.JERunnerAPIHandler;
 import io.je.utilities.beans.JEResponse;
 import io.je.utilities.config.ConfigurationConstants;

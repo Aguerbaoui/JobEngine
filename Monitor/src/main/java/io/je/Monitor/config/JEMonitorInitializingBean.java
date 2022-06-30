@@ -1,14 +1,13 @@
 package io.je.Monitor.config;
 
-import io.siothconfig.SIOTHConfigUtility;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import io.je.Monitor.zmq.JEMonitorSubscriber;
 import io.je.utilities.config.ConfigurationConstants;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.log.JELogger;
+import io.siothconfig.SIOTHConfigUtility;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
 import utils.zmq.ZMQConfiguration;

@@ -1,10 +1,10 @@
 package io.je.rulebuilder.components.blocks;
 
-import java.util.List;
-
 import io.je.rulebuilder.components.BlockLinkModel;
 import io.je.rulebuilder.components.enumerations.TimePersistenceUnit;
 import io.je.utilities.exceptions.RuleBuildFailedException;
+
+import java.util.List;
 
 /*
  * blocks that can be persisted in time

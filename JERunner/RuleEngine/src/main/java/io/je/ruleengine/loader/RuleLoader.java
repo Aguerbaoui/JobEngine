@@ -1,16 +1,18 @@
 package io.je.ruleengine.loader;
 
 import io.je.ruleengine.models.Rule;
-
-import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.JEFileNotFoundException;
 import io.je.utilities.log.JELogger;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 /**
  * load rule content from file path

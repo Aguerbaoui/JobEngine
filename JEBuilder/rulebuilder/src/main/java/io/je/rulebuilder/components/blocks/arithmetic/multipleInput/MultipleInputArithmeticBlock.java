@@ -1,11 +1,6 @@
 package io.je.rulebuilder.components.blocks.arithmetic.multipleInput;
 
-import java.util.ArrayList;
-
-import org.springframework.data.annotation.Transient;
-
 import io.je.rulebuilder.components.blocks.ArithmeticBlock;
-import io.je.rulebuilder.components.blocks.getter.InstanceGetterBlock;
 import io.je.rulebuilder.config.Keywords;
 import io.je.rulebuilder.models.BlockModel;
 import io.je.utilities.exceptions.RuleBuildFailedException;

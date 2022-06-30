@@ -1,6 +1,5 @@
 package io.je.rulebuilder.components.blocks.comparison;
 
-import io.je.rulebuilder.components.blocks.getter.InstanceGetterBlock;
 import io.je.rulebuilder.models.BlockModel;
 import io.je.utilities.exceptions.RuleBuildFailedException;
 

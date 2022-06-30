@@ -1,7 +1,8 @@
 package utils.maths;
 
-import java.math.BigDecimal;
 import utils.maths.UnitConverter.Category;
+
+import java.math.BigDecimal;
 public class Unit {
 
     private Category category;

@@ -1,11 +1,5 @@
 package models;
 
-import static io.je.utilities.constants.JEMessages.FAILED_TO_DELETE_FILES;
-
-import java.util.concurrent.ConcurrentHashMap;
-
-import org.springframework.data.mongodb.core.mapping.Document;
-
 import blocks.WorkflowBlock;
 import blocks.basic.EndBlock;
 import blocks.basic.ScriptBlock;
@@ -16,11 +10,15 @@ import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.InvalidSequenceFlowException;
 import io.je.utilities.exceptions.WorkflowBlockNotFound;
 import io.je.utilities.log.JELogger;
-import io.je.utilities.models.WorkflowModel;
 import io.je.utilities.runtimeobject.JEObject;
+import org.springframework.data.mongodb.core.mapping.Document;
 import utils.files.FileUtilities;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
+
+import java.util.concurrent.ConcurrentHashMap;
+
+import static io.je.utilities.constants.JEMessages.FAILED_TO_DELETE_FILES;
 
 /*
  * Model class for a workflow

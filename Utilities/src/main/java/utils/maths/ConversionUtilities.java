@@ -1,10 +1,10 @@
 package utils.maths;
 
+import utils.maths.UnitConverter.UnitDefinition;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
-import utils.maths.UnitConverter.UnitDefinition;
 public class ConversionUtilities {
 
     /*

@@ -76,7 +76,6 @@ public class RuleEngine {
 
     public static void compileRule(Rule rule) throws RuleCompilationException, JEFileNotFoundException {
 
-
         String projectID = rule.getJobEngineProjectID();
         ProjectContainer project = projectManager.getProjectContainer(projectID);
         project.compileRule(rule);

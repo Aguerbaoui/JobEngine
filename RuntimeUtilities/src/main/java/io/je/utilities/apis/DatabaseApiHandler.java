@@ -1,13 +1,7 @@
 package io.je.utilities.apis;
 
 import com.squareup.okhttp.Response;
-
-import io.je.utilities.constants.JEMessages;
-import io.je.utilities.log.JELogger;
 import io.siothconfig.SIOTHConfigUtility;
-import utils.log.LogCategory;
-import utils.log.LogSubModule;
-import utils.network.HttpMethod;
 import utils.network.Network;
 
 import java.io.IOException;

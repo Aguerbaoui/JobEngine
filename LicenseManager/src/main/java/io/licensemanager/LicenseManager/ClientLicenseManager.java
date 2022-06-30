@@ -1,8 +1,6 @@
 package io.licensemanager.LicenseManager;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import java.net.InetAddress;
 import io.licensemanager.common.GeneralKeys;
 import io.licensemanager.common.SIOTHLicenseRequest;
 import io.licensemanager.common.SIOTHLicenseResponse;
@@ -13,6 +11,8 @@ import io.licensemanager.utilities.InitResponse;
 import io.licensemanager.utilities.LicenseMessages;
 import io.licensemanager.utilities.LicenseUtilities;
 import utils.zmq.ZMQRequester;
+
+import java.net.InetAddress;
 
 public class ClientLicenseManager {
 	static ZMQRequester objZMQRequest;

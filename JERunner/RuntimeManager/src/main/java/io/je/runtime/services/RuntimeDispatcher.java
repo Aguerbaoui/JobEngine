@@ -149,9 +149,12 @@ public class RuntimeDispatcher {
     // compile rule
     public void compileRule(RunnerRuleModel runnerRuleModel)
             throws RuleFormatNotValidException, RuleCompilationException, JEFileNotFoundException {
-        JELogger.debug(JEMessages.COMPILING_RULE + " : " + runnerRuleModel.getRuleName(), LogCategory.RUNTIME,
+
+        JELogger.debug(JEMessages.COMPILING_RULE_WITH_ID + runnerRuleModel.getRuleId(), LogCategory.RUNTIME,
                 runnerRuleModel.getProjectId(), LogSubModule.RULE, runnerRuleModel.getRuleId());
+
         RuleEngineHandler.compileRule(runnerRuleModel);
+
     }
 
     // delete rule

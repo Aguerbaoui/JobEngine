@@ -1,7 +1,8 @@
 package io.je.utilities.beans;
 
-import java.util.List;
 import io.je.utilities.ruleutils.OperationStatusDetails;
+
+import java.util.List;
 
 public class JECustomResponse extends JEResponse {
 

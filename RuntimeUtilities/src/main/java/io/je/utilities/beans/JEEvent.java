@@ -4,9 +4,9 @@ import io.je.utilities.models.EventType;
 import io.je.utilities.monitoring.JEMonitor;
 import io.je.utilities.monitoring.MonitoringMessage;
 import io.je.utilities.monitoring.ObjectType;
-import java.time.LocalDateTime;
-
 import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.time.LocalDateTime;
 
 @Document(collection = "JEEventCollection")
 public class JEEvent extends JEMonitoredData {

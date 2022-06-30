@@ -2,10 +2,6 @@ package io.je;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.je.project.controllers.WorkflowController;
-import io.je.utilities.beans.JEResponse;
-import io.je.utilities.models.WorkflowBlockModel;
-import io.je.utilities.models.WorkflowModel;
-import org.drools.core.command.assertion.AssertEquals;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,13 +13,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.HashMap;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest

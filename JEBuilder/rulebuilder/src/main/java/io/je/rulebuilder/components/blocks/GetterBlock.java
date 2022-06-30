@@ -1,8 +1,8 @@
 package io.je.rulebuilder.components.blocks;
 
-import java.util.List;
-
 import io.je.rulebuilder.models.BlockModel;
+
+import java.util.List;
 
 public abstract class GetterBlock extends ConditionBlock {
 

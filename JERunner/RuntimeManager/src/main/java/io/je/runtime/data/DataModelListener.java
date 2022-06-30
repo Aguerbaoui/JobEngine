@@ -1,7 +1,9 @@
 package io.je.runtime.data;
 
-import io.je.runtime.beans.DMTopic;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.je.runtime.beans.DMListener;
+import io.je.runtime.beans.DMTopic;
 import io.je.runtime.services.RuntimeDispatcher;
 import io.je.utilities.beans.JEData;
 import io.je.utilities.constants.JEMessages;
@@ -13,10 +15,6 @@ import utils.log.LogSubModule;
 
 import java.util.*;
 import java.util.Map.Entry;
-import java.util.concurrent.ConcurrentHashMap;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class DataModelListener {
 

@@ -1,9 +1,10 @@
 package io.je.utilities.log;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import io.siothconfig.SIOTHConfigUtility;
-import utils.log.*;
+import utils.log.LogCategory;
+import utils.log.LogMessage;
+import utils.log.LogSubModule;
 import utils.zmq.ZMQPublisher;
 
 import java.util.Arrays;

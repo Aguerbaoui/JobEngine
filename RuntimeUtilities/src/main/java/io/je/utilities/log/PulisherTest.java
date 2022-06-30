@@ -1,7 +1,6 @@
 package io.je.utilities.log;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import io.je.utilities.monitoring.JEMonitor;
 import io.je.utilities.monitoring.MonitoringMessage;
 
