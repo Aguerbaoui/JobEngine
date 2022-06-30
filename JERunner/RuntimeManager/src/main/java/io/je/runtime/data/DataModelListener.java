@@ -109,7 +109,7 @@ public class DataModelListener {
             }
             catch (Exception e) {
                 JELogger.error(JEMessages.INTERRUPT_TOPIC_ERROR + topics.toString(),  LogCategory.RUNTIME,
-                        null, LogSubModule.JERUNNER, null);
+                        null, LogSubModule.JERUNNER, e.getMessage());
             }
     }
 

@@ -31,7 +31,8 @@ public class ZMQAgent extends ZMQSubscriber {
 				data = this.getSubSocket(ZMQBind.CONNECT).recvStr();
 				//System.err.println("ZMQAgent data : " + data);
 			} catch (Exception ex) {
-				closeSocket();
+				// Do not close socket on exceptions
+				//closeSocket();
 				JELogger.trace(ex.getMessage(), LogCategory.RUNTIME, null, LogSubModule.JERUNNER, "topics");
 				continue;
 			}

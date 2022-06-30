@@ -108,7 +108,8 @@ public class MonitoringSubscriber extends ZMQSubscriber {
 				}
 			} catch (Exception e) {
 				JELogger.error(e.toString(), null, "", null, "");
-				closeSocket();
+				// Do not close socket on exceptions
+				//closeSocket();
 			}
 
 		}

@@ -33,16 +33,6 @@ public abstract class ZMQSubscriber implements Runnable {
 		this.context = new ZContext();
 	}
 
-	public void closeSocket() {
-
-		if (subSocket != null) {
-			subSocket.close();
-			context.destroySocket(subSocket);
-			subSocket = null;
-		}
-
-	}
-
 	public void connectToAddress(ZMQBind bindType) throws ZMQConnectionFailedException {
 		try {
 			if (subSocket == null) {
@@ -68,10 +58,20 @@ public abstract class ZMQSubscriber implements Runnable {
 				subSocket.setCurveSecretKey(ZMQSecurity.getServerPair().secretKey.getBytes());
 				subSocket.setCurvePublicKey(ZMQSecurity.getServerPair().publicKey.getBytes());
 			}
-		} catch (Exception e) {
+		} catch (Exception exp) {
 			closeSocket();
-			throw new ZMQConnectionFailedException(0,"Failed to connect to address [ "+url + ":" + subPort+"]: "+ e.toString());
+			throw new ZMQConnectionFailedException(0,"Failed to connect to address [ "+url + ":" + subPort+"]: "+ exp);
 		}
+	}
+
+	public void closeSocket() {
+
+		if (subSocket != null) {
+			subSocket.close();
+			context.destroySocket(subSocket);
+			subSocket = null;
+		}
+
 	}
 
 	public ZMQ.Socket getSubSocket(ZMQBind bindType) throws ZMQConnectionFailedException {
