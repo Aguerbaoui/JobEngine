@@ -1,18 +1,5 @@
 package io.je.project.services;
 
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
-
-import io.je.utilities.exceptions.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.stereotype.Service;
-
 import io.je.project.beans.JEProject;
 import io.je.project.config.LicenseProperties;
 import io.je.project.repository.VariableRepository;
@@ -21,10 +8,18 @@ import io.je.utilities.apis.JERunnerRequester;
 import io.je.utilities.beans.JEType;
 import io.je.utilities.beans.JEVariable;
 import io.je.utilities.constants.JEMessages;
+import io.je.utilities.exceptions.*;
 import io.je.utilities.log.JELogger;
 import io.je.utilities.models.VariableModel;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Service;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
+
+import java.time.Instant;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 public class VariableService {

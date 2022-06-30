@@ -4,10 +4,8 @@ import com.squareup.okhttp.Response;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.log.JELogger;
-
 import org.activiti.engine.delegate.BpmnError;
 import org.activiti.engine.delegate.DelegateExecution;
-
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
 import utils.network.Network;

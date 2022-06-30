@@ -1,15 +1,13 @@
 package io.je.rulebuilder.components;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
+import io.je.utilities.beans.Status;
+import io.je.utilities.runtimeobject.JEObject;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import io.je.utilities.beans.Status;
-import io.je.utilities.runtimeobject.JEObject;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Document(collection="JERuleCollection")
 public abstract class JERule extends JEObject  {

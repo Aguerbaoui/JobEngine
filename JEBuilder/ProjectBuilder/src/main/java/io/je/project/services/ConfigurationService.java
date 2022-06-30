@@ -1,19 +1,18 @@
 package io.je.project.services;
 
-import java.util.Arrays;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import io.je.project.exception.JEExceptionHandler;
 import io.je.project.listener.ProjectZMQResponder;
 import io.je.utilities.apis.JERunnerAPIHandler;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.log.JELogger;
 import io.siothconfig.SIOTHConfigUtility;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
 import utils.zmq.ZMQBind;
+
+import java.util.Arrays;
 
 /*
  * class responsible for application configuration

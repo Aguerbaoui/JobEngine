@@ -1,8 +1,7 @@
 package io.je.serviceTasks;
 
-import org.activiti.engine.delegate.DelegateExecution;
-
 import io.je.utilities.log.JELogger;
+import org.activiti.engine.delegate.DelegateExecution;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
 

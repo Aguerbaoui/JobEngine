@@ -1,16 +1,14 @@
 package io.je.rulebuilder.components.blocks.getter;
 
-import java.util.List;
-
-import org.springframework.data.annotation.Transient;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import io.je.rulebuilder.components.blocks.GetterBlock;
 import io.je.rulebuilder.config.AttributesMapping;
 import io.je.rulebuilder.config.Keywords;
 import io.je.rulebuilder.models.BlockModel;
 import io.je.utilities.exceptions.RuleBuildFailedException;
+import org.springframework.data.annotation.Transient;
+
+import java.util.List;
 
 public class InstanceGetterBlock extends GetterBlock{
 	

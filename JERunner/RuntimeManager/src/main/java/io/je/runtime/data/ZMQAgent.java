@@ -1,8 +1,5 @@
 package io.je.runtime.data;
 
-import java.util.Arrays;
-import java.util.Set;
-
 import io.je.runtime.services.RuntimeDispatcher;
 import io.je.utilities.beans.JEData;
 import io.je.utilities.constants.JEMessages;
@@ -11,6 +8,9 @@ import utils.log.LogCategory;
 import utils.log.LogSubModule;
 import utils.zmq.ZMQBind;
 import utils.zmq.ZMQSubscriber;
+
+import java.util.Arrays;
+import java.util.Set;
 
 public class ZMQAgent extends ZMQSubscriber {
 
@@ -29,10 +29,7 @@ public class ZMQAgent extends ZMQSubscriber {
 			String data = null;
 			try {
 				data = this.getSubSocket(ZMQBind.CONNECT).recvStr();
-				//System.err.println("ZMQAgent data : " + data);
 			} catch (Exception ex) {
-				// Do not close socket on exceptions
-				//closeSocket();
 				JELogger.trace(ex.getMessage(), LogCategory.RUNTIME, null, LogSubModule.JERUNNER, "topics");
 				continue;
 			}
@@ -42,7 +39,7 @@ public class ZMQAgent extends ZMQSubscriber {
 
 				if (last_topic == null) {
 					for (String topic : topics) {
-						if (data.equals(topic)) {
+						if (data.startsWith(topic)) {
 							last_topic = topic;
 							break;
 						}

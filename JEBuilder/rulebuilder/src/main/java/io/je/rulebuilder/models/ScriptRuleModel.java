@@ -1,9 +1,6 @@
 package io.je.rulebuilder.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
-//import io.je.utilities.runtimeobject.ClassDefinition;
-
 import io.je.rulebuilder.config.AttributesMapping;
 
 public class ScriptRuleModel {

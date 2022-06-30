@@ -1,12 +1,11 @@
 package io.je.rulebuilder.models;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import io.je.rulebuilder.components.BlockLinkModel;
 import io.je.rulebuilder.config.AttributesMapping;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 
 public class BlockModel {

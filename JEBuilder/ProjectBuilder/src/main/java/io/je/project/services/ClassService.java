@@ -724,7 +724,7 @@ public class ClassService {
 
                     if (last_topic == null) {
                         for (String topic : topics) {
-                            if (data.equals(topic)) {
+                            if (data.startsWith(topic)) {
                                 last_topic = topic;
                                 break;
                             }
@@ -761,7 +761,7 @@ public class ClassService {
                 } catch (Exception e) {
                     e.printStackTrace();
                     JELogger.error(JEMessages.ERROR_GETTING_CLASS_UPDATES, LogCategory.DESIGN_MODE, null,
-                            LogSubModule.CLASS, null);
+                            LogSubModule.CLASS, e.getMessage());
                 }
 
                 try {

@@ -1,15 +1,13 @@
 package io.je.rulebuilder.components.blocks.execution;
 
-import java.util.List;
-
-import org.springframework.data.annotation.Transient;
-
 import io.je.rulebuilder.components.blocks.ExecutionBlock;
 import io.je.rulebuilder.config.AttributesMapping;
 import io.je.rulebuilder.models.BlockModel;
 import io.je.rulebuilder.models.ValueType;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.RuleBuildFailedException;
+
+import java.util.List;
 
 /*
  * Block used to writing in an instance's attribute (from DM)

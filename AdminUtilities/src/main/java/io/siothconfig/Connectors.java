@@ -1,8 +1,8 @@
 package io.siothconfig;
 
-import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import java.util.List;
 
 public class Connectors {
 	

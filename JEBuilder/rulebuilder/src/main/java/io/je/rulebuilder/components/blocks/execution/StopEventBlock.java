@@ -1,9 +1,9 @@
 package io.je.rulebuilder.components.blocks.execution;
 
-import java.util.List;
-
 import io.je.rulebuilder.components.BlockLinkModel;
 import io.je.rulebuilder.components.blocks.ExecutionBlock;
+
+import java.util.List;
 
 public class StopEventBlock extends ExecutionBlock {
 	

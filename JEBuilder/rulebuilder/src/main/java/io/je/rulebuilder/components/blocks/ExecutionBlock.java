@@ -1,9 +1,9 @@
 package io.je.rulebuilder.components.blocks;
 
-import java.util.List;
-
 import io.je.rulebuilder.components.BlockLinkModel;
 import io.je.rulebuilder.models.BlockModel;
+
+import java.util.List;
 
 public abstract class ExecutionBlock extends Block {
 

@@ -1,18 +1,16 @@
 package io.je.project.listener;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import utils.log.LogSubModule;
-import utils.zmq.ZMQBind;
-import utils.zmq.ZMQResponser;
 import io.je.project.beans.project.request.ProjectRequestObject;
 import io.je.project.beans.project.response.CleanUpResponseModel;
 import io.je.project.exception.JEExceptionHandler;
 import io.je.project.services.ProjectService;
 import io.je.utilities.log.JELogger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import utils.log.LogSubModule;
+import utils.zmq.ZMQBind;
+import utils.zmq.ZMQResponser;
 
 /**
  * Project management api ZMQ Responder

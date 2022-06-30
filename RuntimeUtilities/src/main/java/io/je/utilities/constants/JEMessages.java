@@ -230,7 +230,7 @@ public class JEMessages {
 
     public static final String UPDATING_RULE = "Updating rule";
 
-    public static final String COMPILING_RULE = "Compiling rule";
+    public static final String COMPILING_RULE_WITH_ID = "Compiling rule, Id : ";
 
     public static final String COMPILING_RULES = "Compiling all rules";
 

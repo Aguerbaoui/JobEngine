@@ -1,6 +1,9 @@
 package io.je.project.variables;
 
-import io.je.utilities.beans.*;
+import io.je.utilities.beans.JEBlockMessage;
+import io.je.utilities.beans.JEMessage;
+import io.je.utilities.beans.JEVariable;
+import io.je.utilities.beans.JEVariableMessage;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.VariableException;
 import io.je.utilities.exceptions.VariableNotFoundException;

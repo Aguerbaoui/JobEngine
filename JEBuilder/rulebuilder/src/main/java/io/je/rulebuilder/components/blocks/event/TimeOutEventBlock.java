@@ -1,10 +1,10 @@
 package io.je.rulebuilder.components.blocks.event;
 
 
-import java.util.List;
-
 import io.je.rulebuilder.components.BlockLinkModel;
 import io.je.rulebuilder.components.blocks.PersistableBlock;
+
+import java.util.List;
 
 public  class TimeOutEventBlock extends PersistableBlock {
 	

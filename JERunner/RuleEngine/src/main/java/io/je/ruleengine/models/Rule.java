@@ -1,11 +1,11 @@
 package io.je.ruleengine.models;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import io.je.ruleengine.enumerations.RuleFormat;
 import io.je.utilities.beans.JEEvent;
 import io.je.utilities.runtimeobject.JEObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /*
  *Rule Definition

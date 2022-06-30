@@ -1,7 +1,5 @@
 package io.je.utilities.beans;
 
-import io.je.utilities.beans.ClassAuthor;
-import io.je.utilities.beans.JEMethod;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 

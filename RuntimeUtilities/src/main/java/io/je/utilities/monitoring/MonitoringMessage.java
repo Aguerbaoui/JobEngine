@@ -1,8 +1,8 @@
 package io.je.utilities.monitoring;
 
-import java.time.LocalDateTime;
-
 import io.je.utilities.beans.Status;
+
+import java.time.LocalDateTime;
 
 public class MonitoringMessage {
 	
