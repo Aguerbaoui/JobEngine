@@ -111,15 +111,14 @@ public class DataModelListener {
 		}
     }
 
-	public static void addDMListener(DMListener dMListener, Set<String> topics) {
+	public static void resetDMListener(DMListener dMListener, Set<String> topics) {
 		createNewZmqAgent(topics);
+
+		allDMTopics = new HashMap<>();
 
 		for(String topic : topics)
 		{
-			if(!allDMTopics.containsKey(topic))
-			{
-				allDMTopics.put(topic, new DMTopic(topic)) ;
-			}
+			allDMTopics.put(topic, new DMTopic(topic)) ;
 			allDMTopics.get(topic).addListener(dMListener);
 		}
 	}

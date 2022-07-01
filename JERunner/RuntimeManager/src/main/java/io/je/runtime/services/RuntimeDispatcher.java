@@ -321,7 +321,7 @@ public class RuntimeDispatcher {
     public void addTopics(String projectId, String listenerId, String listenerType, Set<String> topics) {
         if (topics != null && !topics.isEmpty()) {
             DMListener dMListener = new DMListener(listenerId, projectId, listenerType);
-            DataModelListener.addDMListener(dMListener, topics);
+            DataModelListener.resetDMListener(dMListener, topics);
         }
     }
 
