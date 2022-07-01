@@ -31,9 +31,9 @@ public class UserDefinedRule extends JERule {
 	 */
 
 	@Transient
-	List<ScriptedRule> unitRules = new ArrayList<ScriptedRule>();
+	List<ScriptedRule> unitRules = new ArrayList<>();
 	
-	List<String> subRules = new ArrayList<String>();
+	List<String> subRules = new ArrayList<>();
 
 	public UserDefinedRule() {
 		ruleParameters = new RuleParameters();
@@ -89,7 +89,7 @@ public class UserDefinedRule extends JERule {
 		for(String instanceTopic : instanceTopics.keySet())
 		{
 			if(!this.getTopics().containsKey(instanceTopic.split("#")[0])) {
-				addTopic(instanceTopic,this.getTopics());
+				addTopic(instanceTopic, this.getTopics());
 			}
 		}
 		

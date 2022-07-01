@@ -4,7 +4,6 @@ import org.zeromq.SocketType;
 import org.zeromq.ZContext;
 import org.zeromq.ZMQ;
 
-import java.util.List;
 import java.util.Set;
 
 public abstract class ZMQSubscriber implements Runnable {
@@ -83,7 +82,7 @@ public abstract class ZMQSubscriber implements Runnable {
 		return subSocket;
 	}
 
-	public void removeTopics(List<String> topics) {
+	public void removeTopics(Set<String> topics) {
 		for (String topic : topics) {
 			subSocket.unsubscribe(topic.getBytes());
 			this.topics.remove(topic);

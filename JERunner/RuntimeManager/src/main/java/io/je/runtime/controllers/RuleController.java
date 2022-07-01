@@ -68,7 +68,6 @@ public class RuleController {
 			return JEExceptionHandler.handleException(e);
 		}
 
-
         return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.RULE_UPDATED));
     }
     
@@ -78,7 +77,7 @@ public class RuleController {
     @PostMapping(value = "/updateRules", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> updateRules(@RequestBody List<RunnerRuleModel> runnerRuleModels) {
 
-    	List<OperationStatusDetails> results = new ArrayList<OperationStatusDetails>();
+    	List<OperationStatusDetails> results = new ArrayList<>();
         try {
            
         	 results =runtimeDispatcher.updateRules(runnerRuleModels);

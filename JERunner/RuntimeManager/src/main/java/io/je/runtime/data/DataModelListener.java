@@ -28,8 +28,8 @@ public class DataModelListener {
 	
 	
 	
-	public static List<String> getTopicsByProjectId(String projectId){
-		List<String> topics = new ArrayList<>();
+	public static Set<String> getTopicsByProjectId(String projectId){
+		Set<String> topics = new HashSet<>();
 		for(DMTopic topic : allDMTopics.values())
 		{
 			if(topic.getProjects().contains(projectId))
@@ -40,11 +40,11 @@ public class DataModelListener {
 		return topics;
 	}
 	
-	public static List<String> getRuleTopicsByProjectId(String projectId){
-		List<String> topics = new ArrayList<>();
+	public static Set<String> getRuleTopicsByProjectId(String projectId) {
+		Set<String> topics = new HashSet<>();
 		for(DMTopic topic : allDMTopics.values())
 		{
-			if(topic.getProjects().contains(projectId) )
+			if (topic.getProjects().contains(projectId))
 			{
 				for(DMListener subscriber : topic.getListeners().values())
 				{
@@ -65,7 +65,7 @@ public class DataModelListener {
 
     }
 
-    public static void startListening(List<String> topics) {
+    public static void startListening(Set<String> topics) {
         JELogger.debug(JEMessages.LISTENING_ON_TOPICS + topics,  LogCategory.RUNTIME,
                 null, LogSubModule.JERUNNER, null);
     	for (String id : topics)
@@ -98,17 +98,17 @@ public class DataModelListener {
 		}
 	}
 
-	public static void stopListening(List<String> topics) {
+	public static void stopListening(Set<String> topics) {
         JELogger.control(JEMessages.STOPPED_LISTENING_ON_TOPICS + topics,  LogCategory.RUNTIME,
                 null, LogSubModule.JERUNNER, null);
 
-            try {
-				agent.removeTopics(topics);
-            }
-            catch (Exception e) {
-                JELogger.error(JEMessages.INTERRUPT_TOPIC_ERROR + topics.toString(),  LogCategory.RUNTIME,
-                        null, LogSubModule.JERUNNER, e.getMessage());
-            }
+		try {
+			agent.removeTopics(topics);
+		}
+		catch (Exception e) {
+			JELogger.error(JEMessages.INTERRUPT_TOPIC_ERROR + topics.toString(),  LogCategory.RUNTIME,
+					null, LogSubModule.JERUNNER, e.getMessage());
+		}
     }
 
 	public static void addDMListener(DMListener dMListener, Set<String> topics) {
@@ -151,7 +151,7 @@ public class DataModelListener {
 	{
 		if(!topic.hasListeners())
 		{
-			List<String> temp = new ArrayList<>();
+			Set<String> temp = new HashSet<>();
 			temp.add(topic.getId());
 			stopListening(temp);
 		}

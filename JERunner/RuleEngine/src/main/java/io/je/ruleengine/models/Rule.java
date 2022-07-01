@@ -5,7 +5,8 @@ import io.je.utilities.beans.JEEvent;
 import io.je.utilities.runtimeobject.JEObject;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 /*
  *Rule Definition
@@ -19,7 +20,7 @@ public class Rule extends JEObject {
     //Rule file content
     String content;
     //topics rule is subscribed to
-    List<String> topics = new ArrayList<String>();
+    Set<String> topics = new HashSet<>();
 
     ArrayList<JEEvent> events;
 
@@ -85,11 +86,11 @@ public class Rule extends JEObject {
         events.add(e);
     }
 
-	public List<String> getTopics() {
+	public Set<String> getTopics() {
 		return topics;
 	}
 
-	public void setTopics(List<String> topics) {
+	public void setTopics(Set<String> topics) {
 		this.topics = topics;
 	}
     

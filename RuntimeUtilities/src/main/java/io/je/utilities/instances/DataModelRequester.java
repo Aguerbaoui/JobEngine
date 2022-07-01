@@ -46,8 +46,8 @@ public class DataModelRequester {
         String request = "";
         try {
             request = objectMapper.writeValueAsString(payload);
-        } catch (JsonProcessingException e) {
-
+        } catch (JsonProcessingException exp) {
+            exp.printStackTrace();
         }
 
         String response = requester.sendRequest(request);
@@ -60,15 +60,17 @@ public class DataModelRequester {
     public static List<Object> readInitialValues(String topic) {
         JELogger.trace("Loading last values for topic = " + topic, LogCategory.RUNTIME,
                 null, LogSubModule.JERUNNER, null);
-        List<Object> values = new ArrayList<Object>();
+        List<Object> values = new ArrayList<>();
 
         try {
             HashMap<String, String> requestMap = new HashMap<>();
             requestMap.put("Type", "ReadInitialValues");
             requestMap.put("ModelId", topic);
             String data = requester.sendRequest(objectMapper.writeValueAsString(requestMap));
+
             JELogger.trace(JEMessages.DATA_RECEIVED + data, LogCategory.RUNTIME,
                     null, LogSubModule.JERUNNER, null);
+
             if (data != null) {
                 values = objectMapper.readValue(data, typeFactory.constructCollectionType(List.class, Object.class));
 

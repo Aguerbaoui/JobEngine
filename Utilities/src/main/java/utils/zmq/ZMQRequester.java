@@ -64,7 +64,6 @@ public class ZMQRequester {
             try {
                 requestSocket = context.createSocket(SocketType.REQ);
 
-
                 if (ZMQSecurity.isSecure()) {
 
                     requestSocket.setCurveServerKey(ZMQSecurity.getServerPair().publicKey.getBytes());

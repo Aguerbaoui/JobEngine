@@ -13,8 +13,8 @@ import io.je.utilities.runtimeobject.JEObject;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 /*
  * class responsible for Rule Engine calls
@@ -153,13 +153,13 @@ public class RuleEngineHandler {
 	}
 
 
-	public static List<String> getRuleTopics(String projectId, String ruleId) {
+	public static Set<String> getRuleTopics(String projectId, String ruleId) {
 		Rule rule = RuleEngine.getRule(projectId,ruleId);
 		if(rule!=null)
 		{
 			return rule.getTopics();
 		}
-		return new ArrayList<>();
+		return new HashSet<>();
 	}
 
 
