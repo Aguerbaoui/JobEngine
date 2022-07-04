@@ -58,7 +58,7 @@ public class JEProperties {
     int zmqHeartbeatValue;
 
     @Value("${zmq.heartbeat.interval}")
-    int zmqHeartbeatInterval;
+    int zmqHandshakeInterval;
 
     @Value("${zmq.receive.interval}")
     int zmqReceiveInterval;
@@ -209,12 +209,12 @@ public class JEProperties {
         this.zmqHeartbeatValue = zmqHeartbeatValue;
     }
 
-    public int getZmqHeartbeatInterval() {
-        return zmqHeartbeatInterval;
+    public int getZmqHandshakeInterval() {
+        return zmqHandshakeInterval;
     }
 
-    public void setZmqHeartbeatInterval(int zmqHeartbeatInterval) {
-        this.zmqHeartbeatInterval = zmqHeartbeatInterval;
+    public void setZmqHandshakeInterval(int zmqHeartbeatInterval) {
+        this.zmqHandshakeInterval = zmqHeartbeatInterval;
     }
 
     public int getZmqReceiveInterval() {

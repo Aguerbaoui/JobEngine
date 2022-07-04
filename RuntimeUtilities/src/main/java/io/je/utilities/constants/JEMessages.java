@@ -101,11 +101,11 @@ public class JEMessages {
 
     public static final String ADDING_TOPICS = "Adding topics: ";
 
-    public static final String STOPPED_LISTENING_ON_TOPICS = "Stopping listening to topics: ";
+    public static final String STOPPED_LISTENING_ON_TOPICS = "Stopping listening to topics : ";
 
-    public static final String INTERRUPT_TOPIC_ERROR = "Error interrupting thread for topics: ";
+    public static final String INTERRUPT_TOPIC_ERROR = "Error interrupting thread for topics : ";
 
-    public static final String DATA_RECEIVED = "Data received  ";
+    public static final String DATA_RECEIVED = "Data received : ";
 
     public static final String THREAD_INTERRUPTED = "Thread interrupted while listening to data";
 

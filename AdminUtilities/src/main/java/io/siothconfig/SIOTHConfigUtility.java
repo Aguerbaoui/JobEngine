@@ -20,7 +20,9 @@ public class SIOTHConfigUtility {
 
 	public static void init() {
 		ObjectMapper objectMapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+
 		String jsonString = loadSIOTHConfig();
+
 		if (jsonString != null) {
 			try {
 				siothConfig =  objectMapper.readValue(jsonString, SIOTHConfig.class);
@@ -28,8 +30,6 @@ public class SIOTHConfigUtility {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-
-
 		}
 	}
 

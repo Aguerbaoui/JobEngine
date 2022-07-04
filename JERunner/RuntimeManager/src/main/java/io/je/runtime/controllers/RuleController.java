@@ -113,11 +113,12 @@ public class RuleController {
     public ResponseEntity<?> compileRule(@RequestBody RunnerRuleModel runnerRuleModel) {
 
         try {
+
             runtimeDispatcher.compileRule(runnerRuleModel);
+
         } catch (Exception e) {
 			return JEExceptionHandler.handleException(e);
 		}
-
 
         return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.RULE_UPDATED));
     }

@@ -20,8 +20,8 @@ public class ZMQAgent extends ZMQSubscriber {
 
 	@Override
 	public void run() {
-		JELogger.control("[topics = " + topics + "]" + JEMessages.DATA_LISTENTING_STARTED, LogCategory.RUNTIME, null,
-				LogSubModule.JERUNNER, null);
+		JELogger.control("ZMQAgent : topics : " + topics + " : " + JEMessages.DATA_LISTENTING_STARTED,
+				LogCategory.RUNTIME, null, LogSubModule.JERUNNER, null);
 
 		String last_topic = null;
 
@@ -34,6 +34,9 @@ public class ZMQAgent extends ZMQSubscriber {
 				continue;
 			}
 
+			JELogger.trace(JEMessages.DATA_RECEIVED + data,
+					LogCategory.RUNTIME, null, LogSubModule.JERUNNER, null);
+
 			try {
 				if (data == null) continue;
 
@@ -45,8 +48,6 @@ public class ZMQAgent extends ZMQSubscriber {
 						}
 					}
 				} else {
-					JELogger.trace(JEMessages.DATA_RECEIVED + data,
-							LogCategory.RUNTIME, null, LogSubModule.JERUNNER, last_topic);
 
 					RuntimeDispatcher.injectData(new JEData(last_topic, data));
 

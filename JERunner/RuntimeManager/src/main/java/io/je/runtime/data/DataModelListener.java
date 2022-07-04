@@ -70,7 +70,7 @@ public class DataModelListener {
                 null, LogSubModule.JERUNNER, null);
     	for (String id : topics)
     	{
-			readInitialValues(id);
+			//readInitialValues(id);
 		}
 
 		if (agent!=null && !agent.isListening())

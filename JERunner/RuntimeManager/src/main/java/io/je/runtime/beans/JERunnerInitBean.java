@@ -21,7 +21,7 @@ public class JERunnerInitBean implements InitializingBean {
         try {
         	configurationService.init(runnerProperties);
             ZMQConfiguration.setHeartbeatTimeout(runnerProperties.getZmqHeartbeatValue());
-            ZMQConfiguration.setHandshakeInterval(runnerProperties.getZmqHeartbeatInterval());
+            ZMQConfiguration.setHandshakeInterval(runnerProperties.getZmqHandshakeInterval());
             ZMQConfiguration.setReceiveHighWatermark(runnerProperties.getZmqReceiveHighWatermark());
             ZMQConfiguration.setSendHighWatermark(runnerProperties.getZmqSendHighWatermark());
         }
