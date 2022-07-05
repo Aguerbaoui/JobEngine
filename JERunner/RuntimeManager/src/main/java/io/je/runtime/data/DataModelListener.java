@@ -68,23 +68,38 @@ public class DataModelListener {
     public static void startListening(Set<String> topics) {
         JELogger.debug(JEMessages.LISTENING_ON_TOPICS + topics,  LogCategory.RUNTIME,
                 null, LogSubModule.JERUNNER, null);
+
     	for (String id : topics)
     	{
-			//readInitialValues(id);
+			readInitialValues(id);
 		}
 
-		if (agent!=null && !agent.isListening())
-		{
-			agent.setListening(true);
+		//if (agent!=null && !agent.isListening())
+		//{
 			if (activeThread != null) {
 				activeThread.interrupt();
 				activeThread = null;
 			}
+
+			if (agent != null) {
+				agent.setListening(false);
+				agent = null;
+			}
+
+			createNewZmqAgent(topics);
+			agent.setListening(true);
+
 			activeThread = new Thread(agent);
 			activeThread.start();
-		}
+		//}
     }
 
+	/*
+        ZMQ is missing last value caching (LVC)
+        https://zguide.zeromq.org/docs/chapter5/
+
+        We do it by readInitialValues
+     */
     private static void readInitialValues(String modelId) {
 		List<Object> initialValues = DataModelRequester.readInitialValues(modelId);
 		for(Object value : initialValues)
@@ -99,7 +114,7 @@ public class DataModelListener {
 	}
 
 	public static void stopListening(Set<String> topics) {
-        JELogger.control(JEMessages.STOPPED_LISTENING_ON_TOPICS + topics,  LogCategory.RUNTIME,
+        JELogger.control(JEMessages.STOPPING_LISTENING_TO_TOPICS + topics,  LogCategory.RUNTIME,
                 null, LogSubModule.JERUNNER, null);
 
 		try {

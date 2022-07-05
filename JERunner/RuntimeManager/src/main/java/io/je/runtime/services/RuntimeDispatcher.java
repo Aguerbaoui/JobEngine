@@ -136,12 +136,15 @@ public class RuntimeDispatcher {
     // update rule
     public void updateRule(RunnerRuleModel runnerRuleModel)
             throws RuleCompilationException, JEFileNotFoundException, RuleFormatNotValidException {
+
         JELogger.debug(JEMessages.UPDATING_RULE + " : " + runnerRuleModel.getRuleId(), LogCategory.RUNTIME,
                 runnerRuleModel.getProjectId(), LogSubModule.RULE, runnerRuleModel.getRuleId());
+
         Set<String> topics = DataModelListener.getRuleTopicsByProjectId(runnerRuleModel.getProjectId());
 
         // start listening to datasources
         DataModelListener.startListening(topics);
+
         RuleEngineHandler.updateRule(runnerRuleModel);
 
     }
@@ -454,12 +457,14 @@ public class RuntimeDispatcher {
 
         Set<String> topics = DataModelListener.getRuleTopicsByProjectId(projectId);
         DataModelListener.startListening(topics);
+
         //RuleEngineHandler.buildProject(projectId);
         RuleEngineHandler.runRuleEngineProject(projectId);
+
         for (JEVariable variable : VariableManager.getAllVariables(projectId)) {
             RuleEngineHandler.addVariable(variable);
-
         }
+
         projectStatus.put(projectId, true);
 
     }

@@ -30,7 +30,17 @@ public class ZMQAgent extends ZMQSubscriber {
 			try {
 				data = this.getSubSocket(ZMQBind.CONNECT).recvStr();
 			} catch (Exception ex) {
-				JELogger.trace(ex.getMessage(), LogCategory.RUNTIME, null, LogSubModule.JERUNNER, "topics");
+				//JELogger.trace(ex.getMessage(), LogCategory.RUNTIME, null, LogSubModule.JERUNNER, "topics");
+				//ex.printStackTrace(); // FIXME could have a lot of :
+				/*
+				org.zeromq.ZMQException: Errno 4 : errno 4
+				at org.zeromq.ZMQ$Socket.mayRaise(ZMQ.java:3546)
+				at org.zeromq.ZMQ$Socket.recv(ZMQ.java:3377)
+				at org.zeromq.ZMQ$Socket.recvStr(ZMQ.java:3463)
+				at org.zeromq.ZMQ$Socket.recvStr(ZMQ.java:3444)
+				at io.je.runtime.data.ZMQAgent.run(Unknown Source)
+				at java.base/java.lang.Thread.run(Thread.java:834)
+				*/
 				continue;
 			}
 

@@ -101,7 +101,7 @@ public class JEMessages {
 
     public static final String ADDING_TOPICS = "Adding topics: ";
 
-    public static final String STOPPED_LISTENING_ON_TOPICS = "Stopping listening to topics : ";
+    public static final String STOPPING_LISTENING_TO_TOPICS = "Stopping listening to topics : ";
 
     public static final String INTERRUPT_TOPIC_ERROR = "Error interrupting thread for topics : ";
 

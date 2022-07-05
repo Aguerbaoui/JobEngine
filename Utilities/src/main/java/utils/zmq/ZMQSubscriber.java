@@ -25,6 +25,8 @@ public abstract class ZMQSubscriber implements Runnable {
 		this.subPort = subPort;
 		this.topics = topics;
 		this.context = new ZContext();
+		this.context.setRcvHWM(0);
+		this.context.setSndHWM(0);
 	}
 
 	public ZMQSubscriber() {
@@ -51,6 +53,7 @@ public abstract class ZMQSubscriber implements Runnable {
 			for (String topic : topics) {
 				subSocket.subscribe(topic.getBytes());
 			}
+			setListening(!this.topics.isEmpty());
 
 			if (ZMQSecurity.isSecure()) {
 				subSocket.setCurveServerKey(ZMQSecurity.getServerPair().publicKey.getBytes());
@@ -87,9 +90,7 @@ public abstract class ZMQSubscriber implements Runnable {
 			subSocket.unsubscribe(topic.getBytes());
 			this.topics.remove(topic);
 		}
-		if (this.topics.isEmpty()) {
-			setListening(false);
-		}
+		setListening(!this.topics.isEmpty());
 	}
 
 	public boolean isListening() {

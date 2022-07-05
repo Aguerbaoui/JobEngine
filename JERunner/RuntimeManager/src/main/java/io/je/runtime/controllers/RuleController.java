@@ -60,7 +60,8 @@ public class RuleController {
 
         try {
             runtimeDispatcher.removeRuleTopics(runnerRuleModel.getProjectId(), runnerRuleModel.getRuleId());
-            runtimeDispatcher.addTopics(runnerRuleModel.getProjectId(), runnerRuleModel.getRuleId(),"rule",runnerRuleModel.getTopics());
+
+            runtimeDispatcher.addTopics(runnerRuleModel.getProjectId(), runnerRuleModel.getRuleId(),"rule", runnerRuleModel.getTopics());
 
             runtimeDispatcher.updateRule(runnerRuleModel);
 
