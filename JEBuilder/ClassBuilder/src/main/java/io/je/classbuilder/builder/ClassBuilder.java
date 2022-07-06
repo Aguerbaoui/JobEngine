@@ -295,8 +295,11 @@ public class ClassBuilder {
         ClassFactory.ClassRetriever classRetriever = classFactory.loadOrBuildAndDefine(
                 unitSG
         );
+
         String targetFolder = packageName.contains(CLASS_PACKAGE) ? CLASS_PACKAGE : SCRIPTS_PACKAGE;
+
         String filePath = getPathWithSeparator(generationPath) + getSeparator() + targetFolder + getSeparator() + className + ".java";
+
         File file = new File(generationPath);
         file.delete();
         unitSG.storeToClassPath(FileUtilities.getPathPrefix(generationPath));

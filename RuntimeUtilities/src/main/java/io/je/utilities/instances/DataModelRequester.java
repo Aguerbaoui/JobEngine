@@ -57,15 +57,15 @@ public class DataModelRequester {
     /*
      * request to get last values by class Id
      */
-    public static List<Object> readInitialValues(String topic) {
-        JELogger.trace("Loading last values for topic = " + topic, LogCategory.RUNTIME,
+    public static List<Object> readInitialValues(String modelId) {
+        JELogger.trace("Requesting last values for modelId = " + modelId, LogCategory.RUNTIME,
                 null, LogSubModule.JERUNNER, null);
         List<Object> values = new ArrayList<>();
 
         try {
             HashMap<String, String> requestMap = new HashMap<>();
             requestMap.put("Type", "ReadInitialValues");
-            requestMap.put("ModelId", topic);
+            requestMap.put("ModelId", modelId);
             String data = requester.sendRequest(objectMapper.writeValueAsString(requestMap));
 
             JELogger.trace(JEMessages.DATA_RECEIVED + data, LogCategory.RUNTIME,
@@ -76,7 +76,7 @@ public class DataModelRequester {
 
             }
         } catch (IOException e) {
-            JELogger.error(JEMessages.FAILED_INIT_DATAMODEL + topic, null, "", LogSubModule.JERUNNER, topic);
+            JELogger.error(JEMessages.FAILED_INIT_DATAMODEL + modelId, null, "", LogSubModule.JERUNNER, modelId);
         }
         return values;
 
@@ -89,6 +89,8 @@ public class DataModelRequester {
 
         try {
 
+            JELogger.trace("Requesting last values for instance = " + instanceId, LogCategory.RUNTIME,
+                    null, LogSubModule.JERUNNER, null);
 
             //ZMQRequester requester = new ZMQRequester("tcp://192.168.4.169"/*+SIOTHConfigUtility.getSiothConfig().getMachineCredentials().getIpAddress()*/, SIOTHConfigUtility.getSiothConfig().getDataModelPORTS().getDmService_ReqAddress());
             HashMap<String, String> requestMap = new HashMap<>();

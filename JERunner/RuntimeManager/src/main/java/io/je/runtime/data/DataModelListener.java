@@ -68,12 +68,13 @@ public class DataModelListener {
     public static void startListening(Set<String> topics) {
         JELogger.debug(JEMessages.LISTENING_ON_TOPICS + topics,  LogCategory.RUNTIME,
                 null, LogSubModule.JERUNNER, null);
-
+/*
+		// Moved to ZMQ agent
     	for (String id : topics)
     	{
 			readInitialValues(id);
 		}
-
+*/
 		//if (agent!=null && !agent.isListening())
 		//{
 			if (activeThread != null) {
@@ -100,12 +101,22 @@ public class DataModelListener {
 
         We do it by readInitialValues
      */
-    private static void readInitialValues(String modelId) {
-		List<Object> initialValues = DataModelRequester.readInitialValues(modelId);
+    public static void requestInitialValues(String topic) {
+		List<Object> initialValues = new ArrayList<>();
+
+		String [] splittedTopic = topic.split("#");
+		if (splittedTopic.length > 1) {
+			// Case topic containing instance Id
+			initialValues = Arrays.asList(DataModelRequester.getLastInstanceValue(splittedTopic[1], false));
+		} else if (splittedTopic.length == 1) {
+			// Case topic containing just modelId (Class)
+			initialValues = DataModelRequester.readInitialValues(splittedTopic[0]);
+		}
+
 		for(Object value : initialValues)
 		{
      		 try {				
-				RuntimeDispatcher.injectData(new JEData(modelId, objectMapper.writeValueAsString(value)));
+				RuntimeDispatcher.injectData(new JEData(topic, objectMapper.writeValueAsString(value)));
 				
 			} catch (JsonProcessingException e) {
 				e.printStackTrace();

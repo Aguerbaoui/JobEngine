@@ -41,6 +41,7 @@ public abstract class ZMQSubscriber implements Runnable {
 				subSocket.setHeartbeatTimeout(ZMQConfiguration.HEARTBEAT_TIMEOUT);
 				subSocket.setHandshakeIvl(ZMQConfiguration.HANDSHAKE_INTERVAL);
 				subSocket.setRcvHWM(ZMQConfiguration.RECEIVE_HIGH_WATERMARK);
+				subSocket.setSndHWM(ZMQConfiguration.SEND_HIGH_WATERMARK);
 				subSocket.setReceiveTimeOut(-1);
 
 				if (bindType == ZMQBind.CONNECT) {

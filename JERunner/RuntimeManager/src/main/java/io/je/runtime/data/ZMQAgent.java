@@ -12,6 +12,8 @@ import utils.zmq.ZMQSubscriber;
 import java.util.Arrays;
 import java.util.Set;
 
+import static io.je.runtime.data.DataModelListener.requestInitialValues;
+
 public class ZMQAgent extends ZMQSubscriber {
 
 	public ZMQAgent(String url, int subPort, Set<String> topics) {
@@ -20,6 +22,12 @@ public class ZMQAgent extends ZMQSubscriber {
 
 	@Override
 	public void run() {
+
+		for (String id : topics)
+		{
+			requestInitialValues(id);
+		}
+
 		JELogger.control("ZMQAgent : topics : " + topics + " : " + JEMessages.DATA_LISTENTING_STARTED,
 				LogCategory.RUNTIME, null, LogSubModule.JERUNNER, null);
 
@@ -31,7 +39,7 @@ public class ZMQAgent extends ZMQSubscriber {
 				data = this.getSubSocket(ZMQBind.CONNECT).recvStr();
 			} catch (Exception ex) {
 				//JELogger.trace(ex.getMessage(), LogCategory.RUNTIME, null, LogSubModule.JERUNNER, "topics");
-				//ex.printStackTrace(); // FIXME could have a lot of :
+				ex.printStackTrace(); // FIXME could have a lot of :
 				/*
 				org.zeromq.ZMQException: Errno 4 : errno 4
 				at org.zeromq.ZMQ$Socket.mayRaise(ZMQ.java:3546)
