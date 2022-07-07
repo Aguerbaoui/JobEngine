@@ -140,11 +140,6 @@ public class RuntimeDispatcher {
         JELogger.debug(JEMessages.UPDATING_RULE + " : " + runnerRuleModel.getRuleId(), LogCategory.RUNTIME,
                 runnerRuleModel.getProjectId(), LogSubModule.RULE, runnerRuleModel.getRuleId());
 
-        Set<String> topics = DataModelListener.getRuleTopicsByProjectId(runnerRuleModel.getProjectId());
-
-        // start listening to datasources
-        DataModelListener.startListening(topics);
-
         RuleEngineHandler.updateRule(runnerRuleModel);
 
     }

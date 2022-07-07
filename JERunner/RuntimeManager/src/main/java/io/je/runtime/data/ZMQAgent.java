@@ -41,7 +41,6 @@ public class ZMQAgent extends ZMQSubscriber {
 				try {
 					data = this.getSubSocket(ZMQBind.CONNECT).recvStr();
 				} catch (Exception ex) {
-					// FIXME could have a lot of : org.zeromq.ZMQException: Errno 4
 					ex.printStackTrace();
 					continue;
 				}

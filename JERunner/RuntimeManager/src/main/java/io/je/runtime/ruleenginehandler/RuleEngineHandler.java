@@ -32,6 +32,7 @@ public class RuleEngineHandler {
 		JELogger.debug(JEMessages.VALIDATING_RULE ,
 				LogCategory.RUNTIME, runnerRuleModel.getProjectId(),
 				LogSubModule.RULE,runnerRuleModel.getRuleId());
+
     	String errorMsg = null;
     	if(runnerRuleModel.getRuleId() == null || runnerRuleModel.getRuleId().isEmpty())
     	{
