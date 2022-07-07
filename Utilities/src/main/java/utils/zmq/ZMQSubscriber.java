@@ -18,7 +18,7 @@ public abstract class ZMQSubscriber implements Runnable {
 
 	protected Set<String> topics;
 
-	protected volatile boolean listening = false;
+	protected volatile boolean listening = true;
 
 	public ZMQSubscriber(String url, int subPort, Set<String> topics) {
 		this.url = url;
@@ -49,18 +49,18 @@ public abstract class ZMQSubscriber implements Runnable {
 				} else if (bindType == ZMQBind.BIND) {
 					subSocket.bind(url + ":" + subPort);
 				}
+
+				for (String topic : topics) {
+					subSocket.subscribe(topic.getBytes());
+				}
+
+				if (ZMQSecurity.isSecure()) {
+					subSocket.setCurveServerKey(ZMQSecurity.getServerPair().publicKey.getBytes());
+					subSocket.setCurveSecretKey(ZMQSecurity.getServerPair().secretKey.getBytes());
+					subSocket.setCurvePublicKey(ZMQSecurity.getServerPair().publicKey.getBytes());
+				}
 			}
 
-			for (String topic : topics) {
-				subSocket.subscribe(topic.getBytes());
-			}
-			setListening(!this.topics.isEmpty());
-
-			if (ZMQSecurity.isSecure()) {
-				subSocket.setCurveServerKey(ZMQSecurity.getServerPair().publicKey.getBytes());
-				subSocket.setCurveSecretKey(ZMQSecurity.getServerPair().secretKey.getBytes());
-				subSocket.setCurvePublicKey(ZMQSecurity.getServerPair().publicKey.getBytes());
-			}
 		} catch (Exception exp) {
 			closeSocket();
 			throw new ZMQConnectionFailedException(0,"Failed to connect to address [ "+url + ":" + subPort+"]: "+ exp);
@@ -78,30 +78,21 @@ public abstract class ZMQSubscriber implements Runnable {
 	}
 
 	public ZMQ.Socket getSubSocket(ZMQBind bindType) throws ZMQConnectionFailedException {
-		//if (subSocket == null) {
 
-			connectToAddress(bindType);
+		connectToAddress(bindType);
 
-		//}
 		return subSocket;
-	}
-
-	public void removeTopics(Set<String> topics) {
-		for (String topic : topics) {
-			subSocket.unsubscribe(topic.getBytes());
-			this.topics.remove(topic);
-		}
-		setListening(!this.topics.isEmpty());
 	}
 
 	public boolean isListening() {
 		return listening;
 	}
 
-	public void setListening(boolean listening) {
-		this.listening = listening;
+	public void stopListening() {
+		this.listening = false;
 	}
 
+/*
 	public ZContext getContext() {
 		return context;
 	}
@@ -137,7 +128,7 @@ public abstract class ZMQSubscriber implements Runnable {
 	public void setTopics(Set<String> topics) {
 		this.topics = topics;
 	}
-
+*/
 	// public abstract void handleConnectionFail();
 
 }

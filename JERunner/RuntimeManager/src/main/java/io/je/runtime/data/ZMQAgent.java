@@ -23,63 +23,62 @@ public class ZMQAgent extends ZMQSubscriber {
 	@Override
 	public void run() {
 
-		for (String id : topics)
-		{
-			requestInitialValues(id);
-		}
+		synchronized (this) {
 
-		JELogger.control("ZMQAgent : topics : " + topics + " : " + JEMessages.DATA_LISTENTING_STARTED,
-				LogCategory.RUNTIME, null, LogSubModule.JERUNNER, null);
-
-		String last_topic = null;
-
-		while (listening) {
-			String data = null;
-			try {
-				data = this.getSubSocket(ZMQBind.CONNECT).recvStr();
-			} catch (Exception ex) {
-				//JELogger.trace(ex.getMessage(), LogCategory.RUNTIME, null, LogSubModule.JERUNNER, "topics");
-				ex.printStackTrace(); // FIXME could have a lot of :
-				/*
-				org.zeromq.ZMQException: Errno 4 : errno 4
-				at org.zeromq.ZMQ$Socket.mayRaise(ZMQ.java:3546)
-				at org.zeromq.ZMQ$Socket.recv(ZMQ.java:3377)
-				at org.zeromq.ZMQ$Socket.recvStr(ZMQ.java:3463)
-				at org.zeromq.ZMQ$Socket.recvStr(ZMQ.java:3444)
-				at io.je.runtime.data.ZMQAgent.run(Unknown Source)
-				at java.base/java.lang.Thread.run(Thread.java:834)
-				*/
-				continue;
+			for (String id : this.topics) {
+				requestInitialValues(id);
 			}
 
-			JELogger.trace(JEMessages.DATA_RECEIVED + data,
+			final String ID_MSG = "ZMQAgent Subscriber : ";
+
+			JELogger.debug(ID_MSG + "topics : " + this.topics + " : " + JEMessages.DATA_LISTENTING_STARTED,
 					LogCategory.RUNTIME, null, LogSubModule.JERUNNER, null);
 
-			try {
-				if (data == null) continue;
+			String last_topic = null;
 
-				if (last_topic == null) {
-					for (String topic : topics) {
-						if (data.startsWith(topic)) {
-							last_topic = topic;
-							break;
-						}
-					}
-				} else {
-
-					RuntimeDispatcher.injectData(new JEData(last_topic, data));
-
-					last_topic = null;
+			while (this.listening) {
+				String data = null;
+				try {
+					data = this.getSubSocket(ZMQBind.CONNECT).recvStr();
+				} catch (Exception ex) {
+					// FIXME could have a lot of : org.zeromq.ZMQException: Errno 4
+					ex.printStackTrace();
+					continue;
 				}
 
-			} catch (Exception e) {
-				JELogger.error(JEMessages.UKNOWN_ERROR + Arrays.toString(e.getStackTrace()), LogCategory.RUNTIME, null,
-						LogSubModule.JERUNNER, null);
+				JELogger.trace(ID_MSG + JEMessages.DATA_RECEIVED + data,
+						LogCategory.RUNTIME, null, LogSubModule.JERUNNER, null);
+
+				try {
+					if (data == null) continue;
+
+					if (last_topic == null) {
+						for (String topic : this.topics) {
+							if (data.startsWith(topic)) {
+								last_topic = topic;
+								break;
+							}
+						}
+					} else {
+
+						RuntimeDispatcher.injectData(new JEData(last_topic, data));
+
+						last_topic = null;
+					}
+
+				} catch (Exception e) {
+					JELogger.error(ID_MSG + JEMessages.UKNOWN_ERROR + Arrays.toString(e.getStackTrace()),
+							LogCategory.RUNTIME, null, LogSubModule.JERUNNER, null);
+				}
+
 			}
 
-		}
+			JELogger.debug(ID_MSG + JEMessages.CLOSING_SOCKET,
+					LogCategory.RUNTIME, null, LogSubModule.JERUNNER, null);
 
-		closeSocket();
+			this.closeSocket();
+
+		}
 
 	}
 

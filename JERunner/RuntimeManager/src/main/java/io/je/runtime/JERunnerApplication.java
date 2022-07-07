@@ -18,7 +18,7 @@ public class JERunnerApplication {
 
 	
     public static void main(String[] args) {
-    	//SIOTHConfigUtility.init();
+
     	//System.setProperty("drools.dateformat", SIOTHConfigUtility.getSiothConfig().getDateFormat());
         SpringApplication app = new SpringApplication(JERunnerApplication.class);
         app.setBannerMode(Banner.Mode.OFF);
@@ -27,6 +27,7 @@ public class JERunnerApplication {
         properties.put("server.servlet.context-path", "/RuntimeManager");
         app.setDefaultProperties(properties);
         app.run(args);
+
         JELogger.debug(JEMessages.RUNNER_STARTED,  LogCategory.RUNTIME,
                 null, LogSubModule.JERUNNER, null);
 

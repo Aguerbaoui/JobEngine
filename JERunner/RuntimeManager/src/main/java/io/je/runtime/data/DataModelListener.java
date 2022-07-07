@@ -68,38 +68,29 @@ public class DataModelListener {
     public static void startListening(Set<String> topics) {
         JELogger.debug(JEMessages.LISTENING_ON_TOPICS + topics,  LogCategory.RUNTIME,
                 null, LogSubModule.JERUNNER, null);
-/*
-		// Moved to ZMQ agent
-    	for (String id : topics)
-    	{
-			readInitialValues(id);
+
+		if (activeThread != null) {
+			activeThread.interrupt();
+			activeThread = null;
 		}
-*/
-		//if (agent!=null && !agent.isListening())
-		//{
-			if (activeThread != null) {
-				activeThread.interrupt();
-				activeThread = null;
-			}
 
-			if (agent != null) {
-				agent.setListening(false);
-				agent = null;
-			}
+		if (agent != null) {
+			agent.stopListening();
+			agent = null;
+		}
 
-			createNewZmqAgent(topics);
-			agent.setListening(true);
+		createNewZmqAgent(topics);
 
-			activeThread = new Thread(agent);
-			activeThread.start();
-		//}
+		activeThread = new Thread(agent);
+		activeThread.start();
+
     }
 
 	/*
         ZMQ is missing last value caching (LVC)
         https://zguide.zeromq.org/docs/chapter5/
 
-        We do it by readInitialValues
+        We do it by requestInitialValues
      */
     public static void requestInitialValues(String topic) {
 		List<Object> initialValues = new ArrayList<>();
@@ -125,11 +116,11 @@ public class DataModelListener {
 	}
 
 	public static void stopListening(Set<String> topics) {
-        JELogger.control(JEMessages.STOPPING_LISTENING_TO_TOPICS + topics,  LogCategory.RUNTIME,
+        JELogger.trace(JEMessages.STOPPING_LISTENING_TO_TOPICS + topics,  LogCategory.RUNTIME,
                 null, LogSubModule.JERUNNER, null);
 
 		try {
-			agent.removeTopics(topics);
+			agent.stopListening();
 		}
 		catch (Exception e) {
 			JELogger.error(JEMessages.INTERRUPT_TOPIC_ERROR + topics.toString(),  LogCategory.RUNTIME,

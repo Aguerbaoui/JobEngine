@@ -22,8 +22,8 @@ public class JEMonitorSubscriber {
     public void initSubscriber() {
         subscriber.setConfig("tcp://" + SIOTHConfigUtility.getSiothConfig().getNodes().getSiothMasterNode(),
                 monitorProperties.getMonitoringPort(), new HashSet<>(Arrays.asList(JEMONITOR_TOPIC)));
+
     	Thread thread = new Thread(subscriber);
-        subscriber.setListening(true);
         thread.start();
     }
 

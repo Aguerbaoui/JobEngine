@@ -1,6 +1,7 @@
 package io.je.Monitor.zmq;
 
 import io.je.Monitor.service.WebSocketService;
+import io.je.utilities.constants.JEMessages;
 import io.je.utilities.log.JELogger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -77,37 +78,49 @@ public class MonitoringSubscriber extends ZMQSubscriber {
 	@Override
 	public void run() {
 
-		String last_topic = null;
+		synchronized (this) {
 
-		while (listening) {
-			String data = null;
+			final String ID_MSG = "Monitor Subscriber : ";
 
-			try {
-				data = this.getSubSocket(ZMQBind.BIND).recvStr();
+			JELogger.debug(ID_MSG + "topics : " + this.topics + " : " + JEMessages.DATA_LISTENTING_STARTED,
+					LogCategory.MONITOR, null, LogSubModule.JEMONITOR, null);
 
-				if (data == null) continue;
+			String last_topic = null;
 
-				if (last_topic == null) {
-					for (String topic : topics) {
-						if (data.startsWith(topic)) {
-							last_topic = topic;
-							break;
+			while (this.listening) {
+				String data = null;
+
+				try {
+					data = this.getSubSocket(ZMQBind.BIND).recvStr();
+
+					if (data == null) continue;
+
+					if (last_topic == null) {
+						for (String topic : this.topics) {
+							if (data.startsWith(topic)) {
+								last_topic = topic;
+								break;
+							}
 						}
+					} else {
+
+						JELogger.debug(data);
+						this.service.sendUpdates(data);
+
+						last_topic = null;
 					}
-				} else {
-
-					JELogger.debug(data);
-					service.sendUpdates(data);
-
-					last_topic = null;
+				} catch (Exception e) {
+					JELogger.error(e.toString(), null, "", null, "");
 				}
-			} catch (Exception e) {
-				JELogger.error(e.toString(), null, "", null, "");
+
 			}
 
-		}
+			JELogger.debug(ID_MSG + JEMessages.CLOSING_SOCKET,
+					LogCategory.MONITOR, null, LogSubModule.JEMONITOR, null);
 
-		closeSocket();
+			this.closeSocket();
+
+		}
 
 	}
 

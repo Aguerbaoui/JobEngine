@@ -68,7 +68,7 @@ public class DataModelRequester {
             requestMap.put("ModelId", modelId);
             String data = requester.sendRequest(objectMapper.writeValueAsString(requestMap));
 
-            JELogger.trace(JEMessages.DATA_RECEIVED + data, LogCategory.RUNTIME,
+            JELogger.trace("Request ReadInitialValues : " + JEMessages.DATA_RECEIVED + data, LogCategory.RUNTIME,
                     null, LogSubModule.JERUNNER, null);
 
             if (data != null) {
@@ -98,8 +98,10 @@ public class DataModelRequester {
 
             requestMap.put(isName.length > 0 && Boolean.TRUE.equals(isName[0]) ? "InstanceName" : "InstanceId", instanceId);
             String data = requester.sendRequest(objectMapper.writeValueAsString(requestMap));
-            JELogger.trace(JEMessages.DATA_RECEIVED + " : " + data, LogCategory.RUNTIME,
+
+            JELogger.trace("Request ReadInstance : " + JEMessages.DATA_RECEIVED + " : " + data, LogCategory.RUNTIME,
                     null, LogSubModule.JERUNNER, null);
+
             if (data != null) {
                 return data;
 

@@ -113,6 +113,7 @@ public class JEMessages {
 
     public static final String REMOVING_TOPIC_SUBSCRIPTION = "Removing topic subscription";
 
+    public static final String CLOSING_SOCKET = "Closing socket";
 
     // ****************************************TraceMessages**************************************************
 
