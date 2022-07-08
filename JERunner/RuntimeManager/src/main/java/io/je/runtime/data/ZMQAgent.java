@@ -25,18 +25,19 @@ public class ZMQAgent extends ZMQSubscriber {
 
 		synchronized (this) {
 
-			for (String id : this.topics) {
-				requestInitialValues(id);
-			}
-
 			final String ID_MSG = "ZMQAgent Subscriber : ";
 
 			JELogger.debug(ID_MSG + "topics : " + this.topics + " : " + JEMessages.DATA_LISTENTING_STARTED,
 					LogCategory.RUNTIME, null, LogSubModule.JERUNNER, null);
 
+			for (String id : this.topics) {
+				if (this.listening) {
+					requestInitialValues(id);
+				}
+			}
+
 			String last_topic = null;
 
-			this.listening = true;
 			while (this.listening) {
 				String data = null;
 				try {
