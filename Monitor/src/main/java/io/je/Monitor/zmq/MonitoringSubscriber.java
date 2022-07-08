@@ -87,6 +87,7 @@ public class MonitoringSubscriber extends ZMQSubscriber {
 
 			String last_topic = null;
 
+			this.listening = true;
 			while (this.listening) {
 				String data = null;
 
@@ -95,9 +96,11 @@ public class MonitoringSubscriber extends ZMQSubscriber {
 
 					if (data == null) continue;
 
+					// FIXME waiting to have topic in the same response message
 					if (last_topic == null) {
 						for (String topic : this.topics) {
-							if (data.startsWith(topic)) {
+							// Received Data should be equal topic
+							if (data.equals(topic)) {
 								last_topic = topic;
 								break;
 							}

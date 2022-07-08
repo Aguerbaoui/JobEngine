@@ -89,6 +89,7 @@ public abstract class ZMQSubscriber implements Runnable {
 	}
 
 	public void stopListening() {
+		//FIXME
 		this.listening = false;
 	}
 

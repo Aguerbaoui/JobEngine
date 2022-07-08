@@ -90,20 +90,20 @@ public class RuleEngineHandler {
     }
 
 
-    public static void injectData(String projectId,JEObject instance)  {
-    try
-    {
-    	
-        RuleEngine.assertFact(projectId,instance);
-    }catch(Exception e)
-    {
-		JELogger.warn(JEMessages.ADD_INSTANCE_FAILED + e.getMessage(),
-				LogCategory.RUNTIME, projectId,
-				LogSubModule.RULE,null);
-    	}
-    	
-        
-    }
+	public static void injectData(String projectId, JEObject instance) {
+		try {
+
+			RuleEngine.assertFact(projectId, instance);
+
+		} catch (Exception e) {
+			JELogger.warn(JEMessages.ADD_INSTANCE_FAILED + e.getMessage(),
+					LogCategory.RUNTIME, projectId,
+					LogSubModule.RULE, null);
+		}
+
+	}
+
+
     /*
      * stop running a project given a project id
      */

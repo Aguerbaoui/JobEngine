@@ -705,7 +705,7 @@ public class ClassService {
         @Override
         public void run() {
 
-            synchronized (this) {
+             synchronized (this) {
 
                 final String ID_MSG = "Class Service : ";
 
@@ -714,6 +714,7 @@ public class ClassService {
 
                 String last_topic = null;
 
+                this.listening = true;
                 while (this.listening) {
 
                     //  JELogger.info(ClassUpdateListener.class, "--------------------------------------");
@@ -729,9 +730,11 @@ public class ClassService {
                     try {
                         if (data == null) continue;
 
+                        // FIXME waiting to have topic in the same response message
                         if (last_topic == null) {
                             for (String topic : this.topics) {
-                                if (data.startsWith(topic)) {
+                                // Received Data should be equal topic
+                                if (data.equals(topic)) {
                                     last_topic = topic;
                                     break;
                                 }

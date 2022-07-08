@@ -36,6 +36,7 @@ public class ZMQAgent extends ZMQSubscriber {
 
 			String last_topic = null;
 
+			this.listening = true;
 			while (this.listening) {
 				String data = null;
 				try {
@@ -51,13 +52,17 @@ public class ZMQAgent extends ZMQSubscriber {
 				try {
 					if (data == null) continue;
 
+					// FIXME waiting to have topic in the same response message
 					if (last_topic == null) {
+
 						for (String topic : this.topics) {
-							if (data.startsWith(topic)) {
+							// Instance case or Class case
+							if (data.equals(topic) || data.split("#")[0].equals(topic)) {
 								last_topic = topic;
 								break;
 							}
 						}
+
 					} else {
 
 						RuntimeDispatcher.injectData(new JEData(last_topic, data));
