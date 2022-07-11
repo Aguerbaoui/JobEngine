@@ -57,12 +57,8 @@ public class JELogger extends LoggerUtils {
 
 	public static void debugWithoutPublish(String message, LogCategory category, String projectId, LogSubModule subModule,
 										   String objectId) {
-//Log in file
+		//Log in file
 		debug(message);
-
-//Log in logging service
-		LogMessage logMessage = getLogMessage(LogLevel.DEBUG, message, category, projectId, subModule, objectId);
-		publishLogMessage(logMessage);
 
 	}
 
@@ -77,7 +73,7 @@ public class JELogger extends LoggerUtils {
 		// Log in logging service
 		LogMessage logMessage = getLogMessage(LogLevel.DEBUG, message, category, projectId, subModule, objectId,
 				blockName);
-		// publishLogMessage(logMessage);
+		publishLogMessage(logMessage);
 
 	}
 
