@@ -10,14 +10,12 @@ import utils.zmq.ZMQBind;
 import utils.zmq.ZMQSubscriber;
 
 import java.util.Arrays;
-import java.util.Set;
 
-import static io.je.runtime.data.DataModelListener.requestInitialValues;
 
-public class ZMQAgent extends ZMQSubscriber {
+public class DataZMQSubscriber extends ZMQSubscriber {
 
-	public ZMQAgent(String url, int subPort, Set<String> topics) {
-		super(url, subPort, topics);
+	public DataZMQSubscriber(String url, int subPort) {
+		super(url, subPort);
 	}
 
 	@Override
@@ -25,16 +23,10 @@ public class ZMQAgent extends ZMQSubscriber {
 
 		synchronized (this) {
 
-			final String ID_MSG = "ZMQAgent Subscriber : ";
+			final String ID_MSG = "DataZMQSubscriber : ";
 
 			JELogger.debug(ID_MSG + "topics : " + this.topics + " : " + JEMessages.DATA_LISTENTING_STARTED,
 					LogCategory.RUNTIME, null, LogSubModule.JERUNNER, null);
-
-			for (String id : this.topics) {
-				if (this.listening) {
-					requestInitialValues(id);
-				}
-			}
 
 			String last_topic = null;
 

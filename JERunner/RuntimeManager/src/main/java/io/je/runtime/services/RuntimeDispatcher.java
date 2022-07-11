@@ -327,6 +327,7 @@ public class RuntimeDispatcher {
     public void triggerEvent(String projectId, String id) throws EventException, ProjectNotFoundException {
 
         EventManager.triggerEvent(projectId, id);
+
     }
 
     // Add an event to the runner
@@ -374,7 +375,7 @@ public class RuntimeDispatcher {
     }
 
     // remove rule topics
-    public void removeRuleTopics(String projectId, String ruleId) {
+    public void removeRuleTopics(String ruleId) {
 
         DataModelListener.removeDMListener(ruleId);
 
@@ -451,6 +452,7 @@ public class RuntimeDispatcher {
             throws RulesNotFiredException, RuleBuildFailedException {
 
         Set<String> topics = DataModelListener.getRuleTopicsByProjectId(projectId);
+        // FIXME called by updateRule and runProjectRules
         DataModelListener.startListening(topics);
 
         //RuleEngineHandler.buildProject(projectId);
@@ -474,10 +476,15 @@ public class RuntimeDispatcher {
     public List<OperationStatusDetails> updateRules(List<RunnerRuleModel> runnerRuleModels) {
 
         List<OperationStatusDetails> updateResult = new ArrayList<>();
+
         for (RunnerRuleModel runnerRuleModel : runnerRuleModels) {
+
             OperationStatusDetails details = new OperationStatusDetails(runnerRuleModel.getRuleId());
-            removeRuleTopics(runnerRuleModel.getProjectId(), runnerRuleModel.getRuleId());
+
+            removeRuleTopics(runnerRuleModel.getRuleId());
+
             addTopics(runnerRuleModel.getProjectId(), runnerRuleModel.getRuleId(), "rule", runnerRuleModel.getTopics());
+
             try {
                 updateRule(runnerRuleModel);
                 details.setOperationSucceeded(true);
@@ -485,7 +492,9 @@ public class RuntimeDispatcher {
                 details.setOperationSucceeded(false);
                 details.setOperationError(e.getMessage());
             }
+
         }
+
         return updateResult;
 
     }

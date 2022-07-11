@@ -85,13 +85,13 @@ public class ClassService {
     /**
      * Init a thread that listens to the DataModelRestApi for class definition updates
      */
-    public void initClassUpdateListener() {
+    public void initClassZMQSubscriber() {
         // TODO make runnable static
-        ClassUpdateListener runnable = new ClassUpdateListener(
+        ClassZMQSubscriber runnable = new ClassZMQSubscriber(
                 "tcp://" + SIOTHConfigUtility.getSiothConfig()
                         .getNodes()
                         .getSiothMasterNode(),
-                SIOTHConfigUtility.getSiothConfig()
+                    SIOTHConfigUtility.getSiothConfig()
                         .getDataModelPORTS()
                         .getDmRestAPI_ConfigurationPubAddress());
 
@@ -693,13 +693,13 @@ public class ClassService {
     }
 
 
-    class ClassUpdateListener extends ZMQSubscriber {
+    class ClassZMQSubscriber extends ZMQSubscriber {
 
         ObjectMapper objectMapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
-        public ClassUpdateListener(String url, int subPort) {
-            super(url, subPort, new HashSet<>(Arrays.asList(MODEL_TOPIC)));
-
+        public ClassZMQSubscriber(String url, int subPort) {
+            super(url, subPort);
+            addTopic(MODEL_TOPIC);
         }
 
         @Override
@@ -707,14 +707,13 @@ public class ClassService {
 
              synchronized (this) {
 
-                final String ID_MSG = "Class Service : ";
+                final String ID_MSG = "ClassZMQSubscriber : ";
 
                 JELogger.debug(ID_MSG + "topics : " + this.topics + " : " + JEMessages.DATA_LISTENTING_STARTED,
                         LogCategory.DESIGN_MODE, null, LogSubModule.CLASS, null);
 
                 String last_topic = null;
 
-                this.listening = true;
                 while (this.listening) {
 
                     //  JELogger.info(ClassUpdateListener.class, "--------------------------------------");
