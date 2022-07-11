@@ -319,7 +319,7 @@ public class RuntimeDispatcher {
     public void addTopics(String projectId, String listenerId, String listenerType, Set<String> topics) {
         if (topics != null && !topics.isEmpty()) {
             DMListener dMListener = new DMListener(listenerId, projectId, listenerType);
-            DataModelListener.resetDMListener(dMListener, topics);
+            DataModelListener.updateDMListener(dMListener, topics);
         }
     }
 
@@ -452,10 +452,9 @@ public class RuntimeDispatcher {
             throws RulesNotFiredException, RuleBuildFailedException {
 
         Set<String> topics = DataModelListener.getRuleTopicsByProjectId(projectId);
-        // FIXME called by updateRule and runProjectRules
+
         DataModelListener.startListening(topics);
 
-        //RuleEngineHandler.buildProject(projectId);
         RuleEngineHandler.runRuleEngineProject(projectId);
 
         for (JEVariable variable : VariableManager.getAllVariables(projectId)) {

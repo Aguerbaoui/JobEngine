@@ -31,10 +31,6 @@ public class ZMQLogPublisher {
 		}
 		
 	}
-	
-	
-	
-	
-	
+
 
 }

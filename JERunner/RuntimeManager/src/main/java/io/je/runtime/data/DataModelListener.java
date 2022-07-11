@@ -24,163 +24,162 @@ public class DataModelListener {
 
     private static DataZMQSubscriber dataZMQSubscriber = null;
     private static ObjectMapper objectMapper = new ObjectMapper();
-	static Map<String,DMTopic> allDMTopics = new HashMap<>();
-	
-	
-	
-	public static Set<String> getTopicsByProjectId(String projectId){
-		Set<String> topics = new HashSet<>();
-		for(DMTopic topic : allDMTopics.values())
-		{
-			if(topic.getProjects().contains(projectId))
-			{
-				topics.add(topic.getId());
-			}
-		}
-		return topics;
-	}
-	
-	public static Set<String> getRuleTopicsByProjectId(String projectId) {
-		Set<String> topics = new HashSet<>();
-		for(DMTopic topic : allDMTopics.values())
-		{
-			if (topic.getProjects().contains(projectId))
-			{
-				for(DMListener subscriber : topic.getListeners().values())
-				{
-					if(subscriber.getType().equals("rule"))
-					{
-						topics.add(topic.getId());
-					}
-				}
-			}
-		}
-		return topics;
-	}
+    static Map<String, DMTopic> allDMTopics = new HashMap<>();
 
-	/*
-	     Only one DataZMQSubscriber for all data topics
-	 */
+
+    // FIXME check if ok
+    public static Set<String> getTopicsByProjectId(String projectId) {
+        Set<String> topics = new HashSet<>();
+        for (DMTopic topic : allDMTopics.values()) {
+            if (topic.getProjects().contains(projectId)) {
+                topics.add(topic.getId());
+            }
+        }
+        return topics;
+    }
+
+    // FIXME check if ok
+    public static Set<String> getRuleTopicsByProjectId(String projectId) {
+        Set<String> topics = new HashSet<>();
+        for (DMTopic topic : allDMTopics.values()) {
+            if (topic.getProjects().contains(projectId)) {
+                for (DMListener subscriber : topic.getListeners().values()) {
+                    if (subscriber.getType().equals("rule")) {
+                        topics.add(topic.getId());
+                    }
+                }
+            }
+        }
+        return topics;
+    }
+
+    /*
+         Only one DataZMQSubscriber for all data topics
+     */
     private static DataZMQSubscriber getDataZMQSubscriber() {
 
-		if (dataZMQSubscriber == null) {
-			dataZMQSubscriber = new DataZMQSubscriber("tcp://" + SIOTHConfigUtility.getSiothConfig().getNodes().getSiothMasterNode(),
-					SIOTHConfigUtility.getSiothConfig().getDataModelPORTS().getDmService_PubAddress());
-			Thread thread = new Thread(dataZMQSubscriber);
-			thread.start();
-		}
+        if (dataZMQSubscriber == null) {
+            dataZMQSubscriber = new DataZMQSubscriber("tcp://" + SIOTHConfigUtility.getSiothConfig().getNodes().getSiothMasterNode(),
+                    SIOTHConfigUtility.getSiothConfig().getDataModelPORTS().getDmService_PubAddress());
+            Thread thread = new Thread(dataZMQSubscriber);
+            thread.start();
+        }
 
-		return dataZMQSubscriber;
+        return dataZMQSubscriber;
     }
 
     public static void startListening(Set<String> topics) {
-		// FIXME add Data Model Listener to Logs
-		JELogger.debug(JEMessages.LAUNCHING_LISTENING_TO_TOPICS + topics,  LogCategory.RUNTIME,
-				null, LogSubModule.JERUNNER, null);
 
-		for (String topic : topics) {
+        for (String topic : topics) {
 
-			getDataZMQSubscriber().addTopic(topic);
+			startListening(topic);
 
-			Thread thread = new Thread( () -> requestInitialValues(topic) );
-			thread.start();
-		}
+        }
 
     }
 
-	/*
+    public static void startListening(String topic) {
+
+        // FIXME add Data Model Listener to Logs
+        JELogger.debug(JEMessages.LAUNCHING_LISTENING_TO_TOPIC + topic, LogCategory.RUNTIME,
+                null, LogSubModule.JERUNNER, null);
+
+        getDataZMQSubscriber().addTopic(topic);
+
+        Thread thread = new Thread(() -> requestInitialValues(topic));
+        thread.start();
+
+    }
+
+    /*
         ZMQ is missing last value caching (LVC)
         https://zguide.zeromq.org/docs/chapter5/
 
         We do it by requestInitialValues
      */
     public static void requestInitialValues(String topic) {
-		List<Object> initialValues = new ArrayList<>();
+        List<Object> initialValues = new ArrayList<>();
 
-		String [] splittedTopic = topic.split("#");
-		if (splittedTopic.length > 1) {
-			// Case topic containing instance Id
-			initialValues = Arrays.asList(DataModelRequester.getLastInstanceValue(splittedTopic[1], false));
-		} else if (splittedTopic.length == 1) {
-			// Case topic containing just modelId (Class)
-			initialValues = DataModelRequester.readInitialValues(splittedTopic[0]);
-		}
+        String[] splittedTopic = topic.split("#");
+        if (splittedTopic.length > 1) {
+            // Case topic containing instance Id
+            initialValues = Arrays.asList(DataModelRequester.getLastInstanceValue(splittedTopic[1], false));
+        } else if (splittedTopic.length == 1) {
+            // Case topic containing just modelId (Class)
+            initialValues = DataModelRequester.readInitialValues(splittedTopic[0]);
+        }
 
-		for(Object value : initialValues)
-		{
-     		 try {				
-				RuntimeDispatcher.injectData(new JEData(topic, objectMapper.writeValueAsString(value)));
-				
-			} catch (JsonProcessingException e) {
-				e.printStackTrace();
-			}
-		}
-	}
+        for (Object value : initialValues) {
+            try {
+                RuntimeDispatcher.injectData(new JEData(topic, objectMapper.writeValueAsString(value)));
 
-	public static void stopListening(Set<String> topics) {
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
-		JELogger.debug(JEMessages.STOPPING_LISTENING_TO_TOPICS + topics,  LogCategory.RUNTIME,
-				null, LogSubModule.JERUNNER, null);
+    public static void stopListening(String topic) {
 
-		for (String topic : topics) {
-			getDataZMQSubscriber().removeTopic(topic);
-		}
+        JELogger.debug(JEMessages.STOPPING_LISTENING_TO_TOPIC + topic, LogCategory.RUNTIME,
+                null, LogSubModule.JERUNNER, null);
+
+        getDataZMQSubscriber().removeTopic(topic);
 
     }
 
-	public static void resetDMListener(DMListener dMListener, Set<String> topics) {
+    public static void stopListening(Set<String> topics) {
 
-		startListening(topics);
+        for (String topic : topics) {
+            stopListening(topic);
+        }
 
-		allDMTopics = new HashMap<>();
+    }
 
-		for(String topic : topics)
-		{
-			allDMTopics.put(topic, new DMTopic(topic)) ;
-			allDMTopics.get(topic).addListener(dMListener);
-		}
-	}
-	
-	public static void removeDMListener(String listenerId) {
+    public static void updateDMListener(DMListener dMListener, Set<String> topics) {
 
-		for(Entry<String, DMTopic> topic : allDMTopics.entrySet())
-		{
+        for (String topic : topics) {
+            if (!allDMTopics.containsKey(topic)) {
+                allDMTopics.put(topic, new DMTopic(topic));
+            }
+            allDMTopics.get(topic).addListener(dMListener);
+        }
 
-			if(topic.getValue().hasListener(listenerId))
-			{
-				topic.getValue().removeListener(listenerId);
-			}
+    }
 
-			stopListeningOnTopicIfNoSubscribers(topic.getValue());
-					
-		}
-		
-	}
+    public static void removeDMListener(String listenerId) {
 
-	public static void removeListenersByProjectId(String projectId) {
-		for(Entry<String, DMTopic> topic : allDMTopics.entrySet())
-		{
-			topic.getValue().removeAllProjectListeners(projectId);
-			stopListeningOnTopicIfNoSubscribers(topic.getValue());
-		
-		}
-		
-	}
-	
-	public static void stopListeningOnTopicIfNoSubscribers(DMTopic topic)
-	{
-		if(!topic.hasListeners())
-		{
-			Set<String> temp = new HashSet<>();
-			temp.add(topic.getId());
-			stopListening(temp);
-		}
-	}
+        for (Entry<String, DMTopic> topic : allDMTopics.entrySet()) {
 
-	public static List<String> getProjectsSubscribedToTopic(String topic) {
-		
-		return allDMTopics.get(topic).getProjects();
-		
-	}
+            if (topic.getValue().hasListener(listenerId)) {
+                topic.getValue().removeListener(listenerId);
+            }
+
+            stopListeningOnTopicIfNoSubscribers(topic.getValue());
+
+        }
+
+    }
+
+    public static void removeListenersByProjectId(String projectId) {
+        // FIXME check if ok
+        for (Entry<String, DMTopic> topic : allDMTopics.entrySet()) {
+            topic.getValue().removeAllProjectListeners(projectId);
+            stopListeningOnTopicIfNoSubscribers(topic.getValue());
+        }
+
+    }
+
+    public static void stopListeningOnTopicIfNoSubscribers(DMTopic topic) {
+        if (!topic.hasListeners()) {
+            stopListening(topic.getId());
+        }
+    }
+
+    public static List<String> getProjectsSubscribedToTopic(String topic) {
+
+        return allDMTopics.get(topic).getProjects();
+
+    }
 
 }

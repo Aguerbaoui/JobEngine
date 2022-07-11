@@ -10,7 +10,9 @@ import java.util.stream.Collectors;
 public class DMTopic {
 
     String id;
+
     Map<String, DMListener> dMListeners;
+    // FIXME Set instead of List
     List<String> projects;
 
 

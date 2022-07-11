@@ -97,11 +97,11 @@ public class JEMessages {
 
     // ****************************************Data Listener**************************************************
 
-    public static final String LAUNCHING_LISTENING_TO_TOPICS = "Launching listening to topics: ";
+    public static final String LAUNCHING_LISTENING_TO_TOPIC = "Launching listening to topic : ";
 
     public static final String ADDING_TOPICS = "Adding topics: ";
 
-    public static final String STOPPING_LISTENING_TO_TOPICS = "Stopping listening to topics : ";
+    public static final String STOPPING_LISTENING_TO_TOPIC = "Stopping listening to topic : ";
 
     public static final String INTERRUPT_TOPIC_ERROR = "Error interrupting thread for topics : ";
 
