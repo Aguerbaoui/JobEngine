@@ -145,6 +145,8 @@ public class DataModelListener {
             allDMTopics.get(topic).addListener(dMListener);
         }
 
+        startListening(topics);
+
     }
 
     public static void removeDMListener(String listenerId) {

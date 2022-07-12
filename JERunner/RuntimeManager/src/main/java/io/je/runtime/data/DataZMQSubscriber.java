@@ -10,6 +10,8 @@ import utils.zmq.ZMQBind;
 import utils.zmq.ZMQSubscriber;
 
 import java.util.Arrays;
+import java.util.Iterator;
+import java.util.Set;
 
 
 public class DataZMQSubscriber extends ZMQSubscriber {
@@ -48,7 +50,12 @@ public class DataZMQSubscriber extends ZMQSubscriber {
 					// FIXME waiting to have topic in the same response message
 					if (last_topic == null) {
 
-						for (String topic : this.topics) {
+						// FIXME Avoid concurrent modifications exceptions
+						Set<String> _topics = this.topics;
+
+						Iterator<String> iterator = _topics.iterator();
+						while (iterator.hasNext()) {
+							String topic = iterator.next();
 							// Instance case or Class case
 							if (data.equals(topic) || data.split("#")[0].equals(topic)) {
 								last_topic = topic;
@@ -63,8 +70,10 @@ public class DataZMQSubscriber extends ZMQSubscriber {
 						last_topic = null;
 					}
 
-				} catch (Exception e) {
-					JELogger.error(ID_MSG + JEMessages.UKNOWN_ERROR + Arrays.toString(e.getStackTrace()),
+				} catch (Exception exp) {
+					exp.printStackTrace();
+
+					JELogger.error(ID_MSG + JEMessages.UKNOWN_ERROR + Arrays.toString(exp.getStackTrace()),
 							LogCategory.RUNTIME, null, LogSubModule.JERUNNER, null);
 				}
 

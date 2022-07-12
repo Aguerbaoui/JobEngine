@@ -4,6 +4,7 @@ import org.zeromq.SocketType;
 import org.zeromq.ZContext;
 import org.zeromq.ZMQ;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -17,7 +18,7 @@ public abstract class ZMQSubscriber implements Runnable {
 
 	protected int port = 0;
 
-	protected Set<String> topics = new HashSet<>();
+	protected Set<String> topics = Collections.synchronizedSet(new HashSet());
 
 	protected volatile boolean listening = true;
 
