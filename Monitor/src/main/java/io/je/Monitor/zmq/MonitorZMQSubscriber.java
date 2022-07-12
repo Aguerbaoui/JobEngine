@@ -11,6 +11,7 @@ import utils.log.LogSubModule;
 import utils.zmq.ZMQBind;
 import utils.zmq.ZMQSubscriber;
 
+import static io.je.Monitor.zmq.JEMonitorSubscriber.JEMONITOR_TOPIC;
 import static io.je.utilities.constants.JEMessages.STARTED_LISTENING_FOR_MONITORING_DATA_FROM_THE_JOB_ENGINE;
 
 @Component
@@ -27,7 +28,11 @@ public class MonitorZMQSubscriber extends ZMQSubscriber {
 	@Override
 	public ZMQ.Socket getSubSocket(ZMQBind bindType) {
 		boolean connectionSucceeded = false;
+
 		if (socket == null) {
+
+			this.init();
+			this.addTopic(JEMONITOR_TOPIC);
 
 			try {
 				JELogger.info("Attempting to connect to address: " + url + ":" + port + "...", null, "", null, "");

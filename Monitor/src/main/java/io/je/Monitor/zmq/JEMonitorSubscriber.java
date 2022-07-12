@@ -20,8 +20,6 @@ public class JEMonitorSubscriber {
         monitorZMQSubscriber.setConfig("tcp://" + SIOTHConfigUtility.getSiothConfig().getNodes().getSiothMasterNode(),
                 monitorProperties.getMonitoringPort());
 
-        monitorZMQSubscriber.addTopic(JEMONITOR_TOPIC);
-
     	Thread thread = new Thread(monitorZMQSubscriber);
         thread.start();
     }
