@@ -174,6 +174,7 @@ public class RuleEngine {
             if (project.getStatus() == Status.RUNNING) {
                 JELogger.error(JEMessages.ILLEGAL_OPERATION_CLASS_UPDATE_DURING_PROJECT_RUN, null, null, null, null);
                 project.setReloadContainer(true);
+                project.resetContainer();
             } else {
                 project.resetContainer();
             }

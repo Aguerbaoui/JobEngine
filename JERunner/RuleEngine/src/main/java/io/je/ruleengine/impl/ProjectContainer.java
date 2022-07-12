@@ -9,6 +9,7 @@ import io.je.utilities.log.JELogger;
 import io.je.utilities.ruleutils.IdManager;
 import io.je.utilities.runtimeobject.JEObject;
 import org.apache.commons.lang3.StringUtils;
+import org.drools.core.event.DebugRuleRuntimeEventListener;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.builder.*;
@@ -17,6 +18,7 @@ import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.builder.model.KieSessionModel;
 import org.kie.api.conf.EqualityBehaviorOption;
 import org.kie.api.conf.EventProcessingOption;
+import org.kie.api.event.rule.DebugAgendaEventListener;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
@@ -114,7 +116,7 @@ public class ProjectContainer {
     public void resetContainer() {
         JELogger.debug(JEMessages.RELOADING_PROJECT_CONTAINER, LogCategory.RUNTIME, projectId, LogSubModule.RULE,
                 null);
-        if (kieContainer != null && reloadContainer) {
+    /*    if (kieContainer != null && reloadContainer) {
             initKieBase();
             if (status == Status.RUNNING) {
                 stopRuleExecution(true, true);
@@ -126,6 +128,14 @@ public class ProjectContainer {
                             null);
                 }
             }
+        }*/
+        stopRuleExecution(true, true);
+        try {
+            fireRules();
+        } catch (RulesNotFiredException | RuleBuildFailedException e) {
+            e.printStackTrace();
+            JELogger.error(JEMessages.FAILED_TO_FIRE_RULES, LogCategory.RUNTIME, projectId, LogSubModule.RULE,
+                    null);
         }
         reloadContainer = false;
         JELogger.trace("Reloaded Rule Engine.");
@@ -194,8 +204,8 @@ public class ProjectContainer {
             Runnable runnable = () -> {
                 try {
                     //https://docs.drools.org/7.70.0.Final/drools-docs/html_single/index.html#_event_model
-          /*          kieSession.addEventListener(new DebugAgendaEventListener());
-                    kieSession.addEventListener(new DebugRuleRuntimeEventListener());*/
+                    kieSession.addEventListener(new DebugAgendaEventListener());
+                    kieSession.addEventListener(new DebugRuleRuntimeEventListener());
 
                     //  kieSession.addEventListener(new RuleListener(projectId));
                     //kieSession.addEventListener(ruleListener);
