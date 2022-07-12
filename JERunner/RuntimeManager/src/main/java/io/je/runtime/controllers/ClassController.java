@@ -62,6 +62,7 @@ public class ClassController {
 				synchronized (runtimeDispatcher) {
 					runtimeDispatcher.updateClass(classModel);	
 				}
+
 			} catch (Exception e) {
 				return JEExceptionHandler.handleException(e);
 			}

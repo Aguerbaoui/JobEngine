@@ -64,13 +64,14 @@ public class ZMQRequester {
             try {
                 requestSocket = context.createSocket(SocketType.REQ);
 
-
                 if (ZMQSecurity.isSecure()) {
 
                     requestSocket.setCurveServerKey(ZMQSecurity.getServerPair().publicKey.getBytes());
                     requestSocket.setCurveSecretKey(ZMQSecurity.getServerPair().secretKey.getBytes());
                     requestSocket.setCurvePublicKey(ZMQSecurity.getServerPair().publicKey.getBytes());
                 }
+                requestSocket.setRcvHWM(ZMQConfiguration.RECEIVE_HIGH_WATERMARK);
+                requestSocket.setSndHWM(ZMQConfiguration.SEND_HIGH_WATERMARK);
                 requestSocket.setReceiveTimeOut(-1);
 
                 requestSocket.connect(connectionUrl);

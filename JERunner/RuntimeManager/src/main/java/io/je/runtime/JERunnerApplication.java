@@ -18,7 +18,7 @@ public class JERunnerApplication {
 
 	
     public static void main(String[] args) {
-    	//SIOTHConfigUtility.init();
+
     	//System.setProperty("drools.dateformat", SIOTHConfigUtility.getSiothConfig().getDateFormat());
         SpringApplication app = new SpringApplication(JERunnerApplication.class);
         app.setBannerMode(Banner.Mode.OFF);
@@ -27,8 +27,18 @@ public class JERunnerApplication {
         properties.put("server.servlet.context-path", "/RuntimeManager");
         app.setDefaultProperties(properties);
         app.run(args);
+
         JELogger.debug(JEMessages.RUNNER_STARTED,  LogCategory.RUNTIME,
                 null, LogSubModule.JERUNNER, null);
+
+        System.out.println("Runtime.getRuntime().totalMemory() : " + Runtime.getRuntime().totalMemory());
+        System.out.println("Runtime.getRuntime().maxMemory() : " + Runtime.getRuntime().maxMemory());
+        System.out.println("Runtime.getRuntime().freeMemory() : " + Runtime.getRuntime().freeMemory());
+
+        System.out.println("All Stack Traces size : " + (Thread.getAllStackTraces().size()));
+        System.out.println("Current Thread Stack Trace length : " + (Thread.currentThread().getStackTrace().length));
+
+
         JEClassLoader.getDataModelInstance();
     }
 

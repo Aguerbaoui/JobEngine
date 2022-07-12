@@ -191,7 +191,6 @@ public class ProjectContainer {
         // check that project is not already running
         if (status == Status.RUNNING) {
             stopRuleExecution(false, false);
-
         }
 
         // fire rules
@@ -438,7 +437,7 @@ public class ProjectContainer {
      * delete all rules from kie file system
      */
     private boolean deleteAllRulesFromKieFileSystem() {
-
+        // FIXME case of error
         for (Rule rule : allRules.values()) {
             deleteRuleFromKieFileSystem(rule);
 
@@ -480,6 +479,7 @@ public class ProjectContainer {
             //kScanner.scanNow(); removed because it consults the internet
 
         } catch (Exception e) {
+            // FIXME case of error should return false?
             e.printStackTrace();
             JELogger.error(JEMessages.UNEXPECTED_ERROR + "\n" + e.getMessage(), LogCategory.RUNTIME, projectId,
                     LogSubModule.RULE, null);
@@ -779,6 +779,7 @@ public class ProjectContainer {
 
     public void retractFact(String factId) {
         try {
+            // FIXME
             // kieSession.delete(facts.get(factId));
 
         } catch (Exception e) {

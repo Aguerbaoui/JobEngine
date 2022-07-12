@@ -62,7 +62,7 @@ public class RuntimeDispatcher {
     public void runProject(String projectId, String projectName) throws JEException {
 
         projectStatus.put(projectId, true);
-        List<String> topics = DataModelListener.getTopicsByProjectId(projectId);
+        Set<String> topics = DataModelListener.getTopicsByProjectId(projectId);
 
         JELogger.control("[project  = " + projectName + "]" + JEMessages.RUNNING_PROJECT, LogCategory.RUNTIME, projectId,
                 LogSubModule.JERUNNER, null);
@@ -108,7 +108,7 @@ public class RuntimeDispatcher {
                     LogSubModule.WORKFLOW, ex.getMessage(), ex.toString());
         }
 
-        List<String> topics = DataModelListener.getTopicsByProjectId(projectId);
+        Set<String> topics = DataModelListener.getTopicsByProjectId(projectId);
         DataModelListener.stopListening(topics);
         projectStatus.put(projectId, false);
 
@@ -136,12 +136,10 @@ public class RuntimeDispatcher {
     // update rule
     public void updateRule(RunnerRuleModel runnerRuleModel)
             throws RuleCompilationException, JEFileNotFoundException, RuleFormatNotValidException {
+
         JELogger.debug(JEMessages.UPDATING_RULE + " : " + runnerRuleModel.getRuleId(), LogCategory.RUNTIME,
                 runnerRuleModel.getProjectId(), LogSubModule.RULE, runnerRuleModel.getRuleId());
-        List<String> topics = DataModelListener.getRuleTopicsByProjectId(runnerRuleModel.getProjectId());
 
-        // start listening to datasources
-        DataModelListener.startListening(topics);
         RuleEngineHandler.updateRule(runnerRuleModel);
 
     }
@@ -318,10 +316,10 @@ public class RuntimeDispatcher {
     /**
      * add a topic
      */
-    public void addTopics(String projectId, String listenerId, String listenerType, List<String> topics) {
+    public void addTopics(String projectId, String listenerId, String listenerType, Set<String> topics) {
         if (topics != null && !topics.isEmpty()) {
             DMListener dMListener = new DMListener(listenerId, projectId, listenerType);
-            DataModelListener.addDMListener(dMListener, new HashSet<>(topics));
+            DataModelListener.updateDMListener(dMListener, topics);
         }
     }
 
@@ -329,6 +327,7 @@ public class RuntimeDispatcher {
     public void triggerEvent(String projectId, String id) throws EventException, ProjectNotFoundException {
 
         EventManager.triggerEvent(projectId, id);
+
     }
 
     // Add an event to the runner
@@ -376,7 +375,8 @@ public class RuntimeDispatcher {
     }
 
     // remove rule topics
-    public void removeRuleTopics(String projectId, String ruleId) {
+    public void removeRuleTopics(String ruleId) {
+
         DataModelListener.removeDMListener(ruleId);
 
     }
@@ -451,14 +451,16 @@ public class RuntimeDispatcher {
     public void runProjectRules(String projectId)
             throws RulesNotFiredException, RuleBuildFailedException {
 
-        List<String> topics = DataModelListener.getRuleTopicsByProjectId(projectId);
+        Set<String> topics = DataModelListener.getRuleTopicsByProjectId(projectId);
+
         DataModelListener.startListening(topics);
-        //RuleEngineHandler.buildProject(projectId);
+
         RuleEngineHandler.runRuleEngineProject(projectId);
+
         for (JEVariable variable : VariableManager.getAllVariables(projectId)) {
             RuleEngineHandler.addVariable(variable);
-
         }
+
         projectStatus.put(projectId, true);
 
     }
@@ -473,10 +475,15 @@ public class RuntimeDispatcher {
     public List<OperationStatusDetails> updateRules(List<RunnerRuleModel> runnerRuleModels) {
 
         List<OperationStatusDetails> updateResult = new ArrayList<>();
+
         for (RunnerRuleModel runnerRuleModel : runnerRuleModels) {
+
             OperationStatusDetails details = new OperationStatusDetails(runnerRuleModel.getRuleId());
-            removeRuleTopics(runnerRuleModel.getProjectId(), runnerRuleModel.getRuleId());
+
+            removeRuleTopics(runnerRuleModel.getRuleId());
+
             addTopics(runnerRuleModel.getProjectId(), runnerRuleModel.getRuleId(), "rule", runnerRuleModel.getTopics());
+
             try {
                 updateRule(runnerRuleModel);
                 details.setOperationSucceeded(true);
@@ -484,7 +491,9 @@ public class RuntimeDispatcher {
                 details.setOperationSucceeded(false);
                 details.setOperationError(e.getMessage());
             }
+
         }
+
         return updateResult;
 
     }
@@ -517,9 +526,7 @@ public class RuntimeDispatcher {
     }
 
     public static void sendLog(LogMessage logMessage) {
-        new Thread(() -> {
-            JELogger.sendLog(logMessage);
-        }).start();
+        new Thread(() -> JELogger.sendLog(logMessage)).start();
     }
 
 }

@@ -13,8 +13,8 @@ import io.je.utilities.runtimeobject.JEObject;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 /*
  * class responsible for Rule Engine calls
@@ -32,6 +32,7 @@ public class RuleEngineHandler {
 		JELogger.debug(JEMessages.VALIDATING_RULE ,
 				LogCategory.RUNTIME, runnerRuleModel.getProjectId(),
 				LogSubModule.RULE,runnerRuleModel.getRuleId());
+
     	String errorMsg = null;
     	if(runnerRuleModel.getRuleId() == null || runnerRuleModel.getRuleId().isEmpty())
     	{
@@ -89,20 +90,20 @@ public class RuleEngineHandler {
     }
 
 
-    public static void injectData(String projectId,JEObject instance)  {
-    try
-    {
-    	
-        RuleEngine.assertFact(projectId,instance);
-    }catch(Exception e)
-    {
-		JELogger.warn(JEMessages.ADD_INSTANCE_FAILED + e.getMessage(),
-				LogCategory.RUNTIME, projectId,
-				LogSubModule.RULE,null);
-    	}
-    	
-        
-    }
+	public static void injectData(String projectId, JEObject instance) {
+		try {
+
+			RuleEngine.assertFact(projectId, instance);
+
+		} catch (Exception e) {
+			JELogger.warn(JEMessages.ADD_INSTANCE_FAILED + e.getMessage(),
+					LogCategory.RUNTIME, projectId,
+					LogSubModule.RULE, null);
+		}
+
+	}
+
+
     /*
      * stop running a project given a project id
      */
@@ -153,13 +154,13 @@ public class RuleEngineHandler {
 	}
 
 
-	public static List<String> getRuleTopics(String projectId, String ruleId) {
+	public static Set<String> getRuleTopics(String projectId, String ruleId) {
 		Rule rule = RuleEngine.getRule(projectId,ruleId);
 		if(rule!=null)
 		{
 			return rule.getTopics();
 		}
-		return new ArrayList<>();
+		return new HashSet<>();
 	}
 
 

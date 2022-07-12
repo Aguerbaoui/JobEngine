@@ -15,6 +15,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <project.parent.version>2.4.0</project.parent.version>
         <java.version>11</java.version>
         <version.org.kie>7.45.0.Final</version.org.kie>
         <version.org.drools>7.45.0.Final</version.org.drools>
@@ -113,12 +114,6 @@
             <groupId>io.utils</groupId>
             <artifactId>Utilities</artifactId>
             <version>0.0.1</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.utils</groupId>
-            <artifactId>Utilities</artifactId>
-            <version>0.0.1</version>
         </dependency>
         <dependency>
             <groupId>io.sioth</groupId>
@@ -171,7 +166,27 @@
     <build>
         <finalName>RuntimeManager</finalName>
  		<directory>../../release/RuntimeManager/</directory>
-		<outputDirectory>./target/classes/</outputDirectory>        
-        
+		<outputDirectory>./target/classes/</outputDirectory>
+        <!-- plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>${project.parent.version}</version>
+                <executions>
+                    <execution>
+                        <configuration>
+                            <mainClass>io.je.runtime.JERunnerApplication</mainClass>
+                        </configuration>
+                    </execution>
+                </executions>
+                <configuration>
+                    <executable>true</executable>
+                    <jvmArguments>
+                        -Xms3g
+                        -Xmx4g
+                    </jvmArguments>
+                </configuration>
+            </plugin>
+        </plugins -->
     </build>
 </project>

@@ -97,15 +97,15 @@ public class JEMessages {
 
     // ****************************************Data Listener**************************************************
 
-    public static final String LISTENING_ON_TOPICS = "Listening to topics: ";
+    public static final String LAUNCHING_LISTENING_TO_TOPIC = "Launching listening to topic : ";
 
     public static final String ADDING_TOPICS = "Adding topics: ";
 
-    public static final String STOPPED_LISTENING_ON_TOPICS = "Stopping listening to topics: ";
+    public static final String STOPPING_LISTENING_TO_TOPIC = "Stopping listening to topic : ";
 
-    public static final String INTERRUPT_TOPIC_ERROR = "Error interrupting thread for topics: ";
+    public static final String INTERRUPT_TOPIC_ERROR = "Error interrupting thread for topics : ";
 
-    public static final String DATA_RECEIVED = "Data received  ";
+    public static final String DATA_RECEIVED = "Data received : ";
 
     public static final String THREAD_INTERRUPTED = "Thread interrupted while listening to data";
 
@@ -113,6 +113,7 @@ public class JEMessages {
 
     public static final String REMOVING_TOPIC_SUBSCRIPTION = "Removing topic subscription";
 
+    public static final String CLOSING_SOCKET = "Closing socket";
 
     // ****************************************TraceMessages**************************************************
 
@@ -688,9 +689,9 @@ public class JEMessages {
 
     public static final String GENERATED_RULE = "Generated DRL: ";
 
-    public static final String RULE_NOT_BUILT = "Rule is not built.";
+    public static final String RULE_NOT_BUILT = "Rule is not built";
     public static final String FAILED_TO_STOP_RULE = "Failed to stop rule: ";
-    public static final String STATUS_UPDATE_FAILED = "Failed to update status. ";
+    public static final String STATUS_UPDATE_FAILED = "Failed to update status ";
 
     public static final String FAILED_TO_DELETE_RULE = "Failed to delete rule";
     public static final String FAILED_TO_STOP_THE_WORKFLOW_BECAUSE_IT_ALREADY_IS_STOPPED = "Failed to stop the workflow because it already is stopped";
@@ -698,10 +699,10 @@ public class JEMessages {
     public static final String JOB_ENGINE_ACCEPTS_JAR_FILES_ONLY = "Job engine accepts jar files only";
     public static final String FILE_TOO_LARGE = "Jar file size is too large";
     public static final String FAILED_INIT_DATAMODEL = "Failed to read initial values from Data Model. Topic = ";
-    public static final String RULE_DISABLED = "Rule is disabled.";
+    public static final String RULE_DISABLED = "Rule is disabled";
 
-    public static final String RULE_ALREADY_STOPPED = "Rule already stopped.";
-    public static final String RULE_STOPPED = "Rule is stopped.";
+    public static final String RULE_ALREADY_STOPPED = "Rule already stopped";
+    public static final String RULE_STOPPED = "Rule is stopped";
 
     public static final String RULE_ALREADY_RUNNING = "Rule is already running";
     public static final String DATAMODELAPI_UNREACHABLE = "Data Model RESTAPI unreachable";
@@ -731,13 +732,13 @@ public class JEMessages {
 
     public static final String FAILED_TO_CAST_DATA_CHECK_THE_TYPE_OF_THE_VARIABLE_AND_THE_INCOMING_DATA = "Failed to cast data check the type of the variable and the incoming data";
 
-    public static final String ZMQ_REQUEST_RECEIVED = "Received ZMQ request: ";
-    public static final String ZMQ_RESPONSE_STARTED = "Started ZMQ responser on address :  ";
+    public static final String ZMQ_REQUEST_RECEIVED = "Received ZMQ request : ";
+    public static final String ZMQ_RESPONSE_STARTED = "Started ZMQ responser on address : ";
     public static final String ZMQ_RESPONSE_START_FAIL = "Failed to start ZMQ Responser ";
 
-    public static final String ZMQ_SENDING_RESPONSE = "Sending response: ";
-    public static final String ZMQ_FAILED_TO_RESPOND = "Failed to send ZMQ response: ";
-    public static final String UNKNOWN_REQUEST = "Unknown Request.";
+    public static final String ZMQ_SENDING_RESPONSE = "Sending response : ";
+    public static final String ZMQ_FAILED_TO_RESPOND = "Failed to send ZMQ response : ";
+    public static final String UNKNOWN_REQUEST = "Unknown Request";
     public static final String EVENT_TRIGGER_FAIL = "Failed to trigger event";
 
 

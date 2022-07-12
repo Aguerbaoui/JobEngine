@@ -1,7 +1,5 @@
 package io.je.processes;
 
-//import static io.je.utilities.constants.JEMessages.SENDING_WORKFLOW_MONITORING_DATA_TO_JEMONITOR;
-
 import io.je.JEProcess;
 import io.je.callbacks.OnExecuteOperation;
 import io.je.serviceTasks.ActivitiTask;
@@ -154,7 +152,9 @@ public class ProcessManager {
                 try {
                     repoService.deleteDeployment(processes.get(key)
                             .getDeploymentId());
-                } catch (ActivitiObjectNotFoundException Ignore) {
+                } catch (ActivitiObjectNotFoundException exp) {
+                    // FIXME
+                    exp.printStackTrace();
                 }
             }
             /*Deployment*/
@@ -199,7 +199,9 @@ public class ProcessManager {
                 process.setActiveThread(new Thread(() -> {
                     try {
                         ProcessInstance p = runtimeService.startProcessInstanceByKey(id);
-                    } catch (Exception e) {
+                    } catch (Exception exp) {
+                        // FIXME
+                        exp.printStackTrace();
                     }
                     //process.setRunning(true);
                 }));

@@ -216,39 +216,37 @@ public class RuleBuilder {
 
         // number of execution blocks
         int executionBlockCounter = 0;
+
         // get root blocks
         for (Block ruleBlock : uRule.getBlocks().getAll()) {
+
             if (ruleBlock instanceof ExecutionBlock) {
+
                 executionBlockCounter++;
+
                 for (var rootBlock : ruleBlock.getInputBlocks()) {
 
-                    if (rootBlock != null) {
-                        // FIXME
-                        //if (!(rootBlock.getBlock() instanceof OrBlock)) {
-                            if (uRule.getBlocks() != null) {
-                                roots.add(uRule.getBlocks()
-                                        .getBlock(rootBlock.getBlock()
-                                                .getJobEngineElementID()));
-                            }
-                            for (var b : uRule.getBlocks()
-                                    .getBlock(rootBlock.getBlock()
-                                            .getJobEngineElementID())
-                                    .getInputBlocks()) {
-                                if (b.getBlock() instanceof PersistableBlock) {
-                                    ((PersistableBlock) b.getBlock()).setTimePersistenceValue(((PersistableBlock) rootBlock.getBlock()).getTimePersistenceValue());
-                                    ((PersistableBlock) b.getBlock()).setTimePersistenceUnit(((PersistableBlock) rootBlock.getBlock()).getTimePersistenceUnit());
-                                }
-                            }
-                        /*} else {
-                            for (var b : uRule.getBlocks()
-                                    .getBlock(rootBlock.getBlock()
-                                            .getJobEngineElementID())
-                                    .getInputBlocks()) {
+                    // FIXME error message if rootBlock.getBlock() == null
+                    if (rootBlock != null && rootBlock.getBlock() != null) {
 
-                                roots.add(b.getBlock());
+                        if (uRule.getBlocks() != null) {
+                            roots.add(uRule.getBlocks()
+                                    .getBlock(rootBlock.getBlock()
+                                            .getJobEngineElementID()));
+                        }
 
+                        for (var b : uRule.getBlocks()
+                                .getBlock(rootBlock.getBlock()
+                                        .getJobEngineElementID())
+                                .getInputBlocks()) {
+
+                            if (b.getBlock() instanceof PersistableBlock) {
+                                ((PersistableBlock) b.getBlock()).setTimePersistenceValue(((PersistableBlock) rootBlock.getBlock()).getTimePersistenceValue());
+                                ((PersistableBlock) b.getBlock()).setTimePersistenceUnit(((PersistableBlock) rootBlock.getBlock()).getTimePersistenceUnit());
                             }
-                        }*/
+
+                        }
+
                     }
 
                 }
@@ -260,7 +258,9 @@ public class RuleBuilder {
                 }
 
             }
+
         }
+
         // if this rule has no execution block, then it is not valid.
         if (executionBlockCounter == 0) {
             JELogger.error("[project = " + uRule.getJobEngineProjectName() + "][rule = " + uRule.getJobEngineElementName() + "] " + JEMessages.NO_EXECUTION_BLOCK,

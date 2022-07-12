@@ -1,10 +1,10 @@
 package utils.zmq;
 
 public class ZMQConfiguration {
-	public static int HEARTBEAT_TIMEOUT = 2000;
-	public static int HANDSHAKE_INTERVAL = 2000;
-	public static int RECEIVE_HIGH_WATERMARK = 1000;
-	public static int SEND_HIGH_WATERMARK = 1000;
+	public static int HEARTBEAT_TIMEOUT = 60000;
+	public static int HANDSHAKE_INTERVAL = 60000;
+	public static int RECEIVE_HIGH_WATERMARK = 0; // 0 for illimited messages
+	public static int SEND_HIGH_WATERMARK = 0; // 0 for illimited messages
 
 	public static void setHeartbeatTimeout(int heartbeatTimeout) {
 		HEARTBEAT_TIMEOUT = heartbeatTimeout;

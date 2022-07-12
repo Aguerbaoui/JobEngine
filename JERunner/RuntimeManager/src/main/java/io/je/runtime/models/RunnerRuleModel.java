@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.je.ruleengine.enumerations.RuleFormat;
 import io.je.utilities.mapping.JERunnerRuleMapping;
 
-import java.util.List;
+import java.util.Set;
 
 
 /*
@@ -37,7 +37,7 @@ public class RunnerRuleModel {
     RuleFormat format;
     
     @JsonProperty(JERunnerRuleMapping.TOPICS)
-    List<String> topics;
+    Set<String> topics;
 
     /*
      * getters and setters
@@ -84,11 +84,11 @@ public class RunnerRuleModel {
 		this.ruleName = ruleName;
 	}
 
-	public List<String> getTopics() {
+	public Set<String> getTopics() {
 		return topics;
 	}
 
-	public void setTopics(List<String> topics) {
+	public void setTopics(Set<String> topics) {
 		this.topics = topics;
 	}
 

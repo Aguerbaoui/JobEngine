@@ -14,6 +14,9 @@ import utils.zmq.ZMQBind;
 
 import java.util.Arrays;
 
+import static io.je.utilities.constants.JEMessages.ZMQ_RESPONSE_STARTED;
+import static io.je.utilities.constants.JEMessages.ZMQ_RESPONSE_START_FAIL;
+
 /*
  * class responsible for application configuration
  */
@@ -21,131 +24,124 @@ import java.util.Arrays;
 public class ConfigurationService {
 
 
+    @Autowired
+    ProjectService projectService;
 
-	@Autowired
-	ProjectService projectService;
-	
-	@Autowired
+    @Autowired
     ProjectZMQResponder responser;
 
-	@Autowired
-	ClassService classService;
+    @Autowired
+    ClassService classService;
 
-	static boolean runnerStatus = true;
+    static boolean runnerStatus = true;
 
-	final int healthCheck = SIOTHConfigUtility.getSiothConfig().getJobEngine().getCheckHealthEveryMs();
-	
-	
-	
-
-	/*
-	 * init configuration : > load config from database >update config
-	 */
-	public void init()
-			{
-
-		try{
-				JELogger.debug(JEMessages.INITILIZING_BUILDER,  LogCategory.DESIGN_MODE,
-					null, LogSubModule.JEBUILDER, null);
-
-				updateRunner();
-				classService.initClassUpdateListener();
-		}catch (Exception e) {
-			JELogger.debug("JEBuilder did not start properly\n" + Arrays.toString(e.getStackTrace()),  LogCategory.DESIGN_MODE,
-					null, LogSubModule.JEBUILDER, null);
-		}
-	
-	}
+    final int healthCheck = SIOTHConfigUtility.getSiothConfig().getJobEngine().getCheckHealthEveryMs();
 
 
-	/*
-	* Initialize JE ZMQ responder
-	* */
-	public void initResponder() {
-		try {
-			 responser.init("tcp://"+SIOTHConfigUtility.getSiothConfig().getNodes().getSiothMasterNode(), SIOTHConfigUtility.getSiothConfig().getPorts().getJeResponsePort(),ZMQBind.BIND);
-			responser.setListening(true);
-			Thread listener = new Thread(responser);
-			listener.start();
-			JELogger.info("Started ZMQ responser on address :  "+"tcp://"+SIOTHConfigUtility.getSiothConfig().getNodes().getSiothMasterNode()+":"+SIOTHConfigUtility.getSiothConfig().getPorts().getJeResponsePort(), null, null, LogSubModule.JEBUILDER, null);
+    /*
+     * init configuration : > load config from database >update config
+     */
+    public void init() {
 
-		}catch (Exception e) {
-			JELogger.error("Failed to start ZMQ Responser "+JEExceptionHandler.getExceptionMessage(e), null, null, LogSubModule.JEBUILDER, null);
+        try {
+            JELogger.debug(JEMessages.INITILIZING_BUILDER, LogCategory.DESIGN_MODE,
+                    null, LogSubModule.JEBUILDER, null);
 
-		}
-		
-	}
+            updateRunner();
+            classService.initClassZMQSubscriber();
+        } catch (Exception e) {
+            JELogger.debug("JEBuilder did not start properly\n" + Arrays.toString(e.getStackTrace()), LogCategory.DESIGN_MODE,
+                    null, LogSubModule.JEBUILDER, null);
+        }
 
-
+    }
 
 
-	/*
-	* Update JERunner with projects and classes data
-	* */
-	public void updateRunner(){
-		new Thread(() -> {
-			try {
+    /*
+     * Initialize JE ZMQ responder
+     * */
+    public void initResponder() {
+        try {
+            responser.init("tcp://" + SIOTHConfigUtility.getSiothConfig().getNodes().getSiothMasterNode(), SIOTHConfigUtility.getSiothConfig().getPorts().getJeResponsePort(), ZMQBind.BIND);
+            responser.setListening(true);
+            Thread listener = new Thread(responser);
+            listener.start();
+            JELogger.info(ZMQ_RESPONSE_STARTED + "tcp://" + SIOTHConfigUtility.getSiothConfig().getNodes().getSiothMasterNode() + ":" + SIOTHConfigUtility.getSiothConfig().getPorts().getJeResponsePort(), null, null, LogSubModule.JEBUILDER, null);
+
+        } catch (Exception e) {
+            JELogger.error(ZMQ_RESPONSE_START_FAIL + JEExceptionHandler.getExceptionMessage(e), null, null, LogSubModule.JEBUILDER, null);
+
+        }
+
+    }
 
 
-				boolean serverUp = false;
-				while (!serverUp) {
-					JELogger.debug(JEMessages.RUNNER_IS_DOWN_CHECKING_AGAIN_IN_5_SECONDS,
-							LogCategory.DESIGN_MODE, null,
-							LogSubModule.JEBUILDER,null);
-					Thread.sleep(healthCheck);
-					serverUp = checkRunnerHealth();
-				}
-				JELogger.debug(JEMessages.RUNNER_IS_UP_UPDATING_NOW,
-						LogCategory.DESIGN_MODE, null,
-						LogSubModule.JEBUILDER,null);
-				boolean loadedFiles = false;
-				while(!loadedFiles) {
-					try {
-						classService.loadAllClasses();
-						projectService.loadAllProjects();
-						loadedFiles = true;
-					}
-					catch (Exception e) {
-						loadedFiles = false;
-						JELogger.debug(JEMessages.DATABASE_IS_DOWN_CHECKING_AGAIN,
-								LogCategory.DESIGN_MODE, null,
-								LogSubModule.JEBUILDER,null);
-						Thread.sleep(healthCheck);
-					}
-				}
+    /*
+     * Update JERunner with projects and classes data
+     * */
+    public void updateRunner() {
+        new Thread(() -> {
+            try {
 
-			} catch (Exception e) {
-				JEExceptionHandler.handleException(e);
-			}
-		}).start();
 
-	}
+                boolean serverUp = false;
+                while (!serverUp) {
+                    JELogger.debug(JEMessages.RUNNER_IS_DOWN_CHECKING_AGAIN_IN_5_SECONDS,
+                            LogCategory.DESIGN_MODE, null,
+                            LogSubModule.JEBUILDER, null);
+                    Thread.sleep(healthCheck);
+                    serverUp = checkRunnerHealth();
+                }
+                JELogger.debug(JEMessages.RUNNER_IS_UP_UPDATING_NOW,
+                        LogCategory.DESIGN_MODE, null,
+                        LogSubModule.JEBUILDER, null);
+                boolean loadedFiles = false;
+                while (!loadedFiles) {
+                    try {
+                        classService.loadAllClasses();
+                        projectService.loadAllProjects();
+                        loadedFiles = true;
+                    } catch (Exception e) {
+                        loadedFiles = false;
+                        JELogger.debug(JEMessages.DATABASE_IS_DOWN_CHECKING_AGAIN,
+                                LogCategory.DESIGN_MODE, null,
+                                LogSubModule.JEBUILDER, null);
+                        Thread.sleep(healthCheck);
+                    }
+                }
 
-	/*
-	* check JERunner health
-	* */
-	private static boolean checkRunnerHealth() {
-		try {
-			runnerStatus = JERunnerAPIHandler.checkRunnerHealth();
-		} catch (Exception e) {
-			JEExceptionHandler.handleException(e);
-			return false;
-		}
-		return runnerStatus;
-	}
+            } catch (Exception e) {
+                JEExceptionHandler.handleException(e);
+            }
+        }).start();
 
-	/*
-	* Returns JERunner status
-	* */
-	public static boolean isRunnerStatus() {
-		return runnerStatus;
-	}
+    }
 
-	/*
-	 * Set JERunner status
-	 * */
-	public static void setRunnerStatus(boolean status) {
-		runnerStatus = status;
-	}
+    /*
+     * check JERunner health
+     * */
+    private static boolean checkRunnerHealth() {
+        try {
+            runnerStatus = JERunnerAPIHandler.checkRunnerHealth();
+        } catch (Exception e) {
+            JEExceptionHandler.handleException(e);
+            return false;
+        }
+        return runnerStatus;
+    }
+
+    /*
+     * Returns JERunner status
+     * */
+    public static boolean isRunnerStatus() {
+        return runnerStatus;
+    }
+
+    /*
+     * Set JERunner status
+     * */
+    public static void setRunnerStatus(boolean status) {
+        runnerStatus = status;
+    }
 
 }

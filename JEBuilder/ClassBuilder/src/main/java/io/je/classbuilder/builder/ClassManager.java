@@ -119,10 +119,13 @@ public class ClassManager {
         JELogger.debug(JEMessages.BUILDING_CLASS + "Compiling Code " + "[className = " + classDefinition.getName() + "]",
                 LogCategory.DESIGN_MODE, null,
                 LogSubModule.CLASS, null);
+
         CommandExecutioner.compileCode(filePath, true);
+
         JELogger.debug(JEMessages.BUILDING_CLASS + "JAR " + "[className = " + classDefinition.getName() + "]",
                 LogCategory.DESIGN_MODE, null,
                 LogSubModule.CLASS, null);
+
         CommandExecutioner.buildJar();
 
         // Load the target class using its binary name

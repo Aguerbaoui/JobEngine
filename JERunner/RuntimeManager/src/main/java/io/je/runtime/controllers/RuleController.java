@@ -25,7 +25,7 @@ import static io.je.utilities.constants.JEMessages.RULE_ADDED_SUCCESSFULLY;
  */
 
 @RestController
-@RequestMapping(value= "/rule")
+@RequestMapping(value = "/rule")
 @CrossOrigin(maxAge = 3600)
 public class RuleController {
 
@@ -40,13 +40,12 @@ public class RuleController {
     public ResponseEntity<?> addRule(@RequestBody RunnerRuleModel runnerRuleModel) {
 
         try {
-            runtimeDispatcher.addTopics(runnerRuleModel.getProjectId(), runnerRuleModel.getRuleId(),"rule",runnerRuleModel.getTopics());
-            System.out.println("****>>>>>Rule Topics : "+runnerRuleModel.getTopics());
+            runtimeDispatcher.addTopics(runnerRuleModel.getProjectId(), runnerRuleModel.getRuleId(), "rule", runnerRuleModel.getTopics());
             runtimeDispatcher.addRule(runnerRuleModel);
 
         } catch (Exception e) {
-			return JEExceptionHandler.handleException(e);
-		}
+            return JEExceptionHandler.handleException(e);
+        }
 
 
         return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, RULE_ADDED_SUCCESSFULLY));
@@ -59,37 +58,38 @@ public class RuleController {
     public ResponseEntity<?> updateRule(@RequestBody RunnerRuleModel runnerRuleModel) {
 
         try {
-            runtimeDispatcher.removeRuleTopics(runnerRuleModel.getProjectId(), runnerRuleModel.getRuleId());
-            runtimeDispatcher.addTopics(runnerRuleModel.getProjectId(), runnerRuleModel.getRuleId(),"rule",runnerRuleModel.getTopics());
+            runtimeDispatcher.removeRuleTopics(runnerRuleModel.getRuleId());
+
+            runtimeDispatcher.addTopics(runnerRuleModel.getProjectId(), runnerRuleModel.getRuleId(), "rule", runnerRuleModel.getTopics());
 
             runtimeDispatcher.updateRule(runnerRuleModel);
 
         } catch (Exception e) {
-			return JEExceptionHandler.handleException(e);
-		}
-
+            return JEExceptionHandler.handleException(e);
+        }
 
         return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.RULE_UPDATED));
     }
-    
+
     /*
      * update a  Rule
      */
     @PostMapping(value = "/updateRules", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> updateRules(@RequestBody List<RunnerRuleModel> runnerRuleModels) {
 
-    	List<OperationStatusDetails> results = new ArrayList<OperationStatusDetails>();
+        List<OperationStatusDetails> results = new ArrayList<>();
         try {
-           
-        	 results =runtimeDispatcher.updateRules(runnerRuleModels);
+
+            results = runtimeDispatcher.updateRules(runnerRuleModels);
 
         } catch (Exception e) {
-			return JEExceptionHandler.handleException(e);
-		}
+            return JEExceptionHandler.handleException(e);
+        }
 
 
-        return ResponseEntity.ok(new JECustomResponse(ResponseCodes.CODE_OK, JEMessages.RULE_UPDATED,results));
+        return ResponseEntity.ok(new JECustomResponse(ResponseCodes.CODE_OK, JEMessages.RULE_UPDATED, results));
     }
+
     /*
      * compile  a  Rule
      */
@@ -99,13 +99,13 @@ public class RuleController {
         try {
             runtimeDispatcher.compileRules(runnerRuleModels);
         } catch (Exception e) {
-			return JEExceptionHandler.handleException(e);
-		}
+            return JEExceptionHandler.handleException(e);
+        }
 
 
         return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.RULE_UPDATED));
     }
-    
+
 
     /*
      * compile  a  Rule
@@ -114,34 +114,36 @@ public class RuleController {
     public ResponseEntity<?> compileRule(@RequestBody RunnerRuleModel runnerRuleModel) {
 
         try {
-            runtimeDispatcher.compileRule(runnerRuleModel);
-        } catch (Exception e) {
-			return JEExceptionHandler.handleException(e);
-		}
 
+            runtimeDispatcher.compileRule(runnerRuleModel);
+
+        } catch (Exception e) {
+            return JEExceptionHandler.handleException(e);
+        }
 
         return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.RULE_UPDATED));
     }
-    
-    
+
 
     /*
      * compile  a  Rule
      */
+    // FIXME projectId to be removed
     @GetMapping(value = "/deleteRule/{projectId}/{ruleId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> deleteRule(@PathVariable("projectId") String projectId,
-			@PathVariable("ruleId") String ruleId) {
+                                        @PathVariable("ruleId") String ruleId) {
 
+        try {
+            runtimeDispatcher.removeRuleTopics(ruleId);
 
-			try {
-                runtimeDispatcher.removeRuleTopics(projectId,ruleId);
-				runtimeDispatcher.deleteRule(projectId, ruleId);
-			} catch (Exception e) {
-				return JEExceptionHandler.handleException(e);
-			}
-	
-		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.RULE_DELETED));
-	}
+            runtimeDispatcher.deleteRule(projectId, ruleId);
+
+        } catch (Exception e) {
+            return JEExceptionHandler.handleException(e);
+        }
+
+        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.RULE_DELETED));
+    }
 
     /*
      * Runs only rules
@@ -149,10 +151,10 @@ public class RuleController {
     @GetMapping(value = "/runAllRules/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> runProjectRules(@PathVariable String projectId) {
         try {
-        	runtimeDispatcher.runProjectRules(projectId);
+            runtimeDispatcher.runProjectRules(projectId);
         } catch (Exception e) {
-			return JEExceptionHandler.handleException(e);
-		}
+            return JEExceptionHandler.handleException(e);
+        }
         return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.EXECUTING_PROJECT));
 
     }
@@ -163,10 +165,10 @@ public class RuleController {
     @GetMapping(value = "/shutDownRuleEngine/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> stopRuleEngine(@PathVariable String projectId) {
         try {
-        	runtimeDispatcher.shutDownRuleEngine(projectId);
+            runtimeDispatcher.shutDownRuleEngine(projectId);
         } catch (Exception e) {
-			return JEExceptionHandler.handleException(e);
-		}
+            return JEExceptionHandler.handleException(e);
+        }
         return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.EXECUTING_PROJECT));
 
     }

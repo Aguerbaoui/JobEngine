@@ -206,7 +206,7 @@ public class RuleController {
             ruleService.updateBlockInRule(blockModel);
             projectService.saveProject(projectId);
         } catch (Exception e) {
-            JELogger.debug("Exception occured.");
+            JELogger.debug("Exception occured while updating Block.");
             return JEExceptionHandler.handleException(e);
         }
 
