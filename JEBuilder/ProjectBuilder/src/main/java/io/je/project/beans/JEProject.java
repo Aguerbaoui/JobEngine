@@ -7,7 +7,6 @@ import io.je.rulebuilder.components.UserDefinedRule;
 import io.je.rulebuilder.components.blocks.Block;
 import io.je.utilities.beans.JEEvent;
 import io.je.utilities.beans.JEVariable;
-import io.je.utilities.beans.Status;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.*;
 import models.JEWorkflow;
@@ -23,205 +22,205 @@ import java.util.concurrent.ConcurrentHashMap;
 @Document(collection = "ProjectDefinitionCollection")
 public class JEProject {
 
-	/*
-	 * Project ID
-	 * */
+    /*
+     * Project ID
+     * */
 
 
-	@Id
-	private String projectId;
+    @Id
+    private String projectId;
 
-	@Field("key")
-	private String projectName;
+    @Field("key")
+    private String projectName;
 
-	@Field("CreatedAt")
-	private String createdAt;
+    @Field("CreatedAt")
+    private String createdAt;
 
-	@Field("ModifiedAt")
-	private String modifiedAt;
+    @Field("ModifiedAt")
+    private String modifiedAt;
 
-	@Field("createdBy")
-	private String createdBy;
+    @Field("createdBy")
+    private String createdBy;
 
-	@Field("state")
-	private String state;
+    @Field("state")
+    private String state;
 
-	@Field("description")
-	private String description;
+    @Field("description")
+    private String description;
 
-	@Transient
-	private RuleEngineSummary ruleEngine; //true -> rule engine running , false -> rule engine stopped TODO: switch to enum
+    @Transient
+    private RuleEngineSummary ruleEngine; //true -> rule engine running , false -> rule engine stopped TODO: switch to enum
 
-	/*
-	 * Configuration path
-	 * */
-	private String configurationPath;
+    /*
+     * Configuration path
+     * */
+    private String configurationPath;
 
-	/*
-	 * Rules in a project
-	 * */
-	@Transient
-	private ConcurrentHashMap<String, JERule> rules = new ConcurrentHashMap<>();
+    /*
+     * Rules in a project
+     * */
+    @Transient
+    private ConcurrentHashMap<String, JERule> rules = new ConcurrentHashMap<>();
 
-	/*
-	 * Workflows in a project
-	 * */
-	@Transient
-	private ConcurrentHashMap<String, JEWorkflow> workflows = new ConcurrentHashMap<>();
-
-
-	/*
-	 * Events in a project
-	 * */
-	@Transient
-	private ConcurrentHashMap<String, JEEvent> events = new ConcurrentHashMap<>();
-
-	/*
-	 * Variables in a project
-	 * */
-	@Transient
-	private ConcurrentHashMap<String, JEVariable> variables = new ConcurrentHashMap<>();
-
-	/*
-	 * block names
-	 */
-	Map<String, String> blockNames = new ConcurrentHashMap<>();
-
-	/*
-	 * block name counters
-	 */
-	Map<String, Integer> blockNameCounters = new ConcurrentHashMap<>();
+    /*
+     * Workflows in a project
+     * */
+    @Transient
+    private ConcurrentHashMap<String, JEWorkflow> workflows = new ConcurrentHashMap<>();
 
 
-	private boolean autoReload = true;
+    /*
+     * Events in a project
+     * */
+    @Transient
+    private ConcurrentHashMap<String, JEEvent> events = new ConcurrentHashMap<>();
+
+    /*
+     * Variables in a project
+     * */
+    @Transient
+    private ConcurrentHashMap<String, JEVariable> variables = new ConcurrentHashMap<>();
+
+    /*
+     * block names
+     */
+    Map<String, String> blockNames = new ConcurrentHashMap<>();
+
+    /*
+     * block name counters
+     */
+    Map<String, Integer> blockNameCounters = new ConcurrentHashMap<>();
 
 
-	private boolean isRunning = false;
-
-	private boolean isBuilt = false;
+    private boolean autoReload = true;
 
 
-	/*
-	 * project Status
-	 * */
+    private boolean isRunning = false;
+
+    private boolean isBuilt = false;
 
 
-	/*
-	 * Constructor
-	 * */
-	public JEProject(String projectId) {
-		ruleEngine = new RuleEngineSummary();
-		rules = new ConcurrentHashMap<>();
-		workflows = new ConcurrentHashMap<>();
-		events = new ConcurrentHashMap<>();
-		variables = new ConcurrentHashMap<>();
-		this.projectId = projectId;
-		isBuilt = false;
-		autoReload = true;
+    /*
+     * project Status
+     * */
 
 
-	}
+    /*
+     * Constructor
+     * */
+    public JEProject(String projectId) {
+        ruleEngine = new RuleEngineSummary();
+        rules = new ConcurrentHashMap<>();
+        workflows = new ConcurrentHashMap<>();
+        events = new ConcurrentHashMap<>();
+        variables = new ConcurrentHashMap<>();
+        this.projectId = projectId;
+        isBuilt = false;
+        autoReload = true;
 
 
-	private JEProject() {
-		ruleEngine = new RuleEngineSummary();
-	}
+    }
 
 
-	public Map<String, String> getBlockNames() {
-		return blockNames;
-	}
+    private JEProject() {
+        ruleEngine = new RuleEngineSummary();
+    }
 
 
-	public void setBlockNames(Map<String, String> blockNames) {
-		this.blockNames = blockNames;
-	}
+    public Map<String, String> getBlockNames() {
+        return blockNames;
+    }
 
 
-	public void addBlockName(String blockId, String blockName) {
-
-		blockNames.put(blockId, blockName);
-
-	}
+    public void setBlockNames(Map<String, String> blockNames) {
+        this.blockNames = blockNames;
+    }
 
 
-	public void removeBlockName(String blockId) {
-		blockNames.remove(blockId);
+    public void addBlockName(String blockId, String blockName) {
 
-	}
+        blockNames.put(blockId, blockName);
 
-	public boolean blockNameExists(String blockName) {
-		return blockNames.containsValue(blockName);
-
-	}
-
-	public boolean isAutoReload() {
-		return autoReload;
-	}
+    }
 
 
-	public void setAutoReload(boolean autoReload) {
-		this.autoReload = autoReload;
-	}
+    public void removeBlockName(String blockId) {
+        blockNames.remove(blockId);
+
+    }
+
+    public boolean blockNameExists(String blockName) {
+        return blockNames.containsValue(blockName);
+
+    }
+
+    public boolean isAutoReload() {
+        return autoReload;
+    }
 
 
-	/*
-	 * generate a unique block name from a block name base ( example : script => script44 )
-	 */
-	public String generateUniqueBlockName(String blockNameBase) {
-		if (blockNameBase != null) {
-			String blockName = blockNameBase.replaceAll("\\s+", "");
-			if (!blockNameCounters.containsKey(blockName)) {
-				blockNameCounters.put(blockName, 0);
-			}
-			int counter = blockNameCounters.get(blockName);
-			while (blockNameExists(blockName + counter)) {
-				counter++;
-			}
-			blockNameCounters.put(blockName, counter + 1);
-			return blockName + counter;
-		}
-		return "";
-	}
+    public void setAutoReload(boolean autoReload) {
+        this.autoReload = autoReload;
+    }
 
 
-	/******************************************************** PROJECT **********************************************************************/
+    /*
+     * generate a unique block name from a block name base ( example : script => script44 )
+     */
+    public String generateUniqueBlockName(String blockNameBase) {
+        if (blockNameBase != null) {
+            String blockName = blockNameBase.replaceAll("\\s+", "");
+            if (!blockNameCounters.containsKey(blockName)) {
+                blockNameCounters.put(blockName, 0);
+            }
+            int counter = blockNameCounters.get(blockName);
+            while (blockNameExists(blockName + counter)) {
+                counter++;
+            }
+            blockNameCounters.put(blockName, counter + 1);
+            return blockName + counter;
+        }
+        return "";
+    }
 
 
-	/*
-	 * Get project Id
-	 * */
-	public String getProjectId() {
-		return projectId;
-	}
-
-	/*
-	 * Set project id
-	 * */
-	public void setProjectId(String projectId) {
-		this.projectId = projectId;
-	}
+    /******************************************************** PROJECT **********************************************************************/
 
 
-	public void setRunning(boolean isRunning) {
-		this.isRunning = isRunning;
-	}
+    /*
+     * Get project Id
+     * */
+    public String getProjectId() {
+        return projectId;
+    }
+
+    /*
+     * Set project id
+     * */
+    public void setProjectId(String projectId) {
+        this.projectId = projectId;
+    }
 
 
-	public void setBuilt(boolean isBuilt) {
-		this.isBuilt = isBuilt;
-	}
+    public void setRunning(boolean isRunning) {
+        this.isRunning = isRunning;
+    }
 
 
-	public String getConfigurationPath() {
-		return configurationPath;
-	}
+    public void setBuilt(boolean isBuilt) {
+        this.isBuilt = isBuilt;
+    }
 
-	public void setConfigurationPath(String configurationPath) {
-		this.configurationPath = configurationPath;
-	}
 
-	public boolean isBuilt() {
+    public String getConfigurationPath() {
+        return configurationPath;
+    }
+
+    public void setConfigurationPath(String configurationPath) {
+        this.configurationPath = configurationPath;
+    }
+
+    public boolean isBuilt() {
 	/*	for(JERule rule : this.getRules().values())
 		{
 			if(!rule.isBuilt())
@@ -239,388 +238,388 @@ public class JEProject {
             }
         }
 	*/
-		return isBuilt;
-	}
-
-	public boolean isRunning() {
-		return isRunning;
-	}
-
-
-	/******************************************************** RULES **********************************************************************/
-
-
-	/*
-	 * Get project rules
-	 * */
-	public ConcurrentHashMap<String, JERule> getRules() {
-		return rules;
-	}
+        return isBuilt;
+    }
+
+    public boolean isRunning() {
+        return isRunning;
+    }
+
+
+    /******************************************************** RULES **********************************************************************/
+
+
+    /*
+     * Get project rules
+     * */
+    public ConcurrentHashMap<String, JERule> getRules() {
+        return rules;
+    }
 
-	/*
-	 * Set project rules
-	 * */
-	public void setRules(ConcurrentHashMap<String, JERule> rules) {
-		isBuilt = false;
-		if (rules != null) {
-			this.rules = rules;
-		}
-	}
+    /*
+     * Set project rules
+     * */
+    public void setRules(ConcurrentHashMap<String, JERule> rules) {
+        isBuilt = false;
+        if (rules != null) {
+            this.rules = rules;
+        }
+    }
 
 
-	public boolean ruleExists(String ruleId) {
-		return rules.containsKey(ruleId);
-	}
+    public boolean ruleExists(String ruleId) {
+        return rules.containsKey(ruleId);
+    }
 
-	public JERule getRule(String ruleId) {
-		return rules.get(ruleId);
-	}
-
-	/*
-	 * add a new rule to project
-	 */
-	public void addRule(JERule rule) throws RuleAlreadyExistsException {
-		if (rules.containsKey(rule.getJobEngineElementID())) {
-			throw new RuleAlreadyExistsException(JEMessages.RULE_EXISTS);
-		}
-		this.rules.put(rule.getJobEngineElementID(), rule);
-		isBuilt = false;
-
-	}
+    public JERule getRule(String ruleId) {
+        return rules.get(ruleId);
+    }
+
+    /*
+     * add a new rule to project
+     */
+    public void addRule(JERule rule) throws RuleAlreadyExistsException {
+        if (rules.containsKey(rule.getJobEngineElementID())) {
+            throw new RuleAlreadyExistsException(JEMessages.RULE_EXISTS);
+        }
+        this.rules.put(rule.getJobEngineElementID(), rule);
+        isBuilt = false;
+
+    }
 
-	/*
-	 * update rule to project
-	 */
-	public void updateRule(JERule rule) throws RuleNotFoundException {
-		if (!rules.containsKey(rule.getJobEngineElementID())) {
-			throw new RuleNotFoundException(projectId, rule.getJobEngineElementID());
-		}
-		rules.put(rule.getJobEngineElementID(), rule);
-		rule.setJeObjectLastUpdate(Instant.now());
-		isBuilt = false;
-
-
-	}
-
-	/*
-	 * Add a block to a rule
-	 * */
-	public void addBlockToRule(Block block) {
-		((UserDefinedRule) rules.get(block.getJobEngineElementID())).addBlock(block);
-		isBuilt = false;
-
-	}
-
-
-	/*
-	 * update Block
-	 */
-	public void updateRuleBlock(Block block) {
-		((UserDefinedRule) rules.get(block.getJobEngineElementID())).updateBlock(block);
-		isBuilt = false;
-
-
-	}
-
-	/*
-	 * delete Block
-	 */
-
-	public void deleteRuleBlock(String ruleId, String blockId) {
-		((UserDefinedRule) rules.get(ruleId)).deleteBlock(blockId);
-		rules.get(ruleId)
-				.setJeObjectLastUpdate(Instant.now());
-		isBuilt = false;
-
-
-	}
-
-	/*
-	 * delete rule
-	 */
-	public void deleteRule(String ruleId) throws RuleNotFoundException {
-		if (!rules.containsKey(ruleId)) {
-			throw new RuleNotFoundException(projectId, ruleId);
-		}
-		//TODO: delete file
-		rules.remove(ruleId);
-		ruleEngine.remove(ruleId);
-		isBuilt = false;
-
-
-	}
-
-
-	/******************************************************** Workflows **********************************************************************/
-
-
-	/*
-	 * Get all workflows
-	 * */
-	public ConcurrentHashMap<String, JEWorkflow> getWorkflows() {
-		return workflows;
-	}
-
-	/*
-	 * Set all workflows
-	 * */
-	public void setWorkflows(ConcurrentHashMap<String, JEWorkflow> workflows) {
-		isBuilt = false;
-		this.workflows = workflows;
-	}
-
-	/*
-	 * Add a workflow
-	 * */
-	public void addWorkflow(JEWorkflow wf) {
-		this.workflows.put(wf.getJobEngineElementID(), wf);
-		isBuilt = false;
-
-	}
-
-	/*
-	 * Remove a workflow
-	 */
-	public void removeWorkflow(String id) {
-		workflows.remove(id);
-		isBuilt = false;
-
-	}
-
-	/*
-	 * Checks if a workflow exists
-	 * */
-	public boolean workflowExists(String workflowId) {
-		return getWorkflowByIdOrName(workflowId) != null;
-	}
-
-	/*
-	 * Add a block to a workflow
-	 * */
-	public void addBlockToWorkflow(WorkflowBlock block) {
-		getWorkflowByIdOrName(block.getWorkflowId()).addBlock(block);
-		isBuilt = false;
-
-	}
-
-	/*
-	 * Delete a workflow block
-	 * */
-	public void deleteWorkflowBlock(String workflowId, String blockId) throws InvalidSequenceFlowException, WorkflowBlockNotFound {
-		getWorkflowByIdOrName(workflowId).deleteWorkflowBlock(blockId);
-		removeBlockName(blockId);
-		isBuilt = false;
-
-	}
-
-	/*
-	 * Delete a workflow sequence flow
-	 * */
-	public void deleteWorkflowSequenceFlow(String workflowId, String sourceRef, String targetRef) throws InvalidSequenceFlowException {
-		getWorkflowByIdOrName(workflowId).deleteSequenceFlow(sourceRef, targetRef);
-		isBuilt = false;
+    /*
+     * update rule to project
+     */
+    public void updateRule(JERule rule) throws RuleNotFoundException {
+        if (!rules.containsKey(rule.getJobEngineElementID())) {
+            throw new RuleNotFoundException(projectId, rule.getJobEngineElementID());
+        }
+        rules.put(rule.getJobEngineElementID(), rule);
+        rule.setJeObjectLastUpdate(Instant.now());
+        isBuilt = false;
+
+
+    }
+
+    /*
+     * Add a block to a rule
+     * */
+    public void addBlockToRule(Block block) {
+        ((UserDefinedRule) rules.get(block.getJobEngineElementID())).addBlock(block);
+        isBuilt = false;
+
+    }
+
+
+    /*
+     * update Block
+     */
+    public void updateRuleBlock(Block block) {
+        ((UserDefinedRule) rules.get(block.getJobEngineElementID())).updateBlock(block);
+        isBuilt = false;
+
+
+    }
+
+    /*
+     * delete Block
+     */
+
+    public void deleteRuleBlock(String ruleId, String blockId) {
+        ((UserDefinedRule) rules.get(ruleId)).deleteBlock(blockId);
+        rules.get(ruleId)
+                .setJeObjectLastUpdate(Instant.now());
+        isBuilt = false;
+
+
+    }
+
+    /*
+     * delete rule
+     */
+    public void deleteRule(String ruleId) throws RuleNotFoundException {
+        if (!rules.containsKey(ruleId)) {
+            throw new RuleNotFoundException(projectId, ruleId);
+        }
+        //TODO: delete file
+        rules.remove(ruleId);
+        ruleEngine.remove(ruleId);
+        isBuilt = false;
+
+
+    }
+
+
+    /******************************************************** Workflows **********************************************************************/
+
+
+    /*
+     * Get all workflows
+     * */
+    public ConcurrentHashMap<String, JEWorkflow> getWorkflows() {
+        return workflows;
+    }
+
+    /*
+     * Set all workflows
+     * */
+    public void setWorkflows(ConcurrentHashMap<String, JEWorkflow> workflows) {
+        isBuilt = false;
+        this.workflows = workflows;
+    }
+
+    /*
+     * Add a workflow
+     * */
+    public void addWorkflow(JEWorkflow wf) {
+        this.workflows.put(wf.getJobEngineElementID(), wf);
+        isBuilt = false;
+
+    }
+
+    /*
+     * Remove a workflow
+     */
+    public void removeWorkflow(String id) {
+        workflows.remove(id);
+        isBuilt = false;
+
+    }
+
+    /*
+     * Checks if a workflow exists
+     * */
+    public boolean workflowExists(String workflowId) {
+        return getWorkflowByIdOrName(workflowId) != null;
+    }
+
+    /*
+     * Add a block to a workflow
+     * */
+    public void addBlockToWorkflow(WorkflowBlock block) {
+        getWorkflowByIdOrName(block.getWorkflowId()).addBlock(block);
+        isBuilt = false;
+
+    }
+
+    /*
+     * Delete a workflow block
+     * */
+    public void deleteWorkflowBlock(String workflowId, String blockId) throws InvalidSequenceFlowException, WorkflowBlockNotFound {
+        getWorkflowByIdOrName(workflowId).deleteWorkflowBlock(blockId);
+        removeBlockName(blockId);
+        isBuilt = false;
+
+    }
+
+    /*
+     * Delete a workflow sequence flow
+     * */
+    public void deleteWorkflowSequenceFlow(String workflowId, String sourceRef, String targetRef) throws InvalidSequenceFlowException {
+        getWorkflowByIdOrName(workflowId).deleteSequenceFlow(sourceRef, targetRef);
+        isBuilt = false;
 
-	}
+    }
 
-	/*
-	 * Add a workflow sequence flow
-	 * */
-	public void addWorkflowSequenceFlow(String workflowId, String sourceRef, String targetRef, String condition) throws WorkflowBlockNotFound {
-		JEWorkflow wf = getWorkflowByIdOrName(workflowId);
-		if (!wf.blockExists(sourceRef) || !wf.blockExists(targetRef)) {
-			throw new WorkflowBlockNotFound(JEMessages.WORKFLOW_BLOCK_NOT_FOUND);
-		}
-		wf.addBlockFlow(sourceRef, targetRef, condition);
-		isBuilt = false;
+    /*
+     * Add a workflow sequence flow
+     * */
+    public void addWorkflowSequenceFlow(String workflowId, String sourceRef, String targetRef, String condition) throws WorkflowBlockNotFound {
+        JEWorkflow wf = getWorkflowByIdOrName(workflowId);
+        if (!wf.blockExists(sourceRef) || !wf.blockExists(targetRef)) {
+            throw new WorkflowBlockNotFound(JEMessages.WORKFLOW_BLOCK_NOT_FOUND);
+        }
+        wf.addBlockFlow(sourceRef, targetRef, condition);
+        isBuilt = false;
 
-	}
+    }
 
-	/*
-	 * Get a workflow id
-	 * */
-	public JEWorkflow getWorkflowByIdOrName(String workflowId) {
-		if (!workflows.containsKey(workflowId)) {
-			//checking if workflow exists by name
-			for (JEWorkflow wf : workflows.values()) {
-				if (wf.getJobEngineElementName()
-						.equalsIgnoreCase(workflowId)) return wf;
-			}
-		}
-		return workflows.get(workflowId);
-	}
+    /*
+     * Get a workflow id
+     * */
+    public JEWorkflow getWorkflowByIdOrName(String workflowId) {
+        if (!workflows.containsKey(workflowId)) {
+            //checking if workflow exists by name
+            for (JEWorkflow wf : workflows.values()) {
+                if (wf.getJobEngineElementName()
+                        .equalsIgnoreCase(workflowId)) return wf;
+            }
+        }
+        return workflows.get(workflowId);
+    }
 
-	public boolean isWorkflowEnabled(String id) {
-		return getWorkflowByIdOrName(id).isEnabled();
-	}
+    public boolean isWorkflowEnabled(String id) {
+        return getWorkflowByIdOrName(id).isEnabled();
+    }
 
 
-	/******************************************************** EVENTS **********************************************************************/
+    /******************************************************** EVENTS **********************************************************************/
 
 
-	public boolean eventExists(String eventId) {
-		return events.containsKey(eventId);
-	}
+    public boolean eventExists(String eventId) {
+        return events.containsKey(eventId);
+    }
 
-	public void addEvent(JEEvent event) {
-		events.put(event.getJobEngineElementID(), event);
-	}
+    public void addEvent(JEEvent event) {
+        events.put(event.getJobEngineElementID(), event);
+    }
 
-	public JEEvent getEvent(String eventId) throws EventException {
-		if (!eventExists(eventId)) {
-			throw new EventException(JEMessages.EVENT_NOT_FOUND);
-		}
-		return events.get(eventId);
-	}
+    public JEEvent getEvent(String eventId) throws EventException {
+        if (!eventExists(eventId)) {
+            throw new EventException(JEMessages.EVENT_NOT_FOUND);
+        }
+        return events.get(eventId);
+    }
 
 
-	public ConcurrentHashMap<String, JEEvent> getEvents() {
-		return events;
-	}
+    public ConcurrentHashMap<String, JEEvent> getEvents() {
+        return events;
+    }
 
 
-	public void setEvents(ConcurrentHashMap<String, JEEvent> events) {
-		this.events = events;
-	}
+    public void setEvents(ConcurrentHashMap<String, JEEvent> events) {
+        this.events = events;
+    }
 
-	/******************************************************** Variables **********************************************************************/
+    /******************************************************** Variables **********************************************************************/
 
 
-	public void addVariable(JEVariable var) {
-		variables.put(var.getJobEngineElementID(), var);
-	}
+    public void addVariable(JEVariable var) {
+        variables.put(var.getJobEngineElementID(), var);
+    }
 
-	public boolean variableExists(String varId) {
-		return variables.containsKey(varId);
-	}
+    public boolean variableExists(String varId) {
+        return variables.containsKey(varId);
+    }
 
-	public void removeVariable(String varId) {
-		variables.remove(varId);
-	}
+    public void removeVariable(String varId) {
+        variables.remove(varId);
+    }
 
 
-	public ConcurrentHashMap<String, JEVariable> getVariables() {
-		return variables;
-	}
+    public ConcurrentHashMap<String, JEVariable> getVariables() {
+        return variables;
+    }
 
 
-	public void setVariables(ConcurrentHashMap<String, JEVariable> variables) {
-		this.variables = variables;
-	}
+    public void setVariables(ConcurrentHashMap<String, JEVariable> variables) {
+        this.variables = variables;
+    }
 
-	public JEVariable getVariable(String varId) throws VariableNotFoundException {
-		if (!variableExists(varId)) {
-			throw new VariableNotFoundException(JEMessages.VARIABLE_NOT_FOUND);
-		}
-		return variables.get(varId);
-	}
+    public JEVariable getVariable(String varId) throws VariableNotFoundException {
+        if (!variableExists(varId)) {
+            throw new VariableNotFoundException(JEMessages.VARIABLE_NOT_FOUND);
+        }
+        return variables.get(varId);
+    }
 
 
-	public String getProjectName() {
-		return projectName;
-	}
+    public String getProjectName() {
+        return projectName;
+    }
 
 
-	public void setProjectName(String projectName) {
-		this.projectName = projectName;
-	}
+    public void setProjectName(String projectName) {
+        this.projectName = projectName;
+    }
 
 
-	public String getCreatedAt() {
-		return createdAt;
-	}
+    public String getCreatedAt() {
+        return createdAt;
+    }
 
 
-	public void setCreatedAt(String createdAt) {
-		this.createdAt = createdAt;
-	}
+    public void setCreatedAt(String createdAt) {
+        this.createdAt = createdAt;
+    }
 
 
-	public String getModifiedAt() {
-		return modifiedAt;
-	}
+    public String getModifiedAt() {
+        return modifiedAt;
+    }
 
 
-	public void setModifiedAt(String modifiedAt) {
-		this.modifiedAt = modifiedAt;
-	}
+    public void setModifiedAt(String modifiedAt) {
+        this.modifiedAt = modifiedAt;
+    }
 
 
-	public String getDescription() {
-		return description;
-	}
+    public String getDescription() {
+        return description;
+    }
 
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
 
-	public RuleEngineSummary getRuleEngine() {
-		return ruleEngine;
-	}
+    public RuleEngineSummary getRuleEngine() {
+        return ruleEngine;
+    }
 
 
-	public void setRuleEngine(RuleEngineSummary ruleEngine) {
-		this.ruleEngine = ruleEngine;
-	}
+    public void setRuleEngine(RuleEngineSummary ruleEngine) {
+        this.ruleEngine = ruleEngine;
+    }
 
 
-	public Map<String, Integer> getBlockNameCounters() {
-		return blockNameCounters;
-	}
+    public Map<String, Integer> getBlockNameCounters() {
+        return blockNameCounters;
+    }
 
 
-	public void setBlockNameCounters(Map<String, Integer> blockNameCounters) {
-		this.blockNameCounters = blockNameCounters;
-	}
+    public void setBlockNameCounters(Map<String, Integer> blockNameCounters) {
+        this.blockNameCounters = blockNameCounters;
+    }
 
 
-	public JEWorkflow getStartupWorkflow() {
-		for (JEWorkflow wf : workflows.values()) {
-			if (wf.isOnProjectBoot()) return wf;
-		}
-		return null;
-	}
+    public JEWorkflow getStartupWorkflow() {
+        for (JEWorkflow wf : workflows.values()) {
+            if (wf.isOnProjectBoot()) return wf;
+        }
+        return null;
+    }
 
-	public boolean workflowHasError(JEWorkflow wf) {
+    public boolean workflowHasError(JEWorkflow wf) {
 
-		if (wf.getWorkflowStartBlock() == null || wf.getAllBlocks()
-				.isEmpty()) {
-			wf.setHasErrors(true);
-			// FIXME check JE Monitoring
-			wf.setStatus(Status.ERROR);
-			return true;
-		}
+        if (wf.getWorkflowStartBlock() == null || wf.getAllBlocks()
+                .isEmpty()) {
+            wf.setHasErrors(true);
 
-		for (WorkflowBlock b : wf.getAllBlocks()
-				.values()) {
-			if (b instanceof SubProcessBlock) {
-				for (JEWorkflow workflow : workflows.values()) {
-					if (workflow.getJobEngineElementName()
-							.equals(((SubProcessBlock) b).getSubWorkflowId()) && !workflow.isEnabled()) {
-						wf.setHasErrors(true);
-						return true;
-					}
-				}
-			}
-		}
-		wf.setHasErrors(false);
-		return false;
-	}
 
-	public String getCreatedBy() {
-		return createdBy;
-	}
+            return true;
+        }
 
-	public void setCreatedBy(String createdBy) {
-		this.createdBy = createdBy;
-	}
+        for (WorkflowBlock b : wf.getAllBlocks()
+                .values()) {
+            if (b instanceof SubProcessBlock) {
+                for (JEWorkflow workflow : workflows.values()) {
+                    if (workflow.getJobEngineElementName()
+                            .equals(((SubProcessBlock) b).getSubWorkflowId()) && !workflow.isEnabled()) {
+                        wf.setHasErrors(true);
+                        return true;
+                    }
+                }
+            }
+        }
+        wf.setHasErrors(false);
+        return false;
+    }
 
-	public String getState() {
-		return state;
-	}
+    public String getCreatedBy() {
+        return createdBy;
+    }
 
-	public void setState(String state) {
-		this.state = state;
-	}
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
 }

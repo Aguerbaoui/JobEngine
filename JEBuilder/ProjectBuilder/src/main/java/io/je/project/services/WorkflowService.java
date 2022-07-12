@@ -30,6 +30,9 @@ import io.je.utilities.models.EventType;
 import io.je.utilities.models.LibModel;
 import io.je.utilities.models.WorkflowBlockModel;
 import io.je.utilities.models.WorkflowModel;
+import io.je.utilities.monitoring.JEMonitor;
+import io.je.utilities.monitoring.MonitoringMessage;
+import io.je.utilities.monitoring.ObjectType;
 import io.je.utilities.ruleutils.IdManager;
 import io.je.utilities.ruleutils.OperationStatusDetails;
 import io.siothconfig.SIOTHConfigUtility;
@@ -46,6 +49,7 @@ import utils.string.StringUtilities;
 
 import java.io.IOException;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
@@ -959,7 +963,10 @@ public class WorkflowService {
 
             result.setOperationError(msg);
             result.setOperationSucceeded(false);
-
+            workflow.setStatus(Status.ERROR);
+            MonitoringMessage statusMessage = new MonitoringMessage(LocalDateTime.now(), workflow.getJobEngineElementName(), ObjectType.JEWORKFLOW,
+                    projectId, workflow.getJobEngineElementName(), Status.ERROR.toString());
+            JEMonitor.publish(statusMessage);
             JELogger.error(msg, LogCategory.DESIGN_MODE, projectId, LogSubModule.WORKFLOW, workflowId);
 
             throw new WorkflowBuildException(msg);
