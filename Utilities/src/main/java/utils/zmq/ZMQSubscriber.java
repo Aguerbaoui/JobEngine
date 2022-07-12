@@ -23,17 +23,16 @@ public abstract class ZMQSubscriber implements Runnable {
 	protected volatile boolean listening = true;
 
 	public ZMQSubscriber(String url, int subPort) {
-		initContext();
+		init();
 		this.url = url;
 		this.port = subPort;
 	}
 
 	public ZMQSubscriber() {
 		super();
-		initContext();
 	}
 
-	private void initContext() {
+	protected void init() {
 		this.context = new ZContext();
 		this.context.setRcvHWM(0);
 		this.context.setSndHWM(0);
