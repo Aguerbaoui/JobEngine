@@ -1,6 +1,6 @@
 package io.je.rulebuilder.models;
 
 public enum ValueType {
-	STATIC,VARIABLE,ATTRIBUTE
+    STATIC, VARIABLE, ATTRIBUTE, BLOCKS
 
 }
