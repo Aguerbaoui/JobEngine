@@ -37,6 +37,7 @@ public class CommandExecutioner {
         String command = !currentClassPath ? JAVAC + " " + CP + " \"" + classpathFolder + "\" " + "\"" + filePath + "\" "
                 :
                 JAVAC + " " + CP + " \"" + classpathFolder + "\" " + "\"" + filePath + "\" ";
+
         String errorTextBuilder = ProcessRunner.executeCommandWithErrorOutput(command);
         if (errorTextBuilder.length() > 0 && errorTextBuilder.indexOf("error:") != -1) {
             String error = errorTextBuilder.substring(errorTextBuilder.indexOf("error:"));

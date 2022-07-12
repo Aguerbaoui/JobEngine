@@ -85,16 +85,16 @@ public class ClassService {
     /**
      * Init a thread that listens to the DataModelRestApi for class definition updates
      */
-    public void initClassUpdateListener() {
+    public void initClassZMQSubscriber() {
         // TODO make runnable static
-        ClassUpdateListener runnable = new ClassUpdateListener(
+        ClassZMQSubscriber runnable = new ClassZMQSubscriber(
                 "tcp://" + SIOTHConfigUtility.getSiothConfig()
                         .getNodes()
                         .getSiothMasterNode(),
-                SIOTHConfigUtility.getSiothConfig()
+                    SIOTHConfigUtility.getSiothConfig()
                         .getDataModelPORTS()
                         .getDmRestAPI_ConfigurationPubAddress());
-        runnable.setListening(true);
+
         Thread listener = new Thread(runnable);
         listener.start();
 
@@ -138,7 +138,6 @@ public class ClassService {
     public void loadClassFromDataModel(String workspaceId, String classId, boolean sendToRunner)
             throws ClassLoadException, AddClassException {
 
-
         ClassDefinition classDefinition = ClassManager.loadClassDefinition(workspaceId, classId);
 
         if (classDefinition != null) {
@@ -147,7 +146,6 @@ public class ClassService {
             JELogger.info("Class " + classDefinition.getName() + " loaded successfully.", null, null, null,
                     classDefinition.getName());
         }
-
 
     }
 
@@ -415,8 +413,7 @@ public class ClassService {
         method = getMethodFromModel(m);
         method.setCompiled(compiled);
         if (compiled) {
-            JEClass clazz = classRepository.findById(WorkflowConstants.JEPROCEDURES)
-                    .get();
+            JEClass clazz = classRepository.findById(WorkflowConstants.JEPROCEDURES).get();
             if (clazz == null) {
                 clazz = getNewJEProcedureClass();
             }
@@ -425,6 +422,7 @@ public class ClassService {
             ClassDefinition c = getClassModel(clazz);
             c.getImports()
                     .addAll(m.getImports());
+
             //addClass(c, true, true);
             String filePath = ClassBuilder.buildClass(c, ConfigurationConstants.JAVA_GENERATION_PATH, JEClassLoader.getJobEnginePackageName(CLASS_PACKAGE));
             CommandExecutioner.compileCode(clazz.getClassPath(), ConfigurationConstants.isDev());
@@ -636,13 +634,15 @@ public class ClassService {
         } catch (Exception e) {
             compiled = false;
         }
+
         JEMethod method = getMethodFromModel(m);
         method.setCompiled(compiled);
-        JEClass clazz = classRepository.findById(WorkflowConstants.JEPROCEDURES)
-                .get();
+
+        JEClass clazz = classRepository.findById(WorkflowConstants.JEPROCEDURES).get();
         if (clazz == null) {
             clazz = getNewJEProcedureClass();
         }
+
         if (!compiled) {
             clazz.getMethods()
                     .remove(m.getId());
@@ -693,86 +693,100 @@ public class ClassService {
     }
 
 
-    class ClassUpdateListener extends ZMQSubscriber {
+    class ClassZMQSubscriber extends ZMQSubscriber {
 
         ObjectMapper objectMapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
-        public ClassUpdateListener(String url, int subPort) {
-            super(url, subPort, new HashSet<>(Arrays.asList(MODEL_TOPIC)));
-
+        public ClassZMQSubscriber(String url, int subPort) {
+            super(url, subPort);
+            addTopic(MODEL_TOPIC);
         }
 
         @Override
         public void run() {
 
-            String last_topic = null;
+             synchronized (this) {
 
-            while (listening) {
+                final String ID_MSG = "ClassZMQSubscriber : ";
 
-                //  JELogger.info(ClassUpdateListener.class, "--------------------------------------");
+                JELogger.debug(ID_MSG + "topics : " + this.topics + " : " + JEMessages.DATA_LISTENTING_STARTED,
+                        LogCategory.DESIGN_MODE, null, LogSubModule.CLASS, null);
 
-                String data = null;
-                try {
-                    data = this.getSubSocket(ZMQBind.CONNECT).recvStr();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    continue;
-                }
+                String last_topic = null;
 
-                try {
-                    if (data == null) continue;
+                while (this.listening) {
 
-                    if (last_topic == null) {
-                        for (String topic : topics) {
-                            if (data.startsWith(topic)) {
-                                last_topic = topic;
-                                break;
-                            }
-                        }
-                    } else {
-                        JELogger.debug(JEMessages.DATA_RECEIVED + data, LogCategory.RUNTIME,
-                                null, LogSubModule.CLASS, last_topic);
+                    //  JELogger.info(ClassUpdateListener.class, "--------------------------------------");
 
-                        List<ModelUpdate> updates = null;
-                        try {
-                            updates = Arrays.asList(objectMapper.readValue(data, ModelUpdate[].class));
-                        } catch (JsonProcessingException e) {
-
-                            e.printStackTrace();
-                            throw new InstanceCreationFailed("Failed to parse model update : " + e.getMessage());
-
-                        }
-
-                        for (ModelUpdate update : updates) {
-                            update.getModel()
-                                    .setClassAuthor(ClassAuthor.DATA_MODEL);
-                            if (update.getAction() == DataModelAction.UPDATE || update.getAction() == DataModelAction.ADD) {
-                                addClass(update.getModel(), true, true);
-                            }
-                            if (update.getAction() == DataModelAction.DELETE) {
-                                removeClass(update.getModel()
-                                        .getName());
-                            }
-                        }
-
-                        last_topic = null;
+                    String data = null;
+                    try {
+                        data = this.getSubSocket(ZMQBind.CONNECT).recvStr();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        continue;
                     }
 
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    JELogger.error(JEMessages.ERROR_GETTING_CLASS_UPDATES, LogCategory.DESIGN_MODE, null,
-                            LogSubModule.CLASS, e.getMessage());
+                    try {
+                        if (data == null) continue;
+
+                        // FIXME waiting to have topic in the same response message
+                        if (last_topic == null) {
+                            for (String topic : this.topics) {
+                                // Received Data should be equal topic
+                                if (data.equals(topic)) {
+                                    last_topic = topic;
+                                    break;
+                                }
+                            }
+                        } else {
+                            JELogger.debug(ID_MSG + JEMessages.DATA_RECEIVED + data, LogCategory.RUNTIME,
+                                    null, LogSubModule.CLASS, last_topic);
+
+                            List<ModelUpdate> updates = null;
+                            try {
+                                updates = Arrays.asList(objectMapper.readValue(data, ModelUpdate[].class));
+                            } catch (JsonProcessingException e) {
+
+                                e.printStackTrace();
+                                throw new InstanceCreationFailed("Failed to parse model update : " + e.getMessage());
+
+                            }
+
+                            for (ModelUpdate update : updates) {
+                                update.getModel()
+                                        .setClassAuthor(ClassAuthor.DATA_MODEL);
+                                if (update.getAction() == DataModelAction.UPDATE || update.getAction() == DataModelAction.ADD) {
+                                    addClass(update.getModel(), true, true);
+                                }
+                                if (update.getAction() == DataModelAction.DELETE) {
+                                    removeClass(update.getModel()
+                                            .getName());
+                                }
+                            }
+
+                            last_topic = null;
+                        }
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        JELogger.error(JEMessages.ERROR_GETTING_CLASS_UPDATES, LogCategory.DESIGN_MODE, null,
+                                LogSubModule.CLASS, e.getMessage());
+                    }
+
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e) {
+                        JELogger.error(JEMessages.THREAD_INTERRUPTED, LogCategory.DESIGN_MODE, null,
+                                LogSubModule.CLASS, null);
+                    }
                 }
 
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    JELogger.error(JEMessages.THREAD_INTERRUPTED, LogCategory.DESIGN_MODE, null,
-                            LogSubModule.CLASS, null);
-                }
+                JELogger.debug( ID_MSG + JEMessages.CLOSING_SOCKET, LogCategory.DESIGN_MODE,
+                        null, LogSubModule.CLASS, last_topic);
+
+                this.closeSocket();
+
             }
-
-            closeSocket();
 
         }
 
