@@ -174,7 +174,7 @@ public class ProjectContainer {
      */
     public void fireRules() throws RulesNotFiredException, RuleBuildFailedException {
 
-        JELogger.debugWithoutPublish("[projectId =" + projectId + "]" + JEMessages.FIRING_ALL_RULES,
+        JELogger.debugWithoutPublish("[projectId =" + projectId + "] " + JEMessages.FIRING_ALL_RULES,
                 LogCategory.RUNTIME, projectId, LogSubModule.RULE, null);
         facts = new ConcurrentHashMap<String, FactHandle>();
         if (allRules == null || allRules.isEmpty()) {
@@ -265,7 +265,7 @@ public class ProjectContainer {
                 }
                 if (removeAllRules) {
                     allRules.clear();
-                    deleteAllRulesFromKieFileSystem();
+                    return deleteAllRulesFromKieFileSystem();
                 }
 
             }
@@ -290,7 +290,7 @@ public class ProjectContainer {
      * creating the project's kie container.
      */
     private boolean buildKie() {
-        JELogger.debugWithoutPublish("[projectId =" + projectId + "]" + JEMessages.BUILDING_PROJECT,
+        JELogger.debugWithoutPublish("[projectId =" + projectId + "] " + JEMessages.BUILDING_PROJECT,
                 LogCategory.RUNTIME, projectId, LogSubModule.RULE, null);
         /*
          * if (allRules.isEmpty()) { return false; }
@@ -298,10 +298,10 @@ public class ProjectContainer {
 
         // TODO: only delete/re-add rule that have been modified
         // empty kie file system
-        deleteAllRulesFromKieFileSystem();
+        if (!deleteAllRulesFromKieFileSystem()) { return false; }
 
         // add rules to kfs
-        addAllRulesToKieFileSystem();
+        if (!addAllRulesToKieFileSystem()) { return false; };
 
         // build all rules
         try {
@@ -320,8 +320,9 @@ public class ProjectContainer {
 
     private boolean initKieBase() {
 
-        JELogger.debugWithoutPublish("[projectId =" + projectId + "]" + JEMessages.KIE_INIT, LogCategory.RUNTIME,
+        JELogger.debugWithoutPublish("[projectId =" + projectId + "] " + JEMessages.KIE_INIT, LogCategory.RUNTIME,
                 projectId, LogSubModule.RULE, null);
+
         if (releaseId != null) {
 
             // create container
@@ -386,12 +387,13 @@ public class ProjectContainer {
      * add all rules to kie file system
      */
     private boolean addAllRulesToKieFileSystem() {
-
+        boolean result = true;
         for (Rule rule : allRules.values()) {
-            addRuleToKieFileSystem(rule);
+
+            if (!addRuleToKieFileSystem(rule)) { result = false; }
 
         }
-        return true;
+        return result;
     }
 
     /*
@@ -404,7 +406,8 @@ public class ProjectContainer {
             JELogger.trace(">>> adding " + ruleName, LogCategory.RUNTIME, projectId, LogSubModule.RULE, null);
             kieFileSystem.write(ruleName, rule.getContent());
 
-        } catch (Exception e) {
+        } catch (Exception exp) {
+            JELogger.error(JEMessages.FAILED_TO_ADD_RULE, LogCategory.RUNTIME, projectId, LogSubModule.RULE, null);
             return false;
         }
 
@@ -425,7 +428,6 @@ public class ProjectContainer {
             }
 
         } catch (Exception e) {
-
             JELogger.error(JEMessages.FAILED_TO_DELETE_RULE, LogCategory.RUNTIME, projectId, LogSubModule.RULE, null);
             return false;
         }
@@ -437,12 +439,13 @@ public class ProjectContainer {
      * delete all rules from kie file system
      */
     private boolean deleteAllRulesFromKieFileSystem() {
-        // FIXME case of error
+        boolean result = true;
         for (Rule rule : allRules.values()) {
-            deleteRuleFromKieFileSystem(rule);
+
+            if (!deleteRuleFromKieFileSystem(rule)) { result = false; }
 
         }
-        return true;
+        return result;
     }
 
     /*
@@ -455,6 +458,7 @@ public class ProjectContainer {
     /**
      * update the kie container without "halting" the "kiesession" when there are rules running in the project
      */
+    // FIXME check return value when called
     public boolean updateContainer() {
         try {
             releaseId = kieServices.newReleaseId("io.je", "ruleengine", getReleaseVer());
@@ -527,6 +531,7 @@ public class ProjectContainer {
         // compile rule
         compileRule(rule);
         allRules.put(rule.getJobEngineElementID(), rule);
+        // FIXME check return value
         addRuleToKieFileSystem(rule);
         updateContainer();
 
@@ -554,7 +559,7 @@ public class ProjectContainer {
         // check that rule exists and add it if not
         if (!ruleExists(rule)) {
             allRules.put(rule.getJobEngineElementID(), rule);
-            addRuleToKieFileSystem(rule);
+            if (!addRuleToKieFileSystem(rule)) { return false; };
             updateContainer();
             return true;
         }
@@ -564,8 +569,8 @@ public class ProjectContainer {
 
         // if project is running, update container without interrupting project
         try {
-            deleteRuleFromKieFileSystem(rule);
-            addRuleToKieFileSystem(rule);
+            if (!deleteRuleFromKieFileSystem(rule)) { return false; };
+            if (!addRuleToKieFileSystem(rule)) { return false; };
             updateContainer();
         } catch (Exception e) {
             JELogger.error(JEMessages.RULE_UPDATE_FAIL + "\n" + Arrays.toString(e.getStackTrace()), LogCategory.RUNTIME,
@@ -582,7 +587,7 @@ public class ProjectContainer {
      */
     public void deleteRule(String ruleId) throws DeleteRuleException {
         JELogger.debugWithoutPublish(
-                "[projectId =" + projectId + "] " + JEMessages.DELETING_RULE + " [id : " + ruleId + "]..",
+                "[projectId = " + projectId + "] [ruleId : " + ruleId + "] " + JEMessages.DELETING_RULE ,
                 LogCategory.RUNTIME, projectId, LogSubModule.RULE, ruleId);
         // check that rule exists
         if (!ruleExists(ruleId)) {
@@ -591,12 +596,11 @@ public class ProjectContainer {
         // if project is running, update container without interrupting project
         try {
             long startTime = System.nanoTime();
+            // FIXME check return value
             deleteRuleFromKieFileSystem(allRules.get(ruleId));
             long endTime = System.nanoTime();
             long duration = (endTime - startTime) / 1000000; //divide by 1000000 to get milliseconds.
             JELogger.debug("deleteRuleFromKieFileSystem : " + duration);
-            // deleteAllRulesFromKieFileSystem();
-            // addAllRulesToKieFileSystem();
 
             updateContainer();
         } catch (Exception e) {

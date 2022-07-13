@@ -123,7 +123,7 @@ public class RuleService {
 
                     JERunnerAPIHandler.deleteRule(projectId, subRuleId);
                     JELogger.control("[project = " + project.getProjectName() + "] [rule = "
-                                    + rule.getJobEngineElementName() + "]" + JEMessages.DELETING_RULE, CATEGORY, projectId,
+                                    + rule.getJobEngineElementName() + "] " + JEMessages.DELETING_RULE, CATEGORY, projectId,
                             RULE, ruleId);
                 }
             }
@@ -633,7 +633,7 @@ public class RuleService {
                     JELogger.debug("[project = " + project.getProjectName() + "] [rule = "
                                     + project.getRules()
                                     .get(ruleId)
-                                    .getJobEngineElementName() + "]" + JEMessages.DELETING_RULE,
+                                    .getJobEngineElementName() + "] " + JEMessages.DELETING_RULE,
                             CATEGORY, projectId, RULE, ruleId);
                     if (project.getRule(ruleId) instanceof UserDefinedRule) {
                         UserDefinedRule rule = (UserDefinedRule) project.getRule(ruleId);
@@ -826,7 +826,7 @@ public class RuleService {
 
         UserDefinedRule rule = null;
 
-        // check rule exists
+        // Check rule exists
         try {
             project = getProject(projectId);
             rule = (UserDefinedRule) project.getRule(ruleId);
@@ -835,70 +835,70 @@ public class RuleService {
             result.setOperationError(e.getMessage());
             return result;
         }
-        result.setItemName(rule.getJobEngineElementName());
 
-        if (rule.getStatus() != Status.STOPPED && rule.getStatus() != Status.STOPPING && rule.getStatus() != Status.NOT_BUILT) {
-            rule.setStatus(Status.STOPPING);
-            boolean allSubRulesStopped = true;
-            if (rule.isRunning() && rule.getSubRules() != null) {
-                for (String subRuleId : rule.getSubRules()) {
+        try {
+            result.setItemName(rule.getJobEngineElementName());
 
-                    try {
-                        JEResponse response = JERunnerAPIHandler.deleteRule(projectId, subRuleId);
-                        if (response.getCode() != ResponseCodes.CODE_OK) {
-                            throw new JERunnerErrorException(JEMessages.FAILED_TO_DELETE_RULE);
+            if (rule.getStatus() != Status.STOPPED && rule.getStatus() != Status.STOPPING && rule.getStatus() != Status.NOT_BUILT) {
+
+                rule.setStatus(Status.STOPPING);
+
+                if (rule.isRunning()) {
+                    if (rule.getSubRules() != null) {
+                        for (String subRuleId : rule.getSubRules()) {
+                            JEResponse response = JERunnerAPIHandler.deleteRule(projectId, subRuleId);
+                            if (response.getCode() != ResponseCodes.CODE_OK) {
+                                throw new JERunnerErrorException(JEMessages.FAILED_TO_DELETE_SUBRULE);
+                            }
                         }
-                        rule.setAdded(false);
-                        project.getRuleEngine()
-                                .remove(ruleId);
-
-                        if (project.getRuleEngine()
-                                .getBuiltRules()
-                                .isEmpty()) {
-                            JERunnerAPIHandler.shutDownRuleEngine(projectId);
-                            project.getRuleEngine()
-                                    .setRunning(false);
-                        } else if (project.getRuleEngine()
-                                .getBuiltRules()
-                                .size() == 1) {
-                            JERunnerAPIHandler.shutDownRuleEngine(projectId);
-                            JERunnerAPIHandler.runProjectRules(projectId);
-
-                        }
-
-                    } catch (JERunnerErrorException e) {
-
-                        JELogger.error(JEMessages.FAILED_TO_STOP_RULE
-                                        + project.getRules()
-                                        .get(ruleId)
-                                        .getJobEngineElementName() + " : " + e.getMessage(),
-                                CATEGORY, projectId, RULE, null);
-                        allSubRulesStopped = false;
-                        result.setOperationSucceeded(false);
-                        result.setOperationError(JEMessages.FAILED_TO_STOP_RULE + e.getMessage());
-
                     }
-
-                }
-                if (allSubRulesStopped) {
+                    // FIXME
+                    rule.setAdded(false);
                     rule.setRunning(false);
                 }
 
-            }
-            try {
+                project.getRuleEngine().remove(ruleId);
+
+                if (project.getRuleEngine()
+                        .getBuiltRules()
+                        .isEmpty()) {
+
+                    JERunnerAPIHandler.shutDownRuleEngine(projectId);
+                    project.getRuleEngine().setRunning(false);
+
+                }
+
                 RuleService.updateRuleStatus(rule);
                 ruleRepository.save(rule);
-            } catch (Exception e) {
-                JELogger.error("[rule = " + rule.getJobEngineElementName() + "]" + JEMessages.STATUS_UPDATE_FAILED,
-                        CATEGORY, projectId, RULE, null);
 
+            } else {
+                result.setOperationSucceeded(false);
+                result.setOperationError(JEMessages.RULE_ALREADY_STOPPED);
             }
+            
             return result;
 
+        } catch (JERunnerErrorException e) {
+            JELogger.error(JEMessages.FAILED_TO_STOP_RULE
+                            + project.getRules()
+                            .get(ruleId)
+                            .getJobEngineElementName() + " : " + e.getMessage(),
+                    CATEGORY, projectId, RULE, null);
+
+            result.setOperationSucceeded(false);
+            result.setOperationError(JEMessages.FAILED_TO_STOP_RULE + e.getMessage());
+
+        } catch (Exception e) {
+            JELogger.error("[rule = " + rule.getJobEngineElementName() + "] " + JEMessages.STATUS_UPDATE_FAILED + e.getMessage(),
+                    CATEGORY, projectId, RULE, null);
+
+            result.setOperationSucceeded(false);
+            result.setOperationError(JEMessages.STATUS_UPDATE_FAILED + e.getMessage());
+
+        } finally {
+            // FIXME
+            return result;
         }
-        result.setOperationSucceeded(false);
-        result.setOperationError(JEMessages.RULE_ALREADY_STOPPED);
-        return result;
 
     }
 

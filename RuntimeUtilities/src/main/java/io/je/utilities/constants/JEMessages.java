@@ -553,15 +553,15 @@ public class JEMessages {
 
     public static final String RULE_COMPILATION_FAILED = "Failed to compile Rule";
 
-    public static final String FIRING_ALL_RULES = "Firing all rules.";
+    public static final String FIRING_ALL_RULES = "Firing all rules";
 
-    public static final String NO_RULES = "No rule was found.";
+    public static final String NO_RULES = "No rule was found";
 
-    public static final String BUILDING_KIE = "Building knowledge base.";
+    public static final String BUILDING_KIE = "Building knowledge base";
 
-    public static final String KIE_BUILT = "Knowledge base built successfully.";
+    public static final String KIE_BUILT = "Knowledge base built successfully";
 
-    public static final String KIE_INIT = "Initializing knowledge base.";
+    public static final String KIE_INIT = "Initializing knowledge base";
 
     public static final String KIE_INIT_FAILED = "Failed to initialize knowledge base";
 
@@ -691,9 +691,10 @@ public class JEMessages {
 
     public static final String RULE_NOT_BUILT = "Rule is not built";
     public static final String FAILED_TO_STOP_RULE = "Failed to stop rule: ";
-    public static final String STATUS_UPDATE_FAILED = "Failed to update status ";
+    public static final String STATUS_UPDATE_FAILED = "Failed to update status: ";
 
     public static final String FAILED_TO_DELETE_RULE = "Failed to delete rule";
+    public static final String FAILED_TO_DELETE_SUBRULE = "Failed to delete sub rule";
     public static final String FAILED_TO_STOP_THE_WORKFLOW_BECAUSE_IT_ALREADY_IS_STOPPED = "Failed to stop the workflow because it already is stopped";
     public static final String STOPPING_WORKFLOW_FORCED = "User stopped workflow execution";
     public static final String JOB_ENGINE_ACCEPTS_JAR_FILES_ONLY = "Job engine accepts jar files only";
