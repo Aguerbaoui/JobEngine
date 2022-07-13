@@ -75,12 +75,16 @@ public class RuntimeDispatcher {
 
             // run workflows
             WorkflowEngineHandler.runAllWorkflows(projectId, true);
-            RuleEngineHandler.runRuleEngineProject(projectId);
-            for (JEVariable variable : VariableManager.getAllVariables(projectId)) {
-                RuleEngineHandler.addVariable(variable);
-                RuleEngineHandler.addVariable(variable);
 
+            // run rules
+            RuleEngineHandler.runRuleEngineProject(projectId);
+
+            // add variables
+            for (JEVariable variable : VariableManager.getAllVariables(projectId)) {
+                // FIXME was called twice, check if ok
+                RuleEngineHandler.addVariable(variable);
             }
+
         } catch (JEException e) {
             JELogger.error(" [project  = " + projectName + "]" + JEMessages.PROJECT_RUN_FAILED, LogCategory.RUNTIME,
                     projectId, LogSubModule.JERUNNER, null);
@@ -94,10 +98,10 @@ public class RuntimeDispatcher {
     }
 
     // stop project
-    // run project
+    // run project FIXME why run?
     public void stopProject(String projectId, String projectName) {
 
-        String msg = "[project = " + projectName + "]";
+        String msg = "[project = " + projectName + "] ";
         // stop workflows
         JELogger.control(msg + JEMessages.STOPPING_PROJECT, LogCategory.RUNTIME, projectId,
                 LogSubModule.JERUNNER, null);
@@ -157,7 +161,7 @@ public class RuntimeDispatcher {
 
     // delete rule
     public void deleteRule(String projectId, String ruleId) throws DeleteRuleException {
-        JELogger.debug("[projectId = " + projectId + "] [ruleId = " + ruleId + "]" + JEMessages.DELETING_RULE,
+        JELogger.debug("[projectId = " + projectId + "] [ruleId = " + ruleId + "] " + JEMessages.DELETING_RULE,
                 LogCategory.RUNTIME, projectId, LogSubModule.RULE, ruleId);
         RuleEngineHandler.deleteRule(projectId, ruleId);
     }
@@ -487,9 +491,13 @@ public class RuntimeDispatcher {
             try {
                 updateRule(runnerRuleModel);
                 details.setOperationSucceeded(true);
+                updateResult.add(details);
             } catch (RuleCompilationException | JEFileNotFoundException | RuleFormatNotValidException e) {
                 details.setOperationSucceeded(false);
                 details.setOperationError(e.getMessage());
+                updateResult.add(details);
+                // FIXME finally
+                return updateResult;
             }
 
         }
