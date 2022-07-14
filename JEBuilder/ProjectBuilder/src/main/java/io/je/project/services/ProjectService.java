@@ -93,7 +93,8 @@ public class ProjectService {
 
         try {
             stopProject(id);
-        } catch (ProjectNotFoundException | ProjectStopException | LicenseNotActiveException | ExecutionException e) {
+        } catch (ProjectNotFoundException | ProjectStopException | LicenseNotActiveException | ExecutionException exp) {
+            exp.printStackTrace();
         } catch (InterruptedException e) {
             Thread.currentThread()
                     .interrupt();
@@ -103,7 +104,8 @@ public class ProjectService {
                 LogCategory.DESIGN_MODE, id, LogSubModule.JEBUILDER, null);
         try {
             JERunnerAPIHandler.cleanProjectDataFromRunner(id);
-        } catch (JERunnerErrorException e) {
+        } catch (JERunnerErrorException exp) {
+            exp.printStackTrace();
         }
 
         try {
@@ -172,7 +174,7 @@ public class ProjectService {
     public List<OperationStatusDetails> buildAll(String projectId) throws ProjectNotFoundException,
             InterruptedException, ExecutionException, LicenseNotActiveException, ProjectLoadException {
         JEProject project = getProject(projectId);
-        JELogger.info("[project= " + project.getProjectName() + "]" + JEMessages.BUILDING_PROJECT,
+        JELogger.info("[project= " + project.getProjectName() + "] " + JEMessages.BUILDING_PROJECT,
                 LogCategory.DESIGN_MODE, projectId, LogSubModule.JEBUILDER, null);
 //CompletableFuture<?> buildRules = ruleService.compileALLRules(projectId);
         CompletableFuture<List<OperationStatusDetails>> buildWorkflows = workflowService.buildWorkflows(projectId,
@@ -246,7 +248,7 @@ public class ProjectService {
         }
         JEProject project = loadedProjects.get(projectId);
         // if (project.isRunning()) {
-        JELogger.control("[project = " + project.getProjectName() + "]" + JEMessages.STOPPING_PROJECT,
+        JELogger.control("[project = " + project.getProjectName() + "] " + JEMessages.STOPPING_PROJECT,
                 LogCategory.DESIGN_MODE, projectId, LogSubModule.JEBUILDER, null);
 
         try {

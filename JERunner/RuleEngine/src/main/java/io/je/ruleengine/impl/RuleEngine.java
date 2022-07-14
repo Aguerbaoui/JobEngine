@@ -35,6 +35,7 @@ public class RuleEngine {
 
         String projectId = rule.getJobEngineProjectID();
         ProjectContainer project = projectManager.getProjectContainer(projectId);
+        // FIXME check returned result
         project.updateRule(rule);
 
     }
@@ -59,7 +60,7 @@ public class RuleEngine {
     }
 
     public static void deleteProjectRules(String projectId) {
-        //TODO confirm with manél
+        //TODO confirm
         projectManager.deleteProjectContainer(projectId);
     }
 
@@ -169,8 +170,8 @@ public class RuleEngine {
     }
 
     public static void reloadContainers() {
-        for (ProjectContainer project : ProjectContainerRepository.getAllProjects()
-                .values()) {
+        for (ProjectContainer project : ProjectContainerRepository.getAllProjects().values()) {
+
             if (project.getStatus() == Status.RUNNING) {
                 JELogger.error(JEMessages.ILLEGAL_OPERATION_CLASS_UPDATE_DURING_PROJECT_RUN, null, null, null, null);
                 project.setReloadContainer(true);
@@ -178,7 +179,6 @@ public class RuleEngine {
             } else {
                 project.resetContainer();
             }
-
 
         }
 

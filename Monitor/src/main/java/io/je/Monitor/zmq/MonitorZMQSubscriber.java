@@ -34,6 +34,9 @@ public class MonitorZMQSubscriber extends ZMQSubscriber {
 			this.init();
 			this.addTopic(JEMONITOR_TOPIC);
 
+			JELogger.debug("MonitorZMQSubscriber : topic added : " + JEMONITOR_TOPIC,
+					LogCategory.MONITOR, null, LogSubModule.JEMONITOR, null);
+
 			try {
 				JELogger.info("Attempting to connect to address: " + url + ":" + port + "...", null, "", null, "");
 
@@ -83,7 +86,7 @@ public class MonitorZMQSubscriber extends ZMQSubscriber {
 
 			final String ID_MSG = "Monitor Subscriber : ";
 
-			JELogger.debug(ID_MSG + "topics : " + this.topics + " : " + JEMessages.DATA_LISTENTING_STARTED,
+			JELogger.debug(ID_MSG + JEMessages.DATA_LISTENTING_STARTED,
 					LogCategory.MONITOR, null, LogSubModule.JEMONITOR, null);
 
 			String last_topic = null;

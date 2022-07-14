@@ -48,13 +48,13 @@ public class JERunnerAPIHandler {
      */
     public static JEResponse runProject(String projectId,String projectName)
             throws JERunnerErrorException{
-        String requestUrl = runtimeManagerBaseApi + APIConstants.RUN_PROJECT + projectId + "/"+projectName;
+        String requestUrl = runtimeManagerBaseApi + APIConstants.RUN_PROJECT + projectId + "/" + projectName;
         return sendRequest(requestUrl);
     }
 
     public static JEResponse stopProject(String projectId,String projectName)
             throws JERunnerErrorException{
-        String requestUrl = runtimeManagerBaseApi + APIConstants.STOP_PROJECT + projectId+ "/"+projectName;;
+        String requestUrl = runtimeManagerBaseApi + APIConstants.STOP_PROJECT + projectId+ "/" + projectName;
         return sendRequest(requestUrl);
     }
 
@@ -260,8 +260,6 @@ public class JERunnerAPIHandler {
         String requestUrl = runtimeManagerBaseApi + APIConstants.SHUT_DOWN_RULE_ENGINE + projectId;
         return sendRequest(requestUrl);
 
-
-		
 	}
 
 
