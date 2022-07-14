@@ -207,16 +207,18 @@ public class ProjectContainer {
                     kieSession.addEventListener(new DebugRuleRuntimeEventListener());
 
                     //  kieSession.addEventListener(new RuleListener(projectId));
-                    //kieSession.addEventListener(ruleListener);
+                    //  kieSession.addEventListener(ruleListener);
                     // Thread.currentThread().setContextClassLoader(loader);
+
+                    // FIXME Bug 72: java.lang.NullPointerException at org.drools.core.phreak.PhreakJoinNode.updateChildLeftTuple(PhreakJoinNode.java:463)
                     kieSession.fireUntilHalt();
-                } catch (Exception e) {
-                    e.printStackTrace();
+
+                } catch (Exception exp) {
                     // fatal : Runtime Executions
-                    String ruleId = IdManager.getRuleIdFromErrorMsg(e.getMessage());
-                    e.printStackTrace();
+                    String ruleId = IdManager.getRuleIdFromErrorMsg(exp.getMessage());
+
                     JELogger.error(
-                            JEMessages.RULE_EXECUTION_ERROR + StringUtils.substringBefore(e.getMessage(), " in "),
+                            JEMessages.RULE_EXECUTION_ERROR + StringUtils.substringBefore(exp.getMessage(), " in "),
                             LogCategory.RUNTIME, projectId, LogSubModule.RULE, ruleId);
                     try {
                         fireRules();
@@ -231,15 +233,14 @@ public class ProjectContainer {
             t1.start();
             status = Status.RUNNING;
 
-        } catch (Exception e) {
+        } catch (Exception exp) {
             if (t1 != null) {
                 kieSession.halt();
             }
-            JELogger.error(JEMessages.FAILED_TO_FIRE_RULES + " : " + e.getMessage(), LogCategory.RUNTIME, projectId,
+            JELogger.error(JEMessages.FAILED_TO_FIRE_RULES + " : " + exp.getMessage(), LogCategory.RUNTIME, projectId,
                     LogSubModule.RULE, null);
-            // TODO Add message to exception
-            e.printStackTrace();
-            throw new RulesNotFiredException("");
+
+            throw new RulesNotFiredException(Arrays.toString(exp.getStackTrace()));
 
         }
 
@@ -327,6 +328,8 @@ public class ProjectContainer {
 
             // create container
             try {
+                // FIXME Bug 79: Error creating kieBase org.drools.compiler.kie.builder.impl.KieServicesImpl.newKieContainer(KieServicesImpl.java:190)
+
                 kieContainer = kieServices.newKieContainer(releaseId, JEClassLoader.getDataModelInstance());
                 JEClassLoader.setCurrentRuleEngineClassLoader(JEClassLoader.getDataModelInstance());
                 //JELogger.debug("   CONTAINER :" + kieContainer.getClassLoader().toString());

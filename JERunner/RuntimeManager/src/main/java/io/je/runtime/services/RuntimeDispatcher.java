@@ -77,7 +77,7 @@ public class RuntimeDispatcher {
             WorkflowEngineHandler.runAllWorkflows(projectId, true);
 
             // run rules
-            RuleEngineHandler.runRuleEngineProject(projectId);
+            RuleEngineHandler.runRuleEngineProject(projectId); // FIXME should launch all rules not just rule engine
 
             // add variables
             for (JEVariable variable : VariableManager.getAllVariables(projectId)) {
@@ -465,6 +465,13 @@ public class RuntimeDispatcher {
             RuleEngineHandler.addVariable(variable);
         }
 
+        projectStatus.put(projectId, true);
+
+    }
+
+    public void runRuleEngine(String projectId) throws RulesNotFiredException, RuleBuildFailedException {
+
+        RuleEngineHandler.startRuleEngineProjectExecution(projectId);
         projectStatus.put(projectId, true);
 
     }

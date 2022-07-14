@@ -255,6 +255,12 @@ public class JERunnerAPIHandler {
 		
 	}
 
+    public static JEResponse runRuleEngine(String projectId)
+            throws JERunnerErrorException{
+        String requestUrl = runtimeManagerBaseApi + APIConstants.RUN_RULE_ENGINE + projectId;
+        return sendRequest(requestUrl);
+
+    }
 	public static JEResponse shutDownRuleEngine(String projectId) 
 			   throws JERunnerErrorException{
         String requestUrl = runtimeManagerBaseApi + APIConstants.SHUT_DOWN_RULE_ENGINE + projectId;

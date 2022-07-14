@@ -28,6 +28,7 @@ import utils.string.StringUtilities;
 import java.io.File;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -219,8 +220,8 @@ public class ProjectService {
                         project.getRuleEngine()
                                 .setRunning(true);
 
-                    } catch (Exception e) {
-                        throw new ProjectRunException(JEMessages.ERROR_RUNNING_PROJECT);
+                    } catch (Exception exp) {
+                        throw new ProjectRunException(JEMessages.ERROR_RUNNING_PROJECT + Arrays.toString(exp.getStackTrace()));
                     }
                     project.setRunning(true);
                     saveProject(projectId).get();
