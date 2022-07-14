@@ -852,7 +852,6 @@ public class RuleService {
                             }
                         }
                     }
-                    // FIXME
                     rule.setAdded(false);
                     rule.setRunning(false);
                 }
@@ -875,7 +874,7 @@ public class RuleService {
                 result.setOperationSucceeded(false);
                 result.setOperationError(JEMessages.RULE_ALREADY_STOPPED);
             }
-            
+
             return result;
 
         } catch (JERunnerErrorException e) {
@@ -888,6 +887,7 @@ public class RuleService {
             result.setOperationSucceeded(false);
             result.setOperationError(JEMessages.FAILED_TO_STOP_RULE + e.getMessage());
 
+            return result;
         } catch (Exception e) {
             JELogger.error("[rule = " + rule.getJobEngineElementName() + "] " + JEMessages.STATUS_UPDATE_FAILED + e.getMessage(),
                     CATEGORY, projectId, RULE, null);
@@ -895,8 +895,6 @@ public class RuleService {
             result.setOperationSucceeded(false);
             result.setOperationError(JEMessages.STATUS_UPDATE_FAILED + e.getMessage());
 
-        } finally {
-            // FIXME
             return result;
         }
 
