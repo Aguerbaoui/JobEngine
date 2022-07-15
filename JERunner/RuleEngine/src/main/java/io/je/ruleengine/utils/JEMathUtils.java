@@ -10,12 +10,23 @@ public class JEMathUtils {
 
 
     public static double castToDouble(Object x) {
-        if (x instanceof Float) {
-            return ((Float) x).doubleValue();
-        } else if (x instanceof Integer) {
-            return ((Integer) x).doubleValue();
+        try {
+            if (x instanceof Float) {
+                return ((Float) x).doubleValue();
+            } else if (x instanceof Integer) {
+                return ((Integer) x).doubleValue();
+            } else if (x instanceof Long) {
+                return ((Long) x).doubleValue();
+            } else if (x instanceof Short) {
+                return ((Short) x).doubleValue();
+            } else if (x instanceof Byte) {
+                return ((Byte) x).doubleValue();
+            }
+
+            return (double) x;
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
         }
-        return (double) x;
     }
 
 
