@@ -472,6 +472,11 @@ public class RuntimeDispatcher {
     public void runRuleEngine(String projectId) throws RulesNotFiredException, RuleBuildFailedException {
 
         RuleEngineHandler.startRuleEngineProjectExecution(projectId);
+
+        for (JEVariable variable : VariableManager.getAllVariables(projectId)) {
+            RuleEngineHandler.addVariable(variable);
+        }
+
         projectStatus.put(projectId, true);
 
     }
