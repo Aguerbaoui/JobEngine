@@ -137,7 +137,7 @@ public class ComparisonBlock extends PersistableBlock {
                         .replaceAll(Keywords.toBeReplaced,
                                 getOperationExpression());
                 expression.append(inputExpression);
-                expression.append("\n" + " not(motor( jobEngineElementID == Getter1010.getJobEngineElementID() && temp < 10 &&  this startedby  Getter1010))");
+                //expression.append("\n" + " not(motor( jobEngineElementID == Getter1010.getJobEngineElementID() && temp < 10 &&  this startedby  Getter1010))");
 
                 //in range / out of range blocks
             } else if (inputBlocks.size() == 3 || this instanceof InRangeBlock || this instanceof OutOfRangeBlock) {
