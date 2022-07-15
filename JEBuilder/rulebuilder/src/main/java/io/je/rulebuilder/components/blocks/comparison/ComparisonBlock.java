@@ -101,33 +101,21 @@ public class ComparisonBlock extends PersistableBlock {
 
     }
 
-    protected String getOperationExpression() {
-        if (isOperatorString) {
-            String firstOperand = "(String) " + getInputReferenceByOrder(0);
+    public String getOperatorByOperationId(int operationId) {
+        Optional<Operator> operation = Operator.getOperatorByCode(operationId);
+        isOperatorString = Operator.isStringOperator(operationId);
+        if (operation
+                .isPresent()) {
+            return operation
+                    .get()
+                    .getFullName();
+        } else return "";
 
-            return firstOperand + getOperator() + " (String) " + formatOperator(threshold);
-        }
-        //FIXME: check implementation to handle variables case using getInputBlockByOrder
-        String firstOperand = (getInputBlockByOrder(0) instanceof VariableGetterBlock ? "(double) " : "") + getInputReferenceByOrder(0);
-        return firstOperand + getOperator() + asDouble(formatOperator(threshold));
 
     }
-
-    public String asDouble(String val) {
-        return "JEMathUtils.castToDouble(" + val + " )"; //" Double.valueOf( "+val+" )";
-    }
-
 
     public ComparisonBlock() {
         super();
-    }
-
-
-    protected void setParameters() {
-        if (inputBlockIds.size() > 1) {
-            threshold = getInputReferenceByOrder(1);
-        }
-
     }
 
     @Override
@@ -149,6 +137,7 @@ public class ComparisonBlock extends PersistableBlock {
                         .replaceAll(Keywords.toBeReplaced,
                                 getOperationExpression());
                 expression.append(inputExpression);
+                //expression.append("\n" + " not(motor( jobEngineElementID == Getter1010.getJobEngineElementID() && temp < 10 &&  this startedby  Getter1010))");
 
                 //in range / out of range blocks
             } else if (inputBlocks.size() == 3 || this instanceof InRangeBlock || this instanceof OutOfRangeBlock) {
@@ -209,10 +198,36 @@ public class ComparisonBlock extends PersistableBlock {
 
     }
 
+    protected void setParameters() {
+        if (inputBlockIds.size() > 1) {
+            threshold = getInputReferenceByOrder(1);
+        }
+
+    }
+
+    protected String getOperationExpression() {
+        if (isOperatorString) {
+            String firstOperand = "(String) " + getInputReferenceByOrder(0);
+
+            return firstOperand + getOperator() + " (String) " + formatOperator(threshold);
+        }
+
+        String firstOperand = (getInputBlockByOrder(0) instanceof VariableGetterBlock ? asDouble(getInputReferenceByOrder(0)) : getInputReferenceByOrder(0));
+        return firstOperand + getOperator() + asDouble(formatOperator(threshold));
+
+    }
+
     public String getOperator() {
         return operator;
     }
 
+    public String formatOperator(String operator) {
+        return formatToString ? "\"" + operator + "\"" : operator;
+    }
+
+    public String asDouble(String val) {
+        return "JEMathUtils.castToDouble(" + val + " )"; //" Double.valueOf( "+val+" )";
+    }
 
     protected String getMaxRange() {
         return maxRange;
@@ -230,36 +245,16 @@ public class ComparisonBlock extends PersistableBlock {
         this.includeBounds = includeBounds;
     }
 
+    @Override
+    public String getAsOperandExpression() throws RuleBuildFailedException {
+        throw new RuleBuildFailedException(this.blockName + " cannot be linked to comparison block");
+    }
 
     @Override
     public String toString() {
         return "ComparisonBlock [threshold=" + threshold + ", timePersistenceValue=" + timePersistenceValue
                 + ", timePersistenceUnit=" + timePersistenceUnit + ", ruleId=" + ruleId + ", jobEngineElementID=" + jobEngineElementID
                 + ", jobEngineProjectID=" + jobEngineProjectID + ", jeObjectLastUpdate=" + jeObjectLastUpdate + "]";
-    }
-
-
-    public String getOperatorByOperationId(int operationId) {
-        Optional<Operator> operation = Operator.getOperatorByCode(operationId);
-        isOperatorString = Operator.isStringOperator(operationId);
-        if (operation
-                .isPresent()) {
-            return operation
-                    .get()
-                    .getFullName();
-        } else return "";
-
-
-    }
-
-
-    public String formatOperator(String operator) {
-        return formatToString ? "\"" + operator + "\"" : operator;
-    }
-
-    @Override
-    public String getAsOperandExpression() throws RuleBuildFailedException {
-        throw new RuleBuildFailedException(this.blockName + " cannot be linked to comparison block");
     }
 
 
