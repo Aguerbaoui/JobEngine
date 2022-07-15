@@ -147,7 +147,7 @@ public class RuleEngineHandler {
 	}
 
 	public static void deleteProjectRules(String projectId) {
-		JELogger.debug("[project id = " + projectId+"]"+JEMessages.DELETING_RULES,
+		JELogger.debug("[project id = " + projectId + "] " + JEMessages.DELETING_RULES,
 				LogCategory.RUNTIME, projectId,
 				LogSubModule.RULE,null);
 		RuleEngine.deleteProjectRules(projectId);

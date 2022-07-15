@@ -35,14 +35,14 @@ public class WorkflowEngineHandler {
 
     private static final HashMap<String, ProcessManager> processManagerHashMap = new HashMap<>();
 
+    // TODO init process manager with projects from DB even if no workflows defined yet
     private static void checkProcessManager (String projectId) throws WorkflowBuildException {
-        // FIXME add suitable Exceptions for process manager
+
+        // FIXME add suitable Exceptions for process manager if projectId not existing in DB
         if (!processManagerHashMap.containsKey(projectId)) {
-            throw new WorkflowBuildException("Process manager does not contains the project Id : " + projectId);
+            processManagerHashMap.put(projectId, new ProcessManager());
         }
-        if (processManagerHashMap.get(projectId) == null) {
-            throw new WorkflowBuildException("Process manager null for project Id : " + projectId);
-        }
+
         if (processManagerHashMap.get(projectId).getProcesses() == null) {
             throw new WorkflowBuildException("Process manager has null processes for project Id : " + projectId);
         }

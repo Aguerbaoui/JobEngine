@@ -74,6 +74,7 @@ public abstract class JERule extends JEObject {
     }
 
 
+    // FIXME not used
     public void setAdded(boolean isAdded) {
         this.isAdded = isAdded;
     }
