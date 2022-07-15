@@ -160,10 +160,12 @@ public class AsyncRuleService {
         try {
 
             buildRule(projectId, ruleId).get();
+
             if (!project.getRuleEngine().isRunning()) {
-                JERunnerAPIHandler.runProjectRules(projectId);
+                JERunnerAPIHandler.runRuleEngine(projectId);
                 project.getRuleEngine().setRunning(true);
             }
+
             project.getRule(ruleId).setRunning(false);
             rule.setRunning(true);
             result.setOperationSucceeded(true);

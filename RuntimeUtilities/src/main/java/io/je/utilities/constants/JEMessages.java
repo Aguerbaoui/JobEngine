@@ -649,15 +649,15 @@ public class JEMessages {
     public static final String FAILED_TO_SEND_LOG_MESSAGE_TO_THE_LOGGING_SYSTEM = "Failed to send log message to the Tracker module: ";
     public static final String FAILED_TO_SEND_MONITORING_MESSAGE_TO_THE_LOGGING_SYSTEM = "Failed to send monitoring data to the JEMonitor module: ";
     public static final String CHECK_DM_FOR_DETAILS = "Check Integration Objects' SIOTH Data Model service's log file for more details. ";
-    public static final String ERROR_RUNNING_PROJECT = "Error while running project, check your configuration";
-    public static final String ERROR_STOPPING_PROJECT = "Error while stopping project, check your configuration";
-    public static final String ERROR_STOPPING_WORKFLOW = "Error while stopping workflow, check your configuration";
+    public static final String ERROR_RUNNING_PROJECT = "Error while running project, check your configuration ";
+    public static final String ERROR_STOPPING_PROJECT = "Error while stopping project, check your configuration ";
+    public static final String ERROR_STOPPING_WORKFLOW = "Error while stopping workflow, check your  ";
     public static final String ERROR_WHILE_REFERENCING_A_DISABLED_WORKFLOW = "Error while referencing a disabled workflow: ";
-    public static final String WORKFLOW_IS_DISABLED = "The workflow is disabled, check your configuration";
-    public static final String PROCEDURE_DELETED_SUCCESSFULLY = "The procedure was deleted successfully";
-    public static final String LIBRARY_DELETED_SUCCESSFULLY = "The library was deleted successfully";
-    public static final String LIBRARY_EXISTS = "The file already exists in the system";
-    public static final String THREAD_INTERRUPTED_WHILE_EXECUTING = "Thread execution interrupted";
+    public static final String WORKFLOW_IS_DISABLED = "The workflow is disabled, check your configuration ";
+    public static final String PROCEDURE_DELETED_SUCCESSFULLY = "The procedure was deleted successfully ";
+    public static final String LIBRARY_DELETED_SUCCESSFULLY = "The library was deleted successfully ";
+    public static final String LIBRARY_EXISTS = "The file already exists in the system ";
+    public static final String THREAD_INTERRUPTED_WHILE_EXECUTING = "Thread execution interrupted ";
 
 
     //********************************************************* instances ******************************************************

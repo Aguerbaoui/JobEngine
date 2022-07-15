@@ -77,6 +77,8 @@ public class APIConstants {
 
 	public static final String RUN_PROJECT_RULES = "/rule/runAllRules/";
 
+	public static final String RUN_RULE_ENGINE = "/rule/runRuleEngine/";
+
 	public static final String SHUT_DOWN_RULE_ENGINE = "/rule/shutDownRuleEngine/";
 
 
