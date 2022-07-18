@@ -278,6 +278,8 @@ public class ProjectService {
 
         Optional<JEProject> p = projectRepository.findById(projectId);
         if (p.isEmpty()) {
+            // FIXME to be removed; so throw exception;
+            //  but ascendant compatibility issue; should check with product owner
             p = projectRepository.findByProjectName(projectId);
             if (p.isEmpty()) {
                 throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
@@ -285,7 +287,7 @@ public class ProjectService {
         }
 
         project = p.get();
-
+        // FIXME does we nedd to reload all if loadedProjects filled?
         if (!loadedProjects.containsKey(project.getProjectId())) {
             project.setEvents(eventService.getAllJEEvents(project.getProjectId()));
             project.setRules(ruleService.getAllJERules(project.getProjectId()));

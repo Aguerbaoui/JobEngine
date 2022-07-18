@@ -41,7 +41,8 @@ public class MonitorZMQSubscriber extends ZMQSubscriber {
 				JELogger.info("Attempting to connect to address: " + url + ":" + port + "...", null, "", null, "");
 
 				connectToAddress(bindType);
-				JELogger.info("connection succeeded.", null, "", null, "");
+				// FIXME externalize messages
+				JELogger.info("Connection succeeded", null, "", null, "");
 
 				connectionSucceeded = true;
 
@@ -58,7 +59,7 @@ public class MonitorZMQSubscriber extends ZMQSubscriber {
 				try {
 					connectToAddress(bindType);
 					connectionSucceeded = true;
-					JELogger.info("Connection succeeded.", null, "", null, "");
+					JELogger.info("Connection succeeded", null, "", null, "");
 
 				} catch (Exception e) {
 					connectionSucceeded = false;

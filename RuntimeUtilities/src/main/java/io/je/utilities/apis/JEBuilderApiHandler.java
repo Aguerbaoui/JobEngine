@@ -81,11 +81,11 @@ public class JEBuilderApiHandler {
 		return sendRequestWithBody(url, body);
 	}
 	  public static JEResponse untriggerEvent(String eventId, String projectId) throws JERunnerErrorException {
-        String requestUrl = JEConfiguration.getProjectBuilderUrl() + EVENT_UNTRIGGER_EVENT + projectId + "/" + eventId;
+        String requestUrl = JEConfiguration.getProjectBuilderUrl() + UNTRIGGER_EVENT + projectId + "/" + eventId;
         return sendRequest(requestUrl);
     }
 	   public static JEResponse triggerEvent(String eventId, String projectId) throws JERunnerErrorException {
-        String requestUrl = JEConfiguration.getProjectBuilderUrl() + EVENT_TRIGGER_EVENT + projectId + "/" + eventId;
+        String requestUrl = JEConfiguration.getProjectBuilderUrl() + TRIGGER_EVENT + projectId + "/" + eventId;
 		   /*JELogger.debug(JEMessages.TRIGGERING_NOW+" project id = " + projectId + " event id = " + eventId, LogCategory.RUNTIME,
 				   projectId, LogSubModule.JEBUILDER, eventId);*/
         return sendRequest(requestUrl);
