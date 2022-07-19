@@ -16,7 +16,7 @@ public class LicenseStatusWatcher implements Runnable {
 	int featureCode;
 	static ObjectMapper objectMapper = new ObjectMapper();
 	static ZMQRequester objZMQRequest;
-	boolean listening;
+	boolean listening = true;
 
 	static SIOTHLicenseStatus siothlicenseStatus;
 
@@ -42,7 +42,7 @@ public class LicenseStatusWatcher implements Runnable {
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-           int  requestTimeout = 20000;
+            int  requestTimeout = 20000;
             while (listening)
             {
                 try
@@ -60,7 +60,7 @@ public class LicenseStatusWatcher implements Runnable {
                     if (cipheredData!=null)
                     {
                         String cipheredSIOTHRequest = cipheredData;
-                        String rcvData =  objZMQRequest.sendRequest( cipheredSIOTHRequest,requestTimeout);
+                        String rcvData =  objZMQRequest.sendRequest( cipheredSIOTHRequest ); // FIXME requestTimeout);
                             if (rcvData != null && !rcvData.isEmpty())
                             {
                                 //Decrypt rcvData
@@ -108,15 +108,10 @@ public class LicenseStatusWatcher implements Runnable {
                                     LicenseStatusChangeHandler.invoke(siothlicenseStatus);
                                 }
 
-                               
-
                             }
 
-
                         }
-                        
-                    
-              
+
                     Thread.sleep(10000); 
                 }
                 catch (Exception ex)
