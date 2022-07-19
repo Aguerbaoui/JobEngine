@@ -108,13 +108,13 @@ public class JERunnerAPIHandler {
     ///////////////////////////////// EVENTS//////////////////////////////
 
     public static JEResponse triggerEvent(String eventId, String projectId) throws JERunnerErrorException {
-        String requestUrl = runtimeManagerBaseApi + EVENT_TRIGGER_EVENT + projectId + "/" + eventId;
+        String requestUrl = runtimeManagerBaseApi + TRIGGER_EVENT + projectId + "/" + eventId;
         return sendRequest(requestUrl);
     }
 
     // add event
     public static JEResponse addEvent(HashMap<String, Object> requestModel) throws JERunnerErrorException {
-        String requestUrl = runtimeManagerBaseApi + EVENT_ADD_EVENT;
+        String requestUrl = runtimeManagerBaseApi + ADD_EVENT;
         return sendRequestWithBody(requestUrl, requestModel);
     }
 
@@ -136,7 +136,7 @@ public class JERunnerAPIHandler {
 
     //update event type
     public static void updateEventType(String projectId, String eventId, String type) throws JERunnerErrorException {
-        String requestUrl = runtimeManagerBaseApi + APIConstants.UPDATE_EVENT + "/" + projectId + "/" + eventId;
+        String requestUrl = runtimeManagerBaseApi + APIConstants.UPDATE_EVENT_TYPE + "/" + projectId + "/" + eventId;
         /*JELogger.debug(JEMessages.NETWORK_UPDATE_EVENT+"project id = " + projectId + "event id = " + eventId,  LogCategory.DESIGN_MODE,
                 projectId, LogSubModule.EVENT, eventId);*/
         sendRequestWithStringBody(requestUrl, type);
@@ -233,7 +233,7 @@ public class JERunnerAPIHandler {
 
 
     public static JEResponse untriggerEvent(String eventId, String projectId) throws JERunnerErrorException {
-        String requestUrl = runtimeManagerBaseApi + EVENT_UNTRIGGER_EVENT + projectId + "/" + eventId;
+        String requestUrl = runtimeManagerBaseApi + UNTRIGGER_EVENT + projectId + "/" + eventId;
         return sendRequest(requestUrl);
     }
 

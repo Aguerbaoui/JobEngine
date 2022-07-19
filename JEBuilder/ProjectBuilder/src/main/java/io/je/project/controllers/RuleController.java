@@ -287,11 +287,10 @@ public class RuleController {
                                      @PathVariable("ruleId") String ruleId) {
 
         try {
-
-
             projectService.getProject(projectId);
 
             ruleService.runRule(projectId, ruleId);
+
             projectService.saveProject(projectId);
 
         } catch (Exception e) {
@@ -313,6 +312,7 @@ public class RuleController {
             projectService.getProject(projectId);
 
             results = ruleService.runRules(projectId, ruleIds);
+
             projectService.saveProject(projectId);
 
         } catch (Exception e) {
@@ -355,6 +355,7 @@ public class RuleController {
             projectService.getProject(projectId);
 
             results = ruleService.stopRules(projectId, ruleIds);
+
             projectService.saveProject(projectId);
 
         } catch (Exception e) {

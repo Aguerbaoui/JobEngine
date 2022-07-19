@@ -28,6 +28,7 @@ public abstract class JERule extends JEObject {
     /*
      * check if rule was added to JERunner or not
      */
+    // FIXME is it really used
     boolean isAdded = false;
 
     boolean isRunning = false;
@@ -43,6 +44,7 @@ public abstract class JERule extends JEObject {
     @Transient
     private Map<String, Integer> topics = new HashMap<>();
 
+    // FIXME why not used
     protected Map<String, Integer> classTopics = new HashMap<>();
 
     protected Map<String, Integer> instanceTopics = new HashMap<>();
