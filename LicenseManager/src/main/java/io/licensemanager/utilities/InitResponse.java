@@ -32,9 +32,5 @@ public class InitResponse {
 	public void setStatus(SIOTHLicenseStatus status) {
 		this.status = status;
 	}
-	
-	
-	
-	
 
 }
