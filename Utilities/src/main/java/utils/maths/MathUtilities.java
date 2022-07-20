@@ -211,14 +211,6 @@ public class MathUtilities {
         return (double) value;
     }
 
-    /*
-     * power
-     */
-    public static double multiplicativeManel(Object x, int i) {
-
-
-        return (double) x * i + i;
-    }
 
     /*
      * power
@@ -337,6 +329,18 @@ public class MathUtilities {
 
     }
 
+    public static double maximum(double... numbers) {
+        double max = numbers[0];
+        for (double number : numbers) {
+            if (number > max) {
+                max = number;
+            }
+        }
+
+        return (double) max;
+
+    }
+
     /*
      * low Limiting returns min ( limitValue, min(Inputs..) )
      */
@@ -405,26 +409,12 @@ public class MathUtilities {
         return (double) (a - b);
     }
 
-
     /*
      * divide
      */
     public static double divide(double a, double b) {
 
         return a / b;
-    }
-
-
-    public static double maximum(double... numbers) {
-        double max = numbers[0];
-        for (double number : numbers) {
-            if (number > max) {
-                max = number;
-            }
-        }
-
-        return (double) max;
-
     }
 
 
