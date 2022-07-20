@@ -22,7 +22,7 @@ public class ClientLicenseManager {
     static ObjectMapper objectMapper = new ObjectMapper();
     static boolean isRegistered = false;
 
-    static SIOTHLicenseStatus siothlicenseStatus;
+    static SIOTHLicenseStatus siothlicenseStatus = SIOTHLicenseStatus.Corrupted;
 
     private ClientLicenseManager() {
 
@@ -39,7 +39,7 @@ public class ClientLicenseManager {
     public static InitResponse initializeLicense(String licenseManagerUrl, int featureCode,
                                                  int tags/* , out SIOTHLicenseStatus licenseStatus, out String strError */) {
         String strError = "";
-        SIOTHLicenseStatus licenseStatus = SIOTHLicenseStatus.Corrupted;
+
         try {
 
             // =====> Ini ZMQ Request
@@ -82,8 +82,7 @@ public class ClientLicenseManager {
                                     LogCategory.SIOTH_APPLICATION, null, null, null);
 
                             if (objSIOTHLicenseResponse.bAuthorized) {
-                                // siothlicenseStatus = licenseStatus = objSIOTHLicenseResponse.Status;
-                                siothlicenseStatus = licenseStatus = SIOTHLicenseStatus.Corrupted;
+                                siothlicenseStatus = objSIOTHLicenseResponse.Status;
 
                                 if (siothlicenseStatus == SIOTHLicenseStatus.Backdated
                                         || siothlicenseStatus == SIOTHLicenseStatus.Corrupted

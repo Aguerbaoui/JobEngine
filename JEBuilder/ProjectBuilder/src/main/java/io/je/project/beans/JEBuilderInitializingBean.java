@@ -9,6 +9,7 @@ import io.je.project.services.ConfigurationService;
 import io.je.project.services.ProjectService;
 import io.je.utilities.config.ConfigurationConstants;
 import io.je.utilities.constants.JEMessages;
+import io.je.utilities.exceptions.LicenseNotActiveException;
 import io.je.utilities.log.JELogger;
 import io.je.utilities.monitoring.JEMonitor;
 import io.siothconfig.SIOTHConfigUtility;
@@ -54,7 +55,7 @@ public class JEBuilderInitializingBean implements InitializingBean {
             //Initialize License
             LicenseProperties.init();
 
-        	/*while(!LicenseProperties.licenseIsActive())
+        	while(!LicenseProperties.licenseIsActive())
         	{
         		try {
         			Thread.sleep(5000);
@@ -66,7 +67,7 @@ public class JEBuilderInitializingBean implements InitializingBean {
     				// TODO Auto-generated catch block
     				e.printStackTrace();
     			}
-        	}*/
+        	}
 
             JEMonitor.setPort(builderProperties.getMonitoringPort());
             ZMQSecurity.setSecure(builderProperties.getUseZmqSecurity());
@@ -75,6 +76,7 @@ public class JEBuilderInitializingBean implements InitializingBean {
             ZMQConfiguration.setReceiveHighWatermark(builderProperties.getZmqReceiveHighWatermark());
             ZMQConfiguration.setSendHighWatermark(builderProperties.getZmqSendHighWatermark());
             ProcessRunner.setProcessDumpPath(builderProperties.getProcessesDumpPath(), builderProperties.isDumpJavaProcessExecution());
+
 			//Initialize JE configurations
             configService.init();
             JELogger.control(JEMessages.LOGGER_INITIALIZED,
