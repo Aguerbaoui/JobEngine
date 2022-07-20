@@ -49,6 +49,7 @@ public class RuntimeDispatcher {
     static Map<String, Boolean> projectStatus = new HashMap<>(); // key: projectId , value : true if project is running,
     // false if not
     static Map<String, String> projectNameToId = new HashMap<>();
+
     ///////////////////////////////// PROJECT
     // build project
 	/*public void buildProject(String projectId) throws RuleBuildFailedException, WorkflowBuildException {
@@ -81,7 +82,6 @@ public class RuntimeDispatcher {
 
             // add variables
             for (JEVariable variable : VariableManager.getAllVariables(projectId)) {
-                // FIXME was called twice, check if ok
                 RuleEngineHandler.addVariable(variable);
             }
 

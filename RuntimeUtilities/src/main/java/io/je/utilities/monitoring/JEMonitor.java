@@ -9,41 +9,39 @@ import utils.zmq.ZMQPublisher;
 
 import java.util.Arrays;
 
-public class JEMonitor  {
-
-	
-	static int port;
-	static ZMQPublisher publisher ;
-	static ObjectMapper objectMapper = new ObjectMapper();
-
-	public static void publish(MonitoringMessage msg) {
-		try {
-			if(publisher==null)
-			{
-				publisher	= new ZMQPublisher("tcp://"+SIOTHConfigUtility.getSiothConfig().getNodes().getSiothMasterNode() , port);
-			}
-			
-			String jsonMsg = objectMapper.writeValueAsString(msg);
-			publisher.publish(jsonMsg, "JEMonitorTopic");
-			//System.out.println(jsonMsg);
-
-		} catch (Exception e) {
-			// TODO : replace with custom exception
-			JELogger.error("Failed to publish monitoring value. " + Arrays.toString(e.getStackTrace()),
-					LogCategory.RUNTIME, null,
-					LogSubModule.JERUNNER, null);
-		}
-		
-	}
-
-	public static int getPort() {
-		return port;
-	}
-
-	public static void setPort(int port) {
-		JEMonitor.port = port;
-	}
+public class JEMonitor {
 
 
-	
+    static int port;
+    static ZMQPublisher publisher;
+    static ObjectMapper objectMapper = new ObjectMapper();
+
+    public static void publish(MonitoringMessage msg) {
+        try {
+            if (publisher == null) {
+                publisher = new ZMQPublisher("tcp://" + SIOTHConfigUtility.getSiothConfig().getNodes().getSiothMasterNode(), port);
+            }
+
+            String jsonMsg = objectMapper.writeValueAsString(msg);
+            publisher.publish(jsonMsg, "JEMonitorTopic");
+            //System.out.println(jsonMsg);
+
+        } catch (Exception e) {
+            // TODO : replace with custom exception
+            JELogger.error("Failed to publish monitoring value. " + Arrays.toString(e.getStackTrace()),
+                    LogCategory.RUNTIME, null,
+                    LogSubModule.JERUNNER, null);
+        }
+
+    }
+
+    public static int getPort() {
+        return port;
+    }
+
+    public static void setPort(int port) {
+        JEMonitor.port = port;
+    }
+
+
 }

@@ -43,14 +43,17 @@ public class JEBuilderInitializingBean implements InitializingBean {
             //Initialize SIOTHConfig.json
             ConfigurationConstants.initConstants(builderProperties.getSiothId(), builderProperties.isDev());
             SIOTHConfigUtility.setSiothId(builderProperties.getSiothId());
+
             //Initialize logger
             JELogger.initLogger("JEBuilder", builderProperties.getJeBuilderLogPath(),builderProperties.getJeBuilderLogLevel(), builderProperties.isDev());
             ConfigurationConstants.setJavaGenerationPath(SIOTHConfigUtility.getSiothConfig().getJobEngine().getGeneratedClassesPath());
+
             //Initialize authentication interceptor
             AuthenticationInterceptor.init(builderProperties.getIssuer());
+
             //Initialize License
             LicenseProperties.init();
-           // JEMonitor.setPort(builderProperties.getMonitoringPort());
+
         	/*while(!LicenseProperties.licenseIsActive())
         	{
         		try {
@@ -64,6 +67,7 @@ public class JEBuilderInitializingBean implements InitializingBean {
     				e.printStackTrace();
     			}
         	}*/
+
             JEMonitor.setPort(builderProperties.getMonitoringPort());
             ZMQSecurity.setSecure(builderProperties.getUseZmqSecurity());
             ZMQConfiguration.setHeartbeatTimeout(builderProperties.getZmqHeartbeatValue());
@@ -86,4 +90,5 @@ public class JEBuilderInitializingBean implements InitializingBean {
         }
 
     }
+
 }
