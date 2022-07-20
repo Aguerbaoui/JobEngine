@@ -10,6 +10,8 @@ public  class SIOTHLicenseResponse
     public SIOTHLicenseStatus Status; 
     public String Error;
 
+    public int RemainingDays;
+
 
     public SIOTHLicenseResponse()
     {

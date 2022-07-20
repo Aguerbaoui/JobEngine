@@ -237,6 +237,23 @@ public class SetterBlock extends ExecutionBlock {
                             + "\"" + this.blockName + "\","
                             + this.ignoreWriteIfSameValue
                             + ");\r\n";
+                case BLOCKS:
+                    expression = new StringBuilder();
+                    String getMethod = linkedBlock instanceof InstanceGetterBlock ? (".get" + StringUtils.capitalize(sourceGetterAttributeName)) + "()" : "";
+                    String linkedBlockValue = linkedBlock.getReference("")
+                            .replaceAll("\\s+", "") + getMethod;
+
+                    expression.append("Executioner.updateVariableValue( "
+                            + "\"" + this.jobEngineProjectID + "\","
+                            + "\"" + this.ruleId + "\","
+                            + "\"" + this.destinationVariableId + "\","
+                            + linkedBlockValue + ","
+                            + "\"" + this.blockName + "\","
+                            + this.ignoreWriteIfSameValue
+                            + ");\r\n");
+                    expression.append("\n");
+
+                    return expression.toString();
                 case ATTRIBUTE:
                     return "Executioner.updateVariableValueFromDataModel( "
                             + "\"" + this.jobEngineProjectID + "\","
