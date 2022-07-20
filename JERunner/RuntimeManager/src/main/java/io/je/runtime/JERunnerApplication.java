@@ -23,7 +23,7 @@ public class JERunnerApplication {
         SpringApplication app = new SpringApplication(JERunnerApplication.class);
         app.setBannerMode(Banner.Mode.OFF);
         HashMap<String, Object> properties = new HashMap<>();
-        properties.put("server.port", "13021");
+        properties.put("server.port", "59288");
         properties.put("server.servlet.context-path", "/RuntimeManager");
         app.setDefaultProperties(properties);
         app.run(args);

@@ -16,7 +16,7 @@ public class ProjectBuilderApplication {
         app.setBannerMode(Banner.Mode.OFF);
         HashMap<String, Object> properties = new HashMap<>();
         //DEV port configurations
-        properties.put("server.port", "59088");
+        properties.put("server.port", "59188");
         properties.put("server.servlet.context-path", "/ProjectBuilder");
         app.setDefaultProperties(properties);
         app.run(args);
