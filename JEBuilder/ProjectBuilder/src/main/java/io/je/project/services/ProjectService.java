@@ -215,10 +215,12 @@ public class ProjectService {
                             LogCategory.DESIGN_MODE, projectId, LogSubModule.JEBUILDER, null);
                     try {
                         ruleService.buildRules(projectId);
+
                         JERunnerAPIHandler.runProject(projectId, project.getProjectName());
+
                         ruleService.updateRulesStatus(projectId, true);
-                        project.getRuleEngine()
-                                .setRunning(true);
+
+                        project.getRuleEngine().setRunning(true);
 
                     } catch (Exception exp) {
                         throw new ProjectRunException(JEMessages.ERROR_RUNNING_PROJECT + Arrays.toString(exp.getStackTrace()));
