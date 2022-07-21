@@ -1,5 +1,6 @@
 package io.je.ruleengine.utils;
 
+import io.je.utilities.exceptions.CastToDoubleException;
 import io.je.utilities.log.JELogger;
 import utils.log.LogSubModule;
 
@@ -9,7 +10,7 @@ import utils.log.LogSubModule;
 public class JEMathUtils {
 
 
-    public static double castToDouble(Object x) {
+    public static double castToDouble(Object x) throws CastToDoubleException {
         try {
             if (x instanceof Float) {
                 return ((Float) x).doubleValue();
@@ -25,10 +26,9 @@ public class JEMathUtils {
 
             return (double) x;
         } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
+            throw new CastToDoubleException(e.getMessage());
         }
     }
-
 
     public static boolean divisionByZero(String projectId, String ruleId, String blockId, double a) {
         if (a == 0) {
@@ -45,7 +45,6 @@ public class JEMathUtils {
         }
         return true;
     }
-
 
     public static boolean strictlyPositive(String projectId, String ruleId, String blockId, double a) {
         if (a <= 0) {
@@ -65,6 +64,10 @@ public class JEMathUtils {
 
     public static void main(String[] args) {
         System.out.println("a");
+    }
+
+    public String asDouble(String val) {
+        return "JEMathUtils.castToDouble(" + val + " )"; //" Double.valueOf( "+val+" )";
     }
 }
 
