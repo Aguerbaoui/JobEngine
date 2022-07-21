@@ -27,7 +27,7 @@ public class DataZMQSubscriber extends ZMQSubscriber {
 
             final String ID_MSG = "DataZMQSubscriber : ";
 
-            JELogger.debug(ID_MSG + "topics : " + this.topics + " : " + JEMessages.DATA_LISTENTING_STARTED,
+            JELogger.debug(ID_MSG + JEMessages.DATA_LISTENTING_STARTED,
                     LogCategory.RUNTIME, null, LogSubModule.JERUNNER, null);
 
             String last_topic = null;
