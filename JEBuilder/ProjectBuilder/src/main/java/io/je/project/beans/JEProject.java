@@ -546,7 +546,6 @@ public class JEProject {
         this.blockNameCounters = blockNameCounters;
     }
 
-    // FIXME
     public JEWorkflow getStartupWorkflow() {
         for (JEWorkflow wf : workflows.values()) {
             if (wf.isOnProjectBoot()) return wf;

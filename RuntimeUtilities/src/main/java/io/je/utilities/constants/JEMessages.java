@@ -289,11 +289,11 @@ public class JEMessages {
 
     public static final String WORKFLOW_BLOCK_NOT_FOUND = "Workflow block not found";
 
-    public static final String WORKFLOW_START_BLOCK_NOT_DEFINED = "Workflow start block not defined";
-    public static final String WORKFLOW_START_BLOCK_NOT_UNIQUE = "Workflow start block not unique";
-    public static final String WORKFLOW_END_BLOCK_NOT_DEFINED = "Workflow end block not defined";
+    public static final String WORKFLOW_START_BLOCK_NOT_DEFINED = "Workflow Start block not defined";
+    public static final String WORKFLOW_START_BLOCK_NOT_UNIQUE = "Workflow Start block not unique";
+    public static final String WORKFLOW_END_BLOCK_NOT_DEFINED = "Workflow End block not defined";
 
-    public static final String WORKFLOW_END_BLOCK_NOT_UNIQUE = "Workflow end block not unique";
+    public static final String WORKFLOW_END_BLOCK_NOT_UNIQUE = "Workflow End block not unique";
 
     public static final String PROJECT_NOT_FOUND = "No project with this Id was found.";
 

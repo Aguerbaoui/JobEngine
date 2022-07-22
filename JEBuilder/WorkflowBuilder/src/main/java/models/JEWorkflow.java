@@ -190,7 +190,6 @@ public class JEWorkflow extends JEObject {
     /*
     * True if the workflow starts on project boot
     * */
-    // FIXME just one seems to be processed
     public boolean isOnProjectBoot() {
         return onProjectBoot;
     }
@@ -227,7 +226,7 @@ public class JEWorkflow extends JEObject {
      * Add a block flow to a block
      */
     public void addBlockFlow(String from, String to, String condition) {
-        //TODO Bug with condition ( in case of multiple inflows with multiple conditions currently we are assuming it's 1 condition
+        //TODO Bug with condition ( in case of multiple inflows with multiple conditions currently we are assuming it's 1 condition)
         allBlocks.get(from).getOutFlows().put(to, to);
         allBlocks.get(from).setCondition(condition);
         if (allBlocks.get(to) != null && allBlocks.get(to).getInflows() != null) {

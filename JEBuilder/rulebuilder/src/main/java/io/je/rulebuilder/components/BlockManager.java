@@ -28,7 +28,6 @@ public class BlockManager {
                 LogSubModule.RULE, block.getJobEngineElementID());
         blocks.put(block.getJobEngineElementID(), block);
 
-
     }
 
     /*
@@ -40,13 +39,11 @@ public class BlockManager {
                 LogSubModule.RULE, block.getJobEngineElementID());
         blocks.put(block.getJobEngineElementID(), block);
 
-
     }
 
     public void deleteBlock(String blockId) {
 
         blocks.remove(blockId);
-
 
     }
 
@@ -86,7 +83,6 @@ public class BlockManager {
         for (var outputId : block.getOutputBlockIds()) {
             block.addOutputLink(blocks.get(outputId.getBlockId()), outputId.getConnectionName(), outputId.getOrder());
         }
-
 
     }
 

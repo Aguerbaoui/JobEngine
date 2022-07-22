@@ -962,7 +962,6 @@ public class WorkflowService {
         if (project.workflowHasError(workflow) || !WorkflowBuilder.buildWorkflow(workflow)) {
             String msg = "[project=" + project.getProjectName() + " ] [workflow = " + workflow.getJobEngineElementName() + "] "
                     + JEMessages.WORKFLOW_BUILD_ERROR;
-            //if (workflow.ge)
 
             result.setOperationError(msg);
             result.setOperationSucceeded(false);

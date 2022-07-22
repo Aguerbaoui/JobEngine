@@ -117,6 +117,7 @@ public class ProjectContainer {
         logError(exp, message, null);
     }
 
+    // FIXME factorize or remove if no more needed (debug / dev usage / customer support)
     void logError(Exception exp, String message, String objectId) {
         exp.printStackTrace();
         JELogger.debugWithoutPublish(Arrays.toString(exp.getStackTrace()),LogCategory.RUNTIME,projectId, LogSubModule.RULE,objectId);
