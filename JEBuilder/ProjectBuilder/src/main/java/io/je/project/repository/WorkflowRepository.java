@@ -15,6 +15,4 @@ public interface WorkflowRepository extends MongoRepository<JEWorkflow,String>{
 	void deleteByJobEngineProjectID (String projectId);
 	List<JEWorkflow> findByJobEngineElementName(String jobEngineElementName);
 
-	
-
 }

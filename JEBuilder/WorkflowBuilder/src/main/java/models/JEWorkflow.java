@@ -7,8 +7,7 @@ import blocks.basic.StartBlock;
 import blocks.events.ErrorBoundaryEvent;
 import io.je.utilities.beans.Status;
 import io.je.utilities.constants.JEMessages;
-import io.je.utilities.exceptions.InvalidSequenceFlowException;
-import io.je.utilities.exceptions.WorkflowBlockNotFound;
+import io.je.utilities.exceptions.*;
 import io.je.utilities.log.JELogger;
 import io.je.utilities.runtimeobject.JEObject;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -38,7 +37,6 @@ public class JEWorkflow extends JEObject {
     /*
      * Workflow start block
      */
-    private StartBlock workflowStartBlock;
 
     /*
      * Bpmn path
@@ -144,22 +142,21 @@ public class JEWorkflow extends JEObject {
     /*
      * Return workflow start block
      */
-    public StartBlock getWorkflowStartBlock() {
-        if (workflowStartBlock == null) {
-            for (WorkflowBlock block : allBlocks.values()) {
-                if (block instanceof StartBlock) {
-                    workflowStartBlock = (StartBlock) block;
+    public StartBlock getWorkflowStartBlock() throws WorkflowStartBlockNotDefinedException, WorkflowStartBlockNotUniqueException{
+        StartBlock startBlock = null;
+
+        for (WorkflowBlock block : allBlocks.values()) {
+            if (block instanceof StartBlock) {
+                if (startBlock != null) {
+                    throw new WorkflowStartBlockNotUniqueException();
                 }
+                startBlock = (StartBlock) block;
             }
         }
-        return workflowStartBlock;
-    }
-
-    /*
-     * set workflow start block
-     */
-    public void setWorkflowStartBlock(StartBlock workflowStartBlock) {
-        this.workflowStartBlock = workflowStartBlock;
+        if (startBlock == null) {
+            throw new WorkflowStartBlockNotDefinedException();
+        }
+        return startBlock;
     }
 
     /*
@@ -193,6 +190,7 @@ public class JEWorkflow extends JEObject {
     /*
     * True if the workflow starts on project boot
     * */
+    // FIXME just one seems to be processed
     public boolean isOnProjectBoot() {
         return onProjectBoot;
     }
@@ -209,8 +207,7 @@ public class JEWorkflow extends JEObject {
      */
     public void addBlock(WorkflowBlock block) {
         if (block instanceof StartBlock) {
-            workflowStartBlock = (StartBlock) block;
-            workflowStartBlock.setProcessed(false);
+            block.setProcessed(false);
             this.setTriggeredByEvent(((StartBlock) block).getEventId() != null || ((StartBlock) block).getTimerEvent() != null);
         }
         allBlocks.put(block.getJobEngineElementID(), block);
@@ -230,7 +227,7 @@ public class JEWorkflow extends JEObject {
      * Add a block flow to a block
      */
     public void addBlockFlow(String from, String to, String condition) {
-        //TODO Bug with condition ( in case of multiple inflows with multiple conditions currently we assuming it's 1 condition
+        //TODO Bug with condition ( in case of multiple inflows with multiple conditions currently we are assuming it's 1 condition
         allBlocks.get(from).getOutFlows().put(to, to);
         allBlocks.get(from).setCondition(condition);
         if (allBlocks.get(to) != null && allBlocks.get(to).getInflows() != null) {
@@ -238,9 +235,6 @@ public class JEWorkflow extends JEObject {
         }
         if(allBlocks.get(to) instanceof ErrorBoundaryEvent) {
             ((ErrorBoundaryEvent) allBlocks.get(to)).setAttachedToRef(from);
-        }
-        if(workflowStartBlock != null) {
-            workflowStartBlock = (StartBlock) allBlocks.get(workflowStartBlock.getJobEngineElementID());
         }
         status = Status.NOT_BUILT;
     }
@@ -260,7 +254,7 @@ public class JEWorkflow extends JEObject {
     /*
      * Delete a workflow block
      * */
-    public void deleteWorkflowBlock(String id) throws InvalidSequenceFlowException, WorkflowBlockNotFound {
+    public void deleteWorkflowBlock(String id) throws InvalidSequenceFlowException, WorkflowBlockNotFoundException {
         if(allBlocks.containsKey(id)) {
             for (String blockId : allBlocks.get(id).getInflows().values()) {
                 WorkflowBlock block = this.getBlockById(blockId);
@@ -271,18 +265,18 @@ public class JEWorkflow extends JEObject {
                 deleteSequenceFlow(id, block.getJobEngineElementID());
             }
 
-            WorkflowBlock b = allBlocks.get(id);
-            if (b == null) {
-                throw new WorkflowBlockNotFound(JEMessages.WORKFLOW_BLOCK_NOT_FOUND);
+            WorkflowBlock workflowBlock = allBlocks.get(id);
+            if (workflowBlock == null) {
+                throw new WorkflowBlockNotFoundException(JEMessages.WORKFLOW_BLOCK_NOT_FOUND);
             }
-            if (b instanceof ScriptBlock) {
-                cleanUpScriptTaskBlock((ScriptBlock) b);
+            if (workflowBlock instanceof ScriptBlock) {
+                cleanUpScriptTaskBlock((ScriptBlock) workflowBlock);
             }
             allBlocks.remove(id);
-            if (allBlocks.size() == 0) workflowStartBlock = null;
             status = Status.NOT_BUILT;
         }
     }
+
     public void cleanUpScriptTaskBlock(ScriptBlock b) {
         try {
             FileUtilities.deleteFileFromPath(b.getScriptPath());
@@ -304,20 +298,23 @@ public class JEWorkflow extends JEObject {
         for (WorkflowBlock block : allBlocks.values()) {
             block.setProcessed(false);
         }
-        workflowStartBlock.setProcessed(false);
         status = Status.NOT_BUILT;
     }
-    
 
-
-
-    public EndBlock getWorkflowEndBlock() {
-        for (WorkflowBlock b: allBlocks.values()) {
-            if(b instanceof EndBlock) {
-                return (EndBlock) b;
+    public EndBlock getWorkflowEndBlock() throws WorkflowEndBlockNotUniqueException, WorkflowEndBlockNotDefinedException {
+        EndBlock endBlock = null;
+        for (WorkflowBlock workflowBlock: allBlocks.values()) {
+            if(workflowBlock instanceof EndBlock) {
+                if (endBlock != null) {
+                    throw new WorkflowEndBlockNotUniqueException();
+                }
+                endBlock = (EndBlock) workflowBlock;
             }
         }
-        return null;
+        if (endBlock == null) {
+            throw new WorkflowEndBlockNotDefinedException();
+        }
+        return endBlock;
     }
 
     public void setScript(boolean script) {
@@ -345,7 +342,6 @@ public class JEWorkflow extends JEObject {
         return "JEWorkflow{" +
                 "id='" + jobEngineElementID + '\'' +
                 "workflowName='" + jobEngineElementName + '\'' +
-                ", workflowStartBlock=" + workflowStartBlock +
                 ", bpmnPath='" + bpmnPath + '\'' +
                 ", status='" + status + '\'' +
                 ", allBlocks=" + allBlocks +
@@ -356,4 +352,5 @@ public class JEWorkflow extends JEObject {
                 ", description='" + description + '\'' +
                 '}';
     }
+
 }

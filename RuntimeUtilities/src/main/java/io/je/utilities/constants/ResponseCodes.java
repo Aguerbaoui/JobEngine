@@ -61,9 +61,10 @@ public class ResponseCodes {
 	public static final int METHOD_EXCEPTION = 1047;
 	public static final int FILE_TOO_LARGE_EXCEPTION = 1048;
 	public static final int ZMQError = 1049;
-
-
-
+	public static final int WORKFLOW_START_BLOCK_NOT_DEFINED = 1050;
+	public static final int WORKFLOW_START_BLOCK_NOT_UNIQUE = 1051;
+	public static final int WORKFLOW_END_BLOCK_NOT_DEFINED = 1052;
+	public static final int WORKFLOW_END_BLOCK_NOT_UNIQUE = 1053;
 
 
 }

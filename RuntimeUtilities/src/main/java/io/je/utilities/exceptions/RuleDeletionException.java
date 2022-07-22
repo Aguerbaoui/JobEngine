@@ -4,9 +4,9 @@ import io.je.utilities.constants.ResponseCodes;
 
 public class RuleDeletionException extends JEException {
 
-	public RuleDeletionException( String message) {
-		super(ResponseCodes.RULE_DELETION_ERROR,message);
+    public RuleDeletionException(String message) {
+        super(ResponseCodes.RULE_DELETION_ERROR, message);
 
-	}
+    }
 
 }

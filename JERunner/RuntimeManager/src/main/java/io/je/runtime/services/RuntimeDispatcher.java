@@ -304,7 +304,7 @@ public class RuntimeDispatcher {
                             RuleEngineHandler.injectData(projectId, instanceData);
                         }
                     }
-                } catch (InstanceCreationFailed e) {
+                } catch (InstanceCreationFailedException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
                 }

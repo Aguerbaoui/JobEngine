@@ -748,7 +748,7 @@ public class ClassService {
                             } catch (JsonProcessingException e) {
 
                                 e.printStackTrace();
-                                throw new InstanceCreationFailed("Failed to parse model update : " + e.getMessage());
+                                throw new InstanceCreationFailedException("Failed to parse model update : " + e.getMessage());
 
                             }
 

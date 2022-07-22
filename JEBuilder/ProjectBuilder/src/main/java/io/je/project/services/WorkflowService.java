@@ -82,11 +82,11 @@ public class WorkflowService {
      * Add a workflow to a project
      */
     // @Async
-    public void addWorkflow(WorkflowModel m)
+    public void addWorkflow(WorkflowModel workflowModel)
             throws LicenseNotActiveException, ProjectNotFoundException, ProjectLoadException {
         //LicenseProperties.checkLicenseIsActive();
-        JEProject project = projectService.getProjectById(m.getProjectId());
-        JEWorkflow wf = mapWorkflowModelToJEWorkflow(m);
+        JEProject project = projectService.getProjectById(workflowModel.getProjectId());
+        JEWorkflow wf = mapWorkflowModelToJEWorkflow(workflowModel);
         wf.setJeObjectLastUpdate(Instant.now());
         wf.setJeObjectCreationDate(Instant.now());
         wf.setStatus(Status.NOT_BUILT);
@@ -94,7 +94,7 @@ public class WorkflowService {
         setProjectBootWorkflow(wf, project.getStartupWorkflow());
         JELogger.debug("[project=" + project.getProjectName() + " ][workflow = " +
                         wf.getJobEngineElementName() + "]" + JEMessages.ADDING_WF,
-                LogCategory.DESIGN_MODE, m.getProjectId(), LogSubModule.WORKFLOW, m.getId());
+                LogCategory.DESIGN_MODE, workflowModel.getProjectId(), LogSubModule.WORKFLOW, workflowModel.getId());
         project.addWorkflow(wf);
         workflowRepository.save(wf);
     }
@@ -136,7 +136,7 @@ public class WorkflowService {
         try {
             JERunnerAPIHandler.deleteWorkflow(projectId, wfName);
         } catch (JERunnerErrorException e) {
-            throw new WorkflowException(JEMessages.DELETE_WORKFLOW_FAILED);
+            throw new WorkflowException(JEMessages.DELETE_WORKFLOW_FAILED + e.getMessage());
         }
 
         // delete workflow block names
@@ -164,8 +164,8 @@ public class WorkflowService {
         try {
             FileUtilities.deleteFileFromPath(wf.getBpmnPath());
         } catch (Exception e) {
-            JELogger.error(JEMessages.FAILED_TO_DELETE_FILES, LogCategory.DESIGN_MODE, projectId, LogSubModule.WORKFLOW,
-                    wf.getJobEngineElementID());
+            JELogger.error(JEMessages.FAILED_TO_DELETE_FILES + e.getMessage(), LogCategory.DESIGN_MODE,
+                    projectId, LogSubModule.WORKFLOW, wf.getJobEngineElementID());
         }
         JELogger.info(JEMessages.WORKFLOW_DELETED_SUCCESSFULLY, LogCategory.DESIGN_MODE, projectId, LogSubModule.WORKFLOW,
                 wf.getJobEngineElementID());
@@ -179,7 +179,7 @@ public class WorkflowService {
      */
     public String addWorkflowBlock(WorkflowBlockModel block)
             throws WorkflowNotFoundException,
-            WorkflowBlockNotFound, EventException, LicenseNotActiveException, WorkflowBlockException, ProjectNotFoundException, ProjectLoadException {
+            WorkflowBlockNotFoundException, EventException, LicenseNotActiveException, WorkflowBlockException, ProjectNotFoundException, ProjectLoadException {
 
         //check if license is valid
         LicenseProperties.checkLicenseIsActive();
@@ -308,7 +308,7 @@ public class WorkflowService {
                 break;
             }
             default: {
-                throw new WorkflowBlockNotFound(JEMessages.WORKFLOW_BLOCK_NOT_FOUND);
+                throw new WorkflowBlockNotFoundException(JEMessages.WORKFLOW_BLOCK_NOT_FOUND);
             }
 
 
@@ -857,7 +857,7 @@ public class WorkflowService {
      * Delete a workflow block
      */
     public void deleteWorkflowBlock(String projectId, String workflowId, String blockId)
-            throws WorkflowNotFoundException, WorkflowBlockNotFound,
+            throws WorkflowNotFoundException, WorkflowBlockNotFoundException,
             InvalidSequenceFlowException, LicenseNotActiveException, ProjectNotFoundException, ProjectLoadException {
 
         LicenseProperties.checkLicenseIsActive();
@@ -908,7 +908,7 @@ public class WorkflowService {
      */
     @Async
     public void addSequenceFlow(String projectId, String workflowId, String sourceRef, String targetRef,
-                                String condition) throws WorkflowNotFoundException, WorkflowBlockNotFound, LicenseNotActiveException, ProjectNotFoundException, ProjectLoadException {
+                                String condition) throws WorkflowNotFoundException, WorkflowBlockNotFoundException, LicenseNotActiveException, ProjectNotFoundException, ProjectLoadException {
         LicenseProperties.checkLicenseIsActive();
 
         JEProject project = projectService.getProjectById(projectId);
@@ -931,7 +931,9 @@ public class WorkflowService {
      */
     @Async
     public CompletableFuture<OperationStatusDetails> buildWorkflow(String projectId, String workflowId)
-            throws LicenseNotActiveException, ProjectNotFoundException, ProjectLoadException, WorkflowBuildException {
+            throws LicenseNotActiveException, ProjectNotFoundException, ProjectLoadException, WorkflowBuildException,
+            WorkflowStartBlockNotDefinedException, WorkflowStartBlockNotUniqueException,
+            WorkflowEndBlockNotDefinedException, WorkflowEndBlockNotUniqueException {
         //LicenseProperties.checkLicenseIsActive();
 
         JEProject project = projectService.getProjectById(projectId);
@@ -960,6 +962,7 @@ public class WorkflowService {
         if (project.workflowHasError(workflow) || !WorkflowBuilder.buildWorkflow(workflow)) {
             String msg = "[project=" + project.getProjectName() + " ] [workflow = " + workflow.getJobEngineElementName() + "] "
                     + JEMessages.WORKFLOW_BUILD_ERROR;
+            //if (workflow.ge)
 
             result.setOperationError(msg);
             result.setOperationSucceeded(false);
@@ -1076,7 +1079,7 @@ public class WorkflowService {
      * Update workflow block
      */
     public void updateWorkflowBlock(WorkflowBlockModel block)
-            throws WorkflowBlockNotFound, WorkflowNotFoundException, EventException,
+            throws WorkflowBlockNotFoundException, WorkflowNotFoundException, EventException,
             WorkflowBlockException, ClassLoadException, AddClassException, LicenseNotActiveException, IOException, InterruptedException, ProjectNotFoundException, ProjectLoadException {
         LicenseProperties.checkLicenseIsActive();
 
@@ -1087,7 +1090,7 @@ public class WorkflowService {
 
         if (!project.getWorkflowByIdOrName(block.getWorkflowId())
                 .blockExists(block.getId())) {
-            throw new WorkflowBlockNotFound(JEMessages.WORKFLOW_BLOCK_NOT_FOUND);
+            throw new WorkflowBlockNotFoundException(JEMessages.WORKFLOW_BLOCK_NOT_FOUND);
         }
         JEWorkflow wf = project.getWorkflowByIdOrName(block.getWorkflowId());
         String oldWorkflowBlockName = wf.getBlockById(block.getId())
@@ -1194,7 +1197,7 @@ public class WorkflowService {
                 break;
             }
             default: {
-                throw new WorkflowBlockNotFound(JEMessages.WORKFLOW_BLOCK_NOT_FOUND);
+                throw new WorkflowBlockNotFoundException(JEMessages.WORKFLOW_BLOCK_NOT_FOUND);
             }
 
 
@@ -1234,7 +1237,7 @@ public class WorkflowService {
     /*
      * Update workflow
      */
-    public void updateWorkflow(String projectId, String workflowId, WorkflowModel m)
+    public void updateWorkflow(String projectId, String workflowId, WorkflowModel workflowModel)
             throws WorkflowNotFoundException, LicenseNotActiveException, ProjectNotFoundException, ProjectLoadException {
         LicenseProperties.checkLicenseIsActive();
         JEProject project = projectService.getProjectById(projectId);
@@ -1244,11 +1247,11 @@ public class WorkflowService {
         }
 
         JEWorkflow wf = project.getWorkflowByIdOrName(workflowId);
-        JELogger.debug("[project=" + m.getProjectName() + " ][workflow = " + m.getName() + "]" + JEMessages.UPDATING_WF,
+        JELogger.debug("[project=" + workflowModel.getProjectName() + " ][workflow = " + workflowModel.getName() + "]" + JEMessages.UPDATING_WF,
                 LogCategory.DESIGN_MODE, projectId,
                 LogSubModule.WORKFLOW, workflowId);
-        if (m.getName() != null) {
-            wf.setJobEngineElementName(m.getName());
+        if (workflowModel.getName() != null) {
+            wf.setJobEngineElementName(workflowModel.getName());
             try {
                 FileUtilities.deleteFileFromPath(wf.getBpmnPath());
             } catch (Exception e) {
@@ -1257,7 +1260,7 @@ public class WorkflowService {
             }
         }
 
-        if (m.isOnProjectBoot()) {
+        if (workflowModel.isOnProjectBoot()) {
             JEWorkflow startupWorkflow = project.getStartupWorkflow();
             if (startupWorkflow != null) {
                 startupWorkflow.setOnProjectBoot(false);
@@ -1265,14 +1268,14 @@ public class WorkflowService {
             }
         }
 
-        if (m.isEnabled() != wf.isEnabled()) {
-            wf.setEnabled(m.isEnabled());
+        if (workflowModel.isEnabled() != wf.isEnabled()) {
+            wf.setEnabled(workflowModel.isEnabled());
         }
         wf.setJeObjectLastUpdate(Instant.now());
-        wf.setDescription(m.getDescription());
-        wf.setJeObjectCreatedBy(m.getCreatedBy());
-        wf.setJeObjectModifiedBy(m.getModifiedBy());
-        wf.setOnProjectBoot(m.isOnProjectBoot());
+        wf.setDescription(workflowModel.getDescription());
+        wf.setJeObjectCreatedBy(workflowModel.getCreatedBy());
+        wf.setJeObjectModifiedBy(workflowModel.getModifiedBy());
+        wf.setOnProjectBoot(workflowModel.isOnProjectBoot());
         workflowRepository.save(wf);
 
     }

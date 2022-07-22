@@ -148,84 +148,89 @@ public class WorkflowBuilder {
      * Build pbpmn and Deploy it in engine
      */
     public static boolean buildWorkflow(JEWorkflow workflow) {
-        if (workflow.getWorkflowEndBlock() == null ||
-                workflow.getWorkflowStartBlock() == null ||
-                workflow.getAllBlocks() == null ||
-                workflow.getAllBlocks()
-                        .size() == 0 ||
-                workflow.isHasErrors())
-            return false;
-        if (!workflow.isScript()) {
-            JEToBpmnMapper.createBpmnFromJEWorkflow(workflow);
-        }
-        WorkflowModel wf = new WorkflowModel();
-        wf.setId(workflow.getJobEngineElementID());
-        wf.setPath(ConfigurationConstants.BPMN_PATH + workflow.getJobEngineElementName()
-                .trim() + BPMN_EXTENSION);
-        wf.setProjectId(workflow.getJobEngineProjectID());
-        wf.setTriggeredByEvent(workflow.isTriggeredByEvent());
-        wf.setTriggerMessage(workflow.getWorkflowStartBlock()
-                .getEventId());
-        wf.setOnProjectBoot(workflow.isOnProjectBoot());
-        wf.setProjectName(workflow.getJobEngineProjectName());
-        wf.setName(workflow.getJobEngineElementName()
-                .trim());
-        ArrayList<TaskModel> tasks = new ArrayList<>();
-        for (WorkflowBlock block : workflow.getAllBlocks()
-                .values()) {
-            if (block instanceof WebApiBlock) {
-                TaskModel t = getTaskModel(block.getJobEngineElementID(), block.getJobEngineElementName(), block.getDescription(), WorkflowConstants.WEBSERVICETASK_TYPE);
-                t.setAttributes(getWebApiAttributesMap((WebApiBlock) block));
-                tasks.add(t);
-            }
-            if (block instanceof ScriptBlock) {
-                TaskModel t = getTaskModel(block.getJobEngineElementID(), block.getJobEngineElementName(), block.getDescription(), WorkflowConstants.SCRIPTTASK_TYPE);
-                t.setAttributes(getScriptAttributesMap((ScriptBlock) block));
-                tasks.add(t);
-            }
-            if (block instanceof InformBlock) {
-                TaskModel t = getTaskModel(block.getJobEngineElementID(), block.getJobEngineElementName(), block.getDescription(), WorkflowConstants.INFORMSERVICETASK_TYPE);
-                t.setAttributes(getInformAttributesMap((InformBlock) block));
-                tasks.add(t);
-            }
-            if (block instanceof DBReadBlock) {
-                TaskModel t = getTaskModel(block.getJobEngineElementID(), block.getJobEngineElementName(), block.getDescription(), WorkflowConstants.DBREADSERVICETASK_TYPE);
-                t.setAttributes(getDBReadTaskAttributesMap((DBReadBlock) block));
-                tasks.add(t);
-            }
-            if (block instanceof DBWriteBlock) {
-                TaskModel t = getTaskModel(block.getJobEngineElementID(), block.getJobEngineElementName(), block.getDescription(), WorkflowConstants.DBWRITESERVICETASK_TYPE);
-                t.setAttributes(getDBWriteTaskAttributesMap((DBWriteBlock) block));
-                tasks.add(t);
-            }
-            if (block instanceof DBEditBlock) {
-                TaskModel t = getTaskModel(block.getJobEngineElementID(), block.getJobEngineElementName(), block.getDescription(), WorkflowConstants.DBEDITSERVICETASK_TYPE);
-                t.setAttributes(getDBEditTaskAttributesMap((DBEditBlock) block));
-                tasks.add(t);
-            }
-            if (block instanceof MailBlock) {
-                TaskModel t = getTaskModel(block.getJobEngineElementID(), block.getJobEngineElementName(), block.getDescription(), WorkflowConstants.MAILSERVICETASK_TYPE);
-                t.setAttributes(getEmailTaskAttributesMap((MailBlock) block));
-                tasks.add(t);
-            }
-
-        }
-        wf.setTasks(tasks);
-        workflow.setStatus(Status.BUILDING);
-        String endEventId = workflow.getWorkflowEndBlock()
-                .getEventId();
-        if (endEventId != null) {
-            wf.setEndBlockEventId(endEventId);
-        }
-        JELogger.debug(JEMessages.DEPLOYING_IN_RUNNER_WORKFLOW_WITH_ID + " = " + workflow.getJobEngineElementID(),
-                LogCategory.DESIGN_MODE, workflow.getJobEngineProjectID(),
-                LogSubModule.WORKFLOW, workflow.getJobEngineElementID());
         try {
-            JERunnerAPIHandler.addWorkflow(wf);
-        } catch (JERunnerErrorException e) {
-            JELogger.error(JEMessages.FAILED_TO_DEPLOY_IN_RUNNER_WORKFLOW_WITH_ID + " = " + workflow.getJobEngineElementID(),
+            if (workflow.getWorkflowEndBlock() == null ||
+                    workflow.getWorkflowStartBlock() == null ||
+                    workflow.getAllBlocks() == null ||
+                    workflow.getAllBlocks()
+                            .size() == 0 ||
+                    workflow.isHasErrors())
+                return false;
+            if (!workflow.isScript()) {
+                JEToBpmnMapper.createBpmnFromJEWorkflow(workflow);
+            }
+            WorkflowModel wf = new WorkflowModel();
+            wf.setId(workflow.getJobEngineElementID());
+            wf.setPath(ConfigurationConstants.BPMN_PATH + workflow.getJobEngineElementName()
+                    .trim() + BPMN_EXTENSION);
+            wf.setProjectId(workflow.getJobEngineProjectID());
+            wf.setTriggeredByEvent(workflow.isTriggeredByEvent());
+            wf.setTriggerMessage(workflow.getWorkflowStartBlock()
+                    .getEventId());
+            wf.setOnProjectBoot(workflow.isOnProjectBoot());
+            wf.setProjectName(workflow.getJobEngineProjectName());
+            wf.setName(workflow.getJobEngineElementName()
+                    .trim());
+            ArrayList<TaskModel> tasks = new ArrayList<>();
+            for (WorkflowBlock block : workflow.getAllBlocks()
+                    .values()) {
+                if (block instanceof WebApiBlock) {
+                    TaskModel t = getTaskModel(block.getJobEngineElementID(), block.getJobEngineElementName(), block.getDescription(), WorkflowConstants.WEBSERVICETASK_TYPE);
+                    t.setAttributes(getWebApiAttributesMap((WebApiBlock) block));
+                    tasks.add(t);
+                }
+                if (block instanceof ScriptBlock) {
+                    TaskModel t = getTaskModel(block.getJobEngineElementID(), block.getJobEngineElementName(), block.getDescription(), WorkflowConstants.SCRIPTTASK_TYPE);
+                    t.setAttributes(getScriptAttributesMap((ScriptBlock) block));
+                    tasks.add(t);
+                }
+                if (block instanceof InformBlock) {
+                    TaskModel t = getTaskModel(block.getJobEngineElementID(), block.getJobEngineElementName(), block.getDescription(), WorkflowConstants.INFORMSERVICETASK_TYPE);
+                    t.setAttributes(getInformAttributesMap((InformBlock) block));
+                    tasks.add(t);
+                }
+                if (block instanceof DBReadBlock) {
+                    TaskModel t = getTaskModel(block.getJobEngineElementID(), block.getJobEngineElementName(), block.getDescription(), WorkflowConstants.DBREADSERVICETASK_TYPE);
+                    t.setAttributes(getDBReadTaskAttributesMap((DBReadBlock) block));
+                    tasks.add(t);
+                }
+                if (block instanceof DBWriteBlock) {
+                    TaskModel t = getTaskModel(block.getJobEngineElementID(), block.getJobEngineElementName(), block.getDescription(), WorkflowConstants.DBWRITESERVICETASK_TYPE);
+                    t.setAttributes(getDBWriteTaskAttributesMap((DBWriteBlock) block));
+                    tasks.add(t);
+                }
+                if (block instanceof DBEditBlock) {
+                    TaskModel t = getTaskModel(block.getJobEngineElementID(), block.getJobEngineElementName(), block.getDescription(), WorkflowConstants.DBEDITSERVICETASK_TYPE);
+                    t.setAttributes(getDBEditTaskAttributesMap((DBEditBlock) block));
+                    tasks.add(t);
+                }
+                if (block instanceof MailBlock) {
+                    TaskModel t = getTaskModel(block.getJobEngineElementID(), block.getJobEngineElementName(), block.getDescription(), WorkflowConstants.MAILSERVICETASK_TYPE);
+                    t.setAttributes(getEmailTaskAttributesMap((MailBlock) block));
+                    tasks.add(t);
+                }
+
+            }
+            wf.setTasks(tasks);
+            workflow.setStatus(Status.BUILDING);
+
+            String endEventId = workflow.getWorkflowEndBlock()
+                    .getEventId();
+            if (endEventId != null) {
+                wf.setEndBlockEventId(endEventId);
+            }
+            JELogger.debug(JEMessages.DEPLOYING_IN_RUNNER_WORKFLOW_WITH_ID + " = " + workflow.getJobEngineElementID(),
                     LogCategory.DESIGN_MODE, workflow.getJobEngineProjectID(),
                     LogSubModule.WORKFLOW, workflow.getJobEngineElementID());
+
+                JERunnerAPIHandler.addWorkflow(wf);
+
+        } catch (Exception exp) {
+            JELogger.error(JEMessages.FAILED_TO_DEPLOY_IN_RUNNER_WORKFLOW_WITH_ID + " = " + workflow.getJobEngineElementID()
+                    + " : " + exp.getMessage(),
+                    LogCategory.DESIGN_MODE, workflow.getJobEngineProjectID(),
+                    LogSubModule.WORKFLOW, workflow.getJobEngineElementID());
+
             workflow.setStatus(Status.NOT_BUILT);
             return false;
         }

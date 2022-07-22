@@ -5,9 +5,9 @@ import io.je.utilities.constants.ResponseCodes;
 public class ProjectRunException extends JEException {
 
     public ProjectRunException(String message) {
-		super(ResponseCodes.PROJECT_RUN_FAILED,message);
+        super(ResponseCodes.PROJECT_RUN_FAILED, message);
 
-       
+
     }
 
 }

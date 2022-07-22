@@ -3,7 +3,7 @@ package io.je.utilities.instances;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.je.utilities.classloader.JEClassLoader;
 import io.je.utilities.constants.JEMessages;
-import io.je.utilities.exceptions.InstanceCreationFailed;
+import io.je.utilities.exceptions.InstanceCreationFailedException;
 import io.je.utilities.log.JELogger;
 import io.je.utilities.mapping.InstanceModelMapping;
 import io.je.utilities.models.InstanceModel;
@@ -41,14 +41,14 @@ public class InstanceManager {
     /*
      * create an instance from an InstanceModel
      */
-    public static JEObject createInstance(String dataReceived) throws InstanceCreationFailed {
+    public static JEObject createInstance(String dataReceived) throws InstanceCreationFailedException {
 
         InstanceModel instanceModel = getInstanceModel(dataReceived);
 
         // Retrieve Instance Class
         Class<?> instanceClass = ClassRepository.getClassById(instanceModel.getModelId());
         if (instanceClass == null) {
-            throw new InstanceCreationFailed(JEMessages.CLASS_NOT_LOADED + instanceModel.getInstanceId());
+            throw new InstanceCreationFailedException(JEMessages.CLASS_NOT_LOADED + instanceModel.getInstanceId());
         }
 
         objectMapper.setTypeFactory(
@@ -72,7 +72,7 @@ public class InstanceManager {
         } catch (Exception e) {
 
             e.printStackTrace();
-            throw new InstanceCreationFailed(JEMessages.ADD_INSTANCE_FAILED + e.getMessage());
+            throw new InstanceCreationFailedException(JEMessages.ADD_INSTANCE_FAILED + e.getMessage());
 
         }
         instancesLastValue.put(instanceModel.getInstanceId(), (JEObject) instance);

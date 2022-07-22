@@ -279,7 +279,7 @@ public class JEMessages {
     // ****************************************ResponseMessages**************************************************
 
 
-    public static final String DELETE_WORKFLOW_FAILED = "Error deleting workflow";
+    public static final String DELETE_WORKFLOW_FAILED = "Error deleting workflow : ";
 
     public static final String RUN_WORKFLOW_FAILED = "Error running workflow in JERunner: ";
 
@@ -288,6 +288,12 @@ public class JEMessages {
     public static final String WORKFLOW_NOT_FOUND = "Workflow not found";
 
     public static final String WORKFLOW_BLOCK_NOT_FOUND = "Workflow block not found";
+
+    public static final String WORKFLOW_START_BLOCK_NOT_DEFINED = "Workflow start block not defined";
+    public static final String WORKFLOW_START_BLOCK_NOT_UNIQUE = "Workflow start block not unique";
+    public static final String WORKFLOW_END_BLOCK_NOT_DEFINED = "Workflow end block not defined";
+
+    public static final String WORKFLOW_END_BLOCK_NOT_UNIQUE = "Workflow end block not unique";
 
     public static final String PROJECT_NOT_FOUND = "No project with this Id was found.";
 
@@ -715,7 +721,7 @@ public class JEMessages {
 
     public static final String CODE_COMPILATION_SUCCESSFUL = "Code was successfully compiled";
     public static final String PROCEDURE_SHOULD_CONTAIN_CODE = "Procedure should contain code";
-    public static final String FAILED_TO_DELETE_FILES = "Failed to delete files ";
+    public static final String FAILED_TO_DELETE_FILES = "Failed to delete files : ";
 
     public static final String FAILED_TO_LOAD_PROJECT = "Failed to load project from database";
     public static final String ILLEGAL_OPERATION_CLASS_UPDATE_DURING_PROJECT_RUN = "Class updates will only be effective once the project is stopped. Rules using the updated class may be corrupted";
