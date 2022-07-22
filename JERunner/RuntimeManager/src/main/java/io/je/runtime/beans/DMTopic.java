@@ -52,7 +52,7 @@ public class DMTopic {
 
     public void addListener(DMListener dMListener) {
 
-        if (!dMListeners.containsKey(dMListener.id)) {
+        if (!dMListeners.containsKey(dMListener.id)) { // FIXME if should be removed
 
             dMListeners.put(dMListener.id, dMListener);
 

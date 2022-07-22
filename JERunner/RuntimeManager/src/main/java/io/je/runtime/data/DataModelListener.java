@@ -80,14 +80,16 @@ public class DataModelListener {
 
     public static void startListening(String topic) {
 
-        // FIXME add Data Model Listener to Logs
-        JELogger.debug(JEMessages.LAUNCHING_LISTENING_TO_TOPIC + topic, LogCategory.RUNTIME,
-                null, LogSubModule.JERUNNER, null);
+        if (!getDataZMQSubscriber().hasTopic(topic)) {
 
-        getDataZMQSubscriber().addTopic(topic);
+            JELogger.debug(JEMessages.LAUNCHING_LISTENING_TO_TOPIC + topic, LogCategory.RUNTIME,
+                    null, LogSubModule.JERUNNER, null);
 
-        Thread thread = new Thread(() -> requestInitialValues(topic));
-        thread.start();
+            getDataZMQSubscriber().addTopic(topic);
+
+            Thread thread = new Thread(() -> requestInitialValues(topic));
+            thread.start();
+        }
 
     }
 
@@ -121,10 +123,14 @@ public class DataModelListener {
 
     public static void stopListening(String topic) {
 
-        JELogger.debug(JEMessages.STOPPING_LISTENING_TO_TOPIC + topic, LogCategory.RUNTIME,
-                null, LogSubModule.JERUNNER, null);
+        if (getDataZMQSubscriber().hasTopic(topic)) {
 
-        getDataZMQSubscriber().removeTopic(topic);
+            JELogger.debug(JEMessages.STOPPING_LISTENING_TO_TOPIC + topic, LogCategory.RUNTIME,
+                    null, LogSubModule.JERUNNER, null);
+
+            getDataZMQSubscriber().removeTopic(topic);
+
+        }
 
     }
 

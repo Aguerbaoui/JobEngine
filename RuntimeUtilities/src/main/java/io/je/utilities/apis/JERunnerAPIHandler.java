@@ -76,7 +76,7 @@ public class JERunnerAPIHandler {
 
     // update rule
     public static JEResponse updateRule(Object requestModel) throws JERunnerErrorException {
-        String requestUrl = runtimeManagerBaseApi + APIConstants.UPDATERULE;
+        String requestUrl = runtimeManagerBaseApi + APIConstants.UPDATE_RULE;
         return sendRequestWithBody(requestUrl, requestModel);
     }
 

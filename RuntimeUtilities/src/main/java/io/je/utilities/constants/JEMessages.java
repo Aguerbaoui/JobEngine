@@ -279,7 +279,7 @@ public class JEMessages {
     // ****************************************ResponseMessages**************************************************
 
 
-    public static final String DELETE_WORKFLOW_FAILED = "Error deleting workflow";
+    public static final String DELETE_WORKFLOW_FAILED = "Error deleting workflow : ";
 
     public static final String RUN_WORKFLOW_FAILED = "Error running workflow in JERunner: ";
 
@@ -288,6 +288,12 @@ public class JEMessages {
     public static final String WORKFLOW_NOT_FOUND = "Workflow not found";
 
     public static final String WORKFLOW_BLOCK_NOT_FOUND = "Workflow block not found";
+
+    public static final String WORKFLOW_START_BLOCK_NOT_DEFINED = "Workflow start block not defined";
+    public static final String WORKFLOW_START_BLOCK_NOT_UNIQUE = "Workflow start block not unique";
+    public static final String WORKFLOW_END_BLOCK_NOT_DEFINED = "Workflow end block not defined";
+
+    public static final String WORKFLOW_END_BLOCK_NOT_UNIQUE = "Workflow end block not unique";
 
     public static final String PROJECT_NOT_FOUND = "No project with this Id was found.";
 
@@ -396,7 +402,7 @@ public class JEMessages {
 
     public static final String RULE_ADDED_SUCCESSFULLY = "Rule added successfully.";
 
-    public static final String FAILED_TO_ADD_RULE = "Failed to add rule.";
+    public static final String FAILED_TO_ADD_RULE = "Failed to add rule : ";
 
 
     // rule deletion
@@ -507,7 +513,7 @@ public class JEMessages {
 
     public static final String RULE_CONTAINS_ERRORS = "Rule contains errors";
 
-    public static final String RULE_FILE_NOT_FOUND = "Rule file was not found";
+    public static final String RULE_FILE_NOT_FOUND = "Rule file was not found : ";
 
     public static final String INPUT_CONNECTION1 = "Comparison block cannot have ";
 
@@ -690,10 +696,10 @@ public class JEMessages {
     public static final String GENERATED_RULE = "Generated DRL: ";
 
     public static final String RULE_NOT_BUILT = "Rule is not built";
-    public static final String FAILED_TO_STOP_RULE = "Failed to stop rule: ";
-    public static final String STATUS_UPDATE_FAILED = "Failed to update status: ";
+    public static final String FAILED_TO_STOP_RULE = "Failed to stop rule : ";
+    public static final String STATUS_UPDATE_FAILED = "Failed to update status : ";
 
-    public static final String FAILED_TO_DELETE_RULE = "Failed to delete rule";
+    public static final String FAILED_TO_DELETE_RULE = "Failed to delete rule : ";
     public static final String FAILED_TO_DELETE_SUBRULE = "Failed to delete sub rule";
     public static final String FAILED_TO_STOP_THE_WORKFLOW_BECAUSE_IT_ALREADY_IS_STOPPED = "Failed to stop the workflow because it already is stopped";
     public static final String STOPPING_WORKFLOW_FORCED = "User stopped workflow execution";
@@ -715,7 +721,7 @@ public class JEMessages {
 
     public static final String CODE_COMPILATION_SUCCESSFUL = "Code was successfully compiled";
     public static final String PROCEDURE_SHOULD_CONTAIN_CODE = "Procedure should contain code";
-    public static final String FAILED_TO_DELETE_FILES = "Failed to delete files ";
+    public static final String FAILED_TO_DELETE_FILES = "Failed to delete files : ";
 
     public static final String FAILED_TO_LOAD_PROJECT = "Failed to load project from database";
     public static final String ILLEGAL_OPERATION_CLASS_UPDATE_DURING_PROJECT_RUN = "Class updates will only be effective once the project is stopped. Rules using the updated class may be corrupted";

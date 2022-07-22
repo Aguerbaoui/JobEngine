@@ -26,6 +26,7 @@ public class RuleLoader {
                     rule.getJobEngineProjectID(), LogSubModule.RULE, rule.getJobEngineElementID());
             rule.setContent(new String(Files.readAllBytes(Paths.get(rule.getPath()))));
         } catch (IOException e) {
+            e.printStackTrace();
             throw new JEFileNotFoundException(JEMessages.RULE_FILE_NOT_FOUND + rule.getPath());
         }
     }
@@ -38,6 +39,7 @@ public class RuleLoader {
             writer.close();
             return true;
         } catch (IOException e) {
+            e.printStackTrace();
             throw e;
         }
     }

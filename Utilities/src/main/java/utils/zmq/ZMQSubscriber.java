@@ -100,6 +100,10 @@ public abstract class ZMQSubscriber implements Runnable {
 		}
 	}
 
+	public boolean hasTopic(String topic) {
+		return topics.contains(topic);
+	}
+
 	/*
 
 	public boolean isListening() {

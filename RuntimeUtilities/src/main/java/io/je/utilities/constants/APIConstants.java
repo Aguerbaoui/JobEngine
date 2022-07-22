@@ -33,7 +33,7 @@ public class APIConstants {
 
 	public static final String ADD_RULE =  "/rule/addRule";
 
-	public static final String UPDATERULE = "/rule/updateRule";
+	public static final String UPDATE_RULE = "/rule/updateRule";
 
 	public static final String ADD_CLASS = "/addClass";
 

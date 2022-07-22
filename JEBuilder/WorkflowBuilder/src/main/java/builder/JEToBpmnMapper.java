@@ -14,6 +14,8 @@ import io.je.utilities.config.ConfigurationConstants;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.Timers;
 import io.je.utilities.constants.WorkflowConstants;
+import io.je.utilities.exceptions.WorkflowStartBlockNotDefinedException;
+import io.je.utilities.exceptions.WorkflowStartBlockNotUniqueException;
 import io.je.utilities.log.JELogger;
 import models.JEWorkflow;
 import org.activiti.bpmn.model.Process;
@@ -41,7 +43,8 @@ public class JEToBpmnMapper {
     /**
      * Generate and save bpmn workflow from JE workflow
      */
-    public static void createBpmnFromJEWorkflow(JEWorkflow wf) {
+    public static void createBpmnFromJEWorkflow(JEWorkflow wf) throws WorkflowStartBlockNotDefinedException,
+            WorkflowStartBlockNotUniqueException {
 
         JELogger.debug(BUILDING_BPMN_FROM_JEWORKFLOW + " " + wf.getJobEngineElementID(),
                 LogCategory.DESIGN_MODE, wf.getJobEngineProjectID(),
