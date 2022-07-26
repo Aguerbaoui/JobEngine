@@ -586,17 +586,17 @@ public class JEMessages {
 
     public static final String NETWORK_CALL_ERROR = "Error making network call for URL = ";
 
-    public static final String NETWORK_DELETE_EVENT = "Sending delete event request to JERunner,";
+    public static final String NETWORK_DELETE_EVENT = "Sending delete event request to JERunner : ";
 
-    public static final String NETWORK_CLEAN_PROJECT = "Sending clean project request ";
+    public static final String NETWORK_CLEAN_PROJECT = "Sending clean project request : ";
 
-    public static final String NETWORK_DELETE_WF = "Sending delete workflow request to JERunner,";
+    public static final String NETWORK_DELETE_WF = "Sending delete workflow request to JERunner : ";
 
-    public static final String NETWORK_ADD_VAR = "Sending add variable request to JERunner,";
+    public static final String NETWORK_ADD_VAR = "Sending add variable request to JERunner : ";
 
-    public static final String NETWORK_DELETE_VAR = "Sending delete variable request to JERunner,";
+    public static final String NETWORK_DELETE_VAR = "Sending delete variable request to JERunner : ";
 
-    public static final String NETWORK_UPDATE_EVENT = "Sending update event request to JERunner";
+    public static final String NETWORK_UPDATE_EVENT = "Sending update event request to JERunner : ";
 
 
     // ****************************************UTILS**************************************************

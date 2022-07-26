@@ -2,11 +2,13 @@ package io.je.utilities.apis;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.je.utilities.beans.*;
+import io.je.utilities.log.JELogger;
 import io.je.utilities.mapping.VariableModelMapping;
 import io.siothconfig.SIOTHConfigUtility;
 import utils.log.LogMessage;
 import utils.zmq.ZMQRequester;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,7 +26,8 @@ public class JERunnerRequester {
                     .getSiothMasterNode(),
                     requesterPort);
 
-        } catch (Exception e) {
+        } catch (Exception exp) {
+            JELogger.error(Arrays.toString(exp.getStackTrace()));
         }
     }
 
@@ -88,8 +91,8 @@ public class JERunnerRequester {
             }
 
             return objectMapper.readValue(response, JEZMQResponse.class);
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception exp) {
+            JELogger.error(Arrays.toString(exp.getStackTrace()));
             return new JEZMQResponse(ZMQResponseType.FAIL, "Failed to get response from JERunner.");
 
         }
