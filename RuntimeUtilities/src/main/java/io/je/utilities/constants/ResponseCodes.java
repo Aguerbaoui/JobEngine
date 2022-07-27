@@ -2,14 +2,14 @@ package io.je.utilities.constants;
 
 public class ResponseCodes {
 
-	
+
 	//success
 	public static final int CODE_OK = 200;
 	public static final int UNKNOWN_ERROR = 9999;
 	public static final int NETWORK_ERROR = 9998;
 	public static final int DATABASE_ERROR = 9997;
 
-	
+
 	//exceptions
 	public static final int ADD_RULE_BLOCK = 1000;
 	public static final int ADD_WORKFLOW_BLOCK = 1001;
@@ -60,7 +60,7 @@ public class ResponseCodes {
 	public static final int ERROR_IMPORTING_FILE = 1046;
 	public static final int METHOD_EXCEPTION = 1047;
 	public static final int FILE_TOO_LARGE_EXCEPTION = 1048;
-	public static final int ZMQError = 1049;
+	public static final int CAST_DOUBLE_EXCEPTION = 1049;
 	public static final int WORKFLOW_START_BLOCK_NOT_DEFINED = 1050;
 	public static final int WORKFLOW_START_BLOCK_NOT_UNIQUE = 1051;
 	public static final int WORKFLOW_END_BLOCK_NOT_DEFINED = 1052;

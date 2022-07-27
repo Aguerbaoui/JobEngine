@@ -6,31 +6,40 @@ public class MathUtilities {
 
     public static int decimalPrecision = 3;
 
-
     /*
      * ln
      */
     public static double ln(Object x) {
-        Object value;
+
+        return Math.log(castToDouble(x));
+    }
+
+    public static double castToDouble(Object x) {
         try {
-            value = Math.log((double) x);
+            if (x instanceof Float) {
+                return ((Float) x).doubleValue();
+            } else if (x instanceof Integer) {
+                return ((Integer) x).doubleValue();
+            } else if (x instanceof Long) {
+                return ((Long) x).doubleValue();
+            } else if (x instanceof Short) {
+                return ((Short) x).doubleValue();
+            } else if (x instanceof Byte) {
+                return ((Byte) x).doubleValue();
+            }
+
+            return (double) x;
         } catch (Exception e) {
-            value = Math.log((float) x);
+            throw new RuntimeException(e.getMessage());
         }
-        return (double) value;
     }
 
     /*
      * ceil
      */
     public static double ceil(Object x) {
-        Object value;
-        try {
-            value = Math.ceil((double) x);
-        } catch (Exception e) {
-            value = Math.ceil((float) x);
-        }
-        return (double) value;
+
+        return Math.ceil(castToDouble(x));
     }
 
 
@@ -38,65 +47,40 @@ public class MathUtilities {
      * truncate
      */
     public static double truncate(Object x) {
-        double value;
-        try {
-            value = Math.round((double) x);
-        } catch (Exception e) {
-            value = Math.round((float) x);
-        }
-        return value;
+
+        return Math.round(castToDouble(x));
     }
 
     /*
      * floor
      */
     public static double floor(Object x) {
-        Object value;
-        try {
-            value = Math.floor((double) x);
-        } catch (Exception e) {
-            value = Math.floor((float) x);
-        }
-        return (double) value;
+
+        return Math.floor(castToDouble(x));
     }
 
     /*
      * sin
      */
     public static double sin(Object x) {
-        Object value;
-        try {
-            value = Math.sin((double) x);
-        } catch (Exception e) {
-            value = Math.sin((float) x);
-        }
-        return (double) value;
+
+        return Math.sin(castToDouble(x));
     }
 
     /*
      * cos
      */
     public static double cos(Object x) {
-        Object value;
-        try {
-            value = Math.cos((double) x);
-        } catch (Exception e) {
-            value = Math.cos((float) x);
-        }
-        return (double) value;
+
+        return Math.cos(castToDouble(x));
     }
 
     /*
      * asin
      */
     public static double asin(Object x) {
-        Object value;
-        try {
-            value = Math.asin((double) x);
-        } catch (Exception e) {
-            value = Math.asin((float) x);
-        }
-        return (double) value;
+
+        return Math.asin(castToDouble(x));
     }
 
 
@@ -104,13 +88,8 @@ public class MathUtilities {
      * arctan
      */
     public static double atan(Object x) {
-        Object value;
-        try {
-            value = Math.atan((double) x);
-        } catch (Exception e) {
-            value = Math.atan((float) x);
-        }
-        return (double) value;
+
+        return Math.atan(castToDouble(x));
     }
 
 
@@ -118,64 +97,38 @@ public class MathUtilities {
      * tan
      */
     public static double tan(Object x) {
-        Object value;
-        try {
-            value = Math.tan((double) x);
-        } catch (Exception e) {
-            value = Math.tan((float) x);
-        }
-        return (double) value;
+
+        return Math.tan(castToDouble(x));
     }
 
     /*
      * square
      */
     public static double square(Object x) {
-        Object value;
-        try {
-            value = Math.pow((double) x, 2);
-        } catch (Exception e) {
-            value = Math.pow((float) x, 2);
-        }
-        return (double) value;
+
+        return Math.pow(castToDouble(x), 2);
     }
 
     /*
      * sqrt
      */
     public static double sqrt(Object x) {
-        Object value;
-        try {
-            value = Math.sqrt((double) x);
-        } catch (Exception e) {
-            value = Math.sqrt((float) x);
-        }
-        return (double) value;
+
+        return Math.sqrt(castToDouble(x));
     }
 
     /*
      * acos
      */
     public static double acos(Object x) {
-        Object value;
-        try {
-            value = Math.acos((double) x);
-        } catch (Exception e) {
-            value = Math.acos((float) x);
-        }
-        return (double) value;
+
+        return Math.acos(castToDouble(x));
     }/*
      * abs
      */
 
     public static double abs(Object x) {
-        Object value;
-        try {
-            value = Math.abs((double) x);
-        } catch (Exception e) {
-            value = Math.abs((float) x);
-        }
-        return (double) value;
+        return Math.abs(castToDouble(x));
     }
 
 
@@ -183,13 +136,8 @@ public class MathUtilities {
      * log10
      */
     public static double log10(Object x) {
-        Object value;
-        try {
-            value = Math.log10((double) x);
-        } catch (Exception e) {
-            value = Math.log10((float) x);
-        }
-        return (double) value;
+
+        return Math.log10(castToDouble(x));
     }
 
 
@@ -197,51 +145,33 @@ public class MathUtilities {
      * power
      */
     public static double power(Object x, int i) {
-        Object value;
-        try {
-            value = Math.pow((double) x, i);
-        } catch (Exception e) {
-            //Temp fix should revise later
-            try {
-                value = Math.pow((double) x, i);
-            } catch (Exception ex) {
-                value = Math.pow((Float) x, i);
-            }
-        }
-        return (double) value;
+
+        return Math.pow(castToDouble(x), i);
     }
 
 
-    /*
-     * power
+    /**
+     * bias
      */
     public static double bias(Object x, int i) {
-        Object value;
-        try {
-            value = (double) x + i;
-        } catch (Exception e) {
-            //Tempo fix should revise later
-            try {
-                value = (double) x + i;
-            } catch (Exception ex) {
-                value = (float) x + i;
-            }
-        }
-        return (double) value;
+
+        return castToDouble(x) + i;
     }
 
+    /**
+     * gain
+     */
+    public static double gain(Object x, int i) {
+
+        return castToDouble(x) * i;
+    }
 
     /*
      * exp
      */
     public static double exp(Object x) {
-        Object value;
-        try {
-            value = Math.exp((double) x);
-        } catch (Exception e) {
-            value = Math.exp((float) x);
-        }
-        return (double) value;
+
+        return Math.exp(castToDouble(x));
 
     }
 
@@ -249,8 +179,8 @@ public class MathUtilities {
     /*
      * factorial
      */
-    public static double factorial(double x) {
-        Double value = x;
+    public static double factorial(Object x) {
+        Double value = castToDouble(x);
         if (value.intValue() > 0 && value <= 20) {
             return CombinatoricsUtils.factorial(value.intValue());
 
