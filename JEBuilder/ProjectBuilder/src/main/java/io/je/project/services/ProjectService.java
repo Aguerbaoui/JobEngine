@@ -28,6 +28,7 @@ import utils.string.StringUtilities;
 import java.io.File;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -94,8 +95,9 @@ public class ProjectService {
         try {
             stopProject(id);
         } catch (ProjectNotFoundException | ProjectStopException | LicenseNotActiveException | ExecutionException exp) {
-            exp.printStackTrace();
-        } catch (InterruptedException e) {
+            JELogger.error(Arrays.toString(exp.getStackTrace()));
+        } catch (InterruptedException exp) {
+            JELogger.error(Arrays.toString(exp.getStackTrace()));
             Thread.currentThread()
                     .interrupt();
         }
@@ -105,32 +107,38 @@ public class ProjectService {
         try {
             JERunnerAPIHandler.cleanProjectDataFromRunner(id);
         } catch (JERunnerErrorException exp) {
-            exp.printStackTrace();
+            JELogger.error(Arrays.toString(exp.getStackTrace()));
+            JELogger.error("Error cleaning project data from runner", LogCategory.DESIGN_MODE, id, LogSubModule.JEBUILDER, id);
         }
 
         try {
             ruleService.deleteAll(id);
-        } catch (Exception e) {
+        } catch (Exception exp) {
+            JELogger.error(Arrays.toString(exp.getStackTrace()));
             JELogger.error("Error deleting rules", LogCategory.DESIGN_MODE, id, LogSubModule.JEBUILDER, id);
         }
         try {
             workflowService.deleteAll(id);
-        } catch (Exception e) {
+        } catch (Exception exp) {
+            JELogger.error(Arrays.toString(exp.getStackTrace()));
             JELogger.error("Error deleting workflows", LogCategory.DESIGN_MODE, id, LogSubModule.JEBUILDER, id);
         }
         try {
             eventService.deleteEvents(id, null);
-        } catch (Exception e) {
+        } catch (Exception exp) {
+            JELogger.error(Arrays.toString(exp.getStackTrace()));
             JELogger.error("Error deleting events", LogCategory.DESIGN_MODE, id, LogSubModule.JEBUILDER, id);
         }
         try {
             variableService.deleteVariables(id, null);
-        } catch (Exception e) {
+        } catch (Exception exp) {
+            JELogger.error(Arrays.toString(exp.getStackTrace()));
             JELogger.error("Error deleting variables", LogCategory.DESIGN_MODE, id, LogSubModule.JEBUILDER, id);
         }
         try {
             projectRepository.deleteById(id);
-        } catch (Exception e) {
+        } catch (Exception exp) {
+            JELogger.error(Arrays.toString(exp.getStackTrace()));
             JELogger.error("Error deleting project from database", LogCategory.DESIGN_MODE, id, LogSubModule.JEBUILDER,
                     id);
         }
@@ -214,13 +222,15 @@ public class ProjectService {
                             LogCategory.DESIGN_MODE, projectId, LogSubModule.JEBUILDER, null);
                     try {
                         ruleService.buildRules(projectId);
-                        JERunnerAPIHandler.runProject(projectId, project.getProjectName());
-                        ruleService.updateRulesStatus(projectId, true);
-                        project.getRuleEngine()
-                                .setRunning(true);
 
-                    } catch (Exception e) {
-                        throw new ProjectRunException(JEMessages.ERROR_RUNNING_PROJECT);
+                        JERunnerAPIHandler.runProject(projectId, project.getProjectName());
+
+                        ruleService.updateRulesStatus(projectId, true);
+
+                        project.getRuleEngine().setRunning(true);
+
+                    } catch (Exception exp) {
+                        throw new ProjectRunException(JEMessages.ERROR_RUNNING_PROJECT + Arrays.toString(exp.getStackTrace()));
                     }
                     project.setRunning(true);
                     saveProject(projectId).get();
@@ -277,6 +287,8 @@ public class ProjectService {
 
         Optional<JEProject> p = projectRepository.findById(projectId);
         if (p.isEmpty()) {
+            // FIXME to be removed; so throw exception;
+            //  but ascendant compatibility issue; should check with product owner
             p = projectRepository.findByProjectName(projectId);
             if (p.isEmpty()) {
                 throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
@@ -284,7 +296,7 @@ public class ProjectService {
         }
 
         project = p.get();
-
+        // FIXME does we need to reload all if loadedProjects filled?
         if (!loadedProjects.containsKey(project.getProjectId())) {
             project.setEvents(eventService.getAllJEEvents(project.getProjectId()));
             project.setRules(ruleService.getAllJERules(project.getProjectId()));
@@ -405,7 +417,8 @@ public class ProjectService {
                     }
 
                 }
-            } catch (Exception e) {
+            } catch (Exception exp) {
+                JELogger.error(Arrays.toString(exp.getStackTrace()));
                 JELogger.warn("[project = " + project.getProjectName() + "]" + JEMessages.FAILED_TO_LOAD_PROJECT,
                         LogCategory.DESIGN_MODE, project.getProjectId(), LogSubModule.JEBUILDER, null);
 

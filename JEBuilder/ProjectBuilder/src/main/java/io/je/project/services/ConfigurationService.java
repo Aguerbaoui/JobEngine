@@ -83,8 +83,8 @@ public class ConfigurationService {
         new Thread(() -> {
             try {
 
-
                 boolean serverUp = false;
+
                 while (!serverUp) {
                     JELogger.debug(JEMessages.RUNNER_IS_DOWN_CHECKING_AGAIN_IN_5_SECONDS,
                             LogCategory.DESIGN_MODE, null,
@@ -92,10 +92,13 @@ public class ConfigurationService {
                     Thread.sleep(healthCheck);
                     serverUp = checkRunnerHealth();
                 }
+
                 JELogger.debug(JEMessages.RUNNER_IS_UP_UPDATING_NOW,
                         LogCategory.DESIGN_MODE, null,
                         LogSubModule.JEBUILDER, null);
+
                 boolean loadedFiles = false;
+
                 while (!loadedFiles) {
                     try {
                         classService.loadAllClasses();

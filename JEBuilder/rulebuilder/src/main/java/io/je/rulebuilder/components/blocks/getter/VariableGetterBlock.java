@@ -24,11 +24,9 @@ public class VariableGetterBlock extends ConditionBlock {
                 isProperlyConfigured = false;
             }
 
-
         } catch (Exception e) {
             isProperlyConfigured = false;
         }
-
 
     }
 

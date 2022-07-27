@@ -160,6 +160,7 @@ public class EventService {
                 .toString());
         eventMap.put(EventModelMapping.TIMEOUTUNIT, event.getTimeoutUnit());
         eventMap.put(EventModelMapping.TIMOUTVALUE, event.getTimeoutValue());
+        // FIXME keep only project id
         eventMap.put(EventModelMapping.PROJECTNAME, project.getProjectName());
         JELogger.debug(JEMessages.REGISTERING_EVENT,
                 LogCategory.DESIGN_MODE, event.getJobEngineProjectID(),
@@ -170,7 +171,6 @@ public class EventService {
             throw new EventException(JEMessages.FAILED_TO_ADD_EVENT);
         }
         project.addEvent(event);
-
 
     }
 

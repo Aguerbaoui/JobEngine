@@ -16,76 +16,75 @@ import java.util.Set;
 
 public class DataZMQSubscriber extends ZMQSubscriber {
 
-	public DataZMQSubscriber(String url, int subPort) {
-		super(url, subPort);
-	}
+    public DataZMQSubscriber(String url, int subPort) {
+        super(url, subPort);
+    }
 
-	@Override
-	public void run() {
+    @Override
+    public void run() {
 
-		synchronized (this) {
+        synchronized (this) {
 
-			final String ID_MSG = "DataZMQSubscriber : ";
+            final String ID_MSG = "DataZMQSubscriber : ";
 
-			JELogger.debug(ID_MSG + "topics : " + this.topics + " : " + JEMessages.DATA_LISTENTING_STARTED,
-					LogCategory.RUNTIME, null, LogSubModule.JERUNNER, null);
+            JELogger.debug(ID_MSG + JEMessages.DATA_LISTENTING_STARTED,
+                    LogCategory.RUNTIME, null, LogSubModule.JERUNNER, null);
 
-			String last_topic = null;
+            String last_topic = null;
 
-			while (this.listening) {
-				String data = null;
-				try {
-					data = this.getSubSocket(ZMQBind.CONNECT).recvStr();
-				} catch (Exception ex) {
-					ex.printStackTrace();
-					continue;
-				}
+            while (this.listening) {
+                String data = null;
+                try {
+                    data = this.getSubSocket(ZMQBind.CONNECT).recvStr();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    continue;
+                }
 
-				JELogger.trace(ID_MSG + JEMessages.DATA_RECEIVED + data,
-						LogCategory.RUNTIME, null, LogSubModule.JERUNNER, null);
+                JELogger.trace(ID_MSG + JEMessages.DATA_RECEIVED + data,
+                        LogCategory.RUNTIME, null, LogSubModule.JERUNNER, null);
 
-				try {
-					if (data == null) continue;
+                try {
+                    if (data == null) continue;
 
-					// FIXME waiting to have topic in the same response message
-					if (last_topic == null) {
+                    // FIXME waiting to have topic in the same response message
+                    if (last_topic == null) {
 
-						// FIXME Avoid concurrent modifications exceptions
-						Set<String> _topics = this.topics;
+                        Set<String> _topics = this.topics;
 
-						Iterator<String> iterator = _topics.iterator();
-						while (iterator.hasNext()) {
-							String topic = iterator.next();
-							// Instance case or Class case
-							if (data.equals(topic) || data.split("#")[0].equals(topic)) {
-								last_topic = topic;
-								break;
-							}
-						}
+                        Iterator<String> iterator = _topics.iterator();
+                        while (iterator.hasNext()) {
+                            String topic = iterator.next();
+                            // Instance case or Class case
+                            if (data.equals(topic) || data.split("#")[0].equals(topic)) {
+                                last_topic = topic;
+                                break;
+                            }
+                        }
 
-					} else {
+                    } else {
 
-						RuntimeDispatcher.injectData(new JEData(last_topic, data));
+                        RuntimeDispatcher.injectData(new JEData(last_topic, data));
 
-						last_topic = null;
-					}
+                        last_topic = null;
+                    }
 
-				} catch (Exception exp) {
-					exp.printStackTrace();
+                } catch (Exception exp) {
+                    exp.printStackTrace();
 
-					JELogger.error(ID_MSG + JEMessages.UKNOWN_ERROR + Arrays.toString(exp.getStackTrace()),
-							LogCategory.RUNTIME, null, LogSubModule.JERUNNER, null);
-				}
+                    JELogger.error(ID_MSG + JEMessages.UKNOWN_ERROR + Arrays.toString(exp.getStackTrace()),
+                            LogCategory.RUNTIME, null, LogSubModule.JERUNNER, null);
+                }
 
-			}
+            }
 
-			JELogger.debug(ID_MSG + JEMessages.CLOSING_SOCKET,
-					LogCategory.RUNTIME, null, LogSubModule.JERUNNER, null);
+            JELogger.debug(ID_MSG + JEMessages.CLOSING_SOCKET,
+                    LogCategory.RUNTIME, null, LogSubModule.JERUNNER, null);
 
-			this.closeSocket();
+            this.closeSocket();
 
-		}
+        }
 
-	}
+    }
 
 }

@@ -128,7 +128,7 @@ public class RuleController {
     /*
      * compile  a  Rule
      */
-    // FIXME projectId to be removed
+    // FIXME GetMapping to delete!
     @GetMapping(value = "/deleteRule/{projectId}/{ruleId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> deleteRule(@PathVariable("projectId") String projectId,
                                         @PathVariable("ruleId") String ruleId) {
@@ -160,7 +160,21 @@ public class RuleController {
     }
 
     /*
-     * Runs only rules
+     * Run Rule Engine of a Project
+     * */
+    @GetMapping(value = "/runRuleEngine/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> runRuleEngine(@PathVariable String projectId) {
+        try {
+            runtimeDispatcher.runRuleEngine(projectId);
+        } catch (Exception e) {
+            return JEExceptionHandler.handleException(e);
+        }
+        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.EXECUTING_PROJECT));
+
+    }
+
+    /*
+     *
      * */
     @GetMapping(value = "/shutDownRuleEngine/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> stopRuleEngine(@PathVariable String projectId) {

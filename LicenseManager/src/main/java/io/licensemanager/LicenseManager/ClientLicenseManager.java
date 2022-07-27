@@ -1,6 +1,7 @@
 package io.licensemanager.LicenseManager;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.je.utilities.log.JELogger;
 import io.licensemanager.common.GeneralKeys;
 import io.licensemanager.common.SIOTHLicenseRequest;
 import io.licensemanager.common.SIOTHLicenseResponse;
@@ -10,123 +11,126 @@ import io.licensemanager.eventlistener.LicenseStatusListener;
 import io.licensemanager.utilities.InitResponse;
 import io.licensemanager.utilities.LicenseMessages;
 import io.licensemanager.utilities.LicenseUtilities;
+import utils.log.LogCategory;
 import utils.zmq.ZMQRequester;
 
 import java.net.InetAddress;
 
 public class ClientLicenseManager {
-	static ZMQRequester objZMQRequest;
-	static int requestTimeout;
-	static ObjectMapper objectMapper = new ObjectMapper();
-	static boolean isRegistered = false;
+    static ZMQRequester objZMQRequest;
+    static int requestTimeout;
+    static ObjectMapper objectMapper = new ObjectMapper();
+    static boolean isRegistered = false;
 
-	static SIOTHLicenseStatus siothlicenseStatus;
+    static SIOTHLicenseStatus siothlicenseStatus = SIOTHLicenseStatus.Corrupted;
 
-	private ClientLicenseManager() {
+    private ClientLicenseManager() {
 
-	}
+    }
 
-	public static void initListeners(int featureCode) {
-		LicenseStatusWatcher listener = new LicenseStatusWatcher(featureCode, objZMQRequest);
-		listener.setListening(true);
-		Thread getLicenseStatusThread = new Thread(listener);
-		getLicenseStatusThread.setName("GetLicenseStatusThread");
-		getLicenseStatusThread.start();
+    public static void initListeners(int featureCode) {
+        LicenseStatusWatcher listener = new LicenseStatusWatcher(featureCode, objZMQRequest);
+        Thread getLicenseStatusThread = new Thread(listener);
+        getLicenseStatusThread.setName("GetLicenseStatusThread");
+        getLicenseStatusThread.start();
 
-	}
+    }
 
-	public static InitResponse initializeLicense(String licenseManagerUrl, int featureCode,
-			int tags/* , out SIOTHLicenseStatus licenseStatus, out String strError */) {
-		String strError = "";
-		SIOTHLicenseStatus licenseStatus = SIOTHLicenseStatus.Corrupted;
-		try {
+    public static InitResponse initializeLicense(String licenseManagerUrl, int featureCode,
+                                                 int tags/* , out SIOTHLicenseStatus licenseStatus, out String strError */) {
+        String strError = "";
 
-			// =====> Ini ZMQ Request
-			objZMQRequest = new ZMQRequester(licenseManagerUrl);
+        try {
 
-			if (objZMQRequest != null) {
+            // =====> Ini ZMQ Request
+            objZMQRequest = new ZMQRequester(licenseManagerUrl);
 
-				// ===> get ip address
-				String hostName = InetAddress.getLocalHost().getHostName(); // Retrieve the Name of HOST
-				String myIP = InetAddress.getLocalHost().getHostAddress();
-				/* TODO: */
-				String myProcessName = "JobEngine"; // Process.GetCurrentProcess().ProcessName;
+            if (objZMQRequest != null) {
 
-				SIOTHLicenseRequest objSIOTHLicenseRequest = new SIOTHLicenseRequest("GetAuthorization", myIP,
-						myProcessName, featureCode, tags);
+                // ===> get ip address
+                String hostName = InetAddress.getLocalHost().getHostName(); // Retrieve the Name of HOST
+                String myIP = InetAddress.getLocalHost().getHostAddress();
+                /* TODO: */
+                String myProcessName = "JobEngine"; // Process.GetCurrentProcess().ProcessName;
 
-				// ====> Encrypt
-				String cipheredData = LicenseUtilities.encrypt(objectMapper.writeValueAsString(objSIOTHLicenseRequest),
-						GeneralKeys.passPhraseConnectors);
+                SIOTHLicenseRequest objSIOTHLicenseRequest = new SIOTHLicenseRequest("GetAuthorization", myIP,
+                        myProcessName, featureCode, tags);
 
-				if (cipheredData != null) {
+                // ====> Encrypt
+                String cipheredData = LicenseUtilities.encrypt(objectMapper.writeValueAsString(objSIOTHLicenseRequest),
+                        GeneralKeys.passPhraseConnectors);
 
-					String cipheredSIOTHRequest = cipheredData; /* new String(Base64Utils.encode(cipheredData)); */
+                if (cipheredData != null) {
 
-					requestTimeout = 20000;
-					String rcvData = objZMQRequest.sendRequest(cipheredSIOTHRequest, requestTimeout);
+                    String cipheredSIOTHRequest = cipheredData; /* new String(Base64Utils.encode(cipheredData)); */
 
-					if (rcvData != null && !rcvData.isEmpty()) {
-						// Decrypt rcvData
+                    requestTimeout = 20000;
+                    String rcvData = objZMQRequest.sendRequest(cipheredSIOTHRequest, -1);// requestTimeout);
 
-						String plainRcvResponse = LicenseUtilities.decrypt(rcvData, GeneralKeys.passPhraseConnectors);
+                    if (rcvData != null && !rcvData.isEmpty()) {
+                        // Decrypt rcvData
 
-						if (plainRcvResponse != null) {
-							// Deserialize obj
-							SIOTHLicenseResponse objSIOTHLicenseResponse = objectMapper.readValue(plainRcvResponse,
-									SIOTHLicenseResponse.class);
+                        String plainRcvResponse = LicenseUtilities.decrypt(rcvData, GeneralKeys.passPhraseConnectors);
 
-							if (objSIOTHLicenseResponse.bAuthorized) {
-								// siothlicenseStatus = licenseStatus = objSIOTHLicenseResponse.Status;
-								siothlicenseStatus = licenseStatus = SIOTHLicenseStatus.Corrupted;
+                        if (plainRcvResponse != null) {
+                            // Deserialize obj
+                            SIOTHLicenseResponse objSIOTHLicenseResponse = objectMapper.readValue(plainRcvResponse,
+                                    SIOTHLicenseResponse.class);
 
-								if (siothlicenseStatus == SIOTHLicenseStatus.Backdated
-										|| siothlicenseStatus == SIOTHLicenseStatus.Corrupted
-										|| siothlicenseStatus == SIOTHLicenseStatus.Expired) {
-									return new InitResponse(false, strError, siothlicenseStatus);
-								}
-								isRegistered = true;
-								return new InitResponse(true, strError, siothlicenseStatus);
+                            // FIXME
+                            JELogger.debug("Remaining days : " + objSIOTHLicenseResponse.RemainingDays,
+                                    LogCategory.SIOTH_APPLICATION, null, null, null);
 
-							}
-							strError = objSIOTHLicenseResponse.Error;
+                            if (objSIOTHLicenseResponse.bAuthorized) {
+                                siothlicenseStatus = objSIOTHLicenseResponse.Status;
 
-						} else {
-							strError = LicenseMessages.ERROR_RECEIVING_DATA;
-						}
-					} else {
-						strError = LicenseMessages.licenseManagerUnreachable(licenseManagerUrl);
-					}
+                                if (siothlicenseStatus == SIOTHLicenseStatus.Backdated
+                                        || siothlicenseStatus == SIOTHLicenseStatus.Corrupted
+                                        || siothlicenseStatus == SIOTHLicenseStatus.Expired) {
+                                    return new InitResponse(false, strError, siothlicenseStatus);
+                                }
+                                isRegistered = true;
+                                return new InitResponse(true, strError, siothlicenseStatus);
 
-				} else {
-					strError = LicenseMessages.ERROR_SENDING_REQUEST;
-				}
+                            }
+                            strError = objSIOTHLicenseResponse.Error;
 
-			} else {
+                        } else {
+                            strError = LicenseMessages.ERROR_RECEIVING_DATA;
+                        }
+                    } else {
+                        strError = LicenseMessages.licenseManagerUnreachable(licenseManagerUrl);
+                    }
 
-				strError = LicenseMessages.initZMQError(strError);
-			}
+                } else {
+                    strError = LicenseMessages.ERROR_SENDING_REQUEST;
+                }
 
-			return new InitResponse(false, strError, siothlicenseStatus);
+            } else {
 
-		} catch (Exception ex) {
-			strError = LicenseMessages.initLicenseError(ex.getMessage());
-			return new InitResponse(false, strError, siothlicenseStatus);
+                strError = LicenseMessages.initZMQError(strError);
+            }
 
-		}
-	}
+            return new InitResponse(false, strError, siothlicenseStatus);
 
-	public static void register(LicenseStatusListener jeLicenseStatusListener) {
-		LicenseStatusChangeHandler.addListener(jeLicenseStatusListener);
+        } catch (Exception ex) {
+            strError = LicenseMessages.initLicenseError(ex.getMessage());
+            return new InitResponse(false, strError, siothlicenseStatus);
 
-	}
+        }
+    }
 
-	public static boolean isRegistered() {
-		return isRegistered;
-	}
+    public static void register(LicenseStatusListener jeLicenseStatusListener) {
+        LicenseStatusChangeHandler.addListener(jeLicenseStatusListener);
 
-	public static void setRegistered(boolean isRegistered) {
-		ClientLicenseManager.isRegistered = isRegistered;
-	}
+    }
+
+    public static boolean isRegistered() {
+        return isRegistered;
+    }
+
+    public static void setRegistered(boolean isRegistered) {
+        ClientLicenseManager.isRegistered = isRegistered;
+    }
 
 }

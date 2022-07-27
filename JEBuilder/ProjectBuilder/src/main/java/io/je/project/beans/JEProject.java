@@ -25,84 +25,66 @@ public class JEProject {
     /*
      * Project ID
      * */
-
-
     @Id
     private String projectId;
-
     @Field("key")
     private String projectName;
-
     @Field("CreatedAt")
     private String createdAt;
-
     @Field("ModifiedAt")
     private String modifiedAt;
-
     @Field("createdBy")
     private String createdBy;
-
     @Field("state")
     private String state;
-
     @Field("description")
     private String description;
-
     @Transient
     private RuleEngineSummary ruleEngine; //true -> rule engine running , false -> rule engine stopped TODO: switch to enum
-
     /*
      * Configuration path
      * */
     private String configurationPath;
-
     /*
      * Rules in a project
      * */
     @Transient
     private ConcurrentHashMap<String, JERule> rules = new ConcurrentHashMap<>();
-
     /*
      * Workflows in a project
      * */
     @Transient
     private ConcurrentHashMap<String, JEWorkflow> workflows = new ConcurrentHashMap<>();
-
-
     /*
      * Events in a project
      * */
     @Transient
     private ConcurrentHashMap<String, JEEvent> events = new ConcurrentHashMap<>();
-
     /*
      * Variables in a project
      * */
     @Transient
     private ConcurrentHashMap<String, JEVariable> variables = new ConcurrentHashMap<>();
 
-    /*
-     * block names
-     */
-    Map<String, String> blockNames = new ConcurrentHashMap<>();
-
-    /*
-     * block name counters
-     */
-    Map<String, Integer> blockNameCounters = new ConcurrentHashMap<>();
-
-
     private boolean autoReload = true;
 
 
     private boolean isRunning = false;
 
-    private boolean isBuilt = false;
-
-
     /*
      * project Status
      * */
+    private boolean isBuilt = false;
+
+    /*
+     * block names
+     */
+    Map<String, String> blockNames = new ConcurrentHashMap<>();
+    /*
+     * block name counters
+     */
+    Map<String, Integer> blockNameCounters = new ConcurrentHashMap<>();
+
 
 
     /*
@@ -117,7 +99,6 @@ public class JEProject {
         this.projectId = projectId;
         isBuilt = false;
         autoReload = true;
-
 
     }
 
@@ -201,17 +182,6 @@ public class JEProject {
         this.projectId = projectId;
     }
 
-
-    public void setRunning(boolean isRunning) {
-        this.isRunning = isRunning;
-    }
-
-
-    public void setBuilt(boolean isBuilt) {
-        this.isBuilt = isBuilt;
-    }
-
-
     public String getConfigurationPath() {
         return configurationPath;
     }
@@ -241,10 +211,17 @@ public class JEProject {
         return isBuilt;
     }
 
+    public void setBuilt(boolean isBuilt) {
+        this.isBuilt = isBuilt;
+    }
+
     public boolean isRunning() {
         return isRunning;
     }
 
+    public void setRunning(boolean isRunning) {
+        this.isRunning = isRunning;
+    }
 
     /******************************************************** RULES **********************************************************************/
 
@@ -298,7 +275,6 @@ public class JEProject {
         rule.setJeObjectLastUpdate(Instant.now());
         isBuilt = false;
 
-
     }
 
     /*
@@ -318,7 +294,6 @@ public class JEProject {
         ((UserDefinedRule) rules.get(block.getJobEngineElementID())).updateBlock(block);
         isBuilt = false;
 
-
     }
 
     /*
@@ -330,7 +305,6 @@ public class JEProject {
         rules.get(ruleId)
                 .setJeObjectLastUpdate(Instant.now());
         isBuilt = false;
-
 
     }
 
@@ -345,7 +319,6 @@ public class JEProject {
         rules.remove(ruleId);
         ruleEngine.remove(ruleId);
         isBuilt = false;
-
 
     }
 
@@ -405,7 +378,7 @@ public class JEProject {
     /*
      * Delete a workflow block
      * */
-    public void deleteWorkflowBlock(String workflowId, String blockId) throws InvalidSequenceFlowException, WorkflowBlockNotFound {
+    public void deleteWorkflowBlock(String workflowId, String blockId) throws InvalidSequenceFlowException, WorkflowBlockNotFoundException {
         getWorkflowByIdOrName(workflowId).deleteWorkflowBlock(blockId);
         removeBlockName(blockId);
         isBuilt = false;
@@ -424,10 +397,10 @@ public class JEProject {
     /*
      * Add a workflow sequence flow
      * */
-    public void addWorkflowSequenceFlow(String workflowId, String sourceRef, String targetRef, String condition) throws WorkflowBlockNotFound {
+    public void addWorkflowSequenceFlow(String workflowId, String sourceRef, String targetRef, String condition) throws WorkflowBlockNotFoundException {
         JEWorkflow wf = getWorkflowByIdOrName(workflowId);
         if (!wf.blockExists(sourceRef) || !wf.blockExists(targetRef)) {
-            throw new WorkflowBlockNotFound(JEMessages.WORKFLOW_BLOCK_NOT_FOUND);
+            throw new WorkflowBlockNotFoundException(JEMessages.WORKFLOW_BLOCK_NOT_FOUND);
         }
         wf.addBlockFlow(sourceRef, targetRef, condition);
         isBuilt = false;
@@ -573,7 +546,6 @@ public class JEProject {
         this.blockNameCounters = blockNameCounters;
     }
 
-
     public JEWorkflow getStartupWorkflow() {
         for (JEWorkflow wf : workflows.values()) {
             if (wf.isOnProjectBoot()) return wf;
@@ -581,18 +553,15 @@ public class JEProject {
         return null;
     }
 
-    public boolean workflowHasError(JEWorkflow wf) {
+    public boolean workflowHasError(JEWorkflow wf) throws WorkflowStartBlockNotDefinedException, WorkflowStartBlockNotUniqueException,
+            WorkflowEndBlockNotDefinedException, WorkflowEndBlockNotUniqueException {
 
-        if (wf.getWorkflowStartBlock() == null || wf.getAllBlocks()
-                .isEmpty()) {
+        if (wf.getWorkflowStartBlock() == null || wf.getWorkflowEndBlock() == null) {
             wf.setHasErrors(true);
-
-
             return true;
         }
 
-        for (WorkflowBlock b : wf.getAllBlocks()
-                .values()) {
+        for (WorkflowBlock b : wf.getAllBlocks().values()) {
             if (b instanceof SubProcessBlock) {
                 for (JEWorkflow workflow : workflows.values()) {
                     if (workflow.getJobEngineElementName()

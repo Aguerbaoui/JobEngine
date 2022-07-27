@@ -49,7 +49,9 @@ public class RuntimeDispatcher {
     static Map<String, Boolean> projectStatus = new HashMap<>(); // key: projectId , value : true if project is running,
     // false if not
     static Map<String, String> projectNameToId = new HashMap<>();
+
     ///////////////////////////////// PROJECT
+
     // build project
 	/*public void buildProject(String projectId) throws RuleBuildFailedException, WorkflowBuildException {
 		/*JELogger.debug("[projectId  = " + projectId + "]" + JEMessages.BUILDING_PROJECT, LogCategory.RUNTIME, projectId,
@@ -77,11 +79,10 @@ public class RuntimeDispatcher {
             WorkflowEngineHandler.runAllWorkflows(projectId, true);
 
             // run rules
-            RuleEngineHandler.runRuleEngineProject(projectId);
+            RuleEngineHandler.runRuleEngineProject(projectId); // FIXME should launch all rules not just rule engine
 
             // add variables
             for (JEVariable variable : VariableManager.getAllVariables(projectId)) {
-                // FIXME was called twice, check if ok
                 RuleEngineHandler.addVariable(variable);
             }
 
@@ -98,7 +99,6 @@ public class RuntimeDispatcher {
     }
 
     // stop project
-    // run project FIXME why run?
     public void stopProject(String projectId, String projectName) {
 
         String msg = "[project = " + projectName + "] ";
@@ -304,7 +304,7 @@ public class RuntimeDispatcher {
                             RuleEngineHandler.injectData(projectId, instanceData);
                         }
                     }
-                } catch (InstanceCreationFailed e) {
+                } catch (InstanceCreationFailedException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
@@ -460,6 +460,18 @@ public class RuntimeDispatcher {
         DataModelListener.startListening(topics);
 
         RuleEngineHandler.runRuleEngineProject(projectId);
+
+        for (JEVariable variable : VariableManager.getAllVariables(projectId)) {
+            RuleEngineHandler.addVariable(variable);
+        }
+
+        projectStatus.put(projectId, true);
+
+    }
+
+    public void runRuleEngine(String projectId) throws RulesNotFiredException, RuleBuildFailedException {
+
+        RuleEngineHandler.startRuleEngineProjectExecution(projectId);
 
         for (JEVariable variable : VariableManager.getAllVariables(projectId)) {
             RuleEngineHandler.addVariable(variable);

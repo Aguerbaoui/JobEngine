@@ -21,7 +21,6 @@ public class LicenseMessages {
 		return "Error occurred while initializing ZMQ Request. Error: " + strError +".";
 	}
 
-
 	public static String initLicenseError(String strError)
 	{
 		return "Exception occurred while initializing license. Exception: "  + strError+".";

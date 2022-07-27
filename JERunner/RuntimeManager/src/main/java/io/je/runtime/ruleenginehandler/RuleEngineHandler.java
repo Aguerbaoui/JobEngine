@@ -82,13 +82,6 @@ public class RuleEngineHandler {
     }
 
 
-    /*
-     * start running a project given a project id
-     */
-    public static  void runRuleEngineProject(String projectId) throws RulesNotFiredException, RuleBuildFailedException {
-        RuleEngine.fireRules(projectId);
-    }
-
 
 	public static void injectData(String projectId, JEObject instance) {
 		try {
@@ -103,9 +96,23 @@ public class RuleEngineHandler {
 
 	}
 
+	/*
+	 * FIXME (function? duplicated?) start running a project given a project id
+	 */
+	public static  void runRuleEngineProject(String projectId) throws RulesNotFiredException, RuleBuildFailedException {
+		RuleEngine.fireRules(projectId);
+	}
+
+	/*
+	 * Start running the rule engine given a project id
+	 */
+	public static void startRuleEngineProjectExecution(String projectId) throws RulesNotFiredException, RuleBuildFailedException {
+		RuleEngine.fireRules(projectId);
+	}
+
 
     /*
-     * stop running a project given a project id
+     * FIXME (stop Rule engine not project) stop running a project given a project id
      */
     public static void stopRuleEngineProjectExecution(String projectId)  {
         RuleEngine.stopRuleExecution(projectId);

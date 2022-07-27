@@ -33,21 +33,13 @@ public class APIConstants {
 
 	public static final String ADD_RULE =  "/rule/addRule";
 
-	public static final String UPDATERULE = "/rule/updateRule";
+	public static final String UPDATE_RULE = "/rule/updateRule";
 
 	public static final String ADD_CLASS = "/addClass";
 
 	public static final String UPDATE_CLASS = "/updateClass";
 	
 	public static final String ADD_CLASSES = "/addClasses";
-
-	public static final String TRIGGER_EVENT = "/event/triggerEvent/";
-
-	public static final String ADD_EVENT = "/event/addEvent";
-
-	public static final String UPDATE_EVENT = "/event/updateEventType";
-
-	public static final String DELETE_EVENT = "/event/deleteEvent";
 
 	public static final String DELETE_WORKFLOW = "/workflow/deleteWorkflow";
 
@@ -65,17 +57,23 @@ public class APIConstants {
 
 	public static final String PROJECT_UPDATE_RUNNER = "/jeproject/updateRunner";
 
-	public static final String EVENT_ADD_EVENT = "/event/addEvent";
+	public static final String ADD_EVENT = "/event/addEvent";
 
-	public static final String EVENT_TRIGGER_EVENT = "/event/triggerEvent/";
+	public static final String TRIGGER_EVENT = "/event/triggerEvent/";
 	
-	public static final String EVENT_UNTRIGGER_EVENT = "/event/untriggerEvent/";
-	
+	public static final String UNTRIGGER_EVENT = "/event/untriggerEvent/";
+
+	public static final String UPDATE_EVENT_TYPE = "/event/updateEventType";
+
+	public static final String DELETE_EVENT = "/event/deleteEvent";
+
 	public static final String WRITE_TO_VARIABLE = "/writeVariableValue/";
 
 	public static final String GET_VARIABLE = "/getVariable/";
 
 	public static final String RUN_PROJECT_RULES = "/rule/runAllRules/";
+
+	public static final String RUN_RULE_ENGINE = "/rule/runRuleEngine/";
 
 	public static final String SHUT_DOWN_RULE_ENGINE = "/rule/shutDownRuleEngine/";
 

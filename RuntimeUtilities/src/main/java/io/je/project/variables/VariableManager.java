@@ -118,7 +118,7 @@ public class VariableManager {
 			message.setType("Variable");
 			JEVariableMessage varMessage = new JEVariableMessage(variable.getJobEngineElementName(),
 					variable.getValue().toString());
-			// to be removed
+			// FIXME to be removed
 			JEBlockMessage blockMessage = new JEBlockMessage(variable.getJobEngineElementName(),
 					variable.getValue().toString());
 			message.getBlocks().add(blockMessage);

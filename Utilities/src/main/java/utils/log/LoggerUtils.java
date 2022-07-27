@@ -59,31 +59,24 @@ public class LoggerUtils {
 		if(logger != null) {
 			logger.trace(message);
 		}
-	
 	}
 
 	/*
 	 * Control log level
 	 */
 	public static void control(String message) {
-
 		if(logger != null) {
 			logger.log(CONTROL, message);
 		}
-		
-
 	}
 
 	/*
 	 * Debug log level
 	 */
 	public static void debug(String message) {
-
 		if(logger != null) {
 			logger.debug(message);
 		}
-		
-
 	}
 
 
@@ -104,7 +97,6 @@ public class LoggerUtils {
 	 */
 	public static void error(String message) {
 		// Log in file
-
 		if(logger != null) {
 			logger.error(message);
 		}

@@ -10,13 +10,13 @@ public class JobEngine {
 	@JsonProperty("JEBuilder")
 	public String jeBuilder;
 
-	// FIXME MaxMemory is it used?
+	@JsonProperty("CheckHealth")
+	public int checkHealthEveryMs;
 
 	@JsonProperty("LibraryMaxFileSize")
 	public String libraryMaxFileSize;
 
-	@JsonProperty("CheckHealth")
-	public int checkHealthEveryMs;
+	// FIXME MaxMemory is it used?
 
 	@JsonProperty("GeneratedClassesPath")
 	public String generatedClassesPath;

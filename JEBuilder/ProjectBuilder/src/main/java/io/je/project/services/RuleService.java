@@ -803,7 +803,9 @@ public class RuleService {
 
         List<OperationStatusDetails> results;
         ArrayList<CompletableFuture<OperationStatusDetails>> ruleFuture = new ArrayList<>();
+
         for (String ruleId : ruleIds) {
+
             ruleFuture.add(asyncRuleService.runRule(projectId, ruleId));
 
         }
@@ -917,6 +919,7 @@ public class RuleService {
         for (String ruleId : ruleIds) {
 
             results.add(stopRule(projectId, ruleId));
+
         }
 
         return results;

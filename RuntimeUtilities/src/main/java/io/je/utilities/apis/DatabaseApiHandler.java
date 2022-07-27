@@ -1,6 +1,6 @@
 package io.je.utilities.apis;
 
-import com.squareup.okhttp.Response;
+import okhttp3.Response;
 import io.siothconfig.SIOTHConfigUtility;
 import utils.network.Network;
 
@@ -22,6 +22,7 @@ public class DatabaseApiHandler {
         /*JELogger.info(JEMessages.DB_API_RESPONSE + " = " + response.body().string(), LogCategory.RUNTIME,
                 null, LogSubModule.WORKFLOW, null);*/
         String resp = response.body().string();
+        response.close();
         return resp;
     }
 

@@ -1,8 +1,9 @@
 package utils.network;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.squareup.okhttp.*;
+import utils.log.LoggerUtils;
 import io.netty.resolver.DefaultAddressResolverGroup;
+import okhttp3.*;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,7 @@ import reactor.netty.http.client.HttpClient;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -23,7 +25,6 @@ import java.util.concurrent.TimeUnit;
 
 public class Network {
 
-    private static final OkHttpClient client = new OkHttpClient();
     public static final String AUTHORIZATION = "Authorization";
     public static final String BEARER = "Bearer ";
     public static final String TOKEN = "token";
@@ -31,6 +32,7 @@ public class Network {
     public static final String VALUE = "value";
     public static final String USERNAME = "username";
     public static final String PASSWORD = "password";
+    private static final OkHttpClient client = new OkHttpClient();
     private static ThreadPoolTaskExecutor executor = null;
     private BodyType bodyType;
     private String body;
@@ -59,9 +61,11 @@ public class Network {
             executor.setQueueCapacity(150);
             executor.setThreadNamePrefix("NetworkAsyncThread-");
             executor.initialize();
-            client.setReadTimeout(1, TimeUnit.MINUTES);
-            client.setWriteTimeout(1, TimeUnit.MINUTES);
-            client.setConnectTimeout(1, TimeUnit.MINUTES);
+            client.newBuilder()
+                    .connectTimeout(1, TimeUnit.MINUTES)
+                    .readTimeout(1, TimeUnit.MINUTES)
+                    .writeTimeout(1, TimeUnit.MINUTES)
+                    .build();
         }
         return executor;
     }
@@ -77,7 +81,8 @@ public class Network {
             try {
                 return client.newCall(request)
                         .execute();
-            } catch (IOException e) {
+            } catch (IOException exp) {
+                LoggerUtils.error(Arrays.toString(exp.getStackTrace()));
                 return null;
             }
         }, getAsyncExecutor());
@@ -87,10 +92,9 @@ public class Network {
     /*
      * Delete with response
      * */
-    public static Response makeMultipartFormDataPost(String url, String fileName, String filePath) throws ExecutionException, InterruptedException, IOException {
-        RequestBody requestBody = new MultipartBuilder().type(MultipartBuilder.FORM)
-                .addFormDataPart("file", fileName,
-                        RequestBody.create(null, new File(filePath)))
+    public static Response makeMultipartFormDataPost(String url, String fileName, String filePath) throws IOException {
+        RequestBody requestBody = new MultipartBody.Builder().setType(MultipartBody.FORM)
+                .addFormDataPart("file", fileName, RequestBody.create(null, new File(filePath)))
                 .build();
 
         Request request = new Request.Builder()
@@ -98,30 +102,8 @@ public class Network {
                 .post(requestBody)
                 .build();
 
-        return client.newCall(request)
-                .execute();
+        return client.newCall(request).execute();
 
-        /*RequestBody requestBody = new MultipartBuilder()
-                .type(MultipartBuilder.FORM)
-                .addPart(
-                        Headers.of("Content-Disposition", "form-data; name=\"" + fileName + "\""),
-                        RequestBody.create(null, new File(filePath)))
-                .build();
-
-        Request request = new Request.Builder()
-                .url(url)
-                .post(requestBody)
-                .build();
-
-        CompletableFuture<Response> f = CompletableFuture.supplyAsync(() -> {
-            try {
-                return client.newCall(request).execute();
-            } catch (IOException e) {
-                return null;
-            }
-        }, getAsyncExecutor());
-        return f.get();*/
-        //return resp[0];
     }
 
     public static Response makeDeleteNetworkCallWithResponse(String url) throws InterruptedException, ExecutionException {
@@ -132,7 +114,8 @@ public class Network {
             try {
                 return client.newCall(request)
                         .execute();
-            } catch (IOException e) {
+            } catch (IOException exp) {
+                LoggerUtils.error(Arrays.toString(exp.getStackTrace()));
                 return null;
             }
         }, getAsyncExecutor());
@@ -157,7 +140,8 @@ public class Network {
             try {
                 return client.newCall(request)
                         .execute();
-            } catch (IOException e) {
+            } catch (IOException exp) {
+                LoggerUtils.error(Arrays.toString(exp.getStackTrace()));
                 return null;
             }
         }, getAsyncExecutor());
@@ -179,7 +163,8 @@ public class Network {
             try {
                 return client.newCall(request)
                         .execute();
-            } catch (IOException e) {
+            } catch (IOException exp) {
+                LoggerUtils.error(Arrays.toString(exp.getStackTrace()));
                 return null;
             }
         }, getAsyncExecutor());
@@ -198,59 +183,13 @@ public class Network {
             try {
                 return client.newCall(request)
                         .execute();
-            } catch (IOException e) {
+            } catch (IOException exp) {
+                LoggerUtils.error(Arrays.toString(exp.getStackTrace()));
                 return null;
             }
         }, getAsyncExecutor());
         return f.get();
     }
-
-    /*
-     * Execute network call
-     * */
-    public static HashMap<String, Object> makePostWebClientRequest(String url, String json) throws IOException {
-
-        HttpClient httpClient = HttpClient.create()
-                .resolver(DefaultAddressResolverGroup.INSTANCE);
-
-        WebClient webClient = WebClient.builder()
-                .clientConnector(new ReactorClientHttpConnector(httpClient))
-                .baseUrl(url)
-                .defaultHeader(HttpHeaders.CONTENT_TYPE, "application/json; utf-8")
-                .build();
-
-        HashMap<String, Object> responseMap = new HashMap<>();
-        ResponseEntity<Void> emailResponse;
-        try {
-            emailResponse = webClient.post()
-
-                    .header(HttpHeaders.CONTENT_TYPE, "application/json; utf-8")
-                    .bodyValue(json)
-                    .retrieve()
-
-                    // error body as String or other class
-                    .onStatus(HttpStatus::isError, response -> response.bodyToMono(String.class)
-                            .flatMap(res -> {
-                                responseMap.put("code", response.statusCode());
-                                return Mono.error(new RuntimeException(res));
-                            }))
-
-                    .toBodilessEntity()
-                    .block();
-        } catch (Exception e) {
-            responseMap.put("message", e.getMessage());
-            return responseMap;
-        }
-
-        if (emailResponse != null) {
-            responseMap.put("message", emailResponse);
-            responseMap.put("code", emailResponse.getStatusCode());
-        }
-/*        responseMap.put("code", con.getResponseCode());
-        responseMap.put("message", response.toString());*/
-        return responseMap;
-    }
-
 
     public Response call() throws IOException {
 
@@ -296,23 +235,66 @@ public class Network {
             }
         }
         request = builder.build();
-        OkHttpClient client = new OkHttpClient();
-        client.setReadTimeout(1, TimeUnit.MINUTES);
-        client.setWriteTimeout(1, TimeUnit.MINUTES);
-        client.setConnectTimeout(1, TimeUnit.MINUTES);
-        return client.newCall(request)
-                .execute();
+
+        return client.newCall(request).execute();
+    }
+
+    /*
+     * Execute network call
+     * */
+    public static HashMap<String, Object> makePostWebClientRequest(String url, String json) throws IOException {
+
+        HttpClient httpClient = HttpClient.create()
+                .resolver(DefaultAddressResolverGroup.INSTANCE);
+
+        WebClient webClient = WebClient.builder()
+                .clientConnector(new ReactorClientHttpConnector(httpClient))
+                .baseUrl(url)
+                .defaultHeader(HttpHeaders.CONTENT_TYPE, "application/json; utf-8")
+                .build();
+
+        HashMap<String, Object> responseMap = new HashMap<>();
+        ResponseEntity<Void> emailResponse;
+        try {
+            emailResponse = webClient.post()
+
+                    .header(HttpHeaders.CONTENT_TYPE, "application/json; utf-8")
+                    .bodyValue(json)
+                    .retrieve()
+
+                    // error body as String or other class
+                    .onStatus(HttpStatus::isError, response -> response.bodyToMono(String.class)
+                            .flatMap(res -> {
+                                responseMap.put("code", response.statusCode());
+                                return Mono.error(new RuntimeException(res));
+                            }))
+
+                    .toBodilessEntity()
+                    .block();
+        } catch (Exception exp) {
+            LoggerUtils.error(Arrays.toString(exp.getStackTrace()));
+            responseMap.put("message", exp.getMessage());
+            return responseMap;
+        }
+
+        if (emailResponse != null) {
+            responseMap.put("message", emailResponse);
+            responseMap.put("code", emailResponse.getStatusCode());
+        }
+/*        responseMap.put("code", con.getResponseCode());
+        responseMap.put("message", response.toString());*/
+        return responseMap;
     }
 
     /*
      * Network object builder
      * */
     public static class Builder {
+        private final String url;
         private HttpMethod method;
         private BodyType bodyType;
         private String body;
         private String classType;
-        private final String url;
         private boolean hasParameters;
         private boolean hasBody;
         private HashMap<String, String> authentication;
@@ -396,5 +378,7 @@ public class Network {
             //network.isAuthenticated = this.isAuthenticated;
             return network;
         }
+
     }
+
 }

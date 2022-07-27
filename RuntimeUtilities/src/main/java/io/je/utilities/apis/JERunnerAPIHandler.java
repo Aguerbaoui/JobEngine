@@ -1,7 +1,6 @@
 package io.je.utilities.apis;
 
 
-import com.squareup.okhttp.Response;
 import io.je.utilities.beans.JEResponse;
 import io.je.utilities.constants.APIConstants;
 import io.je.utilities.constants.JEMessages;
@@ -10,6 +9,7 @@ import io.je.utilities.exceptions.JERunnerErrorException;
 import io.je.utilities.log.JELogger;
 import io.je.utilities.models.WorkflowModel;
 import io.siothconfig.SIOTHConfigUtility;
+import okhttp3.Response;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
 import utils.network.Network;
@@ -29,39 +29,39 @@ import static io.je.utilities.constants.APIConstants.*;
 public class JERunnerAPIHandler {
 
 
-    private JERunnerAPIHandler() {}
-
-    
     private static String runtimeManagerBaseApi = SIOTHConfigUtility.getSiothConfig().getJobEngine().getJeRunner();
-  
-	public static void setRuntimeManagerBaseApi(String runtimeUrl) {
-		runtimeManagerBaseApi = runtimeUrl;	
-	}
+
+
+    private JERunnerAPIHandler() {
+    }
 
     public static String getRuntimeManagerBaseApi() {
-		return runtimeManagerBaseApi;
-	}
+        return runtimeManagerBaseApi;
+    }
 
+    public static void setRuntimeManagerBaseApi(String runtimeUrl) {
+        runtimeManagerBaseApi = runtimeUrl;
+    }
 
     /*
      * run project
      */
-    public static JEResponse runProject(String projectId,String projectName)
-            throws JERunnerErrorException{
+    public static JEResponse runProject(String projectId, String projectName)
+            throws JERunnerErrorException {
         String requestUrl = runtimeManagerBaseApi + APIConstants.RUN_PROJECT + projectId + "/" + projectName;
         return sendRequest(requestUrl);
     }
 
-    public static JEResponse stopProject(String projectId,String projectName)
-            throws JERunnerErrorException{
-        String requestUrl = runtimeManagerBaseApi + APIConstants.STOP_PROJECT + projectId+ "/" + projectName;
+    public static JEResponse stopProject(String projectId, String projectName)
+            throws JERunnerErrorException {
+        String requestUrl = runtimeManagerBaseApi + APIConstants.STOP_PROJECT + projectId + "/" + projectName;
         return sendRequest(requestUrl);
     }
 
     //////// RULES //////////
 
     // add rule
-    public static JEResponse addRule(Object requestModel) throws JERunnerErrorException{
+    public static JEResponse addRule(Object requestModel) throws JERunnerErrorException {
         String requestUrl = runtimeManagerBaseApi + APIConstants.ADD_RULE;
         return sendRequestWithBody(requestUrl, requestModel);
 
@@ -76,7 +76,7 @@ public class JERunnerAPIHandler {
 
     // update rule
     public static JEResponse updateRule(Object requestModel) throws JERunnerErrorException {
-        String requestUrl = runtimeManagerBaseApi + APIConstants.UPDATERULE;
+        String requestUrl = runtimeManagerBaseApi + APIConstants.UPDATE_RULE;
         return sendRequestWithBody(requestUrl, requestModel);
     }
 
@@ -92,7 +92,7 @@ public class JERunnerAPIHandler {
         return sendRequestWithBody(requestUrl, requestModel);
 
     }
-    
+
     public static JEResponse updateClass(Map<String, String> requestModel) throws JERunnerErrorException {
         String requestUrl = runtimeManagerBaseApi + UPDATE_CLASS;
         return sendRequestWithBody(requestUrl, requestModel);
@@ -108,13 +108,13 @@ public class JERunnerAPIHandler {
     ///////////////////////////////// EVENTS//////////////////////////////
 
     public static JEResponse triggerEvent(String eventId, String projectId) throws JERunnerErrorException {
-        String requestUrl = runtimeManagerBaseApi + EVENT_TRIGGER_EVENT + projectId + "/" + eventId;
+        String requestUrl = runtimeManagerBaseApi + TRIGGER_EVENT + projectId + "/" + eventId;
         return sendRequest(requestUrl);
     }
 
     // add event
     public static JEResponse addEvent(HashMap<String, Object> requestModel) throws JERunnerErrorException {
-        String requestUrl = runtimeManagerBaseApi + EVENT_ADD_EVENT;
+        String requestUrl = runtimeManagerBaseApi + ADD_EVENT;
         return sendRequestWithBody(requestUrl, requestModel);
     }
 
@@ -129,31 +129,28 @@ public class JERunnerAPIHandler {
 
     //run workflow
     public static JEResponse runWorkflow(String projectId, String workflowName) throws JERunnerErrorException {
-        String requestUrl = SIOTHConfigUtility.getSiothConfig().getJobEngine().getJeRunner()+ APIConstants.RUN_WORKFLOW + projectId + "/" + workflowName;
+        String requestUrl = SIOTHConfigUtility.getSiothConfig().getJobEngine().getJeRunner() + APIConstants.RUN_WORKFLOW + projectId + "/" + workflowName;
         return sendRequest(requestUrl);
 
     }
 
     //update event type
     public static void updateEventType(String projectId, String eventId, String type) throws JERunnerErrorException {
-        String requestUrl = runtimeManagerBaseApi + APIConstants.UPDATE_EVENT + "/" + projectId + "/" + eventId;
-        /*JELogger.debug(JEMessages.NETWORK_UPDATE_EVENT+"project id = " + projectId + "event id = " + eventId,  LogCategory.DESIGN_MODE,
-                projectId, LogSubModule.EVENT, eventId);*/
+        String requestUrl = runtimeManagerBaseApi + APIConstants.UPDATE_EVENT_TYPE + "/" + projectId + "/" + eventId;
+        JELogger.debug(JEMessages.NETWORK_UPDATE_EVENT + "project id = " + projectId + ", event id = " + eventId);
         sendRequestWithStringBody(requestUrl, type);
 
     }
-
 
     // check runner health
     public static boolean checkRunnerHealth() throws InterruptedException, JERunnerErrorException, ExecutionException {
         String requestUrl = runtimeManagerBaseApi + ACTUATOR_HEALTH;
         Response response = null;
         try {
-            //JELogger.debug(JERunnerAPIHandler.class, " url = " + requestUrl);
             response = Network.makeGetNetworkCallWithResponse(requestUrl);
             if (response != null) {
                 if (response.code() != ResponseCodes.CODE_OK) {
-                    JELogger.error(JEMessages.NETWORK_CALL_ERROR + requestUrl,  LogCategory.DESIGN_MODE,
+                    JELogger.error(JEMessages.NETWORK_CALL_ERROR + requestUrl, LogCategory.DESIGN_MODE,
                             null, LogSubModule.JEBUILDER, null);
                     throw new JERunnerErrorException(JEMessages.JERUNNER_ERROR + " : " + response.body().string());
                 }
@@ -168,9 +165,13 @@ public class JERunnerAPIHandler {
             }
 
         } catch (IOException e) {
-            JELogger.error(JEMessages.NETWORK_CALL_ERROR + requestUrl,  LogCategory.DESIGN_MODE,
+            JELogger.error(JEMessages.NETWORK_CALL_ERROR + requestUrl, LogCategory.DESIGN_MODE,
                     null, LogSubModule.JEBUILDER, null);
             throw new JERunnerErrorException(JEMessages.JERUNNER_UNREACHABLE);
+        } finally {
+            if (response != null) {
+                response.close();
+            }
         }
         return false;
     }
@@ -178,89 +179,86 @@ public class JERunnerAPIHandler {
     //delete event from runner
     public static JEResponse deleteEvent(String projectId, String eventId) throws JERunnerErrorException {
         String requestUrl = runtimeManagerBaseApi + DELETE_EVENT + "/" + projectId + "/" + eventId;
-        /*JELogger.debug(JEMessages.NETWORK_DELETE_EVENT+", project id = " + projectId + "event id = " + eventId,  LogCategory.DESIGN_MODE,
-                projectId, LogSubModule.JEBUILDER, eventId);*/
+        JELogger.debug(JEMessages.NETWORK_DELETE_EVENT + ", project id = " + projectId + ", event id = " + eventId);
         return sendDeleteRequest(requestUrl);
     }
 
     // clean project data from runner
-    public static void cleanProjectDataFromRunner(String projectId) throws JERunnerErrorException {
-        String requestUrl = runtimeManagerBaseApi + CLEAN_HOUSE + "/" + projectId ;
-        /*JELogger.debug(JEMessages.NETWORK_CLEAN_PROJECT+" project id = " + projectId,  LogCategory.DESIGN_MODE,
-                projectId, LogSubModule.JEBUILDER, null);*/
-        sendRequest(requestUrl);
+    public static JEResponse cleanProjectDataFromRunner(String projectId) throws JERunnerErrorException {
+        String requestUrl = runtimeManagerBaseApi + CLEAN_HOUSE + "/" + projectId;
+        JELogger.debug(JEMessages.NETWORK_CLEAN_PROJECT + " project id = " + projectId);
+        return sendRequest(requestUrl);
     }
 
 
-	public static JEResponse updateRunnerSettings(Object requestModel) throws JERunnerErrorException {
-	       String requestUrl = runtimeManagerBaseApi + APIConstants.UPDATE_CONFIG ;
-	       JELogger.debug(JEMessages.RUNNER_CONFFIG_UPDATE,  LogCategory.DESIGN_MODE,
+    public static JEResponse updateRunnerSettings(Object requestModel) throws JERunnerErrorException {
+        String requestUrl = runtimeManagerBaseApi + APIConstants.UPDATE_CONFIG;
+        JELogger.debug(JEMessages.RUNNER_CONFFIG_UPDATE, LogCategory.DESIGN_MODE,
                 null, LogSubModule.JEBUILDER, null);
-	        return sendRequestWithBody(requestUrl, requestModel);
-
-		
-	}
+        return sendRequestWithBody(requestUrl, requestModel);
+    }
 
     public static void deleteWorkflow(String projectId, String workflowId) throws JERunnerErrorException {
         String requestUrl = runtimeManagerBaseApi + DELETE_WORKFLOW + "/" + projectId + "/" + workflowId;
-        /*JELogger.debug(JEMessages.NETWORK_DELETE_WF+" project id = " + projectId + "workflow id = " + workflowId,  LogCategory.DESIGN_MODE,
-                projectId, LogSubModule.JEBUILDER, workflowId);*/
-         sendDeleteRequest(requestUrl);
+        JELogger.debug(JEMessages.NETWORK_DELETE_WF + " project id = " + projectId + "workflow id = " + workflowId);
+        sendDeleteRequest(requestUrl);
     }
 
-    public static void addVariable(String projectId, String varId, Object body) throws JERunnerErrorException{
-        String url = SIOTHConfigUtility.getSiothConfig().getJobEngine().getJeRunner()+ APIConstants.ADD_VARIABLE;
-        /*JELogger.debug(JEMessages.NETWORK_ADD_VAR+" project id = " + projectId + " variable id = " + varId,  LogCategory.DESIGN_MODE,
-                projectId, LogSubModule.JEBUILDER, varId);*/
+    public static void addVariable(String projectId, String varId, Object body) throws JERunnerErrorException {
+        String url = SIOTHConfigUtility.getSiothConfig().getJobEngine().getJeRunner() + APIConstants.ADD_VARIABLE;
+        JELogger.debug(JEMessages.NETWORK_ADD_VAR+" project id = " + projectId + " variable id = " + varId);
         sendRequestWithBody(url, body);
-        
     }
 
-    public static void removeVariable(String projectId, String varId) throws  JERunnerErrorException{
-        String url = SIOTHConfigUtility.getSiothConfig().getJobEngine().getJeRunner()+ DELETE_VARIABLE + "/" + projectId + "/" + varId;
-        /*JELogger.debug(JEMessages.NETWORK_DELETE_VAR+" project id = " + projectId + " var id = " + varId,  LogCategory.DESIGN_MODE,
-                projectId, LogSubModule.JEBUILDER, varId);*/
+    public static void removeVariable(String projectId, String varId) throws JERunnerErrorException {
+        String url = SIOTHConfigUtility.getSiothConfig().getJobEngine().getJeRunner() + DELETE_VARIABLE + "/" + projectId + "/" + varId;
+        JELogger.debug(JEMessages.NETWORK_DELETE_VAR + " project id = " + projectId + " var id = " + varId);
         sendDeleteRequest(url);
     }
 
-    public static JEResponse addJarToRunner(HashMap<String, String> payload) throws JERunnerErrorException{
-        String url = SIOTHConfigUtility.getSiothConfig().getJobEngine().getJeRunner()+ APIConstants.ADD_JAR;
-        //JELogger.debug(JEMessages.ADDING_JAR_FILE_TO_RUNNER + payload);
-        JELogger.debug(JEMessages.ADDING_JAR_FILE_TO_RUNNER + payload,  LogCategory.DESIGN_MODE,
+    public static JEResponse addJarToRunner(HashMap<String, String> payload) throws JERunnerErrorException {
+        String url = SIOTHConfigUtility.getSiothConfig().getJobEngine().getJeRunner() + APIConstants.ADD_JAR;
+        JELogger.debug(JEMessages.ADDING_JAR_FILE_TO_RUNNER + payload, LogCategory.DESIGN_MODE,
                 null, LogSubModule.JEBUILDER, null);
         return sendRequestWithBody(url, payload);
     }
 
-
     public static JEResponse untriggerEvent(String eventId, String projectId) throws JERunnerErrorException {
-        String requestUrl = runtimeManagerBaseApi + EVENT_UNTRIGGER_EVENT + projectId + "/" + eventId;
+        String requestUrl = runtimeManagerBaseApi + UNTRIGGER_EVENT + projectId + "/" + eventId;
         return sendRequest(requestUrl);
     }
 
-/*	public static JEResponse writeVariableValue(String projectId,String variableId, Object value, boolean ignoreIfSameValue) throws JERunnerErrorException {
-		 String requestUrl = runtimeManagerBaseApi + "/variable" + WRITE_TO_VARIABLE + projectId + "/" + variableId;
-	     HashMap<String, Object> payload = new HashMap<String, Object>();
-	     payload.put("value", value);
-	     payload.put("ignoreIfSameValue", ignoreIfSameValue);
-		 
-		 return sendRequestWithBody(requestUrl, payload);
+    /*	public static JEResponse writeVariableValue(String projectId,String variableId, Object value, boolean ignoreIfSameValue) throws JERunnerErrorException {
+             String requestUrl = runtimeManagerBaseApi + "/variable" + WRITE_TO_VARIABLE + projectId + "/" + variableId;
+             HashMap<String, Object> payload = new HashMap<String, Object>();
+             payload.put("value", value);
+             payload.put("ignoreIfSameValue", ignoreIfSameValue);
 
-		
-	}
-*/
-	public static  JEResponse  runProjectRules(String projectId) 
-		   throws JERunnerErrorException{
-		        String requestUrl = runtimeManagerBaseApi + APIConstants.RUN_PROJECT_RULES + projectId;
-		        return sendRequest(requestUrl);
-		
-	}
+             return sendRequestWithBody(requestUrl, payload);
 
-	public static JEResponse shutDownRuleEngine(String projectId) 
-			   throws JERunnerErrorException{
-        String requestUrl = runtimeManagerBaseApi + APIConstants.SHUT_DOWN_RULE_ENGINE + projectId;
+
+        }
+    */
+
+    public static JEResponse runProjectRules(String projectId)
+            throws JERunnerErrorException {
+        String requestUrl = runtimeManagerBaseApi + APIConstants.RUN_PROJECT_RULES + projectId;
         return sendRequest(requestUrl);
 
-	}
+    }
+
+    public static JEResponse runRuleEngine(String projectId)
+            throws JERunnerErrorException {
+        String requestUrl = runtimeManagerBaseApi + APIConstants.RUN_RULE_ENGINE + projectId;
+        return sendRequest(requestUrl);
+
+    }
+
+    public static JEResponse shutDownRuleEngine(String projectId)
+            throws JERunnerErrorException {
+        String requestUrl = runtimeManagerBaseApi + APIConstants.SHUT_DOWN_RULE_ENGINE + projectId;
+        return sendRequest(requestUrl);
+    }
 
 
 }
