@@ -32,6 +32,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static org.kie.api.builder.Message.Level.ERROR;
+
 enum Status {
     RUNNING, STOPPED,
 }
@@ -64,12 +66,15 @@ public class ProjectContainer {
     // The KieServices is a thread-safe singleton acting as a hub giving access
     // to the other services provided by Kie.
     private KieServices kieServices;
+
     // KieFileSystem is an in memory file system used to programmatically define
     // the resources composing a KieModule.
     private KieFileSystem kieFileSystem;
+
     // This second kieFileSystem instance is used to compile rules without
     // altering the original kieFileSystem.
     private KieFileSystem kfsToCompile;
+
     // A KieModule is a container of all the resources necessary to define a set of
     // KieBases
     private KieModuleModel kproj;
@@ -80,9 +85,11 @@ public class ProjectContainer {
     // project
     // components are altered
     private ReleaseId releaseId;
+
     // The KScanner is used to automatically discover if there are new releases for
     // a given KieModule
-    private KieScanner kScanner;
+    //private KieScanner kScanner;
+
     // A repository of all the application's knowledge definitions
     private KieBase kieBase;
     // We interact with the engine through a KieSession.
@@ -313,8 +320,13 @@ public class ProjectContainer {
 
         // build all rules
         try {
-            kieServices.newKieBuilder(kieFileSystem, JEClassLoader.getDataModelInstance())
+            KieBuilder kieBuilder = kieServices.newKieBuilder(kieFileSystem, JEClassLoader.getDataModelInstance())
                     .buildAll(null);
+
+            Results results = kieBuilder.getResults();
+
+            JELogger.debug(getKieBuilderMessages(results.getMessages()));
+
         } catch (Exception exp) {
             logError(exp, "Error creating kieBuilder");
             return false;
@@ -340,12 +352,16 @@ public class ProjectContainer {
                 */
 
                 kieContainer = kieServices.newKieContainer(releaseId, JEClassLoader.getDataModelInstance());
-                JEClassLoader.setCurrentRuleEngineClassLoader(JEClassLoader.getDataModelInstance());
-                //JELogger.debug("   CONTAINER :" + kieContainer.getClassLoader().toString());
-                kScanner = kieServices.newKieScanner(kieContainer);
+
                 kieBase = kieContainer.getKieBase("kie-base");
-                Thread.currentThread()
-                        .setContextClassLoader(JEClassLoader.getDataModelInstance());
+
+                JELogger.debug("KIE CONTAINER : " + kieContainer.getClassLoader().toString());
+
+                //kScanner = kieServices.newKieScanner(kieContainer);
+
+                JEClassLoader.setCurrentRuleEngineClassLoader(JEClassLoader.getDataModelInstance());
+
+                Thread.currentThread().setContextClassLoader(JEClassLoader.getDataModelInstance());
 
             } catch (Exception exp) {
                 logError(exp, "Error creating kieBase");
@@ -386,6 +402,7 @@ public class ProjectContainer {
 
             // generate pom file
             kieFileSystem.generateAndWritePomXML(releaseId);
+
         } catch (Exception exp) {
             logError(exp, JEMessages.UNEXPECTED_ERROR);
         }
@@ -478,10 +495,17 @@ public class ProjectContainer {
     public boolean updateContainer() {
         try {
             releaseId = kieServices.newReleaseId("io.je", "ruleengine", getReleaseVer());
+
             JELogger.debug("release Id = " + releaseId, LogCategory.RUNTIME, projectId, LogSubModule.RULE, null);
+
             kieFileSystem.generateAndWritePomXML(releaseId);
-            kieServices.newKieBuilder(kieFileSystem, JEClassLoader.getDataModelInstance())
+
+            KieBuilder kieBuilder = kieServices.newKieBuilder(kieFileSystem, JEClassLoader.getDataModelInstance())
                     .buildAll(null);
+
+            Results results = kieBuilder.getResults();
+
+            JELogger.debug(getKieBuilderMessages(results.getMessages()));
 
             if (kieContainer == null) {
                 kieContainer = kieServices.newKieContainer(releaseId, JEClassLoader.getDataModelInstance());
@@ -491,10 +515,12 @@ public class ProjectContainer {
 
             kieContainer.updateToVersion(releaseId);
 
+            /*
             if (kScanner == null) {
                 kScanner = kieServices.newKieScanner(kieContainer);
             }
             //kScanner.scanNow(); removed because it consults the internet
+            */
 
         } catch (Exception exp) {
             logError(exp, JEMessages.UNEXPECTED_ERROR);
@@ -613,7 +639,7 @@ public class ProjectContainer {
             deleteRuleFromKieFileSystem(allRules.get(ruleId));
             long endTime = System.nanoTime();
             long duration = (endTime - startTime) / 1000000; //divide by 1000000 to get milliseconds.
-            JELogger.debug("deleteRuleFromKieFileSystem : " + duration);
+            JELogger.debug("deleteRuleFromKieFileSystem : duration : " + duration + "(ms)");
 
             updateContainer();
 
@@ -658,16 +684,20 @@ public class ProjectContainer {
          * f.getName()); } } catch (ClassNotFoundException e) { e.printStackTrace(); }
          */
         // Thread.currentThread().setContextClassLoader( loader );
+
+        // FIXME Bug 69: Rule does not fire from the first run, should restart
         KieBuilder kieBuilder = kieServices.newKieBuilder(kfsToCompile, JEClassLoader.getDataModelInstance())
                 .buildAll(null);
 
         Results results = kieBuilder.getResults();
+        
+        JELogger.debug(getKieBuilderMessages(results.getMessages()));
+        
         //FIXME to check utility
         kfsToCompile.delete(filename);
 
-        if (results.hasMessages(Message.Level.ERROR)) {
-            JELogger.error(results.getMessages()
-                            .toString(), LogCategory.RUNTIME, projectId, LogSubModule.RULE,
+        if (results.hasMessages(ERROR)) {
+            JELogger.error(getKieBuilderMessages(results.getMessages(ERROR)), LogCategory.RUNTIME, projectId, LogSubModule.RULE,
                     rule.getJobEngineElementID());
             throw new RuleCompilationException(JEMessages.RULE_CONTAINS_ERRORS, results.getMessages()
                     .get(0)
@@ -676,18 +706,37 @@ public class ProjectContainer {
 
     }
 
+    public String getKieBuilderMessages(List<Message> messageList) {
+        String result = "Kie Builder Messages :";
+        for (Message message : messageList) {
+            result += " { Id : " + message.getId();
+            result += " } , { Level : " + message.getLevel();
+            result += " } , { Text : " + message.getText();
+            result += " } , { Path : " + message.getPath();
+            result += " } , { Line : " + message.getLine();
+            result += " } , { Column : " + message.getColumn();
+            result += " }";
+        }
+        return result;
+    }
     /*
      * this method compiles all the rules in this project container
      */
     public boolean compileAllRules() {
         JELogger.debugWithoutPublish("[projectId =" + projectId + "]" + JEMessages.COMPILING_RULES,
                 LogCategory.DESIGN_MODE, projectId, LogSubModule.RULE, null);
+
         KieBuilder kieBuilder = kieServices.newKieBuilder(kieFileSystem, JEClassLoader.getDataModelInstance())
                 .buildAll(null);
+
         Results results = kieBuilder.getResults();
-        if (results.hasMessages(Message.Level.ERROR)) {
-            JELogger.error(results.getMessages()
-                    .toString(), LogCategory.RUNTIME, projectId, LogSubModule.RULE, null);
+
+        JELogger.debug(getKieBuilderMessages(results.getMessages()));
+
+        if (results.hasMessages(ERROR)) {
+
+            JELogger.error(getKieBuilderMessages(results.getMessages(ERROR)), LogCategory.RUNTIME, projectId, LogSubModule.RULE, null);
+
             return false;
         }
 
