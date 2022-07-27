@@ -117,6 +117,7 @@ public class ProjectContainer {
         logError(exp, message, null);
     }
 
+    // FIXME factorize or remove if no more needed (debug / dev usage / customer support)
     void logError(Exception exp, String message, String objectId) {
         exp.printStackTrace();
         JELogger.debugWithoutPublish(Arrays.toString(exp.getStackTrace()),LogCategory.RUNTIME,projectId, LogSubModule.RULE,objectId);
@@ -332,7 +333,11 @@ public class ProjectContainer {
 
             // create container
             try {
-                // FIXME Bug 79: Error creating kieBase org.drools.compiler.kie.builder.impl.KieServicesImpl.newKieContainer(KieServicesImpl.java:190)
+                /*
+                FIXME Bug 79: Error creating kieBase org.drools.compiler.kie.builder.impl.KieServicesImpl.newKieContainer(KieServicesImpl.java:190)
+
+                FIXME Bug 110: java.lang.RuntimeException: Cannot find KieModule: io.je:ruleengine
+                */
 
                 kieContainer = kieServices.newKieContainer(releaseId, JEClassLoader.getDataModelInstance());
                 JEClassLoader.setCurrentRuleEngineClassLoader(JEClassLoader.getDataModelInstance());

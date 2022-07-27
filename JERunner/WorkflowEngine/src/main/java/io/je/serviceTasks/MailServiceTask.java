@@ -1,22 +1,24 @@
 package io.je.serviceTasks;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.squareup.okhttp.Response;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.constants.WorkflowConstants;
 import io.je.utilities.log.JELogger;
 import io.siothconfig.SIOTHConfigUtility;
+import okhttp3.Response;
 import org.activiti.engine.delegate.BpmnError;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.springframework.http.HttpStatus;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
+import utils.log.LoggerUtils;
 import utils.network.BodyType;
 import utils.network.HttpMethod;
 import utils.network.Network;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 
 import static io.je.utilities.constants.WorkflowConstants.*;
@@ -27,65 +29,8 @@ public class MailServiceTask extends ServiceTask {
     public static final String SEND_EMAIL_AUTH = "SendEmailAuth";
     public static final String SEND_EMAIL = "SendEmail";
 
-
-    public void execute(DelegateExecution execution) {
-
-        MailTask task = (MailTask) ActivitiTaskManager.getTask(execution.getCurrentActivityId());
-        HashMap<String, Object> attributes = new HashMap<>();
-        if (task.isbUseDefaultCredentials()) {
-            attributes.put(WorkflowConstants.ENABLE_SSL, task.isbEnableSSL());
-            attributes.put(WorkflowConstants.B_REQUIRE_AUTHENTICATION, task.isbUseDefaultCredentials());
-        } else {
-            attributes.put(USERNAME, task.getStrUserName());
-            attributes.put(PASSWORD, task.getStrPassword());
-        }
-        attributes.put(PORT, task.getiPort());
-        attributes.put(SENDER_ADDRESS, task.getStrSenderAddress());
-        attributes.put(SEND_TIME_OUT, task.getiSendTimeOut());
-        attributes.put(RECEIVER_ADDRESS, task.getLstRecieverAddress());
-        attributes.put(EMAIL_MESSAGE, task.getEmailMessage());
-        attributes.put(SMTP_SERVER, task.getStrSMTPServer());
-        attributes.put(CC_LIST, task.getLstCCs());
-        attributes.put(BCC_LIST, task.getLstBCCs());
-        attributes.put(ATTACHEMENT_URLS, task.getLstAttachementPaths());
-        attributes.put(UPLOADED_FILES_PATHS, task.getLstUploadedFiles());
-        String url = task.isbUseDefaultCredentials() ? SIOTHConfigUtility.getSiothConfig()
-                .getApis()
-                .getEmailAPI()
-                .getAddress() + SEND_EMAIL : SIOTHConfigUtility.getSiothConfig()
-                .getApis()
-                .getEmailAPI()
-                .getAddress() + SEND_EMAIL_AUTH;
-        try { //http://192.168.4.128:14003/api/SIOTHEmail/SendEmailAuth //http://localhost:14003/api/SIOTHEmail/SendEmailAuth
-            String json = new ObjectMapper().writeValueAsString(attributes);
-            /*Network network = new Network.Builder(url).hasBody(true)
-                    .withMethod(HttpMethod.POST).withBodyType(BodyType.JSON)
-                    .withBody(json).build();
-              Response response = network.call();
-             */
-            HashMap<String, Object> response = Network.makePostWebClientRequest(url, json);
-            HttpStatus code = (HttpStatus) response.get("code");
-
-
-            if (code.isError()) {
-                JELogger.error(JEMessages.MAIL_SERVICE_TASK_RESPONSE + ": \n" + response.get("message"), LogCategory.RUNTIME, task.getProjectId(),
-                        LogSubModule.JERUNNER, task.getWorkflowId(), task.getTaskName());
-
-            } else {
-                JELogger.control(JEMessages.EMAIL_SENT_SUCCESSFULLY, LogCategory.RUNTIME, task.getProjectId(),
-                        LogSubModule.JERUNNER, task.getWorkflowId(), task.getTaskName());
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            JELogger.error(JEMessages.UNEXPECTED_ERROR + e.getMessage(), LogCategory.RUNTIME, task.getProjectId(),
-                    LogSubModule.JERUNNER, task.getWorkflowId(), task.getTaskName());
-            throw new BpmnError(String.valueOf(ResponseCodes.UNKNOWN_ERROR));
-        }
-
-    }
-
     public static void main(String... args) {
+        // FIXME move to test main java ...
         String json = "{\n" +
                 "\"strSenderAddress\": \"ikhdhiri@integrationobjects.com\",\n" +
                 "\"lstRecieverAddress\": [\n" +
@@ -118,12 +63,71 @@ public class MailServiceTask extends ServiceTask {
                 .withBodyType(BodyType.JSON)
                 .withBody(json)
                 .build();
+
+        Response response = null;
         try {
-            Response response = network.call();
-            System.out.println(response.body()
-                    .string());
-        } catch (IOException e) {
-            e.printStackTrace();
+            response = network.call();
+            LoggerUtils.debug("MailServiceTask main response.body().string() : " + response.body().string());
+        } catch (IOException exp) {
+            LoggerUtils.error(Arrays.toString(exp.getStackTrace()));
+        } finally {
+            if (response != null && response.body() != null) {
+                response.body().close();
+            }
         }
     }
+
+    public void execute(DelegateExecution execution) {
+
+        MailTask task = (MailTask) ActivitiTaskManager.getTask(execution.getCurrentActivityId());
+        HashMap<String, Object> attributes = new HashMap<>();
+        if (task.isbUseDefaultCredentials()) {
+            attributes.put(WorkflowConstants.ENABLE_SSL, task.isbEnableSSL());
+            attributes.put(WorkflowConstants.B_REQUIRE_AUTHENTICATION, task.isbUseDefaultCredentials());
+        } else {
+            attributes.put(USERNAME, task.getStrUserName());
+            attributes.put(PASSWORD, task.getStrPassword());
+        }
+        attributes.put(PORT, task.getiPort());
+        attributes.put(SENDER_ADDRESS, task.getStrSenderAddress());
+        attributes.put(SEND_TIME_OUT, task.getiSendTimeOut());
+        attributes.put(RECEIVER_ADDRESS, task.getLstRecieverAddress());
+        attributes.put(EMAIL_MESSAGE, task.getEmailMessage());
+        attributes.put(SMTP_SERVER, task.getStrSMTPServer());
+        attributes.put(CC_LIST, task.getLstCCs());
+        attributes.put(BCC_LIST, task.getLstBCCs());
+        attributes.put(ATTACHEMENT_URLS, task.getLstAttachementPaths());
+        attributes.put(UPLOADED_FILES_PATHS, task.getLstUploadedFiles());
+        String url = task.isbUseDefaultCredentials() ? SIOTHConfigUtility.getSiothConfig()
+                .getApis()
+                .getEmailAPI()
+                .getAddress() + SEND_EMAIL : SIOTHConfigUtility.getSiothConfig()
+                .getApis()
+                .getEmailAPI()
+                .getAddress() + SEND_EMAIL_AUTH;
+        try {
+            String json = new ObjectMapper().writeValueAsString(attributes);
+
+            HashMap<String, Object> response = Network.makePostWebClientRequest(url, json);
+            HttpStatus code = (HttpStatus) response.get("code");
+
+
+            if (code.isError()) {
+                JELogger.error(JEMessages.MAIL_SERVICE_TASK_RESPONSE + ": \n" + response.get("message"), LogCategory.RUNTIME, task.getProjectId(),
+                        LogSubModule.JERUNNER, task.getWorkflowId(), task.getTaskName());
+
+            } else {
+                JELogger.control(JEMessages.EMAIL_SENT_SUCCESSFULLY, LogCategory.RUNTIME, task.getProjectId(),
+                        LogSubModule.JERUNNER, task.getWorkflowId(), task.getTaskName());
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            JELogger.error(JEMessages.UNEXPECTED_ERROR + e.getMessage(), LogCategory.RUNTIME, task.getProjectId(),
+                    LogSubModule.JERUNNER, task.getWorkflowId(), task.getTaskName());
+            throw new BpmnError(String.valueOf(ResponseCodes.UNKNOWN_ERROR));
+        }
+
+    }
+
 }

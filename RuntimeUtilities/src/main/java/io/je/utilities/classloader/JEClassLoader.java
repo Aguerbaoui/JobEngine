@@ -35,13 +35,14 @@ public class JEClassLoader extends ClassLoader {
             dataModelCustomClasses = new HashSet<>();
         }
         dataModelCustomClasses.add(classname);
-        //JELogger.debug("added class "+classname +"now list is : " + dataModelCustomClasses);
+        JELogger.debug("added class "+classname +"now list is : " + dataModelCustomClasses);
     }
 
     public static void removeClassFromDataModelClassesSet(String name) {
         try {
             dataModelCustomClasses.remove(name);
-        } catch (Exception ignored) {
+        } catch (Exception exp) {
+            JELogger.error(Arrays.toString(exp.getStackTrace()));
         }
     }
 
@@ -113,9 +114,9 @@ public class JEClassLoader extends ClassLoader {
                         null, LogSubModule.CLASS, null);
                 Class<?> c = dataModelInstance.getClass(className);
                 return c;
-            } catch (Exception e) {
+            } catch (Exception exp) {
                 JELogger.debug("Class Loading failed by je custom loader for " + className);
-                JELogger.error(Arrays.toString(e.getStackTrace()));
+                JELogger.error(Arrays.toString(exp.getStackTrace()));
             }
         }
         return super.loadClass(className);
@@ -143,8 +144,8 @@ public class JEClassLoader extends ClassLoader {
             Class<?> c = defineClass(name, byteArr, 0, byteArr.length);
             resolveClass(c);
             return c;
-        } catch (IOException e) {
-            //e.printStackTrace();
+        } catch (IOException exp) {
+            JELogger.error(Arrays.toString(exp.getStackTrace()));
             return null;
         }
     }
@@ -193,7 +194,6 @@ public class JEClassLoader extends ClassLoader {
         JEClassLoader.currentRuleEngineClassLoader = currentRuleEngineClassLoader;
     }
 
-
     public static String getJobEnginePackageName(String packageName) {
         String imp = ConfigurationConstants.JAVA_GENERATION_PATH.replace(FileUtilities.getPathPrefix(ConfigurationConstants.JAVA_GENERATION_PATH), "");
         imp = imp.replace("\\", ".");
@@ -206,4 +206,5 @@ public class JEClassLoader extends ClassLoader {
         }
         return imp.replace("..", ".");
     }
+
 }

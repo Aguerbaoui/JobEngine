@@ -30,27 +30,6 @@ public class JEConfiguration {
         }
     }
 
-    public static String getProjectBuilderUrl() {
-        if(jobEngineProperties == null) {
-            loadProperties();
-        }
-        return jobEngineProperties.getProperty("jobenginebuilder.url");
-    }
-
-    public static String getRunnerUrl() {
-        if(jobEngineProperties == null) {
-            loadProperties();
-        }
-        return jobEngineProperties.getProperty("jobenginerunner.url");
-    }
-
-    public static String getMonitorUrl() {
-        if(jobEngineProperties == null) {
-            loadProperties();
-        }
-        return jobEngineProperties.getProperty("jobenginemonitor.url");
-    }
-
     public static String getRunnerLogPath() {
         if(jobEngineProperties == null) {
             loadProperties();

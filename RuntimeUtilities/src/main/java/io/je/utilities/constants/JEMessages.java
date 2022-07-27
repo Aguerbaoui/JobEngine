@@ -289,11 +289,11 @@ public class JEMessages {
 
     public static final String WORKFLOW_BLOCK_NOT_FOUND = "Workflow block not found";
 
-    public static final String WORKFLOW_START_BLOCK_NOT_DEFINED = "Workflow start block not defined";
-    public static final String WORKFLOW_START_BLOCK_NOT_UNIQUE = "Workflow start block not unique";
-    public static final String WORKFLOW_END_BLOCK_NOT_DEFINED = "Workflow end block not defined";
+    public static final String WORKFLOW_START_BLOCK_NOT_DEFINED = "Workflow Start block not defined";
+    public static final String WORKFLOW_START_BLOCK_NOT_UNIQUE = "Workflow Start block not unique";
+    public static final String WORKFLOW_END_BLOCK_NOT_DEFINED = "Workflow End block not defined";
 
-    public static final String WORKFLOW_END_BLOCK_NOT_UNIQUE = "Workflow end block not unique";
+    public static final String WORKFLOW_END_BLOCK_NOT_UNIQUE = "Workflow End block not unique";
 
     public static final String PROJECT_NOT_FOUND = "No project with this Id was found.";
 
@@ -586,17 +586,17 @@ public class JEMessages {
 
     public static final String NETWORK_CALL_ERROR = "Error making network call for URL = ";
 
-    public static final String NETWORK_DELETE_EVENT = "Sending delete event request to JERunner,";
+    public static final String NETWORK_DELETE_EVENT = "Sending delete event request to JERunner : ";
 
-    public static final String NETWORK_CLEAN_PROJECT = "Sending clean project request ";
+    public static final String NETWORK_CLEAN_PROJECT = "Sending clean project request : ";
 
-    public static final String NETWORK_DELETE_WF = "Sending delete workflow request to JERunner,";
+    public static final String NETWORK_DELETE_WF = "Sending delete workflow request to JERunner : ";
 
-    public static final String NETWORK_ADD_VAR = "Sending add variable request to JERunner,";
+    public static final String NETWORK_ADD_VAR = "Sending add variable request to JERunner : ";
 
-    public static final String NETWORK_DELETE_VAR = "Sending delete variable request to JERunner,";
+    public static final String NETWORK_DELETE_VAR = "Sending delete variable request to JERunner : ";
 
-    public static final String NETWORK_UPDATE_EVENT = "Sending update event request to JERunner";
+    public static final String NETWORK_UPDATE_EVENT = "Sending update event request to JERunner : ";
 
 
     // ****************************************UTILS**************************************************

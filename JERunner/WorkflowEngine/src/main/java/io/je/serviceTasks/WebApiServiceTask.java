@@ -1,6 +1,6 @@
 package io.je.serviceTasks;
 
-import com.squareup.okhttp.Response;
+import okhttp3.Response;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.log.JELogger;
@@ -13,7 +13,7 @@ import utils.string.StringSub;
 
 import java.util.Arrays;
 
-public class WebApiServiceTask extends ServiceTask{
+public class WebApiServiceTask extends ServiceTask {
     @Override
     public void execute(DelegateExecution execution) {
         WebApiTask task = (WebApiTask) ActivitiTaskManager.getTask(execution.getCurrentActivityId());
@@ -40,14 +40,20 @@ public class WebApiServiceTask extends ServiceTask{
                     .toClass(task.getResponseClass()).withMethod(task.getHttpMethod()).
                     withAuthScheme(task.getAuthScheme()).withAuthentication(task.getAuthentication()).build();
         }
+        Response response = null;
         try {
-            Response response = network.call();
+            response = network.call();
             JELogger.info(JEMessages.NETWORK_CALL_RESPONSE_IN_WEB_SERVICE_TASK + " = " + response.body().string(),  LogCategory.RUNTIME,
                     task.getProjectId(), LogSubModule.WORKFLOW, null);
         } catch (Exception e) {
             JELogger.error(JEMessages.UNEXPECTED_ERROR +  Arrays.toString(e.getStackTrace()), LogCategory.RUNTIME, null,
                     LogSubModule.JERUNNER, null);
             throw new BpmnError(String.valueOf(ResponseCodes.UNKNOWN_ERROR));
+        } finally {
+            if (response != null && response.body() != null) {
+                response.body().close();
+            }
         }
     }
+
 }

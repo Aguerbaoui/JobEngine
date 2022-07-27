@@ -36,8 +36,8 @@ public class SIOTHConfigUtility {
 	private static String loadSIOTHConfig() {
 		String configPath = SIOTHConfigurationConstants.SIOTH_JSON_CONFIG + siothId + JSON;
 		try {
-			String file = configPath;
-			String json = new String(Files.readAllBytes(Paths.get(file)));
+
+			String json = new String(Files.readAllBytes(Paths.get(configPath)));
 			return json;
 
 		} catch (Exception e) {
@@ -46,7 +46,6 @@ public class SIOTHConfigUtility {
 		}
 
 	}
-
 
 
 	public static SIOTHConfig getSiothConfig() {
@@ -64,4 +63,5 @@ public class SIOTHConfigUtility {
 	public static void setSiothId(String id) {
 		siothId = id;
 	}
+
 }

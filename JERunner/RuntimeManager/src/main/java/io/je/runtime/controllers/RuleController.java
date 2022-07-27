@@ -128,7 +128,7 @@ public class RuleController {
     /*
      * compile  a  Rule
      */
-    // FIXME projectId to be removed
+    // FIXME GetMapping to delete!
     @GetMapping(value = "/deleteRule/{projectId}/{ruleId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> deleteRule(@PathVariable("projectId") String projectId,
                                         @PathVariable("ruleId") String ruleId) {

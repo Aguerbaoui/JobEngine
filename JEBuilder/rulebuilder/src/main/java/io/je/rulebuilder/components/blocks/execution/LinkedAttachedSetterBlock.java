@@ -12,77 +12,70 @@ import io.je.rulebuilder.models.ValueType;
  * destination : Linked to getter
  */
 public class LinkedAttachedSetterBlock extends ExecutionBlock {
-		
-	//SOURCE
-	ValueType sourceType; //Static , Dynamic
-	
-	//static
-	Object value;
-	
 
-	
-	//DESTINATION
-	String getterName;
-	String destinationAttributeName;
+    //SOURCE
+    ValueType sourceType; //Static , Dynamic
 
-	boolean  ignoreWriteIfSameValue=true;
-	//Constants
-	String executionerMethod= "Executioner.writeToInstance(";
-	
-
-	public LinkedAttachedSetterBlock(BlockModel blockModel) {
-		super(blockModel);
-
-		try {
-			ignoreWriteIfSameValue=(boolean) blockModel.getBlockConfiguration().get("ignoreWriteIfSameValue");
-		}catch (Exception e) {
-		}		
-		try
-		{
-			value = blockModel.getBlockConfiguration().get(AttributesMapping.NEWVALUE);
-			destinationAttributeName = (String) blockModel.getBlockConfiguration().get(AttributesMapping.DESTINATION_ATTRIBUTE_NAME);			
-			getterName =  (String) blockModel.getBlockConfiguration().get(AttributesMapping.LINKED_GETTER_NAME);
-			isProperlyConfigured=true;
-			if(inputBlockIds.size()!=1)
-			{
-				isProperlyConfigured=false;
-
-			}
-		}catch(Exception e) {
-			isProperlyConfigured=false;
-		
-		}
-		
+    //static
+    Object value;
 
 
-	}
+    //DESTINATION
+    String getterName;
+    String destinationAttributeName;
 
-	public LinkedAttachedSetterBlock() {
-		super();
-	}
+    boolean ignoreWriteIfSameValue = true;
+    //Constants
+    String executionerMethod = "Executioner.writeToInstance(";
 
 
+    public LinkedAttachedSetterBlock(BlockModel blockModel) {
+        super(blockModel);
 
-	 
-	@Override
-	public String getExpression() {		
-		StringBuilder expression = new StringBuilder();
-		String getterInstanceId = getterName.replaceAll("\\s+", "")+ ".getJobEngineElementID()";
-		expression.append(  "Executioner.updateInstanceAttributeValueFromStaticValue( "
-				 +"\"" + this.jobEngineProjectID  +"\","
-				  +"\"" + this.ruleId  +"\","
-				  +"\"" + this.blockName  +"\","				  					  
-				  + getterInstanceId  +","
-				  +"\"" + this.destinationAttributeName  +"\","
-				  + inputBlocks.get(0).getReference() +","
-				  + this.ignoreWriteIfSameValue 
-				  +");\r\n");
-				expression.append("\n");
-			
-		
-		
-	   return expression.toString();
+        try {
+            ignoreWriteIfSameValue = (boolean) blockModel.getBlockConfiguration().get("ignoreWriteIfSameValue");
+        } catch (Exception e) {
+        }
+        try {
+            value = blockModel.getBlockConfiguration().get(AttributesMapping.NEWVALUE);
+            destinationAttributeName = (String) blockModel.getBlockConfiguration().get(AttributesMapping.DESTINATION_ATTRIBUTE_NAME);
+            getterName = (String) blockModel.getBlockConfiguration().get(AttributesMapping.LINKED_GETTER_NAME);
+            isProperlyConfigured = true;
+            if (inputBlockIds.size() != 1) {
+                isProperlyConfigured = false;
 
-	}
+            }
+        } catch (Exception e) {
+            isProperlyConfigured = false;
+
+        }
+
+
+    }
+
+    public LinkedAttachedSetterBlock() {
+        super();
+    }
+
+
+    @Override
+    public String getExpression() {
+        StringBuilder expression = new StringBuilder();
+        String getterInstanceId = getterName.replaceAll("\\s+", "") + ".getJobEngineElementID()";
+        expression.append("Executioner.updateInstanceAttributeValueFromStaticValue( "
+                + "\"" + this.jobEngineProjectID + "\","
+                + "\"" + this.ruleId + "\","
+                + "\"" + this.blockName + "\","
+                + getterInstanceId + ","
+                + "\"" + this.destinationAttributeName + "\","
+                + inputBlocks.get(0).getReference() + ","
+                + this.ignoreWriteIfSameValue
+                + ");\r\n");
+        expression.append("\n");
+
+
+        return expression.toString();
+
+    }
 
 }

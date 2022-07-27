@@ -126,8 +126,9 @@ public class RuleBuilder {
      * generate script rules
      */
     public static List<ScriptedRule> scriptRule(UserDefinedRule uRule) throws RuleBuildFailedException {
-        uRule.getBlocks()
-                .init();
+
+        uRule.getBlocks().init();
+
         List<String> subRules = new ArrayList<>();
         String duration = null;
         int scriptedRulesCounter = 0;
