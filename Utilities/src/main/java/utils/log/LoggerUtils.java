@@ -85,11 +85,9 @@ public class LoggerUtils {
 	 */
 	public static void info(String message) {
 		// Log in file
-
 		if(logger != null) {
 			logger.info(message);
 		}
-		
 	}
 
 	/*
@@ -110,7 +108,6 @@ public class LoggerUtils {
 		if(logger != null) {
 			logger.warn(message);
 		}
-
 	}
 
 	// get Log message object for the logging service
