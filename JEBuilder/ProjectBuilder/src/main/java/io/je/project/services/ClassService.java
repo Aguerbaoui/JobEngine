@@ -28,6 +28,7 @@ import org.springframework.web.multipart.MultipartFile;
 import utils.files.FileUtilities;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
+import utils.log.LoggerUtils;
 import utils.string.StringUtilities;
 import utils.zmq.ZMQBind;
 import utils.zmq.ZMQSubscriber;
@@ -127,7 +128,7 @@ public class ClassService {
 
             }
         } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
+            LoggerUtils.logException(e);
             JELogger.error(CLASS_LOAD_DENIED_ACCESS, LogCategory.DESIGN_MODE, "", LogSubModule.CLASS, "");
         }
     }
@@ -662,7 +663,7 @@ public class ClassService {
             CommandExecutioner.compileCode(clazz.getClassPath(), ConfigurationConstants.isDev());
             CommandExecutioner.buildJar();
         } catch (Exception e) {
-            e.printStackTrace();
+            LoggerUtils.logException(e);
         }
         //addClass(c, true, true);
         // save updated method in db
@@ -689,7 +690,7 @@ public class ClassService {
             //FileUtilities.deleteDirectory(ConfigurationConstants.EXTERNAL_LIB_PATH);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LoggerUtils.logException(e);
         }
     }
 
@@ -723,7 +724,7 @@ public class ClassService {
                     try {
                         data = this.getSubSocket(ZMQBind.CONNECT).recvStr();
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        LoggerUtils.logException(e);
                         continue;
                     }
 
@@ -748,7 +749,8 @@ public class ClassService {
                                 updates = Arrays.asList(objectMapper.readValue(data, ModelUpdate[].class));
                             } catch (JsonProcessingException e) {
 
-                                e.printStackTrace();
+                                LoggerUtils.logException(e);
+
                                 throw new InstanceCreationFailedException("Failed to parse model update : " + e.getMessage());
 
                             }
@@ -769,7 +771,7 @@ public class ClassService {
                         }
 
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        LoggerUtils.logException(e);
                         JELogger.error(JEMessages.ERROR_GETTING_CLASS_UPDATES, LogCategory.DESIGN_MODE, null,
                                 LogSubModule.CLASS, e.getMessage());
                     }

@@ -122,7 +122,7 @@ public class MailServiceTask extends ServiceTask {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LoggerUtils.logException(e);
             JELogger.error(JEMessages.UNEXPECTED_ERROR + e.getMessage(), LogCategory.RUNTIME, task.getProjectId(),
                     LogSubModule.JERUNNER, task.getWorkflowId(), task.getTaskName());
             throw new BpmnError(String.valueOf(ResponseCodes.UNKNOWN_ERROR));

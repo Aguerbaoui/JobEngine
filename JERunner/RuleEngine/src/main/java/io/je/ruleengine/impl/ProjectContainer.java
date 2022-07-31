@@ -26,6 +26,7 @@ import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.runtime.rule.FactHandle;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
+import utils.log.LoggerUtils;
 
 import java.util.Arrays;
 import java.util.List;
@@ -846,8 +847,7 @@ public class ProjectContainer {
             // kieSession.delete(facts.get(factId));
 
         } catch (Exception e) {
-            // TODO: handle exception
-            e.printStackTrace();
+            LoggerUtils.logException(e);
         }
     }
 

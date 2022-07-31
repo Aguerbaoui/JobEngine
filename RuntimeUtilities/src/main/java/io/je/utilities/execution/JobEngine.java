@@ -18,10 +18,7 @@ import io.je.utilities.runtimeobject.JEObject;
 import io.siothconfig.SIOTHConfigUtility;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import utils.log.LogCategory;
-import utils.log.LogLevel;
-import utils.log.LogMessage;
-import utils.log.LogSubModule;
+import utils.log.*;
 import utils.string.StringUtilities;
 
 import java.io.File;
@@ -235,7 +232,7 @@ public class JobEngine {
                         "", LogCategory.RUNTIME, LogSubModule.JERUNNER);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            LoggerUtils.logException(e);
             sendLogMessage(JEMessages.ERROR_SENDING_INFORM_MESSAGE, projectName, LogLevel.ERROR,
                     "", LogCategory.RUNTIME, LogSubModule.JERUNNER);
         }
@@ -260,7 +257,7 @@ public class JobEngine {
                     .equals(ZMQResponseType.SUCCESS)) return ResponseCodes.CODE_OK;
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LoggerUtils.logException(e);
         }
 
         return respCode;
@@ -387,9 +384,9 @@ public class JobEngine {
                 mapper.findAndRegisterModules();
 
             } catch (MalformedURLException e) {
-                e.printStackTrace();
+                LoggerUtils.logException(e);
             } catch (ClassNotFoundException e) {
-                e.printStackTrace();
+                LoggerUtils.logException(e);
             }
             if (a != null) {
                 instance = (JEObject) mapper.readValue(a.get("instance"), cls);

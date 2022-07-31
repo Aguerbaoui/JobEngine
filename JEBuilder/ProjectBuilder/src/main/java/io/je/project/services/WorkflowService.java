@@ -44,6 +44,7 @@ import org.springframework.stereotype.Service;
 import utils.files.FileUtilities;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
+import utils.log.LoggerUtils;
 import utils.network.AuthScheme;
 import utils.string.StringUtilities;
 
@@ -1564,7 +1565,7 @@ public class WorkflowService {
             FileUtilities.deleteDirectory(ConfigurationConstants.BPMN_PATH);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LoggerUtils.logException(e);
         }
     }
 

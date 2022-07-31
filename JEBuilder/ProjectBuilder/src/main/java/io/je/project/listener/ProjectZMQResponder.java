@@ -9,6 +9,7 @@ import io.je.utilities.log.JELogger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import utils.log.LogSubModule;
+import utils.log.LoggerUtils;
 import utils.zmq.ZMQBind;
 import utils.zmq.ZMQResponser;
 
@@ -88,8 +89,7 @@ public class ProjectZMQResponder extends ZMQResponser {
             try {
                 Thread.sleep(500);
             } catch (InterruptedException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                LoggerUtils.logException(e);
             }
         }
 

@@ -17,6 +17,7 @@ import io.siothconfig.SIOTHConfigUtility;
 import org.springframework.http.HttpStatus;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
+import utils.log.LoggerUtils;
 import utils.network.Network;
 
 import java.io.File;
@@ -312,7 +313,7 @@ public class Executioner {
                     }
 
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    LoggerUtils.logException(e);
                     JELogger.error(JEMessages.UNEXPECTED_ERROR + e.getMessage(), LogCategory.RUNTIME, projectId,
                             LogSubModule.JERUNNER, ruleId, blockName);
 
@@ -374,7 +375,7 @@ public class Executioner {
             Method method = loadClass.getDeclaredMethods()[0];
             method.invoke(null);
         } catch (InvocationTargetException | IllegalAccessException e) {
-            e.printStackTrace();
+            LoggerUtils.logException(e);
         }
 
     }

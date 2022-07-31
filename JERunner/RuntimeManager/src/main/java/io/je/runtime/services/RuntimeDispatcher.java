@@ -29,6 +29,7 @@ import org.springframework.stereotype.Service;
 import utils.log.LogCategory;
 import utils.log.LogMessage;
 import utils.log.LogSubModule;
+import utils.log.LoggerUtils;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -269,7 +270,7 @@ public class RuntimeDispatcher {
             }
 
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            LoggerUtils.logException(e);
             //JEClassLoader.removeClassFromDataModelClassesSet(className);
             throw new ClassLoadException(
                     "[class :" + classModel.getClassName() + " ]" + JEMessages.CLASS_LOAD_FAILED);
@@ -305,8 +306,7 @@ public class RuntimeDispatcher {
                         }
                     }
                 } catch (InstanceCreationFailedException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+                    LoggerUtils.logException(e);
                 }
 
             });
@@ -448,7 +448,7 @@ public class RuntimeDispatcher {
             //JELogger.debug("hello There, your uploaded file is " + JobEngine.getJarFile("org.eclipse.jdt.core-3.7.1.jar").getName());
             JELogger.control("Jar file uploaded successfully", LogCategory.RUNTIME, "", LogSubModule.CLASS, "");
         } catch (Exception e) {
-            e.printStackTrace();
+            LoggerUtils.logException(e);
         }
     }
 

@@ -7,6 +7,7 @@ import io.licensemanager.common.SIOTHLicenseResponse;
 import io.licensemanager.common.enums.SIOTHLicenseStatus;
 import io.licensemanager.eventlistener.LicenseStatusChangeHandler;
 import io.licensemanager.utilities.LicenseUtilities;
+import utils.log.LoggerUtils;
 import utils.zmq.ZMQRequester;
 
 import java.net.InetAddress;
@@ -40,7 +41,7 @@ public class LicenseStatusWatcher implements Runnable {
             try {
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {
-				e.printStackTrace();
+                LoggerUtils.logException(e);
 			}
             int  requestTimeout = 20000;
             while (listening)

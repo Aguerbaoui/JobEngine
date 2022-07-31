@@ -2,6 +2,7 @@ package io.siothconfig;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import utils.log.LoggerUtils;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -27,8 +28,7 @@ public class SIOTHConfigUtility {
 			try {
 				siothConfig =  objectMapper.readValue(jsonString, SIOTHConfig.class);
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				LoggerUtils.logException(e);
 			}
 		}
 	}

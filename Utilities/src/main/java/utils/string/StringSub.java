@@ -1,6 +1,7 @@
 package utils.string;
 
 import org.apache.commons.text.StringSubstitutor;
+import utils.log.LoggerUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -30,7 +31,7 @@ public class StringSub {
             //HashMap<String, Object> subMap = variables.get(projectId);
             return StringSubstitutor.replace(toBeReplaced, variables.get(projectId));
         }
-         return toBeReplaced;
+        return toBeReplaced;
     }
 
     public static String replace(String toBeReplaced, HashMap<String, Object> vars) {
@@ -47,7 +48,7 @@ public class StringSub {
                     "}";
 
 
-            String test =  "{\n" +
+            String test = "{\n" +
                     "  \"id\":\"${testVar}\"\n" +
                     "}";
 
@@ -63,8 +64,8 @@ public class StringSub {
             String result = StringSubstitutor.replace(test, valuesMap);
 
             System.out.println(result);
-        }catch (Exception ex){
-            ex.printStackTrace();
+        } catch (Exception ex) {
+            LoggerUtils.logException(ex);
         }
     }
 }

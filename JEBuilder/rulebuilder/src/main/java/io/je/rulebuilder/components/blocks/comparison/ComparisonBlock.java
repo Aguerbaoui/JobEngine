@@ -13,6 +13,7 @@ import io.je.utilities.exceptions.RuleBuildFailedException;
 import io.je.utilities.log.JELogger;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
+import utils.log.LoggerUtils;
 
 import java.util.List;
 import java.util.Optional;
@@ -184,7 +185,7 @@ public class ComparisonBlock extends PersistableBlock {
             }
             return expression.toString();
         } catch (Exception e) {
-            e.printStackTrace();
+            LoggerUtils.logException(e);
             throw new RuleBuildFailedException(blockName + " is not configured properly");
         }
     }

@@ -12,6 +12,7 @@ import io.je.utilities.log.JELogger;
 import io.siothconfig.SIOTHConfigUtility;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
+import utils.log.LoggerUtils;
 
 import java.util.*;
 import java.util.Map.Entry;
@@ -116,7 +117,7 @@ public class DataModelListener {
                 RuntimeDispatcher.injectData(new JEData(topic, objectMapper.writeValueAsString(value)));
 
             } catch (JsonProcessingException e) {
-                e.printStackTrace();
+                LoggerUtils.logException(e);
             }
         }
     }

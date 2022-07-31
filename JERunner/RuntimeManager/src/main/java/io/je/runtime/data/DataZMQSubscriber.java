@@ -6,6 +6,7 @@ import io.je.utilities.constants.JEMessages;
 import io.je.utilities.log.JELogger;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
+import utils.log.LoggerUtils;
 import utils.zmq.ZMQBind;
 import utils.zmq.ZMQSubscriber;
 
@@ -37,7 +38,7 @@ public class DataZMQSubscriber extends ZMQSubscriber {
                 try {
                     data = this.getSubSocket(ZMQBind.CONNECT).recvStr();
                 } catch (Exception ex) {
-                    ex.printStackTrace();
+                    LoggerUtils.logException(ex);
                     continue;
                 }
 

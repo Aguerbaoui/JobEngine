@@ -23,6 +23,7 @@ import utils.files.FileUtilities;
 import utils.log.LogCategory;
 import utils.log.LogMessage;
 import utils.log.LogSubModule;
+import utils.log.LoggerUtils;
 import utils.string.StringUtilities;
 
 import java.io.File;
@@ -485,7 +486,7 @@ public class ProjectService {
             projectRepository.deleteAll();
             FileUtilities.deleteDirectory(ConfigurationConstants.PROJECTS_PATH);
         } catch (Exception e) {
-            e.printStackTrace();
+            LoggerUtils.logException(e);
         }
     }
 

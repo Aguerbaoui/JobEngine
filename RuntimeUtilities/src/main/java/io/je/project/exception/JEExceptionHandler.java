@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
+import utils.log.LoggerUtils;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -23,7 +24,9 @@ public class JEExceptionHandler {
     }
 
     public static ResponseEntity<?> handleException(Exception e) {
-        e.printStackTrace();
+
+        LoggerUtils.logException(e);
+
         if (e instanceof DataAccessResourceFailureException || e instanceof MongoTimeoutException || e.getCause() instanceof DataAccessResourceFailureException
                 || e.getCause() instanceof MongoTimeoutException) {
 

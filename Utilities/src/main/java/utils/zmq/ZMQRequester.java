@@ -3,6 +3,7 @@ package utils.zmq;
 import org.zeromq.SocketType;
 import org.zeromq.ZContext;
 import org.zeromq.ZMQ;
+import utils.log.LoggerUtils;
 
 
 public class ZMQRequester {
@@ -52,7 +53,7 @@ public class ZMQRequester {
 
             return reply;
         } catch (Exception e) {
-            e.printStackTrace();
+            LoggerUtils.logException(e);
         }
         return reply;
     }
@@ -83,7 +84,7 @@ public class ZMQRequester {
 
                 return reply;
             } catch (Exception e) {
-                e.printStackTrace();
+                LoggerUtils.logException(e);
             } finally {
                 closeSocket();
             }

@@ -1,6 +1,7 @@
 package utils;
 
 import utils.files.FileUtilities;
+import utils.log.LoggerUtils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -37,7 +38,7 @@ public class ProcessRunner {
             try {
                 dumpProcessOutput(process, command, true, true);
             } catch (IOException e) {
-                e.printStackTrace();
+                LoggerUtils.logException(e);
             }
         });
         thread.setName(String.valueOf(pid));

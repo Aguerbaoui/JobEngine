@@ -10,10 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
+import utils.log.LoggerUtils;
 import utils.zmq.ZMQConfiguration;
 
 @Component
-public class JEMonitorInitializingBean  implements InitializingBean {
+public class JEMonitorInitializingBean implements InitializingBean {
 
     @Autowired
     JEMonitorSubscriber subscriber;
@@ -35,7 +36,8 @@ public class JEMonitorInitializingBean  implements InitializingBean {
             ZMQConfiguration.setReceiveHighWatermark(monitorProperties.getZmqReceiveHighWatermark());
             ZMQConfiguration.setSendHighWatermark(monitorProperties.getZmqSendHighWatermark());
             subscriber.initSubscriber();
+        } catch (Exception e) {
+            LoggerUtils.logException(e);
         }
-        catch (Exception e) {e.printStackTrace();}
     }
 }
