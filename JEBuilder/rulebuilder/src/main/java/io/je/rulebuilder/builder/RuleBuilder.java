@@ -73,7 +73,6 @@ public class RuleBuilder {
      */
     public static void sendDRLToJeRunner(JERule rule, String path, boolean compileOnly) throws RuleBuildFailedException, JERunnerErrorException {
 
-
         // compile rule
 
         HashMap<String, Object> ruleMap = new HashMap<>();

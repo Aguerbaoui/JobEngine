@@ -247,6 +247,7 @@ public class RuleController {
             projectService.getProject(projectId);
 
             ruleService.compileRule(projectId, ruleId);
+
             projectService.saveProject(projectId);
 
         } catch (Exception e) {

@@ -193,8 +193,11 @@ public class ClassService {
         JELogger.debug(JEMessages.LOADING_ALL_CLASSES_FROM_DB,
                 LogCategory.DESIGN_MODE, null,
                 LogSubModule.CLASS, null);
+
         loadSIOTHProcedures();
+
         loadDataModelClasses();
+
     }
 
     /*

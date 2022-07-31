@@ -14,7 +14,6 @@ import utils.log.LogSubModule;
 import utils.log.LoggerUtils;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.ExecutionException;
 
@@ -30,15 +29,12 @@ public class JEExceptionHandler {
         if (e instanceof DataAccessResourceFailureException || e instanceof MongoTimeoutException || e.getCause() instanceof DataAccessResourceFailureException
                 || e.getCause() instanceof MongoTimeoutException) {
 
-            JELogger.logException(e);
-
             JELogger.error(JEMessages.UKNOWN_ERROR + e.getMessage(), LogCategory.RUNTIME, null,
                     LogSubModule.JEBUILDER, null);
 
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new JEResponse(ResponseCodes.DATABASE_ERROR, JEMessages.DATABASE_IS_DOWN));
-        } else if (e instanceof JEException) {
 
-            JELogger.logException(e);
+        } else if (e instanceof JEException) {
 
             JELogger.error(e.getMessage(), LogCategory.RUNTIME, null,
                     LogSubModule.JEBUILDER, null);
@@ -49,7 +45,6 @@ public class JEExceptionHandler {
             //return ResponseEntity.badRequest().body(new JEResponse(ex.getCode(), ex.getMessage()));
         } else if (e instanceof ExecutionException) {
             try {
-                JELogger.logException(e);
 
                 JELogger.error(JEMessages.UKNOWN_ERROR + e.getMessage(), LogCategory.RUNTIME, null,
                         LogSubModule.JEBUILDER, null);
@@ -60,7 +55,7 @@ public class JEExceptionHandler {
 
             } catch (Exception e1) {
 
-				JELogger.logException(e1);
+                LoggerUtils.logException(e1);
 
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new JEResponse(ResponseCodes.UNKNOWN_ERROR, e.getMessage()));
 
@@ -68,7 +63,6 @@ public class JEExceptionHandler {
 
         } else if (e instanceof CompletionException) {
             try {
-				JELogger.logException(e);
 
                 JEException ex = (JEException) e.getCause().getCause();
                 if (ex == null) {
@@ -78,19 +72,19 @@ public class JEExceptionHandler {
                         LogSubModule.JEBUILDER, null);
 
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new JEResponse(ex.getCode(), ex.getMessage()));
+
             } catch (Exception e1) {
+                LoggerUtils.logException(e1);
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new JEResponse(ResponseCodes.UNKNOWN_ERROR, e.getMessage()));
             }
 
         } else if (e instanceof IOException) {
-			JELogger.logException(e);
 
             JELogger.error(JEMessages.UKNOWN_ERROR + e.getMessage(), LogCategory.RUNTIME, null,
                     LogSubModule.JEBUILDER, null);
 
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new JEResponse(ResponseCodes.NETWORK_ERROR, String.valueOf(ResponseCodes.NETWORK_ERROR)));
         } else {
-			JELogger.logException(e);
 
             JELogger.error(JEMessages.UKNOWN_ERROR + e.getMessage(), LogCategory.RUNTIME, null,
                     LogSubModule.JEBUILDER, null);
@@ -102,7 +96,7 @@ public class JEExceptionHandler {
 
     public static String getExceptionMessage(Exception e) {
 
-		JELogger.logException(e);
+        JELogger.logException(e);
 
         if (e instanceof DataAccessResourceFailureException || e instanceof MongoTimeoutException || e.getCause() instanceof DataAccessResourceFailureException
                 || e.getCause() instanceof MongoTimeoutException) {

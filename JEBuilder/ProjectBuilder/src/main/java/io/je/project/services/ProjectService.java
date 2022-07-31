@@ -182,13 +182,18 @@ public class ProjectService {
 
     public List<OperationStatusDetails> buildAll(String projectId) throws ProjectNotFoundException,
             InterruptedException, ExecutionException, LicenseNotActiveException, ProjectLoadException {
+
         JEProject project = getProject(projectId);
+
         JELogger.info("[project= " + project.getProjectName() + "] " + JEMessages.BUILDING_PROJECT,
                 LogCategory.DESIGN_MODE, projectId, LogSubModule.JEBUILDER, null);
+
 //CompletableFuture<?> buildRules = ruleService.compileALLRules(projectId);
         CompletableFuture<List<OperationStatusDetails>> buildWorkflows = workflowService.buildWorkflows(projectId,
                 null);
+
         CompletableFuture<List<OperationStatusDetails>> buildRules = ruleService.compileRules(projectId, null);
+
         List<OperationStatusDetails> results = new ArrayList<>();
         buildWorkflows.thenApply(operationStatusDetails -> {
                     results.addAll(operationStatusDetails);
@@ -222,6 +227,7 @@ public class ProjectService {
                     JELogger.info("[project= " + project.getProjectName() + "]" + JEMessages.RUNNING_PROJECT,
                             LogCategory.DESIGN_MODE, projectId, LogSubModule.JEBUILDER, null);
                     try {
+                        // FIXME to be removed, no build on run
                         ruleService.buildRules(projectId);
 
                         JERunnerAPIHandler.runProject(projectId, project.getProjectName());
@@ -366,7 +372,9 @@ public class ProjectService {
     public CompletableFuture<Void> loadAllProjects() {
 
         JELogger.info(JEMessages.LOADING_PROJECTS, LogCategory.DESIGN_MODE, null, LogSubModule.JEBUILDER, null);
+
         List<JEProject> projects = projectRepository.findAll();
+
         for (JEProject project : projects) {
             try {
                 Optional<JEProject> p = projectRepository.findById(project.getProjectId());
@@ -383,7 +391,10 @@ public class ProjectService {
                         try {
                             eventService.registerEvent(event);
                         } catch (EventException e) {
-                            throw new ProjectLoadException(JEMessages.PROJECT_LOAD_ERROR);
+
+                            LoggerUtils.logException(e);
+
+                            throw new ProjectLoadException(JEMessages.PROJECT_LOAD_ERROR + e.getMessage());
                         }
                     }
                     for (JEVariable variable : project.getVariables()
@@ -391,7 +402,10 @@ public class ProjectService {
                         try {
                             variableService.addVariableToRunner(variable);
                         } catch (JERunnerErrorException e) {
-                            throw new ProjectLoadException(JEMessages.PROJECT_LOAD_ERROR);
+
+                            LoggerUtils.logException(e);
+
+                            throw new ProjectLoadException(JEMessages.PROJECT_LOAD_ERROR + e.getMessage());
                         }
                     }
 
@@ -413,7 +427,9 @@ public class ProjectService {
                     saveProject(project);
 
                     if (project.isAutoReload() && runStatus) {
+
                         buildAll(project.getProjectId());
+
                         runAll(project.getProjectId());
 
                     }
@@ -421,9 +437,9 @@ public class ProjectService {
                 }
             } catch (Exception exception) {
                 JELogger.logException(exception);
+
                 JELogger.warn("[project = " + project.getProjectName() + "]" + JEMessages.FAILED_TO_LOAD_PROJECT,
                         LogCategory.DESIGN_MODE, project.getProjectId(), LogSubModule.JEBUILDER, null);
-
             }
 
         }
@@ -452,7 +468,8 @@ public class ProjectService {
                     }
                 }
             } catch (Exception e) {
-                JELogger.error("Failed to send inform message to tracker", LogCategory.RUNTIME,
+                LoggerUtils.logException(e);
+                JELogger.error("Failed to send inform message to tracker : " + e.getMessage(), LogCategory.RUNTIME,
                         informBody.getProjectName(), LogSubModule.WORKFLOW, informBody.getWorkflowName());
             }
         }).start();

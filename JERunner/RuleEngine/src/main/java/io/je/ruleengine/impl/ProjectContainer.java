@@ -607,10 +607,13 @@ public class ProjectContainer {
             // update rule in map
             allRules.put(rule.getJobEngineElementID(), rule);
 
+            if (!deleteRuleFromKieFileSystem(rule)) { return false; }
+
+            if (!addRuleToKieFileSystem(rule)) { return false; }
+
             // if project is running, update container without interrupting project
-            if (!deleteRuleFromKieFileSystem(rule)) { return false; };
-            if (!addRuleToKieFileSystem(rule)) { return false; };
             updateContainer();
+
         } catch (Exception exp) {
             logError(exp, JEMessages.RULE_UPDATE_FAIL, rule.getJobEngineElementID());
             return false;

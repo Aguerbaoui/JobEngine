@@ -73,10 +73,14 @@ public class RuleEngineHandler {
      */
     public static void updateRule(RunnerRuleModel runnerRuleModel) throws RuleCompilationException, JEFileNotFoundException, RuleFormatNotValidException {
 
-    	verifyRuleIsValid(runnerRuleModel); 
+    	verifyRuleIsValid(runnerRuleModel);
+
         Rule rule = new Rule(runnerRuleModel.getRuleId(), runnerRuleModel.getProjectId(), runnerRuleModel.getRuleId(), runnerRuleModel.getFormat(), runnerRuleModel.getRulePath());
+
         rule.setJobEngineProjectName(runnerRuleModel.getProjectName());
+
         rule.setTopics(runnerRuleModel.getTopics());
+
         RuleEngine.updateRule(rule);
 
     }

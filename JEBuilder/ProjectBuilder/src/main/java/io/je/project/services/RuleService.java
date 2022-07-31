@@ -672,8 +672,9 @@ public class RuleService {
     public void compileRule(String projectId, String ruleId)
             throws LicenseNotActiveException, InterruptedException, ExecutionException, RuleBuildFailedException {
         LicenseProperties.checkLicenseIsActive();
-        OperationStatusDetails result = asyncRuleService.compileRule(projectId, ruleId, true)
-                .get();
+
+        OperationStatusDetails result = asyncRuleService.compileRule(projectId, ruleId, true).get();
+
         if (!result.isOperationSucceeded()) {
             throw new RuleBuildFailedException(result.getOperationError());
         }

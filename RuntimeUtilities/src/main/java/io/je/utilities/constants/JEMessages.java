@@ -297,7 +297,7 @@ public class JEMessages {
 
     public static final String PROJECT_NOT_FOUND = "No project with this Id was found.";
 
-    public static final String PROJECT_LOAD_ERROR = "Error loading project files";
+    public static final String PROJECT_LOAD_ERROR = "Error loading project files : ";
 
     public static final String UKNOWN_ERROR = "Unknown error";
 
