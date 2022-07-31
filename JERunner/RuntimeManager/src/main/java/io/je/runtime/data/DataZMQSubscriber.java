@@ -70,9 +70,9 @@ public class DataZMQSubscriber extends ZMQSubscriber {
                     }
 
                 } catch (Exception exp) {
-                    exp.printStackTrace();
+                    JELogger.logException(exp);
 
-                    JELogger.error(ID_MSG + JEMessages.UKNOWN_ERROR + Arrays.toString(exp.getStackTrace()),
+                    JELogger.error(ID_MSG + JEMessages.UKNOWN_ERROR + exp.getMessage(),
                             LogCategory.RUNTIME, null, LogSubModule.JERUNNER, null);
                 }
 

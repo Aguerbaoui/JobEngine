@@ -26,51 +26,45 @@ import java.util.HashMap;
 @RestController
 @CrossOrigin(maxAge = 3600)
 public class ClassController {
-	
-	
-	@Autowired
-	RuntimeDispatcher runtimeDispatcher;
 
 
-	/*
-	 * add a new class
-	 */
-	@PostMapping(value = "/addClass", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> addClass( @RequestBody ClassModel classModel) {
-		
-	
-			try {
-				runtimeDispatcher.addClass(classModel, false);
-			} catch (Exception e) {
-				return JEExceptionHandler.handleException(e);
-			}
-		
-			
-		
-		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.CLASS_WAS_ADDED_SUCCESSFULLY));
-	}
-	
-	/*
-	 * update class
-	 */
-	@PostMapping(value = "/updateClass", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> updateClass( @RequestBody ClassModel classModel, HttpServletRequest request) {
-		
-	
-			try {
+    @Autowired
+    RuntimeDispatcher runtimeDispatcher;
 
-				synchronized (runtimeDispatcher) {
-					runtimeDispatcher.updateClass(classModel);	
-				}
 
-			} catch (Exception e) {
-				return JEExceptionHandler.handleException(e);
-			}
-		
-			
-		
-		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.CLASS_WAS_ADDED_SUCCESSFULLY));
-	}
+    /*
+     * add a new class
+     */
+    @PostMapping(value = "/addClass", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> addClass(@RequestBody ClassModel classModel) {
+
+        try {
+            runtimeDispatcher.addClass(classModel, false);
+        } catch (Exception e) {
+            return JEExceptionHandler.handleException(e);
+        }
+
+        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.CLASS_WAS_ADDED_SUCCESSFULLY));
+    }
+
+    /*
+     * update class
+     */
+    @PostMapping(value = "/updateClass", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> updateClass(@RequestBody ClassModel classModel, HttpServletRequest request) {
+
+        try {
+
+            synchronized (runtimeDispatcher) {
+                runtimeDispatcher.updateClass(classModel);
+            }
+
+        } catch (Exception e) {
+            return JEExceptionHandler.handleException(e);
+        }
+
+        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.CLASS_WAS_ADDED_SUCCESSFULLY));
+    }
 
 	/*
 	
@@ -92,25 +86,18 @@ public class ClassController {
 		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.CLASS_WAS_ADDED_SUCCESSFULLY));
 	}*/
 
-	@PostMapping("/uploadJar")
-	public ResponseEntity<?> uploadJar(@RequestBody HashMap<String, String> payload) {
+    @PostMapping("/uploadJar")
+    public ResponseEntity<?> uploadJar(@RequestBody HashMap<String, String> payload) {
 
-		try {
-			runtimeDispatcher.addJarToProject(payload);
+        try {
+            runtimeDispatcher.addJarToProject(payload);
 
-		} catch (Exception e) {
-			return JEExceptionHandler.handleException(e);
-		}
+        } catch (Exception e) {
+            return JEExceptionHandler.handleException(e);
+        }
 
-		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.PROJECT_UPDATED));
-	}
-	
-	
-		
-		
-		
-		
-			
-		
-		
+        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.PROJECT_UPDATED));
+    }
+
+
 }

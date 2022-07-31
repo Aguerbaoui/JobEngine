@@ -248,7 +248,8 @@ public class ProcessManager {
                 process.getActiveThread()
                         .start();
             } catch (BpmnError e) {
-                JELogger.error("Error" + Arrays.toString(e.getStackTrace()),
+                JELogger.logException(e);
+                JELogger.error("Error" + e.getMessage(),
                         LogCategory.RUNTIME, processes.get(id)
                                 .getProjectId(),
                         LogSubModule.WORKFLOW, id);
@@ -299,7 +300,8 @@ public class ProcessManager {
                         LogSubModule.WORKFLOW, workflow.getKey());
             }
         } catch (Exception e) {
-            JELogger.error("Error in launching a process by message " + Arrays.toString(e.getStackTrace()),
+            JELogger.logException(e);
+            JELogger.error("Error in launching a process by message " + e.getMessage(),
                     LogCategory.RUNTIME, workflow.getProjectId(),
                     LogSubModule.WORKFLOW, workflow.getKey());
         }
@@ -417,8 +419,8 @@ public class ProcessManager {
                             .getProjectId(),
                     LogSubModule.WORKFLOW, workflowId);
         } catch (Exception e) {
-
-            JELogger.error(JEMessages.ERROR_DELETING_A_PROCESS + "\n" + Arrays.toString(e.getStackTrace()),
+            JELogger.logException(e);
+            JELogger.error(JEMessages.ERROR_DELETING_A_PROCESS + e.getMessage(),
                     LogCategory.RUNTIME, processes.get(workflowId)
                             .getProjectId(),
                     LogSubModule.WORKFLOW, workflowId);

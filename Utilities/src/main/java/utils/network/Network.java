@@ -82,7 +82,7 @@ public class Network {
                 return client.newCall(request)
                         .execute();
             } catch (IOException exp) {
-                LoggerUtils.error(Arrays.toString(exp.getStackTrace()));
+                LoggerUtils.logException(exp);
                 return null;
             }
         }, getAsyncExecutor());
@@ -115,7 +115,7 @@ public class Network {
                 return client.newCall(request)
                         .execute();
             } catch (IOException exp) {
-                LoggerUtils.error(Arrays.toString(exp.getStackTrace()));
+                LoggerUtils.logException(exp);
                 return null;
             }
         }, getAsyncExecutor());
@@ -141,7 +141,7 @@ public class Network {
                 return client.newCall(request)
                         .execute();
             } catch (IOException exp) {
-                LoggerUtils.error(Arrays.toString(exp.getStackTrace()));
+                LoggerUtils.logException(exp);
                 return null;
             }
         }, getAsyncExecutor());
@@ -164,7 +164,7 @@ public class Network {
                 return client.newCall(request)
                         .execute();
             } catch (IOException exp) {
-                LoggerUtils.error(Arrays.toString(exp.getStackTrace()));
+                LoggerUtils.logException(exp);
                 return null;
             }
         }, getAsyncExecutor());
@@ -184,7 +184,7 @@ public class Network {
                 return client.newCall(request)
                         .execute();
             } catch (IOException exp) {
-                LoggerUtils.error(Arrays.toString(exp.getStackTrace()));
+                LoggerUtils.logException(exp);
                 return null;
             }
         }, getAsyncExecutor());
@@ -272,7 +272,7 @@ public class Network {
                     .toBodilessEntity()
                     .block();
         } catch (Exception exp) {
-            LoggerUtils.error(Arrays.toString(exp.getStackTrace()));
+            LoggerUtils.logException(exp);
             responseMap.put("message", exp.getMessage());
             return responseMap;
         }

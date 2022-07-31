@@ -111,7 +111,6 @@ public class ComparisonBlock extends PersistableBlock {
                     .getFullName();
         } else return "";
 
-
     }
 
     public ComparisonBlock() {

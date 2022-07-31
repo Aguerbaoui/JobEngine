@@ -24,8 +24,9 @@ public class ZMQLogPublisher {
 			//System.out.println(jsonMsg);
 
 		} catch (Exception e) {
+			JELogger.logException(e);
 			// TODO : replace with custom exception
-			JELogger.error("Failed to publish log message. " + Arrays.toString(e.getStackTrace()),
+			JELogger.error("Failed to publish log message. " + e.getMessage(),
 					LogCategory.RUNTIME, null,
 					LogSubModule.JERUNNER, null);
 		}

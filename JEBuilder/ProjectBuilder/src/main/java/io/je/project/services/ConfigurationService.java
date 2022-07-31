@@ -49,8 +49,9 @@ public class ConfigurationService {
 
             updateRunner();
             classService.initClassZMQSubscriber();
-        } catch (Exception e) {
-            JELogger.debug("JEBuilder did not start properly\n" + Arrays.toString(e.getStackTrace()), LogCategory.DESIGN_MODE,
+        } catch (Exception exception) {
+            JELogger.logException(exception);
+            JELogger.debug("JEBuilder did not start properly : " + exception.getMessage(), LogCategory.DESIGN_MODE,
                     null, LogSubModule.JEBUILDER, null);
         }
 

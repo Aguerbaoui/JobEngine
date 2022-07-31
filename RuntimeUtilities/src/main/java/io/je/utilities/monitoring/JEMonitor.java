@@ -27,8 +27,9 @@ public class JEMonitor {
             //System.out.println(jsonMsg);
 
         } catch (Exception e) {
+            JELogger.logException(e);
             // TODO : replace with custom exception
-            JELogger.error("Failed to publish monitoring value. " + Arrays.toString(e.getStackTrace()),
+            JELogger.error("Failed to publish monitoring value. " + e.getMessage(),
                     LogCategory.RUNTIME, null,
                     LogSubModule.JERUNNER, null);
         }

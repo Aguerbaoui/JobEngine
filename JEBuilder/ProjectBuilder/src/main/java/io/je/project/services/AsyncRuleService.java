@@ -77,7 +77,10 @@ public class AsyncRuleService {
             rule.setContainsErrors(true);
             result.setOperationSucceeded(false);
             result.setOperationError(e.getMessage());
+
+            return CompletableFuture.completedFuture(result);
         }
+
         try {
             RuleService.updateRuleStatus(rule);
             ruleRepository.save(rule);
@@ -86,6 +89,7 @@ public class AsyncRuleService {
                     CATEGORY, projectId, RULE, null);
 
         }
+
         return CompletableFuture.completedFuture(result);
 
     }

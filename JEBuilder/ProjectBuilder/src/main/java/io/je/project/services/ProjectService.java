@@ -94,10 +94,10 @@ public class ProjectService {
 
         try {
             stopProject(id);
-        } catch (ProjectNotFoundException | ProjectStopException | LicenseNotActiveException | ExecutionException exp) {
-            JELogger.error(Arrays.toString(exp.getStackTrace()));
-        } catch (InterruptedException exp) {
-            JELogger.error(Arrays.toString(exp.getStackTrace()));
+        } catch (ProjectNotFoundException | ProjectStopException | LicenseNotActiveException | ExecutionException exception) {
+            JELogger.logException(exception);
+        } catch (InterruptedException exception) {
+            JELogger.logException(exception);
             Thread.currentThread()
                     .interrupt();
         }
@@ -106,39 +106,39 @@ public class ProjectService {
                 LogCategory.DESIGN_MODE, id, LogSubModule.JEBUILDER, null);
         try {
             JERunnerAPIHandler.cleanProjectDataFromRunner(id);
-        } catch (JERunnerErrorException exp) {
-            JELogger.error(Arrays.toString(exp.getStackTrace()));
+        } catch (JERunnerErrorException exception) {
+            JELogger.logException(exception);
             JELogger.error("Error cleaning project data from runner", LogCategory.DESIGN_MODE, id, LogSubModule.JEBUILDER, id);
         }
 
         try {
             ruleService.deleteAll(id);
-        } catch (Exception exp) {
-            JELogger.error(Arrays.toString(exp.getStackTrace()));
+        } catch (Exception exception) {
+            JELogger.logException(exception);
             JELogger.error("Error deleting rules", LogCategory.DESIGN_MODE, id, LogSubModule.JEBUILDER, id);
         }
         try {
             workflowService.deleteAll(id);
-        } catch (Exception exp) {
-            JELogger.error(Arrays.toString(exp.getStackTrace()));
+        } catch (Exception exception) {
+            JELogger.logException(exception);
             JELogger.error("Error deleting workflows", LogCategory.DESIGN_MODE, id, LogSubModule.JEBUILDER, id);
         }
         try {
             eventService.deleteEvents(id, null);
-        } catch (Exception exp) {
-            JELogger.error(Arrays.toString(exp.getStackTrace()));
+        } catch (Exception exception) {
+            JELogger.logException(exception);
             JELogger.error("Error deleting events", LogCategory.DESIGN_MODE, id, LogSubModule.JEBUILDER, id);
         }
         try {
             variableService.deleteVariables(id, null);
-        } catch (Exception exp) {
-            JELogger.error(Arrays.toString(exp.getStackTrace()));
+        } catch (Exception exception) {
+            JELogger.logException(exception);
             JELogger.error("Error deleting variables", LogCategory.DESIGN_MODE, id, LogSubModule.JEBUILDER, id);
         }
         try {
             projectRepository.deleteById(id);
-        } catch (Exception exp) {
-            JELogger.error(Arrays.toString(exp.getStackTrace()));
+        } catch (Exception exception) {
+            JELogger.logException(exception);
             JELogger.error("Error deleting project from database", LogCategory.DESIGN_MODE, id, LogSubModule.JEBUILDER,
                     id);
         }
@@ -229,8 +229,9 @@ public class ProjectService {
 
                         project.getRuleEngine().setRunning(true);
 
-                    } catch (Exception exp) {
-                        throw new ProjectRunException(JEMessages.ERROR_RUNNING_PROJECT + Arrays.toString(exp.getStackTrace()));
+                    } catch (Exception exception) {
+                        JELogger.logException(exception);
+                        throw new ProjectRunException(JEMessages.ERROR_RUNNING_PROJECT + exception.getMessage());
                     }
                     project.setRunning(true);
                     saveProject(projectId).get();
@@ -417,8 +418,8 @@ public class ProjectService {
                     }
 
                 }
-            } catch (Exception exp) {
-                JELogger.error(Arrays.toString(exp.getStackTrace()));
+            } catch (Exception exception) {
+                JELogger.logException(exception);
                 JELogger.warn("[project = " + project.getProjectName() + "]" + JEMessages.FAILED_TO_LOAD_PROJECT,
                         LogCategory.DESIGN_MODE, project.getProjectId(), LogSubModule.JEBUILDER, null);
 

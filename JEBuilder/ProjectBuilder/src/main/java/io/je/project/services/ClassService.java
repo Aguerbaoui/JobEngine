@@ -607,8 +607,9 @@ public class ClassService {
             classRepository.save(clazz);
 
 
-        } catch (Exception e) {
-            JELogger.error(JEMessages.ERROR_REMOVING_LIBRARY + "\n" + Arrays.toString(e.getStackTrace()),
+        } catch (Exception exception) {
+            JELogger.logException(exception);
+            JELogger.error(JEMessages.ERROR_REMOVING_LIBRARY + " : " + exception.getMessage(),
                     LogCategory.DESIGN_MODE, "", LogSubModule.CLASS, name);
             throw new MethodException(JEMessages.ERROR_REMOVING_METHOD);
         }

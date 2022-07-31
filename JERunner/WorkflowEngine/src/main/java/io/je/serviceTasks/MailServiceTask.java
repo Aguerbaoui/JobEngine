@@ -69,7 +69,7 @@ public class MailServiceTask extends ServiceTask {
             response = network.call();
             LoggerUtils.debug("MailServiceTask main response.body().string() : " + response.body().string());
         } catch (IOException exp) {
-            LoggerUtils.error(Arrays.toString(exp.getStackTrace()));
+            LoggerUtils.logException(exp);
         } finally {
             if (response != null && response.body() != null) {
                 response.body().close();

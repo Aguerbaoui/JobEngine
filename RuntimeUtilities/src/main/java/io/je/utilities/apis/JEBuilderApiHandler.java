@@ -131,7 +131,7 @@ public class JEBuilderApiHandler {
 			ObjectMapper objectMapper = new ObjectMapper();
 			return objectMapper.readValue(respBody, VariableModel.class);*/
         } catch (Exception exp) {
-            JELogger.error(Arrays.toString(exp.getStackTrace()));
+            JELogger.logException(exp);
             return null;
         }
     }
@@ -142,7 +142,7 @@ public class JEBuilderApiHandler {
         try {
             return sendRequestWithBody(requestUrl, value);
         } catch (Exception exp) {
-            JELogger.error(Arrays.toString(exp.getStackTrace()));
+            JELogger.logException(exp);
             return null;
         }
     }

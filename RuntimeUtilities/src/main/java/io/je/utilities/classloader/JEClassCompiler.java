@@ -79,8 +79,9 @@ public class JEClassCompiler {
 				}
 			}
 			fileManager.close();
-		}catch (Exception e) {
-			JELogger.error(JEMessages.UNEXPECTED_ERROR + Arrays.toString(e.getStackTrace()), LogCategory.RUNTIME,
+		}catch (Exception exp) {
+			JELogger.logException(exp);
+			JELogger.error(JEMessages.UNEXPECTED_ERROR + exp.getStackTrace(), LogCategory.RUNTIME,
 					null, LogSubModule.JERUNNER, null);
 		}
 		if(!message.isEmpty()) {

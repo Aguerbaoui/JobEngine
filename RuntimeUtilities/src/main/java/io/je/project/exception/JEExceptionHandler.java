@@ -19,128 +19,139 @@ import java.util.concurrent.ExecutionException;
 
 public class JEExceptionHandler {
 
-	private JEExceptionHandler() {}
-	public static ResponseEntity<?> handleException(Exception e) {
-		e.printStackTrace();
-		if (e instanceof DataAccessResourceFailureException || e instanceof MongoTimeoutException || e.getCause() instanceof DataAccessResourceFailureException
-		 || e.getCause() instanceof MongoTimeoutException) {
-			JELogger.error(JEMessages.UKNOWN_ERROR + Arrays.toString(e.getStackTrace()), LogCategory.RUNTIME, null,
-					LogSubModule.JEBUILDER, null);
+    private JEExceptionHandler() {
+    }
 
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new JEResponse(ResponseCodes.DATABASE_ERROR, JEMessages.DATABASE_IS_DOWN));
-		}
+    public static ResponseEntity<?> handleException(Exception e) {
+        e.printStackTrace();
+        if (e instanceof DataAccessResourceFailureException || e instanceof MongoTimeoutException || e.getCause() instanceof DataAccessResourceFailureException
+                || e.getCause() instanceof MongoTimeoutException) {
 
-		else if (e instanceof JEException) {
-			JEException ex = (JEException) e;
-			JELogger.error(e.getMessage(), LogCategory.RUNTIME, null,
-					LogSubModule.JEBUILDER, null);
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new JEResponse(ex.getCode(), ex.getMessage()));
-			//return ResponseEntity.badRequest().body(new JEResponse(ex.getCode(), ex.getMessage()));
-		}
+            JELogger.logException(e);
 
-		else if (e instanceof ExecutionException) {
-			try {
-				JEException ex = (JEException) e.getCause();
-				JELogger.error(JEMessages.UKNOWN_ERROR + Arrays.toString(ex.getStackTrace()), LogCategory.RUNTIME, null,
-						LogSubModule.JEBUILDER, null);
-				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new JEResponse(ex.getCode(), ex.getMessage()));
-			} catch (Exception e1) {
-				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new JEResponse(ResponseCodes.UNKNOWN_ERROR, e.getMessage()));
+            JELogger.error(JEMessages.UKNOWN_ERROR + e.getMessage(), LogCategory.RUNTIME, null,
+                    LogSubModule.JEBUILDER, null);
 
-			}
-			
-				}
-		else if ( e instanceof CompletionException) {
-			try {
-				JEException ex = (JEException) e.getCause().getCause();
-				if(ex==null)
-				{
-					ex = (JEException) e.getCause();
-				}
-				JELogger.error(JEMessages.UKNOWN_ERROR + Arrays.toString(ex.getStackTrace()), LogCategory.RUNTIME, null,
-						LogSubModule.JEBUILDER, null);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new JEResponse(ResponseCodes.DATABASE_ERROR, JEMessages.DATABASE_IS_DOWN));
+        } else if (e instanceof JEException) {
 
-				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new JEResponse(ex.getCode(), ex.getMessage()));
-			} catch (Exception e1) {
-				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new JEResponse(ResponseCodes.UNKNOWN_ERROR, e.getMessage()));
-			}
+            JELogger.logException(e);
 
-		} else if (e instanceof IOException) {
-			JELogger.error(JEMessages.UKNOWN_ERROR + Arrays.toString(e.getStackTrace()), LogCategory.RUNTIME, null,
-					LogSubModule.JEBUILDER, null);
+            JELogger.error(e.getMessage(), LogCategory.RUNTIME, null,
+                    LogSubModule.JEBUILDER, null);
 
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new JEResponse(ResponseCodes.NETWORK_ERROR, String.valueOf(ResponseCodes.NETWORK_ERROR)));
-		}
+            JEException ex = (JEException) e;
 
-		else {
-			JELogger.error(JEMessages.UKNOWN_ERROR + Arrays.toString(e.getStackTrace()), LogCategory.RUNTIME, null,
-					LogSubModule.JEBUILDER, null);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new JEResponse(ex.getCode(), ex.getMessage()));
+            //return ResponseEntity.badRequest().body(new JEResponse(ex.getCode(), ex.getMessage()));
+        } else if (e instanceof ExecutionException) {
+            try {
+                JELogger.logException(e);
 
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new JEResponse(ResponseCodes.UNKNOWN_ERROR, e.getMessage()));
-		}
+                JELogger.error(JEMessages.UKNOWN_ERROR + e.getMessage(), LogCategory.RUNTIME, null,
+                        LogSubModule.JEBUILDER, null);
 
-	}
-	
-	public static String getExceptionMessage(Exception e) {
-		e.printStackTrace();
-		if (e instanceof DataAccessResourceFailureException || e instanceof MongoTimeoutException || e.getCause() instanceof DataAccessResourceFailureException
-		 || e.getCause() instanceof MongoTimeoutException) {
-			JELogger.error(JEMessages.UKNOWN_ERROR + Arrays.toString(e.getStackTrace()), LogCategory.RUNTIME, null,
-					LogSubModule.JEBUILDER, null);
+                JEException ex = (JEException) e.getCause();
 
-			return JEMessages.DATABASE_IS_DOWN;
-		}
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new JEResponse(ex.getCode(), ex.getMessage()));
 
-		else if (e instanceof JEException) {
-			JEException ex = (JEException) e;
-			JELogger.error(e.getMessage(), LogCategory.RUNTIME, null,
-					LogSubModule.JEBUILDER, null);
-			return ex.getMessage();
+            } catch (Exception e1) {
+
+				JELogger.logException(e1);
+
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new JEResponse(ResponseCodes.UNKNOWN_ERROR, e.getMessage()));
+
+            }
+
+        } else if (e instanceof CompletionException) {
+            try {
+				JELogger.logException(e);
+
+                JEException ex = (JEException) e.getCause().getCause();
+                if (ex == null) {
+                    ex = (JEException) e.getCause();
+                }
+                JELogger.error(JEMessages.UKNOWN_ERROR + ex.getMessage(), LogCategory.RUNTIME, null,
+                        LogSubModule.JEBUILDER, null);
+
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new JEResponse(ex.getCode(), ex.getMessage()));
+            } catch (Exception e1) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new JEResponse(ResponseCodes.UNKNOWN_ERROR, e.getMessage()));
+            }
+
+        } else if (e instanceof IOException) {
+			JELogger.logException(e);
+
+            JELogger.error(JEMessages.UKNOWN_ERROR + e.getMessage(), LogCategory.RUNTIME, null,
+                    LogSubModule.JEBUILDER, null);
+
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new JEResponse(ResponseCodes.NETWORK_ERROR, String.valueOf(ResponseCodes.NETWORK_ERROR)));
+        } else {
+			JELogger.logException(e);
+
+            JELogger.error(JEMessages.UKNOWN_ERROR + e.getMessage(), LogCategory.RUNTIME, null,
+                    LogSubModule.JEBUILDER, null);
+
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new JEResponse(ResponseCodes.UNKNOWN_ERROR, e.getMessage()));
+        }
+
+    }
+
+    public static String getExceptionMessage(Exception e) {
+
+		JELogger.logException(e);
+
+        if (e instanceof DataAccessResourceFailureException || e instanceof MongoTimeoutException || e.getCause() instanceof DataAccessResourceFailureException
+                || e.getCause() instanceof MongoTimeoutException) {
+            JELogger.error(JEMessages.UKNOWN_ERROR + e.getMessage(), LogCategory.RUNTIME, null,
+                    LogSubModule.JEBUILDER, null);
+
+            return JEMessages.DATABASE_IS_DOWN;
+        } else if (e instanceof JEException) {
+            JEException ex = (JEException) e;
+            JELogger.error(e.getMessage(), LogCategory.RUNTIME, null,
+                    LogSubModule.JEBUILDER, null);
+            return ex.getMessage();
 //return ResponseEntity.badRequest().body(new JEResponse(ex.getCode(), ex.getMessage()));
-		}
+        } else if (e instanceof ExecutionException) {
+            try {
+                JEException ex = (JEException) e.getCause();
+                JELogger.error(JEMessages.UKNOWN_ERROR + ex.getMessage(), LogCategory.RUNTIME, null,
+                        LogSubModule.JEBUILDER, null);
+                return ex.getMessage();
+            } catch (Exception e1) {
 
-		else if (e instanceof ExecutionException) {
-			try {
-				JEException ex = (JEException) e.getCause();
-				JELogger.error(JEMessages.UKNOWN_ERROR + Arrays.toString(ex.getStackTrace()), LogCategory.RUNTIME, null,
-						LogSubModule.JEBUILDER, null);
-				return ex.getMessage();
-			} catch (Exception e1) {
-				return e.getMessage();
+                return e.getMessage();
 
-			}
-			
-				}
-		else if ( e instanceof CompletionException) {
-			try {
-				JEException ex = (JEException) e.getCause().getCause();
-				if(ex==null)
-				{
-					ex = (JEException) e.getCause();
-				}
-				JELogger.error(JEMessages.UKNOWN_ERROR + Arrays.toString(ex.getStackTrace()), LogCategory.RUNTIME, null,
-						LogSubModule.JEBUILDER, null);
+            }
 
-				return ex.getMessage();
-				} catch (Exception e1) {
-					return e.getMessage();
-			}
+        } else if (e instanceof CompletionException) {
+            try {
+                JEException ex = (JEException) e.getCause().getCause();
+                if (ex == null) {
+                    ex = (JEException) e.getCause();
+                }
+                JELogger.error(JEMessages.UKNOWN_ERROR + ex.getMessage(), LogCategory.RUNTIME, null,
+                        LogSubModule.JEBUILDER, null);
 
-		} else if (e instanceof IOException) {
-			JELogger.error(JEMessages.UKNOWN_ERROR + Arrays.toString(e.getStackTrace()), LogCategory.RUNTIME, null,
-					LogSubModule.JEBUILDER, null);
+                return ex.getMessage();
+            } catch (Exception e1) {
+                return e.getMessage();
+            }
 
-			return JEMessages.UKNOWN_ERROR;
-		}
+        } else if (e instanceof IOException) {
+            JELogger.error(JEMessages.UKNOWN_ERROR + e.getMessage(), LogCategory.RUNTIME, null,
+                    LogSubModule.JEBUILDER, null);
 
-		else {
-			JELogger.error(JEMessages.UKNOWN_ERROR + Arrays.toString(e.getStackTrace()), LogCategory.RUNTIME, null,
-					LogSubModule.JEBUILDER, null);
+            return JEMessages.UKNOWN_ERROR;
+        } else {
+            JELogger.error(JEMessages.UKNOWN_ERROR + e.getMessage(), LogCategory.RUNTIME, null,
+                    LogSubModule.JEBUILDER, null);
 
-			return JEMessages.UKNOWN_ERROR;
-		}
+            return JEMessages.UKNOWN_ERROR;
+        }
 
-	}
-	
+    }
+
 
 }

@@ -50,6 +50,7 @@ public class RuleBuilder {
         JELogger.control(JEMessages.BUILDING_RULE + " : " + jeRule.getJobEngineElementName(),
                 LogCategory.DESIGN_MODE, jeRule.getJobEngineProjectID(),
                 LogSubModule.RULE, jeRule.getJobEngineElementID());
+
         if (jeRule instanceof UserDefinedRule) {
             List<ScriptedRule> unitRules = scriptRule(((UserDefinedRule) jeRule));
             for (ScriptedRule rule : unitRules) {
@@ -58,6 +59,7 @@ public class RuleBuilder {
                 sendDRLToJeRunner(rule, rulePath, compileOnly);
             }
         }
+
         if (jeRule instanceof ScriptedRule) {
             rulePath = ((ScriptedRule) jeRule).generateDRL(buildPath);
             sendDRLToJeRunner(jeRule, rulePath, compileOnly);
@@ -102,18 +104,19 @@ public class RuleBuilder {
             try {
                 jeRunnerResp = JERunnerAPIHandler.updateRule(ruleMap);
             } catch (JERunnerErrorException e) {
+                JELogger.logException(e);
                 JELogger.error(" [ project = " + rule.getJobEngineProjectName() + " ] [rule = " + rule.getJobEngineElementName() + "]"
-                                + JEMessages.RULE_BUILD_FAILED,
+                                + JEMessages.RULE_BUILD_FAILED + " : " + e.getMessage(),
                         LogCategory.DESIGN_MODE, rule.getJobEngineProjectID(),
                         LogSubModule.RULE, rule.getJobEngineElementID());
-                throw new RuleBuildFailedException(JEMessages.RULE_BUILD_FAILED + ": " + e.getMessage());
+                throw new RuleBuildFailedException(JEMessages.RULE_BUILD_FAILED + " : " + e.getMessage());
             }
         }
 
         if (jeRunnerResp == null || jeRunnerResp.getCode() != ResponseCodes.CODE_OK) {
             String response = jeRunnerResp == null ? JEMessages.JERUNNER_UNREACHABLE : jeRunnerResp.getMessage();
             JELogger.error("[project = " + rule.getJobEngineProjectName()
-                            + "][rule =" + rule.getJobEngineElementName() + " ]"
+                            + "][rule =" + rule.getJobEngineElementName() + " ] : "
                             + JEMessages.RULE_BUILD_FAILED + response,
                     LogCategory.DESIGN_MODE, rule.getJobEngineProjectID(),
                     LogSubModule.RULE, rule.getJobEngineElementID());
@@ -156,10 +159,13 @@ public class RuleBuilder {
             }
             // add time persistence
             String rootDuration = root.getPersistence();
+
             String script = generateScript(uRule.getRuleParameters(), scriptedRuleid, rootDuration, condition, consequences);
-            JELogger.debug(JEMessages.GENERATED_RULE + script,
+
+            JELogger.debug(JEMessages.GENERATED_RULE + "\n" + script,
                     LogCategory.DESIGN_MODE, uRule.getJobEngineProjectID(),
                     LogSubModule.RULE, uRule.getJobEngineElementID());
+
             ScriptedRule rule = new ScriptedRule(uRule.getJobEngineProjectID(), scriptedRuleid, script,
                     uRule.getJobEngineElementName() + scriptedRulesCounter, uRule.getJobEngineProjectName());
             rule.setTopics(uRule.getTopics());
@@ -185,7 +191,22 @@ public class RuleBuilder {
         ruleTemplateAttributes.put("enabled", ruleParameters.getEnabled());
         ruleTemplateAttributes.put("condition", condition);
         ruleTemplateAttributes.put("consequence", consequences);
+        // Duration runs only at the beginning of rule execution
         ruleTemplateAttributes.put("duration", duration);
+
+        // Persistence added for next events
+        long persistence = 0;
+        if (duration != null) {
+            if (duration.endsWith("s")) {
+                persistence = Long.parseLong(duration.substring(0, duration.length() - 1)) * 1000;
+            } else if (duration.endsWith("m")) {
+                persistence = Long.parseLong(duration.substring(0, duration.length() - 1)) * 1000 * 60;
+            } else if (duration.endsWith("h")) {
+                persistence = Long.parseLong(duration.substring(0, duration.length() - 1)) * 1000 * 3600;
+            }
+        }
+        ruleTemplateAttributes.put("persistence", "" + persistence);
+
         if (ruleParameters.getDateEffective() != null && !ruleParameters.getDateEffective()
                 .isEmpty()) {
             LocalDateTime date = LocalDateTime.ofInstant(Instant.parse(ruleParameters.getDateEffective()), ZoneId.systemDefault());
@@ -203,8 +224,12 @@ public class RuleBuilder {
             ruleContent = objectDataCompiler.compile(Arrays.asList(ruleTemplateAttributes),
                     RuleBuilder.class.getClassLoader()
                             .getResourceAsStream("RuleTemplate.drl"));
-        } catch (Exception e) {
-            throw new RuleBuildFailedException(JEMessages.RULE_BUILD_FAILED + e.getMessage());
+        } catch (Exception exception) {
+
+            JELogger.logException(exception);
+
+            throw new RuleBuildFailedException(JEMessages.RULE_BUILD_FAILED + " : " + exception.getMessage());
+
         }
 
         String content = StringSubstitutor.replace(ruleContent, ruleTemplateAttributes);

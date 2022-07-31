@@ -126,9 +126,8 @@ public class ProjectContainer {
 
     // FIXME factorize or remove if no more needed (debug / dev usage / customer support)
     void logError(Exception exp, String message, String objectId) {
-        exp.printStackTrace();
-        JELogger.debugWithoutPublish(Arrays.toString(exp.getStackTrace()),LogCategory.RUNTIME,projectId, LogSubModule.RULE,objectId);
-        JELogger.error(message, LogCategory.RUNTIME, projectId, LogSubModule.RULE,objectId);
+        JELogger.logException(exp);
+        JELogger.error(message, LogCategory.RUNTIME, projectId, LogSubModule.RULE, objectId);
     }
 
     public void resetContainer() {
@@ -256,7 +255,7 @@ public class ProjectContainer {
 
             logError(exp, JEMessages.FAILED_TO_FIRE_RULES);
 
-            throw new RulesNotFiredException(Arrays.toString(exp.getStackTrace()));
+            throw new RulesNotFiredException(JEMessages.FAILED_TO_FIRE_RULES);
 
         }
 
@@ -626,7 +625,7 @@ public class ProjectContainer {
     public void deleteRule(String ruleId) throws DeleteRuleException {
         try {
             JELogger.debugWithoutPublish(
-                    "[projectId = " + projectId + "] [ruleId : " + ruleId + "] " + JEMessages.DELETING_RULE ,
+                    "[projectId = " + projectId + "] [ruleId = " + ruleId + "] " + JEMessages.DELETING_RULE ,
                     LogCategory.RUNTIME, projectId, LogSubModule.RULE, ruleId);
             // check that rule exists
             if (!ruleExists(ruleId)) {
@@ -639,7 +638,7 @@ public class ProjectContainer {
             deleteRuleFromKieFileSystem(allRules.get(ruleId));
             long endTime = System.nanoTime();
             long duration = (endTime - startTime) / 1000000; //divide by 1000000 to get milliseconds.
-            JELogger.debug("deleteRuleFromKieFileSystem : duration : " + duration + "(ms)");
+            JELogger.debug("deleteRuleFromKieFileSystem : duration : " + duration + " (ms)");
 
             updateContainer();
 
@@ -699,9 +698,7 @@ public class ProjectContainer {
         if (results.hasMessages(ERROR)) {
             JELogger.error(getKieBuilderMessages(results.getMessages(ERROR)), LogCategory.RUNTIME, projectId, LogSubModule.RULE,
                     rule.getJobEngineElementID());
-            throw new RuleCompilationException(JEMessages.RULE_CONTAINS_ERRORS, results.getMessages()
-                    .get(0)
-                    .getText());
+            throw new RuleCompilationException(JEMessages.RULE_CONTAINS_ERRORS, getKieBuilderMessages(results.getMessages(ERROR)));
         }
 
     }
