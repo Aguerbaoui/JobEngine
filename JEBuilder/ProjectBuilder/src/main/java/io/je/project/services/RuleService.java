@@ -717,20 +717,6 @@ public class RuleService {
     }
 
     /*
-     * run a specific rule.
-     */
-    public void runRule(String projectId, String ruleId)
-            throws LicenseNotActiveException, RuleBuildFailedException, InterruptedException, ExecutionException {
-        //LicenseProperties.checkLicenseIsActive();
-        OperationStatusDetails result = asyncRuleService.runRule(projectId, ruleId)
-                .get();
-        if (!result.isOperationSucceeded()) {
-            throw new RuleBuildFailedException(result.getOperationError());
-        }
-
-    }
-
-    /*
      * Get Project by id
      * */
     private JEProject getProject(String projectId) throws ProjectNotFoundException, ProjectLoadException, LicenseNotActiveException {
@@ -791,6 +777,20 @@ public class RuleService {
                 }
             }
 
+        }
+
+    }
+
+    /*
+     * run a specific rule.
+     */
+    public void runRule(String projectId, String ruleId)
+            throws LicenseNotActiveException, RuleBuildFailedException, InterruptedException, ExecutionException {
+        //LicenseProperties.checkLicenseIsActive();
+        OperationStatusDetails result = asyncRuleService.runRule(projectId, ruleId)
+                .get();
+        if (!result.isOperationSucceeded()) {
+            throw new RuleBuildFailedException(result.getOperationError());
         }
 
     }

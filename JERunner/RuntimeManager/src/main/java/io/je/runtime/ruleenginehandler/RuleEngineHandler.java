@@ -75,7 +75,7 @@ public class RuleEngineHandler {
 
     	verifyRuleIsValid(runnerRuleModel);
 
-        Rule rule = new Rule(runnerRuleModel.getRuleId(), runnerRuleModel.getProjectId(), runnerRuleModel.getRuleId(), runnerRuleModel.getFormat(), runnerRuleModel.getRulePath());
+        Rule rule = new Rule(runnerRuleModel.getRuleId(), runnerRuleModel.getProjectId(), runnerRuleModel.getRuleName(), runnerRuleModel.getFormat(), runnerRuleModel.getRulePath());
 
         rule.setJobEngineProjectName(runnerRuleModel.getProjectName());
 

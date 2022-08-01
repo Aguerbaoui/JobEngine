@@ -1,5 +1,6 @@
 package io.je.ruleengine.impl;
 
+import io.je.ruleengine.drools.PersistenceMap;
 import io.je.ruleengine.loader.RuleLoader;
 import io.je.ruleengine.models.Rule;
 import io.je.utilities.classloader.JEClassLoader;
@@ -671,6 +672,11 @@ public class ProjectContainer {
         JELogger.debugWithoutPublish(
                 "[projectId =" + projectId + "] " + JEMessages.COMPILING_RULE_WITH_ID + rule.getJobEngineElementID(),
                 LogCategory.DESIGN_MODE, rule.getJobEngineProjectID(), LogSubModule.RULE, rule.getJobEngineElementID());
+
+        // Reset rule persistence
+        if (PersistenceMap.getRulesPersistenceMap().get(rule.getJobEngineElementID()) != null) {
+            PersistenceMap.getRulesPersistenceMap().put(rule.getJobEngineElementID(), null);
+        }
 
         RuleLoader.loadRuleContent(rule);
 

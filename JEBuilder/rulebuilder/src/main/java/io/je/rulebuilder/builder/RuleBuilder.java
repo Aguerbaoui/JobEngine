@@ -77,22 +77,24 @@ public class RuleBuilder {
 
         HashMap<String, Object> ruleMap = new HashMap<>();
         ruleMap.put(JERunnerRuleMapping.PROJECT_ID, rule.getJobEngineProjectID());
-        ruleMap.put(JERunnerRuleMapping.PROJECT_NAME, rule.getJobEngineElementName());
-        ruleMap.put(JERunnerRuleMapping.PATH, path);
+        ruleMap.put(JERunnerRuleMapping.PROJECT_NAME, rule.getJobEngineProjectName());
+        ruleMap.put(JERunnerRuleMapping.RULE_PATH, path);
         ruleMap.put(JERunnerRuleMapping.RULE_ID, rule.getJobEngineElementID());
 
         // TODO: remove hard-coded rule format
-        ruleMap.put(JERunnerRuleMapping.FORMAT, "DRL");
-        ruleMap.put(JERunnerRuleMapping.TOPICS, rule.getTopics()
+        ruleMap.put(JERunnerRuleMapping.RULE_FORMAT, "DRL");
+        ruleMap.put(JERunnerRuleMapping.RULE_TOPICS, rule.getTopics()
                 .keySet());
 
         JELogger.debug(" [ project = " + rule.getJobEngineProjectName() + " ] [rule = " + rule.getJobEngineElementName() + "]"
                         + JEMessages.SENDNG_RULE_TO_RUNNER,
                 LogCategory.DESIGN_MODE, rule.getJobEngineProjectID(),
                 LogSubModule.RULE, rule.getJobEngineElementID());
+
         JELogger.debug(" Rule : " + ruleMap,
                 LogCategory.DESIGN_MODE, rule.getJobEngineProjectID(),
                 LogSubModule.RULE, rule.getJobEngineElementID());
+
         JEResponse jeRunnerResp = null;
 
         if (compileOnly) {
@@ -101,7 +103,9 @@ public class RuleBuilder {
 
         } else {
             try {
+
                 jeRunnerResp = JERunnerAPIHandler.updateRule(ruleMap);
+
             } catch (JERunnerErrorException e) {
                 JELogger.logException(e);
                 JELogger.error(" [ project = " + rule.getJobEngineProjectName() + " ] [rule = " + rule.getJobEngineElementName() + "]"

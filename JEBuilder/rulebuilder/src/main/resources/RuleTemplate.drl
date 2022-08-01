@@ -42,7 +42,6 @@ template "JobEngineRuleTemplate"
 rule "@{ruleName}"  @Propagation(IMMEDIATE)
 dialect "mvel"
 salience @{salience}
-duration (@{duration})
 enabled @{enabled}
 date-effective @{dateEffective}
 date-expires @{dateExpires}
@@ -73,6 +72,7 @@ then
     if (rulePersistence.getDuration() >= @{persistence}) {
 
         rulePersistence.setDuration( null );
+        rulePersistence.setStartTimestamp( null );
 
         @{consequence}
 
