@@ -564,6 +564,7 @@ public class JEProject {
         for (WorkflowBlock b : wf.getAllBlocks().values()) {
             if (b instanceof SubProcessBlock) {
                 for (JEWorkflow workflow : workflows.values()) {
+                    // FIXME Name vs ID !!!
                     if (workflow.getJobEngineElementName()
                             .equals(((SubProcessBlock) b).getSubWorkflowId()) && !workflow.isEnabled()) {
                         wf.setHasErrors(true);

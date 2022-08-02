@@ -1,16 +1,18 @@
 package io.je.ruleengine.impl;
 
-import io.je.ruleengine.drools.PersistenceMap;
+import io.je.ruleengine.control.PersistenceMap;
+import io.je.ruleengine.listener.RuleListener;
 import io.je.ruleengine.loader.RuleLoader;
 import io.je.ruleengine.models.Rule;
 import io.je.utilities.classloader.JEClassLoader;
+import io.je.utilities.config.ConfigurationConstants;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.*;
 import io.je.utilities.log.JELogger;
 import io.je.utilities.ruleutils.IdManager;
 import io.je.utilities.runtimeobject.JEObject;
 import org.apache.commons.lang3.StringUtils;
-import org.drools.core.event.DebugRuleRuntimeEventListener;
+import org.drools.core.event.DebugAgendaEventListener;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.builder.*;
@@ -19,7 +21,7 @@ import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.builder.model.KieSessionModel;
 import org.kie.api.conf.EqualityBehaviorOption;
 import org.kie.api.conf.EventProcessingOption;
-import org.kie.api.event.rule.DebugAgendaEventListener;
+import org.kie.api.event.rule.DebugRuleRuntimeEventListener;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
@@ -29,7 +31,6 @@ import utils.log.LogCategory;
 import utils.log.LogSubModule;
 import utils.log.LoggerUtils;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -221,12 +222,15 @@ public class ProjectContainer {
             }
             Runnable runnable = () -> {
                 try {
-                    // https://docs.drools.org/7.70.0.Final/drools-docs/html_single/index.html#_event_model
-                    // kieSession.addEventListener(new DebugAgendaEventListener());
-                    // kieSession.addEventListener(new DebugRuleRuntimeEventListener());
+                    if (ConfigurationConstants.isDev()) {
+                        // https://docs.drools.org/7.68.0.Final/drools-docs/html_single/index.html#_event_model
+                        // kieSession.addEventListener(new DebugAgendaEventListener());
+                        // kieSession.addEventListener(new DebugRuleRuntimeEventListener());
+                    }
 
-                    //  kieSession.addEventListener(new RuleListener(projectId));
-                    //  kieSession.addEventListener(ruleListener);
+                    RuleListener ruleListener = new RuleListener(projectId);
+                    kieSession.addEventListener(ruleListener);
+
                     // Thread.currentThread().setContextClassLoader(loader);
 
                     // FIXME Bug 72: java.lang.NullPointerException at org.drools.core.phreak.PhreakJoinNode.updateChildLeftTuple(PhreakJoinNode.java:463)
@@ -428,17 +432,17 @@ public class ProjectContainer {
      */
     private boolean addRuleToKieFileSystem(Rule rule) {
 
-        if (rule == null || rule.getJobEngineElementName() == null) return false;
+        if (rule == null || rule.getJobEngineElementID() == null) return false;
 
         try {
-            String ruleName = generateResourceName(ResourceType.DRL, rule.getJobEngineElementName());
+            String drlName = generateResourceName(ResourceType.DRL, rule.getJobEngineElementID());
 
-            JELogger.trace(">>> adding ", LogCategory.RUNTIME, projectId, LogSubModule.RULE, ruleName);
+            JELogger.trace(">>> adding ", LogCategory.RUNTIME, projectId, LogSubModule.RULE, drlName);
 
-            kieFileSystem.write(ruleName, rule.getContent());
+            kieFileSystem.write(drlName, rule.getContent());
 
         } catch (Exception exp) {
-            logError(exp, JEMessages.FAILED_TO_ADD_RULE);
+            logError(exp, JEMessages.FAILED_TO_ADD_RULE + rule.getJobEngineElementID());
             return false;
         }
 
@@ -450,19 +454,19 @@ public class ProjectContainer {
      */
     private boolean deleteRuleFromKieFileSystem(Rule rule) {
 
-        if (rule == null || rule.getJobEngineElementName() == null) return false;
+        if (rule == null || rule.getJobEngineElementID() == null) return false;
 
         try {
-            String ruleName = generateResourceName(ResourceType.DRL, rule.getJobEngineElementName());
+            String drlName = generateResourceName(ResourceType.DRL, rule.getJobEngineElementID());
 
-            JELogger.trace(">>> deleting ", LogCategory.RUNTIME, projectId, LogSubModule.RULE, ruleName);
+            JELogger.trace(">>> deleting ", LogCategory.RUNTIME, projectId, LogSubModule.RULE, drlName);
 
-            if (kieFileSystem.read(ruleName) != null) {
-                kieFileSystem.delete(ruleName);
+            if (kieFileSystem.read(drlName) != null) {
+                kieFileSystem.delete(drlName);
             }
 
         } catch (Exception exp) {
-            logError(exp, JEMessages.FAILED_TO_DELETE_RULE, rule.getJobEngineElementName());
+            logError(exp, JEMessages.FAILED_TO_DELETE_RULE, rule.getJobEngineElementID());
             return false;
         }
 
@@ -557,8 +561,8 @@ public class ProjectContainer {
     public void addRule(Rule rule)
             throws RuleCompilationException, RuleAlreadyExistsException, JEFileNotFoundException {
 
-        JELogger.debugWithoutPublish("[projectId =" + projectId + "] " + JEMessages.ADDING_RULE + " ["
-                        + rule.getJobEngineElementName() + "]", LogCategory.RUNTIME, projectId, LogSubModule.RULE,
+        JELogger.debugWithoutPublish("[projectId =" + projectId + "] " + JEMessages.ADDING_RULE + " [ruleId ="
+                        + rule.getJobEngineElementID() + "]", LogCategory.RUNTIME, projectId, LogSubModule.RULE,
                 rule.getJobEngineElementID());
 
         // check if rule already exists
@@ -587,8 +591,8 @@ public class ProjectContainer {
      */
     public boolean updateRule(Rule rule) throws RuleCompilationException, JEFileNotFoundException {
         try {
-            JELogger.debugWithoutPublish("[projectId =" + projectId + "] " + JEMessages.UPDATING_RULE + " ["
-                            + rule.getJobEngineElementName() + "]", LogCategory.RUNTIME, projectId, LogSubModule.RULE,
+            JELogger.debugWithoutPublish("[projectId =" + projectId + "] " + JEMessages.UPDATING_RULE + " [ruleId ="
+                            + rule.getJobEngineElementID() + "]", LogCategory.RUNTIME, projectId, LogSubModule.RULE,
                     rule.getJobEngineElementID());
             // compile rule
             compileRule(rule);
@@ -667,10 +671,8 @@ public class ProjectContainer {
      */
     public void compileRule(Rule rule) throws RuleCompilationException, JEFileNotFoundException {
 
-        // load rule content from rule path
-
         JELogger.debugWithoutPublish(
-                "[projectId =" + projectId + "] " + JEMessages.COMPILING_RULE_WITH_ID + rule.getJobEngineElementID(),
+                "[projectId =" + projectId + "] " + JEMessages.COMPILING_RULE + " Id : " + rule.getJobEngineElementID(),
                 LogCategory.DESIGN_MODE, rule.getJobEngineProjectID(), LogSubModule.RULE, rule.getJobEngineElementID());
 
         // Reset rule persistence
@@ -678,9 +680,10 @@ public class ProjectContainer {
             PersistenceMap.getRulesPersistenceMap().put(rule.getJobEngineElementID(), null);
         }
 
+        // Load rule content from rule path
         RuleLoader.loadRuleContent(rule);
 
-        String filename = generateResourceName(ResourceType.DRL, rule.getJobEngineElementName());
+        String filename = generateResourceName(ResourceType.DRL, rule.getJobEngineElementID());
 
         kfsToCompile.write(filename, rule.getContent());
 
@@ -730,7 +733,7 @@ public class ProjectContainer {
      * this method compiles all the rules in this project container
      */
     public boolean compileAllRules() {
-        JELogger.debugWithoutPublish("[projectId =" + projectId + "]" + JEMessages.COMPILING_RULES,
+        JELogger.debugWithoutPublish("[projectId =" + projectId + "]" + JEMessages.COMPILING_ALL_RULES,
                 LogCategory.DESIGN_MODE, projectId, LogSubModule.RULE, null);
 
         KieBuilder kieBuilder = kieServices.newKieBuilder(kieFileSystem, JEClassLoader.getDataModelInstance())
@@ -754,8 +757,8 @@ public class ProjectContainer {
     /*
      * generate the rule's internal path for the rule to be added to KFS
      */
-    private String generateResourceName(ResourceType type, String ruleName) {
-        return "src/main/resources/" + ruleName + "." + type.getDefaultExtension();
+    private String generateResourceName(ResourceType type, String ruleId) {
+        return "src/main/resources/" + ruleId + "." + type.getDefaultExtension();
 
     }
 

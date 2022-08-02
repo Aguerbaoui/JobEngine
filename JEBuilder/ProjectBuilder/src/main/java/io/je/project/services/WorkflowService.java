@@ -967,7 +967,8 @@ public class WorkflowService {
             result.setOperationError(msg);
             result.setOperationSucceeded(false);
             workflow.setStatus(Status.ERROR);
-            MonitoringMessage statusMessage = new MonitoringMessage(LocalDateTime.now(), workflow.getJobEngineElementName(), ObjectType.JEWORKFLOW,
+            // FIXME check getJobEngineElementID modification regression
+            MonitoringMessage statusMessage = new MonitoringMessage(LocalDateTime.now(), workflow.getJobEngineElementID(), ObjectType.JEWORKFLOW,
                     projectId, workflow.getJobEngineElementName(), Status.ERROR.toString());
             JEMonitor.publish(statusMessage);
             JELogger.error(msg, LogCategory.DESIGN_MODE, projectId, LogSubModule.WORKFLOW, workflowId);
@@ -1577,14 +1578,15 @@ public class WorkflowService {
     //map bean to model
     public WorkflowModel mapJEWorkflowToModel(JEWorkflow wf) {
         WorkflowModel model = new WorkflowModel();
+        model.setId(wf.getJobEngineElementID());
+        model.setProjectId(wf.getJobEngineProjectID());
         model.setName(wf.getJobEngineElementName());
+        model.setProjectName(wf.getJobEngineProjectName());
         model.setOnProjectBoot(wf.isOnProjectBoot());
         model.setModifiedBy(wf.getJeObjectModifiedBy());
         model.setDescription(wf.getDescription());
         model.setCreatedBy(wf.getJeObjectCreatedBy());
-        model.setId(wf.getJobEngineElementID());
         model.setPath(wf.getBpmnPath());
-        model.setProjectId(wf.getJobEngineProjectID());
         model.setTriggeredByEvent(wf.isTriggeredByEvent());
         model.setStatus(wf.getStatus()
                 .toString());
@@ -1594,7 +1596,6 @@ public class WorkflowService {
                 .toString());
         model.setFrontConfig(wf.getFrontConfig());
         model.setEnabled(wf.isEnabled());
-        model.setProjectName(wf.getJobEngineProjectName());
         return model;
     }
 

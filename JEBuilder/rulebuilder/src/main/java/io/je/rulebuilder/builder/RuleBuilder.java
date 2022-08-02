@@ -53,10 +53,10 @@ public class RuleBuilder {
 
         if (jeRule instanceof UserDefinedRule) {
             List<ScriptedRule> unitRules = scriptRule(((UserDefinedRule) jeRule));
-            for (ScriptedRule rule : unitRules) {
+            for (ScriptedRule scriptedRule : unitRules) {
                 // generate drl
-                rulePath = rule.generateDRL(buildPath);
-                sendDRLToJeRunner(rule, rulePath, compileOnly);
+                rulePath = scriptedRule.generateDRL(buildPath);
+                sendDRLToJeRunner(scriptedRule, rulePath, compileOnly);
             }
         }
 
@@ -76,11 +76,13 @@ public class RuleBuilder {
         // compile rule
 
         HashMap<String, Object> ruleMap = new HashMap<>();
-        ruleMap.put(JERunnerRuleMapping.PROJECT_ID, rule.getJobEngineProjectID());
-        ruleMap.put(JERunnerRuleMapping.PROJECT_NAME, rule.getJobEngineProjectName());
-        ruleMap.put(JERunnerRuleMapping.RULE_PATH, path);
-        ruleMap.put(JERunnerRuleMapping.RULE_ID, rule.getJobEngineElementID());
 
+        ruleMap.put(JERunnerRuleMapping.PROJECT_ID, rule.getJobEngineProjectID());
+        ruleMap.put(JERunnerRuleMapping.RULE_ID, rule.getJobEngineElementID());
+        ruleMap.put(JERunnerRuleMapping.PROJECT_NAME, rule.getJobEngineProjectName());
+        ruleMap.put(JERunnerRuleMapping.RULE_NAME, rule.getJobEngineElementName());
+
+        ruleMap.put(JERunnerRuleMapping.RULE_PATH, path);
         // TODO: remove hard-coded rule format
         ruleMap.put(JERunnerRuleMapping.RULE_FORMAT, "DRL");
         ruleMap.put(JERunnerRuleMapping.RULE_TOPICS, rule.getTopics()
@@ -156,7 +158,6 @@ public class RuleBuilder {
             if (root instanceof ConditionBlock) {
                 consequences = ((ConditionBlock) root).getConsequences();
 
-
             } else {
                 consequences = root.getExpression();
             }
@@ -169,10 +170,10 @@ public class RuleBuilder {
                     LogCategory.DESIGN_MODE, uRule.getJobEngineProjectID(),
                     LogSubModule.RULE, uRule.getJobEngineElementID());
 
-            ScriptedRule rule = new ScriptedRule(uRule.getJobEngineProjectID(), scriptedRuleid, script,
+            ScriptedRule scriptedRule = new ScriptedRule(uRule.getJobEngineProjectID(), scriptedRuleid, script,
                     uRule.getJobEngineElementName() + scriptedRulesCounter, uRule.getJobEngineProjectName());
-            rule.setTopics(uRule.getTopics());
-            scriptedRules.add(rule);
+            scriptedRule.setTopics(uRule.getTopics());
+            scriptedRules.add(scriptedRule);
             subRules.add(scriptedRuleid);
             uRule.setSubRules(subRules);
 

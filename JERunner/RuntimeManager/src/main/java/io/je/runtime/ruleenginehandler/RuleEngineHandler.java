@@ -59,12 +59,13 @@ public class RuleEngineHandler {
      */
 
     public static void addRule(RunnerRuleModel runnerRuleModel) throws RuleAlreadyExistsException, RuleCompilationException, JEFileNotFoundException, RuleFormatNotValidException {
-    	verifyRuleIsValid(runnerRuleModel);       
-        Rule rule = new Rule(runnerRuleModel.getRuleId(), runnerRuleModel.getProjectId(), runnerRuleModel.getRuleName(), runnerRuleModel.getFormat(), runnerRuleModel.getRulePath());
-        rule.setJobEngineProjectName(runnerRuleModel.getProjectName());
-        RuleEngine.addRule(rule);  
-      
 
+		verifyRuleIsValid(runnerRuleModel);
+
+        Rule rule = new Rule(runnerRuleModel.getRuleId(), runnerRuleModel.getProjectId(), runnerRuleModel.getRuleName(),
+								runnerRuleModel.getProjectName(), runnerRuleModel.getFormat(), runnerRuleModel.getRulePath());
+
+        RuleEngine.addRule(rule);  
 
     }
 
@@ -75,9 +76,9 @@ public class RuleEngineHandler {
 
     	verifyRuleIsValid(runnerRuleModel);
 
-        Rule rule = new Rule(runnerRuleModel.getRuleId(), runnerRuleModel.getProjectId(), runnerRuleModel.getRuleName(), runnerRuleModel.getFormat(), runnerRuleModel.getRulePath());
-
-        rule.setJobEngineProjectName(runnerRuleModel.getProjectName());
+		// FIXME runnerRuleModel.getRuleName() null
+        Rule rule = new Rule(runnerRuleModel.getRuleId(), runnerRuleModel.getProjectId(), runnerRuleModel.getRuleName(),
+								runnerRuleModel.getProjectName(), runnerRuleModel.getFormat(), runnerRuleModel.getRulePath());
 
         rule.setTopics(runnerRuleModel.getTopics());
 
@@ -139,9 +140,7 @@ public class RuleEngineHandler {
 		verifyRuleIsValid(runnerRuleModel);
 
         Rule rule = new Rule(runnerRuleModel.getRuleId(), runnerRuleModel.getProjectId(), runnerRuleModel.getRuleName(),
-				runnerRuleModel.getFormat(), runnerRuleModel.getRulePath());
-
-        rule.setJobEngineProjectName(runnerRuleModel.getProjectName());
+								runnerRuleModel.getProjectName(), runnerRuleModel.getFormat(), runnerRuleModel.getRulePath());
 
         RuleEngine.compileRule(rule);
 

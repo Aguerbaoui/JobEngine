@@ -227,13 +227,13 @@ public class JEMessages {
 
     public static final String LOADING_RULES = "Getting all rules";
 
-    public static final String ADDING_RULE = "Adding rule ";
+    public static final String ADDING_RULE = "Adding rule";
 
     public static final String UPDATING_RULE = "Updating rule";
 
-    public static final String COMPILING_RULE_WITH_ID = "Compiling rule, Id : ";
+    public static final String COMPILING_RULE = "Compiling rule";
 
-    public static final String COMPILING_RULES = "Compiling all rules";
+    public static final String COMPILING_ALL_RULES = "Compiling all rules";
 
     public static final String LOADING_RULE = "Getting rule";
 

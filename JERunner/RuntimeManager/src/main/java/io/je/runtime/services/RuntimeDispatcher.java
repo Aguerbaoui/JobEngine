@@ -133,7 +133,7 @@ public class RuntimeDispatcher {
     public void addRule(RunnerRuleModel runnerRuleModel) throws RuleAlreadyExistsException, RuleCompilationException,
             JEFileNotFoundException, RuleFormatNotValidException {
 
-        JELogger.debug(JEMessages.ADDING_RULE + " : " + runnerRuleModel.getRuleName(), LogCategory.RUNTIME,
+        JELogger.debug(JEMessages.ADDING_RULE + " : ruleId =" + runnerRuleModel.getRuleId(), LogCategory.RUNTIME,
                 runnerRuleModel.getProjectId(), LogSubModule.RULE, runnerRuleModel.getRuleId());
         RuleEngineHandler.addRule(runnerRuleModel);
     }
@@ -153,7 +153,7 @@ public class RuntimeDispatcher {
     public void compileRule(RunnerRuleModel runnerRuleModel)
             throws RuleFormatNotValidException, RuleCompilationException, JEFileNotFoundException {
 
-        JELogger.debug(JEMessages.COMPILING_RULE_WITH_ID + runnerRuleModel.getRuleId(), LogCategory.RUNTIME,
+        JELogger.debug(JEMessages.COMPILING_RULE + " Id : " + runnerRuleModel.getRuleId(), LogCategory.RUNTIME,
                 runnerRuleModel.getProjectId(), LogSubModule.RULE, runnerRuleModel.getRuleId());
 
         RuleEngineHandler.compileRule(runnerRuleModel);
@@ -165,6 +165,43 @@ public class RuntimeDispatcher {
         JELogger.debug("[projectId = " + projectId + "] [ruleId = " + ruleId + "] " + JEMessages.DELETING_RULE,
                 LogCategory.RUNTIME, projectId, LogSubModule.RULE, ruleId);
         RuleEngineHandler.deleteRule(projectId, ruleId);
+    }
+
+    public List<OperationStatusDetails> updateRules(List<RunnerRuleModel> runnerRuleModels) {
+
+        List<OperationStatusDetails> updateResult = new ArrayList<>();
+
+        for (RunnerRuleModel runnerRuleModel : runnerRuleModels) {
+
+            OperationStatusDetails details = new OperationStatusDetails(runnerRuleModel.getRuleId());
+
+            removeRuleTopics(runnerRuleModel.getRuleId());
+
+            addTopics(runnerRuleModel.getProjectId(), runnerRuleModel.getRuleId(), "rule", runnerRuleModel.getTopics());
+
+            try {
+                updateRule(runnerRuleModel);
+                details.setOperationSucceeded(true);
+                updateResult.add(details);
+            } catch (RuleCompilationException | JEFileNotFoundException | RuleFormatNotValidException e) {
+                details.setOperationSucceeded(false);
+                details.setOperationError(e.getMessage());
+                updateResult.add(details);
+                // FIXME finally
+                return updateResult;
+            }
+
+        }
+
+        return updateResult;
+
+    }
+
+    public void compileRules(List<RunnerRuleModel> runnerRuleModels) throws RuleFormatNotValidException, RuleCompilationException, JEFileNotFoundException {
+        for (RunnerRuleModel runnerRuleModel : runnerRuleModels) {
+            compileRule(runnerRuleModel);
+        }
+
     }
 
     // ***********************************WORKFLOW********************************************************
@@ -485,43 +522,6 @@ public class RuntimeDispatcher {
 
         RuleEngineHandler.stopRuleEngineProjectExecution(projectId);
         projectStatus.put(projectId, false);
-
-    }
-
-    public List<OperationStatusDetails> updateRules(List<RunnerRuleModel> runnerRuleModels) {
-
-        List<OperationStatusDetails> updateResult = new ArrayList<>();
-
-        for (RunnerRuleModel runnerRuleModel : runnerRuleModels) {
-
-            OperationStatusDetails details = new OperationStatusDetails(runnerRuleModel.getRuleId());
-
-            removeRuleTopics(runnerRuleModel.getRuleId());
-
-            addTopics(runnerRuleModel.getProjectId(), runnerRuleModel.getRuleId(), "rule", runnerRuleModel.getTopics());
-
-            try {
-                updateRule(runnerRuleModel);
-                details.setOperationSucceeded(true);
-                updateResult.add(details);
-            } catch (RuleCompilationException | JEFileNotFoundException | RuleFormatNotValidException e) {
-                details.setOperationSucceeded(false);
-                details.setOperationError(e.getMessage());
-                updateResult.add(details);
-                // FIXME finally
-                return updateResult;
-            }
-
-        }
-
-        return updateResult;
-
-    }
-
-    public void compileRules(List<RunnerRuleModel> runnerRuleModels) throws RuleFormatNotValidException, RuleCompilationException, JEFileNotFoundException {
-        for (RunnerRuleModel runnerRuleModel : runnerRuleModels) {
-            compileRule(runnerRuleModel);
-        }
 
     }
 

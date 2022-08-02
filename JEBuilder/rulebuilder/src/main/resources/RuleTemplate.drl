@@ -28,8 +28,8 @@ import io.je.utilities.beans.JEEvent;
 import io.je.utilities.beans.JEVariable;
 import io.je.utilities.beans.JEMessage;
 import io.je.utilities.beans.JEBlockMessage;
-import io.je.ruleengine.drools.Persistence;
-import io.je.ruleengine.drools.PersistenceMap;
+import io.je.ruleengine.control.Persistence;
+import io.je.ruleengine.control.PersistenceMap;
 import io.je.ruleengine.utils.JEMathUtils;
 import io.je.project.variables.VariableManager;
 

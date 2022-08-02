@@ -29,4 +29,5 @@ public class JERunnerInitBean implements InitializingBean {
             LoggerUtils.logException(e);
         }
     }
+
 }
