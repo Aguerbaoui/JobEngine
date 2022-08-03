@@ -6,6 +6,7 @@ salience
 duration
 persistence
 condition
+notCondition
 consequence
 enabled
 dateEffective
@@ -19,6 +20,7 @@ import java.time.Instant;
 import java.util.Date;
 import java.util.HashMap;
 import java.lang.Long;
+import java.lang.Boolean;
 
 import utils.maths.*;
 
@@ -43,6 +45,7 @@ rule "@{ruleName}"  @Propagation(IMMEDIATE)
 dialect "mvel"
 salience @{salience}
 enabled @{enabled}
+no-loop true
 date-effective @{dateEffective}
 date-expires @{dateExpires}
 timer (cron:@{cronExpression})
@@ -75,6 +78,34 @@ then
         rulePersistence.setStartTimestamp( null );
 
         @{consequence}
+
+    }
+
+end
+
+
+
+rule "reset persistence counter @{ruleName}"  @Propagation(IMMEDIATE)
+dialect "mvel"
+salience @{salience}
+enabled @{enabled}
+date-effective @{dateEffective}
+date-expires @{dateExpires}
+timer (cron:@{cronExpression})
+
+when
+
+    @{notCondition}
+
+then
+
+    Persistence rulePersistence = PersistenceMap.getRulesPersistenceMap().get("@{ruleName}");
+
+    if (rulePersistence != null) {
+
+        rulePersistence.setDuration( null );
+
+        rulePersistence.setStartTimestamp( null );
 
     }
 

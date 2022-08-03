@@ -74,10 +74,10 @@ public class RuleService {
             throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
         }
 
-        // TODO : remove harcoded msgs
         if (ruleModel.getRuleId() == null) {
             throw new RuleNotAddedException(JEMessages.RULE_ID_NULL);
         }
+
         if (ruleModel.getRuleName() == null) {
             throw new RuleNotAddedException(JEMessages.RULE_NAME_NULL);
         }

@@ -148,23 +148,26 @@ public class RuleBuilder {
             uRule.getBlocks()
                     .resetAllBlocks();
             scriptedRuleid = subRulePrefix + uRule.getJobEngineElementName() + ++scriptedRulesCounter;
+
             String condition = "";
+            String notCondition = "";
+
             if (root instanceof ConditionBlock) {
                 condition = root.getExpression();
-
+                notCondition = "not ( " + condition.replaceAll("\n", " and ") + " ) ";
             }
 
             String consequences = "";
             if (root instanceof ConditionBlock) {
                 consequences = ((ConditionBlock) root).getConsequences();
-
             } else {
                 consequences = root.getExpression();
             }
+
             // add time persistence
             String rootDuration = root.getPersistence();
 
-            String script = generateScript(uRule.getRuleParameters(), scriptedRuleid, rootDuration, condition, consequences);
+            String script = generateScript(uRule.getRuleParameters(), scriptedRuleid, rootDuration, condition, consequences, notCondition);
 
             JELogger.debug(JEMessages.GENERATED_RULE + "\n" + script,
                     LogCategory.DESIGN_MODE, uRule.getJobEngineProjectID(),
@@ -183,10 +186,11 @@ public class RuleBuilder {
 
 
     /* generate DRL for this rule */
-    private static String generateScript(RuleParameters ruleParameters, String ruleId, String duration, String condition, String consequences)
+    private static String generateScript(RuleParameters ruleParameters, String ruleId, String duration, String condition,
+                                         String consequences, String notCondition)
             throws RuleBuildFailedException {
 
-        // set rule attributes
+        // Set rule attributes
         Map<String, String> ruleTemplateAttributes = new HashMap<>();
         ruleTemplateAttributes.put("customImport", ConfigurationConstants.getJobEngineCustomImport());
         ruleTemplateAttributes.put("ruleName", ruleId);
@@ -195,7 +199,8 @@ public class RuleBuilder {
         ruleTemplateAttributes.put("enabled", ruleParameters.getEnabled());
         ruleTemplateAttributes.put("condition", condition);
         ruleTemplateAttributes.put("consequence", consequences);
-        // Duration runs only at the beginning of rule execution
+        ruleTemplateAttributes.put("notCondition", notCondition);
+        // Duration replaced by Persistence
         ruleTemplateAttributes.put("duration", duration);
 
         // Persistence added for next events

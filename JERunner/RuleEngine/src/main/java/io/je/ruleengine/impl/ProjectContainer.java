@@ -226,10 +226,10 @@ public class ProjectContainer {
                         // https://docs.drools.org/7.68.0.Final/drools-docs/html_single/index.html#_event_model
                         // kieSession.addEventListener(new DebugAgendaEventListener());
                         // kieSession.addEventListener(new DebugRuleRuntimeEventListener());
+                        //RuleListener ruleListener = new RuleListener(projectId);
+                        //kieSession.addEventListener(ruleListener);
                     }
 
-                    RuleListener ruleListener = new RuleListener(projectId);
-                    kieSession.addEventListener(ruleListener);
 
                     // Thread.currentThread().setContextClassLoader(loader);
 
