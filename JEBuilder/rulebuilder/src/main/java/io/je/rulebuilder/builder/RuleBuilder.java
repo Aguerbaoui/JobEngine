@@ -199,7 +199,6 @@ public class RuleBuilder {
         ruleTemplateAttributes.put("enabled", ruleParameters.getEnabled());
         ruleTemplateAttributes.put("condition", condition);
         ruleTemplateAttributes.put("consequence", consequences);
-        ruleTemplateAttributes.put("notCondition", notCondition);
         // Duration replaced by Persistence
         ruleTemplateAttributes.put("duration", duration);
 
@@ -215,6 +214,10 @@ public class RuleBuilder {
             }
         }
         ruleTemplateAttributes.put("persistence", "" + persistence);
+        // Avoid evaluation of Reset Persistence Rule if persistence not > 0
+        ruleTemplateAttributes.put("notCondition", notCondition);
+        ruleTemplateAttributes.put("resetPersistenceEnabled",
+                ( ruleParameters.getEnabled().equals("true") && (persistence > 0 ) ) ? "true" : "false" );
 
         if (ruleParameters.getDateEffective() != null && !ruleParameters.getDateEffective()
                 .isEmpty()) {

@@ -6,9 +6,10 @@ salience
 duration
 persistence
 condition
-notCondition
 consequence
 enabled
+notCondition
+resetPersistenceEnabled
 dateEffective
 cronExpression
 dateExpires
@@ -85,10 +86,11 @@ end
 
 
 
-rule "reset persistence counter @{ruleName}"  @Propagation(IMMEDIATE)
+rule "reset persistence @{ruleName}"  @Propagation(IMMEDIATE)
 dialect "mvel"
 salience @{salience}
-enabled @{enabled}
+enabled @{resetPersistenceEnabled}
+no-loop true
 date-effective @{dateEffective}
 date-expires @{dateExpires}
 timer (cron:@{cronExpression})
