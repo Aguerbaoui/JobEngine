@@ -56,7 +56,7 @@ public class BlockManager {
                 } else {
                     JELogger.error("Error with block configuration",
                             LogCategory.DESIGN_MODE, block.getJobEngineProjectID(),
-                            LogSubModule.RULE, block.getJobEngineElementID());
+                            LogSubModule.RULE, block.getRuleId(), block.getBlockName());
                     throw new RuleBuildFailedException(block.getBlockName() + " is not configured properly");
                 }
             }
