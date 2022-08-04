@@ -1,53 +1,116 @@
 
-
 template header
 
 ruleName
 salience
 duration
+persistence
 condition
 consequence
 enabled
+notCondition
+resetPersistenceEnabled
 dateEffective
 cronExpression
 dateExpires
+
 package io.je.runtime;
 
 import java.time.LocalDateTime;
 import java.time.Instant;
-
-import io.je.utilities.beans.JEMessage;
-import io.je.utilities.beans.JEBlockMessage;
 import java.util.Date;
 import java.util.HashMap;
+import java.lang.Long;
+import java.lang.Boolean;
+
+import utils.maths.*;
 
 import io.je.utilities.log.JELogger;
 import io.je.utilities.execution.Executioner;
 import io.je.utilities.beans.JEEvent;
 import io.je.utilities.beans.JEVariable;
-import utils.maths.*;
-import ${customImport};
+import io.je.utilities.beans.JEMessage;
+import io.je.utilities.beans.JEBlockMessage;
+import io.je.ruleengine.control.Persistence;
+import io.je.ruleengine.control.PersistenceMap;
 import io.je.ruleengine.utils.JEMathUtils;
 import io.je.project.variables.VariableManager;
 
+import ${customImport};
+
+
 template "JobEngineRuleTemplate"
+
 
 rule "@{ruleName}"  @Propagation(IMMEDIATE)
 dialect "mvel"
-
 salience @{salience}
-duration (@{duration})
 enabled @{enabled}
+no-loop true
 date-effective @{dateEffective}
 date-expires @{dateExpires}
 timer (cron:@{cronExpression})
 
 when
-   @{condition}
+
+    @{condition}
+
 then
-   @{consequence}
-   
-    
+
+    if (PersistenceMap.getRulesPersistenceMap().get("@{ruleName}") == null) {
+
+        PersistenceMap.getRulesPersistenceMap().put("@{ruleName}", new Persistence());
+
+    }
+
+    Persistence rulePersistence = PersistenceMap.getRulesPersistenceMap().get("@{ruleName}");
+
+    if (rulePersistence.getDuration() == null) {
+
+        rulePersistence.setStartTimestamp( Instant.now().toEpochMilli() );
+
+    }
+
+    rulePersistence.setDuration( Instant.now().toEpochMilli() - rulePersistence.getStartTimestamp() );
+
+    if (rulePersistence.getDuration() >= @{persistence}) {
+
+        rulePersistence.setDuration( null );
+        rulePersistence.setStartTimestamp( null );
+
+        @{consequence}
+
+    }
+
+end
+
+
+
+rule "reset persistence @{ruleName}"  @Propagation(IMMEDIATE)
+dialect "mvel"
+salience @{salience}
+enabled @{resetPersistenceEnabled}
+no-loop true
+date-effective @{dateEffective}
+date-expires @{dateExpires}
+timer (cron:@{cronExpression})
+
+when
+
+    @{notCondition}
+
+then
+
+    Persistence rulePersistence = PersistenceMap.getRulesPersistenceMap().get("@{ruleName}");
+
+    if (rulePersistence != null) {
+
+        rulePersistence.setDuration( null );
+
+        rulePersistence.setStartTimestamp( null );
+
+    }
+
 end
 
 

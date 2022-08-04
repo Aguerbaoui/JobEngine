@@ -20,6 +20,7 @@ import io.je.utilities.models.LibModel;
 import io.siothconfig.SIOTHConfigUtility;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
+import utils.log.LoggerUtils;
 import utils.zmq.ZMQPublisher;
 import utils.zmq.ZMQRequester;
 
@@ -137,7 +138,9 @@ public class ClassManager {
             loadedClass = JEClassLoader.getDataModelInstance()
                     .loadClass(className);
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+
+            LoggerUtils.logException(e);
+
             JEClassLoader.removeClassFromDataModelClassesSet(className);
             throw new ClassLoadException(
                     JEMessages.CLASS_LOAD_FAILED + "[" + classDefinition.getName() + "]" + e.getMessage());
@@ -215,7 +218,7 @@ public class ClassManager {
                 // jeClass.setWorkspaceId(workspaceId);
 
             } catch (Exception e) {
-                e.printStackTrace();
+                LoggerUtils.logException(e);
                 throw new ClassLoadException(JEMessages.FAILED_TO_SEND_LOG_MESSAGE_TO_THE_LOGGING_SYSTEM + response);
             }
 

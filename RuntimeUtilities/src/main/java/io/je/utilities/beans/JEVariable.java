@@ -232,6 +232,4 @@ public class JEVariable extends JEMonitoredData {
         return classType;
     }
     
-    
-    
 }

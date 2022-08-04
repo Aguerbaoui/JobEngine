@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
+import utils.log.LoggerUtils;
 import utils.zmq.ZMQBind;
 
 import java.util.Arrays;
@@ -48,9 +49,12 @@ public class ConfigurationService {
                     null, LogSubModule.JEBUILDER, null);
 
             updateRunner();
+
             classService.initClassZMQSubscriber();
-        } catch (Exception e) {
-            JELogger.debug("JEBuilder did not start properly\n" + Arrays.toString(e.getStackTrace()), LogCategory.DESIGN_MODE,
+
+        } catch (Exception exception) {
+            JELogger.logException(exception);
+            JELogger.debug("JEBuilder did not start properly : " + exception.getMessage(), LogCategory.DESIGN_MODE,
                     null, LogSubModule.JEBUILDER, null);
         }
 
@@ -101,10 +105,14 @@ public class ConfigurationService {
 
                 while (!loadedFiles) {
                     try {
+
                         classService.loadAllClasses();
+
                         projectService.loadAllProjects();
+
                         loadedFiles = true;
                     } catch (Exception e) {
+                        LoggerUtils.logException(e);
                         loadedFiles = false;
                         JELogger.debug(JEMessages.DATABASE_IS_DOWN_CHECKING_AGAIN,
                                 LogCategory.DESIGN_MODE, null,

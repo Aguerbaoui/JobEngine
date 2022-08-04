@@ -25,8 +25,9 @@ public class JEMathUtils {
             }
 
             return (double) x;
-        } catch (Exception e) {
-            throw new CastToDoubleException(e.getMessage());
+        } catch (Exception exp) {
+            JELogger.logException(exp);
+            throw new CastToDoubleException(exp.getMessage());
         }
     }
 
@@ -63,7 +64,6 @@ public class JEMathUtils {
     }
 
     public static void main(String[] args) {
-        System.out.println("a");
     }
 
     public String asDouble(String val) {

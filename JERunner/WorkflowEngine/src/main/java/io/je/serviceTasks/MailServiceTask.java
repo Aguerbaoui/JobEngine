@@ -69,7 +69,7 @@ public class MailServiceTask extends ServiceTask {
             response = network.call();
             LoggerUtils.debug("MailServiceTask main response.body().string() : " + response.body().string());
         } catch (IOException exp) {
-            LoggerUtils.error(Arrays.toString(exp.getStackTrace()));
+            LoggerUtils.logException(exp);
         } finally {
             if (response != null && response.body() != null) {
                 response.body().close();
@@ -122,7 +122,7 @@ public class MailServiceTask extends ServiceTask {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LoggerUtils.logException(e);
             JELogger.error(JEMessages.UNEXPECTED_ERROR + e.getMessage(), LogCategory.RUNTIME, task.getProjectId(),
                     LogSubModule.JERUNNER, task.getWorkflowId(), task.getTaskName());
             throw new BpmnError(String.valueOf(ResponseCodes.UNKNOWN_ERROR));

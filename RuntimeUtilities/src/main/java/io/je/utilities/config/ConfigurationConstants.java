@@ -50,6 +50,10 @@ public class ConfigurationConstants {
         return dev;
     }
 
+    public static void setDev(boolean dev) {
+        ConfigurationConstants.dev = dev;
+    }
+
     public static String getJobEngineCustomImport() {
         String imp = ConfigurationConstants.JAVA_GENERATION_PATH.replace(FileUtilities.getPathPrefix(ConfigurationConstants.JAVA_GENERATION_PATH), "");
         imp = imp.replace("\\", ".");
@@ -74,10 +78,5 @@ public class ConfigurationConstants {
         }
     }
 
-	public static void setDev(boolean dev) {
-		ConfigurationConstants.dev = dev;
-	}
-    
-    
-    
+
 }

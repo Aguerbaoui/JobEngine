@@ -42,7 +42,7 @@ public class JEClassLoader extends ClassLoader {
         try {
             dataModelCustomClasses.remove(name);
         } catch (Exception exp) {
-            JELogger.error(Arrays.toString(exp.getStackTrace()));
+            JELogger.logException(exp);
         }
     }
 
@@ -115,8 +115,8 @@ public class JEClassLoader extends ClassLoader {
                 Class<?> c = dataModelInstance.getClass(className);
                 return c;
             } catch (Exception exp) {
-                JELogger.debug("Class Loading failed by je custom loader for " + className);
-                JELogger.error(Arrays.toString(exp.getStackTrace()));
+                JELogger.logException(exp);
+                JELogger.debug("Class Loading failed by je custom loader for : " + className);
             }
         }
         return super.loadClass(className);
@@ -145,7 +145,7 @@ public class JEClassLoader extends ClassLoader {
             resolveClass(c);
             return c;
         } catch (IOException exp) {
-            JELogger.error(Arrays.toString(exp.getStackTrace()));
+            JELogger.logException(exp);
             return null;
         }
     }

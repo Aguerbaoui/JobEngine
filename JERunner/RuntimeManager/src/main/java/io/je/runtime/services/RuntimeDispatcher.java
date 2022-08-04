@@ -29,6 +29,7 @@ import org.springframework.stereotype.Service;
 import utils.log.LogCategory;
 import utils.log.LogMessage;
 import utils.log.LogSubModule;
+import utils.log.LoggerUtils;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -132,7 +133,7 @@ public class RuntimeDispatcher {
     public void addRule(RunnerRuleModel runnerRuleModel) throws RuleAlreadyExistsException, RuleCompilationException,
             JEFileNotFoundException, RuleFormatNotValidException {
 
-        JELogger.debug(JEMessages.ADDING_RULE + " : " + runnerRuleModel.getRuleName(), LogCategory.RUNTIME,
+        JELogger.debug(JEMessages.ADDING_RULE + " : ruleId =" + runnerRuleModel.getRuleId(), LogCategory.RUNTIME,
                 runnerRuleModel.getProjectId(), LogSubModule.RULE, runnerRuleModel.getRuleId());
         RuleEngineHandler.addRule(runnerRuleModel);
     }
@@ -152,7 +153,7 @@ public class RuntimeDispatcher {
     public void compileRule(RunnerRuleModel runnerRuleModel)
             throws RuleFormatNotValidException, RuleCompilationException, JEFileNotFoundException {
 
-        JELogger.debug(JEMessages.COMPILING_RULE_WITH_ID + runnerRuleModel.getRuleId(), LogCategory.RUNTIME,
+        JELogger.debug(JEMessages.COMPILING_RULE + " Id : " + runnerRuleModel.getRuleId(), LogCategory.RUNTIME,
                 runnerRuleModel.getProjectId(), LogSubModule.RULE, runnerRuleModel.getRuleId());
 
         RuleEngineHandler.compileRule(runnerRuleModel);
@@ -164,6 +165,43 @@ public class RuntimeDispatcher {
         JELogger.debug("[projectId = " + projectId + "] [ruleId = " + ruleId + "] " + JEMessages.DELETING_RULE,
                 LogCategory.RUNTIME, projectId, LogSubModule.RULE, ruleId);
         RuleEngineHandler.deleteRule(projectId, ruleId);
+    }
+
+    public List<OperationStatusDetails> updateRules(List<RunnerRuleModel> runnerRuleModels) {
+
+        List<OperationStatusDetails> updateResult = new ArrayList<>();
+
+        for (RunnerRuleModel runnerRuleModel : runnerRuleModels) {
+
+            OperationStatusDetails details = new OperationStatusDetails(runnerRuleModel.getRuleId());
+
+            removeRuleTopics(runnerRuleModel.getRuleId());
+
+            addTopics(runnerRuleModel.getProjectId(), runnerRuleModel.getRuleId(), "rule", runnerRuleModel.getTopics());
+
+            try {
+                updateRule(runnerRuleModel);
+                details.setOperationSucceeded(true);
+                updateResult.add(details);
+            } catch (RuleCompilationException | JEFileNotFoundException | RuleFormatNotValidException e) {
+                details.setOperationSucceeded(false);
+                details.setOperationError(e.getMessage());
+                updateResult.add(details);
+                // FIXME finally
+                return updateResult;
+            }
+
+        }
+
+        return updateResult;
+
+    }
+
+    public void compileRules(List<RunnerRuleModel> runnerRuleModels) throws RuleFormatNotValidException, RuleCompilationException, JEFileNotFoundException {
+        for (RunnerRuleModel runnerRuleModel : runnerRuleModels) {
+            compileRule(runnerRuleModel);
+        }
+
     }
 
     // ***********************************WORKFLOW********************************************************
@@ -269,7 +307,7 @@ public class RuntimeDispatcher {
             }
 
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            LoggerUtils.logException(e);
             //JEClassLoader.removeClassFromDataModelClassesSet(className);
             throw new ClassLoadException(
                     "[class :" + classModel.getClassName() + " ]" + JEMessages.CLASS_LOAD_FAILED);
@@ -305,8 +343,7 @@ public class RuntimeDispatcher {
                         }
                     }
                 } catch (InstanceCreationFailedException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+                    LoggerUtils.logException(e);
                 }
 
             });
@@ -448,7 +485,7 @@ public class RuntimeDispatcher {
             //JELogger.debug("hello There, your uploaded file is " + JobEngine.getJarFile("org.eclipse.jdt.core-3.7.1.jar").getName());
             JELogger.control("Jar file uploaded successfully", LogCategory.RUNTIME, "", LogSubModule.CLASS, "");
         } catch (Exception e) {
-            e.printStackTrace();
+            LoggerUtils.logException(e);
         }
     }
 
@@ -485,43 +522,6 @@ public class RuntimeDispatcher {
 
         RuleEngineHandler.stopRuleEngineProjectExecution(projectId);
         projectStatus.put(projectId, false);
-
-    }
-
-    public List<OperationStatusDetails> updateRules(List<RunnerRuleModel> runnerRuleModels) {
-
-        List<OperationStatusDetails> updateResult = new ArrayList<>();
-
-        for (RunnerRuleModel runnerRuleModel : runnerRuleModels) {
-
-            OperationStatusDetails details = new OperationStatusDetails(runnerRuleModel.getRuleId());
-
-            removeRuleTopics(runnerRuleModel.getRuleId());
-
-            addTopics(runnerRuleModel.getProjectId(), runnerRuleModel.getRuleId(), "rule", runnerRuleModel.getTopics());
-
-            try {
-                updateRule(runnerRuleModel);
-                details.setOperationSucceeded(true);
-                updateResult.add(details);
-            } catch (RuleCompilationException | JEFileNotFoundException | RuleFormatNotValidException e) {
-                details.setOperationSucceeded(false);
-                details.setOperationError(e.getMessage());
-                updateResult.add(details);
-                // FIXME finally
-                return updateResult;
-            }
-
-        }
-
-        return updateResult;
-
-    }
-
-    public void compileRules(List<RunnerRuleModel> runnerRuleModels) throws RuleFormatNotValidException, RuleCompilationException, JEFileNotFoundException {
-        for (RunnerRuleModel runnerRuleModel : runnerRuleModels) {
-            compileRule(runnerRuleModel);
-        }
 
     }
 

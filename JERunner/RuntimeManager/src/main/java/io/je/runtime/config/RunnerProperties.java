@@ -9,6 +9,6 @@ import org.springframework.context.annotation.PropertySource;
 @ConfigurationProperties
 @Configuration("RunnerProperties")
 @PropertySource(SIOTHConfigurationConstants.APPLICATION_PROPERTIES_PATH)
-public class RunnerProperties extends JEProperties{
+public class RunnerProperties extends JEProperties {
 
 }

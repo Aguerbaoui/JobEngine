@@ -21,34 +21,14 @@ public  class OrBlock extends LogicBlock {
 	public String getExpression() throws RuleBuildFailedException {
 		StringBuilder expression = new StringBuilder();
 
-		// FIXME fires executions as much as true conditions
-		expression.append(" ( ");
+		// FIXME currently fires executions as much as true conditions => fire once
 		for(int i=0; i<inputBlocks.size();i++)
 		{
-			expression.append(" ( ");
 			expression.append(inputBlocks.get(i).getExpression());
-			expression.append(" ) ");
 			if (i < inputBlocks.size() - 1) { //&& !inputBlocks.get(i).getExpression().isEmpty()) {
 				expression.append(" or "); // FIXME operator / Or operation
 			}
 		}
-		expression.append(" ) ");
-
-
-/*
-		// not (not A and not B)
-		expression.append(" not ( ");
-		for(int i=0; i<inputBlocks.size();i++)
-		{
-			expression.append(" not ( ");
-			expression.append(inputBlocks.get(i).getExpression());
-			expression.append(" ) ");
-			if (i < inputBlocks.size() - 1) {
-				expression.append(" and ");
-			}
-		}
-		expression.append(" ) ");
-*/
 
 		return expression.toString();
 	}

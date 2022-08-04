@@ -6,6 +6,7 @@ import io.je.utilities.exceptions.JEFileNotFoundException;
 import io.je.utilities.log.JELogger;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
+import utils.log.LoggerUtils;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -26,7 +27,7 @@ public class RuleLoader {
                     rule.getJobEngineProjectID(), LogSubModule.RULE, rule.getJobEngineElementID());
             rule.setContent(new String(Files.readAllBytes(Paths.get(rule.getPath()))));
         } catch (IOException e) {
-            e.printStackTrace();
+            LoggerUtils.logException(e);
             throw new JEFileNotFoundException(JEMessages.RULE_FILE_NOT_FOUND + rule.getPath());
         }
     }
@@ -39,7 +40,7 @@ public class RuleLoader {
             writer.close();
             return true;
         } catch (IOException e) {
-            e.printStackTrace();
+            LoggerUtils.logException(e);
             throw e;
         }
     }

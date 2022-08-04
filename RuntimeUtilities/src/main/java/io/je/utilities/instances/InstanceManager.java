@@ -12,6 +12,7 @@ import org.json.JSONObject;
 import utils.comparator.Comparator;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
+import utils.log.LoggerUtils;
 
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
@@ -71,7 +72,8 @@ public class InstanceManager {
 
         } catch (Exception e) {
 
-            e.printStackTrace();
+            LoggerUtils.logException(e);
+
             throw new InstanceCreationFailedException(JEMessages.ADD_INSTANCE_FAILED + e.getMessage());
 
         }

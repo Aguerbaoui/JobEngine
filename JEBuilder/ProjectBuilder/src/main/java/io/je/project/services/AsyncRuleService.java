@@ -17,6 +17,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
+import utils.log.LoggerUtils;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -57,15 +58,17 @@ public class AsyncRuleService {
 
         try {
             if (rule.isEnabled()) {
+
                 RuleBuilder.buildRule(rule, getProject(projectId).getConfigurationPath(), compileOnly);
+
                 // update rule status
                 // rule built
-
                 if (!compileOnly) {
                     rule.setAdded(true);
                     rule.setBuilt(true);
                     project.getRuleEngine().add(ruleId);
                 }
+
                 rule.setCompiled(true);
                 result.setOperationSucceeded(true);
                 rule.setContainsErrors(false);
@@ -77,7 +80,10 @@ public class AsyncRuleService {
             rule.setContainsErrors(true);
             result.setOperationSucceeded(false);
             result.setOperationError(e.getMessage());
+
+            return CompletableFuture.completedFuture(result);
         }
+
         try {
             RuleService.updateRuleStatus(rule);
             ruleRepository.save(rule);
@@ -86,6 +92,7 @@ public class AsyncRuleService {
                     CATEGORY, projectId, RULE, null);
 
         }
+
         return CompletableFuture.completedFuture(result);
 
     }
@@ -128,13 +135,11 @@ public class AsyncRuleService {
             return CompletableFuture.completedFuture(result);
         }
 
-
         if (!rule.isEnabled()) {
             result.setOperationSucceeded(false);
             result.setOperationError(JEMessages.RULE_DISABLED);
             return CompletableFuture.completedFuture(result);
         }
-
 
         if (!rule.isCompiled()) {
             result.setOperationSucceeded(false);
@@ -159,6 +164,7 @@ public class AsyncRuleService {
 		}*/
         try {
 
+            // FIXME to be removed, no build on run
             buildRule(projectId, ruleId).get();
 
             if (!project.getRuleEngine().isRunning()) {
@@ -175,7 +181,8 @@ public class AsyncRuleService {
 
             result.setOperationSucceeded(false);
             result.setOperationError(e.getMessage());
-        } catch (ExecutionException e) {
+        }
+        catch (ExecutionException e) {
             result.setOperationSucceeded(false);
             result.setOperationError(e.getCause().getMessage());
         } catch (InterruptedException e) {
@@ -183,10 +190,13 @@ public class AsyncRuleService {
             result.setOperationSucceeded(false);
             result.setOperationError(e.getMessage());
         }
+
         try {
             RuleService.updateRuleStatus(rule);
             ruleRepository.save(rule);
         } catch (Exception e) {
+            LoggerUtils.logException(e);
+
             JELogger.error("[rule = " + rule.getJobEngineElementName() + "]" + JEMessages.STATUS_UPDATE_FAILED,
                     CATEGORY, projectId, RULE, null);
 

@@ -72,7 +72,6 @@ public class ConfigurationService {
         SIOTHConfigUtility.setSiothId(siothId);
         ConfigurationConstants.setDev(isDev);
         ConfigurationConstants.setJavaGenerationPath(SIOTHConfigUtility.getSiothConfig().getJobEngine().getGeneratedClassesPath());
-        
 
 	}
 	

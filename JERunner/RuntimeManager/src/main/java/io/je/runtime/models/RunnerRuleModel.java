@@ -29,14 +29,14 @@ public class RunnerRuleModel {
     String ruleId;
 
     //path where the rule file was created
-    @JsonProperty(JERunnerRuleMapping.PATH)
+    @JsonProperty(JERunnerRuleMapping.RULE_PATH)
     String rulePath;
 
     //Rule format
-    @JsonProperty(JERunnerRuleMapping.FORMAT)
+    @JsonProperty(JERunnerRuleMapping.RULE_FORMAT)
     RuleFormat format;
     
-    @JsonProperty(JERunnerRuleMapping.TOPICS)
+    @JsonProperty(JERunnerRuleMapping.RULE_TOPICS)
     Set<String> topics;
 
     /*

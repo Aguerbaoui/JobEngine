@@ -23,7 +23,8 @@ public class DatabaseServiceTask extends ServiceTask {
                }
            }
            catch(Exception e) {
-               JELogger.error(JEMessages.UNEXPECTED_ERROR +  Arrays.toString(e.getStackTrace()), LogCategory.RUNTIME, null,
+               JELogger.logException(e);
+               JELogger.error(JEMessages.UNEXPECTED_ERROR +  e.getMessage(), LogCategory.RUNTIME, null,
                        LogSubModule.JERUNNER, null);
                throw new BpmnError("Error");
            }

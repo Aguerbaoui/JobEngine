@@ -7,30 +7,47 @@ public class VariableModel {
 
     private String id;
 
-    private String type; 
+    private String type;
 
     private String projectId;
-    
+
     private String projectName;
 
     private String name;
 
     private Object value;
-    
+
     private String description;
-    
+
     private String initialValue;
 
     private String createdAt;
-    
+
     private String lastModifiedAt;
-    
+
     private String createdBy;
-    
+
     private String modifiedBy;
 
 
-    
+    public VariableModel() {
+    }
+
+    public VariableModel(JEVariable variable) {
+        this.projectId = variable.getJobEngineProjectID();
+        this.projectName = variable.getJobEngineProjectName();
+        this.id = variable.getJobEngineElementID();
+        this.name = variable.getJobEngineElementName();
+        this.type = variable.getType().toString();
+        this.initialValue = String.valueOf(variable.getInitialValue());
+        this.createdAt = variable.getJeObjectCreationDate().toString();
+        this.lastModifiedAt = variable.getJeObjectLastUpdate().toString();
+        this.value = variable.getValue();
+        this.createdBy = variable.getJeObjectCreatedBy();
+        this.modifiedBy = variable.getJeObjectModifiedBy();
+        this.description = variable.getDescription();
+    }
+
     public String getId() {
         return id;
     }
@@ -64,89 +81,66 @@ public class VariableModel {
     }
 
     public Object getValue() {
-        return value != null ? value: initialValue;
+        return value != null ? value : initialValue;
     }
 
     public void setValue(Object value) {
         this.value = value;
     }
 
-    
-    
-    
     public String getDescription() {
-		return description;
-	}
+        return description;
+    }
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-	public String getCreatedBy() {
-		return createdBy;
-	}
+    public String getCreatedBy() {
+        return createdBy;
+    }
 
-	public void setCreatedBy(String createdBy) {
-		this.createdBy = createdBy;
-	}
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
 
-	public String getModifiedBy() {
-		return modifiedBy;
-	}
+    public String getModifiedBy() {
+        return modifiedBy;
+    }
 
-	public void setModifiedBy(String modifiedBy) {
-		this.modifiedBy = modifiedBy;
-	}
+    public void setModifiedBy(String modifiedBy) {
+        this.modifiedBy = modifiedBy;
+    }
 
-	public String getCreatedAt() {
-		return createdAt;
-	}
+    public String getCreatedAt() {
+        return createdAt;
+    }
 
-	public void setCreatedAt(String createdAt) {
-		this.createdAt = createdAt;
-	}
+    public void setCreatedAt(String createdAt) {
+        this.createdAt = createdAt;
+    }
 
-	public String getLastModifiedAt() {
-		return lastModifiedAt;
-	}
+    public String getLastModifiedAt() {
+        return lastModifiedAt;
+    }
 
-	public void setLastModifiedAt(String lastModifiedAt) {
-		this.lastModifiedAt = lastModifiedAt;
-	}
+    public void setLastModifiedAt(String lastModifiedAt) {
+        this.lastModifiedAt = lastModifiedAt;
+    }
 
-	public String getInitialValue() {
-		return initialValue;
-	}
+    public String getInitialValue() {
+        return initialValue;
+    }
 
-	public void setInitialValue(String initialValue) {
-		this.initialValue = initialValue;
-	}
+    public void setInitialValue(String initialValue) {
+        this.initialValue = initialValue;
+    }
 
-	public VariableModel() {}
+    public String getProjectName() {
+        return projectName;
+    }
 
-	
-
-
-	public String getProjectName() {
-		return projectName;
-	}
-
-	public void setProjectName(String projectName) {
-		this.projectName = projectName;
-	}
-
-	public VariableModel(JEVariable variable) {
-		 this.projectId = variable.getJobEngineProjectID();
-		 this.projectName = variable.getJobEngineProjectName();
-	        this.id = variable.getJobEngineElementID();
-	        this.name = variable.getJobEngineElementName();
-	        this.type = variable.getType().toString();
-	        this.initialValue = String.valueOf(variable.getInitialValue());
-			this.createdAt = variable.getJeObjectCreationDate().toString();
-			this.lastModifiedAt = variable.getJeObjectLastUpdate().toString();
-	        this.value =  variable.getValue();
-			this.createdBy = variable.getJeObjectCreatedBy();
-			this.modifiedBy = variable.getJeObjectModifiedBy();
-			this.description = variable.getDescription();
-	}
+    public void setProjectName(String projectName) {
+        this.projectName = projectName;
+    }
 }

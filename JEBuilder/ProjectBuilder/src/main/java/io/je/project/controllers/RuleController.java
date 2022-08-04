@@ -18,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import utils.log.LoggerUtils;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -160,7 +161,7 @@ public class RuleController {
 
             ruleService.updateRule(projectId, ruleModel);
         } catch (Exception e) {
-            e.printStackTrace();
+            LoggerUtils.logException(e);
             return JEExceptionHandler.handleException(e);
 
         }
@@ -246,6 +247,7 @@ public class RuleController {
             projectService.getProject(projectId);
 
             ruleService.compileRule(projectId, ruleId);
+
             projectService.saveProject(projectId);
 
         } catch (Exception e) {

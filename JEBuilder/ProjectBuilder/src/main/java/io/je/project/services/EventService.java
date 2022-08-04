@@ -153,15 +153,14 @@ public class EventService {
 
         //TODO: add test on response
         HashMap<String, Object> eventMap = new HashMap<String, Object>();
+        eventMap.put(EventModelMapping.EVENTID, event.getJobEngineElementID());
         eventMap.put(EventModelMapping.PROJECTID, event.getJobEngineProjectID());
         eventMap.put(EventModelMapping.EVENTNAME, event.getJobEngineElementName());
-        eventMap.put(EventModelMapping.EVENTID, event.getJobEngineElementID());
-        eventMap.put(EventModelMapping.EVENTTYPE, event.getType()
-                .toString());
+        eventMap.put(EventModelMapping.PROJECTNAME, project.getProjectName());
+        eventMap.put(EventModelMapping.EVENTTYPE, event.getType().toString());
         eventMap.put(EventModelMapping.TIMEOUTUNIT, event.getTimeoutUnit());
         eventMap.put(EventModelMapping.TIMOUTVALUE, event.getTimeoutValue());
-        // FIXME keep only project id
-        eventMap.put(EventModelMapping.PROJECTNAME, project.getProjectName());
+
         JELogger.debug(JEMessages.REGISTERING_EVENT,
                 LogCategory.DESIGN_MODE, event.getJobEngineProjectID(),
                 LogSubModule.EVENT, event.getJobEngineElementID());

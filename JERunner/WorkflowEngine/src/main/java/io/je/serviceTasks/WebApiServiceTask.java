@@ -30,7 +30,9 @@ public class WebApiServiceTask extends ServiceTask {
                         .withBody(json).withAuthScheme(task.getAuthScheme()).withAuthentication(task.getAuthentication()).build();
             }
             catch(Exception e) {
-                JELogger.error(JEMessages.UNEXPECTED_ERROR +  Arrays.toString(e.getStackTrace()), LogCategory.RUNTIME, null,
+                JELogger.logException(e);
+
+                JELogger.error(JEMessages.UNEXPECTED_ERROR +  e.getMessage(), LogCategory.RUNTIME, null,
                         LogSubModule.JERUNNER, null);
                 throw new BpmnError(String.valueOf(ResponseCodes.UNKNOWN_ERROR));
             }
@@ -43,10 +45,13 @@ public class WebApiServiceTask extends ServiceTask {
         Response response = null;
         try {
             response = network.call();
-            JELogger.info(JEMessages.NETWORK_CALL_RESPONSE_IN_WEB_SERVICE_TASK + " = " + response.body().string(),  LogCategory.RUNTIME,
-                    task.getProjectId(), LogSubModule.WORKFLOW, null);
+            if (response != null && response.body() != null) {
+                JELogger.info(JEMessages.NETWORK_CALL_RESPONSE_IN_WEB_SERVICE_TASK + " = " + response.body().string(), LogCategory.RUNTIME,
+                        task.getProjectId(), LogSubModule.WORKFLOW, null);
+            }
         } catch (Exception e) {
-            JELogger.error(JEMessages.UNEXPECTED_ERROR +  Arrays.toString(e.getStackTrace()), LogCategory.RUNTIME, null,
+            JELogger.logException(e);
+            JELogger.error(JEMessages.UNEXPECTED_ERROR +  e.getMessage(), LogCategory.RUNTIME, null,
                     LogSubModule.JERUNNER, null);
             throw new BpmnError(String.valueOf(ResponseCodes.UNKNOWN_ERROR));
         } finally {

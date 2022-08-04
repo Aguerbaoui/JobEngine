@@ -8,6 +8,7 @@ import io.je.utilities.log.JELogger;
 import io.siothconfig.SIOTHConfigUtility;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
+import utils.log.LoggerUtils;
 import utils.zmq.ZMQRequester;
 
 import java.io.IOException;
@@ -47,7 +48,7 @@ public class DataModelRequester {
         try {
             request = objectMapper.writeValueAsString(payload);
         } catch (JsonProcessingException exp) {
-            exp.printStackTrace();
+            LoggerUtils.logException(exp);
         }
 
         String response = requester.sendRequest(request);

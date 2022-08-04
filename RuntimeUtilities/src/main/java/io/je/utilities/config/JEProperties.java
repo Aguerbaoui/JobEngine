@@ -22,7 +22,7 @@ public class JEProperties {
     @Value("${dev.environment}")
     boolean dev;
 
-    // FIXME process
+    // FIXME processdump
     @Value("${java.prcessdump}")
     boolean dumpJavaProcessExecution;
 

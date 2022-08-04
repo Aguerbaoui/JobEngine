@@ -2,6 +2,7 @@ package io.je.rulebuilder.components;
 
 
 import utils.files.FileUtilities;
+import utils.log.LoggerUtils;
 
 public class ScriptedRule extends JERule {
 
@@ -31,11 +32,10 @@ public class ScriptedRule extends JERule {
             FileUtilities.copyStringToFile(script, fileName, "UTF-8");
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LoggerUtils.logException(e);
         }
         return fileName;
-
-
+        
     }
 
 

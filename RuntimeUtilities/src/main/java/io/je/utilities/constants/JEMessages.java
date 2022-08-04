@@ -227,13 +227,13 @@ public class JEMessages {
 
     public static final String LOADING_RULES = "Getting all rules";
 
-    public static final String ADDING_RULE = "Adding rule ";
+    public static final String ADDING_RULE = "Adding rule";
 
     public static final String UPDATING_RULE = "Updating rule";
 
-    public static final String COMPILING_RULE_WITH_ID = "Compiling rule, Id : ";
+    public static final String COMPILING_RULE = "Compiling rule";
 
-    public static final String COMPILING_RULES = "Compiling all rules";
+    public static final String COMPILING_ALL_RULES = "Compiling all rules";
 
     public static final String LOADING_RULE = "Getting rule";
 
@@ -297,7 +297,7 @@ public class JEMessages {
 
     public static final String PROJECT_NOT_FOUND = "No project with this Id was found.";
 
-    public static final String PROJECT_LOAD_ERROR = "Error loading project files";
+    public static final String PROJECT_LOAD_ERROR = "Error loading project files : ";
 
     public static final String UKNOWN_ERROR = "Unknown error";
 
@@ -541,9 +541,9 @@ public class JEMessages {
 
     public static final String STOPPING_PROJECT_CONTAINER_FAILED = "Failed to stop project container";
 
-    public static final String RELOADING_PROJECT_CONTAINER = "Reloading project container..";
+    public static final String RELOADING_PROJECT_CONTAINER = "Reloading project container ... ";
 
-    public static final String UNEXPECTED_ERROR = "An unexpected error occurred ";
+    public static final String UNEXPECTED_ERROR = "An unexpected error occurred : ";
 
     public static final String RULE_ADDED = "Rule added successfully ";
 
@@ -629,8 +629,8 @@ public class JEMessages {
     public static final String LOADING_VARIABLES = "Loading variables...";
     public static final String PROJECT_AUTO_RELOAD = "Setting project auto reload to";
     public static final String PROJECT_UPDATED = "Project updated successfully";
-    public static final String RULE_EXECUTION_ERROR = "Rule execution error: ";
-    public static final String ERROR_DELETING_A_PROCESS = "Error deleting a process";
+    public static final String RULE_EXECUTION_ERROR = "Rule execution error : ";
+    public static final String ERROR_DELETING_A_PROCESS = "Error deleting a process : ";
     public static final String INFORM_BLOCK_ERROR = "Failed to execute Inform block";
     public static final String EMAIL_BLOCK_ERROR = "Failed to execute Email block";
     public static final String SMS_BLOCK_ERROR = "Failed to execute SMS block";
@@ -655,7 +655,7 @@ public class JEMessages {
     public static final String FAILED_TO_SEND_LOG_MESSAGE_TO_THE_LOGGING_SYSTEM = "Failed to send log message to the Tracker module: ";
     public static final String FAILED_TO_SEND_MONITORING_MESSAGE_TO_THE_LOGGING_SYSTEM = "Failed to send monitoring data to the JEMonitor module: ";
     public static final String CHECK_DM_FOR_DETAILS = "Check Integration Objects' SIOTH Data Model service's log file for more details. ";
-    public static final String ERROR_RUNNING_PROJECT = "Error while running project, check your configuration ";
+    public static final String ERROR_RUNNING_PROJECT = "Error while running project, check your configuration : ";
     public static final String ERROR_STOPPING_PROJECT = "Error while stopping project, check your configuration ";
     public static final String ERROR_STOPPING_WORKFLOW = "Error while stopping workflow, check your  ";
     public static final String ERROR_WHILE_REFERENCING_A_DISABLED_WORKFLOW = "Error while referencing a disabled workflow: ";

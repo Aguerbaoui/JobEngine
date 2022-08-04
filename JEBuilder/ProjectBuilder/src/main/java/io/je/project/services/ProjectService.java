@@ -23,6 +23,7 @@ import utils.files.FileUtilities;
 import utils.log.LogCategory;
 import utils.log.LogMessage;
 import utils.log.LogSubModule;
+import utils.log.LoggerUtils;
 import utils.string.StringUtilities;
 
 import java.io.File;
@@ -94,10 +95,10 @@ public class ProjectService {
 
         try {
             stopProject(id);
-        } catch (ProjectNotFoundException | ProjectStopException | LicenseNotActiveException | ExecutionException exp) {
-            JELogger.error(Arrays.toString(exp.getStackTrace()));
-        } catch (InterruptedException exp) {
-            JELogger.error(Arrays.toString(exp.getStackTrace()));
+        } catch (ProjectNotFoundException | ProjectStopException | LicenseNotActiveException | ExecutionException exception) {
+            JELogger.logException(exception);
+        } catch (InterruptedException exception) {
+            JELogger.logException(exception);
             Thread.currentThread()
                     .interrupt();
         }
@@ -106,39 +107,39 @@ public class ProjectService {
                 LogCategory.DESIGN_MODE, id, LogSubModule.JEBUILDER, null);
         try {
             JERunnerAPIHandler.cleanProjectDataFromRunner(id);
-        } catch (JERunnerErrorException exp) {
-            JELogger.error(Arrays.toString(exp.getStackTrace()));
+        } catch (JERunnerErrorException exception) {
+            JELogger.logException(exception);
             JELogger.error("Error cleaning project data from runner", LogCategory.DESIGN_MODE, id, LogSubModule.JEBUILDER, id);
         }
 
         try {
             ruleService.deleteAll(id);
-        } catch (Exception exp) {
-            JELogger.error(Arrays.toString(exp.getStackTrace()));
+        } catch (Exception exception) {
+            JELogger.logException(exception);
             JELogger.error("Error deleting rules", LogCategory.DESIGN_MODE, id, LogSubModule.JEBUILDER, id);
         }
         try {
             workflowService.deleteAll(id);
-        } catch (Exception exp) {
-            JELogger.error(Arrays.toString(exp.getStackTrace()));
+        } catch (Exception exception) {
+            JELogger.logException(exception);
             JELogger.error("Error deleting workflows", LogCategory.DESIGN_MODE, id, LogSubModule.JEBUILDER, id);
         }
         try {
             eventService.deleteEvents(id, null);
-        } catch (Exception exp) {
-            JELogger.error(Arrays.toString(exp.getStackTrace()));
+        } catch (Exception exception) {
+            JELogger.logException(exception);
             JELogger.error("Error deleting events", LogCategory.DESIGN_MODE, id, LogSubModule.JEBUILDER, id);
         }
         try {
             variableService.deleteVariables(id, null);
-        } catch (Exception exp) {
-            JELogger.error(Arrays.toString(exp.getStackTrace()));
+        } catch (Exception exception) {
+            JELogger.logException(exception);
             JELogger.error("Error deleting variables", LogCategory.DESIGN_MODE, id, LogSubModule.JEBUILDER, id);
         }
         try {
             projectRepository.deleteById(id);
-        } catch (Exception exp) {
-            JELogger.error(Arrays.toString(exp.getStackTrace()));
+        } catch (Exception exception) {
+            JELogger.logException(exception);
             JELogger.error("Error deleting project from database", LogCategory.DESIGN_MODE, id, LogSubModule.JEBUILDER,
                     id);
         }
@@ -181,13 +182,18 @@ public class ProjectService {
 
     public List<OperationStatusDetails> buildAll(String projectId) throws ProjectNotFoundException,
             InterruptedException, ExecutionException, LicenseNotActiveException, ProjectLoadException {
+
         JEProject project = getProject(projectId);
+
         JELogger.info("[project= " + project.getProjectName() + "] " + JEMessages.BUILDING_PROJECT,
                 LogCategory.DESIGN_MODE, projectId, LogSubModule.JEBUILDER, null);
+
 //CompletableFuture<?> buildRules = ruleService.compileALLRules(projectId);
         CompletableFuture<List<OperationStatusDetails>> buildWorkflows = workflowService.buildWorkflows(projectId,
                 null);
+
         CompletableFuture<List<OperationStatusDetails>> buildRules = ruleService.compileRules(projectId, null);
+
         List<OperationStatusDetails> results = new ArrayList<>();
         buildWorkflows.thenApply(operationStatusDetails -> {
                     results.addAll(operationStatusDetails);
@@ -221,6 +227,7 @@ public class ProjectService {
                     JELogger.info("[project= " + project.getProjectName() + "]" + JEMessages.RUNNING_PROJECT,
                             LogCategory.DESIGN_MODE, projectId, LogSubModule.JEBUILDER, null);
                     try {
+                        // FIXME to be removed, no build on run
                         ruleService.buildRules(projectId);
 
                         JERunnerAPIHandler.runProject(projectId, project.getProjectName());
@@ -229,8 +236,9 @@ public class ProjectService {
 
                         project.getRuleEngine().setRunning(true);
 
-                    } catch (Exception exp) {
-                        throw new ProjectRunException(JEMessages.ERROR_RUNNING_PROJECT + Arrays.toString(exp.getStackTrace()));
+                    } catch (Exception exception) {
+                        JELogger.logException(exception);
+                        throw new ProjectRunException(JEMessages.ERROR_RUNNING_PROJECT + exception.getMessage());
                     }
                     project.setRunning(true);
                     saveProject(projectId).get();
@@ -364,7 +372,9 @@ public class ProjectService {
     public CompletableFuture<Void> loadAllProjects() {
 
         JELogger.info(JEMessages.LOADING_PROJECTS, LogCategory.DESIGN_MODE, null, LogSubModule.JEBUILDER, null);
+
         List<JEProject> projects = projectRepository.findAll();
+
         for (JEProject project : projects) {
             try {
                 Optional<JEProject> p = projectRepository.findById(project.getProjectId());
@@ -381,7 +391,10 @@ public class ProjectService {
                         try {
                             eventService.registerEvent(event);
                         } catch (EventException e) {
-                            throw new ProjectLoadException(JEMessages.PROJECT_LOAD_ERROR);
+
+                            LoggerUtils.logException(e);
+
+                            throw new ProjectLoadException(JEMessages.PROJECT_LOAD_ERROR + e.getMessage());
                         }
                     }
                     for (JEVariable variable : project.getVariables()
@@ -389,7 +402,10 @@ public class ProjectService {
                         try {
                             variableService.addVariableToRunner(variable);
                         } catch (JERunnerErrorException e) {
-                            throw new ProjectLoadException(JEMessages.PROJECT_LOAD_ERROR);
+
+                            LoggerUtils.logException(e);
+
+                            throw new ProjectLoadException(JEMessages.PROJECT_LOAD_ERROR + e.getMessage());
                         }
                     }
 
@@ -411,17 +427,19 @@ public class ProjectService {
                     saveProject(project);
 
                     if (project.isAutoReload() && runStatus) {
+
                         buildAll(project.getProjectId());
+
                         runAll(project.getProjectId());
 
                     }
 
                 }
-            } catch (Exception exp) {
-                JELogger.error(Arrays.toString(exp.getStackTrace()));
+            } catch (Exception exception) {
+                JELogger.logException(exception);
+
                 JELogger.warn("[project = " + project.getProjectName() + "]" + JEMessages.FAILED_TO_LOAD_PROJECT,
                         LogCategory.DESIGN_MODE, project.getProjectId(), LogSubModule.JEBUILDER, null);
-
             }
 
         }
@@ -450,7 +468,8 @@ public class ProjectService {
                     }
                 }
             } catch (Exception e) {
-                JELogger.error("Failed to send inform message to tracker", LogCategory.RUNTIME,
+                LoggerUtils.logException(e);
+                JELogger.error("Failed to send inform message to tracker : " + e.getMessage(), LogCategory.RUNTIME,
                         informBody.getProjectName(), LogSubModule.WORKFLOW, informBody.getWorkflowName());
             }
         }).start();
@@ -484,7 +503,7 @@ public class ProjectService {
             projectRepository.deleteAll();
             FileUtilities.deleteDirectory(ConfigurationConstants.PROJECTS_PATH);
         } catch (Exception e) {
-            e.printStackTrace();
+            LoggerUtils.logException(e);
         }
     }
 

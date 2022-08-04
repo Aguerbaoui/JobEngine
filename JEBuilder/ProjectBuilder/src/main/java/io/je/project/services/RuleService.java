@@ -74,10 +74,10 @@ public class RuleService {
             throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
         }
 
-        // TODO : remove harcoded msgs
         if (ruleModel.getRuleId() == null) {
             throw new RuleNotAddedException(JEMessages.RULE_ID_NULL);
         }
+
         if (ruleModel.getRuleName() == null) {
             throw new RuleNotAddedException(JEMessages.RULE_NAME_NULL);
         }
@@ -672,8 +672,9 @@ public class RuleService {
     public void compileRule(String projectId, String ruleId)
             throws LicenseNotActiveException, InterruptedException, ExecutionException, RuleBuildFailedException {
         LicenseProperties.checkLicenseIsActive();
-        OperationStatusDetails result = asyncRuleService.compileRule(projectId, ruleId, true)
-                .get();
+
+        OperationStatusDetails result = asyncRuleService.compileRule(projectId, ruleId, true).get();
+
         if (!result.isOperationSucceeded()) {
             throw new RuleBuildFailedException(result.getOperationError());
         }
@@ -713,20 +714,6 @@ public class RuleService {
             map.put(rule.getJobEngineElementID(), rule);
         }
         return map;
-    }
-
-    /*
-     * run a specific rule.
-     */
-    public void runRule(String projectId, String ruleId)
-            throws LicenseNotActiveException, RuleBuildFailedException, InterruptedException, ExecutionException {
-        //LicenseProperties.checkLicenseIsActive();
-        OperationStatusDetails result = asyncRuleService.runRule(projectId, ruleId)
-                .get();
-        if (!result.isOperationSucceeded()) {
-            throw new RuleBuildFailedException(result.getOperationError());
-        }
-
     }
 
     /*
@@ -790,6 +777,20 @@ public class RuleService {
                 }
             }
 
+        }
+
+    }
+
+    /*
+     * run a specific rule.
+     */
+    public void runRule(String projectId, String ruleId)
+            throws LicenseNotActiveException, RuleBuildFailedException, InterruptedException, ExecutionException {
+        //LicenseProperties.checkLicenseIsActive();
+        OperationStatusDetails result = asyncRuleService.runRule(projectId, ruleId)
+                .get();
+        if (!result.isOperationSucceeded()) {
+            throw new RuleBuildFailedException(result.getOperationError());
         }
 
     }

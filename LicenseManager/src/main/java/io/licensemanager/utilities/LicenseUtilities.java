@@ -1,5 +1,7 @@
 package io.licensemanager.utilities;
 
+import utils.log.LoggerUtils;
+
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
@@ -71,7 +73,7 @@ public class LicenseUtilities {
 
             return new String(plaintext, "UTF-8");
         } catch (Exception e) {
-            e.printStackTrace();
+            LoggerUtils.logException(e);
             return null;
 
         }

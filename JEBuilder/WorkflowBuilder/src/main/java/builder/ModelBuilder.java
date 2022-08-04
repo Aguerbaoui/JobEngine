@@ -11,6 +11,7 @@ import org.activiti.bpmn.model.*;
 import utils.files.FileUtilities;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
+import utils.log.LoggerUtils;
 import utils.string.StringUtilities;
 
 import java.util.ArrayList;
@@ -349,7 +350,7 @@ public class ModelBuilder {
                     LogSubModule.WORKFLOW, null);
             FileUtilities.copyStringToFile(bpmn20Xml, fileName, "utf-8");
         } catch (Exception e) {
-            e.printStackTrace();
+            LoggerUtils.logException(e);
         }
     }
 
@@ -357,7 +358,7 @@ public class ModelBuilder {
         try {
             FileUtilities.copyStringToFile(bpmn, fileName, "utf-8");
         } catch (Exception e) {
-            e.printStackTrace();
+            LoggerUtils.logException(e);
         }
     }
 

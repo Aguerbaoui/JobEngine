@@ -47,7 +47,6 @@ public class RuleController {
             return JEExceptionHandler.handleException(e);
         }
 
-
         return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, RULE_ADDED_SUCCESSFULLY));
     }
 
@@ -58,6 +57,7 @@ public class RuleController {
     public ResponseEntity<?> updateRule(@RequestBody RunnerRuleModel runnerRuleModel) {
 
         try {
+            // FIXME factorize calls for update rule / rules
             runtimeDispatcher.removeRuleTopics(runnerRuleModel.getRuleId());
 
             runtimeDispatcher.addTopics(runnerRuleModel.getProjectId(), runnerRuleModel.getRuleId(), "rule", runnerRuleModel.getTopics());
@@ -85,7 +85,6 @@ public class RuleController {
         } catch (Exception e) {
             return JEExceptionHandler.handleException(e);
         }
-
 
         return ResponseEntity.ok(new JECustomResponse(ResponseCodes.CODE_OK, JEMessages.RULE_UPDATED, results));
     }
