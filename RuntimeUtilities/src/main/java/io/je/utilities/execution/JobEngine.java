@@ -18,10 +18,7 @@ import io.je.utilities.runtimeobject.JEObject;
 import io.siothconfig.SIOTHConfigUtility;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import utils.log.LogCategory;
-import utils.log.LogLevel;
-import utils.log.LogMessage;
-import utils.log.LogSubModule;
+import utils.log.*;
 import utils.string.StringUtilities;
 
 import java.io.File;
@@ -235,7 +232,7 @@ public class JobEngine {
                         "", LogCategory.RUNTIME, LogSubModule.JERUNNER);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            LoggerUtils.logException(e);
             sendLogMessage(JEMessages.ERROR_SENDING_INFORM_MESSAGE, projectName, LogLevel.ERROR,
                     "", LogCategory.RUNTIME, LogSubModule.JERUNNER);
         }
@@ -260,7 +257,7 @@ public class JobEngine {
                     .equals(ZMQResponseType.SUCCESS)) return ResponseCodes.CODE_OK;
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LoggerUtils.logException(e);
         }
 
         return respCode;
@@ -355,10 +352,6 @@ public class JobEngine {
         System.exit(0);
     }
 
-    public static void display1() {
-        System.out.println("step 7");
-    }
-
     public static JEObject getDataModelInstance(String instanceName) throws IOException {
         System.out.println("step 1");
         JEConfiguration.loadProperties();
@@ -391,9 +384,9 @@ public class JobEngine {
                 mapper.findAndRegisterModules();
 
             } catch (MalformedURLException e) {
-                e.printStackTrace();
+                LoggerUtils.logException(e);
             } catch (ClassNotFoundException e) {
-                e.printStackTrace();
+                LoggerUtils.logException(e);
             }
             if (a != null) {
                 instance = (JEObject) mapper.readValue(a.get("instance"), cls);
@@ -422,12 +415,16 @@ public class JobEngine {
 
 
     public static void main(String... args) throws IOException {
-        sendLogMessage("testtt", "DM", LogLevel.INFORM, "testwf",
+
+        sendLogMessage("test", "DM", LogLevel.INFORM, "testwf",
                 LogCategory.RUNTIME, LogSubModule.WORKFLOW);
-        JobEngine.informUser("testtt", "DM", "testwf")
-        ;
+
+        JobEngine.informUser("test", "DM", "testwf");
+
         setDataModelInstanceAttribute("23aa0c9c-ee34-c9e6-bbeb-7d407f0139b1", "fuelLevel", 110);
+
         JEObject a = JobEngine.getDataModelInstance("azerty");
+
         /*while(true) {
             informUser("test message", "DM", "testwf");
         }*/

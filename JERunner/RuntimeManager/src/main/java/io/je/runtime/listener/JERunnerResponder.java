@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import utils.log.LogLevel;
 import utils.log.LogMessage;
 import utils.log.LogSubModule;
+import utils.log.LoggerUtils;
 import utils.zmq.ZMQBind;
 import utils.zmq.ZMQResponser;
 
@@ -102,7 +103,7 @@ public class JERunnerResponder extends ZMQResponser {
             runtimeDispatcher.triggerEvent((String) body.get(VariableModelMapping.PROJECT_ID),
                     (String) body.get("eventId"));
         } catch (Exception e) {
-            e.printStackTrace();
+            LoggerUtils.logException(e);
             return new JEZMQResponse(ZMQResponseType.FAIL, e.getMessage());
         }
 
@@ -114,7 +115,7 @@ public class JERunnerResponder extends ZMQResponser {
             HashMap<String, String> map = (HashMap<String, String>) requestBody;
             runtimeDispatcher.informUser(map.get("message"), map.get("projectName"), map.get("workflowName"));
         } catch (Exception e) {
-            e.printStackTrace();
+            LoggerUtils.logException(e);
             return new JEZMQResponse(ZMQResponseType.FAIL, e.getMessage());
         }
 
@@ -131,7 +132,7 @@ public class JERunnerResponder extends ZMQResponser {
                     map.get("ObjectId"), map.get("ObjectId"));
             runtimeDispatcher.sendLog(logMessage);
         } catch (Exception e) {
-            e.printStackTrace();
+            LoggerUtils.logException(e);
             return new JEZMQResponse(ZMQResponseType.FAIL, e.getMessage());
         }
 
@@ -161,7 +162,7 @@ public class JERunnerResponder extends ZMQResponser {
                     String.valueOf(body.get(VariableModelMapping.VALUE)),
                     (boolean) body.get(VariableModelMapping.IGNORE_IF_SAME_VALUE));
         } catch (Exception e) {
-            e.printStackTrace();
+            LoggerUtils.logException(e);
             return new JEZMQResponse(ZMQResponseType.FAIL, e.getMessage());
         }
 
@@ -179,7 +180,7 @@ public class JERunnerResponder extends ZMQResponser {
 
             return rep;
         } catch (Exception e) {
-            e.printStackTrace();
+            LoggerUtils.logException(e);
             return new JEZMQResponse(ZMQResponseType.FAIL, e.getMessage());
         }
 
@@ -207,7 +208,7 @@ public class JERunnerResponder extends ZMQResponser {
 
             return rep;
         } catch (Exception e) {
-            e.printStackTrace();
+            LoggerUtils.logException(e);
             return new JEZMQResponse(ZMQResponseType.FAIL, e.getMessage());
         }
 

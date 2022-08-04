@@ -24,9 +24,9 @@ public class Rule extends JEObject {
 
     ArrayList<JEEvent> events;
 
-    public Rule(String jobEngineElementID, String jobEngineProjectID, String name, RuleFormat resourceType,
-                String path) {
-        super(jobEngineElementID, jobEngineProjectID, name);
+    public Rule(String jobEngineElementID, String jobEngineProjectID, String jobEngineElementName, String jobEngineProjectName,
+                RuleFormat resourceType, String path) {
+        super(jobEngineElementID, jobEngineProjectID, jobEngineElementName, jobEngineProjectName);
         this.resourceType = resourceType;
         this.path = path;
 

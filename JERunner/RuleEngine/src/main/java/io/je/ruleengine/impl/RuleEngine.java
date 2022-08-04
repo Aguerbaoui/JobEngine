@@ -32,9 +32,10 @@ public class RuleEngine {
 
     public static void updateRule(Rule rule) throws RuleCompilationException, JEFileNotFoundException {
 
-
         String projectId = rule.getJobEngineProjectID();
+
         ProjectContainer project = projectManager.getProjectContainer(projectId);
+
         // FIXME check returned result
         project.updateRule(rule);
 

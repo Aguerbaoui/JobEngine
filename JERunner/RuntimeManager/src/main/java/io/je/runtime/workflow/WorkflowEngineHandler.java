@@ -17,6 +17,7 @@ import io.je.utilities.monitoring.MonitoringMessage;
 import io.je.utilities.monitoring.ObjectType;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
+import utils.log.LoggerUtils;
 import utils.network.AuthScheme;
 import utils.network.BodyType;
 import utils.network.HttpMethod;
@@ -116,7 +117,7 @@ public class WorkflowEngineHandler {
             processManagerHashMap.get(projectId)
                     .throwSignal(msg);
         } catch (NullPointerException ex) {
-            ex.printStackTrace();
+            LoggerUtils.logException(ex);
         }
     }
 

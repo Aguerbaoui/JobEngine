@@ -39,7 +39,8 @@ public class Request {
             ObjectMapper objectMapper = new ObjectMapper();
             return objectMapper.readValue(respBody, JEResponse.class);
         } catch (IOException | InterruptedException | ExecutionException exp) {
-            JELogger.error(JEMessages.NETWORK_CALL_ERROR + requestUrl + " : " + Arrays.toString(exp.getStackTrace()),
+            JELogger.logException(exp);
+            JELogger.error(JEMessages.NETWORK_CALL_ERROR + requestUrl + " : " + exp.getMessage(),
                     LogCategory.RUNTIME, null, LogSubModule.JEBUILDER, null);
             throw new JERunnerErrorException(JEMessages.JERUNNER_UNREACHABLE + " Or " + JEMessages.JEBUILDER_UNREACHABLE);
         } finally {
@@ -69,7 +70,8 @@ public class Request {
             ObjectMapper objectMapper = new ObjectMapper();
             return objectMapper.readValue(respBody, JEResponse.class);
         } catch (IOException | InterruptedException | ExecutionException exp) {
-            JELogger.error(JEMessages.NETWORK_CALL_ERROR + requestUrl + " : " + Arrays.toString(exp.getStackTrace()),
+            JELogger.logException(exp);
+            JELogger.error(JEMessages.NETWORK_CALL_ERROR + requestUrl + " : " + exp.getMessage(),
                     LogCategory.RUNTIME, null, LogSubModule.JEBUILDER, null);
             throw new JERunnerErrorException(JEMessages.JERUNNER_UNREACHABLE + " Or " + JEMessages.JEBUILDER_UNREACHABLE);
         } finally {
@@ -99,7 +101,8 @@ public class Request {
             ObjectMapper objectMapper = new ObjectMapper();
             return objectMapper.readValue(respBody, JEResponse.class);
         } catch (IOException | InterruptedException | ExecutionException exp) {
-            JELogger.error(JEMessages.NETWORK_CALL_ERROR + requestUrl + " : " + Arrays.toString(exp.getStackTrace()),
+            JELogger.logException(exp);
+            JELogger.error(JEMessages.NETWORK_CALL_ERROR + requestUrl + " : " + exp.getMessage(),
                     LogCategory.RUNTIME, null, LogSubModule.JEBUILDER, null);
             throw new JERunnerErrorException(JEMessages.JERUNNER_UNREACHABLE + " Or " + JEMessages.JEBUILDER_UNREACHABLE);
         } finally {
@@ -128,7 +131,8 @@ public class Request {
             ObjectMapper objectMapper = new ObjectMapper();
             return objectMapper.readValue(respBody, JEResponse.class);
         } catch (IOException | InterruptedException | ExecutionException exp) {
-            JELogger.error(JEMessages.NETWORK_CALL_ERROR + requestUrl + " : " + Arrays.toString(exp.getStackTrace()),
+            JELogger.logException(exp);
+            JELogger.error(JEMessages.NETWORK_CALL_ERROR + requestUrl + " : " + exp.getMessage(),
                     LogCategory.RUNTIME, null, LogSubModule.JEBUILDER, null);
             throw new JERunnerErrorException(JEMessages.JERUNNER_UNREACHABLE + " Or " + JEMessages.JEBUILDER_UNREACHABLE);
         } finally {
@@ -158,7 +162,8 @@ public class Request {
             ObjectMapper objectMapper = new ObjectMapper();
             return objectMapper.readValue(respBody, JEResponse.class);
         } catch (IOException | InterruptedException | ExecutionException exp) {
-            JELogger.error(JEMessages.NETWORK_CALL_ERROR + requestUrl + " : " + Arrays.toString(exp.getStackTrace()),
+            JELogger.logException(exp);
+            JELogger.error(JEMessages.NETWORK_CALL_ERROR + requestUrl + " : " + exp.getMessage(),
                     LogCategory.RUNTIME, null, LogSubModule.JEBUILDER, null);
             throw new JERunnerErrorException(JEMessages.JERUNNER_UNREACHABLE + " Or " + JEMessages.JEBUILDER_UNREACHABLE);
         } finally {
@@ -187,7 +192,8 @@ public class Request {
             ObjectMapper objectMapper = new ObjectMapper();
             return objectMapper.readValue(respBody, classToCastTo);
         } catch (IOException | InterruptedException | ExecutionException exp) {
-            JELogger.error(JEMessages.NETWORK_CALL_ERROR + requestUrl + " : " + Arrays.toString(exp.getStackTrace()),
+            JELogger.logException(exp);
+            JELogger.error(JEMessages.NETWORK_CALL_ERROR + requestUrl + " : " + exp.getMessage(),
                     LogCategory.RUNTIME, null, LogSubModule.JEBUILDER, null);
             throw new JERunnerErrorException(JEMessages.JERUNNER_UNREACHABLE + " Or " + JEMessages.JEBUILDER_UNREACHABLE);
         } finally {

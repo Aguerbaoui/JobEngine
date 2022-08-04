@@ -2,6 +2,7 @@ package io.je.utilities.config;
 
 
 import io.siothconfig.SIOTHConfigUtility;
+import utils.log.LoggerUtils;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -26,7 +27,7 @@ public class JEConfiguration {
             jobEngineProperties.load(input);
             SIOTHConfigUtility.setSiothId(JEConfiguration.getSiothId());
         } catch (IOException ex) {
-            ex.printStackTrace();
+            LoggerUtils.logException(ex);
         }
     }
 

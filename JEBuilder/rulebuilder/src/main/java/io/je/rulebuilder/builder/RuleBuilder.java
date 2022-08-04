@@ -50,14 +50,16 @@ public class RuleBuilder {
         JELogger.control(JEMessages.BUILDING_RULE + " : " + jeRule.getJobEngineElementName(),
                 LogCategory.DESIGN_MODE, jeRule.getJobEngineProjectID(),
                 LogSubModule.RULE, jeRule.getJobEngineElementID());
+
         if (jeRule instanceof UserDefinedRule) {
             List<ScriptedRule> unitRules = scriptRule(((UserDefinedRule) jeRule));
-            for (ScriptedRule rule : unitRules) {
+            for (ScriptedRule scriptedRule : unitRules) {
                 // generate drl
-                rulePath = rule.generateDRL(buildPath);
-                sendDRLToJeRunner(rule, rulePath, compileOnly);
+                rulePath = scriptedRule.generateDRL(buildPath);
+                sendDRLToJeRunner(scriptedRule, rulePath, compileOnly);
             }
         }
+
         if (jeRule instanceof ScriptedRule) {
             rulePath = ((ScriptedRule) jeRule).generateDRL(buildPath);
             sendDRLToJeRunner(jeRule, rulePath, compileOnly);
@@ -71,27 +73,30 @@ public class RuleBuilder {
      */
     public static void sendDRLToJeRunner(JERule rule, String path, boolean compileOnly) throws RuleBuildFailedException, JERunnerErrorException {
 
-
         // compile rule
 
         HashMap<String, Object> ruleMap = new HashMap<>();
-        ruleMap.put(JERunnerRuleMapping.PROJECT_ID, rule.getJobEngineProjectID());
-        ruleMap.put(JERunnerRuleMapping.PROJECT_NAME, rule.getJobEngineElementName());
-        ruleMap.put(JERunnerRuleMapping.PATH, path);
-        ruleMap.put(JERunnerRuleMapping.RULE_ID, rule.getJobEngineElementID());
 
+        ruleMap.put(JERunnerRuleMapping.PROJECT_ID, rule.getJobEngineProjectID());
+        ruleMap.put(JERunnerRuleMapping.RULE_ID, rule.getJobEngineElementID());
+        ruleMap.put(JERunnerRuleMapping.PROJECT_NAME, rule.getJobEngineProjectName());
+        ruleMap.put(JERunnerRuleMapping.RULE_NAME, rule.getJobEngineElementName());
+
+        ruleMap.put(JERunnerRuleMapping.RULE_PATH, path);
         // TODO: remove hard-coded rule format
-        ruleMap.put(JERunnerRuleMapping.FORMAT, "DRL");
-        ruleMap.put(JERunnerRuleMapping.TOPICS, rule.getTopics()
+        ruleMap.put(JERunnerRuleMapping.RULE_FORMAT, "DRL");
+        ruleMap.put(JERunnerRuleMapping.RULE_TOPICS, rule.getTopics()
                 .keySet());
 
         JELogger.debug(" [ project = " + rule.getJobEngineProjectName() + " ] [rule = " + rule.getJobEngineElementName() + "]"
                         + JEMessages.SENDNG_RULE_TO_RUNNER,
                 LogCategory.DESIGN_MODE, rule.getJobEngineProjectID(),
                 LogSubModule.RULE, rule.getJobEngineElementID());
+
         JELogger.debug(" Rule : " + ruleMap,
                 LogCategory.DESIGN_MODE, rule.getJobEngineProjectID(),
                 LogSubModule.RULE, rule.getJobEngineElementID());
+
         JEResponse jeRunnerResp = null;
 
         if (compileOnly) {
@@ -100,20 +105,23 @@ public class RuleBuilder {
 
         } else {
             try {
+
                 jeRunnerResp = JERunnerAPIHandler.updateRule(ruleMap);
+
             } catch (JERunnerErrorException e) {
+                JELogger.logException(e);
                 JELogger.error(" [ project = " + rule.getJobEngineProjectName() + " ] [rule = " + rule.getJobEngineElementName() + "]"
-                                + JEMessages.RULE_BUILD_FAILED,
+                                + JEMessages.RULE_BUILD_FAILED + " : " + e.getMessage(),
                         LogCategory.DESIGN_MODE, rule.getJobEngineProjectID(),
                         LogSubModule.RULE, rule.getJobEngineElementID());
-                throw new RuleBuildFailedException(JEMessages.RULE_BUILD_FAILED + ": " + e.getMessage());
+                throw new RuleBuildFailedException(JEMessages.RULE_BUILD_FAILED + " : " + e.getMessage());
             }
         }
 
         if (jeRunnerResp == null || jeRunnerResp.getCode() != ResponseCodes.CODE_OK) {
             String response = jeRunnerResp == null ? JEMessages.JERUNNER_UNREACHABLE : jeRunnerResp.getMessage();
             JELogger.error("[project = " + rule.getJobEngineProjectName()
-                            + "][rule =" + rule.getJobEngineElementName() + " ]"
+                            + "][rule =" + rule.getJobEngineElementName() + " ] : "
                             + JEMessages.RULE_BUILD_FAILED + response,
                     LogCategory.DESIGN_MODE, rule.getJobEngineProjectID(),
                     LogSubModule.RULE, rule.getJobEngineElementID());
@@ -140,30 +148,35 @@ public class RuleBuilder {
             uRule.getBlocks()
                     .resetAllBlocks();
             scriptedRuleid = subRulePrefix + uRule.getJobEngineElementName() + ++scriptedRulesCounter;
+
             String condition = "";
+            String notCondition = "";
+
             if (root instanceof ConditionBlock) {
                 condition = root.getExpression();
-
+                notCondition = "not ( " + condition.replaceAll("\n", " and ") + " ) ";
             }
 
             String consequences = "";
             if (root instanceof ConditionBlock) {
                 consequences = ((ConditionBlock) root).getConsequences();
-
-
             } else {
                 consequences = root.getExpression();
             }
+
             // add time persistence
             String rootDuration = root.getPersistence();
-            String script = generateScript(uRule.getRuleParameters(), scriptedRuleid, rootDuration, condition, consequences);
-            JELogger.debug(JEMessages.GENERATED_RULE + script,
+
+            String script = generateScript(uRule.getRuleParameters(), scriptedRuleid, rootDuration, condition, consequences, notCondition);
+
+            JELogger.debug(JEMessages.GENERATED_RULE + "\n" + script,
                     LogCategory.DESIGN_MODE, uRule.getJobEngineProjectID(),
                     LogSubModule.RULE, uRule.getJobEngineElementID());
-            ScriptedRule rule = new ScriptedRule(uRule.getJobEngineProjectID(), scriptedRuleid, script,
+
+            ScriptedRule scriptedRule = new ScriptedRule(uRule.getJobEngineProjectID(), scriptedRuleid, script,
                     uRule.getJobEngineElementName() + scriptedRulesCounter, uRule.getJobEngineProjectName());
-            rule.setTopics(uRule.getTopics());
-            scriptedRules.add(rule);
+            scriptedRule.setTopics(uRule.getTopics());
+            scriptedRules.add(scriptedRule);
             subRules.add(scriptedRuleid);
             uRule.setSubRules(subRules);
 
@@ -173,10 +186,11 @@ public class RuleBuilder {
 
 
     /* generate DRL for this rule */
-    private static String generateScript(RuleParameters ruleParameters, String ruleId, String duration, String condition, String consequences)
+    private static String generateScript(RuleParameters ruleParameters, String ruleId, String duration, String condition,
+                                         String consequences, String notCondition)
             throws RuleBuildFailedException {
 
-        // set rule attributes
+        // Set rule attributes
         Map<String, String> ruleTemplateAttributes = new HashMap<>();
         ruleTemplateAttributes.put("customImport", ConfigurationConstants.getJobEngineCustomImport());
         ruleTemplateAttributes.put("ruleName", ruleId);
@@ -185,7 +199,26 @@ public class RuleBuilder {
         ruleTemplateAttributes.put("enabled", ruleParameters.getEnabled());
         ruleTemplateAttributes.put("condition", condition);
         ruleTemplateAttributes.put("consequence", consequences);
+        // Duration replaced by Persistence
         ruleTemplateAttributes.put("duration", duration);
+
+        // Persistence added for next events
+        long persistence = 0;
+        if (duration != null) {
+            if (duration.endsWith("s")) {
+                persistence = Long.parseLong(duration.substring(0, duration.length() - 1)) * 1000;
+            } else if (duration.endsWith("m")) {
+                persistence = Long.parseLong(duration.substring(0, duration.length() - 1)) * 1000 * 60;
+            } else if (duration.endsWith("h")) {
+                persistence = Long.parseLong(duration.substring(0, duration.length() - 1)) * 1000 * 3600;
+            }
+        }
+        ruleTemplateAttributes.put("persistence", "" + persistence);
+        // Avoid evaluation of Reset Persistence Rule if persistence not > 0
+        ruleTemplateAttributes.put("notCondition", notCondition);
+        ruleTemplateAttributes.put("resetPersistenceEnabled",
+                ( ruleParameters.getEnabled().equals("true") && (persistence > 0 ) ) ? "true" : "false" );
+
         if (ruleParameters.getDateEffective() != null && !ruleParameters.getDateEffective()
                 .isEmpty()) {
             LocalDateTime date = LocalDateTime.ofInstant(Instant.parse(ruleParameters.getDateEffective()), ZoneId.systemDefault());
@@ -203,8 +236,12 @@ public class RuleBuilder {
             ruleContent = objectDataCompiler.compile(Arrays.asList(ruleTemplateAttributes),
                     RuleBuilder.class.getClassLoader()
                             .getResourceAsStream("RuleTemplate.drl"));
-        } catch (Exception e) {
-            throw new RuleBuildFailedException(JEMessages.RULE_BUILD_FAILED + e.getMessage());
+        } catch (Exception exception) {
+
+            JELogger.logException(exception);
+
+            throw new RuleBuildFailedException(JEMessages.RULE_BUILD_FAILED + " : " + exception.getMessage());
+
         }
 
         String content = StringSubstitutor.replace(ruleContent, ruleTemplateAttributes);

@@ -15,7 +15,6 @@ import utils.log.LoggerUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -61,7 +60,7 @@ public class Network {
                 return client.newCall(request)
                         .execute();
             } catch (IOException exp) {
-                LoggerUtils.error(Arrays.toString(exp.getStackTrace()));
+                LoggerUtils.logException(exp);
                 return null;
             }
         }, getAsyncExecutor());
@@ -115,7 +114,7 @@ public class Network {
                 return client.newCall(request)
                         .execute();
             } catch (IOException exp) {
-                LoggerUtils.error(Arrays.toString(exp.getStackTrace()));
+                LoggerUtils.logException(exp);
                 return null;
             }
         }, getAsyncExecutor());
@@ -141,7 +140,7 @@ public class Network {
                 return client.newCall(request)
                         .execute();
             } catch (IOException exp) {
-                LoggerUtils.error(Arrays.toString(exp.getStackTrace()));
+                LoggerUtils.logException(exp);
                 return null;
             }
         }, getAsyncExecutor());
@@ -164,7 +163,7 @@ public class Network {
                 return client.newCall(request)
                         .execute();
             } catch (IOException exp) {
-                LoggerUtils.error(Arrays.toString(exp.getStackTrace()));
+                LoggerUtils.logException(exp);
                 return null;
             }
         }, getAsyncExecutor());
@@ -184,7 +183,7 @@ public class Network {
                 return client.newCall(request)
                         .execute();
             } catch (IOException exp) {
-                LoggerUtils.error(Arrays.toString(exp.getStackTrace()));
+                LoggerUtils.logException(exp);
                 return null;
             }
         }, getAsyncExecutor());
@@ -225,7 +224,7 @@ public class Network {
                     .block();
         } catch (Exception exp) {
             responseMap.putIfAbsent("code", HttpStatus.INTERNAL_SERVER_ERROR); //in case there is an issue with the request itself and not an email api error
-            LoggerUtils.error(Arrays.toString(exp.getStackTrace()));
+            LoggerUtils.logException(exp);
             responseMap.put("message", exp.getMessage());
             return responseMap;
         }

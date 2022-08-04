@@ -110,6 +110,23 @@ public class LoggerUtils {
 		}
 	}
 
+	/*
+	 * Log Exception
+	 */
+	public static void logException(Exception exception) {
+
+		String message = exception.toString() + "\n";
+		for (StackTraceElement stackTraceElement : exception.getStackTrace()) {
+			message += stackTraceElement.toString() + "\n";
+		}
+
+		// Log in file
+		if(logger != null) {
+			logger.error(message);
+		}
+
+	}
+
 	// get Log message object for the logging service
 	public static LogMessage getLogMessage(LogLevel logLevel, String message, LogCategory category, String projectId,
 			LogSubModule subModule, String objectId) {

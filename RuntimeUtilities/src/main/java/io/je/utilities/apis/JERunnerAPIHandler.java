@@ -70,7 +70,7 @@ public class JERunnerAPIHandler {
     // compile rule
     public static JEResponse compileRule(Object requestModel)
             throws JERunnerErrorException {
-        String requestUrl = runtimeManagerBaseApi + APIConstants.COMPILERULE;
+        String requestUrl = runtimeManagerBaseApi + APIConstants.COMPILE_RULE;
         return sendRequestWithBody(requestUrl, requestModel);
     }
 
@@ -81,7 +81,7 @@ public class JERunnerAPIHandler {
     }
 
     public static JEResponse deleteRule(String projectId, String ruleId) throws JERunnerErrorException {
-        String requestUrl = runtimeManagerBaseApi + APIConstants.DELETERULE + "/" + projectId + "/" + ruleId;
+        String requestUrl = runtimeManagerBaseApi + APIConstants.DELETE_RULE + "/" + projectId + "/" + ruleId;
         return sendRequest(requestUrl);
     }
 

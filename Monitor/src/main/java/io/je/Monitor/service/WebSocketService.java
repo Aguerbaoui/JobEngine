@@ -8,6 +8,7 @@ import io.je.utilities.monitoring.ObjectType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
+import utils.log.LoggerUtils;
 
 @Service
 public class WebSocketService {
@@ -40,7 +41,7 @@ public class WebSocketService {
                 template.convertAndSend("/variable/variableUpdates", msg);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            LoggerUtils.logException(e);
         }
     }
 }

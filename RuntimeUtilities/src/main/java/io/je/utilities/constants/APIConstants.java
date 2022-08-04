@@ -22,7 +22,7 @@ public class APIConstants {
 
 
     
-    public final static String COMPILERULE= "/rule/compileRule";
+    public final static String COMPILE_RULE = "/rule/compileRule";
 
     
 
@@ -51,7 +51,7 @@ public class APIConstants {
 
     public static final String DEFAULT =  "DEFAULT";
 
-	public static final String DELETERULE = "/rule/deleteRule";
+	public static final String DELETE_RULE = "/rule/deleteRule";
 
 	public static final String ACTUATOR_HEALTH = "/actuator";
 

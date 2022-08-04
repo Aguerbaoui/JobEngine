@@ -15,9 +15,10 @@ public abstract class JEObject {
 
     protected String jobEngineProjectID;
 
+    protected String jobEngineElementName;
+
     protected String jobEngineProjectName;
 
-    protected String jobEngineElementName;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
     protected Instant jeObjectLastUpdate;
 
@@ -41,9 +42,9 @@ public abstract class JEObject {
         super();
         this.jobEngineElementID = jobEngineElementID;
         this.jobEngineProjectID = jobEngineProjectID;
+        this.jobEngineElementName = jobEngineElementName;
         this.jeObjectLastUpdate = Instant.now();
         this.jeObjectCreationDate = Instant.now();
-        this.jobEngineElementName = jobEngineElementName;
         //TODO: add time config (format, timezone, etc ..)
         //set update time
     }
@@ -52,10 +53,10 @@ public abstract class JEObject {
         super();
         this.jobEngineElementID = jobEngineElementID;
         this.jobEngineProjectID = jobEngineProjectID;
-        this.jeObjectLastUpdate = Instant.now();
-        this.jeObjectCreationDate = Instant.now();
         this.jobEngineElementName = jobEngineElementName;
         this.jobEngineProjectName = jobEngineProjectName;
+        this.jeObjectLastUpdate = Instant.now();
+        this.jeObjectCreationDate = Instant.now();
         //TODO: add time config (format, timezone, etc ..)
         //set update time
     }

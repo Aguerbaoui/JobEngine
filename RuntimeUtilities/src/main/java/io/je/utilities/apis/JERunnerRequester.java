@@ -27,7 +27,7 @@ public class JERunnerRequester {
                     requesterPort);
 
         } catch (Exception exp) {
-            JELogger.error(Arrays.toString(exp.getStackTrace()));
+            JELogger.logException(exp);
         }
     }
 
@@ -92,7 +92,7 @@ public class JERunnerRequester {
 
             return objectMapper.readValue(response, JEZMQResponse.class);
         } catch (Exception exp) {
-            JELogger.error(Arrays.toString(exp.getStackTrace()));
+            JELogger.logException(exp);
             return new JEZMQResponse(ZMQResponseType.FAIL, "Failed to get response from JERunner.");
 
         }

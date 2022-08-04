@@ -1,5 +1,6 @@
 package utils.maths;
 
+import utils.log.LoggerUtils;
 import utils.maths.UnitConverter.UnitDefinition;
 
 import java.text.ParseException;
@@ -23,8 +24,7 @@ public class ConversionUtilities {
         try {
             date1=new SimpleDateFormat(dateFormat).parse(dateAsString);
         } catch (ParseException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            LoggerUtils.logException(e);
         }
         return date1;
 

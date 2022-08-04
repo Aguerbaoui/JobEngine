@@ -20,6 +20,7 @@ import org.springframework.stereotype.Component;
 import utils.ProcessRunner;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
+import utils.log.LoggerUtils;
 import utils.zmq.ZMQConfiguration;
 import utils.zmq.ZMQSecurity;
 
@@ -64,8 +65,7 @@ public class JEBuilderInitializingBean implements InitializingBean {
     				JELogger.error(e.getMessage(), LogCategory.SIOTH_APPLICATION, "",
     						LogSubModule.JEBUILDER, "");
     			} catch (InterruptedException e) {
-    				// TODO Auto-generated catch block
-    				e.printStackTrace();
+                    LoggerUtils.logException(e);
     			}
         	}
 

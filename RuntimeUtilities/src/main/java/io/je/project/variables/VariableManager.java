@@ -11,6 +11,7 @@ import io.je.utilities.log.JELogger;
 import utils.comparator.Comparator;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
+import utils.log.LoggerUtils;
 import utils.string.StringSub;
 
 import java.time.LocalDateTime;
@@ -127,7 +128,7 @@ public class VariableManager {
 				JELogger.debug("Variable [" + variable.getJobEngineElementName() + "] = " + variable.getValue(),
 						LogCategory.RUNTIME, projectId, LogSubModule.VARIABLE, variableId);
 			} catch (Exception e) {
-				e.printStackTrace();
+				LoggerUtils.logException(e);
 			}
 
 		} else {

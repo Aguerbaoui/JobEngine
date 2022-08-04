@@ -24,6 +24,7 @@ import org.activiti.engine.task.Task;
 import utils.files.FileUtilities;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
+import utils.log.LoggerUtils;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -153,8 +154,7 @@ public class ProcessManager {
                     repoService.deleteDeployment(processes.get(key)
                             .getDeploymentId());
                 } catch (ActivitiObjectNotFoundException exp) {
-                    // FIXME
-                    exp.printStackTrace();
+                    LoggerUtils.logException(exp);
                 }
             }
             /*Deployment*/
@@ -200,8 +200,7 @@ public class ProcessManager {
                     try {
                         ProcessInstance p = runtimeService.startProcessInstanceByKey(id);
                     } catch (Exception exp) {
-                        // FIXME
-                        exp.printStackTrace();
+                        LoggerUtils.logException(exp);
                     }
                     //process.setRunning(true);
                 }));
@@ -241,14 +240,15 @@ public class ProcessManager {
                     try {
                         ProcessInstance p = runtimeService.startProcessInstanceByKey(id, variables);
                     } catch (Exception ex) {
-                        ex.printStackTrace();
+                        LoggerUtils.logException(ex);
                     }
                     //process.setRunning(true);
                 }));
                 process.getActiveThread()
                         .start();
             } catch (BpmnError e) {
-                JELogger.error("Error" + Arrays.toString(e.getStackTrace()),
+                JELogger.logException(e);
+                JELogger.error("Error" + e.getMessage(),
                         LogCategory.RUNTIME, processes.get(id)
                                 .getProjectId(),
                         LogSubModule.WORKFLOW, id);
@@ -299,7 +299,8 @@ public class ProcessManager {
                         LogSubModule.WORKFLOW, workflow.getKey());
             }
         } catch (Exception e) {
-            JELogger.error("Error in launching a process by message " + Arrays.toString(e.getStackTrace()),
+            JELogger.logException(e);
+            JELogger.error("Error in launching a process by message " + e.getMessage(),
                     LogCategory.RUNTIME, workflow.getProjectId(),
                     LogSubModule.WORKFLOW, workflow.getKey());
         }
@@ -417,8 +418,8 @@ public class ProcessManager {
                             .getProjectId(),
                     LogSubModule.WORKFLOW, workflowId);
         } catch (Exception e) {
-
-            JELogger.error(JEMessages.ERROR_DELETING_A_PROCESS + "\n" + Arrays.toString(e.getStackTrace()),
+            JELogger.logException(e);
+            JELogger.error(JEMessages.ERROR_DELETING_A_PROCESS + e.getMessage(),
                     LogCategory.RUNTIME, processes.get(workflowId)
                             .getProjectId(),
                     LogSubModule.WORKFLOW, workflowId);
