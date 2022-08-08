@@ -114,10 +114,6 @@ public class ComparisonBlock extends PersistableBlock {
 
     }
 
-    public ComparisonBlock() {
-        super();
-    }
-
     @Override
     public String getReference(String optional) {
         return getBlockNameAsVariable();
@@ -147,6 +143,7 @@ public class ComparisonBlock extends PersistableBlock {
                     expression.append("\n");
 
                 }
+                // FIXME could reduce drools performance, check updated doc
                 expression.append("eval(");
                 expression.append(getOperationExpression());
                 expression.append(")");
@@ -207,9 +204,9 @@ public class ComparisonBlock extends PersistableBlock {
 
     protected String getOperationExpression() {
         if (isOperatorString) {
-            String firstOperand = "(String) " + getInputReferenceByOrder(0);
+            String firstOperand = " ( (String) " + getInputReferenceByOrder(0) + " ) ";
 
-            return firstOperand + getOperator() + " (String) " + formatOperator(threshold);
+            return firstOperand + getOperator() + " ( (String) " + formatOperator(threshold) + " ) ";
         }
 
         String firstOperand = (getInputBlockByOrder(0) instanceof VariableGetterBlock ? asDouble(getInputReferenceByOrder(0)) : getInputReferenceByOrder(0));
