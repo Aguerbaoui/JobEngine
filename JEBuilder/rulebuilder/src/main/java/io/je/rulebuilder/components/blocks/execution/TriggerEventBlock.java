@@ -10,44 +10,44 @@ import utils.log.LogSubModule;
 
 public class TriggerEventBlock extends ExecutionBlock {
 
-	String eventId = null;
-	String eventName = null;
+    String eventId = null;
+    String eventName = null;
 
-	public TriggerEventBlock(BlockModel blockModel) {
-		super(blockModel);
-		if (blockModel.getBlockConfiguration() != null && blockModel.getBlockConfiguration()
-				.get(AttributesMapping.VALUE) != null) {
-			eventId = (String) blockModel.getBlockConfiguration()
-					.get(AttributesMapping.VALUE);
-			eventName = (String) blockModel.getBlockConfiguration()
-					.get(AttributesMapping.VALUE2);
+    public TriggerEventBlock(BlockModel blockModel) {
+        super(blockModel);
+        if (blockModel.getBlockConfiguration() != null && blockModel.getBlockConfiguration()
+                .get(AttributesMapping.VALUE) != null) {
+            eventId = (String) blockModel.getBlockConfiguration()
+                    .get(AttributesMapping.VALUE);
+            eventName = (String) blockModel.getBlockConfiguration()
+                    .get(AttributesMapping.VALUE2);
 
-		}
+        }
 
-	}
+    }
 
-	public TriggerEventBlock() {
-		super();
-	}
+    public TriggerEventBlock() {
+        super();
+    }
 
-	@Override
-	public String getExpression() throws RuleBuildFailedException {
-		//return "Executioner.triggerEvent(\"" +jobEngineProjectID  +"\" , \""+ eventId  + "\");";
-		if (eventId == null) {
+    @Override
+    public String getExpression() throws RuleBuildFailedException {
+        //return "Executioner.triggerEvent(\"" +jobEngineProjectID  +"\" , \""+ eventId  + "\");";
+        if (eventId == null) {
 
-			JELogger.error("Failed to build block : " + blockName, LogCategory.DESIGN_MODE, jobEngineProjectID, LogSubModule.RULE, ruleId);
-			isProperlyConfigured = false;
-			throw new RuleBuildFailedException(blockName + " is not configured properly");
+            JELogger.error("Failed to build block : " + blockName, LogCategory.DESIGN_MODE, jobEngineProjectID, LogSubModule.RULE, ruleId);
+            isProperlyConfigured = false;
+            throw new RuleBuildFailedException(blockName + " is not configured properly");
 
-		}
-		return "Executioner.triggerEvent(\"" + jobEngineProjectID + "\" , \""
-				+ eventId + "\",\""
-				+ eventName + "\",\"" +
-				ruleId + "\",\"" +
-				blockName
-				+ "\");";
+        }
+        return "Executioner.triggerEvent(\"" + jobEngineProjectID + "\" , \""
+                + eventId + "\",\""
+                + eventName + "\",\"" +
+                ruleId + "\",\"" +
+                blockName
+                + "\");";
 
-	}
+    }
 
 
 }

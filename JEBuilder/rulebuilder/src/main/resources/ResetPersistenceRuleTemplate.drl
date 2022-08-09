@@ -1,0 +1,27 @@
+
+rule "reset persistence @{ruleName}"  @Propagation(IMMEDIATE)
+dialect "mvel"
+salience @{salience}
+enabled true
+no-loop true
+date-effective @{dateEffective}
+date-expires @{dateExpires}
+timer (cron:@{cronExpression})
+
+when
+
+    @{notCondition}
+
+then
+
+    Persistence rulePersistence = PersistenceMap.getRulesPersistenceMap().get("@{ruleName}");
+
+    if (rulePersistence != null) {
+
+        rulePersistence.setDuration( null );
+
+        rulePersistence.setStartTimestamp( null );
+
+    }
+
+end

@@ -35,7 +35,7 @@ public class ScriptedRule extends JERule {
             LoggerUtils.logException(e);
         }
         return fileName;
-        
+
     }
 
 

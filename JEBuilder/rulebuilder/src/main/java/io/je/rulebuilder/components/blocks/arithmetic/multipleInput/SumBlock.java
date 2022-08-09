@@ -4,19 +4,19 @@ import io.je.rulebuilder.models.BlockModel;
 
 public class SumBlock extends MultipleInputArithmeticBlock {
 
-	public SumBlock(BlockModel blockModel) {
-		super(blockModel);
-	}
-	
-	private SumBlock() {
-		
-	}
+    public SumBlock(BlockModel blockModel) {
+        super(blockModel);
+    }
 
-	@Override
-	protected String getArithmeticFormula(int level,String type) {
-		return "MathUtilities.sum( "  ;
+    private SumBlock() {
 
-	}
+    }
+
+    @Override
+    protected String getArithmeticFormula(int level, String type) {
+        return "MathUtilities.sum( ";
+
+    }
 
 
 }

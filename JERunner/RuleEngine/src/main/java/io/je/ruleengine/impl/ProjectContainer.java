@@ -1,7 +1,7 @@
 package io.je.ruleengine.impl;
 
 import io.je.ruleengine.control.PersistenceMap;
-import io.je.ruleengine.listener.RuleListener;
+import io.je.ruleengine.listener.AgendaEventListener;
 import io.je.ruleengine.loader.RuleLoader;
 import io.je.ruleengine.models.Rule;
 import io.je.utilities.classloader.JEClassLoader;
@@ -13,14 +13,17 @@ import io.je.utilities.ruleutils.IdManager;
 import io.je.utilities.runtimeobject.JEObject;
 import org.apache.commons.lang3.StringUtils;
 import org.drools.core.event.DebugAgendaEventListener;
+import org.drools.core.event.DebugProcessEventListener;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.builder.*;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.builder.model.KieSessionModel;
+import org.kie.api.conf.DeclarativeAgendaOption;
 import org.kie.api.conf.EqualityBehaviorOption;
 import org.kie.api.conf.EventProcessingOption;
+import org.kie.api.conf.KieBaseMutabilityOption;
 import org.kie.api.event.rule.DebugRuleRuntimeEventListener;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieContainer;
@@ -112,10 +115,14 @@ public class ProjectContainer {
     public ProjectContainer(String projectId) {
 
         this.projectId = projectId;
-        // Initialise kie configuration .
+
+        // Initialise kie configuration
         kieServices = KieServices.Factory.get();
+
         kieFileSystem = kieServices.newKieFileSystem();
+
         kfsToCompile = kieServices.newKieFileSystem();
+
         //ruleListener = new RuleListener(projectId);
 
         // createKModule
@@ -216,20 +223,19 @@ public class ProjectContainer {
         // fire rules
         Thread t1 = null;
         try {
-            if (kieSession == null) {
-                kieSession = kieBase.newKieSession();
-
-            }
             Runnable runnable = () -> {
                 try {
                     if (ConfigurationConstants.isDev()) {
                         // https://docs.drools.org/7.68.0.Final/drools-docs/html_single/index.html#_event_model
-                        // kieSession.addEventListener(new DebugAgendaEventListener());
-                        // kieSession.addEventListener(new DebugRuleRuntimeEventListener());
-                        //RuleListener ruleListener = new RuleListener(projectId);
-                        //kieSession.addEventListener(ruleListener);
-                    }
+                       /*
+                        kieSession.addEventListener(new DebugAgendaEventListener());
+                        kieSession.addEventListener(new DebugProcessEventListener());
+                        kieSession.addEventListener(new DebugRuleRuntimeEventListener());
 
+                        AgendaEventListener agendaEventListener = new AgendaEventListener(projectId);
+                        kieSession.addEventListener(agendaEventListener);
+                        */
+                    }
 
                     // Thread.currentThread().setContextClassLoader(loader);
 
@@ -337,11 +343,11 @@ public class ProjectContainer {
             return false;
         }
 
-        return initKieBase();
+        return initKieBaseAndSession();
 
     }
 
-    private boolean initKieBase() {
+    private boolean initKieBaseAndSession() {
 
         JELogger.debugWithoutPublish("[projectId =" + projectId + "] " + JEMessages.KIE_INIT, LogCategory.RUNTIME,
                 projectId, LogSubModule.RULE, null);
@@ -359,6 +365,8 @@ public class ProjectContainer {
                 kieContainer = kieServices.newKieContainer(releaseId, JEClassLoader.getDataModelInstance());
 
                 kieBase = kieContainer.getKieBase("kie-base");
+
+                kieSession = kieBase.newKieSession(kieContainer.getKieSessionConfiguration("kie-session"), kieServices.newEnvironment());
 
                 JELogger.debug("KIE CONTAINER : " + kieContainer.getClassLoader().toString());
 
@@ -390,16 +398,21 @@ public class ProjectContainer {
             kproj = kieServices.newKieModuleModel();
 
             // add kie base model
-            KieBaseModel kieBaseModel1 = kproj.newKieBaseModel("kie-base")
+            KieBaseModel kieBaseModel = kproj.newKieBaseModel("kie-base")
                     .setDefault(true)
                     .setEqualsBehavior(EqualityBehaviorOption.IDENTITY)
-                    .setEventProcessingMode(EventProcessingOption.STREAM);
+                    .setEventProcessingMode(EventProcessingOption.STREAM)
+                    // For cancel match option
+                    .setDeclarativeAgenda(DeclarativeAgendaOption.ENABLED)
+                    .setMutability(KieBaseMutabilityOption.ALLOWED);
 
             // add kie session model
-            kieBaseModel1.newKieSessionModel("kie-session")
+            KieSessionModel kieSessionModel = kieBaseModel.newKieSessionModel("kie-session")
                     .setDefault(true)
                     .setType(KieSessionModel.KieSessionType.STATEFUL)
-                    .setClockType(ClockTypeOption.get("realtime"));
+                    .setClockType(ClockTypeOption.get("realtime"))
+                    .setDirectFiring(true);
+
             kieFileSystem.writeKModuleXML(kproj.toXML());
 
             // set releaseId

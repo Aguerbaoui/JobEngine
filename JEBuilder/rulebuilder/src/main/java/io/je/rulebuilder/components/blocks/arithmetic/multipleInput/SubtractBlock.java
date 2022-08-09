@@ -4,18 +4,18 @@ import io.je.rulebuilder.models.BlockModel;
 
 public class SubtractBlock extends MultipleInputArithmeticBlock {
 
-	public SubtractBlock(BlockModel blockModel) {
-		super(blockModel);
-	}
-	
-	private SubtractBlock() {
-		
-	}
+    public SubtractBlock(BlockModel blockModel) {
+        super(blockModel);
+    }
 
-	@Override
-	protected String getArithmeticFormula(int level,String type) {
-		return "MathUtilities.subtract( "  ;
+    private SubtractBlock() {
 
-	}
+    }
+
+    @Override
+    protected String getArithmeticFormula(int level, String type) {
+        return "MathUtilities.subtract( ";
+
+    }
 
 }

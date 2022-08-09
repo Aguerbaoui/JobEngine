@@ -6,106 +6,104 @@ import io.je.rulebuilder.models.BlockModel;
 import io.je.utilities.exceptions.RuleBuildFailedException;
 
 public abstract class SingleInputArithmeticBlock extends ArithmeticBlock {
-	
-	protected String defaultType = "number";
-	
-	public SingleInputArithmeticBlock(BlockModel blockModel) {
-		super(blockModel);
-		if(inputBlockIds.isEmpty())
-		{
-			isProperlyConfigured=false;
 
-		}
-	}
-	
-	@Override
-	public String getReference(String optional) {
-		return getBlockNameAsVariable();
-	}
+    protected String defaultType = "number";
 
-	protected SingleInputArithmeticBlock() {
-	}
+    public SingleInputArithmeticBlock(BlockModel blockModel) {
+        super(blockModel);
+        if (inputBlockIds.isEmpty()) {
+            isProperlyConfigured = false;
 
-	
-	protected abstract String getFormula();
+        }
+    }
 
-	
-	@Override
-	protected String getArithmeticFormula(int level,String type) {
-		if(type.equalsIgnoreCase("number"))
-		{
-			switch(level)
-			{
-			case 0:
-				return " Double() from " +  getFormula() ;
-			case 1:
-				return " Double(" + Keywords.toBeReplaced +") from " + getFormula() ;
-			default: 
-				return " Double() from " + getFormula() ;
-			
-			}
-		}else if(type.equalsIgnoreCase("string") )
-		{
-			switch(level)
-			{
-			case 0:
-				return " String() from " +  getFormula() ;
-			case 1:
-				return " String(" + Keywords.toBeReplaced +") from " + getFormula() ;
-			default: 
-				return " String() from " + getFormula() ;
-			
-			}
-		}else if(type.equalsIgnoreCase("date") )
-		{
-			return "Date() from " + getFormula();
-		}
-		
-		 return " Double() from " + getFormula() ;
-	}
+    protected SingleInputArithmeticBlock() {
+    }
+
+    @Override
+    public String getReference(String optional) {
+        return getBlockNameAsVariable();
+    }
+
+    protected abstract String getFormula();
 
 
-	@Override
-	public String getExpression() throws RuleBuildFailedException {
-		StringBuilder expression = new StringBuilder();
-		expression.append("\n");
-		expression.append(inputBlocks.get(0).getExpression());
-		expression.append("\n");
-		//int x = includesOperation? 1:0;
-		expression.append( getBlockNameAsVariable()+" : " +getArithmeticFormula (0,defaultType));
-		if(stopExecutionIfInvalidInput)
-		{
-			expression.append("\n"+evaluateExecution(asDouble(inputBlocks.get(0).getReference())));
-		}
-		return expression.toString();
-	}
+    @Override
+    protected String getArithmeticFormula(int level, String type) {
+        if (type.equalsIgnoreCase("number")) {
+            switch (level) {
+                case 0:
+                    return " Double() from " + getFormula();
+                case 1:
+                    return " Double(" + Keywords.toBeReplaced + ") from " + getFormula();
+                default:
+                    return " Double() from " + getFormula();
 
-	
-	@Override
-	public String getAsOperandExpression() throws RuleBuildFailedException {
-		StringBuilder expression = new StringBuilder();
-		expression.append("\n");
-		expression.append(inputBlocks.get(0).getExpression());
-		expression.append("\n");
-	
-		expression.append( getBlockNameAsVariable()+" : " +getArithmeticFormula (1,defaultType));
-		if(stopExecutionIfInvalidInput)
-		{
-			expression.append("\n"+evaluateExecution(asDouble(inputBlocks.get(0).getReference())));
-		}
-		return expression.toString();
-	}
+            }
+        } else if (type.equalsIgnoreCase("string")) {
+            switch (level) {
+                case 0:
+                    return " String() from " + getFormula();
+                case 1:
+                    return " String(" + Keywords.toBeReplaced + ") from " + getFormula();
+                default:
+                    return " String() from " + getFormula();
+
+            }
+        } else if (type.equalsIgnoreCase("date")) {
+            return "Date() from " + getFormula();
+        }
+
+        return " Double() from " + getFormula();
+    }
+
+    @Override
+    public String getNotExpression() throws RuleBuildFailedException {
+        // FIXME
+        StringBuilder expression = new StringBuilder();
+
+        expression.append("\n not ( " + getExpression() + " ) \n");
+
+        return expression.toString();
+    }
+
+    @Override
+    public String getExpression() throws RuleBuildFailedException {
+        StringBuilder expression = new StringBuilder();
+        expression.append("\n");
+        expression.append(inputBlocks.get(0).getExpression());
+        expression.append("\n");
+        //int x = includesOperation? 1:0;
+        expression.append(getBlockNameAsVariable() + " : " + getArithmeticFormula(0, defaultType));
+        if (stopExecutionIfInvalidInput) {
+            expression.append("\n" + evaluateExecution(asDouble(inputBlocks.get(0).getReference())));
+        }
+        return expression.toString();
+    }
 
 
-	
+    @Override
+    public String getAsOperandExpression() throws RuleBuildFailedException {
+        StringBuilder expression = new StringBuilder();
+        expression.append("\n");
+        expression.append(inputBlocks.get(0).getExpression());
+        expression.append("\n");
 
-	public String getDefaultType() {
-		return defaultType;
-	}
+        expression.append(getBlockNameAsVariable() + " : " + getArithmeticFormula(1, defaultType));
+        if (stopExecutionIfInvalidInput) {
+            expression.append("\n" + evaluateExecution(asDouble(inputBlocks.get(0).getReference())));
+        }
+        return expression.toString();
+    }
 
 
-	public void setDefaultType(String defaultType) {
-		this.defaultType = defaultType;
-	}
-	
+    public String getDefaultType() {
+        return defaultType;
+    }
+
+
+    public void setDefaultType(String defaultType) {
+        this.defaultType = defaultType;
+    }
+
 }

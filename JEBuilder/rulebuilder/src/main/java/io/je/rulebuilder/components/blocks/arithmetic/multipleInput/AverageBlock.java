@@ -4,19 +4,19 @@ import io.je.rulebuilder.models.BlockModel;
 
 public class AverageBlock extends MultipleInputArithmeticBlock {
 
-	public AverageBlock(BlockModel blockModel) {
-		super(blockModel);
-	}
-	
-	private AverageBlock() {
-		
-	}
+    public AverageBlock(BlockModel blockModel) {
+        super(blockModel);
+    }
 
-	@Override
-	protected String getArithmeticFormula(int level,String type) {
-		return "MathUtilities.average( "  ;
+    private AverageBlock() {
 
-	}
+    }
+
+    @Override
+    protected String getArithmeticFormula(int level, String type) {
+        return "MathUtilities.average( ";
+
+    }
 
 
 }

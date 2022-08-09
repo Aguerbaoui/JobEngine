@@ -17,8 +17,8 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.parent.version>2.4.0</project.parent.version>
         <java.version>11</java.version>
-        <version.org.kie>7.68.0.Final</version.org.kie>
-        <version.org.drools>7.68.0.Final</version.org.drools>
+        <version.org.kie>7.73.0.Final</version.org.kie>
+        <version.org.drools>7.73.0.Final</version.org.drools>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
     </properties>

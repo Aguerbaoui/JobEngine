@@ -17,41 +17,28 @@ import java.util.concurrent.ConcurrentHashMap;
 public abstract class JERule extends JEObject {
 
 
+    // FIXME why not used
+    protected Map<String, Integer> classTopics = new HashMap<>();
+    protected Map<String, Integer> instanceTopics = new HashMap<>();
     /*
      * buildStatus
      */
     boolean isBuilt = false;
-
-
     boolean isCompiled = false;
-
     /*
      * check if rule was added to JERunner or not
      */
     // FIXME is it really used
     boolean isAdded = false;
-
     boolean isRunning = false;
-
     boolean enabled = true;
-
     @Transient
     boolean containsErrors = false;
-
-
     Status status = Status.NOT_BUILT;
-
+    String description;
+    String ruleFrontConfig;
     @Transient
     private Map<String, Integer> topics = new HashMap<>();
-
-    // FIXME why not used
-    protected Map<String, Integer> classTopics = new HashMap<>();
-
-    protected Map<String, Integer> instanceTopics = new HashMap<>();
-
-    String description;
-
-    String ruleFrontConfig;
 
 
     public JERule(String jobEngineElementID, String jobEngineProjectID, String ruleName) {
@@ -70,17 +57,22 @@ public abstract class JERule extends JEObject {
         return isBuilt;
     }
 
+    public void setBuilt(boolean isBuilt) {
+        if (!isBuilt) {
+            this.isCompiled = false;
+        }
+        this.isBuilt = isBuilt;
+
+    }
 
     public boolean isAdded() {
         return isAdded;
     }
 
-
     // FIXME not used
     public void setAdded(boolean isAdded) {
         this.isAdded = isAdded;
     }
-
 
     public boolean isCompiled() {
         return isCompiled;
@@ -88,14 +80,6 @@ public abstract class JERule extends JEObject {
 
     public void setCompiled(boolean isCompiled) {
         this.isCompiled = isCompiled;
-    }
-
-    public void setBuilt(boolean isBuilt) {
-        if (!isBuilt) {
-            this.isCompiled = false;
-        }
-        this.isBuilt = isBuilt;
-
     }
 
     public String getRuleFrontConfig() {

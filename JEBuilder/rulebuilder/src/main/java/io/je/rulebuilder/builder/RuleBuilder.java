@@ -24,10 +24,15 @@ import utils.date.DateUtils;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
 
+import java.io.ByteArrayInputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /*
  * Rule Builder class that builds .drl file from JERule instance
@@ -140,21 +145,26 @@ public class RuleBuilder {
         List<String> subRules = new ArrayList<>();
         String duration = null;
         int scriptedRulesCounter = 0;
-        String scriptedRuleid = "";
+        String scriptedRuleId = "";
         List<ScriptedRule> scriptedRules = new ArrayList<>();
         Set<Block> rootBlocks = getRootBlocks(uRule);
         String subRulePrefix = IdManager.generateSubRulePrefix(uRule.getJobEngineElementID());
         for (Block root : rootBlocks) {
             uRule.getBlocks()
                     .resetAllBlocks();
-            scriptedRuleid = subRulePrefix + uRule.getJobEngineElementName() + ++scriptedRulesCounter;
+            scriptedRuleId = subRulePrefix + uRule.getJobEngineElementName() + ++scriptedRulesCounter;
 
             String condition = "";
             String notCondition = "";
 
             if (root instanceof ConditionBlock) {
+
                 condition = root.getExpression();
-                notCondition = "not ( " + condition.replaceAll("\n", " and ") + " ) ";
+
+                notCondition = ((ConditionBlock) root).getNotExpression();
+
+// FIXME cast to each child class
+
             }
 
             String consequences = "";
@@ -167,17 +177,17 @@ public class RuleBuilder {
             // add time persistence
             String rootDuration = root.getPersistence();
 
-            String script = generateScript(uRule.getRuleParameters(), scriptedRuleid, rootDuration, condition, consequences, notCondition);
+            String script = generateScript(uRule.getRuleParameters(), scriptedRuleId, rootDuration, condition, consequences, notCondition);
 
             JELogger.debug(JEMessages.GENERATED_RULE + "\n" + script,
                     LogCategory.DESIGN_MODE, uRule.getJobEngineProjectID(),
                     LogSubModule.RULE, uRule.getJobEngineElementID());
 
-            ScriptedRule scriptedRule = new ScriptedRule(uRule.getJobEngineProjectID(), scriptedRuleid, script,
+            ScriptedRule scriptedRule = new ScriptedRule(uRule.getJobEngineProjectID(), scriptedRuleId, script,
                     uRule.getJobEngineElementName() + scriptedRulesCounter, uRule.getJobEngineProjectName());
             scriptedRule.setTopics(uRule.getTopics());
             scriptedRules.add(scriptedRule);
-            subRules.add(scriptedRuleid);
+            subRules.add(scriptedRuleId);
             uRule.setSubRules(subRules);
 
         }
@@ -190,52 +200,88 @@ public class RuleBuilder {
                                          String consequences, String notCondition)
             throws RuleBuildFailedException {
 
-        // Set rule attributes
-        Map<String, String> ruleTemplateAttributes = new HashMap<>();
-        ruleTemplateAttributes.put("customImport", ConfigurationConstants.getJobEngineCustomImport());
-        ruleTemplateAttributes.put("ruleName", ruleId);
-        ruleTemplateAttributes.put("salience", ruleParameters.getSalience());
-        ruleTemplateAttributes.put("cronExpression", ruleParameters.getTimer());
-        ruleTemplateAttributes.put("enabled", ruleParameters.getEnabled());
-        ruleTemplateAttributes.put("condition", condition);
-        ruleTemplateAttributes.put("consequence", consequences);
-        // Duration replaced by Persistence
-        ruleTemplateAttributes.put("duration", duration);
-
-        // Persistence added for next events
-        long persistence = 0;
-        if (duration != null) {
-            if (duration.endsWith("s")) {
-                persistence = Long.parseLong(duration.substring(0, duration.length() - 1)) * 1000;
-            } else if (duration.endsWith("m")) {
-                persistence = Long.parseLong(duration.substring(0, duration.length() - 1)) * 1000 * 60;
-            } else if (duration.endsWith("h")) {
-                persistence = Long.parseLong(duration.substring(0, duration.length() - 1)) * 1000 * 3600;
-            }
-        }
-        ruleTemplateAttributes.put("persistence", "" + persistence);
-        // Avoid evaluation of Reset Persistence Rule if persistence not > 0
-        ruleTemplateAttributes.put("notCondition", notCondition);
-        ruleTemplateAttributes.put("resetPersistenceEnabled",
-                ( ruleParameters.getEnabled().equals("true") && (persistence > 0 ) ) ? "true" : "false" );
-
-        if (ruleParameters.getDateEffective() != null && !ruleParameters.getDateEffective()
-                .isEmpty()) {
-            LocalDateTime date = LocalDateTime.ofInstant(Instant.parse(ruleParameters.getDateEffective()), ZoneId.systemDefault());
-            ruleTemplateAttributes.put("dateEffective", "\"" + DateUtils.formatDate(date, ConfigurationConstants.DROOLS_DATE_FORMAT) + "\"");
-        }
-        if (ruleParameters.getDateExpires() != null && !ruleParameters.getDateExpires()
-                .isEmpty()) {
-            LocalDateTime date = LocalDateTime.ofInstant(Instant.parse(ruleParameters.getDateExpires()), ZoneId.systemDefault());
-            ruleTemplateAttributes.put("dateExpires", "\"" + DateUtils.formatDate(date, ConfigurationConstants.DROOLS_DATE_FORMAT) + "\"");
-        }
-
-        ObjectDataCompiler objectDataCompiler = new ObjectDataCompiler();
-        String ruleContent = "";
         try {
-            ruleContent = objectDataCompiler.compile(Arrays.asList(ruleTemplateAttributes),
-                    RuleBuilder.class.getClassLoader()
-                            .getResourceAsStream("RuleTemplate.drl"));
+
+            // Set rule attributes
+            Map<String, String> ruleTemplateAttributes = new HashMap<>();
+
+            ruleTemplateAttributes.put("customImport", ConfigurationConstants.getJobEngineCustomImport());
+            ruleTemplateAttributes.put("ruleName", ruleId);
+            ruleTemplateAttributes.put("salience", ruleParameters.getSalience());
+            ruleTemplateAttributes.put("cronExpression", ruleParameters.getTimer());
+            ruleTemplateAttributes.put("enabled", ruleParameters.getEnabled());
+
+            if (ruleParameters.getDateEffective() != null && !ruleParameters.getDateEffective()
+                    .isEmpty()) {
+                LocalDateTime date = LocalDateTime.ofInstant(Instant.parse(ruleParameters.getDateEffective()), ZoneId.systemDefault());
+                ruleTemplateAttributes.put("dateEffective", "\"" + DateUtils.formatDate(date, ConfigurationConstants.DROOLS_DATE_FORMAT) + "\"");
+            }
+            if (ruleParameters.getDateExpires() != null && !ruleParameters.getDateExpires()
+                    .isEmpty()) {
+                LocalDateTime date = LocalDateTime.ofInstant(Instant.parse(ruleParameters.getDateExpires()), ZoneId.systemDefault());
+                ruleTemplateAttributes.put("dateExpires", "\"" + DateUtils.formatDate(date, ConfigurationConstants.DROOLS_DATE_FORMAT) + "\"");
+            }
+
+            ruleTemplateAttributes.put("condition", condition);
+
+            ruleTemplateAttributes.put("consequence", consequences);
+
+            ruleTemplateAttributes.put("notCondition", notCondition);
+
+            // Duration replaced by Persistence
+            long persistence = 0;
+            if (duration != null) {
+                if (duration.endsWith("s")) {
+                    persistence = Long.parseLong(duration.substring(0, duration.length() - 1)) * 1000;
+                } else if (duration.endsWith("m")) {
+                    persistence = Long.parseLong(duration.substring(0, duration.length() - 1)) * 1000 * 60;
+                } else if (duration.endsWith("h")) {
+                    persistence = Long.parseLong(duration.substring(0, duration.length() - 1)) * 1000 * 3600;
+                }
+            }
+
+            ruleTemplateAttributes.put("persistence", "" + persistence);
+
+            // Avoid evaluation of Reset Persistence Rule if persistence not > 0
+            Boolean resetPersistenceEnabled = persistence > 0;
+
+            Stream<String> lines = Files.lines(Path.of(RuleBuilder.class.getClassLoader()
+                    .getResource("ResetPersistenceRuleTemplate.drl").toURI()));
+
+            String resetPersistenceRule = lines.collect(Collectors.joining("\n"));
+            lines.close();
+
+            lines = Files.lines(Path.of(RuleBuilder.class.getClassLoader()
+                    .getResource("RuleTemplate.drl").toURI()));
+
+            String drlTemplate = lines.collect(Collectors.joining("\n"));
+            lines.close();
+
+            // TODO enhance Logic OR code (do not change position unless aware)
+            drlTemplate = drlTemplate.replace("@{condition}", condition);
+
+            // TODO enhance persistence code (do not change position unless aware)
+            if (resetPersistenceEnabled) {
+                drlTemplate = drlTemplate.replace("@{resetPersistenceRule}", resetPersistenceRule);
+            } else {
+                ruleTemplateAttributes.put("resetPersistenceRule", "");
+            }
+
+            System.err.println("drl template : \n" + drlTemplate);
+
+            ObjectDataCompiler objectDataCompiler = new ObjectDataCompiler();
+
+            String drlCompiled = objectDataCompiler.compile(Arrays.asList(ruleTemplateAttributes),
+                    new ByteArrayInputStream(drlTemplate.getBytes()));
+
+            System.err.println("drl compiled : \n" + drlTemplate);
+
+            String drlContent = StringSubstitutor.replace(drlCompiled, ruleTemplateAttributes);
+
+            System.err.println("drl after replace : \n" + drlContent);
+
+            return drlContent;
+
         } catch (Exception exception) {
 
             JELogger.logException(exception);
@@ -243,9 +289,6 @@ public class RuleBuilder {
             throw new RuleBuildFailedException(JEMessages.RULE_BUILD_FAILED + " : " + exception.getMessage());
 
         }
-
-        String content = StringSubstitutor.replace(ruleContent, ruleTemplateAttributes);
-        return content;
 
     }
 

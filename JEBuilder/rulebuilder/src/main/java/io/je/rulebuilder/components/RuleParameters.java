@@ -2,86 +2,83 @@ package io.je.rulebuilder.components;
 
 public class RuleParameters {
 
-	/*
-	 * rule priority
-	 */
-	private String salience;
+    /*
+     * rule priority
+     */
+    private String salience;
 
-	/*
-	 * rule parameter that indicates whether a rule is enabled or disabled
-	 */
-	private String enabled;
+    /*
+     * rule parameter that indicates whether a rule is enabled or disabled
+     */
+    private String enabled;
 
-	/*
-	 * rule parameter that indicates when the rule should be activated
-	 */
-	private String dateEffective;
+    /*
+     * rule parameter that indicates when the rule should be activated
+     */
+    private String dateEffective;
 
-	/*
-	 * rule parameter that indicates when the rule expires
-	 */
-	private String dateExpires;
+    /*
+     * rule parameter that indicates when the rule expires
+     */
+    private String dateExpires;
 
-	/*
-	 * cron expression that defines the rule's firing schedule
-	 */
-	private String timer;
+    /*
+     * cron expression that defines the rule's firing schedule
+     */
+    private String timer;
 
-	private String duration;
-	
-	
-	
-	//getter and setters
-	public String getSalience() {
-		return salience;
-	}
-
-	public void setSalience(String salience) {
-		this.salience = salience;
-	}
+    private String duration;
 
 
+    //getter and setters
+    public String getSalience() {
+        return salience;
+    }
 
-	public String getEnabled() {
-		return enabled;
-	}
+    public void setSalience(String salience) {
+        this.salience = salience;
+    }
 
-	public void setEnabled(String enabled) {
-		this.enabled = enabled;
-	}
 
-	public String getDateEffective() {
-		return dateEffective;
-	}
+    public String getEnabled() {
+        return enabled;
+    }
 
-	public void setDateEffective(String dateEffective) {
-		this.dateEffective = dateEffective;
-	}
+    public void setEnabled(String enabled) {
+        this.enabled = enabled;
+    }
 
-	public String getDateExpires() {
-		return dateExpires;
-	}
+    public String getDateEffective() {
+        return dateEffective;
+    }
 
-	public void setDateExpires(String dateExpires) {
-		this.dateExpires = dateExpires;
-	}
+    public void setDateEffective(String dateEffective) {
+        this.dateEffective = dateEffective;
+    }
 
-	public String getTimer() {
-		return timer;
-	}
+    public String getDateExpires() {
+        return dateExpires;
+    }
 
-	public void setTimer(String timer) {
-		this.timer = timer;
-	}
+    public void setDateExpires(String dateExpires) {
+        this.dateExpires = dateExpires;
+    }
 
-	public String getDuration() {
-		return duration;
-	}
+    public String getTimer() {
+        return timer;
+    }
 
-	public void setDuration(String duration) {
-		this.duration = duration;
-	}
-	
-	
-	
+    public void setTimer(String timer) {
+        this.timer = timer;
+    }
+
+    public String getDuration() {
+        return duration;
+    }
+
+    public void setDuration(String duration) {
+        this.duration = duration;
+    }
+
+
 }

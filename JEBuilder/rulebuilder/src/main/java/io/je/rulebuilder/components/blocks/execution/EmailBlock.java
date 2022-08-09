@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import io.je.rulebuilder.components.blocks.ExecutionBlock;
 import io.je.rulebuilder.models.BlockModel;
+import io.je.utilities.exceptions.RuleBuildFailedException;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -22,34 +23,21 @@ import static io.je.utilities.constants.WorkflowConstants.*;
 @Setter
 public class EmailBlock extends ExecutionBlock {
 
-    private boolean bEnableSSL = false;
-
-    private String strSenderAddress;
-
-    private List<String> lstRecieverAddress;
-
-    private List<String> lstAttachementPaths;
-
-    private List<String> lstUploadedFiles;
-
-    private List<String> lstCCs;
-
-    private List<String> lstBCCs;
-
-    private String strSMTPServer;
-
-    private int iPort;
-
-    private int iSendTimeOut;
-
-    private HashMap<String, String> emailMessage;
-
-    private String strUserName;
-
-    private String strPassword;
-
     //Constants
     String executionerMethod = "Executioner.sendEmail(";
+    private boolean bEnableSSL = false;
+    private String strSenderAddress;
+    private List<String> lstRecieverAddress;
+    private List<String> lstAttachementPaths;
+    private List<String> lstUploadedFiles;
+    private List<String> lstCCs;
+    private List<String> lstBCCs;
+    private String strSMTPServer;
+    private int iPort;
+    private int iSendTimeOut;
+    private HashMap<String, String> emailMessage;
+    private String strUserName;
+    private String strPassword;
 
 
     public EmailBlock(BlockModel blockModel) {
@@ -141,5 +129,6 @@ public class EmailBlock extends ExecutionBlock {
         return expression.toString();
 
     }
+
 
 }

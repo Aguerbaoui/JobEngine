@@ -84,7 +84,6 @@ public class ComparisonBlock extends PersistableBlock {
 
                 }
 
-
             }
 
             operator = getOperatorByOperationId(blockModel.getOperationId());
@@ -99,7 +98,10 @@ public class ComparisonBlock extends PersistableBlock {
             isProperlyConfigured = false;
         }
 
+    }
 
+    public ComparisonBlock() {
+        super();
     }
 
     public String getOperatorByOperationId(int operationId) {
@@ -175,9 +177,7 @@ public class ComparisonBlock extends PersistableBlock {
                         expression.append(secondOperand);
                     }
 
-
                 }
-
 
             }
             return expression.toString();
@@ -185,6 +185,16 @@ public class ComparisonBlock extends PersistableBlock {
             LoggerUtils.logException(e);
             throw new RuleBuildFailedException(blockName + " is not configured properly");
         }
+    }
+
+    @Override
+    public String getNotExpression() throws RuleBuildFailedException {
+        // FIXME check if ok
+        StringBuilder expression = new StringBuilder();
+
+        expression.append("\n not ( " + getExpression() + " ) \n");
+
+        return expression.toString();
     }
 
     //check number of inputs
