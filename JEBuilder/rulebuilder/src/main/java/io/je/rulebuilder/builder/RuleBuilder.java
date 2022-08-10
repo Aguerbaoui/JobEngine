@@ -8,6 +8,9 @@ import io.je.rulebuilder.components.blocks.Block;
 import io.je.rulebuilder.components.blocks.ConditionBlock;
 import io.je.rulebuilder.components.blocks.ExecutionBlock;
 import io.je.rulebuilder.components.blocks.PersistableBlock;
+import io.je.rulebuilder.components.blocks.logic.AndBlock;
+import io.je.rulebuilder.components.blocks.logic.NotBlock;
+import io.je.rulebuilder.components.blocks.logic.OrBlock;
 import io.je.utilities.apis.JERunnerAPIHandler;
 import io.je.utilities.beans.JEResponse;
 import io.je.utilities.config.ConfigurationConstants;
@@ -163,10 +166,31 @@ public class RuleBuilder {
 
                 condition = conditionBlock.getExpression();
 
-                // FIXME conditionBlock.getNotExpression(); returns empty (cast issue?)
-                notCondition = " not ( " + condition.replaceAll("\n", " and ") + " ) ";
-
                 consequences = conditionBlock.getConsequences();
+
+                // Do not change unless aware
+                if (root instanceof OrBlock) {
+
+                    OrBlock orBlock = (OrBlock) root;
+
+                    notCondition = orBlock.getNotExpression();
+
+                } else if (root instanceof AndBlock) {
+
+                    AndBlock andBlock = (AndBlock) root;
+
+                    notCondition = andBlock.getNotExpression();
+
+                } else if (root instanceof NotBlock) {
+
+                    NotBlock notBlock = (NotBlock) root;
+
+                    notCondition = notBlock.getNotExpression();
+
+                } else {
+                    // TODO check if need for more specific blocks cast
+                    notCondition = " not ( " + condition.replaceAll("\n", " and ") + " ) ";
+                }
 
             } else {
 

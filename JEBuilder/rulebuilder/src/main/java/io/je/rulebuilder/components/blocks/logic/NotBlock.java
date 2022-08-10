@@ -9,13 +9,13 @@ public class NotBlock extends LogicBlock {
 
     String operator;
 
+    // TODO constants
     public NotBlock(BlockModel blockModel) {
         super(blockModel);
         operator = " not ";
     }
 
     public NotBlock() {
-        // FIXME constant
         operator = " not ";
     }
 
@@ -23,7 +23,7 @@ public class NotBlock extends LogicBlock {
     public String getExpression() throws RuleBuildFailedException {
         StringBuilder expression = new StringBuilder();
 
-        expression.append(operator + getNotExpression());
+        expression.append(operator + " ( " + getNotExpression() + " ) ");
 
         return expression.toString();
     }
@@ -32,15 +32,13 @@ public class NotBlock extends LogicBlock {
     public String getNotExpression() throws RuleBuildFailedException {
         StringBuilder expression = new StringBuilder();
 
-        expression.append("(");
-
         for (int i = 0; i < inputBlocks.size(); i++) {
-            expression.append("\n");
-            expression.append("(");
+
             expression.append(inputBlocks.get(i).getExpression());
-            expression.append(")");
+
+            if (i != inputBlocks.size() - 1) expression.append(" and ");
+
         }
-        expression.append(")");
 
         return expression.toString();
     }

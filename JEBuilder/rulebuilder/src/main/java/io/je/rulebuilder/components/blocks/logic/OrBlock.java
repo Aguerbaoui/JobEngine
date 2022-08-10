@@ -8,13 +8,13 @@ import io.je.utilities.exceptions.RuleBuildFailedException;
 public class OrBlock extends LogicBlock {
 
 
+    // TODO constants
     public OrBlock(BlockModel blockModel) {
         super(blockModel);
         operator = " or ";
     }
 
     public OrBlock() {
-        // FIXME constant
         operator = " or ";
     }
 
@@ -22,6 +22,7 @@ public class OrBlock extends LogicBlock {
     public String getExpression() throws RuleBuildFailedException {
         StringBuilder expression = new StringBuilder();
 
+        // Do not change unless aware
         expression.append(getNotExpression() + "\n");
 
         expression.append(
@@ -86,9 +87,8 @@ public class OrBlock extends LogicBlock {
 
         }
 
-        expression.append( // FIXME : Add JEVariable Definitions if needed (currently used for debug)
-                ""
-        );
+        // FIXME : Add JEVariable Definitions if needed (currently used for debug)
+        expression.append("");
 
         return expression.toString();
     }
@@ -108,7 +108,7 @@ public class OrBlock extends LogicBlock {
                             + "\n");
 
             if (i < inputBlocks.size() - 1) {
-                expression.append( operator);
+                expression.append(operator);
             }
         }
 
