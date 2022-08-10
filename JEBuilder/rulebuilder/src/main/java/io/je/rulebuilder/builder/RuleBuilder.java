@@ -156,22 +156,22 @@ public class RuleBuilder {
 
             String condition = "";
             String notCondition = "";
-
-            if (root instanceof ConditionBlock) {
-
-                condition = root.getExpression();
-
-                notCondition = ((ConditionBlock) root).getNotExpression();
-
-// FIXME cast to each child class
-
-            }
-
             String consequences = "";
+
             if (root instanceof ConditionBlock) {
-                consequences = ((ConditionBlock) root).getConsequences();
+                ConditionBlock conditionBlock = (ConditionBlock) root;
+
+                condition = conditionBlock.getExpression();
+
+                // FIXME conditionBlock.getNotExpression(); returns empty (cast issue?)
+                notCondition = " not ( " + condition.replaceAll("\n", " and ") + " ) ";
+
+                consequences = conditionBlock.getConsequences();
+
             } else {
+
                 consequences = root.getExpression();
+
             }
 
             // add time persistence
