@@ -1,7 +1,6 @@
 package utils.network;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import utils.log.LoggerUtils;
 import io.netty.resolver.DefaultAddressResolverGroup;
 import okhttp3.*;
 import org.springframework.http.HttpHeaders;
@@ -12,10 +11,10 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 import reactor.netty.http.client.HttpClient;
+import utils.log.LoggerUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -50,6 +49,25 @@ public class Network {
     }
 
     /*
+     * Get with response
+     * */
+    public static Response makeGetNetworkCallWithResponse(String url) throws InterruptedException, ExecutionException {
+        Request request = new Request.Builder().url(url)
+                .get()
+                .build();
+        CompletableFuture<Response> f = CompletableFuture.supplyAsync(() -> {
+            try {
+                return client.newCall(request)
+                        .execute();
+            } catch (IOException exp) {
+                LoggerUtils.logException(exp);
+                return null;
+            }
+        }, getAsyncExecutor());
+        return f.get();
+    }
+
+    /*
      * Async executor for network calls
      * */
     public static Executor getAsyncExecutor() {
@@ -68,25 +86,6 @@ public class Network {
                     .build();
         }
         return executor;
-    }
-
-    /*
-     * Get with response
-     * */
-    public static Response makeGetNetworkCallWithResponse(String url) throws InterruptedException, ExecutionException {
-        Request request = new Request.Builder().url(url)
-                .get()
-                .build();
-        CompletableFuture<Response> f = CompletableFuture.supplyAsync(() -> {
-            try {
-                return client.newCall(request)
-                        .execute();
-            } catch (IOException exp) {
-                LoggerUtils.logException(exp);
-                return null;
-            }
-        }, getAsyncExecutor());
-        return f.get();
     }
 
     /*
@@ -191,6 +190,54 @@ public class Network {
         return f.get();
     }
 
+    /*
+     * Execute network call
+     * */
+    public static HashMap<String, Object> makePostWebClientRequest(String url, String json) throws IOException {
+
+        HttpClient httpClient = HttpClient.create()
+                .resolver(DefaultAddressResolverGroup.INSTANCE);
+
+        WebClient webClient = WebClient.builder()
+                .clientConnector(new ReactorClientHttpConnector(httpClient))
+                .baseUrl(url)
+                .defaultHeader(HttpHeaders.CONTENT_TYPE, "application/json; utf-8")
+                .build();
+
+        HashMap<String, Object> responseMap = new HashMap<>();
+        ResponseEntity<Void> emailResponse;
+        try {
+            emailResponse = webClient.post()
+
+                    .header(HttpHeaders.CONTENT_TYPE, "application/json; utf-8")
+                    .bodyValue(json)
+                    .retrieve()
+
+                    // error body as String or other class
+                    .onStatus(HttpStatus::isError, response -> response.bodyToMono(String.class)
+                            .flatMap(res -> {
+                                responseMap.put("code", response.statusCode());
+                                return Mono.error(new RuntimeException(res));
+                            }))
+
+                    .toBodilessEntity()
+                    .block();
+        } catch (Exception exp) {
+            responseMap.putIfAbsent("code", HttpStatus.INTERNAL_SERVER_ERROR); //in case there is an issue with the request itself and not an email api error
+            LoggerUtils.logException(exp);
+            responseMap.put("message", exp.getMessage());
+            return responseMap;
+        }
+
+        if (emailResponse != null) {
+            responseMap.put("message", emailResponse);
+            responseMap.put("code", emailResponse.getStatusCode());
+        }
+/*        responseMap.put("code", con.getResponseCode());
+        responseMap.put("message", response.toString());*/
+        return responseMap;
+    }
+
     public Response call() throws IOException {
 
         RequestBody requestBody = null;
@@ -237,53 +284,6 @@ public class Network {
         request = builder.build();
 
         return client.newCall(request).execute();
-    }
-
-    /*
-     * Execute network call
-     * */
-    public static HashMap<String, Object> makePostWebClientRequest(String url, String json) throws IOException {
-
-        HttpClient httpClient = HttpClient.create()
-                .resolver(DefaultAddressResolverGroup.INSTANCE);
-
-        WebClient webClient = WebClient.builder()
-                .clientConnector(new ReactorClientHttpConnector(httpClient))
-                .baseUrl(url)
-                .defaultHeader(HttpHeaders.CONTENT_TYPE, "application/json; utf-8")
-                .build();
-
-        HashMap<String, Object> responseMap = new HashMap<>();
-        ResponseEntity<Void> emailResponse;
-        try {
-            emailResponse = webClient.post()
-
-                    .header(HttpHeaders.CONTENT_TYPE, "application/json; utf-8")
-                    .bodyValue(json)
-                    .retrieve()
-
-                    // error body as String or other class
-                    .onStatus(HttpStatus::isError, response -> response.bodyToMono(String.class)
-                            .flatMap(res -> {
-                                responseMap.put("code", response.statusCode());
-                                return Mono.error(new RuntimeException(res));
-                            }))
-
-                    .toBodilessEntity()
-                    .block();
-        } catch (Exception exp) {
-            LoggerUtils.logException(exp);
-            responseMap.put("message", exp.getMessage());
-            return responseMap;
-        }
-
-        if (emailResponse != null) {
-            responseMap.put("message", emailResponse);
-            responseMap.put("code", emailResponse.getStatusCode());
-        }
-/*        responseMap.put("code", con.getResponseCode());
-        responseMap.put("message", response.toString());*/
-        return responseMap;
     }
 
     /*
