@@ -77,8 +77,7 @@ public class JEConfiguration {
         if(jobEngineProperties == null) {
             loadProperties();
         }
-        // FIXME spelling mistake : process
-        return jobEngineProperties.getProperty("java.prcessdump");
+        return jobEngineProperties.getProperty("java.processdump");
     }
 
     public static String getJavaDumpPath() {
