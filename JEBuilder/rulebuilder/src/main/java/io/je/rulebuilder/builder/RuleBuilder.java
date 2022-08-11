@@ -27,15 +27,15 @@ import utils.date.DateUtils;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /*
  * Rule Builder class that builds .drl file from JERule instance
@@ -269,8 +269,27 @@ public class RuleBuilder {
             // Avoid evaluation of Reset Persistence Rule if persistence not > 0
             Boolean resetPersistenceEnabled = persistence > 0;
 
+            InputStream inputStream = RuleBuilder.class.getClassLoader().
+                    getResourceAsStream("ResetPersistenceRuleTemplate.drl");
+
+            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+
+            String resetPersistenceRule = reader.lines()
+                    .collect(Collectors.joining("\n"));
+
+            inputStream = RuleBuilder.class.getClassLoader().
+                    getResourceAsStream("RuleTemplate.drl");
+
+            reader = new BufferedReader(new InputStreamReader(inputStream));
+
+            String drlTemplate = reader.lines()
+                    .collect(Collectors.joining("\n"));
+
+            reader.close();
+
+/*
             Stream<String> lines = Files.lines(Path.of(RuleBuilder.class.getClassLoader()
-                    .getResource("ResetPersistenceRuleTemplate.drl").toURI()));
+                    .getResource("src/main/resources/ResetPersistenceRuleTemplate.drl").toURI()));
 
             String resetPersistenceRule = lines.collect(Collectors.joining("\n"));
             lines.close();
@@ -280,6 +299,7 @@ public class RuleBuilder {
 
             String drlTemplate = lines.collect(Collectors.joining("\n"));
             lines.close();
+*/
 
             // TODO enhance Logic OR code (do not change position unless aware)
             drlTemplate = drlTemplate.replace("@{condition}", condition);
