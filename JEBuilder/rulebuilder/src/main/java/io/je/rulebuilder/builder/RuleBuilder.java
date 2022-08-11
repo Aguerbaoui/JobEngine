@@ -287,20 +287,6 @@ public class RuleBuilder {
 
             reader.close();
 
-/*
-            Stream<String> lines = Files.lines(Path.of(RuleBuilder.class.getClassLoader()
-                    .getResource("src/main/resources/ResetPersistenceRuleTemplate.drl").toURI()));
-
-            String resetPersistenceRule = lines.collect(Collectors.joining("\n"));
-            lines.close();
-
-            lines = Files.lines(Path.of(RuleBuilder.class.getClassLoader()
-                    .getResource("RuleTemplate.drl").toURI()));
-
-            String drlTemplate = lines.collect(Collectors.joining("\n"));
-            lines.close();
-*/
-
             // TODO enhance Logic OR code (do not change position unless aware)
             drlTemplate = drlTemplate.replace("@{condition}", condition);
 
