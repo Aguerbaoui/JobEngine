@@ -270,7 +270,7 @@ public class RuleBuilder {
             Boolean resetPersistenceEnabled = persistence > 0;
 
             Stream<String> lines = Files.lines(Path.of(RuleBuilder.class.getClassLoader()
-                    .getResource("ResetPersistenceRuleTemplate.drl").toURI()));
+                    .getResource("ResetTemplate.drl").toURI()));
 
             String resetPersistenceRule = lines.collect(Collectors.joining("\n"));
             lines.close();
