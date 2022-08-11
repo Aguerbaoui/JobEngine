@@ -89,6 +89,7 @@ then
 
             @{consequence}
 
+/*
             System.err.println("OrLogicManager.getRuleMatchCounter('@{ruleName}') after RESET : "
                                     + OrLogicManager.getRuleMatchCounter("@{ruleName}") );
 
@@ -96,6 +97,7 @@ then
 
             System.err.println("OrLogicManager.getRuleMatchCounter('@{ruleName}') No consequence : "
                                     + OrLogicManager.getRuleMatchCounter("@{ruleName}") );
+*/
         }
 
     }

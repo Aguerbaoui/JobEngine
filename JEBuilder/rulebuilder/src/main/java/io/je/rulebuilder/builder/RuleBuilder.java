@@ -291,18 +291,18 @@ public class RuleBuilder {
                 ruleTemplateAttributes.put("resetPersistenceRule", "");
             }
 
-            System.err.println("drl template : \n" + drlTemplate);
+            //System.err.println("drl template : \n" + drlTemplate);
 
             ObjectDataCompiler objectDataCompiler = new ObjectDataCompiler();
 
             String drlCompiled = objectDataCompiler.compile(Arrays.asList(ruleTemplateAttributes),
                     new ByteArrayInputStream(drlTemplate.getBytes()));
 
-            System.err.println("drl compiled : \n" + drlTemplate);
+            //System.err.println("drl compiled : \n" + drlTemplate);
 
             String drlContent = StringSubstitutor.replace(drlCompiled, ruleTemplateAttributes);
 
-            System.err.println("drl after replace : \n" + drlContent);
+            //System.err.println("drl after replace : \n" + drlContent);
 
             return drlContent;
 
