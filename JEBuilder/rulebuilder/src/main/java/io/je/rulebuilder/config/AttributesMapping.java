@@ -5,6 +5,8 @@ package io.je.rulebuilder.config;
  */
 public class AttributesMapping {
 
+    // FIXME Const names standard
+
     //common attributes
     public static final String PROJECTID = "project_id";
     public static final String RULEID = "rule_id";

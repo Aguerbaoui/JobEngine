@@ -84,6 +84,7 @@ public abstract class Block extends JEObject {
     //return drl expression of block
     public abstract String getExpression() throws RuleBuildFailedException;
 
+
     public abstract String getAsOperandExpression() throws RuleBuildFailedException;
 
 

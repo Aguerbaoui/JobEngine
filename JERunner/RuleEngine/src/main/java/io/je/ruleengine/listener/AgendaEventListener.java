@@ -5,26 +5,27 @@ import io.je.utilities.beans.JEMessage;
 import io.je.utilities.ruleutils.IdManager;
 import io.je.utilities.runtimeobject.JEObject;
 import org.kie.api.definition.process.Process;
+import org.kie.api.definition.rule.Rule;
 import org.kie.api.event.rule.*;
-import org.kie.api.runtime.Channel;
-import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.api.runtime.KieRuntime;
 import org.kie.api.runtime.rule.FactHandle;
+import org.kie.api.runtime.rule.Match;
+import org.kie.api.runtime.rule.RuleContext;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
  * Work in progress for the object viewer
  **/
-public class RuleListener extends DefaultAgendaEventListener {
+public class AgendaEventListener extends DefaultAgendaEventListener {
 
     private String projectId;
     //private  HashMap<String,RuleMatch> ruleMatches = new HashMap<String, RuleMatch>();
 
-    public RuleListener(String projectId) {
+    public AgendaEventListener(String projectId) {
         super();
         this.projectId = projectId;
     }
@@ -32,6 +33,7 @@ public class RuleListener extends DefaultAgendaEventListener {
 
     @Override
     public void matchCreated(MatchCreatedEvent event) {
+
         System.err.println("Instant.now().getNano() : " + Instant.now().getNano());
         System.err.println("getSessionClock getCurrentTime : " + event.getKieRuntime().getSessionClock().getCurrentTime());
 
@@ -93,6 +95,67 @@ public class RuleListener extends DefaultAgendaEventListener {
         for (FactHandle factHandle : event.getMatch().getFactHandles()) {
             System.err.println("MatchCreatedEvent factHandle : " + factHandle.toExternalForm());
         }
+
+
+        RuleContext ruleContext = new RuleContext() {
+            @Override
+            public Rule getRule() {
+                return event.getMatch().getRule();
+            }
+
+            @Override
+            public Match getMatch() {
+                return event.getMatch();
+            }
+
+            @Override
+            public FactHandle insertLogical(Object object) {
+                return null;
+            }
+
+            @Override
+            public FactHandle insertLogical(Object object, Object value) {
+                return null;
+            }
+
+            @Override
+            public void blockMatch(Match match) {
+
+            }
+
+            @Override
+            public void unblockAllMatches(Match match) {
+
+            }
+
+            @Override
+            public void cancelMatch(Match match) {
+                System.err.println("Event Cancelled in MatchCreatedEvent");
+            }
+
+            @Override
+            public KieRuntime getKieRuntime() {
+                return null;
+            }
+
+            @Override
+            public KieRuntime getKnowledgeRuntime() {
+                return null;
+            }
+        };
+
+        ruleContext.cancelMatch(event.getMatch());
+
+        System.err.println("MatchCreatedEvent getKieRuntime getKieBase getProcesses AFTER CANCEL MATCH : ");
+
+        for (Process process : event.getKieRuntime().getKieBase().getProcesses()) {
+            System.err.println("process Id : " + process.getId());
+            System.err.println("process Name : " + process.getName());
+            System.err.println("process Package name: " + process.getPackageName());
+            System.err.println("process type : " + process.getType());
+            System.err.println("process version : " + process.getVersion());
+        }
+
     }
 
     @Override
@@ -120,6 +183,7 @@ public class RuleListener extends DefaultAgendaEventListener {
 
     @Override
     public void beforeMatchFired(BeforeMatchFiredEvent event) {
+
         System.err.println("Instant.now().getNano() : " + Instant.now().getNano());
         System.err.println("getSessionClock getCurrentTime : " + event.getKieRuntime().getSessionClock().getCurrentTime());
 
@@ -139,6 +203,75 @@ public class RuleListener extends DefaultAgendaEventListener {
         for (FactHandle factHandle : event.getMatch().getFactHandles()) {
             System.err.println("BeforeMatchFiredEvent factHandle : " + factHandle.toExternalForm());
         }
+
+        System.err.println("BeforeMatchFiredEvent getKieRuntime getKieBase PROCESS : ");
+        for (Process process : event.getKieRuntime().getKieBase().getProcesses()) {
+            System.err.println("process Id : " + process.getId());
+            System.err.println("process Name : " + process.getName());
+            System.err.println("process Package name: " + process.getPackageName());
+            System.err.println("process type : " + process.getType());
+            System.err.println("process version : " + process.getVersion());
+        }
+
+        RuleContext ruleContext = new RuleContext() {
+            @Override
+            public Rule getRule() {
+                return event.getMatch().getRule();
+            }
+
+            @Override
+            public Match getMatch() {
+                return event.getMatch();
+            }
+
+            @Override
+            public FactHandle insertLogical(Object object) {
+                return null;
+            }
+
+            @Override
+            public FactHandle insertLogical(Object object, Object value) {
+                return null;
+            }
+
+            @Override
+            public void blockMatch(Match match) {
+
+            }
+
+            @Override
+            public void unblockAllMatches(Match match) {
+
+            }
+
+            @Override
+            public void cancelMatch(Match match) {
+                System.err.println("Event Cancelled in BeforeMatchFiredEvent");
+            }
+
+            @Override
+            public KieRuntime getKieRuntime() {
+                return null;
+            }
+
+            @Override
+            public KieRuntime getKnowledgeRuntime() {
+                return null;
+            }
+        };
+
+        ruleContext.cancelMatch(event.getMatch());
+
+        System.err.println("BeforeMatchFiredEvent getKieRuntime getKieBase getProcesses AFTER CANCEL MATCH : ");
+
+        for (Process process : event.getKieRuntime().getKieBase().getProcesses()) {
+            System.err.println("process Id : " + process.getId());
+            System.err.println("process Name : " + process.getName());
+            System.err.println("process Package name: " + process.getPackageName());
+            System.err.println("process type : " + process.getType());
+            System.err.println("process version : " + process.getVersion());
+        }
+
     }
 
     @Override
@@ -224,6 +357,86 @@ public class RuleListener extends DefaultAgendaEventListener {
     	//send match to monitoring
     	*/
 
+        RuleContext ruleContext = new RuleContext() {
+            @Override
+            public Rule getRule() {
+                return event.getMatch().getRule();
+            }
+
+            @Override
+            public Match getMatch() {
+                return event.getMatch();
+            }
+
+            @Override
+            public FactHandle insertLogical(Object object) {
+                return null;
+            }
+
+            @Override
+            public FactHandle insertLogical(Object object, Object value) {
+                return null;
+            }
+
+            @Override
+            public void blockMatch(Match match) {
+
+            }
+
+            @Override
+            public void unblockAllMatches(Match match) {
+
+            }
+
+            @Override
+            public void cancelMatch(Match match) {
+                System.err.println("Event Cancelled in AfterMatchFiredEvent");
+            }
+
+            @Override
+            public KieRuntime getKieRuntime() {
+                return null;
+            }
+
+            @Override
+            public KieRuntime getKnowledgeRuntime() {
+                return null;
+            }
+        };
+
+        ruleContext.cancelMatch(event.getMatch());
+
+        System.err.println("AfterMatchFiredEvent getKieRuntime getKieBase getProcesses AFTER CANCEL MATCH : ");
+
+        for (Process process : event.getKieRuntime().getKieBase().getProcesses()) {
+            System.err.println("process Id : " + process.getId());
+            System.err.println("process Name : " + process.getName());
+            System.err.println("process Package name: " + process.getPackageName());
+            System.err.println("process type : " + process.getType());
+            System.err.println("process version : " + process.getVersion());
+        }
+
+
+        System.err.println("Instant.now().getNano() : " + Instant.now().getNano());
+        System.err.println("getSessionClock getCurrentTime : " + event.getKieRuntime().getSessionClock().getCurrentTime());
+
+        System.err.println("AfterMatchFiredEvent : " + event.getKieRuntime().toString());
+
+        System.err.println("AfterMatchFiredEvent : " + event.getMatch().getRule());
+
+        for (String declarationId : event.getMatch().getDeclarationIds()) {
+            System.err.println("AfterMatchFiredEvent declarationId : " + declarationId);
+            System.err.println("AfterMatchFiredEvent declarationValue : " + event.getMatch().getDeclarationValue(declarationId));
+        }
+
+        for (Object object : event.getMatch().getObjects()) {
+            System.err.println("AfterMatchFiredEvent object : " + object);
+        }
+
+        for (FactHandle factHandle : event.getMatch().getFactHandles()) {
+            System.err.println("AfterMatchFiredEvent factHandle : " + factHandle.toExternalForm());
+        }
+
     }
 
     @Override
@@ -254,13 +467,11 @@ public class RuleListener extends DefaultAgendaEventListener {
     @Override
     public void afterRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event) {
         System.err.println("RuleFlowGroupDeactivatedEvent : " + event.getKieRuntime().getSessionConfiguration().toString());
-
     }
 
 
     public void executionReached(String executionId) {
         int i = 0;
-
     }
 
 }

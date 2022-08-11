@@ -4,19 +4,19 @@ import io.je.rulebuilder.models.BlockModel;
 
 public class MultiplyBlock extends MultipleInputArithmeticBlock {
 
-	public MultiplyBlock(BlockModel blockModel) {
-		super(blockModel);
-	}
-	
-	private MultiplyBlock() {
-		
-	}
+    public MultiplyBlock(BlockModel blockModel) {
+        super(blockModel);
+    }
 
-	@Override
-	protected String getArithmeticFormula(int level,String type) {
-		return "MathUtilities.multiply( "  ;
+    private MultiplyBlock() {
 
-	}
+    }
+
+    @Override
+    protected String getArithmeticFormula(int level, String type) {
+        return "MathUtilities.multiply( ";
+
+    }
 
 
 }

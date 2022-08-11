@@ -6,64 +6,62 @@ import java.util.List;
 
 public abstract class GetterBlock extends ConditionBlock {
 
-	protected String classId;
-	protected String classPath;
-	protected 	List<String> specificInstances;
+    protected String classId;
+    protected String classPath;
+    protected List<String> specificInstances;
 
-	
-	public GetterBlock(BlockModel blockModel) {
-		super(blockModel.getBlockId(), blockModel.getProjectId(), blockModel.getRuleId(), blockModel.getBlockName(),
-				blockModel.getDescription(),blockModel.getInputBlocksIds(),blockModel.getOutputBlocksIds());
-	}
-	
-	/*
-	 * returns the instances in the following format :
-	 * instance1,instance2...,instancen
-	 */
-	protected String getInstances() {
-		String instanceIds = "";
-		instanceIds += "\"" + specificInstances.get(0) + "\"";
-		for (int i = 1; i < specificInstances.size(); i++) {
-			instanceIds += " , " + "\"" + specificInstances.get(i) + "\"";
-		}
-		return instanceIds;
-	}
-	
 
-	public GetterBlock() {
-		super();
-	}
+    public GetterBlock(BlockModel blockModel) {
+        super(blockModel.getBlockId(), blockModel.getProjectId(), blockModel.getRuleId(), blockModel.getBlockName(),
+                blockModel.getDescription(), blockModel.getInputBlocksIds(), blockModel.getOutputBlocksIds());
+    }
 
-	@Override
-	public String toString() {
-		return "GetterBlock [ruleId=" + ruleId + ", jobEngineElementID=" + jobEngineElementID + ", jobEngineProjectID="
-				+ jobEngineProjectID + ", jeObjectLastUpdate=" + jeObjectLastUpdate + "]";
-	}
+    public GetterBlock() {
+        super();
+    }
 
-	public String getClassId() {
-		return classId;
-	}
+    /*
+     * returns the instances in the following format :
+     * instance1,instance2...,instancen
+     */
+    protected String getInstances() {
+        String instanceIds = "";
+        instanceIds += "\"" + specificInstances.get(0) + "\"";
+        for (int i = 1; i < specificInstances.size(); i++) {
+            instanceIds += " , " + "\"" + specificInstances.get(i) + "\"";
+        }
+        return instanceIds;
+    }
 
-	public void setClassId(String classId) {
-		this.classId = classId;
-	}
+    @Override
+    public String toString() {
+        return "GetterBlock [ruleId=" + ruleId + ", jobEngineElementID=" + jobEngineElementID + ", jobEngineProjectID="
+                + jobEngineProjectID + ", jeObjectLastUpdate=" + jeObjectLastUpdate + "]";
+    }
 
-	public String getClassPath() {
-		return classPath;
-	}
+    public String getClassId() {
+        return classId;
+    }
 
-	public void setClassPath(String classPath) {
-		this.classPath = classPath;
-	}
+    public void setClassId(String classId) {
+        this.classId = classId;
+    }
 
-	public List<String> getSpecificInstances() {
-		return specificInstances;
-	}
+    public String getClassPath() {
+        return classPath;
+    }
 
-	public void setSpecificInstances(List<String> specificInstances) {
-		this.specificInstances = specificInstances;
-	}
-	
-	
+    public void setClassPath(String classPath) {
+        this.classPath = classPath;
+    }
+
+    public List<String> getSpecificInstances() {
+        return specificInstances;
+    }
+
+    public void setSpecificInstances(List<String> specificInstances) {
+        this.specificInstances = specificInstances;
+    }
+
 
 }

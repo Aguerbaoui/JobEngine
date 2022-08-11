@@ -250,12 +250,22 @@ public class MathUtilities {
     }
 
     /*
-     * highLimiting returns min ( limitValue, max(Inputs..) )
+     * High Limiting returns min ( limitValue, max(Inputs..) )
      */
     public static double highLimiting(double limit, double... numbers) {
         double max = maximum(numbers);
 
         return (double) Math.min(limit, max);
+
+    }
+
+    /*
+     * Low Limiting returns max ( limitValue, min(Inputs..) )
+     */
+    public static double lowLimiting(double limit, double... numbers) {
+        double min = minimum(numbers);
+
+        return (double) Math.max(limit, min);
 
     }
 
@@ -268,16 +278,6 @@ public class MathUtilities {
         }
 
         return (double) max;
-
-    }
-
-    /*
-     * low Limiting returns min ( limitValue, min(Inputs..) )
-     */
-    public static double lowLimiting(double limit, double... numbers) {
-        double min = minimum(numbers);
-
-        return (double) Math.min(limit, min);
 
     }
 

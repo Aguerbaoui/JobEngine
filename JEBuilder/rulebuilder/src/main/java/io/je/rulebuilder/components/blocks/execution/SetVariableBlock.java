@@ -5,52 +5,45 @@ import io.je.rulebuilder.config.AttributesMapping;
 import io.je.rulebuilder.models.BlockModel;
 
 /*
- * Block used to writing in an instance's attribute (from DM) 
+ * Block used to writing in an instance's attribute (from DM)
  * source : previous block
  * operation id : 5003
  */
 public class SetVariableBlock extends ExecutionBlock {
-	
-
-	
-	/*******************************Instance definition*******************************/
-	String variableId;
 
 
-	public SetVariableBlock(BlockModel blockModel) {
-		super(blockModel);
-		try
-		{
-			
-			variableId = (String) blockModel.getBlockConfiguration().get(AttributesMapping.VALUE);
-			isProperlyConfigured=true;
-		}catch(Exception e) {
-			isProperlyConfigured=false;
-		}finally {
-			if(variableId==null)
-			{
-				isProperlyConfigured=false;
-
-			}
-		}
-		
+    /*******************************Instance definition*******************************/
+    String variableId;
 
 
-	}
+    public SetVariableBlock(BlockModel blockModel) {
+        super(blockModel);
+        try {
 
-	public SetVariableBlock() {
-		super();
-	}
+            variableId = (String) blockModel.getBlockConfiguration().get(AttributesMapping.VALUE);
+            isProperlyConfigured = true;
+        } catch (Exception e) {
+            isProperlyConfigured = false;
+        } finally {
+            if (variableId == null) {
+                isProperlyConfigured = false;
+
+            }
+        }
 
 
+    }
 
-	 
-	@Override
-	public String getExpression() {		
-	   return "Executioner.updateVariable("+variableId+", "+inputBlocks.get(0).getReference()+");";
+    public SetVariableBlock() {
+        super();
+    }
 
-	}
 
+    @Override
+    public String getExpression() {
+        return "Executioner.updateVariable(" + variableId + ", " + inputBlocks.get(0).getReference() + ");";
+
+    }
 
 
 }

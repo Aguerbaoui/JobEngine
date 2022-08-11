@@ -4,20 +4,19 @@ import io.je.rulebuilder.models.BlockModel;
 
 public class MinimumBlock extends MultipleInputArithmeticBlock {
 
-	public MinimumBlock(BlockModel blockModel) {
-		super(blockModel);
-		// TODO Auto-generated constructor stub
-	}
-	
-	private MinimumBlock()
-	{
-		
-	}
+    public MinimumBlock(BlockModel blockModel) {
+        super(blockModel);
+        // TODO Auto-generated constructor stub
+    }
 
-	@Override
-	protected String getArithmeticFormula(int level,String type) {
-		return "MathUtilities.minimum( "  ;
+    private MinimumBlock() {
 
-	}
+    }
+
+    @Override
+    protected String getArithmeticFormula(int level, String type) {
+        return "MathUtilities.minimum( ";
+
+    }
 
 }

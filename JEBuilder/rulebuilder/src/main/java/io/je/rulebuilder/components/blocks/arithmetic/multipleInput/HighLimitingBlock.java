@@ -5,24 +5,23 @@ import io.je.rulebuilder.models.BlockModel;
 
 public class HighLimitingBlock extends MultipleInputArithmeticBlock {
 
-	String limit;
+    String limit;
 
-	public HighLimitingBlock(BlockModel blockModel) {
-		super(blockModel);
-		limit=String.valueOf( blockModel.getBlockConfiguration().get(AttributesMapping.VALUE));
+    public HighLimitingBlock(BlockModel blockModel) {
+        super(blockModel);
+        limit = String.valueOf(blockModel.getBlockConfiguration().get(AttributesMapping.VALUE));
 
-	}
+    }
 
 
-	private HighLimitingBlock()
-	{
-		
-	}
+    private HighLimitingBlock() {
 
-	@Override
-	protected String getArithmeticFormula(int level,String type) {
-		return "MathUtilities.highLimiting( "+limit+","  ;
+    }
 
-	}
+    @Override
+    protected String getArithmeticFormula(int level, String type) {
+        return "MathUtilities.highLimiting( " + limit + ",";
+
+    }
 
 }

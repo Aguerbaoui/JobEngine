@@ -30,15 +30,6 @@ public enum Operator {
         this.code = code;
     }
 
-
-    public String getFullName() {
-        return full;
-    }
-
-    public Integer getCode() {
-        return code;
-    }
-
     public static Boolean isStringOperator(int operation) {
         return (operation >= 2007 && operation <= 2013);
 
@@ -55,6 +46,14 @@ public enum Operator {
         return Arrays.stream(Operator.values())
                 .filter(operator -> Objects.equals(operator.full, operation))
                 .findFirst();
+    }
+
+    public String getFullName() {
+        return full;
+    }
+
+    public Integer getCode() {
+        return code;
     }
 
 }

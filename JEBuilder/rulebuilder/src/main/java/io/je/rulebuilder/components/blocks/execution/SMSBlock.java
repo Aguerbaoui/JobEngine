@@ -26,28 +26,18 @@ import static io.je.utilities.constants.WorkflowConstants.*;
 public class SMSBlock extends ExecutionBlock {
 
 
-    private String serverType;
-
-    private List<String> receiverPhoneNumbers;
-
-
-    private String accountSID;
-
-    private String accountToken;
-
-    private String senderPhoneNumber;
-
-
-    private String message;
-
-
     //Constants
     String executionerMethod = "Executioner.sendSMS(";
+    private String serverType;
+    private List<String> receiverPhoneNumbers;
+    private String accountSID;
+    private String accountToken;
+    private String senderPhoneNumber;
+    private String message;
 
 
     public SMSBlock(BlockModel blockModel) {
         super(blockModel);
-
 
         try {
             //FIXME: change string to constants
@@ -67,12 +57,10 @@ public class SMSBlock extends ExecutionBlock {
                     .get(RECEIVER_PHONE_NUMBERS);
             isProperlyConfigured = serverType != null;
 
-
         } catch (Exception e) {
             isProperlyConfigured = false;
 
         }
-
 
     }
 
@@ -115,7 +103,6 @@ public class SMSBlock extends ExecutionBlock {
                 .append(formatMessage())
                 .append("\");\r\n");
         expression.append("\n");
-
 
         return expression.toString();
 

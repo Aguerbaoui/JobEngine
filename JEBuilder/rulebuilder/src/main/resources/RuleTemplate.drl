@@ -3,13 +3,12 @@ template header
 
 ruleName
 salience
-duration
-persistence
 condition
 consequence
 enabled
+persistence
+resetPersistenceRule
 notCondition
-resetPersistenceEnabled
 dateEffective
 cronExpression
 dateExpires
@@ -33,6 +32,7 @@ import io.je.utilities.beans.JEMessage;
 import io.je.utilities.beans.JEBlockMessage;
 import io.je.ruleengine.control.Persistence;
 import io.je.ruleengine.control.PersistenceMap;
+import io.je.ruleengine.control.OrLogicManager;
 import io.je.ruleengine.utils.JEMathUtils;
 import io.je.project.variables.VariableManager;
 
@@ -78,40 +78,33 @@ then
         rulePersistence.setDuration( null );
         rulePersistence.setStartTimestamp( null );
 
-        @{consequence}
+        // FIXME should be better, but DO NOT CHANGE, unless aware
+        if ( OrLogicManager.getRuleMatchCounter("@{ruleName}") == null ) {
+
+            @{consequence}
+
+        } else if (OrLogicManager.getRuleMatchCounter("@{ruleName}") > 0 ) {
+
+            OrLogicManager.resetRuleMatch("@{ruleName}");
+
+            @{consequence}
+
+/*
+            System.err.println("OrLogicManager.getRuleMatchCounter('@{ruleName}') after RESET : "
+                                    + OrLogicManager.getRuleMatchCounter("@{ruleName}") );
+
+        } else {
+
+            System.err.println("OrLogicManager.getRuleMatchCounter('@{ruleName}') No consequence : "
+                                    + OrLogicManager.getRuleMatchCounter("@{ruleName}") );
+*/
+        }
 
     }
 
 end
 
-
-
-rule "reset persistence @{ruleName}"  @Propagation(IMMEDIATE)
-dialect "mvel"
-salience @{salience}
-enabled @{resetPersistenceEnabled}
-no-loop true
-date-effective @{dateEffective}
-date-expires @{dateExpires}
-timer (cron:@{cronExpression})
-
-when
-
-    @{notCondition}
-
-then
-
-    Persistence rulePersistence = PersistenceMap.getRulesPersistenceMap().get("@{ruleName}");
-
-    if (rulePersistence != null) {
-
-        rulePersistence.setDuration( null );
-
-        rulePersistence.setStartTimestamp( null );
-
-    }
-
-end
-
+@{resetPersistenceRule}
 
 end template
+

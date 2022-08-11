@@ -84,7 +84,6 @@ public class ComparisonBlock extends PersistableBlock {
 
                 }
 
-
             }
 
             operator = getOperatorByOperationId(blockModel.getOperationId());
@@ -99,7 +98,10 @@ public class ComparisonBlock extends PersistableBlock {
             isProperlyConfigured = false;
         }
 
+    }
 
+    public ComparisonBlock() {
+        super();
     }
 
     public String getOperatorByOperationId(int operationId) {
@@ -112,10 +114,6 @@ public class ComparisonBlock extends PersistableBlock {
                     .getFullName();
         } else return "";
 
-    }
-
-    public ComparisonBlock() {
-        super();
     }
 
     @Override
@@ -147,6 +145,7 @@ public class ComparisonBlock extends PersistableBlock {
                     expression.append("\n");
 
                 }
+                // FIXME could reduce drools performance, check updated doc
                 expression.append("eval(");
                 expression.append(getOperationExpression());
                 expression.append(")");
@@ -178,9 +177,7 @@ public class ComparisonBlock extends PersistableBlock {
                         expression.append(secondOperand);
                     }
 
-
                 }
-
 
             }
             return expression.toString();
@@ -188,6 +185,16 @@ public class ComparisonBlock extends PersistableBlock {
             LoggerUtils.logException(e);
             throw new RuleBuildFailedException(blockName + " is not configured properly");
         }
+    }
+
+    @Override
+    public String getNotExpression() throws RuleBuildFailedException {
+        // FIXME check if ok
+        StringBuilder expression = new StringBuilder();
+
+        expression.append("\n not ( " + getExpression() + " ) \n");
+
+        return expression.toString();
     }
 
     //check number of inputs
@@ -207,9 +214,9 @@ public class ComparisonBlock extends PersistableBlock {
 
     protected String getOperationExpression() {
         if (isOperatorString) {
-            String firstOperand = "(String) " + getInputReferenceByOrder(0);
+            String firstOperand = " ( (String) " + getInputReferenceByOrder(0) + " ) ";
 
-            return firstOperand + getOperator() + " (String) " + formatOperator(threshold);
+            return firstOperand + getOperator() + " ( (String) " + formatOperator(threshold) + " ) ";
         }
 
         String firstOperand = (getInputBlockByOrder(0) instanceof VariableGetterBlock ? asDouble(getInputReferenceByOrder(0)) : getInputReferenceByOrder(0));

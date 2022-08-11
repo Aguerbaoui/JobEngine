@@ -3,73 +3,71 @@ package io.je.rulebuilder.components.blocks;
 import io.je.rulebuilder.models.BlockModel;
 import io.je.utilities.exceptions.RuleBuildFailedException;
 
-public  class LogicBlock extends PersistableBlock {
+public class LogicBlock extends PersistableBlock {
 
-	protected String operator;
-	public LogicBlock(BlockModel blockModel) {
-		super(blockModel.getBlockId(), blockModel.getProjectId(), blockModel.getRuleId(), 
-				blockModel.getBlockName(), blockModel.getDescription(),blockModel.getTimePersistenceValue(),blockModel.getTimePersistenceUnit(),blockModel.getInputBlocksIds(),blockModel.getOutputBlocksIds());
-		switch(blockModel.getOperationId())
-		{
-		//and
-		case 3001:
-			operator = "";
-			break;
-		
-		//or
-		case 3002 :
-			operator = "or";
-			break;
-		
-		}
-	}
+    protected String operator = "";
 
-	 public LogicBlock() {
-		
-	}
+    public LogicBlock(BlockModel blockModel) {
+        super(blockModel.getBlockId(), blockModel.getProjectId(), blockModel.getRuleId(),
+                blockModel.getBlockName(), blockModel.getDescription(), blockModel.getTimePersistenceValue(), blockModel.getTimePersistenceUnit(), blockModel.getInputBlocksIds(), blockModel.getOutputBlocksIds());
 
-	@Override
-	public String getExpression() throws RuleBuildFailedException {
-		StringBuilder expression = new StringBuilder();
-		expression.append("\n");
-		expression.append("(");
-		expression.append(inputBlocks.get(0).getExpression());
-		expression.append(")");
-		expression.append("\n");
+        switch (blockModel.getOperationId()) {
+            //and
+            case 3001:
+                operator = " and ";
+                break;
 
-		for(int i=1; i<inputBlocks.size();i++)
-		{
-			expression.append(operator);
-			expression.append("\n");
-			expression.append("(");
-			expression.append(inputBlocks.get(i).getExpression());
-			expression.append(")");
-		}
-		return expression.toString();
-	}
+            //or
+            case 3002:
+                operator = " or ";
+                break;
 
-	@Override
-	public String getReference(String optional) {
-		return getBlockNameAsVariable();
-	}
-	@Override
-	public String getAsOperandExpression() {
-		// not applicable for these blocks
-		return null;
-	}
+        }
+    }
 
+    public LogicBlock() {
 
+    }
 
+    @Override
+    public String getExpression() throws RuleBuildFailedException {
+        StringBuilder expression = new StringBuilder();
+        expression.append("\n");
+        expression.append("(");
+        expression.append(inputBlocks.get(0).getExpression());
+        expression.append(")");
+        expression.append("\n");
 
+        for (int i = 1; i < inputBlocks.size(); i++) {
+            expression.append(operator);
+            expression.append("\n");
+            expression.append("(");
+            expression.append(inputBlocks.get(i).getExpression());
+            expression.append(")");
+        }
+        return expression.toString();
+    }
 
+    @Override
+    public String getNotExpression() throws RuleBuildFailedException {
 
+        StringBuilder expression = new StringBuilder();
 
+        expression.append("\n not ( " + getExpression() + " ) \n");
 
+        return expression.toString();
+    }
 
+    @Override
+    public String getReference(String optional) {
+        return getBlockNameAsVariable();
+    }
 
-
-
-
+    @Override
+    public String getAsOperandExpression() {
+        // not applicable for these blocks
+        return null;
+    }
 
 
 }

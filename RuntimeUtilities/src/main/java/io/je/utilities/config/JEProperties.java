@@ -22,8 +22,7 @@ public class JEProperties {
     @Value("${dev.environment}")
     boolean dev;
 
-    // FIXME processdump
-    @Value("${java.prcessdump}")
+    @Value("${java.processdump}")
     boolean dumpJavaProcessExecution;
 
 
@@ -49,7 +48,7 @@ public class JEProperties {
     @Value("${zmq.heartbeat.value}")
     int zmqHeartbeatValue;
 
-    @Value("${zmq.heartbeat.interval}")
+    @Value("${zmq.handshake.interval}")
     int zmqHandshakeInterval;
 
     @Value("${zmq.receive.interval}")

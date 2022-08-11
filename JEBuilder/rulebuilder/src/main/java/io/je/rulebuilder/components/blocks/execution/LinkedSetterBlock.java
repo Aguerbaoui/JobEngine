@@ -7,108 +7,98 @@ import io.je.rulebuilder.models.BlockModel;
 import java.util.List;
 
 /*
- * Block used to writing in an instance's attribute (from DM) 
+ * Block used to writing in an instance's attribute (from DM)
  * source : previous block
  * operation id : 5003
  */
 public class LinkedSetterBlock extends ExecutionBlock {
-	
-
-	boolean isGeneric;
-
-	/*******************************Instance definition*******************************/
-	String classId;
-	String classPath;
-	String destinationAttributeName;
-	String destinationAttributeType;
-
-	List<String> instances ; 
-	boolean  ignoreWriteIfSameValue=true;
-
-	public LinkedSetterBlock(BlockModel blockModel) {
-		super(blockModel);
-		try {
-			ignoreWriteIfSameValue=(boolean) blockModel.getBlockConfiguration().get("ignoreWriteIfSameValue");
-		}catch (Exception e) {
-			// TODO: handle exception
-		}
-		try
-		{
-			isGeneric= (boolean) blockModel.getBlockConfiguration().get("isGeneric");	
-			classId=(String) blockModel.getBlockConfiguration().get(AttributesMapping.CLASSID);
-			classPath = (String) blockModel.getBlockConfiguration().get(AttributesMapping.CLASSNAME);
-			destinationAttributeName = (String) blockModel.getBlockConfiguration().get(AttributesMapping.ATTRIBUTENAME);
-			instances = (List<String>) blockModel.getBlockConfiguration().get(AttributesMapping.SPECIFICINSTANCES);
-			isProperlyConfigured=true;
-			if(inputBlockIds.isEmpty())
-			{
-				isProperlyConfigured=false;
-
-			}
-		}catch(Exception e) {
-			isProperlyConfigured=false;
-		}finally {
-			if(classId==null || classPath==null || destinationAttributeName==null || instances==null || instances.isEmpty())
-			{
-				isProperlyConfigured=false;
-
-			}
-		}
-		
 
 
-	}
+    boolean isGeneric;
 
-	public LinkedSetterBlock() {
-		super();
-	}
+    /*******************************Instance definition*******************************/
+    String classId;
+    String classPath;
+    String destinationAttributeName;
+    String destinationAttributeType;
 
+    List<String> instances;
+    boolean ignoreWriteIfSameValue = true;
 
+    public LinkedSetterBlock(BlockModel blockModel) {
+        super(blockModel);
+        try {
+            ignoreWriteIfSameValue = (boolean) blockModel.getBlockConfiguration().get("ignoreWriteIfSameValue");
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
+        try {
+            isGeneric = (boolean) blockModel.getBlockConfiguration().get("isGeneric");
+            classId = (String) blockModel.getBlockConfiguration().get(AttributesMapping.CLASSID);
+            classPath = (String) blockModel.getBlockConfiguration().get(AttributesMapping.CLASSNAME);
+            destinationAttributeName = (String) blockModel.getBlockConfiguration().get(AttributesMapping.ATTRIBUTENAME);
+            instances = (List<String>) blockModel.getBlockConfiguration().get(AttributesMapping.SPECIFICINSTANCES);
+            isProperlyConfigured = true;
+            if (inputBlockIds.isEmpty()) {
+                isProperlyConfigured = false;
 
-	 
-	@Override
-	public String getExpression() {		
-		StringBuilder expression = new StringBuilder();
-	
-			for(String instance : instances)
-			{
-				expression.append(  "Executioner.updateInstanceAttributeValueFromStaticValue( "
-						 +"\"" + this.jobEngineProjectID  +"\","
-						  +"\"" + this.ruleId  +"\","
-						  +"\"" + this.blockName  +"\","				  					  
-						  +"\"" + instance  +"\","
-						  +"\"" + this.destinationAttributeName  +"\","
-						  + inputBlocks.get(0).getReference() +","
-						  + this.ignoreWriteIfSameValue 
+            }
+        } catch (Exception e) {
+            isProperlyConfigured = false;
+        } finally {
+            if (classId == null || classPath == null || destinationAttributeName == null || instances == null || instances.isEmpty()) {
+                isProperlyConfigured = false;
 
-						  
-						  +");\r\n");
-				expression.append("\n");
-			}
-		
-		
-	   return expression.toString();
-
-	}
-
-	public boolean isGeneric() {
-		return isGeneric;
-	}
-
-	public void setGeneric(boolean isGeneric) {
-		this.isGeneric = isGeneric;
-	}
-
-	public String getClassId() {
-		return classId;
-	}
-
-	public void setClassId(String classId) {
-		this.classId = classId;
-	}
-	
+            }
+        }
 
 
+    }
+
+    public LinkedSetterBlock() {
+        super();
+    }
+
+
+    @Override
+    public String getExpression() {
+        StringBuilder expression = new StringBuilder();
+
+        for (String instance : instances) {
+            expression.append("Executioner.updateInstanceAttributeValueFromStaticValue( "
+                    + "\"" + this.jobEngineProjectID + "\","
+                    + "\"" + this.ruleId + "\","
+                    + "\"" + this.blockName + "\","
+                    + "\"" + instance + "\","
+                    + "\"" + this.destinationAttributeName + "\","
+                    + inputBlocks.get(0).getReference() + ","
+                    + this.ignoreWriteIfSameValue
+
+
+                    + ");\r\n");
+            expression.append("\n");
+        }
+
+
+        return expression.toString();
+
+    }
+
+    public boolean isGeneric() {
+        return isGeneric;
+    }
+
+    public void setGeneric(boolean isGeneric) {
+        this.isGeneric = isGeneric;
+    }
+
+    public String getClassId() {
+        return classId;
+    }
+
+    public void setClassId(String classId) {
+        this.classId = classId;
+    }
 
 
 }
