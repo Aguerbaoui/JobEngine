@@ -47,10 +47,12 @@ public class ClientLicenseManager {
 
             if (objZMQRequest != null) {
 
-                // ===> get ip address
-                String hostName = InetAddress.getLocalHost().getHostName(); // Retrieve the Name of HOST
+                /* TODO : The requested machine attribute take the hash value of the machine biosId */
+                // Retrieve the Name of HOST
+                String hostName = InetAddress.getLocalHost().getHostName();
+                // Get IP Address
                 String myIP = InetAddress.getLocalHost().getHostAddress();
-                /* TODO: */
+
                 String myProcessName = "JobEngine"; // Process.GetCurrentProcess().ProcessName;
 
                 SIOTHLicenseRequest objSIOTHLicenseRequest = new SIOTHLicenseRequest("GetAuthorization", myIP,
