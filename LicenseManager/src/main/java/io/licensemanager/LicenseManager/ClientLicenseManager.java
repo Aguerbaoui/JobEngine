@@ -79,23 +79,25 @@ public class ClientLicenseManager {
                             SIOTHLicenseResponse objSIOTHLicenseResponse = objectMapper.readValue(plainRcvResponse,
                                     SIOTHLicenseResponse.class);
 
-                            // FIXME
                             JELogger.debug("Remaining days : " + objSIOTHLicenseResponse.RemainingDays,
                                     LogCategory.SIOTH_APPLICATION, null, null, null);
 
+                            strError = objSIOTHLicenseResponse.Error;
+
+                            // FIXME check case bAuthorized false
                             if (objSIOTHLicenseResponse.bAuthorized) {
                                 siothlicenseStatus = objSIOTHLicenseResponse.Status;
 
                                 if (siothlicenseStatus == SIOTHLicenseStatus.Backdated
                                         || siothlicenseStatus == SIOTHLicenseStatus.Corrupted
                                         || siothlicenseStatus == SIOTHLicenseStatus.Expired) {
+
                                     return new InitResponse(false, strError, siothlicenseStatus);
                                 }
                                 isRegistered = true;
                                 return new InitResponse(true, strError, siothlicenseStatus);
 
                             }
-                            strError = objSIOTHLicenseResponse.Error;
 
                         } else {
                             strError = LicenseMessages.ERROR_RECEIVING_DATA;

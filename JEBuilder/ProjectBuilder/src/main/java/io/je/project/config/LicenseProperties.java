@@ -29,16 +29,19 @@ public class LicenseProperties {
      * */
     public static void init() {
 
-		JELogger.info("Checking License Status..", LogCategory.SIOTH_APPLICATION, "", LogSubModule.JEBUILDER, "");
+		JELogger.info("Checking License Status ... ", LogCategory.SIOTH_APPLICATION, "", LogSubModule.JEBUILDER, "");
+
 		InitResponse response = ClientLicenseManager.initializeLicense(licenseManagerUrl, jobEngineFeatureCode, 0);
 
-		if (!response.getErrorMsg().isEmpty()) {
+		if (response.getErrorMsg() != null && !response.getErrorMsg().isEmpty()) {
 			JELogger.error("Error occured while initializing license. Error: " + response.getErrorMsg(),
 					LogCategory.SIOTH_APPLICATION, "", LogSubModule.JEBUILDER, "");
-
 		}
+
         setLicenseStatus(response.getStatus());
+
         ClientLicenseManager.initListeners(jobEngineFeatureCode);
+
         ClientLicenseManager.register(new JELicenseStatusListener());
 
     }
