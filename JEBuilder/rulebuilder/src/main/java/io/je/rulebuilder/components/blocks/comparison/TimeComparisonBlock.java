@@ -21,6 +21,7 @@ public class TimeComparisonBlock extends ComparisonBlock {
         super(blockModel.getBlockId(), blockModel.getProjectId(), blockModel.getRuleId(), blockModel.getBlockName(),
                 blockModel.getDescription(),
                 blockModel.getTimePersistenceValue(), blockModel.getTimePersistenceUnit(), blockModel.getInputBlocksIds(), blockModel.getOutputBlocksIds());
+
         if (blockModel.getBlockConfiguration() != null) {
             LocalDateTime date = LocalDateTime.parse((String) blockModel.getBlockConfiguration()
                     .get(AttributesMapping.VALUE), DateTimeFormatter.ISO_DATE_TIME);
