@@ -43,6 +43,7 @@ public class AcceptEventBlock extends ConditionBlock {
 
     @Override
     public String getNotExpression() throws RuleBuildFailedException {
+        // TODO fix getExpression() if persistence activated in the UI (replace \n by and), ...
         StringBuilder expression = new StringBuilder();
 
         expression.append("\n not ( " + getExpression() + " ) \n");

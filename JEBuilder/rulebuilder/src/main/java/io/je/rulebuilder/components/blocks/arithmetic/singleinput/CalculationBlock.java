@@ -19,7 +19,6 @@ public class CalculationBlock extends SingleInputArithmeticBlock {
 
     private CalculationBlock() {
 
-
     }
 
     @Override
@@ -103,7 +102,7 @@ public class CalculationBlock extends SingleInputArithmeticBlock {
                 return calculatorReference + "ln( " + getInputReferenceByOrder(0) + ")";
             //length
             case 1026:
-                return getInputReferenceByOrder(0) + ".length()";
+                return " ( (Double) (( (String) " + getInputReferenceByOrder(0) + " ).length()) ) ";
             default:
                 return getInputReferenceByOrder(0);
 
@@ -114,7 +113,12 @@ public class CalculationBlock extends SingleInputArithmeticBlock {
 
     @Override
     protected String evaluateExecution(String... inputs) {
+
+        // FIXME why Varargs inputs while using just the first one
+
         switch (operationId) {
+
+            // FIXME eval reduce Drools performance
 
             //factorial x>=0 && x<=20
             case 1005:
@@ -123,9 +127,11 @@ public class CalculationBlock extends SingleInputArithmeticBlock {
             //sqrt x>=0
             case 1007:
                 return "eval(JEMathUtils.positive(\"" + this.jobEngineProjectID + "\",\"" + this.ruleId + "\",\"" + this.blockName + "\"," + inputs[0] + "))\n";
+
             //ln x>0
             case 1025:
                 return "eval(JEMathUtils.strictlyPositive(\"" + this.jobEngineProjectID + "\",\"" + this.ruleId + "\",\"" + this.blockName + "\"," + inputs[0] + "))\n";
+
             default:
                 return "";
         }

@@ -9,6 +9,7 @@
 		<version>2.4.0</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
+
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -17,12 +18,14 @@
 		<maven.compiler.target>11</maven.compiler.target>
 
 	</properties>
+
 	<groupId>io.je</groupId>
 	<artifactId>Monitor</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>war</packaging>
 	<name>Monitor</name>
 	<description>JE monitoring</description>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

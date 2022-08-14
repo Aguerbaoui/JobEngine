@@ -59,7 +59,7 @@ public abstract class SingleInputArithmeticBlock extends ArithmeticBlock {
 
     @Override
     public String getNotExpression() throws RuleBuildFailedException {
-        // FIXME
+        // FIXME change getExpression if persistence added in the UI (replace \n with and), ...
         StringBuilder expression = new StringBuilder();
 
         expression.append("\n not ( " + getExpression() + " ) \n");

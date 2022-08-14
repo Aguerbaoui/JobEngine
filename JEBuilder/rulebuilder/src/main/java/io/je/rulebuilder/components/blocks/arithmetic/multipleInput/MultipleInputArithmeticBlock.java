@@ -37,7 +37,7 @@ public abstract class MultipleInputArithmeticBlock extends ArithmeticBlock {
 
     @Override
     public String getNotExpression() throws RuleBuildFailedException {
-        // FIXME
+        // FIXME change getExpression if persistence added in the UI (replace \n with and), ...
         StringBuilder expression = new StringBuilder();
 
         expression.append("\n not ( " + getExpression() + " ) \n");
@@ -82,7 +82,6 @@ public abstract class MultipleInputArithmeticBlock extends ArithmeticBlock {
             expression.append("\n" + evaluateExecution(asDouble(inputBlocks.get(0).getReference())));
         }
         return expression.toString();
-
 
     }
 

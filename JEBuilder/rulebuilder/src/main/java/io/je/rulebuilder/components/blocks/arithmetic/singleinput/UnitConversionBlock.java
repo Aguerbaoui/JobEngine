@@ -13,7 +13,6 @@ public class UnitConversionBlock extends SingleInputArithmeticBlock {
         inputUnit = (String) blockModel.getBlockConfiguration().get(AttributesMapping.INPUTUNIT);
         outputUnit = (String) blockModel.getBlockConfiguration().get(AttributesMapping.OUTPUTUNIT);
 
-
     }
 
     private UnitConversionBlock() {
