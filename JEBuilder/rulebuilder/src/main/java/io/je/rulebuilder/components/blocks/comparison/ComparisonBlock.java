@@ -220,7 +220,7 @@ public class ComparisonBlock extends PersistableBlock {
         }
 
         String firstOperand = (getInputBlockByOrder(0) instanceof VariableGetterBlock ? asDouble(getInputReferenceByOrder(0)) : getInputReferenceByOrder(0));
-        return firstOperand + getOperator() + asDouble(formatOperator(threshold));
+        return asDouble(firstOperand) + getOperator() + asDouble(formatOperator(threshold));
 
     }
 

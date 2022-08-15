@@ -60,7 +60,6 @@ public class OutOfRangeBlock extends ComparisonBlock {
         }
         return "(" + firstOperand + "<" + minRange + "||" + firstOperand + ">" + maxRange + ")";
 
-
     }
 
 
