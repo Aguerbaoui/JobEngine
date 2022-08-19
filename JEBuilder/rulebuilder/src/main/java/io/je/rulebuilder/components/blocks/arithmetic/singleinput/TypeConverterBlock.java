@@ -28,6 +28,7 @@ public class TypeConverterBlock extends SingleInputArithmeticBlock {
 
     @Override
     protected String getFormula() {
+        // TODO add convert to Boolean ?
         if (typeToConvertTo.equalsIgnoreCase("string")) {
             return "String.valueOf(" + inputBlocks.get(0).getReference() + ".toString())";
         } else if (typeToConvertTo.equalsIgnoreCase("date")) {
