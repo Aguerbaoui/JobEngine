@@ -119,7 +119,7 @@ public class RuleEngineHandler {
     /*
      * FIXME (stop Rule engine not project) stop running a project given a project id
      */
-    public static void stopRuleEngineProjectExecution(String projectId)  {
+    public static void stopProjectRuleEngineExecution(String projectId)  {
         RuleEngine.stopRuleExecution(projectId);
     }
 

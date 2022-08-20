@@ -23,6 +23,7 @@ public abstract class Block extends JEObject {
     protected String ruleId;
     protected String blockName;
     protected String blockDescription;
+
     protected boolean isProperlyConfigured = true;
 
     @Transient
@@ -46,11 +47,13 @@ public abstract class Block extends JEObject {
 
     public Block(String jobEngineElementID, String jobEngineProjectID, String ruleId, String blockName,
                  String blockDescription, List<BlockLinkModel> inputBlockIds, List<BlockLinkModel> outputBlocksIds) {
+
         super(jobEngineElementID, jobEngineProjectID, blockName);
+
         this.ruleId = ruleId;
         this.blockName = blockName;
         this.blockDescription = blockDescription;
-        isProperlyConfigured = true;
+        this.isProperlyConfigured = true;
         if (blockName == null) {
             isProperlyConfigured = false;
         }
@@ -188,7 +191,7 @@ public abstract class Block extends JEObject {
 
 
     public boolean isProperlyConfigured() {
-        return isProperlyConfigured;
+        return this.isProperlyConfigured;
     }
 
     public void setProperlyConfigured(boolean isProperlyConfigured) {

@@ -1,6 +1,7 @@
 package io.je.rulebuilder.components.blocks.logic;
 
 
+import io.je.rulebuilder.components.BlockLink;
 import io.je.rulebuilder.components.blocks.LogicBlock;
 import io.je.rulebuilder.models.BlockModel;
 import io.je.utilities.exceptions.RuleBuildFailedException;
@@ -39,39 +40,12 @@ public class OrBlock extends LogicBlock {
                         + "end"
                         + "\n\n"
 
-                        + "rule \"Logic Or reset @{ruleName}\"  @Propagation(IMMEDIATE)\n" +
-                        "dialect \"mvel\"\n" +
-                        "salience @{salience}\n" +
-                        "enabled @{enabled}\n" +
-                        "no-loop true\n" +
-                        "date-effective @{dateEffective}\n" +
-                        "date-expires @{dateExpires}\n" +
-                        "timer (cron:@{cronExpression})\n" +
-                        "\n" +
-
-                        "when"
-                        + "\n"
         );
 
         for (int i = 0; i < inputBlocks.size(); i++) {
 
-            expression.append("    " + inputBlocks.get(i).getExpression() + "\n");
-
             expression.append(
-                    "then"
-                            + "\n"
-                            //+ "    System.err.println(\"OrLogicManager.getRuleMatchCounter('@{ruleName}') : \""
-                            //+ "  +  OrLogicManager.getRuleMatchCounter(\"@{ruleName}\") );" + "\n"
-
-                            + "    OrLogicManager.addRuleMatch(\"@{ruleName}\");" + "\n"
-
-                            //+ "    System.err.println(\"OrLogicManager.getRuleMatchCounter('@{ruleName}') after ADD : \""
-                            //+ "  +  OrLogicManager.getRuleMatchCounter(\"@{ruleName}\") );" + "\n"
-
-                            + "end"
-                            + "\n\n"
-
-                            + "rule \"" + i + " @{ruleName}\"  @Propagation(IMMEDIATE)\n" +
+                    "rule \"" + i + " @{ruleName}\"  @Propagation(IMMEDIATE)\n" +
                             "dialect \"mvel\"\n" +
                             "salience @{salience}\n" +
                             "enabled @{enabled}\n" +
@@ -85,10 +59,48 @@ public class OrBlock extends LogicBlock {
                             + "\n"
             );
 
+            expression.append("    " + inputBlocks.get(i).getExpression() + "\n");
+
+            expression.append(
+                    "then"
+                            + "\n"
+                            + "    System.err.println(\"OrLogicManager.getRuleMatchCounter('@{ruleName}') : \""
+                            + "  +  OrLogicManager.getRuleMatchCounter(\"@{ruleName}\") );" + "\n"
+
+                            + "    OrLogicManager.addRuleMatch(\"@{ruleName}\");" + "\n"
+
+                            + "    System.err.println(\"OrLogicManager.getRuleMatchCounter('@{ruleName}') after ADD : \""
+                            + "  +  OrLogicManager.getRuleMatchCounter(\"@{ruleName}\") );" + "\n"
+
+                            + "end"
+                            + "\n\n"
+
+            );
+
         }
 
-        // FIXME : Add JEVariable Definitions if needed (currently used for debug)
-        expression.append("");
+        expression.append(
+                "rule \"OR LOGIC @{ruleName}\"  @Propagation(IMMEDIATE)\n" +
+                        "dialect \"mvel\"\n" +
+                        "salience @{salience}\n" +
+                        "enabled @{enabled}\n" +
+                        "no-loop true\n" +
+                        "date-effective @{dateEffective}\n" +
+                        "date-expires @{dateExpires}\n" +
+                        "timer (cron:@{cronExpression})\n" +
+                        "\n" +
+
+                        "when"
+                        + "\n"
+
+        );
+
+        // FIXME : should loop on input block till data sources : check Bug 5209
+        for (int i = 0; i < inputBlocks.size(); i++) {
+            for (BlockLink blockLink: inputBlocks.get(i).getBlock().getInputBlocks()) {
+                expression.append("   " + blockLink.getExpression() + "\n");
+            }
+        }
 
         return expression.toString();
     }
@@ -104,8 +116,8 @@ public class OrBlock extends LogicBlock {
         for (int i = 0; i < inputBlocks.size(); i++) {
 
             expression.append("\n"
-                            + inputBlocks.get(i).getExpression()
-                            + "\n");
+                    + inputBlocks.get(i).getExpression()
+                    + "\n");
 
             if (i < inputBlocks.size() - 1) {
                 expression.append(operator);

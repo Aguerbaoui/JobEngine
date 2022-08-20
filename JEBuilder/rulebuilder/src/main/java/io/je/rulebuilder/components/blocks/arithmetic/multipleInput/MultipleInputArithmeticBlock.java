@@ -25,6 +25,7 @@ public abstract class MultipleInputArithmeticBlock extends ArithmeticBlock {
 
     @Override
     public String getExpression() throws RuleBuildFailedException {
+        // FIXME alreadyScripted needed ?
         if (!alreadyScripted) {
             StringBuilder expression = generateAllPreviousBlocksExpressions();
             expression.append(generateBlockExpression(false));

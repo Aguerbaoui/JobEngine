@@ -91,7 +91,7 @@ public class RuntimeDispatcher {
             JELogger.error(" [project  = " + projectName + "]" + JEMessages.PROJECT_RUN_FAILED, LogCategory.RUNTIME,
                     projectId, LogSubModule.JERUNNER, null);
             DataModelListener.stopListening(topics);
-            RuleEngineHandler.stopRuleEngineProjectExecution(projectId);
+            RuleEngineHandler.stopProjectRuleEngineExecution(projectId);
             WorkflowEngineHandler.stopProjectWorkflows(projectId);
             projectStatus.put(projectId, false);
             throw e;
@@ -520,7 +520,7 @@ public class RuntimeDispatcher {
 
     public void shutDownRuleEngine(String projectId) {
 
-        RuleEngineHandler.stopRuleEngineProjectExecution(projectId);
+        RuleEngineHandler.stopProjectRuleEngineExecution(projectId);
         projectStatus.put(projectId, false);
 
     }

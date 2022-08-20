@@ -7,6 +7,7 @@ import io.je.rulebuilder.config.Keywords;
 import io.je.rulebuilder.models.BlockModel;
 import io.je.utilities.exceptions.RuleBuildFailedException;
 import org.springframework.data.annotation.Transient;
+import utils.log.LoggerUtils;
 
 import java.util.List;
 
@@ -56,8 +57,8 @@ public class InstanceGetterBlock extends GetterBlock {
     @Override
     public String getAsOperandExpression() throws RuleBuildFailedException {
         StringBuilder expression = new StringBuilder();
-
-        if (!alreadyScripted) {
+        // FIXME check if no regressions
+        //if (!alreadyScripted) {
             // input blocks can be an event block
             if (!inputBlocks.isEmpty()) {
                 expression.append(inputBlocks.get(0).getExpression());
@@ -79,14 +80,14 @@ public class InstanceGetterBlock extends GetterBlock {
                 expression.append(" , ");
             }
 
+            // FIXME two lines below needed?
             expression.replace(expression.length() - 3, expression.length() - 1, "");
-
             expression.append(" , ");
 
-            expression.append(Keywords.toBeReplaced); // tbrp
+            expression.append(Keywords.toBeReplaced);
             expression.append(" ) ");
             setAlreadyScripted(true);
-        }
+        //}
         return expression.toString();
     }
 
@@ -99,7 +100,8 @@ public class InstanceGetterBlock extends GetterBlock {
     @Override
     public String getExpression() throws RuleBuildFailedException {
         StringBuilder expression = new StringBuilder();
-        if (!alreadyScripted) {
+        // FIXME check if no regressions
+        //if (!alreadyScripted) {
 
             if (!inputBlocks.isEmpty()) {
                 expression.append(inputBlocks.get(0).getExpression());
@@ -130,8 +132,8 @@ public class InstanceGetterBlock extends GetterBlock {
 
             expression.append(" ) ");
 
-            setAlreadyScripted(true);
-        }
+            //setAlreadyScripted(true);
+        //}
         return expression.toString();
 
     }
