@@ -24,6 +24,8 @@ public abstract class Block extends JEObject {
     protected String blockDescription;
 
     protected boolean isProperlyConfigured = true;
+    // TODO Set different causes, Externalize messages
+    protected String misConfigurationCause = "";
 
     @Transient
     protected List<BlockLink> inputBlockLinks = new ArrayList<>();
@@ -54,7 +56,8 @@ public abstract class Block extends JEObject {
         this.blockDescription = blockDescription;
         this.isProperlyConfigured = true;
         if (blockName == null) {
-            isProperlyConfigured = false;
+            this.isProperlyConfigured = false;
+            this.misConfigurationCause = "Block name is null";
         }
         this.inputBlockIds = inputBlockIds;
         this.outputBlockIds = outputBlocksIds;
@@ -196,6 +199,13 @@ public abstract class Block extends JEObject {
         this.isProperlyConfigured = isProperlyConfigured;
     }
 
+    public String getMisConfigurationCause() {
+        return misConfigurationCause;
+    }
+
+    public void setMisConfigurationCause(String misConfigurationCause) {
+        this.misConfigurationCause = misConfigurationCause;
+    }
 
     public boolean isAlreadyScripted() {
         return alreadyScripted;

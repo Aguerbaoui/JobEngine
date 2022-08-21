@@ -24,10 +24,14 @@ public class VariableGetterBlock extends ConditionBlock {
             isProperlyConfigured = true;
             if (variableId == null) {
                 isProperlyConfigured = false;
+                misConfigurationCause = "VariableGetterBlock : Variable Id is null";
             }
 
         } catch (Exception e) {
             isProperlyConfigured = false;
+            misConfigurationCause = "VariableGetterBlock : Exception while loading variable Id : " + e.getMessage();
+
+            LoggerUtils.logException(e);
         }
 
     }

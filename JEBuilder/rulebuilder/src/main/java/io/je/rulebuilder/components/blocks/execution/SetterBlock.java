@@ -8,6 +8,7 @@ import io.je.rulebuilder.models.BlockModel;
 import io.je.rulebuilder.models.ValueType;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.RuleBuildFailedException;
+import io.je.utilities.log.JELogger;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
@@ -61,7 +62,7 @@ public class SetterBlock extends ExecutionBlock {
             isGeneric = (boolean) blockModel.getBlockConfiguration().get("isGeneric");
             ignoreWriteIfSameValue = (boolean) blockModel.getBlockConfiguration().get("ignoreWriteIfSameValue");
         } catch (Exception e) {
-            // TODO: handle exception
+            JELogger.logException(e);
         }
         try {
 
@@ -99,11 +100,12 @@ public class SetterBlock extends ExecutionBlock {
             destinationClassId = (String) blockModel.getBlockConfiguration().get("destinationClassId");
 
             isProperlyConfigured = true;
+            misConfigurationCause = "";
         } catch (Exception e) {
             isProperlyConfigured = false;
-
+            misConfigurationCause = "SetterBlock : exception occurred while initialize : " + e.getMessage();
+            JELogger.logException(e);
         }
-
 
     }
 

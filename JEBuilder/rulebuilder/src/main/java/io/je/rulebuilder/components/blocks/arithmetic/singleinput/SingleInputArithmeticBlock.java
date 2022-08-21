@@ -13,7 +13,7 @@ public abstract class SingleInputArithmeticBlock extends ArithmeticBlock {
         super(blockModel);
         if (inputBlockIds.isEmpty()) {
             isProperlyConfigured = false;
-
+            misConfigurationCause = "SingleInputArithmeticBlock : Input blocks Id empty";
         }
     }
 

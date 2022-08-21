@@ -79,6 +79,7 @@ then
         rulePersistence.setStartTimestamp( null );
 
         // FIXME should be better, but DO NOT CHANGE, unless aware
+        // TODO Possible solution make different drl for persistence, OR Logic, OR Logic with persistence
         if ( OrLogicManager.getRuleMatchCounter("@{ruleName}") == null ) {
 
             @{consequence}

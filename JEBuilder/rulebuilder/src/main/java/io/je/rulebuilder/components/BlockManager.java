@@ -54,10 +54,10 @@ public class BlockManager {
                 if (block.isProperlyConfigured()) {
                     initBlock(block);
                 } else {
-                    JELogger.error("Error with block configuration",
+                    JELogger.error("Error with block configuration : " + block.getMisConfigurationCause(),
                             LogCategory.DESIGN_MODE, block.getJobEngineProjectID(),
                             LogSubModule.RULE, block.getRuleId(), block.getBlockName());
-                    throw new RuleBuildFailedException(block.getBlockName() + " is not configured properly");
+                    throw new RuleBuildFailedException(block.getBlockName() + " : block not configured properly : " + block.getMisConfigurationCause());
                 }
             }
         }

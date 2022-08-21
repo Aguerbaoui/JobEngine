@@ -3,6 +3,7 @@ package io.je.rulebuilder.components.blocks.execution;
 import io.je.rulebuilder.components.blocks.ExecutionBlock;
 import io.je.rulebuilder.config.AttributesMapping;
 import io.je.rulebuilder.models.BlockModel;
+import io.je.utilities.log.JELogger;
 
 import java.util.List;
 
@@ -30,8 +31,9 @@ public class LinkedSetterBlock extends ExecutionBlock {
         try {
             ignoreWriteIfSameValue = (boolean) blockModel.getBlockConfiguration().get("ignoreWriteIfSameValue");
         } catch (Exception e) {
-            // TODO: handle exception
+            JELogger.logException(e);
         }
+
         try {
             isGeneric = (boolean) blockModel.getBlockConfiguration().get("isGeneric");
             classId = (String) blockModel.getBlockConfiguration().get(AttributesMapping.CLASSID);
@@ -41,19 +43,33 @@ public class LinkedSetterBlock extends ExecutionBlock {
             isProperlyConfigured = true;
             if (inputBlockIds.isEmpty()) {
                 isProperlyConfigured = false;
-
+                misConfigurationCause = "LinkedSetterBlock : Input blocks ID empty";
             }
         } catch (Exception e) {
             isProperlyConfigured = false;
+            misConfigurationCause = "LinkedSetterBlock : Exception occurred while initialize : " + e.getMessage();
+            JELogger.logException(e);
         } finally {
-            if (classId == null || classPath == null || destinationAttributeName == null || instances == null || instances.isEmpty()) {
+            if (classId == null) {
                 isProperlyConfigured = false;
-
+                misConfigurationCause = "LinkedSetterBlock : Class ID is null";
+            } else if (classPath == null) {
+                isProperlyConfigured = false;
+                misConfigurationCause = "LinkedSetterBlock : Class Path is null";
+            } else if (destinationAttributeName == null) {
+                isProperlyConfigured = false;
+                misConfigurationCause = "LinkedSetterBlock : Destination Attribute Name is null";
+            } else if (instances == null) {
+                isProperlyConfigured = false;
+                misConfigurationCause = "LinkedSetterBlock : Instances list null";
+            } else if (instances.isEmpty()) {
+                isProperlyConfigured = false;
+                misConfigurationCause = "LinkedSetterBlock : Instances list empty";
             }
         }
 
-
     }
+
 
     public LinkedSetterBlock() {
         super();

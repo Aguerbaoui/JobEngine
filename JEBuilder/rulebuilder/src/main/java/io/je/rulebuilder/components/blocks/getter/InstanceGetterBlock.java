@@ -37,10 +37,17 @@ public class InstanceGetterBlock extends GetterBlock {
             isProperlyConfigured = true;
         } catch (Exception e) {
             isProperlyConfigured = false;
-        } finally {
-            if (classId == null || classPath == null) {
-                isProperlyConfigured = false;
+            misConfigurationCause = "InstanceGetterBlock : Exception while loading Classes / Instances info : " + e.getMessage();
 
+            LoggerUtils.logException(e);
+        } finally {
+            if (classId == null) {
+                isProperlyConfigured = false;
+                misConfigurationCause = "InstanceGetterBlock : Class Id is null";
+            }
+            if (classPath == null) {
+                isProperlyConfigured = false;
+                misConfigurationCause = "InstanceGetterBlock : Class Path is null";
             }
         }
 

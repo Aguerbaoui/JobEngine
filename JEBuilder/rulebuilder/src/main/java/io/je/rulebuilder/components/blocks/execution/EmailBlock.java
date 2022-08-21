@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 import io.je.rulebuilder.components.blocks.ExecutionBlock;
 import io.je.rulebuilder.models.BlockModel;
 import io.je.utilities.exceptions.RuleBuildFailedException;
+import io.je.utilities.log.JELogger;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -73,10 +74,12 @@ public class EmailBlock extends ExecutionBlock {
             strPassword = (String) blockModel.getBlockConfiguration()
                     .get("strPassword");
             isProperlyConfigured = true;
+            misConfigurationCause = "";
 
         } catch (Exception e) {
             isProperlyConfigured = false;
-
+            misConfigurationCause = "EmailBlock : Exception occurred while initialize: " + e.getMessage();
+            JELogger.logException(e);
         }
 
 
