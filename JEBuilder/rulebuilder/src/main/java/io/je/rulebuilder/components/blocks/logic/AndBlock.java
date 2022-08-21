@@ -19,11 +19,11 @@ public class AndBlock extends LogicBlock {
     @Override
     public String getExpression() throws RuleBuildFailedException {
         StringBuilder expression = new StringBuilder();
-        for (int i = 0; i < inputBlocks.size(); i++) {
+        for (int i = 0; i < inputBlockLinks.size(); i++) {
 
-            expression.append(inputBlocks.get(i).getExpression());
+            expression.append(inputBlockLinks.get(i).getExpression());
 
-            if (i != inputBlocks.size() - 1) expression.append(operator);
+            if (i != inputBlockLinks.size() - 1) expression.append(operator);
 
         }
         return expression.toString();

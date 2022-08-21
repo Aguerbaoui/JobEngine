@@ -71,7 +71,7 @@ public class LinkedSetterBlock extends ExecutionBlock {
                     + "\"" + this.blockName + "\","
                     + "\"" + instance + "\","
                     + "\"" + this.destinationAttributeName + "\","
-                    + inputBlocks.get(0).getReference() + ","
+                    + inputBlockLinks.get(0).getReference() + ","
                     + this.ignoreWriteIfSameValue
 
 

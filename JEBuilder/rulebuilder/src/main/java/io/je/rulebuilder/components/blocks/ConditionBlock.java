@@ -20,7 +20,7 @@ public abstract class ConditionBlock extends Block {
 
     public String getConsequences() throws RuleBuildFailedException {
         StringBuilder consequences = new StringBuilder();
-        for (var block : getOutputBlocks()) {
+        for (var block : getOutputBlockLinks()) {
             if (block.getBlock() instanceof ExecutionBlock || block.getBlock() instanceof OrBlock) {
                 consequences.append(block.getBlock().getExpression());
                 consequences.append("\n");

@@ -49,7 +49,7 @@ public class LinkedVariableSetterBlock extends ExecutionBlock {
                 + "\"" + this.jobEngineProjectID + "\","
                 + "\"" + this.ruleId + "\","
                 + "\"" + this.variableId + "\", "
-                + inputBlocks.get(0).getReference()
+                + inputBlockLinks.get(0).getReference()
                 + ", " + "\"" + blockName + "\","
                 + this.ignoreWriteIfSameValue
                 + ");\r\n";

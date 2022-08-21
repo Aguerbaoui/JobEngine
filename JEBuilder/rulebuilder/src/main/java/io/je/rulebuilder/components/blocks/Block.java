@@ -9,8 +9,7 @@ import io.je.utilities.runtimeobject.JEObject;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /*
@@ -21,16 +20,16 @@ public abstract class Block extends JEObject {
 
 
     protected String ruleId;
-    protected String blockName;
+    protected String blockName; // FIXME block ID needed at this level
     protected String blockDescription;
 
     protected boolean isProperlyConfigured = true;
 
     @Transient
-    protected List<BlockLink> inputBlocks = new ArrayList<>();
+    protected List<BlockLink> inputBlockLinks = new ArrayList<>();
 
     @Transient
-    protected List<BlockLink> outputBlocks = new ArrayList<>();
+    protected List<BlockLink> outputBlockLinks = new ArrayList<>();
 
 
     protected boolean alreadyScripted = false;
@@ -72,14 +71,13 @@ public abstract class Block extends JEObject {
 
     public void addInputLink(Block block, String connectionName, int order) {
 
-        inputBlocks.add(new BlockLink(block, order, connectionName));
-
+        inputBlockLinks.add(new BlockLink(block, order, connectionName));
 
     }
 
     public void addOutputLink(Block block, String connectionName, int order) {
 
-        outputBlocks.add(new BlockLink(block, order, connectionName));
+        outputBlockLinks.add(new BlockLink(block, order, connectionName));
 
     }
 
@@ -133,23 +131,23 @@ public abstract class Block extends JEObject {
     }
 
 
-    public List<BlockLink> getInputBlocks() {
-        return inputBlocks;
+    public List<BlockLink> getInputBlockLinks() {
+        return inputBlockLinks;
     }
 
 
-    public void setInputBlocks(List<BlockLink> inputBlocks) {
-        this.inputBlocks = inputBlocks;
+    public void setInputBlockLinks(List<BlockLink> inputBlockLinks) {
+        this.inputBlockLinks = inputBlockLinks;
     }
 
 
-    public List<BlockLink> getOutputBlocks() {
-        return outputBlocks;
+    public List<BlockLink> getOutputBlockLinks() {
+        return outputBlockLinks;
     }
 
 
-    public void setOutputBlocks(List<BlockLink> outputBlocks) {
-        this.outputBlocks = outputBlocks;
+    public void setOutputBlockLinks(List<BlockLink> outputBlockLinks) {
+        this.outputBlockLinks = outputBlockLinks;
     }
 
 
@@ -178,14 +176,14 @@ public abstract class Block extends JEObject {
         this.outputBlockIds = outputBlockIds;
     }
 
-    //ignore block
+    //ignore block FIXME is it working
     public void ignoreBlock() {
-        for (var inputBlock : inputBlocks) {
-            inputBlock.getBlock().outputBlocks.addAll(outputBlocks);
+        for (var inputBlock : inputBlockLinks) {
+            inputBlock.getBlock().outputBlockLinks.addAll(outputBlockLinks);
         }
 
-        for (var outputBlock : outputBlocks) {
-            outputBlock.getBlock().inputBlocks.addAll(inputBlocks);
+        for (var outputBlock : outputBlockLinks) {
+            outputBlock.getBlock().inputBlockLinks.addAll(inputBlockLinks);
         }
     }
 
@@ -210,15 +208,15 @@ public abstract class Block extends JEObject {
     public String getPersistence() {
         if (this instanceof PersistableBlock) {
             PersistableBlock pBlock = (PersistableBlock) this;
-            String persistence = pBlock.getPersistanceExpression();
+            String persistence = pBlock.getPersistenceExpression();
             if (persistence != null) {
                 return persistence;
-            } else if (pBlock.getInputBlocks()
+            } else if (pBlock.getInputBlockLinks()
                     .isEmpty()) {
                 return null;
 
             } else {
-                for (var b : inputBlocks) {
+                for (var b : inputBlockLinks) {
                     if (b.getBlock()
                             .getPersistence() != null) {
                         return b.getBlock()
@@ -233,7 +231,7 @@ public abstract class Block extends JEObject {
 
 
     public Block getInputBlockByOrder(int order) {
-        var input = inputBlocks.stream()
+        var input = inputBlockLinks.stream()
                 .filter(x -> x.getOrder() == order)
                 .findFirst();
         return input.map(BlockLink::getBlock)
@@ -241,7 +239,7 @@ public abstract class Block extends JEObject {
     }
 
     public String getInputReferenceByOrder(int order) {
-        var input = inputBlocks.stream()
+        var input = inputBlockLinks.stream()
                 .filter(x -> x.getOrder() == order)
                 .findFirst();
         return input.map(BlockLink::getReference)
@@ -250,7 +248,7 @@ public abstract class Block extends JEObject {
 
 
     public List<Block> getInputsByOrder(int order) {
-        return inputBlocks.stream()
+        return inputBlockLinks.stream()
                 .filter(x -> x.getOrder() == order)
                 .map(BlockLink::getBlock)
                 .collect(Collectors.toList());
@@ -258,15 +256,15 @@ public abstract class Block extends JEObject {
 
 
     public boolean hasPrecedent(Block block) {
-        if (inputBlocks.isEmpty()) {
+        if (inputBlockLinks.isEmpty()) {
             return false;
         } else {
-            if (inputBlocks.stream()
+            if (inputBlockLinks.stream()
                     .anyMatch(x -> x.getBlock()
                             .equals(block))) {
                 return true;
             }
-            for (var b : inputBlocks) {
+            for (var b : inputBlockLinks) {
                 if (b.getBlock()
                         .hasPrecedent(block)) {
                     return true;
@@ -276,5 +274,36 @@ public abstract class Block extends JEObject {
 
         return false;
     }
+
+    // FIXME : should loop on input block till getters (data sources) : check Bug 5209
+    public Set<String> getAllInputBlocksExpressions() throws RuleBuildFailedException {
+        Set<String> allInputBlocksExpressions = new HashSet<>();
+
+        for (var blockLink : inputBlockLinks) {
+            if (blockLink.getBlock() != null) {
+                for (var block: blockLink.getBlock().getInputBlockLinks()) {
+                    allInputBlocksExpressions.add(block.getExpression());
+                }
+            }
+        }
+
+        return allInputBlocksExpressions;
+    }
+
+    // TODO finish and use in getAllInputBlocksExpressions
+    public Set<Block> getAllGetterBlocksExpressions() {
+        Set<Block> getterInputBlocks = new HashSet<>();
+
+        for (var block : inputBlockLinks) {
+            if (block.getBlock() instanceof InstanceGetterBlock) {
+                getterInputBlocks.add(block.getBlock());
+            } else if (block.getBlock() instanceof VariableGetterBlock) {
+                getterInputBlocks.add(block.getBlock());
+            }
+        }
+
+        return getterInputBlocks.stream().sorted((o1, o2) -> o1.getBlockName().compareTo(o2.getBlockName())).collect(Collectors.toSet());
+    }
+
 
 }

@@ -66,8 +66,8 @@ public class BlockManager {
     private void initBlock(Block block) {
 
         block.setAlreadyScripted(false);
-        block.setInputBlocks(new ArrayList<>());
-        block.setOutputBlocks(new ArrayList<>());
+        block.setInputBlockLinks(new ArrayList<>());
+        block.setOutputBlockLinks(new ArrayList<>());
         if (block instanceof AttachedSetterBlock) {
             if (((AttachedSetterBlock) block).getSourceLinkedBlockId() != null)
                 ((AttachedSetterBlock) block).setLinkedBlock(blocks.get(((AttachedSetterBlock) block).getSourceLinkedBlockId()));

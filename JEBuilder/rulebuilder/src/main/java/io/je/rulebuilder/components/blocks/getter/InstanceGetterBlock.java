@@ -60,8 +60,8 @@ public class InstanceGetterBlock extends GetterBlock {
         // FIXME check if no regressions
         //if (!alreadyScripted) {
             // input blocks can be an event block
-            if (!inputBlocks.isEmpty()) {
-                expression.append(inputBlocks.get(0).getExpression());
+            if (!inputBlockLinks.isEmpty()) {
+                expression.append(inputBlockLinks.get(0).getExpression());
                 expression.append("\n");
 
             }
@@ -86,7 +86,7 @@ public class InstanceGetterBlock extends GetterBlock {
 
             expression.append(Keywords.toBeReplaced);
             expression.append(" ) ");
-            setAlreadyScripted(true);
+            //setAlreadyScripted(true);
         //}
         return expression.toString();
     }
@@ -103,8 +103,8 @@ public class InstanceGetterBlock extends GetterBlock {
         // FIXME check if no regressions
         //if (!alreadyScripted) {
 
-            if (!inputBlocks.isEmpty()) {
-                expression.append(inputBlocks.get(0).getExpression());
+            if (!inputBlockLinks.isEmpty()) {
+                expression.append(inputBlockLinks.get(0).getExpression());
                 expression.append("\n");
 
             }

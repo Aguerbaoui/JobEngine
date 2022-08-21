@@ -34,15 +34,15 @@ public class LogicBlock extends PersistableBlock {
         StringBuilder expression = new StringBuilder();
         expression.append("\n");
         expression.append("(");
-        expression.append(inputBlocks.get(0).getExpression());
+        expression.append(inputBlockLinks.get(0).getExpression());
         expression.append(")");
         expression.append("\n");
 
-        for (int i = 1; i < inputBlocks.size(); i++) {
+        for (int i = 1; i < inputBlockLinks.size(); i++) {
             expression.append(operator);
             expression.append("\n");
             expression.append("(");
-            expression.append(inputBlocks.get(i).getExpression());
+            expression.append(inputBlockLinks.get(i).getExpression());
             expression.append(")");
         }
         return expression.toString();

@@ -68,7 +68,7 @@ public class LinkedAttachedSetterBlock extends ExecutionBlock {
                 + "\"" + this.blockName + "\","
                 + getterInstanceId + ","
                 + "\"" + this.destinationAttributeName + "\","
-                + inputBlocks.get(0).getReference() + ","
+                + inputBlockLinks.get(0).getReference() + ","
                 + this.ignoreWriteIfSameValue
                 + ");\r\n");
         expression.append("\n");

@@ -58,8 +58,8 @@ public abstract class MultipleInputArithmeticBlock extends ArithmeticBlock {
     private StringBuilder generateAllPreviousBlocksExpressions() throws RuleBuildFailedException {
         StringBuilder expression = new StringBuilder();
         expression.append("\n");
-        for (int i = 0; i < inputBlocks.size(); i++) {
-            expression.append(inputBlocks.get(i).getBlock().getExpression());
+        for (int i = 0; i < inputBlockLinks.size(); i++) {
+            expression.append(inputBlockLinks.get(i).getBlock().getExpression());
             expression.append("\n");
 
         }
@@ -74,13 +74,13 @@ public abstract class MultipleInputArithmeticBlock extends ArithmeticBlock {
         StringBuilder expression = new StringBuilder();
 
         expression.append(getBlockNameAsVariable() + comparableExpression);
-        expression.append(getArithmeticFormula(0, "number") + asDouble(inputBlocks.get(0).getReference()));
-        for (int i = 1; i < inputBlocks.size(); i++) {
-            expression.append(" , " + asDouble(inputBlocks.get(i).getReference()));
+        expression.append(getArithmeticFormula(0, "number") + asDouble(inputBlockLinks.get(0).getReference()));
+        for (int i = 1; i < inputBlockLinks.size(); i++) {
+            expression.append(" , " + asDouble(inputBlockLinks.get(i).getReference()));
         }
         expression.append(")");
         if (stopExecutionIfInvalidInput) {
-            expression.append("\n" + evaluateExecution(asDouble(inputBlocks.get(0).getReference())));
+            expression.append("\n" + evaluateExecution(asDouble(inputBlockLinks.get(0).getReference())));
         }
         return expression.toString();
 

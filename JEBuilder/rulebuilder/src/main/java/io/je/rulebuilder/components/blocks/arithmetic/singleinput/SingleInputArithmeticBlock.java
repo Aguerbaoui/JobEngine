@@ -90,12 +90,12 @@ public abstract class SingleInputArithmeticBlock extends ArithmeticBlock {
     public String getExpression() throws RuleBuildFailedException {
         StringBuilder expression = new StringBuilder();
         expression.append("\n");
-        expression.append(inputBlocks.get(0).getExpression());
+        expression.append(inputBlockLinks.get(0).getExpression());
         expression.append("\n");
         //int x = includesOperation? 1:0;
         expression.append(getBlockNameAsVariable() + " : " + getArithmeticFormula(0, defaultType));
         if (stopExecutionIfInvalidInput) {
-            expression.append("\n" + evaluateExecution(asDouble(inputBlocks.get(0).getReference())));
+            expression.append("\n" + evaluateExecution(asDouble(inputBlockLinks.get(0).getReference())));
         }
         return expression.toString();
     }
@@ -105,12 +105,12 @@ public abstract class SingleInputArithmeticBlock extends ArithmeticBlock {
     public String getAsOperandExpression() throws RuleBuildFailedException {
         StringBuilder expression = new StringBuilder();
         expression.append("\n");
-        expression.append(inputBlocks.get(0).getExpression());
+        expression.append(inputBlockLinks.get(0).getExpression());
         expression.append("\n");
 
         expression.append(getBlockNameAsVariable() + " : " + getArithmeticFormula(1, defaultType));
         if (stopExecutionIfInvalidInput) {
-            expression.append("\n" + evaluateExecution(asDouble(inputBlocks.get(0).getReference())));
+            expression.append("\n" + evaluateExecution(asDouble(inputBlockLinks.get(0).getReference())));
         }
         return expression.toString();
     }

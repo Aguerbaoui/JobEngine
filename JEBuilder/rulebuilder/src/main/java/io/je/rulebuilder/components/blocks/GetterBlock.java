@@ -4,6 +4,7 @@ import io.je.rulebuilder.models.BlockModel;
 
 import java.util.List;
 
+// FIXME rename to ClassGetterBlock
 public abstract class GetterBlock extends ConditionBlock {
 
     protected String classId;

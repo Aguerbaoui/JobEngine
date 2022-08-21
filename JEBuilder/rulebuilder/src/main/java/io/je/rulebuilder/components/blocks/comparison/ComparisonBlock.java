@@ -130,7 +130,7 @@ public class ComparisonBlock extends PersistableBlock {
             setParameters();
 
             // single input
-            if (inputBlocks.size() == 1) {
+            if (inputBlockLinks.size() == 1) {
                 String inputExpression = getInputBlockByOrder(0).getAsOperandExpression()
                         .replaceAll(Keywords.toBeReplaced,
                                 getOperationExpression());
@@ -138,8 +138,8 @@ public class ComparisonBlock extends PersistableBlock {
                 //expression.append("\n" + " not(motor( jobEngineElementID == Getter1010.getJobEngineElementID() && temp < 10 &&  this startedby  Getter1010))");
 
                 //in range / out of range blocks
-            } else if (inputBlocks.size() == 3 || this instanceof InRangeBlock || this instanceof OutOfRangeBlock) {
-                for (var input : inputBlocks) {
+            } else if (inputBlockLinks.size() == 3 || this instanceof InRangeBlock || this instanceof OutOfRangeBlock) {
+                for (var input : inputBlockLinks) {
                     expression.append(input.getBlock()
                             .getExpression());
                     expression.append("\n");
@@ -151,7 +151,7 @@ public class ComparisonBlock extends PersistableBlock {
                 expression.append(")");
 
                 //comparison blocks
-            } else if (inputBlocks.size() == 2) {
+            } else if (inputBlockLinks.size() == 2) {
 
                 if (getInputBlockByOrder(0).equals(getInputBlockByOrder(1)) && getInputBlockByOrder(0) instanceof InstanceGetterBlock) {
                     expression.append(getInputBlockByOrder(0).getAsOperandExpression()

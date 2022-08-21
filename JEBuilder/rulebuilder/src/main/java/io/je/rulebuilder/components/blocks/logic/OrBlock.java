@@ -42,7 +42,7 @@ public class OrBlock extends LogicBlock {
 
         );
 
-        for (int i = 0; i < inputBlocks.size(); i++) {
+        for (int i = 0; i < inputBlockLinks.size(); i++) {
 
             expression.append(
                     "rule \"" + i + " @{ruleName}\"  @Propagation(IMMEDIATE)\n" +
@@ -59,7 +59,7 @@ public class OrBlock extends LogicBlock {
                             + "\n"
             );
 
-            expression.append("    " + inputBlocks.get(i).getExpression() + "\n");
+            expression.append("    " + inputBlockLinks.get(i).getExpression() + "\n");
 
             expression.append(
                     "then"
@@ -95,11 +95,9 @@ public class OrBlock extends LogicBlock {
 
         );
 
-        // FIXME : should loop on input block till data sources : check Bug 5209
-        for (int i = 0; i < inputBlocks.size(); i++) {
-            for (BlockLink blockLink: inputBlocks.get(i).getBlock().getInputBlocks()) {
-                expression.append("   " + blockLink.getExpression() + "\n");
-            }
+        // FIXME : should loop on input block till getters (data sources) : check Bug 5209
+        for (var inputBlocksExpression : getAllInputBlocksExpressions()) {
+            expression.append("   " + inputBlocksExpression + "\n");
         }
 
         return expression.toString();
@@ -113,13 +111,13 @@ public class OrBlock extends LogicBlock {
                 " not ( "
         );
         // Do not change by getExpression()
-        for (int i = 0; i < inputBlocks.size(); i++) {
+        for (int i = 0; i < inputBlockLinks.size(); i++) {
 
             expression.append("\n"
-                    + inputBlocks.get(i).getExpression()
+                    + inputBlockLinks.get(i).getExpression()
                     + "\n");
 
-            if (i < inputBlocks.size() - 1) {
+            if (i < inputBlockLinks.size() - 1) {
                 expression.append(operator);
             }
         }
