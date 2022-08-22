@@ -22,12 +22,15 @@ public class LogBlock extends ExecutionBlock {
                     .get(AttributesMapping.VALUE);
         }
 
-        if (this.logMessage != null && !this.logMessage.isEmpty()) {
+        if (this.logMessage == null) {
+            this.isProperlyConfigured = false;
+            this.misConfigurationCause = "InformBlock : log message null";
+        } else if (this.logMessage.isEmpty()) {
+            this.isProperlyConfigured = false;
+            this.misConfigurationCause = "InformBlock : log message empty";
+        } else {
             this.isProperlyConfigured = true;
             this.misConfigurationCause = "";
-        } else {
-            this.isProperlyConfigured = false;
-            this.misConfigurationCause = "LogBlock : log message empty or null";
         }
 
     }
