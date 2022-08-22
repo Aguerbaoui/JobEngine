@@ -13,7 +13,7 @@ public abstract class SingleInputArithmeticBlock extends ArithmeticBlock {
         super(blockModel);
         if (inputBlockIds.isEmpty()) {
             isProperlyConfigured = false;
-
+            misConfigurationCause = "SingleInputArithmeticBlock : Input blocks Id empty";
         }
     }
 
@@ -30,16 +30,8 @@ public abstract class SingleInputArithmeticBlock extends ArithmeticBlock {
 
     @Override
     protected String getArithmeticFormula(int level, String type) {
-        if (type.equalsIgnoreCase("number")) {
-            switch (level) {
-                case 0:
-                    return " Double() from " + getFormula();
-                case 1:
-                    return " Double(" + Keywords.toBeReplaced + ") from " + getFormula();
-                default:
-                    return " Double() from " + getFormula();
-
-            }
+        if (type.equalsIgnoreCase("date")) {
+            return "Date() from " + getFormula();
         } else if (type.equalsIgnoreCase("string")) {
             switch (level) {
                 case 0:
@@ -50,11 +42,38 @@ public abstract class SingleInputArithmeticBlock extends ArithmeticBlock {
                     return " String() from " + getFormula();
 
             }
-        } else if (type.equalsIgnoreCase("date")) {
-            return "Date() from " + getFormula();
+        } else if (type.equalsIgnoreCase("int")) {
+            switch (level) {
+                case 0:
+                    return " Integer() from " + getFormula();
+                case 1:
+                    return " Integer(" + Keywords.toBeReplaced + ") from " + getFormula();
+                default:
+                    return " Integer() from " + getFormula();
+
+            }
+        } else if (type.equalsIgnoreCase("float")) {
+            switch (level) {
+                case 0:
+                    return " Float() from " + getFormula();
+                case 1:
+                    return " Float(" + Keywords.toBeReplaced + ") from " + getFormula();
+                default:
+                    return " Float() from " + getFormula();
+
+            }
+        } else {
+            switch (level) {
+                case 0:
+                    return " Double() from " + getFormula();
+                case 1:
+                    return " Double(" + Keywords.toBeReplaced + ") from " + getFormula();
+                default:
+                    return " Double() from " + getFormula();
+
+            }
         }
 
-        return " Double() from " + getFormula();
     }
 
     @Override
@@ -71,12 +90,12 @@ public abstract class SingleInputArithmeticBlock extends ArithmeticBlock {
     public String getExpression() throws RuleBuildFailedException {
         StringBuilder expression = new StringBuilder();
         expression.append("\n");
-        expression.append(inputBlocks.get(0).getExpression());
+        expression.append(inputBlockLinks.get(0).getExpression());
         expression.append("\n");
         //int x = includesOperation? 1:0;
         expression.append(getBlockNameAsVariable() + " : " + getArithmeticFormula(0, defaultType));
         if (stopExecutionIfInvalidInput) {
-            expression.append("\n" + evaluateExecution(asDouble(inputBlocks.get(0).getReference())));
+            expression.append("\n" + evaluateExecution(asDouble(inputBlockLinks.get(0).getReference())));
         }
         return expression.toString();
     }
@@ -86,12 +105,12 @@ public abstract class SingleInputArithmeticBlock extends ArithmeticBlock {
     public String getAsOperandExpression() throws RuleBuildFailedException {
         StringBuilder expression = new StringBuilder();
         expression.append("\n");
-        expression.append(inputBlocks.get(0).getExpression());
+        expression.append(inputBlockLinks.get(0).getExpression());
         expression.append("\n");
 
         expression.append(getBlockNameAsVariable() + " : " + getArithmeticFormula(1, defaultType));
         if (stopExecutionIfInvalidInput) {
-            expression.append("\n" + evaluateExecution(asDouble(inputBlocks.get(0).getReference())));
+            expression.append("\n" + evaluateExecution(asDouble(inputBlockLinks.get(0).getReference())));
         }
         return expression.toString();
     }

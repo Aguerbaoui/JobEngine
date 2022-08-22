@@ -1,6 +1,7 @@
 package utils.maths;
 
 import org.apache.commons.math3.util.CombinatoricsUtils;
+import utils.log.LoggerUtils;
 
 public class MathUtilities {
 
@@ -30,6 +31,7 @@ public class MathUtilities {
 
             return (double) x;
         } catch (Exception e) {
+            LoggerUtils.logException(e);
             throw new RuntimeException(e.getMessage());
         }
     }

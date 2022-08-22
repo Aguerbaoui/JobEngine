@@ -274,11 +274,16 @@ public class ProjectContainer {
     }
 
     /*
-     * This method stops the rule execution
+     * This method stops the rule (engine?) execution
      */
     public boolean stopRuleExecution(boolean destroySession, boolean removeAllRules) {
-        JELogger.debugWithoutPublish(JEMessages.STOPPING_PROJECT_CONTAINER, LogCategory.RUNTIME, projectId,
-                LogSubModule.RULE, null);
+
+        JELogger.debugWithoutPublish(JEMessages.STOPPING_PROJECT_CONTAINER
+                + " , destroy session : " + Boolean.toString(destroySession)
+                + " , remove all project rules : " + Boolean.toString(removeAllRules), // FIXME msg
+                LogCategory.RUNTIME, projectId, LogSubModule.RULE, null);
+
+        // TODO : Add more control for stopping rules / catching exceptions (case rule stopped but still firing, ex : Issue 14962)
         // destroySession=false;
         try {
 
@@ -617,7 +622,7 @@ public class ProjectContainer {
             // check that rule exists and add it if not
             if (!ruleExists(rule)) {
                 allRules.put(rule.getJobEngineElementID(), rule);
-                if (!addRuleToKieFileSystem(rule)) { return false; };
+                if (!addRuleToKieFileSystem(rule)) { return false; }
                 updateContainer();
                 return true;
             }

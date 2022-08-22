@@ -4,6 +4,7 @@ package io.je.rulebuilder.components.blocks.execution;
 import io.je.rulebuilder.components.blocks.ExecutionBlock;
 import io.je.rulebuilder.config.AttributesMapping;
 import io.je.rulebuilder.models.BlockModel;
+import io.je.utilities.log.JELogger;
 
 import java.util.ArrayList;
 import java.util.regex.Matcher;
@@ -21,7 +22,17 @@ public class LogBlock extends ExecutionBlock {
                     .get(AttributesMapping.VALUE);
         }
 
-        this.isProperlyConfigured = this.logMessage != null && !this.logMessage.isEmpty();
+        if (this.logMessage == null) {
+            this.isProperlyConfigured = false;
+            this.misConfigurationCause = "InformBlock : log message null";
+        } else if (this.logMessage.isEmpty()) {
+            this.isProperlyConfigured = false;
+            this.misConfigurationCause = "InformBlock : log message empty";
+        } else {
+            this.isProperlyConfigured = true;
+            this.misConfigurationCause = "";
+        }
+
     }
 
     public LogBlock() {

@@ -12,6 +12,7 @@ import io.siothconfig.SIOTHConfigUtility;
 import okhttp3.Response;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
+import utils.log.LoggerUtils;
 import utils.network.Network;
 
 import java.io.IOException;
@@ -165,6 +166,7 @@ public class JERunnerAPIHandler {
             }
 
         } catch (IOException e) {
+            LoggerUtils.logException(e);
             JELogger.error(JEMessages.NETWORK_CALL_ERROR + requestUrl, LogCategory.DESIGN_MODE,
                     null, LogSubModule.JEBUILDER, null);
             throw new JERunnerErrorException(JEMessages.JERUNNER_UNREACHABLE);

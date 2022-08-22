@@ -62,6 +62,7 @@ public class Executioner {
                 JELogger.info(message, LogCategory.RUNTIME, projectId, LogSubModule.RULE, ruleId, blockName);
             });
         } catch (Exception e) {
+            LoggerUtils.logException(e);
             JELogger.error(JEMessages.INFORM_BLOCK_ERROR, LogCategory.RUNTIME, projectId, LogSubModule.RULE, ruleId);
 
         }
@@ -84,6 +85,7 @@ public class Executioner {
                 InstanceManager.writeToDataModelInstance(instanceId, attributeName, value, ignoreSameValue);
             });
         } catch (Exception e) {
+            LoggerUtils.logException(e);
             JELogger.error(JEMessages.WRITE_INSTANCE_FAILED + e.getMessage(), LogCategory.RUNTIME, projectId,
                     LogSubModule.RULE, ruleId, blockName);
         }
@@ -105,11 +107,13 @@ public class Executioner {
                     InstanceManager.writeToDataModelInstance(instanceId, attributeName, attribueValue, ignoreSameValue);
 
                 } catch (VariableNotFoundException e) {
+                    LoggerUtils.logException(e);
                     JELogger.error(JEMessages.WRITE_INSTANCE_FAILED + e.getMessage(), LogCategory.RUNTIME, projectId,
                             LogSubModule.RULE, ruleId, blockName);
                 }
             });
         } catch (Exception e) {
+            LoggerUtils.logException(e);
             JELogger.error(JEMessages.WRITE_INSTANCE_FAILED + e.getMessage(), LogCategory.RUNTIME, projectId,
                     LogSubModule.RULE, ruleId, blockName);
         }
@@ -135,11 +139,13 @@ public class Executioner {
                             attribueValue, ignoreSameValue);
 
                 } catch (Exception e) {
+                    LoggerUtils.logException(e);
                     JELogger.error(JEMessages.WRITE_INSTANCE_FAILED + e.getMessage(), LogCategory.RUNTIME, projectId,
                             LogSubModule.RULE, ruleId, blockName);
                 }
             });
         } catch (Exception e) {
+            LoggerUtils.logException(e);
             JELogger.error(JEMessages.WRITE_INSTANCE_FAILED + e.getMessage(), LogCategory.RUNTIME, projectId,
                     LogSubModule.RULE, ruleId, blockName);
         }
@@ -165,11 +171,13 @@ public class Executioner {
                                 LogSubModule.RULE, ruleId, blockName);
                     }
                 } catch (Exception e) {
+                    LoggerUtils.logException(e);
                     JELogger.error(JEMessages.UPDATING_VARIABLE_FAILED + e.getMessage(), LogCategory.RUNTIME, projectId,
                             LogSubModule.RULE, ruleId, blockName);
                 }
             });
         } catch (Exception e) {
+            LoggerUtils.logException(e);
             JELogger.error(JEMessages.UPDATING_VARIABLE_FAILED + e.getMessage(), LogCategory.RUNTIME, projectId,
                     LogSubModule.RULE, ruleId, blockName);
         }
@@ -191,11 +199,13 @@ public class Executioner {
                             VariableManager.getVariableValue(projectId, sourceVariableId)
                                     .getValue(), ignoreIfSameValue);
                 } catch (Exception e) {
+                    LoggerUtils.logException(e);
                     JELogger.error(JEMessages.UPDATING_VARIABLE_FAILED + e.getMessage(), LogCategory.RUNTIME, projectId,
                             LogSubModule.RULE, ruleId, blockName);
                 }
             });
         } catch (Exception e) {
+            LoggerUtils.logException(e);
             JELogger.error(JEMessages.UPDATING_VARIABLE_FAILED + e.getMessage(), LogCategory.RUNTIME, projectId,
                     LogSubModule.RULE, ruleId, blockName);
         }
@@ -226,11 +236,13 @@ public class Executioner {
                     }
 
                 } catch (Exception e) {
+                    LoggerUtils.logException(e);
                     JELogger.error(JEMessages.UPDATING_VARIABLE_FAILED + e.getMessage(), LogCategory.RUNTIME, projectId,
                             LogSubModule.RULE, ruleId, blockName);
                 }
             });
         } catch (Exception e) {
+            LoggerUtils.logException(e);
             JELogger.error(JEMessages.UPDATING_VARIABLE_FAILED + e.getMessage(), LogCategory.RUNTIME, projectId,
                     LogSubModule.RULE, ruleId, blockName);
         }
@@ -251,6 +263,7 @@ public class Executioner {
             try {
                 JERunnerRequester.triggerEvent(projectId, eventId);
             } catch (Exception e) {
+                LoggerUtils.logException(e);
                 JELogger.error(JEMessages.EVENT_TRIGGER_FAIL, LogCategory.RUNTIME, projectId, LogSubModule.RULE, ruleId,
                         triggerSource);
 
@@ -320,6 +333,7 @@ public class Executioner {
                 }
             });
         } catch (Exception e) {
+            LoggerUtils.logException(e);
             JELogger.error(JEMessages.EMAIL_BLOCK_ERROR, LogCategory.RUNTIME, projectId, LogSubModule.RULE, ruleId);
 
         }
@@ -350,6 +364,7 @@ public class Executioner {
                         JELogger.control(SENT_MESSAGE_SUCCESSFULLY_TO + new PhoneNumber(number), LogCategory.RUNTIME, projectId,
                                 LogSubModule.JERUNNER, ruleId, blockName);
                     } catch (Exception e) {
+                        LoggerUtils.logException(e);
                         JELogger.error(ERROR_OCCURRED_WHEN_SENDING_MESSAGE_TO + new PhoneNumber(number) + ": " + e.getMessage(), LogCategory.RUNTIME, projectId,
                                 LogSubModule.JERUNNER, ruleId, blockName);
 
@@ -361,6 +376,7 @@ public class Executioner {
             });
 
         } catch (Exception e) {
+            LoggerUtils.logException(e);
             JELogger.error(JEMessages.SMS_BLOCK_ERROR, LogCategory.RUNTIME, projectId, LogSubModule.RULE, ruleId);
 
         }

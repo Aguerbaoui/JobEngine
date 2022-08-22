@@ -12,6 +12,7 @@ import io.je.utilities.log.JELogger;
 import io.je.utilities.runtimeobject.JEObject;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
+import utils.log.LoggerUtils;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -94,6 +95,7 @@ public class RuleEngineHandler {
 			RuleEngine.assertFact(projectId, instance);
 
 		} catch (Exception e) {
+			LoggerUtils.logException(e);
 			JELogger.warn(JEMessages.ADD_INSTANCE_FAILED + e.getMessage(),
 					LogCategory.RUNTIME, projectId,
 					LogSubModule.RULE, null);
@@ -119,7 +121,7 @@ public class RuleEngineHandler {
     /*
      * FIXME (stop Rule engine not project) stop running a project given a project id
      */
-    public static void stopRuleEngineProjectExecution(String projectId)  {
+    public static void stopProjectRuleEngineExecution(String projectId)  {
         RuleEngine.stopRuleExecution(projectId);
     }
 

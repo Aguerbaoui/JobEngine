@@ -8,6 +8,7 @@ import io.je.rulebuilder.models.BlockModel;
 import io.je.rulebuilder.models.ValueType;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.RuleBuildFailedException;
+import io.je.utilities.log.JELogger;
 import org.apache.commons.lang3.StringUtils;
 
 import static io.je.rulebuilder.config.AttributesMapping.SOURCE_GETTER_ATTRIBUTE_NAME;
@@ -51,8 +52,9 @@ public class AttachedSetterBlock extends ExecutionBlock {
             ignoreWriteIfSameValue = (boolean) blockModel.getBlockConfiguration()
                     .get("ignoreWriteIfSameValue");
         } catch (Exception e) {
-            // TODO: handle exception
+            JELogger.logException(e);
         }
+
         try {
             value = blockModel.getBlockConfiguration()
                     .get(AttributesMapping.NEWVALUE);
@@ -75,9 +77,11 @@ public class AttachedSetterBlock extends ExecutionBlock {
 
 
             isProperlyConfigured = true;
+            misConfigurationCause = "";
         } catch (Exception e) {
             isProperlyConfigured = false;
-
+            misConfigurationCause = "AttachedSetterBlock : Exception occurred while initialize : " + e.getMessage();
+            JELogger.logException(e);
         }
 
 
@@ -175,7 +179,9 @@ public class AttachedSetterBlock extends ExecutionBlock {
             }
         } catch (Exception e) {
             isProperlyConfigured = false;
-            throw new RuleBuildFailedException(JEMessages.INVALID_CONFIG);
+            misConfigurationCause = "AttachedSetterBlock : Exception occurred : " + e.getMessage();
+            JELogger.logException(e);
+            throw new RuleBuildFailedException(JEMessages.INVALID_CONFIG + " : " + misConfigurationCause);
         }
 
     }

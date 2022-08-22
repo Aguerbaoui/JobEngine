@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import utils.log.LoggerUtils;
 import utils.string.StringUtilities;
 
 import java.util.List;
@@ -40,6 +41,7 @@ public class ProcedureController {
             classService.addProcedure(m);
         } catch (ClassLoadException e) {
             if(!e.getCompilationErrorMessage().isEmpty()) {
+                LoggerUtils.logException(e);
                 return ResponseEntity.ok(new JEResponse(e.getCode(), e.getCompilationErrorMessage()));
             }
             return JEExceptionHandler.handleException(e);
@@ -57,6 +59,7 @@ public class ProcedureController {
             classService.compileCode(m, ClassBuilderConfig.SCRIPTS_PACKAGE);
         } catch (ClassLoadException e) {
             if(!StringUtilities.isEmpty(e.getCompilationErrorMessage())) {
+                LoggerUtils.logException(e);
                 return ResponseEntity.ok(new JEResponse(e.getCode(), e.getCompilationErrorMessage()));
             }
             return JEExceptionHandler.handleException(e);
@@ -73,6 +76,7 @@ public class ProcedureController {
             classService.updateProcedure(m);
         } catch (ClassLoadException e) {
             if(!e.getCompilationErrorMessage().isEmpty()) {
+                LoggerUtils.logException(e);
                 return ResponseEntity.ok(new JEResponse(e.getCode(), e.getCompilationErrorMessage()));
             }
             return JEExceptionHandler.handleException(e);

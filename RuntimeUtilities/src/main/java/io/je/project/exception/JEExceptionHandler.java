@@ -117,9 +117,8 @@ public class JEExceptionHandler {
                         LogSubModule.JEBUILDER, null);
                 return ex.getMessage();
             } catch (Exception e1) {
-
+                LoggerUtils.logException(e);
                 return e.getMessage();
-
             }
 
         } else if (e instanceof CompletionException) {
@@ -133,6 +132,7 @@ public class JEExceptionHandler {
 
                 return ex.getMessage();
             } catch (Exception e1) {
+                LoggerUtils.logException(e);
                 return e.getMessage();
             }
 

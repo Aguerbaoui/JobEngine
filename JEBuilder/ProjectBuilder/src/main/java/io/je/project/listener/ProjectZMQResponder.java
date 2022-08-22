@@ -118,8 +118,8 @@ public class ProjectZMQResponder extends ZMQResponser {
             responseStr = objectMapper.writeValueAsString(response);
 
         } catch (Exception e) {
+            LoggerUtils.logException(e);
             JELogger.error("Failed to generate response: " + e.getMessage(), null, null, LogSubModule.JEBUILDER, null);
-
         }
 
         return responseStr;
@@ -133,6 +133,7 @@ public class ProjectZMQResponder extends ZMQResponser {
             this.getRepSocket(ZMQBind.BIND)
                     .send(response);
         } catch (Exception e) {
+            LoggerUtils.logException(e);
             JELogger.error("Failed to send ZMQ response: " + e.getMessage(), null, null, LogSubModule.JEBUILDER, null);
         }
 

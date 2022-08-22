@@ -7,6 +7,7 @@ import io.je.rulebuilder.config.Keywords;
 import io.je.rulebuilder.models.BlockModel;
 import io.je.utilities.exceptions.RuleBuildFailedException;
 import org.springframework.data.annotation.Transient;
+import utils.log.LoggerUtils;
 
 import java.util.List;
 
@@ -36,10 +37,17 @@ public class InstanceGetterBlock extends GetterBlock {
             isProperlyConfigured = true;
         } catch (Exception e) {
             isProperlyConfigured = false;
-        } finally {
-            if (classId == null || classPath == null) {
-                isProperlyConfigured = false;
+            misConfigurationCause = "InstanceGetterBlock : Exception while loading Classes / Instances info : " + e.getMessage();
 
+            LoggerUtils.logException(e);
+        } finally {
+            if (classId == null) {
+                isProperlyConfigured = false;
+                misConfigurationCause = "InstanceGetterBlock : Class Id is null";
+            }
+            if (classPath == null) {
+                isProperlyConfigured = false;
+                misConfigurationCause = "InstanceGetterBlock : Class Path is null";
             }
         }
 
@@ -56,11 +64,11 @@ public class InstanceGetterBlock extends GetterBlock {
     @Override
     public String getAsOperandExpression() throws RuleBuildFailedException {
         StringBuilder expression = new StringBuilder();
-
-        if (!alreadyScripted) {
+        // FIXME check if no regressions
+        //if (!alreadyScripted) {
             // input blocks can be an event block
-            if (!inputBlocks.isEmpty()) {
-                expression.append(inputBlocks.get(0).getExpression());
+            if (!inputBlockLinks.isEmpty()) {
+                expression.append(inputBlockLinks.get(0).getExpression());
                 expression.append("\n");
 
             }
@@ -79,14 +87,14 @@ public class InstanceGetterBlock extends GetterBlock {
                 expression.append(" , ");
             }
 
+            // FIXME two lines below needed?
             expression.replace(expression.length() - 3, expression.length() - 1, "");
-
             expression.append(" , ");
 
-            expression.append(Keywords.toBeReplaced); // tbrp
+            expression.append(Keywords.toBeReplaced);
             expression.append(" ) ");
-            setAlreadyScripted(true);
-        }
+            //setAlreadyScripted(true);
+        //}
         return expression.toString();
     }
 
@@ -99,10 +107,11 @@ public class InstanceGetterBlock extends GetterBlock {
     @Override
     public String getExpression() throws RuleBuildFailedException {
         StringBuilder expression = new StringBuilder();
-        if (!alreadyScripted) {
+        // FIXME check if no regressions
+        //if (!alreadyScripted) {
 
-            if (!inputBlocks.isEmpty()) {
-                expression.append(inputBlocks.get(0).getExpression());
+            if (!inputBlockLinks.isEmpty()) {
+                expression.append(inputBlockLinks.get(0).getExpression());
                 expression.append("\n");
 
             }
@@ -130,8 +139,8 @@ public class InstanceGetterBlock extends GetterBlock {
 
             expression.append(" ) ");
 
-            setAlreadyScripted(true);
-        }
+            //setAlreadyScripted(true);
+        //}
         return expression.toString();
 
     }

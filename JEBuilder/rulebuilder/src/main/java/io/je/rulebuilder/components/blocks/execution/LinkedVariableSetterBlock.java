@@ -2,6 +2,7 @@ package io.je.rulebuilder.components.blocks.execution;
 
 import io.je.rulebuilder.components.blocks.ExecutionBlock;
 import io.je.rulebuilder.models.BlockModel;
+import io.je.utilities.log.JELogger;
 
 /*
  * Block used to writing in a variable
@@ -21,20 +22,23 @@ public class LinkedVariableSetterBlock extends ExecutionBlock {
         try {
             ignoreWriteIfSameValue = (boolean) blockModel.getBlockConfiguration().get("ignoreWriteIfSameValue");
         } catch (Exception e) {
-            // TODO: handle exception
+            JELogger.logException(e);
         }
         try {
             variableId = (String) blockModel.getBlockConfiguration().get("variableId");
 
             isProperlyConfigured = true;
+            misConfigurationCause = "";
+
             if (inputBlockIds.isEmpty()) {
                 isProperlyConfigured = false;
-
+                misConfigurationCause = "LinkedVariableSetterBlock : Input blocks ID empty";
             }
         } catch (Exception e) {
             isProperlyConfigured = false;
+            misConfigurationCause = "LinkedVariableSetterBlock : exception occurred while initialize : " + e.getMessage();
+            JELogger.logException(e);
         }
-
 
     }
 
@@ -49,7 +53,7 @@ public class LinkedVariableSetterBlock extends ExecutionBlock {
                 + "\"" + this.jobEngineProjectID + "\","
                 + "\"" + this.ruleId + "\","
                 + "\"" + this.variableId + "\", "
-                + inputBlocks.get(0).getReference()
+                + inputBlockLinks.get(0).getReference()
                 + ", " + "\"" + blockName + "\","
                 + this.ignoreWriteIfSameValue
                 + ");\r\n";

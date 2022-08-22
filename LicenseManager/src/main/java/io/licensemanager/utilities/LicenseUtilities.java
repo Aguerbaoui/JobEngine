@@ -45,6 +45,7 @@ public class LicenseUtilities {
             return Base64.getEncoder()
                     .encodeToString(saltIvCiphertext);
         } catch (Exception e) {
+            LoggerUtils.logException(e);
             return null;
         }
     }

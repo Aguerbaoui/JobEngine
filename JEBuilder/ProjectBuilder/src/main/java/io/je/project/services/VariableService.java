@@ -16,6 +16,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
+import utils.log.LoggerUtils;
 
 import java.time.Instant;
 import java.util.*;
@@ -118,6 +119,7 @@ public class VariableService {
         try {
             JERunnerAPIHandler.addVariable(variableModel.getProjectId(), variableModel.getId(), variableModel);
         } catch (JERunnerErrorException e) {
+            LoggerUtils.logException(e);
             throw new VariableException(JEMessages.ERROR_ADDING_VARIABLE_TO_PROJECT);
         }
         project.addVariable(var);
@@ -144,6 +146,7 @@ public class VariableService {
         try {
             JERunnerAPIHandler.removeVariable(projectId, varId);
         } catch (JERunnerErrorException e) {
+            LoggerUtils.logException(e);
             throw new VariableException(JEMessages.ERROR_DELETING_VARIABLE_FROM_PROJECT);
         }
         project.removeVariable(varId);
@@ -175,6 +178,7 @@ public class VariableService {
         try {
             JERunnerAPIHandler.addVariable(variableModel.getProjectId(), variableModel.getId(), variableModel);
         } catch (JERunnerErrorException e) {
+            LoggerUtils.logException(e);
             throw new VariableException(JEMessages.ERROR_ADDING_VARIABLE_TO_PROJECT);
         }
         project.addVariable(var);
@@ -190,6 +194,7 @@ public class VariableService {
             variable.setValue(value);
             variableRepository.save(variable);
         } catch (Exception e) {
+            LoggerUtils.logException(e);
             throw new VariableException(JEMessages.ERROR_WRITING_VALUE_TO_VARIABLE);
         }
 
@@ -224,6 +229,7 @@ public class VariableService {
                 return true;
             }
         } catch (Exception e) {
+            LoggerUtils.logException(e);
             return false;
         }
         return false;
@@ -248,6 +254,7 @@ public class VariableService {
                 try {
                     deleteVariable(projectId, var.getJobEngineElementID());
                 } catch (Exception e) {
+                    LoggerUtils.logException(e);
                     JELogger.error("[variable=" + var.getJobEngineElementName() + "]" + JEMessages.ERROR_DELETING_VARIABLE_FROM_PROJECT + e.getMessage(),
                             LogCategory.DESIGN_MODE, projectId,
                             LogSubModule.VARIABLE, var.getJobEngineElementID());
@@ -258,6 +265,7 @@ public class VariableService {
                 try {
                     deleteVariable(projectId, id);
                 } catch (Exception e) {
+                    LoggerUtils.logException(e);
                     JELogger.error("[variable=" + project.getVariable(id).getJobEngineElementName() + "]" + JEMessages.ERROR_DELETING_VARIABLE_FROM_PROJECT + e.getMessage(),
                             LogCategory.DESIGN_MODE, projectId,
                             LogSubModule.VARIABLE, id);

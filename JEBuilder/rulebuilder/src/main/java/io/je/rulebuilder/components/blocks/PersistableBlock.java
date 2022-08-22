@@ -73,7 +73,7 @@ public abstract class PersistableBlock extends ConditionBlock {
         }
     }
 
-    public String getPersistanceExpression() {
+    public String getPersistenceExpression() {
         if (timePersistenceValue != 0 && timePersistenceUnit != null) {
             return String.valueOf(timePersistenceValue) + getUnitAsString();
         }
@@ -88,8 +88,8 @@ public abstract class PersistableBlock extends ConditionBlock {
     @Override
     public String toString() {
         return "Block [timePersistenceValue=" + timePersistenceValue + ", timePersistenceUnit="
-                + timePersistenceUnit + ", ruleId=" + ruleId + ", inputBlocks=" + inputBlocks + ", outputBlocks="
-                + outputBlocks + ", jobEngineElementID=" + jobEngineElementID + ", jobEngineProjectID="
+                + timePersistenceUnit + ", ruleId=" + ruleId + ", inputBlocks=" + inputBlockLinks + ", outputBlocks="
+                + outputBlockLinks + ", jobEngineElementID=" + jobEngineElementID + ", jobEngineProjectID="
                 + jobEngineProjectID + ", jeObjectLastUpdate=" + jeObjectLastUpdate + "]";
     }
 }

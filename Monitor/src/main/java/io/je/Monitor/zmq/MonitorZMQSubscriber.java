@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import org.zeromq.ZMQ;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
+import utils.log.LoggerUtils;
 import utils.zmq.ZMQBind;
 import utils.zmq.ZMQSubscriber;
 
@@ -64,11 +65,13 @@ public class MonitorZMQSubscriber extends ZMQSubscriber {
 				} catch (Exception e) {
 					connectionSucceeded = false;
 
+					LoggerUtils.logException(e);
 				}
 				try {
 					Thread.sleep(1000);
 				} catch (InterruptedException e) {
 					Thread.currentThread().interrupt();
+					LoggerUtils.logException(e);
 				}
 
 			}

@@ -5,6 +5,7 @@ import io.je.rulebuilder.components.blocks.ConditionBlock;
 import io.je.rulebuilder.config.Keywords;
 import io.je.rulebuilder.models.BlockModel;
 import io.je.utilities.exceptions.RuleBuildFailedException;
+import utils.log.LoggerUtils;
 
 /*
  * operation Id 4005
@@ -23,10 +24,14 @@ public class VariableGetterBlock extends ConditionBlock {
             isProperlyConfigured = true;
             if (variableId == null) {
                 isProperlyConfigured = false;
+                misConfigurationCause = "VariableGetterBlock : Variable Id is null";
             }
 
         } catch (Exception e) {
             isProperlyConfigured = false;
+            misConfigurationCause = "VariableGetterBlock : Exception while loading variable Id : " + e.getMessage();
+
+            LoggerUtils.logException(e);
         }
 
     }
@@ -44,12 +49,12 @@ public class VariableGetterBlock extends ConditionBlock {
 
     @Override
     public String getExpression() {
-        return blockName.replaceAll("\\s+", "") + " : JEVariable ( jobEngineElementID == \"" + variableId + "\"," + getAttributeVariableName() + " : value )";
+        return blockName.replaceAll("\\s+", "") + " : JEVariable ( jobEngineElementID == \"" + variableId + "\", " + getAttributeVariableName() + " : value )";
     }
 
     @Override
     public String getNotExpression() throws RuleBuildFailedException {
-        // FIXME
+        // FIXME check if OK
         StringBuilder expression = new StringBuilder();
 
         expression.append("\n not ( " + getExpression() + " ) \n");
@@ -72,7 +77,7 @@ public class VariableGetterBlock extends ConditionBlock {
 
     @Override
     public String getAsOperandExpression() {
-        return blockName.replaceAll("\\s+", "") + " : JEVariable ( jobEngineElementID == \"" + variableId + "\"," + getAttributeVariableName() + " : value,  " + Keywords.toBeReplaced + " )";
+        return blockName.replaceAll("\\s+", "") + " : JEVariable ( jobEngineElementID == \"" + variableId + "\", " + getAttributeVariableName() + " : value,  " + Keywords.toBeReplaced + " )";
     }
 
 }

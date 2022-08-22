@@ -27,6 +27,7 @@ import org.springframework.stereotype.Service;
 import utils.files.FileUtilities;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
+import utils.log.LoggerUtils;
 
 import java.time.Instant;
 import java.util.*;
@@ -651,6 +652,7 @@ public class RuleService {
                     project.deleteRule(ruleId);
                     ruleRepository.deleteById(ruleId);
                 } catch (Exception e) {
+                    LoggerUtils.logException(e);
                     undeletedRules.put(ruleId, e.getMessage());
                 }
 
@@ -754,6 +756,7 @@ public class RuleService {
                         RuleService.updateRuleStatus(rule.getValue());
                         ruleRepository.save(rule.getValue());
                     } catch (Exception e) {
+                        LoggerUtils.logException(e);
                         JELogger.error("[rule = " + rule.getValue()
                                 .getJobEngineElementName() + "]"
                                 + JEMessages.STATUS_UPDATE_FAILED, CATEGORY, projectId, RULE, null);
@@ -770,6 +773,7 @@ public class RuleService {
                     RuleService.updateRuleStatus(rule.getValue());
                     ruleRepository.save(rule.getValue());
                 } catch (Exception e) {
+                    LoggerUtils.logException(e);
                     JELogger.error("[rule = " + rule.getValue()
                             .getJobEngineElementName() + "]"
                             + JEMessages.STATUS_UPDATE_FAILED, CATEGORY, projectId, RULE, null);
@@ -834,6 +838,7 @@ public class RuleService {
             project = getProject(projectId);
             rule = (UserDefinedRule) project.getRule(ruleId);
         } catch (Exception e) {
+            LoggerUtils.logException(e);
             result.setOperationSucceeded(false);
             result.setOperationError(e.getMessage());
             return result;
@@ -881,6 +886,7 @@ public class RuleService {
             return result;
 
         } catch (JERunnerErrorException e) {
+            LoggerUtils.logException(e);
             JELogger.error(JEMessages.FAILED_TO_STOP_RULE
                             + project.getRules()
                             .get(ruleId)
@@ -892,6 +898,7 @@ public class RuleService {
 
             return result;
         } catch (Exception e) {
+            LoggerUtils.logException(e);
             JELogger.error("[rule = " + rule.getJobEngineElementName() + "] " + JEMessages.STATUS_UPDATE_FAILED + e.getMessage(),
                     CATEGORY, projectId, RULE, null);
 

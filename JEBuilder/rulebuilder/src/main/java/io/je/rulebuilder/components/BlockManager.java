@@ -54,10 +54,12 @@ public class BlockManager {
                 if (block.isProperlyConfigured()) {
                     initBlock(block);
                 } else {
-                    JELogger.error("Error with block configuration",
-                            LogCategory.DESIGN_MODE, block.getJobEngineProjectID(),
+                    String message = block.getBlockName() + " : The block is not configured properly : " + block.getMisConfigurationCause();
+
+                    JELogger.error(message, LogCategory.DESIGN_MODE, block.getJobEngineProjectID(),
                             LogSubModule.RULE, block.getRuleId(), block.getBlockName());
-                    throw new RuleBuildFailedException(block.getBlockName() + " is not configured properly");
+
+                    throw new RuleBuildFailedException(message);
                 }
             }
         }
@@ -66,8 +68,8 @@ public class BlockManager {
     private void initBlock(Block block) {
 
         block.setAlreadyScripted(false);
-        block.setInputBlocks(new ArrayList<>());
-        block.setOutputBlocks(new ArrayList<>());
+        block.setInputBlockLinks(new ArrayList<>());
+        block.setOutputBlockLinks(new ArrayList<>());
         if (block instanceof AttachedSetterBlock) {
             if (((AttachedSetterBlock) block).getSourceLinkedBlockId() != null)
                 ((AttachedSetterBlock) block).setLinkedBlock(blocks.get(((AttachedSetterBlock) block).getSourceLinkedBlockId()));

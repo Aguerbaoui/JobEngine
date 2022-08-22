@@ -11,6 +11,7 @@ import io.je.utilities.log.JELogger;
 import io.je.utilities.models.EventType;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
+import utils.log.LoggerUtils;
 
 import java.util.HashMap;
 
@@ -35,6 +36,7 @@ public class EventManager {
             try {
                 WorkflowEngineHandler.startProcessInstanceByMessage(projectId, messageEvent);
             } catch (WorkflowBuildException ex) {
+                LoggerUtils.logException(ex);
                 JELogger.error(messageEvent, LogCategory.RUNTIME, projectId,
                         LogSubModule.WORKFLOW, ex.getMessage(), ex.toString());
             }
@@ -51,6 +53,7 @@ public class EventManager {
             try {
                 WorkflowEngineHandler.throwSignalEventInWorkflow(projectId, messageEvent);
             } catch (WorkflowBuildException ex) {
+                LoggerUtils.logException(ex);
                 JELogger.error(messageEvent, LogCategory.RUNTIME, projectId,
                         LogSubModule.WORKFLOW, ex.getMessage(), ex.toString());
             }
@@ -67,6 +70,7 @@ public class EventManager {
             try {
                 WorkflowEngineHandler.throwMessageEventInWorkflow(projectId, event);
             } catch (WorkflowBuildException ex) {
+                LoggerUtils.logException(ex);
                 JELogger.error(event, LogCategory.RUNTIME, projectId,
                         LogSubModule.WORKFLOW, ex.getMessage(), ex.toString());
             }
@@ -83,6 +87,7 @@ public class EventManager {
             try {
                 WorkflowEngineHandler.throwSignalEventInWorkflow(projectId, event);
             } catch (WorkflowBuildException ex) {
+                LoggerUtils.logException(ex);
                 JELogger.error(event, LogCategory.RUNTIME, projectId,
                         LogSubModule.WORKFLOW, ex.getMessage(), ex.toString());
             }

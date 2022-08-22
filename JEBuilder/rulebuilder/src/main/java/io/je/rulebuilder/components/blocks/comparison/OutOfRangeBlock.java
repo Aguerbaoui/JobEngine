@@ -23,7 +23,7 @@ public class OutOfRangeBlock extends ComparisonBlock {
 
     @Override
     protected void checkBlockConfiguration() throws RuleBuildFailedException {
-        if (minRange == null && maxRange == null && inputBlocks.size() != 3) {
+        if (minRange == null && maxRange == null && inputBlockLinks.size() != 3) {
             throw new RuleBuildFailedException(blockName + " is not configured properly");
         }
 
@@ -59,7 +59,6 @@ public class OutOfRangeBlock extends ComparisonBlock {
             return "(" + firstOperand + "<=" + minRange + "||" + firstOperand + ">=" + maxRange + ")";
         }
         return "(" + firstOperand + "<" + minRange + "||" + firstOperand + ">" + maxRange + ")";
-
 
     }
 

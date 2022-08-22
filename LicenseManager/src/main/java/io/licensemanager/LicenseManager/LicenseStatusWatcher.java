@@ -109,7 +109,11 @@ public class LicenseStatusWatcher implements Runnable {
                 }
 
                 Thread.sleep(10000);
+
             } catch (Exception ex) {
+
+                LoggerUtils.logException(ex);
+
                 siothlicenseStatus = SIOTHLicenseStatus.Corrupted;
 
                 LicenseStatusChangeHandler.invoke(siothlicenseStatus);

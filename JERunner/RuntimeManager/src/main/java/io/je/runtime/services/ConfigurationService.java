@@ -58,6 +58,7 @@ public class ConfigurationService {
 			JELogger.info(JEMessages.ZMQ_RESPONSE_STARTED+"tcp://"+SIOTHConfigUtility.getSiothConfig().getNodes().getSiothMasterNode()+":"+responsePort, null, null, LogSubModule.JEBUILDER, null);
 
 		}catch (Exception e) {
+			LoggerUtils.logException(e);
 			JELogger.error(JEMessages.ZMQ_RESPONSE_START_FAIL+JEExceptionHandler.getExceptionMessage(e), null, null, LogSubModule.JEBUILDER, null);
 
 		}

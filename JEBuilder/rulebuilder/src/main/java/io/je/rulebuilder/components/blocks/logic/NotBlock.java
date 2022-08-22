@@ -32,11 +32,11 @@ public class NotBlock extends LogicBlock {
     public String getNotExpression() throws RuleBuildFailedException {
         StringBuilder expression = new StringBuilder();
 
-        for (int i = 0; i < inputBlocks.size(); i++) {
+        for (int i = 0; i < inputBlockLinks.size(); i++) {
 
-            expression.append(inputBlocks.get(i).getExpression());
+            expression.append(inputBlockLinks.get(i).getExpression());
 
-            if (i != inputBlocks.size() - 1) expression.append(" and ");
+            if (i != inputBlockLinks.size() - 1) expression.append(" and ");
 
         }
 

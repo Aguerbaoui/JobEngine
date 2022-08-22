@@ -222,6 +222,7 @@ public class JERunnerResponder extends ZMQResponser {
             this.getRepSocket(ZMQBind.BIND)
                     .send(objectMapper.writeValueAsString(response));
         } catch (Exception e) {
+            LoggerUtils.logException(e);
             JELogger.error(JEMessages.ZMQ_FAILED_TO_RESPOND + e.getMessage(), null, null, LogSubModule.JERUNNER, null);
         }
 

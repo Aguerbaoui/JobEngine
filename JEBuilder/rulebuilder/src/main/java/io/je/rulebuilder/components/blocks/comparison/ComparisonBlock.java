@@ -90,12 +90,16 @@ public class ComparisonBlock extends PersistableBlock {
             //block is "not our of range" and "in range"
             formatToString = (blockModel.getOperationId() >= 2007 && blockModel.getOperationId() <= 2015) && inputBlockIds.size() == 1;
             isProperlyConfigured = true;
+            misConfigurationCause = "";
             if (threshold == null && inputBlockIds.size() < 2) {
                 isProperlyConfigured = false;
+                misConfigurationCause = "ComparisonBlock : Unable to compare : Threshold is null and input blocks ID contains less than two elements";
             }
         } catch (Exception e) {
-            JELogger.error("Failed to build block : " + jobEngineElementName + ": " + e.getMessage(), LogCategory.DESIGN_MODE, jobEngineProjectID, LogSubModule.RULE, ruleId);
+            LoggerUtils.logException(e);
+            JELogger.error("Failed to build block : " + jobEngineElementName + " : " + e.getMessage(), LogCategory.DESIGN_MODE, jobEngineProjectID, LogSubModule.RULE, ruleId);
             isProperlyConfigured = false;
+            misConfigurationCause = "ComparisonBlock : Exception occurred while initialize : " + e.getMessage();
         }
 
     }
@@ -130,7 +134,7 @@ public class ComparisonBlock extends PersistableBlock {
             setParameters();
 
             // single input
-            if (inputBlocks.size() == 1) {
+            if (inputBlockLinks.size() == 1) {
                 String inputExpression = getInputBlockByOrder(0).getAsOperandExpression()
                         .replaceAll(Keywords.toBeReplaced,
                                 getOperationExpression());
@@ -138,8 +142,8 @@ public class ComparisonBlock extends PersistableBlock {
                 //expression.append("\n" + " not(motor( jobEngineElementID == Getter1010.getJobEngineElementID() && temp < 10 &&  this startedby  Getter1010))");
 
                 //in range / out of range blocks
-            } else if (inputBlocks.size() == 3 || this instanceof InRangeBlock || this instanceof OutOfRangeBlock) {
-                for (var input : inputBlocks) {
+            } else if (inputBlockLinks.size() == 3 || this instanceof InRangeBlock || this instanceof OutOfRangeBlock) {
+                for (var input : inputBlockLinks) {
                     expression.append(input.getBlock()
                             .getExpression());
                     expression.append("\n");
@@ -151,7 +155,7 @@ public class ComparisonBlock extends PersistableBlock {
                 expression.append(")");
 
                 //comparison blocks
-            } else if (inputBlocks.size() == 2) {
+            } else if (inputBlockLinks.size() == 2) {
 
                 if (getInputBlockByOrder(0).equals(getInputBlockByOrder(1)) && getInputBlockByOrder(0) instanceof InstanceGetterBlock) {
                     expression.append(getInputBlockByOrder(0).getAsOperandExpression()
@@ -220,7 +224,7 @@ public class ComparisonBlock extends PersistableBlock {
         }
 
         String firstOperand = (getInputBlockByOrder(0) instanceof VariableGetterBlock ? asDouble(getInputReferenceByOrder(0)) : getInputReferenceByOrder(0));
-        return firstOperand + getOperator() + asDouble(formatOperator(threshold));
+        return asDouble(firstOperand) + getOperator() + asDouble(formatOperator(threshold));
 
     }
 

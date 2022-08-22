@@ -22,7 +22,8 @@ public class UnitConversionBlock extends SingleInputArithmeticBlock {
 
     @Override
     protected String getFormula() {
-        return "ConversionUtilities.convert( " + inputBlocks.get(0).getReference() + "," + inputUnit + "," + outputUnit + ")";
+        return "ConversionUtilities.convert( Double.valueOf(" + inputBlockLinks.get(0).getReference() + ".toString())"
+                + ", UnitDefinition." + inputUnit + ", UnitDefinition." + outputUnit + " )";
     }
 
 

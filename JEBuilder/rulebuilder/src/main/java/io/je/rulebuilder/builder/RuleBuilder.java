@@ -335,7 +335,7 @@ public class RuleBuilder {
 
                 executionBlockCounter++;
 
-                for (var rootBlock : ruleBlock.getInputBlocks()) {
+                for (var rootBlock : ruleBlock.getInputBlockLinks()) {
 
                     // FIXME error message if rootBlock.getBlock() == null
                     if (rootBlock != null && rootBlock.getBlock() != null) {
@@ -349,7 +349,7 @@ public class RuleBuilder {
                         for (var b : uRule.getBlocks()
                                 .getBlock(rootBlock.getBlock()
                                         .getJobEngineElementID())
-                                .getInputBlocks()) {
+                                .getInputBlockLinks()) {
 
                             if (b.getBlock() instanceof PersistableBlock) {
                                 ((PersistableBlock) b.getBlock()).setTimePersistenceValue(((PersistableBlock) rootBlock.getBlock()).getTimePersistenceValue());
@@ -363,7 +363,7 @@ public class RuleBuilder {
                 }
 
                 // if exec block has no root, it's a root
-                if (ruleBlock.getInputBlocks()
+                if (ruleBlock.getInputBlockLinks()
                         .isEmpty()) {
                     roots.add(ruleBlock);
                 }

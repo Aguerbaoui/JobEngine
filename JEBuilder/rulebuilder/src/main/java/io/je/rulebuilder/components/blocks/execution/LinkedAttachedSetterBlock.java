@@ -4,6 +4,7 @@ import io.je.rulebuilder.components.blocks.ExecutionBlock;
 import io.je.rulebuilder.config.AttributesMapping;
 import io.je.rulebuilder.models.BlockModel;
 import io.je.rulebuilder.models.ValueType;
+import io.je.utilities.log.JELogger;
 
 /*
  * Block used to writing in an instance's attribute (from DM)
@@ -35,6 +36,7 @@ public class LinkedAttachedSetterBlock extends ExecutionBlock {
         try {
             ignoreWriteIfSameValue = (boolean) blockModel.getBlockConfiguration().get("ignoreWriteIfSameValue");
         } catch (Exception e) {
+            JELogger.logException(e);
         }
         try {
             value = blockModel.getBlockConfiguration().get(AttributesMapping.NEWVALUE);
@@ -43,11 +45,12 @@ public class LinkedAttachedSetterBlock extends ExecutionBlock {
             isProperlyConfigured = true;
             if (inputBlockIds.size() != 1) {
                 isProperlyConfigured = false;
-
+                misConfigurationCause = "LinkedAttachedSetterBlock : Input blocks ID size not equal 1";
             }
         } catch (Exception e) {
             isProperlyConfigured = false;
-
+            misConfigurationCause = "LinkedAttachedSetterBlock : Exception occurred while initialize : " + e.getMessage();
+            JELogger.logException(e);
         }
 
 
@@ -68,7 +71,7 @@ public class LinkedAttachedSetterBlock extends ExecutionBlock {
                 + "\"" + this.blockName + "\","
                 + getterInstanceId + ","
                 + "\"" + this.destinationAttributeName + "\","
-                + inputBlocks.get(0).getReference() + ","
+                + inputBlockLinks.get(0).getReference() + ","
                 + this.ignoreWriteIfSameValue
                 + ");\r\n");
         expression.append("\n");

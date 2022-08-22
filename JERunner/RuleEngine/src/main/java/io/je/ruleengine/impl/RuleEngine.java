@@ -53,6 +53,7 @@ public class RuleEngine {
 
         ProjectContainer project = projectManager.getProjectContainer(projectId);
         return project.stopRuleExecution(true, false);
+        
     }
 
     public static boolean fireRules(String projectId, List<Rule> rules, boolean removePreviouslyAddedRules) {

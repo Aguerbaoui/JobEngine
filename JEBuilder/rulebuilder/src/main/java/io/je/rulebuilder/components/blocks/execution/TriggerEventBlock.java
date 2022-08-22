@@ -37,7 +37,9 @@ public class TriggerEventBlock extends ExecutionBlock {
 
             JELogger.error("Failed to build block : " + blockName, LogCategory.DESIGN_MODE, jobEngineProjectID, LogSubModule.RULE, ruleId);
             isProperlyConfigured = false;
-            throw new RuleBuildFailedException(blockName + " is not configured properly");
+            misConfigurationCause = "TriggerEventBlock : event Id null";
+
+            throw new RuleBuildFailedException(blockName + " is not configured properly : " + misConfigurationCause);
 
         }
         return "Executioner.triggerEvent(\"" + jobEngineProjectID + "\" , \""
