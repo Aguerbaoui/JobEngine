@@ -3,6 +3,7 @@ package utils.zmq;
 import org.zeromq.SocketType;
 import org.zeromq.ZContext;
 import org.zeromq.ZMQ;
+import utils.log.LoggerUtils;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -64,6 +65,7 @@ public abstract class ZMQSubscriber implements Runnable {
 			}
 
 		} catch (Exception exp) {
+			LoggerUtils.logException(exp);
 			closeSocket();
 			throw new ZMQConnectionFailedException(0, "Failed to connect to address [ " + url + ":" + port + "]: " + exp);
 		}

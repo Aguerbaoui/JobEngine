@@ -274,6 +274,7 @@ public class ProjectService {
             ruleService.stopRules(projectId, null);
 
         } catch (Exception e) {
+            LoggerUtils.logException(e);
             throw new ProjectStopException(JEMessages.ERROR_STOPPING_PROJECT);
         }
         project.setRunning(false);
@@ -318,6 +319,7 @@ public class ProjectService {
                 try {
                     eventService.registerEvent(event);
                 } catch (EventException e) {
+                    LoggerUtils.logException(e);
                     throw new ProjectLoadException(JEMessages.PROJECT_LOAD_ERROR);
                 }
             }
@@ -326,6 +328,7 @@ public class ProjectService {
                 try {
                     variableService.addVariableToRunner(variable);
                 } catch (JERunnerErrorException e) {
+                    LoggerUtils.logException(e);
                     throw new ProjectLoadException(JEMessages.PROJECT_LOAD_ERROR);
                 }
 
@@ -554,6 +557,7 @@ public class ProjectService {
                 return jeLib;
             }
         } catch (Exception e) {
+            LoggerUtils.logException(e);
             throw new LibraryException(JEMessages.ERROR_IMPORTING_FILE + ":" + e.getMessage());
         }
 

@@ -223,6 +223,7 @@ public class Network {
                     .toBodilessEntity()
                     .block();
         } catch (Exception exp) {
+            LoggerUtils.logException(exp);
             responseMap.putIfAbsent("code", HttpStatus.INTERNAL_SERVER_ERROR); //in case there is an issue with the request itself and not an email api error
             LoggerUtils.logException(exp);
             responseMap.put("message", exp.getMessage());

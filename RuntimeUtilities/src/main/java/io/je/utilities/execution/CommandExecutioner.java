@@ -8,6 +8,7 @@ import utils.ProcessRunner;
 import utils.files.FileUtilities;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
+import utils.log.LoggerUtils;
 
 import java.io.IOException;
 
@@ -71,6 +72,7 @@ public class CommandExecutioner {
         try {
             FileUtilities.deleteFileFromPath(ConfigurationConstants.EXTERNAL_LIB_PATH + "JEUtils.jar");
         } catch (Exception e) {
+            LoggerUtils.logException(e);
             JELogger.error(ERROR_BUILDING_JAR_FILE_AFTER_COMPILING_CLASSES_CHECK_ONGOING_PROCESSES, LogCategory.DESIGN_MODE, "", LogSubModule.JEBUILDER, "");
         }
         ProcessRunner.executeCommandWithPidOutput(command.toString())

@@ -4,6 +4,7 @@ import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.VariableException;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
+import utils.log.LoggerUtils;
 
 import java.time.LocalDateTime;
 
@@ -81,6 +82,7 @@ public class JEVariable extends JEMonitoredData {
 
             }
         } catch (Exception e) {
+            LoggerUtils.logException(e);
             throw new VariableException(JEMessages.FAILED_TO_CAST_DATA_CHECK_THE_TYPE_OF_THE_VARIABLE_AND_THE_INCOMING_DATA);
         }
     }

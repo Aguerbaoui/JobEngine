@@ -47,6 +47,7 @@ public class VariableManager {
 			}
 
 		} catch (Exception e) {
+			LoggerUtils.logException(e);
 			throw new VariableNotFoundException(JEMessages.VARIABLE_NOT_FOUND);
 		}
 		throw new VariableNotFoundException(JEMessages.VARIABLE_NOT_FOUND);

@@ -110,6 +110,7 @@ public class InstanceManager {
             }
 
         } catch (Exception e) {
+            LoggerUtils.logException(e);
             JELogger.error(JEMessages.READ_INSTANCE_FAILED + instanceId + " " + e.getMessage(), null, "",
                     LogSubModule.JERUNNER, instanceId);
         }
@@ -135,6 +136,7 @@ public class InstanceManager {
             JELogger.error(JEMessages.READ_INSTANCE_FAILED + instanceId, null, "", LogSubModule.JERUNNER, instanceId);
 
         } catch (Exception e) {
+            LoggerUtils.logException(e);
             JELogger.error(JEMessages.READ_INSTANCE_FAILED + instanceId + " " + e.getMessage(), null, "",
                     LogSubModule.JERUNNER, instanceId);
         }

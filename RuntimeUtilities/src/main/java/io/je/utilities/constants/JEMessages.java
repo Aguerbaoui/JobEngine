@@ -299,7 +299,7 @@ public class JEMessages {
 
     public static final String PROJECT_LOAD_ERROR = "Error loading project files : ";
 
-    public static final String UKNOWN_ERROR = "Unknown error";
+    public static final String UKNOWN_ERROR = "Unknown error : ";
 
     public static final String INVALID_SEQUENCE_FLOW = "Invalid sequence flow";
 

@@ -93,7 +93,8 @@ public class ProcessRunner {
         if (dumpOutput) {
             try {
                 FileUtilities.writeToFile(processDumpPath, output);
-            } catch (Exception ignored) {
+            } catch (Exception e) {
+                LoggerUtils.logException(e);
             }
         }
         // System.out.println("testing **************" + command);

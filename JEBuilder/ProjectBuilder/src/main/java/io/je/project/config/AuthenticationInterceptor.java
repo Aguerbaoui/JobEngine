@@ -12,6 +12,7 @@ import com.auth0.jwt.interfaces.JWTVerifier;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
+import utils.log.LoggerUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -67,6 +68,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
                     .build();
             verifier.verify(token);
         } catch (JWTVerificationException exception) {
+            LoggerUtils.logException(exception);
             PrintWriter writer = response.getWriter();
             writer.write(exception.getMessage());
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);

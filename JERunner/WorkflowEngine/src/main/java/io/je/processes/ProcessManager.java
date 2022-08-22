@@ -169,6 +169,7 @@ public class ProcessManager {
             processes.get(key)
                     .setDeploymentId(deployment.getId());
         } catch (Exception e) {
+            LoggerUtils.logException(e);
             MonitoringMessage msg = new MonitoringMessage(LocalDateTime.now(), key, ObjectType.JEWORKFLOW,
                     processes.get(key)
                             .getProjectId(), Status.STOPPED.toString(), Status.STOPPED.toString());
@@ -293,13 +294,14 @@ public class ProcessManager {
                 }
             }
         } catch (ActivitiObjectNotFoundException e) {
+            LoggerUtils.logException(e);
             if (workflow != null) {
                 JELogger.error(JEMessages.PROCESS_EXITED,
                         LogCategory.RUNTIME, workflow.getProjectId(),
                         LogSubModule.WORKFLOW, workflow.getKey());
             }
         } catch (Exception e) {
-            JELogger.logException(e);
+            LoggerUtils.logException(e);
             JELogger.error("Error in launching a process by message " + e.getMessage(),
                     LogCategory.RUNTIME, workflow.getProjectId(),
                     LogSubModule.WORKFLOW, workflow.getKey());
@@ -319,14 +321,17 @@ public class ProcessManager {
                 try {
                     launchProcessByKeyWithoutVariables(process.getName(), runProject);
                 } catch (WorkflowAlreadyRunningException e) {
+                    LoggerUtils.logException(e);
                     JELogger.error(JEMessages.WORKFLOW_ALREADY_RUNNING + process.getKey(),
                             LogCategory.RUNTIME, projectId,
                             LogSubModule.WORKFLOW, process.getKey());
                 } catch (WorkflowRunException e) {
+                    LoggerUtils.logException(e);
                     /*JELogger.error(JEMessages.PROCESS_HAS_TO_BE_TRIGGERED_BY_EVENT + process.getKey(),
                             LogCategory.RUNTIME, projectId,
                             LogSubModule.WORKFLOW, process.getKey());*/
                 } catch (WorkflowBuildException e) {
+                    LoggerUtils.logException(e);
                     JELogger.error(JEMessages.WORKFLOW_RUN_ERROR + process.getKey(),
                             LogCategory.RUNTIME, projectId,
                             LogSubModule.WORKFLOW, process.getKey());
@@ -352,6 +357,7 @@ public class ProcessManager {
             try {
                 removeProcess(process.getKey());
             } catch (WorkflowRunException e) {
+                LoggerUtils.logException(e);
                 JELogger.debug(JEMessages.FAILED_TO_STOP_THE_WORKFLOW_BECAUSE_IT_ALREADY_IS_STOPPED, LogCategory.RUNTIME, process.getProjectId(), LogSubModule.WORKFLOW, process.getKey());
             }
         }
@@ -372,6 +378,7 @@ public class ProcessManager {
                 try {
                     JERunnerAPIHandler.triggerEvent(process.getEndEventId(), process.getProjectId());
                 } catch (JERunnerErrorException e) {
+                    LoggerUtils.logException(e);
                     JELogger.error(JEMessages.ERROR_TRIGGERING_EVENT, LogCategory.RUNTIME, process.getProjectId(), LogSubModule.WORKFLOW, processes.get(id)
                             .getName());
                 }
@@ -401,6 +408,7 @@ public class ProcessManager {
                             CommandExecutioner.KillProcessByPid(((ScriptTask) task).getPid());
                             ((ScriptTask) task).setPid(-1);
                         } catch (Exception e) {
+                            LoggerUtils.logException(e);
                             JELogger.error(JEMessages.ERROR_STOPPING_PROCESS, LogCategory.RUNTIME, process.getProjectId(), LogSubModule.WORKFLOW, process.getName());
 
                         }
@@ -413,6 +421,7 @@ public class ProcessManager {
 
         } catch (ActivitiObjectNotFoundException e) {
 
+            LoggerUtils.logException(e);
             JELogger.error(JEMessages.ERROR_DELETING_A_NON_EXISTING_PROCESS,
                     LogCategory.RUNTIME, processes.get(workflowId)
                             .getProjectId(),

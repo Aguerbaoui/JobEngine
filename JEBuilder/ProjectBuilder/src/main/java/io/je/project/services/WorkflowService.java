@@ -137,6 +137,7 @@ public class WorkflowService {
         try {
             JERunnerAPIHandler.deleteWorkflow(projectId, wfName);
         } catch (JERunnerErrorException e) {
+            LoggerUtils.logException(e);
             throw new WorkflowException(JEMessages.DELETE_WORKFLOW_FAILED + e.getMessage());
         }
 
@@ -165,6 +166,7 @@ public class WorkflowService {
         try {
             FileUtilities.deleteFileFromPath(wf.getBpmnPath());
         } catch (Exception e) {
+            LoggerUtils.logException(e);
             JELogger.error(JEMessages.FAILED_TO_DELETE_FILES + e.getMessage(), LogCategory.DESIGN_MODE,
                     projectId, LogSubModule.WORKFLOW, wf.getJobEngineElementID());
         }
@@ -249,7 +251,8 @@ public class WorkflowService {
             case WorkflowConstants.SCRIPTTASK_TYPE: {
                 try {
                     project.addBlockToWorkflow(getScriptBlock(project, wf, block, false));
-                } catch (ClassLoadException | AddClassException | IOException | InterruptedException ignore) {
+                } catch (ClassLoadException | AddClassException | IOException | InterruptedException e) {
+                    LoggerUtils.logException(e);
                 }
                 break;
             }
@@ -518,6 +521,7 @@ public class WorkflowService {
             try {
                 classService.compileCode(c, SCRIPTS_PACKAGE);
             } catch (Exception e) {
+                LoggerUtils.logException(e);
                 wf.cleanUpScriptTaskBlock(scriptBlock);
                 throw e;
             }
@@ -1000,6 +1004,7 @@ public class WorkflowService {
                 try {
                     results.add(buildWorkflow(projectId, wf.getJobEngineElementID()).get());
                 } catch (Exception e) {
+                    LoggerUtils.logException(e);
                     results.add(OperationStatusDetails.getResultDetails(wf.getJobEngineElementID(), false,
                             THREAD_INTERRUPTED_WHILE_EXECUTING,
                             wf.getJobEngineElementName()));
@@ -1010,6 +1015,7 @@ public class WorkflowService {
                 try {
                     results.add(buildWorkflow(projectId, id).get());
                 } catch (Exception e) {
+                    LoggerUtils.logException(e);
                     results.add(OperationStatusDetails.getResultDetails(id, false, THREAD_INTERRUPTED_WHILE_EXECUTING,
                             project.getWorkflowByIdOrName(id)
                                     .getJobEngineElementName()));
@@ -1068,6 +1074,7 @@ public class WorkflowService {
             result.setItemName(wf.getJobEngineElementName());
             result.setItemId(workflowId);
         } catch (WorkflowRunException e) {
+            LoggerUtils.logException(e);
             result.setOperationSucceeded(false);
             result.setOperationError(e.getMessage());
         }
@@ -1256,6 +1263,7 @@ public class WorkflowService {
             try {
                 FileUtilities.deleteFileFromPath(wf.getBpmnPath());
             } catch (Exception e) {
+                LoggerUtils.logException(e);
                 JELogger.error(JEMessages.FAILED_TO_DELETE_FILES, LogCategory.DESIGN_MODE, projectId,
                         LogSubModule.WORKFLOW, wf.getJobEngineElementID());
             }
@@ -1336,6 +1344,7 @@ public class WorkflowService {
             try {
                 removeWorkflow(projectId, id);
             } catch (Exception e) {
+                LoggerUtils.logException(e);
                 JELogger.error(JEMessages.DELETE_WORKFLOW_FAILED + " id = " + id + " " + e.getMessage(),
                         LogCategory.DESIGN_MODE, projectId,
                         LogSubModule.WORKFLOW, id);
@@ -1371,6 +1380,7 @@ public class WorkflowService {
             //wf.setStatus(Status.STOPPING);
 
         } catch (JERunnerErrorException e) {
+            LoggerUtils.logException(e);
             result.setOperationSucceeded(false);
             result.setOperationError(JEMessages.ERROR_STOPPING_WORKFLOW);
         }
@@ -1409,6 +1419,7 @@ public class WorkflowService {
                 throw new WorkflowNotFoundException(JEMessages.WORKFLOW_NOT_FOUND);
             }
         } catch (Exception e) {
+            LoggerUtils.logException(e);
             throw new WorkflowNotFoundException(JEMessages.WORKFLOW_NOT_FOUND);
         }
     }
@@ -1425,6 +1436,7 @@ public class WorkflowService {
                 removeWorkflow(projectId, id);
             } catch (WorkflowNotFoundException | LicenseNotActiveException
                      | WorkflowException e) {
+                LoggerUtils.logException(e);
                 JELogger.error(JEMessages.DELETE_WORKFLOW_FAILED, LogCategory.DESIGN_MODE, projectId,
                         LogSubModule.WORKFLOW, id);
             }
@@ -1465,6 +1477,7 @@ public class WorkflowService {
                 try {
                     results.add(runWorkflow(projectId, wf.getJobEngineElementID()).get());
                 } catch (Exception e) {
+                    LoggerUtils.logException(e);
                     results.add(OperationStatusDetails.getResultDetails(wf.getJobEngineElementID(), false,
                             THREAD_INTERRUPTED_WHILE_EXECUTING,
                             wf.getJobEngineElementName()));
@@ -1475,6 +1488,7 @@ public class WorkflowService {
                 try {
                     results.add(runWorkflow(projectId, id).get());
                 } catch (Exception e) {
+                    LoggerUtils.logException(e);
                     results.add(OperationStatusDetails.getResultDetails(id, false, THREAD_INTERRUPTED_WHILE_EXECUTING,
                             project.getWorkflowByIdOrName(id)
                                     .getJobEngineElementName()));
@@ -1500,6 +1514,7 @@ public class WorkflowService {
                 try {
                     results.add(stopWorkflow(projectId, wf.getJobEngineElementID()).get());
                 } catch (Exception e) {
+                    LoggerUtils.logException(e);
                     results.add(OperationStatusDetails.getResultDetails(wf.getJobEngineElementID(), false,
                             THREAD_INTERRUPTED_WHILE_EXECUTING,
                             wf.getJobEngineElementName()));
@@ -1510,7 +1525,7 @@ public class WorkflowService {
                 try {
                     results.add(stopWorkflow(projectId, id).get());
                 } catch (Exception e) {
-
+                    LoggerUtils.logException(e);
                     results.add(OperationStatusDetails.getResultDetails(id, false, THREAD_INTERRUPTED_WHILE_EXECUTING,
                             project.getWorkflowByIdOrName(id)
                                     .getJobEngineElementName()));
@@ -1555,7 +1570,8 @@ public class WorkflowService {
                 FileUtilities.deleteFileFromPath(lib.getFilePath());
                 libraryRepository.delete(lib);
             }
-        } catch (Exception Ignore) {
+        } catch (Exception e) {
+            LoggerUtils.logException(e);
         }
     }
 

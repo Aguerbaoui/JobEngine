@@ -9,6 +9,7 @@ import io.je.utilities.exceptions.RuleBuildFailedException;
 import io.je.utilities.log.JELogger;
 import lombok.Getter;
 import lombok.Setter;
+import utils.log.LoggerUtils;
 
 import java.util.HashMap;
 import java.util.List;
@@ -112,7 +113,7 @@ public class EmailBlock extends ExecutionBlock {
                     .withDefaultPrettyPrinter();
             json = ow.writeValueAsString(attributes);
         } catch (JsonProcessingException e) {
-
+            LoggerUtils.logException(e);
             throw new RuntimeException(e);
         }
         expression.append("Executioner.sendEmail( " + "\"")

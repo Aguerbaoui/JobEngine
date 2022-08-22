@@ -15,6 +15,7 @@ import io.je.utilities.models.WorkflowModel;
 import models.JEWorkflow;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
+import utils.log.LoggerUtils;
 import utils.string.StringUtilities;
 
 import java.util.ArrayList;
@@ -226,6 +227,7 @@ public class WorkflowBuilder {
                 JERunnerAPIHandler.addWorkflow(wf);
 
         } catch (Exception exp) {
+            LoggerUtils.logException(exp);
             JELogger.error(JEMessages.FAILED_TO_DEPLOY_IN_RUNNER_WORKFLOW_WITH_ID + " = " + workflow.getJobEngineElementID()
                     + " : " + exp.getMessage(),
                     LogCategory.DESIGN_MODE, workflow.getJobEngineProjectID(),
@@ -248,6 +250,7 @@ public class WorkflowBuilder {
         try {
             JERunnerAPIHandler.runWorkflow(projectId, key);
         } catch (JERunnerErrorException e) {
+            LoggerUtils.logException(e);
             throw new WorkflowRunException(JEMessages.WORKFLOW_RUN_ERROR + e.getMessage());
         }
 

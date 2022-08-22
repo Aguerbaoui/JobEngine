@@ -161,7 +161,6 @@ public class RuleController {
 
             ruleService.updateRule(projectId, ruleModel);
         } catch (Exception e) {
-            LoggerUtils.logException(e);
             return JEExceptionHandler.handleException(e);
 
         }
@@ -207,7 +206,7 @@ public class RuleController {
             ruleService.updateBlockInRule(blockModel);
             projectService.saveProject(projectId);
         } catch (Exception e) {
-            JELogger.debug("Exception occured while updating Block.");
+            JELogger.error("Exception occurred while updating Block.");
             return JEExceptionHandler.handleException(e);
         }
 

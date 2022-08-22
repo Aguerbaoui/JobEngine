@@ -48,6 +48,7 @@ public class AsyncRuleService {
             project = getProject(projectId);
             rule = project.getRule(ruleId);
         } catch (Exception e) {
+            LoggerUtils.logException(e);
             result.setOperationSucceeded(false);
             result.setOperationError(e.getMessage());
             return CompletableFuture.completedFuture(result);
@@ -76,6 +77,8 @@ public class AsyncRuleService {
             }
         } catch (RuleBuildFailedException | JERunnerErrorException | ProjectNotFoundException | ProjectLoadException |
                  LicenseNotActiveException e) {
+            LoggerUtils.logException(e);
+
             rule.setBuilt(false);
             rule.setContainsErrors(true);
             result.setOperationSucceeded(false);
@@ -88,6 +91,7 @@ public class AsyncRuleService {
             RuleService.updateRuleStatus(rule);
             ruleRepository.save(rule);
         } catch (Exception e) {
+            LoggerUtils.logException(e);
             JELogger.error("[rule = " + rule.getJobEngineElementName() + "]" + JEMessages.STATUS_UPDATE_FAILED,
                     CATEGORY, projectId, RULE, null);
 
@@ -123,6 +127,7 @@ public class AsyncRuleService {
             project = getProject(projectId);
             rule = project.getRule(ruleId);
         } catch (Exception e) {
+            LoggerUtils.logException(e);
             result.setOperationSucceeded(false);
             result.setOperationError(e.getMessage());
             return CompletableFuture.completedFuture(result);
@@ -178,14 +183,16 @@ public class AsyncRuleService {
             JELogger.control("[rule = " + rule.getJobEngineElementName() + "]" + JEMessages.RULE_RUNNING,
                     CATEGORY, projectId, RULE, null);
         } catch (JERunnerErrorException e) {
-
+            LoggerUtils.logException(e);
             result.setOperationSucceeded(false);
             result.setOperationError(e.getMessage());
         }
         catch (ExecutionException e) {
+            LoggerUtils.logException(e);
             result.setOperationSucceeded(false);
             result.setOperationError(e.getCause().getMessage());
         } catch (InterruptedException e) {
+            LoggerUtils.logException(e);
             Thread.currentThread().interrupt();
             result.setOperationSucceeded(false);
             result.setOperationError(e.getMessage());

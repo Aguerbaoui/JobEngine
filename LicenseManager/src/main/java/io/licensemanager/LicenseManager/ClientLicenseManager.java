@@ -12,6 +12,7 @@ import io.licensemanager.utilities.InitResponse;
 import io.licensemanager.utilities.LicenseMessages;
 import io.licensemanager.utilities.LicenseUtilities;
 import utils.log.LogCategory;
+import utils.log.LoggerUtils;
 import utils.zmq.ZMQRequester;
 
 import java.net.InetAddress;
@@ -118,6 +119,7 @@ public class ClientLicenseManager {
             return new InitResponse(false, strError, siothlicenseStatus);
 
         } catch (Exception ex) {
+            LoggerUtils.logException(ex);
             strError = LicenseMessages.initLicenseError(ex.getMessage());
             return new InitResponse(false, strError, siothlicenseStatus);
 

@@ -41,7 +41,8 @@ public class SIOTHConfigUtility {
 			return json;
 
 		} catch (Exception e) {
-			System.out.println("Failed to start application. [SIOTHConfig.json] was not found in : " + configPath);
+			LoggerUtils.logException(e);
+			LoggerUtils.error("Failed to start application. [SIOTHConfig.json] was not found in : " + configPath);
 			return null;
 		}
 

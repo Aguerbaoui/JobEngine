@@ -8,6 +8,7 @@ import org.activiti.engine.delegate.BpmnError;
 import org.activiti.engine.delegate.DelegateExecution;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
+import utils.log.LoggerUtils;
 
 public class ScriptServiceTask extends ServiceTask {
 
@@ -30,6 +31,7 @@ public class ScriptServiceTask extends ServiceTask {
             execution.setVariable("test", "555");
             //System.out.println("done waiting for script");
         } catch (Exception e) {
+            LoggerUtils.logException(e);
             throw new BpmnError("Error");
         }
 

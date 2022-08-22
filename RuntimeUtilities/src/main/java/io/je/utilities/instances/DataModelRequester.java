@@ -77,6 +77,7 @@ public class DataModelRequester {
 
             }
         } catch (IOException e) {
+            LoggerUtils.logException(e);
             JELogger.error(JEMessages.FAILED_INIT_DATAMODEL + modelId, null, "", LogSubModule.JERUNNER, modelId);
         }
         return values;
@@ -108,6 +109,7 @@ public class DataModelRequester {
 
             }
         } catch (JsonProcessingException e) {
+            LoggerUtils.logException(e);
             JELogger.error(JEMessages.FAILED_INIT_DATAMODEL + instanceId, null, "", LogSubModule.JERUNNER, instanceId);
         }
         return null;

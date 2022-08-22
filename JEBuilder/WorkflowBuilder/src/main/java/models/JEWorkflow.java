@@ -14,6 +14,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import utils.files.FileUtilities;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
+import utils.log.LoggerUtils;
 
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -280,6 +281,7 @@ public class JEWorkflow extends JEObject {
         try {
             FileUtilities.deleteFileFromPath(b.getScriptPath());
         } catch (Exception e) {
+            LoggerUtils.logException(e);
             JELogger.error(FAILED_TO_DELETE_FILES, LogCategory.DESIGN_MODE, jobEngineProjectID, LogSubModule.WORKFLOW, b.getJobEngineElementID());
         }
 

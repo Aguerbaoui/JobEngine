@@ -96,6 +96,7 @@ public class ComparisonBlock extends PersistableBlock {
                 misConfigurationCause = "ComparisonBlock : Unable to compare : Threshold is null and input blocks ID contains less than two elements";
             }
         } catch (Exception e) {
+            LoggerUtils.logException(e);
             JELogger.error("Failed to build block : " + jobEngineElementName + " : " + e.getMessage(), LogCategory.DESIGN_MODE, jobEngineProjectID, LogSubModule.RULE, ruleId);
             isProperlyConfigured = false;
             misConfigurationCause = "ComparisonBlock : Exception occurred while initialize : " + e.getMessage();

@@ -8,6 +8,7 @@ import io.je.rulebuilder.models.BlockModel;
 import io.je.utilities.log.JELogger;
 import lombok.Getter;
 import lombok.Setter;
+import utils.log.LoggerUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -94,7 +95,7 @@ public class SMSBlock extends ExecutionBlock {
                     .withDefaultPrettyPrinter();
             json = ow.writeValueAsString(attributes);
         } catch (JsonProcessingException e) {
-
+            LoggerUtils.logException(e);
             throw new RuntimeException(e);
         }
         expression.append("Executioner.sendSMS( " + "\"")

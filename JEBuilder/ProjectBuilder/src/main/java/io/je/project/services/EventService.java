@@ -16,6 +16,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
+import utils.log.LoggerUtils;
 import utils.string.StringUtilities;
 
 import java.util.*;
@@ -167,6 +168,7 @@ public class EventService {
         try {
             JERunnerAPIHandler.addEvent(eventMap);
         } catch (JERunnerErrorException e) {
+            LoggerUtils.logException(e);
             throw new EventException(JEMessages.FAILED_TO_ADD_EVENT);
         }
         project.addEvent(event);
@@ -210,6 +212,7 @@ public class EventService {
                     LogSubModule.EVENT, eventId);
             JERunnerAPIHandler.updateEventType(projectId, eventId, eventType);
         } catch (Exception e) {
+            LoggerUtils.logException(e);
             throw new EventException(JEMessages.EVENT_NOT_FOUND);
         }
         event.setType(t);
@@ -250,6 +253,7 @@ public class EventService {
         try {
             JERunnerAPIHandler.deleteEvent(projectId, eventId);
         } catch (JERunnerErrorException e) {
+            LoggerUtils.logException(e);
             throw new EventException(JEMessages.ERROR_DELETING_EVENT);
         }
 
@@ -325,6 +329,7 @@ public class EventService {
                 try {
                     deleteEvent(projectId, event.getJobEngineElementID());
                 } catch (Exception e) {
+                    LoggerUtils.logException(e);
                     JELogger.error(JEMessages.ERROR_DELETING_EVENT + " id = " + event.getJobEngineElementID() + " " + e.getMessage(),
                             LogCategory.DESIGN_MODE, projectId,
                             LogSubModule.EVENT, event.getJobEngineElementID());
@@ -335,6 +340,7 @@ public class EventService {
                 try {
                     deleteEvent(projectId, id);
                 } catch (Exception e) {
+                    LoggerUtils.logException(e);
                     JELogger.error(JEMessages.ERROR_DELETING_EVENT + " id = " + id + " " + e.getMessage(),
                             LogCategory.DESIGN_MODE, projectId,
                             LogSubModule.EVENT, id);

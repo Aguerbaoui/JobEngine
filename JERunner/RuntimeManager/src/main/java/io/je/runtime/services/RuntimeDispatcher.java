@@ -88,6 +88,7 @@ public class RuntimeDispatcher {
             }
 
         } catch (JEException e) {
+            LoggerUtils.logException(e);
             JELogger.error(" [project  = " + projectName + "]" + JEMessages.PROJECT_RUN_FAILED, LogCategory.RUNTIME,
                     projectId, LogSubModule.JERUNNER, null);
             DataModelListener.stopListening(topics);
@@ -109,6 +110,7 @@ public class RuntimeDispatcher {
         try {
             WorkflowEngineHandler.stopProjectWorkflows(projectId);
         } catch (WorkflowBuildException ex) {
+            LoggerUtils.logException(ex);
             JELogger.error(msg, LogCategory.RUNTIME, projectId,
                     LogSubModule.WORKFLOW, ex.getMessage(), ex.toString());
         }
@@ -184,6 +186,7 @@ public class RuntimeDispatcher {
                 details.setOperationSucceeded(true);
                 updateResult.add(details);
             } catch (RuleCompilationException | JEFileNotFoundException | RuleFormatNotValidException e) {
+                LoggerUtils.logException(e);
                 details.setOperationSucceeded(false);
                 details.setOperationError(e.getMessage());
                 updateResult.add(details);
@@ -237,6 +240,7 @@ public class RuntimeDispatcher {
                     wf.getProjectId(), Status.BUILDING.toString(), Status.STOPPED.toString());
             JEMonitor.publish(msg);
         } catch (Exception e) {
+            LoggerUtils.logException(e);
             MonitoringMessage msg = new MonitoringMessage(LocalDateTime.now(), wf.getName(), ObjectType.JEWORKFLOW,
                     wf.getProjectId(), Status.STOPPED.toString(), Status.STOPPED.toString());
             JEMonitor.publish(msg);
@@ -267,6 +271,7 @@ public class RuntimeDispatcher {
         try {
             WorkflowEngineHandler.runAllWorkflows(projectId, false);
         } catch (WorkflowBuildException ex) {
+            LoggerUtils.logException(ex);
             JELogger.error(msg, LogCategory.RUNTIME, projectId,
                     LogSubModule.WORKFLOW, ex.getMessage(), ex.toString());
         }
@@ -348,6 +353,7 @@ public class RuntimeDispatcher {
 
             });
         } catch (Exception e) {
+            LoggerUtils.logException(e);
             JELogger.error(JEMessages.FAILED_TO_INJECT_DATA + e.getMessage(), LogCategory.RUNTIME, null,
                     LogSubModule.JERUNNER, null);
         }
@@ -408,6 +414,7 @@ public class RuntimeDispatcher {
         try {
             WorkflowEngineHandler.deleteProjectProcesses(projectId);
         } catch (WorkflowBuildException ex) {
+            LoggerUtils.logException(ex);
             JELogger.error(msg, LogCategory.RUNTIME, projectId,
                     LogSubModule.WORKFLOW, ex.getMessage(), ex.toString());
         }
@@ -428,10 +435,12 @@ public class RuntimeDispatcher {
         try {
             WorkflowEngineHandler.deleteProcess(projectId, workflowId);
         } catch (WorkflowRunException e) {
+            LoggerUtils.logException(e);
             JELogger.debug(JEMessages.ERROR_DELETING_A_NON_EXISTING_PROCESS,
                     LogCategory.RUNTIME, projectId,
                     LogSubModule.WORKFLOW, workflowId);
         } catch (WorkflowBuildException ex) {
+            LoggerUtils.logException(ex);
             JELogger.error(workflowId, LogCategory.RUNTIME, projectId,
                     LogSubModule.WORKFLOW, ex.getMessage(), ex.toString());
         }
@@ -538,6 +547,7 @@ public class RuntimeDispatcher {
                 JELogger.info(message, LogCategory.RUNTIME, projectId,
                         LogSubModule.WORKFLOW, process.getKey());
             } catch (WorkflowBuildException ex) {
+                LoggerUtils.logException(ex);
                 JELogger.error(message, LogCategory.RUNTIME, projectId,
                         LogSubModule.WORKFLOW, ex.getMessage(), ex.toString());
             }
