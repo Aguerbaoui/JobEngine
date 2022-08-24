@@ -3,83 +3,78 @@ package io.siothconfig;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class JobEngine {
-	
-	@JsonProperty("JERunner")
-	public String jeRunner;
 
-	@JsonProperty("JEBuilder")
-	public String jeBuilder;
+    @JsonProperty("JERunner")
+    public String jeRunner;
 
-	@JsonProperty("CheckHealth")
-	public int checkHealthEveryMs;
+    @JsonProperty("JEBuilder")
+    public String jeBuilder;
 
-	@JsonProperty("LibraryMaxFileSize")
-	public String libraryMaxFileSize;
+    @JsonProperty("CheckHealth")
+    public int checkHealthEveryMs;
 
-	// FIXME MaxMemory is it used?
+    @JsonProperty("LibraryMaxFileSize")
+    public String libraryMaxFileSize;
 
-	@JsonProperty("GeneratedClassesPath")
-	public String generatedClassesPath;
-	
-	
-	
-	private JobEngine() {
-		// TODO Auto-generated constructor stub
-	}
+    // FIXME MaxMemory is it used?
+
+    @JsonProperty("GeneratedClassesPath")
+    public String generatedClassesPath;
 
 
-
-	public String getJeRunner() {
-		return jeRunner;
-	}
-
+    private JobEngine() {
+        // TODO Auto-generated constructor stub
+    }
 
 
-	public void setJeRunner(String jeRunner) {
-		this.jeRunner = jeRunner;
-	}
+    public String getJeRunner() {
+        return jeRunner;
+    }
 
 
-
-	public String getJeBuilder() {
-		return jeBuilder;
-	}
-
+    public void setJeRunner(String jeRunner) {
+        this.jeRunner = jeRunner;
+    }
 
 
-	public void setJeBuilder(String jeBuilder) {
-		this.jeBuilder = jeBuilder;
-	}
+    public String getJeBuilder() {
+        return jeBuilder;
+    }
 
-	public int getCheckHealthEveryMs() {
-		return checkHealthEveryMs;
-	}
 
-	public void setCheckHealthEveryMs(int checkHealthEveryMs) {
-		this.checkHealthEveryMs = checkHealthEveryMs;
-	}
+    public void setJeBuilder(String jeBuilder) {
+        this.jeBuilder = jeBuilder;
+    }
 
-	public int getLibraryMaxFileSize() {
-		try {
-			if (libraryMaxFileSize != null) {
-				int size = Integer.valueOf(libraryMaxFileSize.substring(0, libraryMaxFileSize.indexOf("MB")));
-				return size * 1048576;
-			}  return 100 * 1048576;
-		}
-		catch (Exception e) {
-			return 100 * 1048576;
-		}
-	}
+    public int getCheckHealthEveryMs() {
+        return checkHealthEveryMs;
+    }
 
-	public void setLibraryMaxFileSize(String libraryMaxFileSize) {
-		this.libraryMaxFileSize = libraryMaxFileSize;
-	}
+    public void setCheckHealthEveryMs(int checkHealthEveryMs) {
+        this.checkHealthEveryMs = checkHealthEveryMs;
+    }
 
-	public String getGeneratedClassesPath() {
-		return generatedClassesPath;
-	}
+    public int getLibraryMaxFileSize() {
+        try {
+            if (libraryMaxFileSize != null) {
+                int size = Integer.valueOf(libraryMaxFileSize.substring(0, libraryMaxFileSize.indexOf("MB")));
+                return size * 1048576;
+            }
+            return 100 * 1048576;
+        } catch (Exception e) {
+            return 100 * 1048576;
+        }
+    }
 
-	public void setGeneratedClassesPath(String generatedClassesPath) {
-		this.generatedClassesPath = generatedClassesPath;
-	}
+    public void setLibraryMaxFileSize(String libraryMaxFileSize) {
+        this.libraryMaxFileSize = libraryMaxFileSize;
+    }
+
+    public String getGeneratedClassesPath() {
+        return generatedClassesPath;
+    }
+
+    public void setGeneratedClassesPath(String generatedClassesPath) {
+        this.generatedClassesPath = generatedClassesPath;
+    }
 }

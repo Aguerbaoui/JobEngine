@@ -4,12 +4,16 @@ import io.je.rulebuilder.components.BlockLink;
 import io.je.rulebuilder.components.BlockLinkModel;
 import io.je.rulebuilder.components.blocks.getter.InstanceGetterBlock;
 import io.je.rulebuilder.components.blocks.getter.VariableGetterBlock;
+import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.RuleBuildFailedException;
 import io.je.utilities.runtimeobject.JEObject;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /*
@@ -57,7 +61,7 @@ public abstract class Block extends JEObject {
         this.isProperlyConfigured = true;
         if (blockName == null) {
             this.isProperlyConfigured = false;
-            this.misConfigurationCause = "Block name is null";
+            this.misConfigurationCause = JEMessages.BLOCK_NAME_IS_NULL;
         }
         this.inputBlockIds = inputBlockIds;
         this.outputBlockIds = outputBlocksIds;

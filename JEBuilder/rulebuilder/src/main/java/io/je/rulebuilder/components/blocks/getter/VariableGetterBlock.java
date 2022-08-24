@@ -4,6 +4,7 @@ package io.je.rulebuilder.components.blocks.getter;
 import io.je.rulebuilder.components.blocks.ConditionBlock;
 import io.je.rulebuilder.config.Keywords;
 import io.je.rulebuilder.models.BlockModel;
+import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.RuleBuildFailedException;
 import utils.log.LoggerUtils;
 
@@ -24,12 +25,12 @@ public class VariableGetterBlock extends ConditionBlock {
             isProperlyConfigured = true;
             if (variableId == null) {
                 isProperlyConfigured = false;
-                misConfigurationCause = "VariableGetterBlock : Variable Id is null";
+                misConfigurationCause = JEMessages.VARIABLE_GETTER_BLOCK_VARIABLE_ID_IS_NULL;
             }
 
         } catch (Exception e) {
             isProperlyConfigured = false;
-            misConfigurationCause = "VariableGetterBlock : Exception while loading variable Id : " + e.getMessage();
+            misConfigurationCause = JEMessages.VARIABLE_GETTER_BLOCK_EXCEPTION_WHILE_LOADING_VARIABLE_ID + e.getMessage();
 
             LoggerUtils.logException(e);
         }

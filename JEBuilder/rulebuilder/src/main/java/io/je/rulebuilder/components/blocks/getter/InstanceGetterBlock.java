@@ -5,6 +5,7 @@ import io.je.rulebuilder.components.blocks.GetterBlock;
 import io.je.rulebuilder.config.AttributesMapping;
 import io.je.rulebuilder.config.Keywords;
 import io.je.rulebuilder.models.BlockModel;
+import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.RuleBuildFailedException;
 import org.springframework.data.annotation.Transient;
 import utils.log.LoggerUtils;
@@ -37,17 +38,17 @@ public class InstanceGetterBlock extends GetterBlock {
             isProperlyConfigured = true;
         } catch (Exception e) {
             isProperlyConfigured = false;
-            misConfigurationCause = "InstanceGetterBlock : Exception while loading Classes / Instances info : " + e.getMessage();
+            misConfigurationCause = JEMessages.INSTANCE_GETTER_BLOCK_EXCEPTION_WHILE_LOADING_CLASSES_INSTANCES_INFO + e.getMessage();
 
             LoggerUtils.logException(e);
         } finally {
             if (classId == null) {
                 isProperlyConfigured = false;
-                misConfigurationCause = "InstanceGetterBlock : Class Id is null";
+                misConfigurationCause = JEMessages.INSTANCE_GETTER_BLOCK_CLASS_ID_IS_NULL;
             }
             if (classPath == null) {
                 isProperlyConfigured = false;
-                misConfigurationCause = "InstanceGetterBlock : Class Path is null";
+                misConfigurationCause = JEMessages.INSTANCE_GETTER_BLOCK_CLASS_PATH_IS_NULL;
             }
         }
 

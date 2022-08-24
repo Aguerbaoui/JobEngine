@@ -3,6 +3,7 @@ package io.je.rulebuilder.components;
 import io.je.rulebuilder.components.blocks.Block;
 import io.je.rulebuilder.components.blocks.execution.AttachedSetterBlock;
 import io.je.rulebuilder.components.blocks.execution.SetterBlock;
+import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.RuleBuildFailedException;
 import io.je.utilities.log.JELogger;
 import utils.log.LogCategory;
@@ -54,7 +55,8 @@ public class BlockManager {
                 if (block.isProperlyConfigured()) {
                     initBlock(block);
                 } else {
-                    String message = block.getBlockName() + " : The block is not configured properly : " + block.getMisConfigurationCause();
+                    // TODO externalize messages
+                    String message = block.getBlockName() + JEMessages.THE_BLOCK_IS_NOT_CONFIGURED_PROPERLY + block.getMisConfigurationCause();
 
                     JELogger.error(message, LogCategory.DESIGN_MODE, block.getJobEngineProjectID(),
                             LogSubModule.RULE, block.getRuleId(), block.getBlockName());
