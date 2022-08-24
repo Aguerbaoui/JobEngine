@@ -6,60 +6,60 @@ public class MongoConfiguration {
 
 
     @JsonProperty("MongoServerHostName")
-    public String mongoServerHostName ;
-    
+    public String mongoServerHostName;
+
     @JsonProperty("MongoServerPort")
-    public int mongoServerPort ;
+    public int mongoServerPort;
 
     @JsonProperty("MongoUserName")
-    public String mongoUserName ;
+    public String mongoUserName;
 
     @JsonProperty("MongoPassword")
-    public String mongoPassword ;
+    public String mongoPassword;
 
-    
+
     private MongoConfiguration() {
-		// TODO Auto-generated constructor stub
-	}
+        // TODO Auto-generated constructor stub
+    }
 
 
-	public String getMongoServerHostName() {
-		return mongoServerHostName;
-	}
+    public String getMongoServerHostName() {
+        return mongoServerHostName;
+    }
 
 
-	public void setMongoServerHostName(String mongoServerHostName) {
-		this.mongoServerHostName = mongoServerHostName;
-	}
+    public void setMongoServerHostName(String mongoServerHostName) {
+        this.mongoServerHostName = mongoServerHostName;
+    }
 
 
-	public int getMongoServerPort() {
-		return mongoServerPort;
-	}
+    public int getMongoServerPort() {
+        return mongoServerPort;
+    }
 
 
-	public void setMongoServerPort(int mongoServerPort) {
-		this.mongoServerPort = mongoServerPort;
-	}
+    public void setMongoServerPort(int mongoServerPort) {
+        this.mongoServerPort = mongoServerPort;
+    }
 
 
-	public String getMongoUserName() {
-		return mongoUserName;
-	}
+    public String getMongoUserName() {
+        return mongoUserName;
+    }
 
 
-	public void setMongoUserName(String mongoUserName) {
-		this.mongoUserName = mongoUserName;
-	}
+    public void setMongoUserName(String mongoUserName) {
+        this.mongoUserName = mongoUserName;
+    }
 
 
-	public String getMongoPassword() {
-		return mongoPassword;
-	}
+    public String getMongoPassword() {
+        return mongoPassword;
+    }
 
 
-	public void setMongoPassword(String mongoPassword) {
-		this.mongoPassword = mongoPassword;
-	}
-	
+    public void setMongoPassword(String mongoPassword) {
+        this.mongoPassword = mongoPassword;
+    }
+
 }

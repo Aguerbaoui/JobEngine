@@ -28,16 +28,16 @@ import utils.zmq.ZMQSecurity;
 public class JEBuilderInitializingBean implements InitializingBean {
 
 
-	@Autowired
+    @Autowired
     @Lazy
     ProjectService projectService;
-	
-	@Autowired
+
+    @Autowired
     @Lazy
-	ConfigurationService configService;
-	
-	@Autowired
-	BuilderProperties builderProperties;
+    ConfigurationService configService;
+
+    @Autowired
+    BuilderProperties builderProperties;
 
     @Override
     public void afterPropertiesSet() {
@@ -47,7 +47,7 @@ public class JEBuilderInitializingBean implements InitializingBean {
             SIOTHConfigUtility.setSiothId(builderProperties.getSiothId());
 
             //Initialize logger
-            JELogger.initLogger("JEBuilder", builderProperties.getJeBuilderLogPath(),builderProperties.getJeBuilderLogLevel(), builderProperties.isDev());
+            JELogger.initLogger("JEBuilder", builderProperties.getJeBuilderLogPath(), builderProperties.getJeBuilderLogLevel(), builderProperties.isDev());
             ConfigurationConstants.setJavaGenerationPath(SIOTHConfigUtility.getSiothConfig().getJobEngine().getGeneratedClassesPath());
 
             //Initialize authentication interceptor
@@ -56,18 +56,17 @@ public class JEBuilderInitializingBean implements InitializingBean {
             //Initialize License
             LicenseProperties.init();
 
-        	while(!LicenseProperties.licenseIsActive())
-        	{
-        		try {
-        			Thread.sleep(5000);
-    				LicenseProperties.checkLicenseIsActive();    				
-    			} catch (LicenseNotActiveException e) {
-    				JELogger.error(e.getMessage(), LogCategory.SIOTH_APPLICATION, "",
-    						LogSubModule.JEBUILDER, "");
-    			} catch (InterruptedException e) {
+            while (!LicenseProperties.licenseIsActive()) {
+                try {
+                    Thread.sleep(5000);
+                    LicenseProperties.checkLicenseIsActive();
+                } catch (LicenseNotActiveException e) {
+                    JELogger.error(e.getMessage(), LogCategory.SIOTH_APPLICATION, "",
+                            LogSubModule.JEBUILDER, "");
+                } catch (InterruptedException e) {
                     LoggerUtils.logException(e);
-    			}
-        	}
+                }
+            }
 
             JEMonitor.setPort(builderProperties.getMonitoringPort());
             ZMQSecurity.setSecure(builderProperties.getUseZmqSecurity());
@@ -77,20 +76,20 @@ public class JEBuilderInitializingBean implements InitializingBean {
             ZMQConfiguration.setSendHighWatermark(builderProperties.getZmqSendHighWatermark());
             ProcessRunner.setProcessDumpPath(builderProperties.getProcessesDumpPath(), builderProperties.isDumpJavaProcessExecution());
 
-			//Initialize JE configurations
+            //Initialize JE configurations
             configService.init();
             JELogger.control(JEMessages.LOGGER_INITIALIZED,
                     LogCategory.DESIGN_MODE, null,
                     LogSubModule.JEBUILDER, null);
-            JELogger.control(JEMessages.BUILDER_STARTED,  LogCategory.DESIGN_MODE,
+            JELogger.control(JEMessages.BUILDER_STARTED, LogCategory.DESIGN_MODE,
                     null, LogSubModule.JEBUILDER, null);
             configService.initResponder();
 
-        } catch (  Exception   e) {
+        } catch (Exception e) {
 
             JELogger.logException(e);
 
-            JELogger.error(JEMessages.UNEXPECTED_ERROR , LogCategory.DESIGN_MODE, null,
+            JELogger.error(JEMessages.UNEXPECTED_ERROR, LogCategory.DESIGN_MODE, null,
                     LogSubModule.JEBUILDER, null);
         }
 

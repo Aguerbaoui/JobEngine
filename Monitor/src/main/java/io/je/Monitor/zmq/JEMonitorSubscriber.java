@@ -8,19 +8,17 @@ import org.springframework.stereotype.Component;
 @Component
 public class JEMonitorSubscriber {
 
-	@Autowired
+    public static final String JEMONITOR_TOPIC = "JEMonitorTopic";
+    @Autowired
     MonitorZMQSubscriber monitorZMQSubscriber;
-	
     @Autowired
     MonitorProperties monitorProperties;
-
-    public static final String JEMONITOR_TOPIC = "JEMonitorTopic";
 
     public void initSubscriber() {
         monitorZMQSubscriber.setConfig("tcp://" + SIOTHConfigUtility.getSiothConfig().getNodes().getSiothMasterNode(),
                 monitorProperties.getMonitoringPort());
 
-    	Thread thread = new Thread(monitorZMQSubscriber);
+        Thread thread = new Thread(monitorZMQSubscriber);
         thread.start();
     }
 

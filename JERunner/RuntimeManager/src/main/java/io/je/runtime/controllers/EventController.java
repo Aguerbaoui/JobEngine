@@ -20,64 +20,60 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin(maxAge = 3600)
 public class EventController {
 
-	@Autowired
-	RuntimeDispatcher runtimeDispatcher ;
+    @Autowired
+    RuntimeDispatcher runtimeDispatcher;
 
-	/*
-	 * add a new event
-	 */
-	@PostMapping(value = "/addEvent", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> addEvent(@RequestBody EventModel eventModel) {
+    /*
+     * add a new event
+     */
+    @PostMapping(value = "/addEvent", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> addEvent(@RequestBody EventModel eventModel) {
 
-		runtimeDispatcher.addEvent(eventModel);
-		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.RULE_ADDED_SUCCESSFULLY));
-	}
-	
+        runtimeDispatcher.addEvent(eventModel);
+        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.RULE_ADDED_SUCCESSFULLY));
+    }
+
 
     /*
      * trigger event
      * */
     @GetMapping(value = "/triggerEvent/{projectId}/{eventId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> triggerEvent(@PathVariable String projectId, @PathVariable String eventId) {
-		try {
-			runtimeDispatcher.triggerEvent(projectId, eventId);
-		} catch (Exception e) {
-			return JEExceptionHandler.handleException(e);
-		}
-		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.TOPIC_ADDED));
+        try {
+            runtimeDispatcher.triggerEvent(projectId, eventId);
+        } catch (Exception e) {
+            return JEExceptionHandler.handleException(e);
+        }
+        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.TOPIC_ADDED));
     }
-    
-    
 
 
-    
+    @PostMapping(value = "/updateEventType/{projectId}/{eventId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> updateEventType(@PathVariable("projectId") String projectId, @PathVariable("eventId") String eventId, @RequestBody String eventType) {
 
-	@PostMapping(value = "/updateEventType/{projectId}/{eventId}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> updateEventType(@PathVariable("projectId") String projectId,@PathVariable("eventId") String eventId, @RequestBody String eventType) {
+        try {
+            runtimeDispatcher.updateEventType(projectId, eventId, eventType);
+        } catch (Exception e) {
+            return JEExceptionHandler.handleException(e);
+        }
+        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.EVENT_ADDED));
+    }
 
-		try {
-			runtimeDispatcher.updateEventType(projectId, eventId, eventType);
-		} catch (Exception e) {
-			return JEExceptionHandler.handleException(e);
-		}
-		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.EVENT_ADDED));
-	}
+    /*
+     * delete event
+     */
+    @DeleteMapping(value = "/deleteEvent/{projectId}/{eventId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> deleteEvent(@PathVariable("projectId") String projectId,
+                                         @PathVariable("eventId") String eventId) {
 
-	/*
-	 * delete event
-	 */
-	@DeleteMapping(value = "/deleteEvent/{projectId}/{eventId}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> deleteEvent(@PathVariable("projectId") String projectId,
-										 @PathVariable("eventId") String eventId) {
+        try {
+            runtimeDispatcher.deleteEvent(projectId, eventId);
 
-		try {
-			runtimeDispatcher.deleteEvent(projectId, eventId);
+        } catch (Exception e) {
+            return JEExceptionHandler.handleException(e);
+        }
 
-		} catch (Exception e) {
-			return JEExceptionHandler.handleException(e);
-		}
-
-		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.EVENT_DELETED));
-	}
+        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.EVENT_DELETED));
+    }
 
 }

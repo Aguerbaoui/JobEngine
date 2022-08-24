@@ -5,111 +5,103 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.HashMap;
 
-@Document(collection="JEClass")
-public class JEClass  {
-	
-	@Id
-	String classId; // class id defined in data model
-	String workspaceId;
-	String className;
-	HashMap<String, JEMethod>  methods = new HashMap<>();
+@Document(collection = "JEClass")
+public class JEClass {
 
-	/*
-	 * path where .java file is saved
-	 */
-	String classPath;
-	
-	/*
-	 * class type : class, interface or enum
-	 */
-	ClassType classType;
+    @Id
+    String classId; // class id defined in data model
+    String workspaceId;
+    String className;
+    HashMap<String, JEMethod> methods = new HashMap<>();
 
-	//Class author ( Script, procedure or a datamodel class)
-	ClassAuthor classAuthor;
-	
-	public JEClass() {
-		methods = new HashMap<>();
-	}
+    /*
+     * path where .java file is saved
+     */
+    String classPath;
 
+    /*
+     * class type : class, interface or enum
+     */
+    ClassType classType;
 
+    //Class author ( Script, procedure or a datamodel class)
+    ClassAuthor classAuthor;
 
-	public JEClass(String workspaceId,String classId, String className, String classPath, ClassType classType) {
-		this.workspaceId = workspaceId;
-		this.className = className;
-		this.classPath = classPath;
-		this.classId = classId;
-		this.classType = classType;
-		methods = new HashMap<>();
-	}
-
-	
-	
-	public String getClassId() {
-		return classId;
-	}
+    public JEClass() {
+        methods = new HashMap<>();
+    }
 
 
-
-	public void setClassId(String classId) {
-		this.classId = classId;
-	}
-
-
-
-	public String getClassName() {
-		return className;
-	}
-
-	public void setClassName(String className) {
-		this.className = className;
-	}
-
-	public String getClassPath() {
-		return classPath;
-	}
-
-	public void setClassPath(String classPath) {
-		this.classPath = classPath;
-	}
+    public JEClass(String workspaceId, String classId, String className, String classPath, ClassType classType) {
+        this.workspaceId = workspaceId;
+        this.className = className;
+        this.classPath = classPath;
+        this.classId = classId;
+        this.classType = classType;
+        methods = new HashMap<>();
+    }
 
 
-
-	public ClassType getClassType() {
-		return classType;
-	}
-
+    public String getClassId() {
+        return classId;
+    }
 
 
-	public void setClassType(ClassType classType) {
-		this.classType = classType;
-	}
+    public void setClassId(String classId) {
+        this.classId = classId;
+    }
 
 
+    public String getClassName() {
+        return className;
+    }
 
-	public String getWorkspaceId() {
-		return workspaceId;
-	}
+    public void setClassName(String className) {
+        this.className = className;
+    }
+
+    public String getClassPath() {
+        return classPath;
+    }
+
+    public void setClassPath(String classPath) {
+        this.classPath = classPath;
+    }
 
 
+    public ClassType getClassType() {
+        return classType;
+    }
 
-	public void setWorkspaceId(String workspaceId) {
-		this.workspaceId = workspaceId;
-	}
+
+    public void setClassType(ClassType classType) {
+        this.classType = classType;
+    }
 
 
-	public HashMap<String, JEMethod> getMethods() {
-		return methods;
-	}
+    public String getWorkspaceId() {
+        return workspaceId;
+    }
 
-	public void setMethods(HashMap<String, JEMethod> methods) {
-		this.methods = methods;
-	}
 
-	public ClassAuthor getClassAuthor(){
-		return classAuthor;
-	}
-	
-	public void setClassAuthor(ClassAuthor classAuthor){
-		this.classAuthor = classAuthor;
-	}
+    public void setWorkspaceId(String workspaceId) {
+        this.workspaceId = workspaceId;
+    }
+
+
+    public HashMap<String, JEMethod> getMethods() {
+        return methods;
+    }
+
+    public void setMethods(HashMap<String, JEMethod> methods) {
+        this.methods = methods;
+    }
+
+    public ClassAuthor getClassAuthor() {
+        return classAuthor;
+    }
+
+    public void setClassAuthor(ClassAuthor classAuthor) {
+        this.classAuthor = classAuthor;
+    }
 }

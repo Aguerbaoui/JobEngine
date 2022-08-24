@@ -4,13 +4,17 @@ public class JEResponse {
 
     protected String message;
     protected int code;
-    
-    
+
 
     protected JEResponse() {
-	}
+    }
 
-	public String getMessage() {
+    public JEResponse(int code, String message) {
+        this.message = message;
+        this.code = code;
+    }
+
+    public String getMessage() {
         return message;
     }
 
@@ -23,12 +27,6 @@ public class JEResponse {
     }
 
     public void setCode(int code) {
-        this.code = code;
-    }
-
-
-    public JEResponse(int code, String message) {
-        this.message = message;
         this.code = code;
     }
 }

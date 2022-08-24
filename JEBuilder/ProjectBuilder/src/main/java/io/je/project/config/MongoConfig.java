@@ -16,8 +16,8 @@ import java.util.Collections;
 
 
 /*
-* MongoDB configuration 
-* */
+ * MongoDB configuration
+ * */
 @Configuration
 @EnableMongoRepositories(basePackages = "io.je.project.repository")
 @Lazy

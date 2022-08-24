@@ -25,19 +25,16 @@ public class WebSocketService {
             MonitoringMessage msg = objectMapper.readValue(payload, MonitoringMessage.class);
             if (msg.getObjectType().equals(ObjectType.JERULE)) {
                 template.convertAndSend("/rule/ruleUpdates", msg);
-            }
-            else if (msg.getObjectType().equals(ObjectType.JEWORKFLOW)) {
+            } else if (msg.getObjectType().equals(ObjectType.JEWORKFLOW)) {
                 template.convertAndSend("/workflow/workflowUpdates", msg);
                 WorkflowModel m = new WorkflowModel();
                 m.setProjectId(msg.getObjectProjectId());
                 m.setStatus(msg.getStatus());
                 m.setId(msg.getObjectId());
                 JEBuilderApiHandler.updateWorkflowStatus(msg.getObjectId(), msg.getObjectProjectId(), m);
-            }
-            else if (msg.getObjectType().equals(ObjectType.JEEVENT)) {
+            } else if (msg.getObjectType().equals(ObjectType.JEEVENT)) {
                 template.convertAndSend("/event/eventUpdates", msg);
-            }
-            else {
+            } else {
                 template.convertAndSend("/variable/variableUpdates", msg);
             }
         } catch (Exception e) {

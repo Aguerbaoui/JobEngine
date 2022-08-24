@@ -18,19 +18,19 @@ public class ScriptBlock extends WorkflowBlock {
         return script + "JobEngine.endJob();";
     }
 
+    public void setScript(String script) {
+        if (StringUtilities.isEmpty(script)) return;
+        if (script.equalsIgnoreCase(APIConstants.DEFAULT)) this.script = null;
+        else
+            this.script = script;
+    }
+
     public int getTimeout() {
         return timeout;
     }
 
     public void setTimeout(int timeout) {
         this.timeout = timeout;
-    }
-
-    public void setScript(String script) {
-        if (StringUtilities.isEmpty(script)) return;
-        if(script.equalsIgnoreCase(APIConstants.DEFAULT)) this.script = null;
-        else
-            this.script = script;
     }
 
     public String getScriptPath() {

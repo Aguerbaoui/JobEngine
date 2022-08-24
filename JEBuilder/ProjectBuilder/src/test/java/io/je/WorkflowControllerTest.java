@@ -20,13 +20,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 public class WorkflowControllerTest {
 
+    private final ObjectMapper objectMapper = new ObjectMapper();
     @InjectMocks
     WorkflowController workflowController;
-
     @Autowired
     private MockMvc mockMvc;
-
-    private final ObjectMapper objectMapper = new ObjectMapper();
 
     /******************************************** ADD BLOCKS TESTS *****************************************************/
     @Test
@@ -40,7 +38,6 @@ public class WorkflowControllerTest {
         //JEResponse response = objectMapper.readValue(result.getResponse().getContentAsString(), JEResponse.class);
         assertEquals(result.getResponse().getStatus(), 200);
     }
-
 
 
 }

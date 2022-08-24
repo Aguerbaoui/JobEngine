@@ -9,6 +9,6 @@ import java.util.Optional;
 @Repository
 public interface ProjectRepository extends MongoRepository<JEProject, String> {
     Optional<JEProject> findByProjectName(String jobEngineElementName);
-	
+
 
 }

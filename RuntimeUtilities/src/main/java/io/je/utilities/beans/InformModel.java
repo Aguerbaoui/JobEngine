@@ -7,7 +7,9 @@ public class InformModel {
 
     public String workflowName;
 
-    public InformModel() {}
+    public InformModel() {
+    }
+
     public InformModel(String message, String projectName, String workflowName) {
         this.message = message;
         this.projectName = projectName;

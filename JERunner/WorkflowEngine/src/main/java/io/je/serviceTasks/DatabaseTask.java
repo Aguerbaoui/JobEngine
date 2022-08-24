@@ -1,6 +1,6 @@
 package io.je.serviceTasks;
 
-public class DatabaseTask extends ActivitiTask{
+public class DatabaseTask extends ActivitiTask {
 
     private String request;
 

@@ -15,13 +15,13 @@ import utils.log.LogSubModule;
  */
 public class LicenseProperties {
 
+    static SIOTHLicenseStatus licenseStatus = null;
     private static String licenseManagerUrl = "tcp://" + SIOTHConfigUtility.getSiothConfig()
             .getNodes()
             .getSiothMasterNode()
             + ":" + SIOTHConfigUtility.getSiothConfig()
             .getPorts()
             .getSiothLicensePort();
-    static SIOTHLicenseStatus licenseStatus = null;
     private static int jobEngineFeatureCode = 4920;
 
     /*
@@ -29,14 +29,14 @@ public class LicenseProperties {
      * */
     public static void init() {
 
-		JELogger.info("Checking License Status ... ", LogCategory.SIOTH_APPLICATION, "", LogSubModule.JEBUILDER, "");
+        JELogger.info("Checking License Status ... ", LogCategory.SIOTH_APPLICATION, "", LogSubModule.JEBUILDER, "");
 
-		InitResponse response = ClientLicenseManager.initializeLicense(licenseManagerUrl, jobEngineFeatureCode, 0);
+        InitResponse response = ClientLicenseManager.initializeLicense(licenseManagerUrl, jobEngineFeatureCode, 0);
 
-		if (response.getErrorMsg() != null && !response.getErrorMsg().isEmpty()) {
-			JELogger.error("Error occured while initializing license. Error: " + response.getErrorMsg(),
-					LogCategory.SIOTH_APPLICATION, "", LogSubModule.JEBUILDER, "");
-		}
+        if (response.getErrorMsg() != null && !response.getErrorMsg().isEmpty()) {
+            JELogger.error("Error occured while initializing license. Error: " + response.getErrorMsg(),
+                    LogCategory.SIOTH_APPLICATION, "", LogSubModule.JEBUILDER, "");
+        }
 
         setLicenseStatus(response.getStatus());
 
@@ -67,8 +67,8 @@ public class LicenseProperties {
     public static void checkLicenseIsActive() throws LicenseNotActiveException {
 
         if (!licenseIsActive()) {
-      	JELogger.info("License is not active ", LogCategory.SIOTH_APPLICATION, "",
-            	LogSubModule.JEBUILDER, "");
+            JELogger.info("License is not active ", LogCategory.SIOTH_APPLICATION, "",
+                    LogSubModule.JEBUILDER, "");
             throw new LicenseNotActiveException(String.valueOf(licenseStatus));
         }
     }

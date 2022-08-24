@@ -27,15 +27,6 @@ public abstract class JEObject {
     protected String jeObjectCreatedBy;
 
     protected String jeObjectModifiedBy;
-
-    public String getClassName() {
-        return className;
-    }
-
-    public void setClassName(String className) {
-        this.className = className;
-    }
-
     protected String className;
 
     public JEObject(String jobEngineElementID, String jobEngineProjectID, String jobEngineElementName) {
@@ -61,11 +52,18 @@ public abstract class JEObject {
         //set update time
     }
 
-
     //TODO: to be deleted. Only constructor with fields needs to be kept.
     protected JEObject() {
         this.jeObjectLastUpdate = Instant.now();
         this.jeObjectCreationDate = Instant.now();
+    }
+
+    public String getClassName() {
+        return className;
+    }
+
+    public void setClassName(String className) {
+        this.className = className;
     }
 
     public String getJobEngineElementID() {

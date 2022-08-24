@@ -1,6 +1,6 @@
 package io.je.serviceTasks;
 
-public class InformTask extends ActivitiTask{
+public class InformTask extends ActivitiTask {
 
     private String message;
 

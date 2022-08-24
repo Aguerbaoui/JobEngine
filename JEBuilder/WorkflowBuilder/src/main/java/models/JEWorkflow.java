@@ -75,29 +75,21 @@ public class JEWorkflow extends JEObject {
     private boolean triggeredByEvent;
 
     /*
-    * True if the workflow starts with project boot
-    * */
+     * True if the workflow starts with project boot
+     * */
     private boolean onProjectBoot = false;
 
     /*
-    * Workflow description
-    * */
+     * Workflow description
+     * */
     private String description;
 
     /*
-    * True if workflow is enabled for execution
-    * */
+     * True if workflow is enabled for execution
+     * */
     private boolean isEnabled;
 
     private boolean hasErrors = false;
-
-    private String getScript() {
-        return script;
-    }
-
-    public void setScript(String script) {
-        this.script = script;
-    }
 
     /*
      * Constructor
@@ -106,6 +98,10 @@ public class JEWorkflow extends JEObject {
         super();
         allBlocks = new ConcurrentHashMap<String, WorkflowBlock>();
         status = Status.NOT_BUILT;
+    }
+
+    private String getScript() {
+        return script;
     }
 
     public boolean isTriggeredByEvent() {
@@ -136,6 +132,14 @@ public class JEWorkflow extends JEObject {
         return isScript;
     }
 
+    public void setScript(String script) {
+        this.script = script;
+    }
+
+    public void setScript(boolean script) {
+        isScript = script;
+    }
+
     public void setIsScript(boolean script) {
         isScript = script;
     }
@@ -143,7 +147,7 @@ public class JEWorkflow extends JEObject {
     /*
      * Return workflow start block
      */
-    public StartBlock getWorkflowStartBlock() throws WorkflowStartBlockNotDefinedException, WorkflowStartBlockNotUniqueException{
+    public StartBlock getWorkflowStartBlock() throws WorkflowStartBlockNotDefinedException, WorkflowStartBlockNotUniqueException {
         StartBlock startBlock = null;
 
         for (WorkflowBlock block : allBlocks.values()) {
@@ -189,8 +193,8 @@ public class JEWorkflow extends JEObject {
     }
 
     /*
-    * True if the workflow starts on project boot
-    * */
+     * True if the workflow starts on project boot
+     * */
     public boolean isOnProjectBoot() {
         return onProjectBoot;
     }
@@ -219,7 +223,7 @@ public class JEWorkflow extends JEObject {
     }
 
     public void setDescription(String description) {
-        if(description != null)
+        if (description != null)
             this.description = description;
     }
 
@@ -233,7 +237,7 @@ public class JEWorkflow extends JEObject {
         if (allBlocks.get(to) != null && allBlocks.get(to).getInflows() != null) {
             allBlocks.get(to).getInflows().put(from, from);
         }
-        if(allBlocks.get(to) instanceof ErrorBoundaryEvent) {
+        if (allBlocks.get(to) instanceof ErrorBoundaryEvent) {
             ((ErrorBoundaryEvent) allBlocks.get(to)).setAttachedToRef(from);
         }
         status = Status.NOT_BUILT;
@@ -255,7 +259,7 @@ public class JEWorkflow extends JEObject {
      * Delete a workflow block
      * */
     public void deleteWorkflowBlock(String id) throws InvalidSequenceFlowException, WorkflowBlockNotFoundException {
-        if(allBlocks.containsKey(id)) {
+        if (allBlocks.containsKey(id)) {
             for (String blockId : allBlocks.get(id).getInflows().values()) {
                 WorkflowBlock block = this.getBlockById(blockId);
                 deleteSequenceFlow(block.getJobEngineElementID(), id);
@@ -304,8 +308,8 @@ public class JEWorkflow extends JEObject {
 
     public EndBlock getWorkflowEndBlock() throws WorkflowEndBlockNotUniqueException, WorkflowEndBlockNotDefinedException {
         EndBlock endBlock = null;
-        for (WorkflowBlock workflowBlock: allBlocks.values()) {
-            if(workflowBlock instanceof EndBlock) {
+        for (WorkflowBlock workflowBlock : allBlocks.values()) {
+            if (workflowBlock instanceof EndBlock) {
                 if (endBlock != null) {
                     throw new WorkflowEndBlockNotUniqueException();
                 }
@@ -316,10 +320,6 @@ public class JEWorkflow extends JEObject {
             throw new WorkflowEndBlockNotDefinedException();
         }
         return endBlock;
-    }
-
-    public void setScript(boolean script) {
-        isScript = script;
     }
 
     public boolean isEnabled() {

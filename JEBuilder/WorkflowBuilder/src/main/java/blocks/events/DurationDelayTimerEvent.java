@@ -14,7 +14,7 @@ public class DurationDelayTimerEvent extends WorkflowBlock {
 
     public void setTimeDuration(String timeDuration) {
         if (StringUtilities.isEmpty(timeDuration)) return;
-        if(timeDuration.equalsIgnoreCase(APIConstants.DEFAULT)) this.timeDuration = null;
+        if (timeDuration.equalsIgnoreCase(APIConstants.DEFAULT)) this.timeDuration = null;
         else
             this.timeDuration = timeDuration;
     }

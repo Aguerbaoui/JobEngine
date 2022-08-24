@@ -16,7 +16,7 @@ import java.util.HashMap;
 @SpringBootApplication
 public class JERunnerApplication {
 
-	
+
     public static void main(String[] args) {
 
         SpringApplication app = new SpringApplication(JERunnerApplication.class);
@@ -27,7 +27,7 @@ public class JERunnerApplication {
         app.setDefaultProperties(properties);
         app.run(args);
 
-        JELogger.debug(JEMessages.RUNNER_STARTED,  LogCategory.RUNTIME,
+        JELogger.debug(JEMessages.RUNNER_STARTED, LogCategory.RUNTIME,
                 null, LogSubModule.JERUNNER, null);
 
         System.out.println("Runtime.getRuntime().totalMemory() : " + Runtime.getRuntime().totalMemory());
@@ -44,7 +44,7 @@ public class JERunnerApplication {
     @PreDestroy
     public void onDestroy() throws Exception {
 
-    	JEBuilderApiHandler.requestUpdateFromBuilder();
+        JEBuilderApiHandler.requestUpdateFromBuilder();
     }
 }
 

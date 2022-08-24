@@ -8,8 +8,8 @@ public class Nodes {
     private String siothMasterNode;
 
 
-
-    public Nodes() {}
+    public Nodes() {
+    }
 
     public String getSiothMasterNode() {
         return siothMasterNode;

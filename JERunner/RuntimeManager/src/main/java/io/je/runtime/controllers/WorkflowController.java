@@ -18,7 +18,7 @@ import static io.je.utilities.constants.JEMessages.EXECUTING_WORKFLOW;
  * Workflow Rest Controller
  * */
 @RestController
-@RequestMapping(value= "/workflow")
+@RequestMapping(value = "/workflow")
 @CrossOrigin(maxAge = 3600)
 public class WorkflowController {
 
@@ -62,8 +62,8 @@ public class WorkflowController {
         try {
             dispatcher.launchProcessWithoutVariables(projectId, key, false);
         } catch (Exception e) {
-			return JEExceptionHandler.handleException(e);
-		}
+            return JEExceptionHandler.handleException(e);
+        }
         return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, EXECUTING_WORKFLOW));
 
     }
@@ -76,10 +76,11 @@ public class WorkflowController {
         try {
             dispatcher.runAllWorkflows(projectId);
         } catch (Exception e) {
-			return JEExceptionHandler.handleException(e);
-		}
+            return JEExceptionHandler.handleException(e);
+        }
         return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, EXECUTING_WORKFLOW));
     }
+
     /*
      * Delete a workflow
      */

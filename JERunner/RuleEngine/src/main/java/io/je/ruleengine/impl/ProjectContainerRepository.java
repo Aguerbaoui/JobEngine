@@ -12,7 +12,9 @@ public class ProjectContainerRepository {
     //Map of all the projectContainers of this RuleEngine.
     static Map<String, ProjectContainer> allProjects = new ConcurrentHashMap<>();
 
-
+    public static Map<String, ProjectContainer> getAllProjects() {
+        return allProjects;
+    }
 
     /*
      * create new project container
@@ -24,26 +26,26 @@ public class ProjectContainerRepository {
     }
 
     /*
+     * delete project container
+     */
+
+    /*
      * get project container by ID
      */
     public ProjectContainer getProjectContainer(String projectId) {
- 
+
         if (projectContainerExists(projectId)) {
             return allProjects.get(projectId);
         }
         return newProjectContainer(projectId);
     }
 
-    /*
-     * delete project container
-     */
-
     public void deleteProjectContainer(String projectId) {
         if (projectContainerExists(projectId)) {
             ProjectContainer project = allProjects.get(projectId);
             if (project.getStatus() == Status.RUNNING) {
                 //TODO: error management
-                project.stopRuleExecution(true,false);
+                project.stopRuleExecution(true, false);
             }
             project = null;
             allProjects.remove(projectId);
@@ -56,13 +58,8 @@ public class ProjectContainerRepository {
     /*
      * check if a project container with a specific id exists
      */
-    public  boolean projectContainerExists(String projectId) {
+    public boolean projectContainerExists(String projectId) {
 
         return allProjects.containsKey(projectId);
-    }
-
-
-    public static Map<String, ProjectContainer> getAllProjects() {
-        return allProjects;
     }
 }

@@ -61,6 +61,54 @@ public class RuntimeDispatcher {
 		WorkflowEngineHandler.buildProject(projectId);
 	}*/
 
+    /**
+     * inject data into the rule/workflow engine according to the topics they are subscribed to (to prevent duplication)
+     */
+    public static void injectData(JEData jeData) {
+        JELogger.trace(JEMessages.INJECTING_DATA, LogCategory.RUNTIME, null, LogSubModule.JERUNNER, null);
+        try {
+            CompletableFuture.runAsync(() -> {
+                JEObject instanceData;
+                try {
+                    instanceData = InstanceManager.createInstance(jeData.getData());
+                    for (String projectId : DataModelListener.getProjectsSubscribedToTopic(jeData.getTopic())) {
+                        if (Boolean.TRUE.equals(projectStatus.get(projectId))) {
+                            RuleEngineHandler.injectData(projectId, instanceData);
+                        }
+                    }
+                } catch (InstanceCreationFailedException e) {
+                    LoggerUtils.logException(e);
+                }
+
+            });
+        } catch (Exception e) {
+            LoggerUtils.logException(e);
+            JELogger.error(JEMessages.FAILED_TO_INJECT_DATA + e.getMessage(), LogCategory.RUNTIME, null,
+                    LogSubModule.JERUNNER, null);
+        }
+
+    }
+
+    public static void informUser(String message, String projectName, String workflowName) {
+        new Thread(() -> {
+            String projectId = projectNameToId.get(projectName);
+            try {
+                JEProcess process = WorkflowEngineHandler.getProcessByID(projectId, workflowName);
+                JELogger.info(message, LogCategory.RUNTIME, projectId,
+                        LogSubModule.WORKFLOW, process.getKey());
+            } catch (WorkflowBuildException ex) {
+                LoggerUtils.logException(ex);
+                JELogger.error(message, LogCategory.RUNTIME, projectId,
+                        LogSubModule.WORKFLOW, ex.getMessage(), ex.toString());
+            }
+        }).start();
+
+    }
+
+    public static void sendLog(LogMessage logMessage) {
+        new Thread(() -> JELogger.sendLog(logMessage)).start();
+    }
+
     // run project
     public void runProject(String projectId, String projectName) throws JEException {
 
@@ -162,6 +210,8 @@ public class RuntimeDispatcher {
 
     }
 
+    // ***********************************WORKFLOW********************************************************
+
     // delete rule
     public void deleteRule(String projectId, String ruleId) throws DeleteRuleException {
         JELogger.debug("[projectId = " + projectId + "] [ruleId = " + ruleId + "] " + JEMessages.DELETING_RULE,
@@ -206,8 +256,6 @@ public class RuntimeDispatcher {
         }
 
     }
-
-    // ***********************************WORKFLOW********************************************************
 
     /**
      * Add a workflow to the engine
@@ -254,8 +302,9 @@ public class RuntimeDispatcher {
             throws WorkflowNotFoundException, WorkflowAlreadyRunningException,
             WorkflowBuildException, WorkflowRunException {
 
-		/**/JELogger.debug("[projectId = " + projectId + "] [workflow = " + key + "] " + JEMessages.RUNNING_WF,
-				LogCategory.RUNTIME, projectId, LogSubModule.WORKFLOW, key);
+        /**/
+        JELogger.debug("[projectId = " + projectId + "] [workflow = " + key + "] " + JEMessages.RUNNING_WF,
+                LogCategory.RUNTIME, projectId, LogSubModule.WORKFLOW, key);
         //buildWorkflow(projectId, key);
         WorkflowEngineHandler.launchProcessWithoutVariables(projectId, key, runProject);
 
@@ -327,35 +376,6 @@ public class RuntimeDispatcher {
         if (classModel.getClassAuthor()
                 .equals(ClassAuthor.DATA_MODEL)) {
             RuleEngineHandler.reloadContainers();
-        }
-
-    }
-
-
-    /**
-     * inject data into the rule/workflow engine according to the topics they are subscribed to (to prevent duplication)
-     */
-    public static void injectData(JEData jeData) {
-        JELogger.trace(JEMessages.INJECTING_DATA, LogCategory.RUNTIME, null, LogSubModule.JERUNNER, null);
-        try {
-            CompletableFuture.runAsync(() -> {
-                JEObject instanceData;
-                try {
-                    instanceData = InstanceManager.createInstance(jeData.getData());
-                    for (String projectId : DataModelListener.getProjectsSubscribedToTopic(jeData.getTopic())) {
-                        if (Boolean.TRUE.equals(projectStatus.get(projectId))) {
-                            RuleEngineHandler.injectData(projectId, instanceData);
-                        }
-                    }
-                } catch (InstanceCreationFailedException e) {
-                    LoggerUtils.logException(e);
-                }
-
-            });
-        } catch (Exception e) {
-            LoggerUtils.logException(e);
-            JELogger.error(JEMessages.FAILED_TO_INJECT_DATA + e.getMessage(), LogCategory.RUNTIME, null,
-                    LogSubModule.JERUNNER, null);
         }
 
     }
@@ -537,26 +557,6 @@ public class RuntimeDispatcher {
     public JEVariable getVariable(String projectId, String variableId) throws VariableNotFoundException {
         return VariableManager.getVariableValue(projectId, variableId);
 
-    }
-
-    public static void informUser(String message, String projectName, String workflowName) {
-        new Thread(() -> {
-            String projectId = projectNameToId.get(projectName);
-            try {
-                JEProcess process = WorkflowEngineHandler.getProcessByID(projectId, workflowName);
-                JELogger.info(message, LogCategory.RUNTIME, projectId,
-                        LogSubModule.WORKFLOW, process.getKey());
-            } catch (WorkflowBuildException ex) {
-                LoggerUtils.logException(ex);
-                JELogger.error(message, LogCategory.RUNTIME, projectId,
-                        LogSubModule.WORKFLOW, ex.getMessage(), ex.toString());
-            }
-        }).start();
-
-    }
-
-    public static void sendLog(LogMessage logMessage) {
-        new Thread(() -> JELogger.sendLog(logMessage)).start();
     }
 
 }

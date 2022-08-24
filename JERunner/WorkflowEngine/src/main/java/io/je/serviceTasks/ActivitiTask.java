@@ -2,17 +2,14 @@ package io.je.serviceTasks;
 
 public class ActivitiTask {
 
-    public ActivitiTask() {}
-
     private String projectId;
-
     private String taskId;
-
     private String taskName;
-
     private String processId;
-
     private String workflowId;
+
+    public ActivitiTask() {
+    }
 
     public String getProcessId() {
         return processId;
@@ -34,16 +31,16 @@ public class ActivitiTask {
         return taskName;
     }
 
+    public void setTaskName(String taskName) {
+        this.taskName = taskName;
+    }
+
     public String getProjectId() {
         return projectId;
     }
 
     public void setProjectId(String projectId) {
         this.projectId = projectId;
-    }
-
-    public void setTaskName(String taskName) {
-        this.taskName = taskName;
     }
 
     public String getWorkflowId() {

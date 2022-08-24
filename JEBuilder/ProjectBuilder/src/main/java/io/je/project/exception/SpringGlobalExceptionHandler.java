@@ -15,8 +15,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /*
-* Spring global exception handler
-* */
+ * Spring global exception handler
+ * */
 @ControllerAdvice
 public class SpringGlobalExceptionHandler {
 
@@ -24,7 +24,7 @@ public class SpringGlobalExceptionHandler {
     @ExceptionHandler(MultipartException.class)
     public ResponseEntity<?> handleError1(MultipartException e, RedirectAttributes redirectAttributes) {
 
-        return  ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new JEResponse(ResponseCodes.ERROR_IMPORTING_FILE, JEMessages.ERROR_IMPORTING_FILE));
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new JEResponse(ResponseCodes.ERROR_IMPORTING_FILE, JEMessages.ERROR_IMPORTING_FILE));
     }
 
     //CommonsMultipartResolver
@@ -32,7 +32,7 @@ public class SpringGlobalExceptionHandler {
     public ResponseEntity<?> handleError2(MaxUploadSizeExceededException e, RedirectAttributes redirectAttributes, HttpServletRequest request,
                                           HttpServletResponse response) {
 
-        return  ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new JEResponse(ResponseCodes.FILE_TOO_LARGE_EXCEPTION, JEMessages.FILE_TOO_LARGE));
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new JEResponse(ResponseCodes.FILE_TOO_LARGE_EXCEPTION, JEMessages.FILE_TOO_LARGE));
 
     }
 }

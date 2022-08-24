@@ -7,92 +7,85 @@ import org.json.JSONObject;
 
 public class InstanceModel {
 
-	@JsonProperty(InstanceModelMapping.MODELID)
-	String modelId;
-	
-	@JsonProperty(InstanceModelMapping.MODELNAME)
-	String modelName;
-	
-	@JsonProperty(InstanceModelMapping.INSTANCEID)
-	String instanceId;
-	
-	@JsonProperty(InstanceModelMapping.INSTANCENAME)
-	String instanceName;
-	
-	@JsonProperty(InstanceModelMapping.ISHDA)
-	boolean isHDA;
-	
+    @JsonProperty(InstanceModelMapping.MODELID)
+    String modelId;
 
-	@JsonProperty(InstanceModelMapping.PAYLOAD)
-	JSONObject payload;
+    @JsonProperty(InstanceModelMapping.MODELNAME)
+    String modelName;
 
-	
-	
-	public InstanceModel() {
-		// TODO Auto-generated constructor stub
-	}
+    @JsonProperty(InstanceModelMapping.INSTANCEID)
+    String instanceId;
 
-	public String getModelId() {
-		return modelId;
-	}
+    @JsonProperty(InstanceModelMapping.INSTANCENAME)
+    String instanceName;
 
-	public void setModelId(String modelId) {
-		this.modelId = modelId;
-	}
-
-	public String getInstanceId() {
-		return instanceId;
-	}
-
-	public void setInstanceId(String instanceId) {
-		this.instanceId = instanceId;
-	}
-
-	
-
-	public JSONObject getPayload() {
-		return payload;
-	}
-
-	public void setPayload(JSONObject payload) {
-		this.payload = payload;
-	}
+    @JsonProperty(InstanceModelMapping.ISHDA)
+    boolean isHDA;
 
 
+    @JsonProperty(InstanceModelMapping.PAYLOAD)
+    JSONObject payload;
 
-	public String getModelName() {
-		return modelName;
-	}
 
-	public void setModelName(String modelName) {
-		this.modelName = modelName;
-	}
+    public InstanceModel() {
+        // TODO Auto-generated constructor stub
+    }
 
-	public String getInstanceName() {
-		return instanceName;
-	}
+    public String getModelId() {
+        return modelId;
+    }
 
-	public void setInstanceName(String instanceName) {
-		this.instanceName = instanceName;
-	}
+    public void setModelId(String modelId) {
+        this.modelId = modelId;
+    }
 
-	public boolean isHDA() {
-		return isHDA;
-	}
+    public String getInstanceId() {
+        return instanceId;
+    }
 
-	public void setHDA(boolean isHDA) {
-		this.isHDA = isHDA;
-	}
+    public void setInstanceId(String instanceId) {
+        this.instanceId = instanceId;
+    }
 
-	@Override
-	public String toString() {
-		return "InstanceModel [modelId=" + modelId + ", modelName=" + modelName + ", instanceId=" + instanceId
-				+ ", instanceName=" + instanceName + ", isHDA=" + isHDA + ", payload=" + payload + "]";
-	}
 
-	
+    public JSONObject getPayload() {
+        return payload;
+    }
 
-	
-		
-	
+    public void setPayload(JSONObject payload) {
+        this.payload = payload;
+    }
+
+
+    public String getModelName() {
+        return modelName;
+    }
+
+    public void setModelName(String modelName) {
+        this.modelName = modelName;
+    }
+
+    public String getInstanceName() {
+        return instanceName;
+    }
+
+    public void setInstanceName(String instanceName) {
+        this.instanceName = instanceName;
+    }
+
+    public boolean isHDA() {
+        return isHDA;
+    }
+
+    public void setHDA(boolean isHDA) {
+        this.isHDA = isHDA;
+    }
+
+    @Override
+    public String toString() {
+        return "InstanceModel [modelId=" + modelId + ", modelName=" + modelName + ", instanceId=" + instanceId
+                + ", instanceName=" + instanceName + ", isHDA=" + isHDA + ", payload=" + payload + "]";
+    }
+
+
 }

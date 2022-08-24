@@ -10,8 +10,8 @@ import java.util.HashMap;
 //@EnableAutoConfiguration
 public class ProjectBuilderApplication {
 
-    public static void main(String[] args)  {
-      
+    public static void main(String[] args) {
+
         SpringApplication app = new SpringApplication(ProjectBuilderApplication.class);
         app.setBannerMode(Banner.Mode.OFF);
         HashMap<String, Object> properties = new HashMap<>();
@@ -20,7 +20,7 @@ public class ProjectBuilderApplication {
         properties.put("server.servlet.context-path", "/ProjectBuilder");
         app.setDefaultProperties(properties);
         app.run(args);
-       
+
 //C:\Program Files\Integration Objects\Integration Objects' SmartIoT Highway\JobEngine\Builder\properties
     }
 

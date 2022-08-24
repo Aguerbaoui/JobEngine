@@ -37,52 +37,40 @@ public class ProcessManager {
 
 
     /**
+     * List of all active processes
+     */
+    private static HashMap<String, JEProcess> processes = new HashMap<>();
+    DeploymentBuilder deploymentBuilder;
+    Deployment deployment;
+    /**
      * Activiti Workflow engine
      */
     private ProcessEngine processEngine;
-
     /**
      * Runtime service for Activiti
      */
     private RuntimeService runtimeService;
-
     /**
      * Task service for Activiti
      */
     private TaskService taskService;
-
-
     /**
      * Management service for Activiti
      */
     private ManagementService managementService;
-
     /**
      * Dynamic service for Activiti
      */
     private DynamicBpmnService dyService;
-
     private HistoryService historyService;
-
     /**
      * Repository service for activiti
      */
     private RepositoryService repoService;
-
-
-    /**
-     * List of all active processes
-     */
-    private static HashMap<String, JEProcess> processes = new HashMap<>();
-
-
     /**
      * List of all possible workflow task executions
      */
     private HashMap<String, OnExecuteOperation> allCallbacks = new HashMap<String, OnExecuteOperation>();
-
-    DeploymentBuilder deploymentBuilder;
-    Deployment deployment;
 
     /**
      * Initialize the workflow engine
@@ -99,6 +87,29 @@ public class ProcessManager {
                 .createDeployment()
                 .name("DeploymentBuilder");
         //taskService.createTaskQuery().taskId(id); not the same as execution.id this has to be the original task id from the bpmn so we can map them
+    }
+
+    public static void setRunning(String id, boolean b, String processInstanceId) {
+        JEProcess process = processes.get(id);
+        process.setRunning(b);
+        Status status = b ? Status.RUNNING : Status.STOPPED;
+        MonitoringMessage msg = new MonitoringMessage(LocalDateTime.now(), id, ObjectType.JEWORKFLOW,
+                processes.get(id)
+                        .getProjectId(), String.valueOf(b), status.toString());
+        //JELogger.debug(SENDING_WORKFLOW_MONITORING_DATA_TO_JEMONITOR + "\n" + msg, LogCategory.RUNTIME, process.getProjectId(), LogSubModule.WORKFLOW, processes.get(id).getName());
+        JEMonitor.publish(msg);
+        if (!b) {
+            if (process.getEndEventId() != null) {
+
+                try {
+                    JERunnerAPIHandler.triggerEvent(process.getEndEventId(), process.getProjectId());
+                } catch (JERunnerErrorException e) {
+                    LoggerUtils.logException(e);
+                    JELogger.error(JEMessages.ERROR_TRIGGERING_EVENT, LogCategory.RUNTIME, process.getProjectId(), LogSubModule.WORKFLOW, processes.get(id)
+                            .getName());
+                }
+            }
+        }
     }
 
     /**
@@ -311,6 +322,17 @@ public class ProcessManager {
         }
     }
 
+    /*public void buildProjectWorkflows(String projectId) throws WorkflowBuildException {
+        JELogger.debug(JEMessages.BUILDING_WORKFLOWS_IN_PROJECT + " id = " + projectId,
+                LogCategory.RUNTIME, projectId,
+                LogSubModule.WORKFLOW, null);
+        for (JEProcess process : processes.values()) {
+            if (process.getProjectId().equals(projectId) && !process.isDeployed()) {
+                deployProcess(process.getKey());
+            }
+        }
+    }*/
+
     /*
      * Run all workflows ( in case runProject == false we run all kinds of workflows( scheduled or not ) )
      * */
@@ -343,17 +365,6 @@ public class ProcessManager {
         }
     }
 
-    /*public void buildProjectWorkflows(String projectId) throws WorkflowBuildException {
-        JELogger.debug(JEMessages.BUILDING_WORKFLOWS_IN_PROJECT + " id = " + projectId,
-                LogCategory.RUNTIME, projectId,
-                LogSubModule.WORKFLOW, null);
-        for (JEProcess process : processes.values()) {
-            if (process.getProjectId().equals(projectId) && !process.isDeployed()) {
-                deployProcess(process.getKey());
-            }
-        }
-    }*/
-
     public void stopProjectWorkflows() {
 
         for (JEProcess process : processes.values()) {
@@ -365,30 +376,6 @@ public class ProcessManager {
             }
         }
     }
-
-    public static void setRunning(String id, boolean b, String processInstanceId) {
-        JEProcess process = processes.get(id);
-        process.setRunning(b);
-        Status status = b ? Status.RUNNING : Status.STOPPED;
-        MonitoringMessage msg = new MonitoringMessage(LocalDateTime.now(), id, ObjectType.JEWORKFLOW,
-                processes.get(id)
-                        .getProjectId(), String.valueOf(b), status.toString());
-        //JELogger.debug(SENDING_WORKFLOW_MONITORING_DATA_TO_JEMONITOR + "\n" + msg, LogCategory.RUNTIME, process.getProjectId(), LogSubModule.WORKFLOW, processes.get(id).getName());
-        JEMonitor.publish(msg);
-        if (!b) {
-            if (process.getEndEventId() != null) {
-
-                try {
-                    JERunnerAPIHandler.triggerEvent(process.getEndEventId(), process.getProjectId());
-                } catch (JERunnerErrorException e) {
-                    LoggerUtils.logException(e);
-                    JELogger.error(JEMessages.ERROR_TRIGGERING_EVENT, LogCategory.RUNTIME, process.getProjectId(), LogSubModule.WORKFLOW, processes.get(id)
-                            .getName());
-                }
-            }
-        }
-    }
-
 
     //Stop/remove workflow
     public void removeProcess(String workflowId) throws WorkflowRunException {

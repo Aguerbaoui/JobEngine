@@ -295,7 +295,7 @@ public abstract class Block extends JEObject {
 
         for (var blockLink : inputBlockLinks) {
             if (blockLink.getBlock() != null) {
-                for (var block: blockLink.getBlock().getInputBlockLinks()) {
+                for (var block : blockLink.getBlock().getInputBlockLinks()) {
                     allInputBlocksExpressions.add(block.getExpression());
                 }
             }
