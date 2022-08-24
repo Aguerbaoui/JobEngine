@@ -13,8 +13,6 @@ import utils.log.LogSubModule;
 import utils.log.LoggerUtils;
 import utils.zmq.ZMQBind;
 
-import java.util.Arrays;
-
 import static io.je.utilities.constants.JEMessages.ZMQ_RESPONSE_STARTED;
 import static io.je.utilities.constants.JEMessages.ZMQ_RESPONSE_START_FAIL;
 

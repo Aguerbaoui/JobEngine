@@ -3,9 +3,12 @@ package io.je.rulebuilder.components.blocks.execution;
 import io.je.rulebuilder.components.blocks.ExecutionBlock;
 import io.je.rulebuilder.config.AttributesMapping;
 import io.je.rulebuilder.models.BlockModel;
+import io.je.utilities.constants.JEMessages;
 import io.je.utilities.log.JELogger;
 
 import java.util.List;
+
+import static io.je.utilities.constants.JEMessages.EXCEPTION_OCCURRED_WHILE_INITIALIZE;
 
 /*
  * Block used to writing in an instance's attribute (from DM)
@@ -43,28 +46,28 @@ public class LinkedSetterBlock extends ExecutionBlock {
             isProperlyConfigured = true;
             if (inputBlockIds.isEmpty()) {
                 isProperlyConfigured = false;
-                misConfigurationCause = "LinkedSetterBlock : Input blocks ID empty";
+                misConfigurationCause = JEMessages.LINKED_SETTER_BLOCK_INPUT_BLOCKS_ID_EMPTY;
             }
         } catch (Exception e) {
             isProperlyConfigured = false;
-            misConfigurationCause = "LinkedSetterBlock : Exception occurred while initialize : " + e.getMessage();
+            misConfigurationCause = JEMessages.LINKED_SETTER_BLOCK + EXCEPTION_OCCURRED_WHILE_INITIALIZE + e.getMessage();
             JELogger.logException(e);
         } finally {
             if (classId == null) {
                 isProperlyConfigured = false;
-                misConfigurationCause = "LinkedSetterBlock : Class ID is null";
+                misConfigurationCause = JEMessages.LINKED_SETTER_BLOCK_CLASS_ID_IS_NULL;
             } else if (classPath == null) {
                 isProperlyConfigured = false;
-                misConfigurationCause = "LinkedSetterBlock : Class Path is null";
+                misConfigurationCause = JEMessages.LINKED_SETTER_BLOCK_CLASS_PATH_IS_NULL;
             } else if (destinationAttributeName == null) {
                 isProperlyConfigured = false;
-                misConfigurationCause = "LinkedSetterBlock : Destination Attribute Name is null";
+                misConfigurationCause = JEMessages.LINKED_SETTER_BLOCK_DESTINATION_ATTRIBUTE_NAME_IS_NULL;
             } else if (instances == null) {
                 isProperlyConfigured = false;
-                misConfigurationCause = "LinkedSetterBlock : Instances list null";
+                misConfigurationCause = JEMessages.LINKED_SETTER_BLOCK_INSTANCES_LIST_NULL;
             } else if (instances.isEmpty()) {
                 isProperlyConfigured = false;
-                misConfigurationCause = "LinkedSetterBlock : Instances list empty";
+                misConfigurationCause = JEMessages.LINKED_SETTER_BLOCK_INSTANCES_LIST_EMPTY;
             }
         }
 

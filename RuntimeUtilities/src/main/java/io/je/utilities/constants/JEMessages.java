@@ -749,4 +749,40 @@ public class JEMessages {
     public static final String EVENT_TRIGGER_FAIL = "Failed to trigger event";
 
 
+    //********************************************************* Rule blocks ******************************************************
+    public static final String THE_BLOCK_IS_NOT_CONFIGURED_PROPERLY = " : The block is not configured properly : ";
+    public static final String SINGLE_INPUT_ARITHMETIC_BLOCK_INPUT_BLOCKS_ID_EMPTY = "SingleInputArithmeticBlock : Input blocks Id empty";
+    public static final String BLOCK_NAME_IS_NULL = "Block name is null";
+    public static final String COMPARISON_BLOCK_UNABLE_TO_COMPARE_THRESHOLD_IS_NULL_AND_INPUT_BLOCKS_ID_CONTAINS_LESS_THAN_TWO_ELEMENTS = "ComparisonBlock : Unable to compare : Threshold is null and input blocks ID contains less than two elements";
+    public static final String EXCEPTION_OCCURRED_WHILE_INITIALIZE = "Exception occurred while initialize : ";
+    public static final String COMPARISON_BLOCK = "ComparisonBlock : ";
+    public static final String ATTACHED_SETTER_BLOCK = "AttachedSetterBlock : ";
+    public static final String ATTACHED_SETTER_BLOCK_EXCEPTION_OCCURRED = "AttachedSetterBlock : Exception occurred : ";
+    public static final String EMAIL_BLOCK = "EmailBlock : ";
+    public static final String LINKED_ATTACHED_SETTER_BLOCK_INPUT_BLOCKS_ID_SIZE_NOT_EQUAL_1 = "LinkedAttachedSetterBlock : Input blocks ID size not equal 1";
+    public static final String LINKED_ATTACHED_SETTER_BLOCK = "LinkedAttachedSetterBlock : ";
+    public static final String LINKED_SETTER_BLOCK_INPUT_BLOCKS_ID_EMPTY = "LinkedSetterBlock : Input blocks ID empty";
+    public static final String LINKED_SETTER_BLOCK = "LinkedSetterBlock : ";
+    public static final String LINKED_SETTER_BLOCK_CLASS_ID_IS_NULL = "LinkedSetterBlock : Class ID is null";
+    public static final String LINKED_SETTER_BLOCK_CLASS_PATH_IS_NULL = "LinkedSetterBlock : Class Path is null";
+    public static final String LINKED_SETTER_BLOCK_DESTINATION_ATTRIBUTE_NAME_IS_NULL = "LinkedSetterBlock : Destination Attribute Name is null";
+    public static final String LINKED_SETTER_BLOCK_INSTANCES_LIST_NULL = "LinkedSetterBlock : Instances list null";
+    public static final String LINKED_SETTER_BLOCK_INSTANCES_LIST_EMPTY = "LinkedSetterBlock : Instances list empty";
+    public static final String LINKED_VARIABLE_SETTER_BLOCK_INPUT_BLOCKS_ID_EMPTY = "LinkedVariableSetterBlock : Input blocks ID empty";
+    public static final String LINKED_VARIABLE_SETTER_BLOCK = "LinkedVariableSetterBlock : ";
+    public static final String INFORM_BLOCK_LOG_MESSAGE_NULL = "InformBlock : log message null";
+    public static final String INFORM_BLOCK_LOG_MESSAGE_EMPTY = "InformBlock : log message empty";
+    public static final String SETTER_BLOCK = "SetterBlock : ";
+    public static final String SET_VARIABLE_BLOCK = "SetVariableBlock : ";
+    public static final String SET_VARIABLE_BLOCK_VARIABLE_ID_NULL = "SetVariableBlock : Variable Id null";
+    public static final String SMSBLOCK_SERVER_TYPE_NULL = "SMSBlock : Server Type null";
+    public static final String SMSBLOCK = "SMSBlock : ";
+    public static final String TRIGGER_EVENT_BLOCK_EVENT_ID_NULL = "TriggerEventBlock : event Id null";
+    public static final String INSTANCE_GETTER_BLOCK_EXCEPTION_WHILE_LOADING_CLASSES_INSTANCES_INFO = "InstanceGetterBlock : Exception while loading Classes / Instances info : ";
+    public static final String INSTANCE_GETTER_BLOCK_CLASS_ID_IS_NULL = "InstanceGetterBlock : Class Id is null";
+    public static final String INSTANCE_GETTER_BLOCK_CLASS_PATH_IS_NULL = "InstanceGetterBlock : Class Path is null";
+    public static final String VARIABLE_GETTER_BLOCK_EXCEPTION_WHILE_LOADING_VARIABLE_ID = "VariableGetterBlock : Exception while loading variable Id : ";
+    public static final String VARIABLE_GETTER_BLOCK_VARIABLE_ID_IS_NULL = "VariableGetterBlock : Variable Id is null";
+
+
 }

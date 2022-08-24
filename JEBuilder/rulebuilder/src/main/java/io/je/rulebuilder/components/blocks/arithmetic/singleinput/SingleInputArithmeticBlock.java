@@ -3,6 +3,7 @@ package io.je.rulebuilder.components.blocks.arithmetic.singleinput;
 import io.je.rulebuilder.components.blocks.ArithmeticBlock;
 import io.je.rulebuilder.config.Keywords;
 import io.je.rulebuilder.models.BlockModel;
+import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.RuleBuildFailedException;
 
 public abstract class SingleInputArithmeticBlock extends ArithmeticBlock {
@@ -13,7 +14,7 @@ public abstract class SingleInputArithmeticBlock extends ArithmeticBlock {
         super(blockModel);
         if (inputBlockIds.isEmpty()) {
             isProperlyConfigured = false;
-            misConfigurationCause = "SingleInputArithmeticBlock : Input blocks Id empty";
+            misConfigurationCause = JEMessages.SINGLE_INPUT_ARITHMETIC_BLOCK_INPUT_BLOCKS_ID_EMPTY;
         }
     }
 

@@ -13,6 +13,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import static io.je.rulebuilder.config.AttributesMapping.SOURCE_GETTER_ATTRIBUTE_NAME;
 import static io.je.rulebuilder.config.AttributesMapping.SOURCE_LINKED_BLOCK_ID;
+import static io.je.utilities.constants.JEMessages.EXCEPTION_OCCURRED_WHILE_INITIALIZE;
 
 /*
  * Block used to writing in an instance's attribute (from DM)
@@ -80,7 +81,7 @@ public class AttachedSetterBlock extends ExecutionBlock {
             misConfigurationCause = "";
         } catch (Exception e) {
             isProperlyConfigured = false;
-            misConfigurationCause = "AttachedSetterBlock : Exception occurred while initialize : " + e.getMessage();
+            misConfigurationCause = JEMessages.ATTACHED_SETTER_BLOCK + EXCEPTION_OCCURRED_WHILE_INITIALIZE + e.getMessage();
             JELogger.logException(e);
         }
 
@@ -179,7 +180,7 @@ public class AttachedSetterBlock extends ExecutionBlock {
             }
         } catch (Exception e) {
             isProperlyConfigured = false;
-            misConfigurationCause = "AttachedSetterBlock : Exception occurred : " + e.getMessage();
+            misConfigurationCause = JEMessages.ATTACHED_SETTER_BLOCK_EXCEPTION_OCCURRED + e.getMessage();
             JELogger.logException(e);
             throw new RuleBuildFailedException(JEMessages.INVALID_CONFIG + " : " + misConfigurationCause);
         }

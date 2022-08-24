@@ -12,7 +12,6 @@ import utils.log.LogSubModule;
 import utils.network.Network;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
 
 public class Request {

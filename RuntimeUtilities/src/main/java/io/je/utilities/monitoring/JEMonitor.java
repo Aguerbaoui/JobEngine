@@ -7,8 +7,6 @@ import utils.log.LogCategory;
 import utils.log.LogSubModule;
 import utils.zmq.ZMQPublisher;
 
-import java.util.Arrays;
-
 public class JEMonitor {
 
 

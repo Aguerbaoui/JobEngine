@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import io.je.rulebuilder.components.blocks.ExecutionBlock;
 import io.je.rulebuilder.models.BlockModel;
+import io.je.utilities.constants.JEMessages;
 import io.je.utilities.log.JELogger;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,6 +17,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static io.je.utilities.constants.JEMessages.EXCEPTION_OCCURRED_WHILE_INITIALIZE;
 import static io.je.utilities.constants.WorkflowConstants.*;
 
 /**
@@ -63,12 +65,12 @@ public class SMSBlock extends ExecutionBlock {
                 misConfigurationCause = "";
             } else {
                 isProperlyConfigured = false;
-                misConfigurationCause = "SMSBlock : Server Type null";
+                misConfigurationCause = JEMessages.SMSBLOCK_SERVER_TYPE_NULL;
             }
 
         } catch (Exception e) {
             isProperlyConfigured = false;
-            misConfigurationCause = "SMSBlock : exception occurred while initialize : " + e.getMessage();
+            misConfigurationCause = JEMessages.SMSBLOCK + EXCEPTION_OCCURRED_WHILE_INITIALIZE + e.getMessage();
             JELogger.logException(e);
         }
 

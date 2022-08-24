@@ -1,7 +1,5 @@
 package io.je.ruleengine.control;
 
-import java.lang.Long;
-
 public class Persistence {
 
     Long startTimestamp = null;

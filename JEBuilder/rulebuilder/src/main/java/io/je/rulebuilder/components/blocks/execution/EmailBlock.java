@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import io.je.rulebuilder.components.blocks.ExecutionBlock;
 import io.je.rulebuilder.models.BlockModel;
-import io.je.utilities.exceptions.RuleBuildFailedException;
+import io.je.utilities.constants.JEMessages;
 import io.je.utilities.log.JELogger;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,6 +14,7 @@ import utils.log.LoggerUtils;
 import java.util.HashMap;
 import java.util.List;
 
+import static io.je.utilities.constants.JEMessages.EXCEPTION_OCCURRED_WHILE_INITIALIZE;
 import static io.je.utilities.constants.WorkflowConstants.*;
 
 /**
@@ -79,7 +80,7 @@ public class EmailBlock extends ExecutionBlock {
 
         } catch (Exception e) {
             isProperlyConfigured = false;
-            misConfigurationCause = "EmailBlock : Exception occurred while initialize: " + e.getMessage();
+            misConfigurationCause = JEMessages.EMAIL_BLOCK + EXCEPTION_OCCURRED_WHILE_INITIALIZE + e.getMessage();
             JELogger.logException(e);
         }
 

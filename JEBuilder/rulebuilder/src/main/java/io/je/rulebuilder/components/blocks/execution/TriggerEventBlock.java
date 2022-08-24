@@ -3,6 +3,7 @@ package io.je.rulebuilder.components.blocks.execution;
 import io.je.rulebuilder.components.blocks.ExecutionBlock;
 import io.je.rulebuilder.config.AttributesMapping;
 import io.je.rulebuilder.models.BlockModel;
+import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.RuleBuildFailedException;
 import io.je.utilities.log.JELogger;
 import utils.log.LogCategory;
@@ -37,9 +38,9 @@ public class TriggerEventBlock extends ExecutionBlock {
 
             JELogger.error("Failed to build block : " + blockName, LogCategory.DESIGN_MODE, jobEngineProjectID, LogSubModule.RULE, ruleId);
             isProperlyConfigured = false;
-            misConfigurationCause = "TriggerEventBlock : event Id null";
+            misConfigurationCause = JEMessages.TRIGGER_EVENT_BLOCK_EVENT_ID_NULL;
 
-            throw new RuleBuildFailedException(blockName + " is not configured properly : " + misConfigurationCause);
+            throw new RuleBuildFailedException(blockName + JEMessages.THE_BLOCK_IS_NOT_CONFIGURED_PROPERLY + misConfigurationCause);
 
         }
         return "Executioner.triggerEvent(\"" + jobEngineProjectID + "\" , \""
