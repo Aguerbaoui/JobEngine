@@ -7,8 +7,6 @@ import utils.log.LogMessage;
 import utils.log.LogSubModule;
 import utils.zmq.ZMQPublisher;
 
-import java.util.Arrays;
-
 public class ZMQLogPublisher {
 
 	//TODO: read from config instead of hardcoded msg

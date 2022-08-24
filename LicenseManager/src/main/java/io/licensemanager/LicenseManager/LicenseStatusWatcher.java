@@ -9,7 +9,6 @@ import io.licensemanager.common.enums.SIOTHLicenseStatus;
 import io.licensemanager.eventlistener.LicenseStatusChangeHandler;
 import io.licensemanager.utilities.LicenseUtilities;
 import utils.log.LogCategory;
-import utils.log.LogSubModule;
 import utils.log.LoggerUtils;
 import utils.zmq.ZMQRequester;
 

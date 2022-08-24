@@ -1,17 +1,15 @@
 package io.je.serviceTasks;
 
-import okhttp3.Response;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.log.JELogger;
+import okhttp3.Response;
 import org.activiti.engine.delegate.BpmnError;
 import org.activiti.engine.delegate.DelegateExecution;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
 import utils.network.Network;
 import utils.string.StringSub;
-
-import java.util.Arrays;
 
 public class WebApiServiceTask extends ServiceTask {
     @Override
