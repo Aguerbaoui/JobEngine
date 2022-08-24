@@ -224,12 +224,12 @@ public class WorkflowBuilder {
                     LogCategory.DESIGN_MODE, workflow.getJobEngineProjectID(),
                     LogSubModule.WORKFLOW, workflow.getJobEngineElementID());
 
-                JERunnerAPIHandler.addWorkflow(wf);
+            JERunnerAPIHandler.addWorkflow(wf);
 
         } catch (Exception exp) {
             LoggerUtils.logException(exp);
             JELogger.error(JEMessages.FAILED_TO_DEPLOY_IN_RUNNER_WORKFLOW_WITH_ID + " = " + workflow.getJobEngineElementID()
-                    + " : " + exp.getMessage(),
+                            + " : " + exp.getMessage(),
                     LogCategory.DESIGN_MODE, workflow.getJobEngineProjectID(),
                     LogSubModule.WORKFLOW, workflow.getJobEngineElementID());
 

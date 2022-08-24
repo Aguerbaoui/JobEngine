@@ -9,6 +9,6 @@ import org.springframework.context.annotation.PropertySource;
 @ConfigurationProperties
 @Configuration("MonitorProperties")
 @PropertySource(SIOTHConfigurationConstants.APPLICATION_PROPERTIES_PATH)
-public class MonitorProperties extends JEProperties{
+public class MonitorProperties extends JEProperties {
 
 }

@@ -52,6 +52,7 @@ public class ClassDefinition {
     List<String> imports;
 
     ClassAuthor classAuthor;
+    boolean importDataModelClasses = true;
 
     public boolean isImportDataModelClasses() {
         return importDataModelClasses;
@@ -60,8 +61,6 @@ public class ClassDefinition {
     public void setImportDataModelClasses(boolean importDataModelClasses) {
         this.importDataModelClasses = importDataModelClasses;
     }
-
-    boolean importDataModelClasses = true;
 
     public String getInheritanceSemantics() {
         return inheritanceSemantics;

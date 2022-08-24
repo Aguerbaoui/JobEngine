@@ -4,30 +4,27 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class APIS {
 
-	@JsonProperty("EmailAPI")
-	 public Conf emailAPI ;
-	
-	@JsonProperty("DatabaseAPI")
-     public Conf databaseAPI ;
+    @JsonProperty("EmailAPI")
+    public Conf emailAPI;
 
-	public Conf getEmailAPI() {
-		return emailAPI;
-	}
+    @JsonProperty("DatabaseAPI")
+    public Conf databaseAPI;
 
-	public void setEmailAPI(Conf emailAPI) {
-		this.emailAPI = emailAPI;
-	}
+    public Conf getEmailAPI() {
+        return emailAPI;
+    }
 
-	public Conf getDatabaseAPI() {
-		return databaseAPI;
-	}
+    public void setEmailAPI(Conf emailAPI) {
+        this.emailAPI = emailAPI;
+    }
 
-	public void setDatabaseAPI(Conf databaseAPI) {
-		this.databaseAPI = databaseAPI;
-	}
-     
-     
-     
-	
-     
+    public Conf getDatabaseAPI() {
+        return databaseAPI;
+    }
+
+    public void setDatabaseAPI(Conf databaseAPI) {
+        this.databaseAPI = databaseAPI;
+    }
+
+
 }

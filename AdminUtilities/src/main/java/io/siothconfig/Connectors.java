@@ -5,65 +5,64 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 
 public class Connectors {
-	
-
-	@JsonProperty("Protocols")
-    public List<String> protocols ;
-	
-	@JsonProperty("Data Stores")
-	public List<String> databases ;
-    
-	@JsonProperty("Network Watchers")
-	public List<String> networkWatchers ;
-    
-	@JsonProperty("Brokers")
-	public List<String> brokers ;
-
-	
-	private Connectors() {
-		// TODO Auto-generated constructor stub
-	}
 
 
-	public List<String> getProtocols() {
-		return protocols;
-	}
+    @JsonProperty("Protocols")
+    public List<String> protocols;
+
+    @JsonProperty("Data Stores")
+    public List<String> databases;
+
+    @JsonProperty("Network Watchers")
+    public List<String> networkWatchers;
+
+    @JsonProperty("Brokers")
+    public List<String> brokers;
 
 
-	public void setProtocols(List<String> protocols) {
-		this.protocols = protocols;
-	}
+    private Connectors() {
+        // TODO Auto-generated constructor stub
+    }
 
 
-	public List<String> getDatabases() {
-		return databases;
-	}
+    public List<String> getProtocols() {
+        return protocols;
+    }
 
 
-	public void setDatabases(List<String> databases) {
-		this.databases = databases;
-	}
+    public void setProtocols(List<String> protocols) {
+        this.protocols = protocols;
+    }
 
 
-	public List<String> getNetworkWatchers() {
-		return networkWatchers;
-	}
+    public List<String> getDatabases() {
+        return databases;
+    }
 
 
-	public void setNetworkWatchers(List<String> networkWatchers) {
-		this.networkWatchers = networkWatchers;
-	}
+    public void setDatabases(List<String> databases) {
+        this.databases = databases;
+    }
 
 
-	public List<String> getBrokers() {
-		return brokers;
-	}
+    public List<String> getNetworkWatchers() {
+        return networkWatchers;
+    }
 
 
-	public void setBrokers(List<String> brokers) {
-		this.brokers = brokers;
-	}
-	
-	
+    public void setNetworkWatchers(List<String> networkWatchers) {
+        this.networkWatchers = networkWatchers;
+    }
+
+
+    public List<String> getBrokers() {
+        return brokers;
+    }
+
+
+    public void setBrokers(List<String> brokers) {
+        this.brokers = brokers;
+    }
+
 
 }

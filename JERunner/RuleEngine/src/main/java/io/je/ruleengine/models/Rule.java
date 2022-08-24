@@ -33,7 +33,6 @@ public class Rule extends JEObject {
     }
 
 
-
     public RuleFormat getResourceType() {
         return resourceType;
     }
@@ -64,14 +63,12 @@ public class Rule extends JEObject {
     }
 
 
-
-
     @Override
-	public String toString() {
-		return "Rule [path=" + path + ", content=" + content + "]";
-	}
+    public String toString() {
+        return "Rule [path=" + path + ", content=" + content + "]";
+    }
 
-	public ArrayList<JEEvent> getEvents() {
+    public ArrayList<JEEvent> getEvents() {
         return events;
     }
 
@@ -80,20 +77,20 @@ public class Rule extends JEObject {
     }
 
     public void addEvent(JEEvent e) {
-        if(events == null) {
+        if (events == null) {
             events = new ArrayList<>();
         }
         events.add(e);
     }
 
-	public Set<String> getTopics() {
-		return topics;
-	}
+    public Set<String> getTopics() {
+        return topics;
+    }
 
-	public void setTopics(Set<String> topics) {
-		this.topics = topics;
-	}
-    
-    
+    public void setTopics(Set<String> topics) {
+        this.topics = topics;
+    }
+
+
 }
 

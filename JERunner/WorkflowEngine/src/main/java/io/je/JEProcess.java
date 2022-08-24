@@ -7,35 +7,22 @@ import java.util.HashMap;
 
 public class JEProcess {
 
+    HashMap<String, ActivitiTask> activitiTasks;
     private String key;
-
     private String name;
-
     private String bpmnPath;
-
     private boolean triggeredByEvent;
-
     private String triggerMessage;
-
     private boolean running = false;
-
     private boolean deployed = false;
-
     private String projectId;
-
     private ProcessInstance processInstance;
-
     private String deploymentId;
-
     private String endEventId;
-
     /*
      * True if the workflow starts with project boot
      * */
     private boolean onProjectBoot = false;
-
-    HashMap<String, ActivitiTask> activitiTasks;
-
     private Thread activeThread = null;
 
     public JEProcess() {
@@ -65,16 +52,16 @@ public class JEProcess {
         return triggeredByEvent;
     }
 
+    public void setTriggeredByEvent(boolean triggeredByEvent) {
+        this.triggeredByEvent = triggeredByEvent;
+    }
+
     public HashMap<String, ActivitiTask> getActivitiTasks() {
         return activitiTasks;
     }
 
     public void setActivitiTasks(HashMap<String, ActivitiTask> activitiTasks) {
         this.activitiTasks = activitiTasks;
-    }
-
-    public void setTriggeredByEvent(boolean triggeredByEvent) {
-        this.triggeredByEvent = triggeredByEvent;
     }
 
     public String getKey() {

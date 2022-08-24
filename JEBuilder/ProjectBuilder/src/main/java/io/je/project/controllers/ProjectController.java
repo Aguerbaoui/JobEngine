@@ -33,239 +33,238 @@ import static io.je.utilities.constants.JEMessages.*;
 @CrossOrigin(maxAge = 3600)
 public class ProjectController {
 
-	@Autowired
-	ProjectService projectService;
+    @Autowired
+    ProjectService projectService;
 
-	@Autowired
-	ConfigurationService configService;
+    @Autowired
+    ConfigurationService configService;
 //########################################### **PROJECT** ################################################################
 
-	/*
-	 * Get project running status
-	 */
-	@GetMapping("/getProjectRunStatus/{projectId}")
-	public ResponseEntity<?> getProjectRunStatus(@PathVariable String projectId) {
-		JEProject project = null;
-		try {
-			project = projectService.getProject(projectId);
+    /*
+     * Get project running status
+     */
+    @GetMapping("/getProjectRunStatus/{projectId}")
+    public ResponseEntity<?> getProjectRunStatus(@PathVariable String projectId) {
+        JEProject project = null;
+        try {
+            project = projectService.getProject(projectId);
 
-		} catch (Exception e) {
-			return JEExceptionHandler.handleException(e);
+        } catch (Exception e) {
+            return JEExceptionHandler.handleException(e);
 
-		}
-		return ResponseEntity.ok(project.isRunning());
+        }
+        return ResponseEntity.ok(project.isRunning());
 
-	}
-	
-	/*
-	 * Get project running status
-	 */
-	@GetMapping("/getProjectGlobalInfo/{projectId}")
-	public ResponseEntity<?> getProjectGlobalInfo(@PathVariable String projectId) {
-		JEProject project = null;
-		HashMap<String,Integer> data = new HashMap<>();
+    }
 
-		try {
-			project = projectService.getProject(projectId);
-			if(project!=null)
-			{
-				data.put("ruleCount",  project.getRules().size());
-				data.put("workflowCount",  project.getWorkflows().size());
-				data.put("eventCount",  project.getEvents().size());
-			}
-			else
-			{
-				return  JEExceptionHandler.handleException(new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND));
-			}
-		} catch (Exception e) {
-			return JEExceptionHandler.handleException(e);
-		}
-		return ResponseEntity.ok(data);
-	}
-	
-	
-	/*
-	 * check if block name is unique
-	 */
-	@GetMapping("/getIsBlockNameUnique/{projectId}/{blockName}")
-	public ResponseEntity<?> getIsBlockNameUnique(@PathVariable String projectId,@PathVariable String blockName) {
-		JEProject project = null;
-		try {
-			project = projectService.getProject(projectId);
+    /*
+     * Get project running status
+     */
+    @GetMapping("/getProjectGlobalInfo/{projectId}")
+    public ResponseEntity<?> getProjectGlobalInfo(@PathVariable String projectId) {
+        JEProject project = null;
+        HashMap<String, Integer> data = new HashMap<>();
 
-		} catch (Exception e) {
-			return JEExceptionHandler.handleException(e);
-
-		}
-
-		return ResponseEntity.ok(project==null?false:!project.blockNameExists(blockName));
-
-	}
-	
-
-	/*
-	 * Get project built status
-	 */
-	@GetMapping("/getProjectBuildStatus/{projectId}")
-	public ResponseEntity<?> getProjectBuildStatus(@PathVariable String projectId) {
-		JEProject project = null;
-		try {
-			project = projectService.getProject(projectId);
-
-		} catch (Exception e) {
-			return JEExceptionHandler.handleException(e);
-
-		}
-
-		return ResponseEntity.ok(project.isBuilt());
-
-	}
-	/*
-	 * Add new project
-	 */
-	@DeleteMapping(value = "/deleteProject/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> deleteProject(@PathVariable String projectId) {
-		if (!projectService.projectExists(projectId)) {
-			return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, PROJECT_DELETED));
-		}
-
-		try {
-
-			projectService.removeProject(projectId).get();
-		} catch (Exception e) {
-			return JEExceptionHandler.handleException(e);
-
-		}
-		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, PROJECT_DELETED));
-	}
+        try {
+            project = projectService.getProject(projectId);
+            if (project != null) {
+                data.put("ruleCount", project.getRules().size());
+                data.put("workflowCount", project.getWorkflows().size());
+                data.put("eventCount", project.getEvents().size());
+            } else {
+                return JEExceptionHandler.handleException(new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND));
+            }
+        } catch (Exception e) {
+            return JEExceptionHandler.handleException(e);
+        }
+        return ResponseEntity.ok(data);
+    }
 
 
-	/*
-	 * Build entire project files
-	 */
-	@PostMapping(value = "/buildProject/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> buildProject(@PathVariable String projectId) {
-		try {
-			List<OperationStatusDetails> results = projectService.buildAll(projectId);
-			return ResponseEntity.ok(new JECustomResponse(ResponseCodes.CODE_OK, BUILT_EVERYTHING_SUCCESSFULLY,results));
-		} catch (Exception e) {
-			return JEExceptionHandler.handleException(e);
+    /*
+     * check if block name is unique
+     */
+    @GetMapping("/getIsBlockNameUnique/{projectId}/{blockName}")
+    public ResponseEntity<?> getIsBlockNameUnique(@PathVariable String projectId, @PathVariable String blockName) {
+        JEProject project = null;
+        try {
+            project = projectService.getProject(projectId);
 
-		}
+        } catch (Exception e) {
+            return JEExceptionHandler.handleException(e);
 
-	}
+        }
 
-	/* Run project */
-	@PostMapping(value = "/runProject/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> runProject(@PathVariable String projectId) {
-		try {
+        return ResponseEntity.ok(project == null ? false : !project.blockNameExists(blockName));
 
-			projectService.runAll(projectId);
+    }
 
-		} catch (Exception e) {
-			return JEExceptionHandler.handleException(e);
 
-		}
-		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, PROJECT_RUNNING));
-	}
+    /*
+     * Get project built status
+     */
+    @GetMapping("/getProjectBuildStatus/{projectId}")
+    public ResponseEntity<?> getProjectBuildStatus(@PathVariable String projectId) {
+        JEProject project = null;
+        try {
+            project = projectService.getProject(projectId);
 
-	/* Stop project */
-	@PostMapping(value = "/stopProject/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> stopProject(@PathVariable String projectId) {
+        } catch (Exception e) {
+            return JEExceptionHandler.handleException(e);
 
-		try {
-			projectService.stopProject(projectId);
+        }
 
-		} catch (Exception e) {
-			return JEExceptionHandler.handleException(e);
+        return ResponseEntity.ok(project.isBuilt());
 
-		}
+    }
 
-		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, PROJECT_STOPPED));
-	}
+    /*
+     * Add new project
+     */
+    @DeleteMapping(value = "/deleteProject/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> deleteProject(@PathVariable String projectId) {
+        if (!projectService.projectExists(projectId)) {
+            return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, PROJECT_DELETED));
+        }
 
-	/*
-	 * Stop the project
-	 */
-	@GetMapping(value = "/getLog", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> getLog() {
-		// TODO: add failed to stop project exception
+        try {
 
-		// List l = new ArrayList(JELogger.getQueue());
-		// JELogger.getQueue().removeAll(JELogger.getQueue());
-		return ResponseEntity.ok(JELogger.getQueue());
+            projectService.removeProject(projectId).get();
+        } catch (Exception e) {
+            return JEExceptionHandler.handleException(e);
 
-	}
+        }
+        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, PROJECT_DELETED));
+    }
 
-	
-	/*
-	 * Add new project
-	 */
-	@PostMapping(value = "/{projectId}/setProjectAutoReload", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> setProjectAutoReload(@RequestBody boolean autoReload,@PathVariable String projectId) {
-		if (!projectService.projectExists(projectId)) {
-			return ResponseEntity.ok(new JEResponse(ResponseCodes.PROJECT_NOT_FOUND, JEMessages.PROJECT_NOT_FOUND));
-		}
-		try {
-			JEProject project = projectService.getProject(projectId);
-			if(project != null) {
-				JELogger.debug("[project =" + project.getProjectName() + " ]  " + JEMessages.PROJECT_AUTO_RELOAD + autoReload, LogCategory.DESIGN_MODE,
-						projectId, LogSubModule.JEBUILDER, null);
-				project.setAutoReload(autoReload);
-				projectService.saveProject(project).get();
-			}
-		} catch (Exception e) {
-			return JEExceptionHandler.handleException(e);
-		}
-		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.PROJECT_UPDATED));
-	}
 
-	@GetMapping(value = "/updateRunner", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> updateRunner() {
+    /*
+     * Build entire project files
+     */
+    @PostMapping(value = "/buildProject/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> buildProject(@PathVariable String projectId) {
+        try {
+            List<OperationStatusDetails> results = projectService.buildAll(projectId);
+            return ResponseEntity.ok(new JECustomResponse(ResponseCodes.CODE_OK, BUILT_EVERYTHING_SUCCESSFULLY, results));
+        } catch (Exception e) {
+            return JEExceptionHandler.handleException(e);
 
-		try {
-			configService.updateRunner();
-		} catch (Exception e) {
-			return JEExceptionHandler.handleException(e);
-		}
-		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, "Updated"));
-	}
+        }
 
-	@GetMapping(value = "/cleanUp", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> cleanUpHouse() {
-		try {
-			projectService.cleanUpHouse();
-		} catch (Exception e) {
-			return JEExceptionHandler.handleException(e);
-		}
-		return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, "Updated"));
-	}
-	/*
-	 * Inform message from workflow in runtime
-	 */
-	@PostMapping(value = "/informUser", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> informUser(@RequestBody InformModel informBody) {
-		try {
-			projectService.informUser(informBody);
-			return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.SUCCESSFULLY_INFORMED));
-		} catch (Exception e) {
-			return JEExceptionHandler.handleException(e);
-		}
+    }
 
-	}
+    /* Run project */
+    @PostMapping(value = "/runProject/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> runProject(@PathVariable String projectId) {
+        try {
 
-	/*
-	 * send log message from workflow in runtime
-	 */
-	@PostMapping(value = "/sendLog", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> informUser(@RequestBody LogMessage logMessage) {
-		try {
-			projectService.sendLog(logMessage);
-			return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.SUCCESSFULLY_INFORMED));
-		} catch (Exception e) {
-			return JEExceptionHandler.handleException(e);
-		}
+            projectService.runAll(projectId);
 
-	}
+        } catch (Exception e) {
+            return JEExceptionHandler.handleException(e);
+
+        }
+        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, PROJECT_RUNNING));
+    }
+
+    /* Stop project */
+    @PostMapping(value = "/stopProject/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> stopProject(@PathVariable String projectId) {
+
+        try {
+            projectService.stopProject(projectId);
+
+        } catch (Exception e) {
+            return JEExceptionHandler.handleException(e);
+
+        }
+
+        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, PROJECT_STOPPED));
+    }
+
+    /*
+     * Stop the project
+     */
+    @GetMapping(value = "/getLog", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> getLog() {
+        // TODO: add failed to stop project exception
+
+        // List l = new ArrayList(JELogger.getQueue());
+        // JELogger.getQueue().removeAll(JELogger.getQueue());
+        return ResponseEntity.ok(JELogger.getQueue());
+
+    }
+
+
+    /*
+     * Add new project
+     */
+    @PostMapping(value = "/{projectId}/setProjectAutoReload", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> setProjectAutoReload(@RequestBody boolean autoReload, @PathVariable String projectId) {
+        if (!projectService.projectExists(projectId)) {
+            return ResponseEntity.ok(new JEResponse(ResponseCodes.PROJECT_NOT_FOUND, JEMessages.PROJECT_NOT_FOUND));
+        }
+        try {
+            JEProject project = projectService.getProject(projectId);
+            if (project != null) {
+                JELogger.debug("[project =" + project.getProjectName() + " ]  " + JEMessages.PROJECT_AUTO_RELOAD + autoReload, LogCategory.DESIGN_MODE,
+                        projectId, LogSubModule.JEBUILDER, null);
+                project.setAutoReload(autoReload);
+                projectService.saveProject(project).get();
+            }
+        } catch (Exception e) {
+            return JEExceptionHandler.handleException(e);
+        }
+        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.PROJECT_UPDATED));
+    }
+
+    @GetMapping(value = "/updateRunner", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> updateRunner() {
+
+        try {
+            configService.updateRunner();
+        } catch (Exception e) {
+            return JEExceptionHandler.handleException(e);
+        }
+        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, "Updated"));
+    }
+
+    @GetMapping(value = "/cleanUp", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> cleanUpHouse() {
+        try {
+            projectService.cleanUpHouse();
+        } catch (Exception e) {
+            return JEExceptionHandler.handleException(e);
+        }
+        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, "Updated"));
+    }
+
+    /*
+     * Inform message from workflow in runtime
+     */
+    @PostMapping(value = "/informUser", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> informUser(@RequestBody InformModel informBody) {
+        try {
+            projectService.informUser(informBody);
+            return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.SUCCESSFULLY_INFORMED));
+        } catch (Exception e) {
+            return JEExceptionHandler.handleException(e);
+        }
+
+    }
+
+    /*
+     * send log message from workflow in runtime
+     */
+    @PostMapping(value = "/sendLog", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> informUser(@RequestBody LogMessage logMessage) {
+        try {
+            projectService.sendLog(logMessage);
+            return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.SUCCESSFULLY_INFORMED));
+        } catch (Exception e) {
+            return JEExceptionHandler.handleException(e);
+        }
+
+    }
 
 }

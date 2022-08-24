@@ -53,7 +53,7 @@ public class RuleEngine {
 
         ProjectContainer project = projectManager.getProjectContainer(projectId);
         return project.stopRuleExecution(true, false);
-        
+
     }
 
     public static boolean fireRules(String projectId, List<Rule> rules, boolean removePreviouslyAddedRules) {
@@ -66,23 +66,17 @@ public class RuleEngine {
         projectManager.deleteProjectContainer(projectId);
     }
 
-
-    public boolean addRules(List<Rule> rules) throws RuleAlreadyExistsException, RuleCompilationException,
-            JEFileNotFoundException {
-
-        // TODO: try/catch errors and return list of the rules that were not added
-        for (Rule rule : rules) {
-            addRule(rule);
-        }
-        return true;
-    }
-
     public static void compileRule(Rule rule) throws RuleCompilationException, JEFileNotFoundException {
 
         String projectID = rule.getJobEngineProjectID();
         ProjectContainer project = projectManager.getProjectContainer(projectID);
         project.compileRule(rule);
 
+    }
+
+    public static void deleteRule(String projectId, String ruleId) throws DeleteRuleException {
+        ProjectContainer project = projectManager.getProjectContainer(projectId);
+        project.deleteRule(ruleId);
     }
 
 
@@ -100,52 +94,6 @@ public class RuleEngine {
 
         return true;
     } */
-
-
-    public boolean compileRules(List<Rule> rules) throws RuleCompilationException, JEFileNotFoundException {
-
-        for (Rule rule : rules) {
-            compileRule(rule);
-        }
-        return true;
-    }
-
-    public static void deleteRule(String projectId, String ruleId) throws DeleteRuleException {
-        ProjectContainer project = projectManager.getProjectContainer(projectId);
-        project.deleteRule(ruleId);
-    }
-
-    public boolean deleteRules(List<String> rulesIDs) {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    public boolean disableRule(String ruleID) {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    public boolean enableRule(String ruleID) {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    public boolean insertFact(JEObject fact) {
-
-        ProjectContainer project = projectManager.getProjectContainer(fact.getJobEngineProjectID());
-        project.insertFact(fact);
-        return false;
-    }
-
-    public boolean retractFact(JEObject fact) {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    public boolean updateFact(JEObject fact) {
-        // TODO Auto-generated method stub
-        return false;
-    }
 
     public static void buildProject(String projectId) throws RuleBuildFailedException {
 
@@ -184,6 +132,56 @@ public class RuleEngine {
 
         }
 
+    }
+
+    public boolean addRules(List<Rule> rules) throws RuleAlreadyExistsException, RuleCompilationException,
+            JEFileNotFoundException {
+
+        // TODO: try/catch errors and return list of the rules that were not added
+        for (Rule rule : rules) {
+            addRule(rule);
+        }
+        return true;
+    }
+
+    public boolean compileRules(List<Rule> rules) throws RuleCompilationException, JEFileNotFoundException {
+
+        for (Rule rule : rules) {
+            compileRule(rule);
+        }
+        return true;
+    }
+
+    public boolean deleteRules(List<String> rulesIDs) {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    public boolean disableRule(String ruleID) {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    public boolean enableRule(String ruleID) {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    public boolean insertFact(JEObject fact) {
+
+        ProjectContainer project = projectManager.getProjectContainer(fact.getJobEngineProjectID());
+        project.insertFact(fact);
+        return false;
+    }
+
+    public boolean retractFact(JEObject fact) {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    public boolean updateFact(JEObject fact) {
+        // TODO Auto-generated method stub
+        return false;
     }
 
 

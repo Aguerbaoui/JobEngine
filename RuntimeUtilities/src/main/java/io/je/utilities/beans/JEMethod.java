@@ -20,7 +20,9 @@ public class JEMethod extends JEObject {
 
     boolean compiled;
 
-    public JEMethod() {}
+    public JEMethod() {
+    }
+
     public List<JEField> getInputs() {
         return inputs;
     }

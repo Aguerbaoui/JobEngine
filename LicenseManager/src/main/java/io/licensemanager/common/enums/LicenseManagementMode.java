@@ -1,6 +1,6 @@
 package io.licensemanager.common.enums;
 
 public enum LicenseManagementMode {
-	Centralized,
+    Centralized,
     Decentralized
 }

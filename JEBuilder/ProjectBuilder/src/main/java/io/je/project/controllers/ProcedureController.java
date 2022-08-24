@@ -23,8 +23,8 @@ import static io.je.utilities.constants.JEMessages.PROCEDURE_ADDED_SUCCESSFULLY;
 
 
 /*
-* Rest controller for procedures
-* */
+ * Rest controller for procedures
+ * */
 @RestController
 @RequestMapping(value = "/procedure")
 @CrossOrigin(maxAge = 3600)
@@ -40,13 +40,12 @@ public class ProcedureController {
             //projectService.getProject(m.getProjectId());
             classService.addProcedure(m);
         } catch (ClassLoadException e) {
-            if(!e.getCompilationErrorMessage().isEmpty()) {
+            if (!e.getCompilationErrorMessage().isEmpty()) {
                 LoggerUtils.logException(e);
                 return ResponseEntity.ok(new JEResponse(e.getCode(), e.getCompilationErrorMessage()));
             }
             return JEExceptionHandler.handleException(e);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return JEExceptionHandler.handleException(e);
         }
         return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, PROCEDURE_ADDED_SUCCESSFULLY));
@@ -58,30 +57,29 @@ public class ProcedureController {
             //projectService.getProject(m.getProjectId());
             classService.compileCode(m, ClassBuilderConfig.SCRIPTS_PACKAGE);
         } catch (ClassLoadException e) {
-            if(!StringUtilities.isEmpty(e.getCompilationErrorMessage())) {
+            if (!StringUtilities.isEmpty(e.getCompilationErrorMessage())) {
                 LoggerUtils.logException(e);
                 return ResponseEntity.ok(new JEResponse(e.getCode(), e.getCompilationErrorMessage()));
             }
             return JEExceptionHandler.handleException(e);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return JEExceptionHandler.handleException(e);
         }
         return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, CODE_COMPILATION_SUCCESSFUL));
     }
+
     @PatchMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> updateProcedure(@RequestBody MethodModel m) {
         try {
             //projectService.getProject(m.getProjectId());
             classService.updateProcedure(m);
         } catch (ClassLoadException e) {
-            if(!e.getCompilationErrorMessage().isEmpty()) {
+            if (!e.getCompilationErrorMessage().isEmpty()) {
                 LoggerUtils.logException(e);
                 return ResponseEntity.ok(new JEResponse(e.getCode(), e.getCompilationErrorMessage()));
             }
             return JEExceptionHandler.handleException(e);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return JEExceptionHandler.handleException(e);
         }
         return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, PROCEDURE_ADDED_SUCCESSFULLY));
@@ -93,8 +91,7 @@ public class ProcedureController {
         try {
             MethodModel m = classService.getMethodModelByName(methodName);
             return ResponseEntity.ok(m);
-        }
-        catch (Exception exception) {
+        } catch (Exception exception) {
             return JEExceptionHandler.handleException(exception);
         }
     }
@@ -104,8 +101,7 @@ public class ProcedureController {
     public ResponseEntity<?> deleteProcedure(@PathVariable("name") String name) {
         try {
             classService.removeProcedure(name);
-        }
-        catch (Exception exception) {
+        } catch (Exception exception) {
             return JEExceptionHandler.handleException(exception);
         }
         return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.PROCEDURE_DELETED_SUCCESSFULLY));
@@ -116,44 +112,41 @@ public class ProcedureController {
     public ResponseEntity<?> getMethods() {
         try {
             List<MethodModel> list = classService.getAllMethods();
-            if( !list.isEmpty()) {
+            if (!list.isEmpty()) {
                 return ResponseEntity.ok(list);
             }
 
-        }
-        catch (Exception exception) {
+        } catch (Exception exception) {
             return JEExceptionHandler.handleException(exception);
         }
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping(value ="/getLibraries", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/getLibraries", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public ResponseEntity<?> getLibraries() {
         try {
             List<LibModel> list = classService.getAllLibs();
-            if( !list.isEmpty()) {
+            if (!list.isEmpty()) {
                 return ResponseEntity.ok(list);
             }
 
-        }
-        catch (Exception exception) {
+        } catch (Exception exception) {
             return JEExceptionHandler.handleException(exception);
         }
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping(value ="/getLibraryById/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/getLibraryById/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public ResponseEntity<?> getLibraryById(@PathVariable("id") String id) {
         try {
             LibModel model = classService.getLibraryById(id);
-            if( model != null) {
+            if (model != null) {
                 return ResponseEntity.ok(model);
             }
 
-        }
-        catch (Exception exception) {
+        } catch (Exception exception) {
             return JEExceptionHandler.handleException(exception);
         }
         return ResponseEntity.noContent().build();
@@ -176,8 +169,7 @@ public class ProcedureController {
     public ResponseEntity<?> deleteLibrary(@PathVariable("id") String id) {
         try {
             classService.removeLibrary(id);
-        }
-        catch (Exception exception) {
+        } catch (Exception exception) {
             return JEExceptionHandler.handleException(exception);
         }
         return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.LIBRARY_DELETED_SUCCESSFULLY));

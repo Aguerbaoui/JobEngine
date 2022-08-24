@@ -7,22 +7,23 @@ import java.time.format.DateTimeFormatter;
 
 public class DateUtils {
 
-    private DateUtils() {}
-    public static LocalDateTime getCurrentTime()
-    {
-        return LocalDateTime.now();
+    private static DateTimeFormatter formatter;
+
+    private DateUtils() {
     }
 
-    private static DateTimeFormatter formatter;
+    public static LocalDateTime getCurrentTime() {
+        return LocalDateTime.now();
+    }
 
     public static void setFormatter(String format) {
         formatter = DateTimeFormatter.ofPattern(format);
     }
+
     /*
      * returns a String of the current time in the format specified
      */
-    public static String getCurrentTimeAsString(String formatToApply)
-    {
+    public static String getCurrentTimeAsString(String formatToApply) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(formatToApply);
         return LocalDateTime.now().format(formatter);
 
@@ -31,8 +32,7 @@ public class DateUtils {
     /*
      * return a string of the specified date into the specific format
      */
-    public static String formatDate(LocalDateTime date, String timeFormat)
-    {
+    public static String formatDate(LocalDateTime date, String timeFormat) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(timeFormat);
         return date.format(formatter);
 
@@ -42,27 +42,24 @@ public class DateUtils {
      * input : String in format "timeFormat"
      * output : String in format "formatToapply"
      */
-    public static String formatDateString(String date, String timeFormat,String formatToApply)
-    {
+    public static String formatDateString(String date, String timeFormat, String formatToApply) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(formatToApply);
-        return getTimeFromString(date,timeFormat).format(formatter);
+        return getTimeFromString(date, timeFormat).format(formatter);
 
     }
 
 
-    public static String parseUTCStringToLocalTimeString(String utcStr)
-    {
+    public static String parseUTCStringToLocalTimeString(String utcStr) {
         if (utcStr == null) return null;
 
-    	return LocalDateTime.ofInstant(Instant.parse(utcStr), ZoneOffset.systemDefault()).toString();
+        return LocalDateTime.ofInstant(Instant.parse(utcStr), ZoneOffset.systemDefault()).toString();
     }
-    
-    
+
+
     /*
      * converts a date String to a LocalDateTime instance
      */
-    public static LocalDateTime getTimeFromString(String timeAsString,String timeFormat)
-    {
+    public static LocalDateTime getTimeFromString(String timeAsString, String timeFormat) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(timeFormat);
 
         return LocalDateTime.parse(timeAsString, formatter);

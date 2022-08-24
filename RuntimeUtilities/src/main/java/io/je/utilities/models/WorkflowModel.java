@@ -27,9 +27,9 @@ public class WorkflowModel {
     private ArrayList<EventModel> events;
 
     private ArrayList<TaskModel> tasks;
-    
-    private   String createdBy;
-    
+
+    private String createdBy;
+
     private String modifiedBy;
 
     private String status;
@@ -51,6 +51,10 @@ public class WorkflowModel {
         this.events = events;
         this.tasks = tasks;
         this.name = name;
+    }
+
+    public WorkflowModel() {
+        super();
     }
 
     public String getTriggerMessage() {
@@ -75,10 +79,6 @@ public class WorkflowModel {
 
     public void setTriggeredByEvent(boolean triggeredByEvent) {
         this.triggeredByEvent = triggeredByEvent;
-    }
-
-    public WorkflowModel() {
-        super();
     }
 
     public String getProjectId() {
@@ -137,23 +137,22 @@ public class WorkflowModel {
         this.onProjectBoot = onProjectBoot;
     }
 
-    
-    
+
     public String getCreatedBy() {
-		return createdBy;
-	}
+        return createdBy;
+    }
 
-	public void setCreatedBy(String createdBy) {
-		this.createdBy = createdBy;
-	}
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
 
-	public String getModifiedBy() {
-		return modifiedBy;
-	}
+    public String getModifiedBy() {
+        return modifiedBy;
+    }
 
-	public void setModifiedBy(String modifiedBy) {
-		this.modifiedBy = modifiedBy;
-	}
+    public void setModifiedBy(String modifiedBy) {
+        this.modifiedBy = modifiedBy;
+    }
 
     public String getStatus() {
         return status;

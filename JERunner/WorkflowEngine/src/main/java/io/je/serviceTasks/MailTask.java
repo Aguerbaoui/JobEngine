@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class MailTask extends ActivitiTask{
+public class MailTask extends ActivitiTask {
     private boolean bEnableSSL = false;
 
     private boolean bUseDefaultCredentials = false;
@@ -47,16 +47,16 @@ public class MailTask extends ActivitiTask{
         return bUseDefaultCredentials;
     }
 
+    public void setbUseDefaultCredentials(boolean bUseDefaultCredentials) {
+        this.bUseDefaultCredentials = bUseDefaultCredentials;
+    }
+
     public String getUrl() {
         return url;
     }
 
     public void setUrl(String url) {
         this.url = url;
-    }
-
-    public void setbUseDefaultCredentials(boolean bUseDefaultCredentials) {
-        this.bUseDefaultCredentials = bUseDefaultCredentials;
     }
 
     public String getStrSenderAddress() {
@@ -124,7 +124,7 @@ public class MailTask extends ActivitiTask{
     }
 
     public List<String> getLstAttachementPaths() {
-        if(lstAttachementPaths == null) lstAttachementPaths = new ArrayList<>();
+        if (lstAttachementPaths == null) lstAttachementPaths = new ArrayList<>();
         return lstAttachementPaths;
     }
 
@@ -133,7 +133,7 @@ public class MailTask extends ActivitiTask{
     }
 
     public List<String> getLstUploadedFiles() {
-        if(lstUploadedFiles == null) lstUploadedFiles = new ArrayList<>();
+        if (lstUploadedFiles == null) lstUploadedFiles = new ArrayList<>();
         return lstUploadedFiles;
     }
 
@@ -142,7 +142,7 @@ public class MailTask extends ActivitiTask{
     }
 
     public List<String> getLstCCs() {
-        if(lstCCs == null) lstCCs = new ArrayList<>();
+        if (lstCCs == null) lstCCs = new ArrayList<>();
         return lstCCs;
     }
 
@@ -151,7 +151,7 @@ public class MailTask extends ActivitiTask{
     }
 
     public List<String> getLstBCCs() {
-        if(lstBCCs == null) lstBCCs = new ArrayList<>();
+        if (lstBCCs == null) lstBCCs = new ArrayList<>();
         return lstBCCs;
     }
 

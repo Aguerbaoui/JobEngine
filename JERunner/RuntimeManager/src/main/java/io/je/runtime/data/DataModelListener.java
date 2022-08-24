@@ -23,10 +23,9 @@ public class DataModelListener {
      * Map of topic-listener
      * */
 
+    static Map<String, DMTopic> allDMTopics = new HashMap<>();
     private static DataZMQSubscriber dataZMQSubscriber = null;
     private static ObjectMapper objectMapper = new ObjectMapper();
-    static Map<String, DMTopic> allDMTopics = new HashMap<>();
-
 
     // FIXME check if ok
     public static Set<String> getTopicsByProjectId(String projectId) {
@@ -73,7 +72,7 @@ public class DataModelListener {
 
         for (String topic : topics) {
 
-			startListening(topic);
+            startListening(topic);
 
         }
 

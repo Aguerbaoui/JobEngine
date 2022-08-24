@@ -9,10 +9,10 @@ import java.util.List;
 
 
 @Repository
-public interface RuleRepository extends MongoRepository<JERule,String>{
-	List<JERule> findByJobEngineProjectID (String projectId);
-	void deleteByJobEngineProjectID (String projectId);
+public interface RuleRepository extends MongoRepository<JERule, String> {
+    List<JERule> findByJobEngineProjectID(String projectId);
 
-	
+    void deleteByJobEngineProjectID(String projectId);
+
 
 }

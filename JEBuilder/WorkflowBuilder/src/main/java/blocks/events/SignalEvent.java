@@ -7,15 +7,15 @@ import utils.string.StringUtilities;
 public class SignalEvent extends WorkflowBlock {
 
     private String eventId;
+    private boolean throwSignal;
 
     public String getEventId() {
         return eventId;
     }
 
-    private boolean throwSignal;
     public void setEventId(String eventId) {
         if (StringUtilities.isEmpty(eventId)) return;
-        if(eventId.equalsIgnoreCase(APIConstants.DEFAULT)) this.eventId = null;
+        if (eventId.equalsIgnoreCase(APIConstants.DEFAULT)) this.eventId = null;
         else
             this.eventId = eventId;
     }

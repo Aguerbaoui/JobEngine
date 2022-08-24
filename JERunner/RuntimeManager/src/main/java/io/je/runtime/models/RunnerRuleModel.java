@@ -15,16 +15,16 @@ public class RunnerRuleModel {
     //The project this rule belongs to
     @JsonProperty(JERunnerRuleMapping.PROJECT_ID)
     String projectId;
-    
-    
+
+
     @JsonProperty(JERunnerRuleMapping.PROJECT_NAME)
     String projectName;
 
     //rule identifier
     @JsonProperty(JERunnerRuleMapping.RULE_NAME)
     String ruleName;
-    
-  //rule identifier
+
+    //rule identifier
     @JsonProperty(JERunnerRuleMapping.RULE_ID)
     String ruleId;
 
@@ -35,7 +35,7 @@ public class RunnerRuleModel {
     //Rule format
     @JsonProperty(JERunnerRuleMapping.RULE_FORMAT)
     RuleFormat format;
-    
+
     @JsonProperty(JERunnerRuleMapping.RULE_TOPICS)
     Set<String> topics;
 
@@ -76,32 +76,29 @@ public class RunnerRuleModel {
     }
 
 
-	public String getRuleName() {
-		return ruleName;
-	}
+    public String getRuleName() {
+        return ruleName;
+    }
 
-	public void setRuleName(String ruleName) {
-		this.ruleName = ruleName;
-	}
+    public void setRuleName(String ruleName) {
+        this.ruleName = ruleName;
+    }
 
-	public Set<String> getTopics() {
-		return topics;
-	}
+    public Set<String> getTopics() {
+        return topics;
+    }
 
-	public void setTopics(Set<String> topics) {
-		this.topics = topics;
-	}
+    public void setTopics(Set<String> topics) {
+        this.topics = topics;
+    }
 
-	public String getProjectName() {
-		return projectName;
-	}
+    public String getProjectName() {
+        return projectName;
+    }
 
-	public void setProjectName(String projectName) {
-		this.projectName = projectName;
-	}
-
-   
-	
+    public void setProjectName(String projectName) {
+        this.projectName = projectName;
+    }
 
 
 }

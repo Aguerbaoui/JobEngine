@@ -10,103 +10,95 @@ import java.util.HashMap;
 
 public class WebApiTask extends ActivitiTask {
 
-	public WebApiTask() {
-	}
+    private HttpMethod httpMethod;
+    private BodyType bodyType;
+    private String stringBody;
+    private HashMap<String, String> body;
+    private String responseClass;
+    private boolean hasBody;
+    private AuthScheme authScheme = AuthScheme.NONE;
+    private HashMap<String, String> authentication;
+    private String url;
 
-	private HttpMethod httpMethod;
+    public WebApiTask() {
+    }
 
-	private BodyType bodyType;
+    public HttpMethod getHttpMethod() {
+        return httpMethod;
+    }
 
-	private String stringBody;
+    public void setHttpMethod(HttpMethod httpMethod) {
+        this.httpMethod = httpMethod;
+    }
 
-	private HashMap<String, String> body;
+    public boolean hasBody() {
+        return hasBody;
+    }
 
-	private String responseClass;
+    public BodyType getBodyType() {
+        return bodyType;
+    }
 
-	private boolean hasBody;
+    public void setBodyType(BodyType bodyType) {
+        this.bodyType = bodyType;
+    }
 
-	private AuthScheme authScheme = AuthScheme.NONE;
+    public String getBody() throws JsonProcessingException {
+        if (stringBody != null) {
+            return stringBody;
+        }
+        return new ObjectMapper().writeValueAsString(body);
+    }
 
-	private HashMap<String, String> authentication;
+    public void setBody(HashMap<String, String> body) {
+        this.body = body;
+    }
 
-	private String url;
+    public String getResponseClass() {
+        return responseClass;
+    }
 
-	public HttpMethod getHttpMethod() {
-		return httpMethod;
-	}
+    public void setResponseClass(String responseClass) {
+        this.responseClass = responseClass;
+    }
 
-	public void setHttpMethod(HttpMethod httpMethod) {
-		this.httpMethod = httpMethod;
-	}
+    public String getUrl() {
+        return url;
+    }
 
-	public boolean hasBody() {
-		return hasBody;
-	}
+    public void setUrl(String url) {
+        this.url = url;
+    }
 
-	public void setHasBody(boolean hasBody) {
-		this.hasBody = hasBody;
-	}
+    public String getStringBody() {
+        return stringBody;
+    }
 
-	public BodyType getBodyType() {
-		return bodyType;
-	}
+    public void setStringBody(String stringBody) {
+        this.stringBody = stringBody;
+    }
 
-	public void setBodyType(BodyType bodyType) {
-		this.bodyType = bodyType;
-	}
+    public boolean isHasBody() {
+        return hasBody;
+    }
 
-	public String getBody() throws JsonProcessingException {
-		if (stringBody != null) {
-			return stringBody;
-		}
-		return new ObjectMapper().writeValueAsString(body);
-	}
+    public void setHasBody(boolean hasBody) {
+        this.hasBody = hasBody;
+    }
 
-	public void setBody(HashMap<String, String> body) {
-		this.body = body;
-	}
+    public AuthScheme getAuthScheme() {
+        return authScheme;
+    }
 
-	public String getResponseClass() {
-		return responseClass;
-	}
+    public void setAuthScheme(AuthScheme authScheme) {
+        this.authScheme = authScheme;
+    }
 
-	public void setResponseClass(String responseClass) {
-		this.responseClass = responseClass;
-	}
+    public HashMap<String, String> getAuthentication() {
+        return authentication;
+    }
 
-	public String getUrl() {
-		return url;
-	}
-
-	public void setUrl(String url) {
-		this.url = url;
-	}
-
-	public void setStringBody(String stringBody) {
-		this.stringBody = stringBody;
-	}
-
-	public String getStringBody() {
-		return stringBody;
-	}
-
-	public boolean isHasBody() {
-		return hasBody;
-	}
-
-	public AuthScheme getAuthScheme() {
-		return authScheme;
-	}
-
-	public void setAuthScheme(AuthScheme authScheme) {
-		this.authScheme = authScheme;
-	}
-
-	public HashMap<String, String> getAuthentication() {
-		return authentication;
-	}
-
-	public void setAuthentication(HashMap<String, String> authentication) {
-		this.authentication = authentication;
-	}
+    public void setAuthentication(HashMap<String, String> authentication) {
+        this.authentication = authentication;
+    }
 }

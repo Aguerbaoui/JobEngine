@@ -27,32 +27,28 @@ public class RuleEngineHandler {
 
     }
 
-    
-    private static String verifyRuleIsValid(RunnerRuleModel runnerRuleModel) throws RuleFormatNotValidException
-    {
-		JELogger.debug(JEMessages.VALIDATING_RULE ,
-				LogCategory.RUNTIME, runnerRuleModel.getProjectId(),
-				LogSubModule.RULE,runnerRuleModel.getRuleId());
 
-    	String errorMsg = null;
-    	if(runnerRuleModel.getRuleId() == null || runnerRuleModel.getRuleId().isEmpty())
-    	{
-    		
-    		errorMsg = JEMessages.ID_NOT_FOUND;
-    		throw new RuleFormatNotValidException(errorMsg);
-    	}
-    	if(runnerRuleModel.getRulePath() == null || runnerRuleModel.getRulePath().isEmpty())
-    	{
-    		errorMsg = JEMessages.RULE_FILE_NOT_FOUND;
-    		throw new RuleFormatNotValidException(errorMsg);
-    	}
-    	if(runnerRuleModel.getProjectId() == null || runnerRuleModel.getProjectId().isEmpty())
-    	{
-    		errorMsg = JEMessages.RULE_PROJECT_ID_NULL;
-    		throw new RuleFormatNotValidException(errorMsg);
-    	}
-    	
-    	return errorMsg;
+    private static String verifyRuleIsValid(RunnerRuleModel runnerRuleModel) throws RuleFormatNotValidException {
+        JELogger.debug(JEMessages.VALIDATING_RULE,
+                LogCategory.RUNTIME, runnerRuleModel.getProjectId(),
+                LogSubModule.RULE, runnerRuleModel.getRuleId());
+
+        String errorMsg = null;
+        if (runnerRuleModel.getRuleId() == null || runnerRuleModel.getRuleId().isEmpty()) {
+
+            errorMsg = JEMessages.ID_NOT_FOUND;
+            throw new RuleFormatNotValidException(errorMsg);
+        }
+        if (runnerRuleModel.getRulePath() == null || runnerRuleModel.getRulePath().isEmpty()) {
+            errorMsg = JEMessages.RULE_FILE_NOT_FOUND;
+            throw new RuleFormatNotValidException(errorMsg);
+        }
+        if (runnerRuleModel.getProjectId() == null || runnerRuleModel.getProjectId().isEmpty()) {
+            errorMsg = JEMessages.RULE_PROJECT_ID_NULL;
+            throw new RuleFormatNotValidException(errorMsg);
+        }
+
+        return errorMsg;
     }
 
     /*
@@ -61,12 +57,12 @@ public class RuleEngineHandler {
 
     public static void addRule(RunnerRuleModel runnerRuleModel) throws RuleAlreadyExistsException, RuleCompilationException, JEFileNotFoundException, RuleFormatNotValidException {
 
-		verifyRuleIsValid(runnerRuleModel);
+        verifyRuleIsValid(runnerRuleModel);
 
         Rule rule = new Rule(runnerRuleModel.getRuleId(), runnerRuleModel.getProjectId(), runnerRuleModel.getRuleName(),
-								runnerRuleModel.getProjectName(), runnerRuleModel.getFormat(), runnerRuleModel.getRulePath());
+                runnerRuleModel.getProjectName(), runnerRuleModel.getFormat(), runnerRuleModel.getRulePath());
 
-        RuleEngine.addRule(rule);  
+        RuleEngine.addRule(rule);
 
     }
 
@@ -75,11 +71,11 @@ public class RuleEngineHandler {
      */
     public static void updateRule(RunnerRuleModel runnerRuleModel) throws RuleCompilationException, JEFileNotFoundException, RuleFormatNotValidException {
 
-    	verifyRuleIsValid(runnerRuleModel);
+        verifyRuleIsValid(runnerRuleModel);
 
-		// FIXME runnerRuleModel.getRuleName() null
+        // FIXME runnerRuleModel.getRuleName() null
         Rule rule = new Rule(runnerRuleModel.getRuleId(), runnerRuleModel.getProjectId(), runnerRuleModel.getRuleName(),
-								runnerRuleModel.getProjectName(), runnerRuleModel.getFormat(), runnerRuleModel.getRulePath());
+                runnerRuleModel.getProjectName(), runnerRuleModel.getFormat(), runnerRuleModel.getRulePath());
 
         rule.setTopics(runnerRuleModel.getTopics());
 
@@ -88,123 +84,120 @@ public class RuleEngineHandler {
     }
 
 
+    public static void injectData(String projectId, JEObject instance) {
+        try {
 
-	public static void injectData(String projectId, JEObject instance) {
-		try {
+            RuleEngine.assertFact(projectId, instance);
 
-			RuleEngine.assertFact(projectId, instance);
+        } catch (Exception e) {
+            LoggerUtils.logException(e);
+            JELogger.warn(JEMessages.ADD_INSTANCE_FAILED + e.getMessage(),
+                    LogCategory.RUNTIME, projectId,
+                    LogSubModule.RULE, null);
+        }
 
-		} catch (Exception e) {
-			LoggerUtils.logException(e);
-			JELogger.warn(JEMessages.ADD_INSTANCE_FAILED + e.getMessage(),
-					LogCategory.RUNTIME, projectId,
-					LogSubModule.RULE, null);
-		}
+    }
 
-	}
+    /*
+     * FIXME (function? duplicated?) start running a project given a project id
+     */
+    public static void runRuleEngineProject(String projectId) throws RulesNotFiredException, RuleBuildFailedException {
+        RuleEngine.fireRules(projectId);
+    }
 
-	/*
-	 * FIXME (function? duplicated?) start running a project given a project id
-	 */
-	public static  void runRuleEngineProject(String projectId) throws RulesNotFiredException, RuleBuildFailedException {
-		RuleEngine.fireRules(projectId);
-	}
-
-	/*
-	 * Start running the rule engine given a project id
-	 */
-	public static void startRuleEngineProjectExecution(String projectId) throws RulesNotFiredException, RuleBuildFailedException {
-		RuleEngine.fireRules(projectId);
-	}
+    /*
+     * Start running the rule engine given a project id
+     */
+    public static void startRuleEngineProjectExecution(String projectId) throws RulesNotFiredException, RuleBuildFailedException {
+        RuleEngine.fireRules(projectId);
+    }
 
 
     /*
      * FIXME (stop Rule engine not project) stop running a project given a project id
      */
-    public static void stopProjectRuleEngineExecution(String projectId)  {
+    public static void stopProjectRuleEngineExecution(String projectId) {
         RuleEngine.stopRuleExecution(projectId);
     }
 
-    
+
     /*
      * build project
      */
-	public static void buildProject(String projectId) throws RuleBuildFailedException {
-		RuleEngine.buildProject(projectId);
-		
-	}
+    public static void buildProject(String projectId) throws RuleBuildFailedException {
+        RuleEngine.buildProject(projectId);
 
-	/*
-	 * compile rule 
-	 */
-	public static void compileRule(RunnerRuleModel runnerRuleModel) throws RuleFormatNotValidException, RuleCompilationException, JEFileNotFoundException {
+    }
 
-		verifyRuleIsValid(runnerRuleModel);
+    /*
+     * compile rule
+     */
+    public static void compileRule(RunnerRuleModel runnerRuleModel) throws RuleFormatNotValidException, RuleCompilationException, JEFileNotFoundException {
+
+        verifyRuleIsValid(runnerRuleModel);
 
         Rule rule = new Rule(runnerRuleModel.getRuleId(), runnerRuleModel.getProjectId(), runnerRuleModel.getRuleName(),
-								runnerRuleModel.getProjectName(), runnerRuleModel.getFormat(), runnerRuleModel.getRulePath());
+                runnerRuleModel.getProjectName(), runnerRuleModel.getFormat(), runnerRuleModel.getRulePath());
 
         RuleEngine.compileRule(rule);
 
-	}
+    }
 
-	public static void deleteRule(String projectId,String ruleId) throws DeleteRuleException {
-		RuleEngine.deleteRule(projectId,ruleId);
-		
-	}
+    public static void deleteRule(String projectId, String ruleId) throws DeleteRuleException {
+        RuleEngine.deleteRule(projectId, ruleId);
 
-	public static void addEvent(JEEvent event) {
-		RuleEngine.assertFact(event.getJobEngineProjectID(), event);
-		
-	}
+    }
 
-	public static void deleteProjectRules(String projectId) {
-		JELogger.debug("[project id = " + projectId + "] " + JEMessages.DELETING_RULES,
-				LogCategory.RUNTIME, projectId,
-				LogSubModule.RULE,null);
-		RuleEngine.deleteProjectRules(projectId);
-	}
+    public static void addEvent(JEEvent event) {
+        RuleEngine.assertFact(event.getJobEngineProjectID(), event);
 
+    }
 
-	public static Set<String> getRuleTopics(String projectId, String ruleId) {
-		Rule rule = RuleEngine.getRule(projectId,ruleId);
-		if(rule!=null)
-		{
-			return rule.getTopics();
-		}
-		return new HashSet<>();
-	}
+    public static void deleteProjectRules(String projectId) {
+        JELogger.debug("[project id = " + projectId + "] " + JEMessages.DELETING_RULES,
+                LogCategory.RUNTIME, projectId,
+                LogSubModule.RULE, null);
+        RuleEngine.deleteProjectRules(projectId);
+    }
 
 
-	public static void addVariable(JEVariable variable) {
-		RuleEngine.assertFact(variable.getJobEngineProjectID(), variable);
-		
-	}
-
-	public static void deleteVariable(String projectId, String id) {
-		RuleEngine.deleteFact(projectId,id);
-		
-	}
-	
-	public static void deleteEvent(String projectId, String id) {
-		RuleEngine.deleteFact(projectId,id);
-		
-	}
+    public static Set<String> getRuleTopics(String projectId, String ruleId) {
+        Rule rule = RuleEngine.getRule(projectId, ruleId);
+        if (rule != null) {
+            return rule.getTopics();
+        }
+        return new HashSet<>();
+    }
 
 
-	public static void clearRuleTopics(String projectId, String ruleId) {
-		Rule rule = RuleEngine.getRule(projectId,ruleId);
-		if(rule!=null)
-		{
-			rule.getTopics().clear();
-		}
-		
-	}
+    public static void addVariable(JEVariable variable) {
+        RuleEngine.assertFact(variable.getJobEngineProjectID(), variable);
+
+    }
+
+    public static void deleteVariable(String projectId, String id) {
+        RuleEngine.deleteFact(projectId, id);
+
+    }
+
+    public static void deleteEvent(String projectId, String id) {
+        RuleEngine.deleteFact(projectId, id);
+
+    }
 
 
-	public static void reloadContainers() {
-		RuleEngine.reloadContainers();
-		
-	}
+    public static void clearRuleTopics(String projectId, String ruleId) {
+        Rule rule = RuleEngine.getRule(projectId, ruleId);
+        if (rule != null) {
+            rule.getTopics().clear();
+        }
+
+    }
+
+
+    public static void reloadContainers() {
+        RuleEngine.reloadContainers();
+
+    }
 
 }

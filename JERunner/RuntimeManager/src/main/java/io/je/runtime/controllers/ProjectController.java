@@ -42,12 +42,12 @@ public class ProjectController {
      * Run the whole project ( rules and workflows )
      * */
     @GetMapping(value = "/runProject/{projectId}/{projectName}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> runProject(@PathVariable String projectId,@PathVariable String projectName) {
+    public ResponseEntity<?> runProject(@PathVariable String projectId, @PathVariable String projectName) {
         try {
-            dispatcher.runProject(projectId,projectName);
+            dispatcher.runProject(projectId, projectName);
         } catch (Exception e) {
-			return JEExceptionHandler.handleException(e);
-		}
+            return JEExceptionHandler.handleException(e);
+        }
         return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.EXECUTING_PROJECT));
 
     }
@@ -56,9 +56,9 @@ public class ProjectController {
      * Stop the project
      * */
     @GetMapping(value = "/stopProject/{projectId}/{projectName}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> stopProject(@PathVariable String projectId,@PathVariable String projectName) {
-    	//TODO: add failed to stop project exception
-            dispatcher.stopProject(projectId,projectName);
+    public ResponseEntity<?> stopProject(@PathVariable String projectId, @PathVariable String projectName) {
+        //TODO: add failed to stop project exception
+        dispatcher.stopProject(projectId, projectName);
 
         return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.PROJECT_STOPPED));
 
@@ -72,18 +72,19 @@ public class ProjectController {
         try {
             dispatcher.removeProjectData(projectId);
         } catch (Exception e) {
-			return JEExceptionHandler.handleException(e);
-		}
+            return JEExceptionHandler.handleException(e);
+        }
         return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.PROJECT_DELETED));
 
     }
+
     /*
      * Get app log
      * */
     @GetMapping(value = "/getLog", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getLog() {
         //TODO: add failed to stop project exception
-       // List l = new ArrayList(JELogger.getQueue());
+        // List l = new ArrayList(JELogger.getQueue());
         //JELogger.getQueue().removeAll(JELogger.getQueue());
         return ResponseEntity.ok(JELogger.getQueue());
 

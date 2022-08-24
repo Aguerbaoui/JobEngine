@@ -8,16 +8,15 @@ import utils.string.StringUtilities;
 public class MessageEvent extends WorkflowBlock {
 
     private String eventId;
+    private boolean throwMessage;
 
     public String getEventId() {
         return eventId;
     }
 
-    private boolean throwMessage;
-
     public void setEventId(String eventId) {
         if (StringUtilities.isEmpty(eventId)) return;
-        if(eventId.equalsIgnoreCase(APIConstants.DEFAULT)) this.eventId = null;
+        if (eventId.equalsIgnoreCase(APIConstants.DEFAULT)) this.eventId = null;
         else
             this.eventId = eventId;
     }

@@ -16,7 +16,7 @@ public class CycleTimerEvent extends WorkflowBlock {
 
     public void setTimeCycle(String timeCycle) {
         if (StringUtilities.isEmpty(timeCycle)) return;
-        if(timeCycle.equalsIgnoreCase(APIConstants.DEFAULT)) this.timeCycle = null;
+        if (timeCycle.equalsIgnoreCase(APIConstants.DEFAULT)) this.timeCycle = null;
         else
             this.timeCycle = timeCycle;
     }
@@ -27,7 +27,7 @@ public class CycleTimerEvent extends WorkflowBlock {
 
     public void setEndDate(String endDate) {
         if (StringUtilities.isEmpty(endDate)) return;
-        if(endDate.equalsIgnoreCase(APIConstants.DEFAULT)) this.endDate = null;
+        if (endDate.equalsIgnoreCase(APIConstants.DEFAULT)) this.endDate = null;
         else
             this.endDate = endDate;
     }

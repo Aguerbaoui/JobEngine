@@ -10,7 +10,8 @@ public class JEField {
 
     private String name;
 
-    public  JEField() {}
+    public JEField() {
+    }
 
     public String getName() {
         return name;

@@ -12,7 +12,9 @@ public class JELib extends JEObject {
 
     private FileType fileType;
 
-    public JELib()  {}
+    public JELib() {
+    }
+
     public String getFilePath() {
         return filePath;
     }

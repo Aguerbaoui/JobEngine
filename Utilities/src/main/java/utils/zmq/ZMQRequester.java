@@ -28,7 +28,7 @@ public class ZMQRequester {
     public ZMQRequester(String url) {
         connectionUrl = url;
         this.context = new ZContext();
-     
+
     }
 
 

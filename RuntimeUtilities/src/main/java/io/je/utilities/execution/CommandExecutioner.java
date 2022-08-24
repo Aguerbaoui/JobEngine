@@ -29,9 +29,9 @@ public class CommandExecutioner {
 
     public static final String TASKKILL_PID = "taskkill /F /T /PID ";
 
-    private static Runtime rt = Runtime.getRuntime();
-
     public static final String classpathFolder = System.getenv(ConfigurationConstants.SIOTH_ENVIRONMENT_VARIABLE) + "\\..\\Job Engine\\libs\\*";
+
+    private static Runtime rt = Runtime.getRuntime();
 
     public static void compileCode(String filePath, boolean currentClassPath) throws InterruptedException, IOException, ClassLoadException {
         //currentClassPath = false;

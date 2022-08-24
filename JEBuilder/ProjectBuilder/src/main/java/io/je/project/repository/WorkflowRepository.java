@@ -8,11 +8,12 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 
-
 @Repository
-public interface WorkflowRepository extends MongoRepository<JEWorkflow,String>{
-	List<JEWorkflow> findByJobEngineProjectID (String projectId);
-	void deleteByJobEngineProjectID (String projectId);
-	List<JEWorkflow> findByJobEngineElementName(String jobEngineElementName);
+public interface WorkflowRepository extends MongoRepository<JEWorkflow, String> {
+    List<JEWorkflow> findByJobEngineProjectID(String projectId);
+
+    void deleteByJobEngineProjectID(String projectId);
+
+    List<JEWorkflow> findByJobEngineElementName(String jobEngineElementName);
 
 }

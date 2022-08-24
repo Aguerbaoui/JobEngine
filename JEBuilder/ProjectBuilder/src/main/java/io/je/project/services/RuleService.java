@@ -44,27 +44,51 @@ import java.util.stream.Collectors;
 public class RuleService {
 
     private static final String DEFAULT_DELETE_CONSTANT = "DELETED";
-
+    private static final LogSubModule RULE = LogSubModule.RULE;
+    private static final LogCategory CATEGORY = LogCategory.DESIGN_MODE;
     @Autowired
     RuleRepository ruleRepository;
-
     @Autowired
     @Lazy
     ClassService classService;
-
     @Autowired
     @Lazy
     AsyncRuleService asyncRuleService;
-
     @Autowired
     @Lazy
     ProjectService projectService;
 
-    private static final LogSubModule RULE = LogSubModule.RULE;
-    private static final LogCategory CATEGORY = LogCategory.DESIGN_MODE;
-
     /*
      * Add a rule to a project
+     */
+
+    /*
+     * Update rule status
+     * */
+    public static void updateRuleStatus(JERule rule) {
+
+        if (rule.isRunning() || rule.getStatus() == Status.RUNNING_NOT_UP_TO_DATE) {
+            if (rule.isBuilt()) {
+                rule.setStatus(Status.RUNNING);
+            } else {
+                rule.setStatus(Status.RUNNING_NOT_UP_TO_DATE);
+            }
+        } else {
+
+            if (rule.containsErrors()) {
+                rule.setStatus(Status.ERROR);
+            } else if (rule.isCompiled()) {
+                rule.setStatus(Status.STOPPED);
+            } else {
+                rule.setStatus(Status.NOT_BUILT);
+            }
+
+        }
+
+    }
+
+    /*
+     * delete rule from a project
      */
 
     public void createRule(String projectId, RuleModel ruleModel) throws ProjectNotFoundException,
@@ -108,7 +132,7 @@ public class RuleService {
     }
 
     /*
-     * delete rule from a project
+     * update rule : update rule attributes
      */
 
     public void deleteRule(String projectId, String ruleId)
@@ -140,10 +164,6 @@ public class RuleService {
         JELogger.info(JEMessages.RULE_DELETED, LogCategory.DESIGN_MODE, projectId, LogSubModule.RULE,
                 ruleId);
     }
-
-    /*
-     * update rule : update rule attributes
-     */
 
     public void updateRule(String projectId, RuleModel ruleModel)
             throws ProjectNotFoundException, LicenseNotActiveException, ProjectLoadException {
@@ -324,6 +344,10 @@ public class RuleService {
     }
 
     /*
+     * delete block
+     */
+
+    /*
      * update rule : update block in rule
      */
     public void updateBlockInRule(BlockModel blockModel) throws AddRuleBlockException, ProjectNotFoundException,
@@ -399,10 +423,6 @@ public class RuleService {
 
     }
 
-    /*
-     * delete block
-     */
-
     public void deleteBlock(String projectId, String ruleId, String blockId) throws ProjectNotFoundException,
             RuleNotFoundException, LicenseNotActiveException, ProjectLoadException {
         LicenseProperties.checkLicenseIsActive();
@@ -474,6 +494,10 @@ public class RuleService {
         return result;
     }
 
+    /*
+     * Retrieve list of all rules that exist in a project.
+     */
+
     private void cleanUpRule(JEProject project, String ruleId) throws JERunnerErrorException {
 
         String rulePrefix = IdManager.generateSubRulePrefix(ruleId);
@@ -487,10 +511,6 @@ public class RuleService {
         }
 
     }
-
-    /*
-     * Retrieve list of all rules that exist in a project.
-     */
 
     public Collection<RuleModel> getAllRules(String projectId)
             throws ProjectNotFoundException, LicenseNotActiveException, ProjectLoadException {
@@ -911,6 +931,29 @@ public class RuleService {
     }
 
     /*
+     * @Async public List<CompletableFuture<OperationStatusDetails>>
+     * compileRules1(String projectId, List<String> ruleIds) throws
+     * LicenseNotActiveException, ProjectNotFoundException {
+     * LicenseProperties.checkLicenseIsActive();
+     *
+     * System.out.println("----Compiling rules : "+ Instant.now() );
+     * if(ruleIds==null) {
+     *
+     * ruleIds = Collections.list(getProject(projectId).getRules().keys()); }
+     *
+     * ArrayList<CompletableFuture<OperationStatusDetails>> ruleFuture = new
+     * ArrayList<>(); for (String ruleId : ruleIds) {
+     * ruleFuture.add(asyncRuleService.compileRule(projectId, ruleId, true));
+     *
+     * }
+     *
+     *
+     * return ruleFuture;
+     *
+     * }
+     */
+
+    /*
      * Stop list of rules
      * */
     public List<OperationStatusDetails> stopRules(String projectId, List<String> ruleIds)
@@ -933,29 +976,6 @@ public class RuleService {
         return results;
 
     }
-
-    /*
-     * @Async public List<CompletableFuture<OperationStatusDetails>>
-     * compileRules1(String projectId, List<String> ruleIds) throws
-     * LicenseNotActiveException, ProjectNotFoundException {
-     * LicenseProperties.checkLicenseIsActive();
-     *
-     * System.out.println("----Compiling rules : "+ Instant.now() );
-     * if(ruleIds==null) {
-     *
-     * ruleIds = Collections.list(getProject(projectId).getRules().keys()); }
-     *
-     * ArrayList<CompletableFuture<OperationStatusDetails>> ruleFuture = new
-     * ArrayList<>(); for (String ruleId : ruleIds) {
-     * ruleFuture.add(asyncRuleService.compileRule(projectId, ruleId, true));
-     *
-     * }
-     *
-     *
-     * return ruleFuture;
-     *
-     * }
-     */
 
     /*
      * Compile list of rules
@@ -982,31 +1002,6 @@ public class RuleService {
                 .collect(Collectors.toList());
 
         return CompletableFuture.completedFuture(results);
-
-    }
-
-    /*
-     * Update rule status
-     * */
-    public static void updateRuleStatus(JERule rule) {
-
-        if (rule.isRunning() || rule.getStatus() == Status.RUNNING_NOT_UP_TO_DATE) {
-            if (rule.isBuilt()) {
-                rule.setStatus(Status.RUNNING);
-            } else {
-                rule.setStatus(Status.RUNNING_NOT_UP_TO_DATE);
-            }
-        } else {
-
-            if (rule.containsErrors()) {
-                rule.setStatus(Status.ERROR);
-            } else if (rule.isCompiled()) {
-                rule.setStatus(Status.STOPPED);
-            } else {
-                rule.setStatus(Status.NOT_BUILT);
-            }
-
-        }
 
     }
 
