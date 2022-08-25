@@ -30,4 +30,13 @@ public class ConversionUtilities {
         return date1;
 
     }
+    public static String convertIfBoolean(String var) {
+        if (var.equalsIgnoreCase("true")) {
+            return "1";
+        } else if (var.equalsIgnoreCase("false")) {
+            return "0";
+        }
+        return var;
+    }
+
 }
