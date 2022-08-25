@@ -180,7 +180,7 @@
                 <executions>
                     <execution>
                         <configuration>
-                            <mainClass>io.je.runtime.JERunnerApplication</mainClass>
+                            <mainClass>io.je.runtime.RuntimeManagerApplication</mainClass>
                         </configuration>
                     </execution>
                 </executions>

@@ -9,7 +9,7 @@ public class ServletInitializer extends SpringBootServletInitializer {
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
         //SIOTHConfigUtility.init();
-        return application.sources(MonitorApplication.class).bannerMode(Banner.Mode.OFF);
+        return application.sources(JEMonitorApplication.class).bannerMode(Banner.Mode.OFF);
     }
 
 }

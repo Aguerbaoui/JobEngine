@@ -733,7 +733,7 @@ public class ProjectContainer {
 
         if (results.hasMessages(ERROR)) {
             JELogger.error(getKieBuilderMessages(results.getMessages(ERROR)), LogCategory.RUNTIME, projectId, LogSubModule.RULE,
-                    rule.getJobEngineElementID());
+                    rule.getJobEngineElementID().substring(1 , 37)); // FIXME get rule ID instead of substring
             throw new RuleCompilationException(JEMessages.RULE_CONTAINS_ERRORS, getKieBuilderMessages(results.getMessages(ERROR)));
         }
 

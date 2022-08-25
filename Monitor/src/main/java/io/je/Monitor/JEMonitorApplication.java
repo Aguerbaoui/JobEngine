@@ -7,11 +7,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import java.util.HashMap;
 
 @SpringBootApplication
-public class MonitorApplication {
+public class JEMonitorApplication {
 
     public static void main(String[] args) {
 
-        SpringApplication app = new SpringApplication(MonitorApplication.class);
+        SpringApplication app = new SpringApplication(JEMonitorApplication.class);
         app.setBannerMode(Banner.Mode.OFF);
         HashMap<String, Object> properties = new HashMap<>();
         properties.put("server.port", "59088");
