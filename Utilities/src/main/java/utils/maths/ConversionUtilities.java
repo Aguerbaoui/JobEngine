@@ -18,13 +18,14 @@ public class ConversionUtilities {
     }
 
     // DO NOT REMOVE, USED in .drl (Drools)
-    public static Date convertTypeDate(String dateFormat, String dateAsString) {
+    public static Date convertTypeDate(String dateFormat, String dateAsString) throws ParseException {
         Date date1 = null;
         try {
             date1 = new SimpleDateFormat(dateFormat).parse(dateAsString);
         } catch (ParseException e) {
             // FIXME may be log with JELogger
             LoggerUtils.logException(e);
+            throw e;
         }
         return date1;
 
