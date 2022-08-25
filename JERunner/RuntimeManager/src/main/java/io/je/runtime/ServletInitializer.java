@@ -10,7 +10,7 @@ public class ServletInitializer extends SpringBootServletInitializer {
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
 
-        return application.sources(JERunnerApplication.class).bannerMode(Banner.Mode.OFF);
+        return application.sources(RuntimeManagerApplication.class).bannerMode(Banner.Mode.OFF);
 
     }
 

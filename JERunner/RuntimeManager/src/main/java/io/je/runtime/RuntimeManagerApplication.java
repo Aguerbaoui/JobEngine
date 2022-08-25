@@ -14,12 +14,12 @@ import javax.annotation.PreDestroy;
 import java.util.HashMap;
 
 @SpringBootApplication
-public class JERunnerApplication {
+public class RuntimeManagerApplication {
 
 
     public static void main(String[] args) {
 
-        SpringApplication app = new SpringApplication(JERunnerApplication.class);
+        SpringApplication app = new SpringApplication(RuntimeManagerApplication.class);
         app.setBannerMode(Banner.Mode.OFF);
         HashMap<String, Object> properties = new HashMap<>();
         properties.put("server.port", "59288");
