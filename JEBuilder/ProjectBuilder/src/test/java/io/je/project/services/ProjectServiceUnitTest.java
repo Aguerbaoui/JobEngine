@@ -16,7 +16,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @SpringBootTest
 @ActiveProfiles("test")
 @RunWith(SpringJUnit4ClassRunner.class)
-class ProjectServiceTest {
+class ProjectServiceUnitTest {
     @Autowired
     private ProjectService projectService;
 

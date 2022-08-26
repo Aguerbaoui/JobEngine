@@ -16,11 +16,10 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import javax.servlet.http.HttpServletResponse;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class WorkflowControllerTest {
+public class WorkflowControllerUnitTest {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
     @InjectMocks

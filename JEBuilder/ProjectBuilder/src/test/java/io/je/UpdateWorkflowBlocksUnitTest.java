@@ -23,7 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class UpdateWorkflowBlocksTest {
+public class UpdateWorkflowBlocksUnitTest {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
     @InjectMocks
