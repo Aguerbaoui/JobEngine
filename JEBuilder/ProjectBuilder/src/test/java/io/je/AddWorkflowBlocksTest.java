@@ -216,4 +216,5 @@ public class AddWorkflowBlocksTest {
         //JEResponse response = objectMapper.readValue(result.getResponse().getContentAsString(), JEResponse.class);
         assertEquals(200, result.getResponse().getStatus());
     }
+
 }

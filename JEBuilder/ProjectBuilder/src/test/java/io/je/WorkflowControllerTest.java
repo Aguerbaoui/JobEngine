@@ -13,6 +13,8 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import javax.servlet.http.HttpServletResponse;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -26,6 +28,8 @@ public class WorkflowControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
+    private int EXPECTED_RESPONSE = HttpServletResponse.SC_UNAUTHORIZED; // FIXME manage authentication to get : 200 OK
+
     /******************************************** ADD BLOCKS TESTS *****************************************************/
     @Test
     public void addWorkflowTest() throws Exception {
@@ -37,13 +41,9 @@ public class WorkflowControllerTest {
         MvcResult result = mockMvc.perform(requestBuilder)
         // FIXME auth => .andExpect(status().isOk())
                             .andReturn();
-        //JEResponse response = objectMapper.readValue(result.getResponse().getContentAsString(), JEResponse.class);
 
-        // No authentication : 401 Unauthorized
-        assertEquals(401, result.getResponse().getStatus());
+        assertEquals(EXPECTED_RESPONSE, result.getResponse().getStatus());
 
-        // FIXME manage authentication to get : 200 OK
-        //assertEquals(200, result.getResponse().getStatus());
     }
 
 
