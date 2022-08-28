@@ -13,6 +13,8 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import javax.servlet.http.HttpServletResponse;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -25,6 +27,9 @@ public class AddWorkflowBlocksUnitTest {
     @Autowired
     private MockMvc mockMvc;
 
+    private int EXPECTED_RESPONSE = HttpServletResponse.SC_OK;
+
+
     @Test
     public void addStartBlockTest() throws Exception {
         String model = "{\"id\":\"b-075c-cbaa-1658-9ccf\",\"type\":\"start\",\"attributes\":{\"name\":\"Start1\",\"description\":\"\"}," +
@@ -33,7 +38,7 @@ public class AddWorkflowBlocksUnitTest {
                 .accept(MediaType.APPLICATION_JSON_VALUE).contentType("application/json");
         MvcResult result = mockMvc.perform(requestBuilder).andExpect(status().isOk()).andReturn();
         //JEResponse response = objectMapper.readValue(result.getResponse().getContentAsString(), JEResponse.class);
-        assertEquals(200, result.getResponse().getStatus());
+        assertEquals(EXPECTED_RESPONSE, result.getResponse().getStatus());
     }
 
     @Test
@@ -44,7 +49,7 @@ public class AddWorkflowBlocksUnitTest {
                 .accept(MediaType.APPLICATION_JSON_VALUE).contentType("application/json");
         MvcResult result = mockMvc.perform(requestBuilder).andExpect(status().isOk()).andReturn();
         //JEResponse response = objectMapper.readValue(result.getResponse().getContentAsString(), JEResponse.class);
-        assertEquals(200, result.getResponse().getStatus());
+        assertEquals(EXPECTED_RESPONSE, result.getResponse().getStatus());
     }
 
     @Test
@@ -56,7 +61,7 @@ public class AddWorkflowBlocksUnitTest {
                 .accept(MediaType.APPLICATION_JSON_VALUE).contentType("application/json");
         MvcResult result = mockMvc.perform(requestBuilder).andExpect(status().isOk()).andReturn();
         //JEResponse response = objectMapper.readValue(result.getResponse().getContentAsString(), JEResponse.class);
-        assertEquals(200, result.getResponse().getStatus());
+        assertEquals(EXPECTED_RESPONSE, result.getResponse().getStatus());
     }
 
     @Test
@@ -68,7 +73,7 @@ public class AddWorkflowBlocksUnitTest {
                 .accept(MediaType.APPLICATION_JSON_VALUE).contentType("application/json");
         MvcResult result = mockMvc.perform(requestBuilder).andExpect(status().isOk()).andReturn();
         //JEResponse response = objectMapper.readValue(result.getResponse().getContentAsString(), JEResponse.class);
-        assertEquals(200, result.getResponse().getStatus());
+        assertEquals(EXPECTED_RESPONSE, result.getResponse().getStatus());
     }
 
     @Test
@@ -80,7 +85,7 @@ public class AddWorkflowBlocksUnitTest {
                 .accept(MediaType.APPLICATION_JSON_VALUE).contentType("application/json");
         MvcResult result = mockMvc.perform(requestBuilder).andExpect(status().isOk()).andReturn();
         //JEResponse response = objectMapper.readValue(result.getResponse().getContentAsString(), JEResponse.class);
-        assertEquals(200, result.getResponse().getStatus());
+        assertEquals(EXPECTED_RESPONSE, result.getResponse().getStatus());
     }
 
     @Test
@@ -90,7 +95,7 @@ public class AddWorkflowBlocksUnitTest {
                 .accept(MediaType.APPLICATION_JSON_VALUE).contentType("application/json");
         MvcResult result = mockMvc.perform(requestBuilder).andExpect(status().isOk()).andReturn();
         //JEResponse response = objectMapper.readValue(result.getResponse().getContentAsString(), JEResponse.class);
-        assertEquals(200, result.getResponse().getStatus());
+        assertEquals(EXPECTED_RESPONSE, result.getResponse().getStatus());
     }
 
 
@@ -101,7 +106,7 @@ public class AddWorkflowBlocksUnitTest {
                 .accept(MediaType.APPLICATION_JSON_VALUE).contentType("application/json");
         MvcResult result = mockMvc.perform(requestBuilder).andExpect(status().isOk()).andReturn();
         //JEResponse response = objectMapper.readValue(result.getResponse().getContentAsString(), JEResponse.class);
-        assertEquals(200, result.getResponse().getStatus());
+        assertEquals(EXPECTED_RESPONSE, result.getResponse().getStatus());
     }
 
     @Test
@@ -111,7 +116,7 @@ public class AddWorkflowBlocksUnitTest {
                 .accept(MediaType.APPLICATION_JSON_VALUE).contentType("application/json");
         MvcResult result = mockMvc.perform(requestBuilder).andExpect(status().isOk()).andReturn();
         //JEResponse response = objectMapper.readValue(result.getResponse().getContentAsString(), JEResponse.class);
-        assertEquals(200, result.getResponse().getStatus());
+        assertEquals(EXPECTED_RESPONSE, result.getResponse().getStatus());
     }
 
     @Test
@@ -121,7 +126,7 @@ public class AddWorkflowBlocksUnitTest {
                 .accept(MediaType.APPLICATION_JSON_VALUE).contentType("application/json");
         MvcResult result = mockMvc.perform(requestBuilder).andExpect(status().isOk()).andReturn();
         //JEResponse response = objectMapper.readValue(result.getResponse().getContentAsString(), JEResponse.class);
-        assertEquals(200, result.getResponse().getStatus());
+        assertEquals(EXPECTED_RESPONSE, result.getResponse().getStatus());
     }
 
     @Test
@@ -131,7 +136,7 @@ public class AddWorkflowBlocksUnitTest {
                 .accept(MediaType.APPLICATION_JSON_VALUE).contentType("application/json");
         MvcResult result = mockMvc.perform(requestBuilder).andExpect(status().isOk()).andReturn();
         //JEResponse response = objectMapper.readValue(result.getResponse().getContentAsString(), JEResponse.class);
-        assertEquals(200, result.getResponse().getStatus());
+        assertEquals(EXPECTED_RESPONSE, result.getResponse().getStatus());
     }
 
     @Test
@@ -144,7 +149,7 @@ public class AddWorkflowBlocksUnitTest {
                 .accept(MediaType.APPLICATION_JSON_VALUE).contentType("application/json");
         MvcResult result = mockMvc.perform(requestBuilder).andExpect(status().isOk()).andReturn();
         //JEResponse response = objectMapper.readValue(result.getResponse().getContentAsString(), JEResponse.class);
-        assertEquals(200, result.getResponse().getStatus());
+        assertEquals(EXPECTED_RESPONSE, result.getResponse().getStatus());
     }
 
     @Test
@@ -154,7 +159,7 @@ public class AddWorkflowBlocksUnitTest {
                 .accept(MediaType.APPLICATION_JSON_VALUE).contentType("application/json");
         MvcResult result = mockMvc.perform(requestBuilder).andExpect(status().isOk()).andReturn();
         //JEResponse response = objectMapper.readValue(result.getResponse().getContentAsString(), JEResponse.class);
-        assertEquals(200, result.getResponse().getStatus());
+        assertEquals(EXPECTED_RESPONSE, result.getResponse().getStatus());
     }
 
     @Test
@@ -164,7 +169,7 @@ public class AddWorkflowBlocksUnitTest {
                 .accept(MediaType.APPLICATION_JSON_VALUE).contentType("application/json");
         MvcResult result = mockMvc.perform(requestBuilder).andExpect(status().isOk()).andReturn();
         //JEResponse response = objectMapper.readValue(result.getResponse().getContentAsString(), JEResponse.class);
-        assertEquals(200, result.getResponse().getStatus());
+        assertEquals(EXPECTED_RESPONSE, result.getResponse().getStatus());
     }
 
     @Test
@@ -174,7 +179,7 @@ public class AddWorkflowBlocksUnitTest {
                 .accept(MediaType.APPLICATION_JSON_VALUE).contentType("application/json");
         MvcResult result = mockMvc.perform(requestBuilder).andExpect(status().isOk()).andReturn();
         //JEResponse response = objectMapper.readValue(result.getResponse().getContentAsString(), JEResponse.class);
-        assertEquals(200, result.getResponse().getStatus());
+        assertEquals(EXPECTED_RESPONSE, result.getResponse().getStatus());
     }
 
     @Test
@@ -184,7 +189,7 @@ public class AddWorkflowBlocksUnitTest {
                 .accept(MediaType.APPLICATION_JSON_VALUE).contentType("application/json");
         MvcResult result = mockMvc.perform(requestBuilder).andExpect(status().isOk()).andReturn();
         //JEResponse response = objectMapper.readValue(result.getResponse().getContentAsString(), JEResponse.class);
-        assertEquals(200, result.getResponse().getStatus());
+        assertEquals(EXPECTED_RESPONSE, result.getResponse().getStatus());
     }
 
     @Test
@@ -194,7 +199,7 @@ public class AddWorkflowBlocksUnitTest {
                 .accept(MediaType.APPLICATION_JSON_VALUE).contentType("application/json");
         MvcResult result = mockMvc.perform(requestBuilder).andExpect(status().isOk()).andReturn();
         //JEResponse response = objectMapper.readValue(result.getResponse().getContentAsString(), JEResponse.class);
-        assertEquals(200, result.getResponse().getStatus());
+        assertEquals(EXPECTED_RESPONSE, result.getResponse().getStatus());
     }
 
     @Test
@@ -204,7 +209,7 @@ public class AddWorkflowBlocksUnitTest {
                 .accept(MediaType.APPLICATION_JSON_VALUE).contentType("application/json");
         MvcResult result = mockMvc.perform(requestBuilder).andExpect(status().isOk()).andReturn();
         //JEResponse response = objectMapper.readValue(result.getResponse().getContentAsString(), JEResponse.class);
-        assertEquals(200, result.getResponse().getStatus());
+        assertEquals(EXPECTED_RESPONSE, result.getResponse().getStatus());
     }
 
     @Test
@@ -214,7 +219,8 @@ public class AddWorkflowBlocksUnitTest {
                 .accept(MediaType.APPLICATION_JSON_VALUE).contentType("application/json");
         MvcResult result = mockMvc.perform(requestBuilder).andExpect(status().isOk()).andReturn();
         //JEResponse response = objectMapper.readValue(result.getResponse().getContentAsString(), JEResponse.class);
-        assertEquals(200, result.getResponse().getStatus());
+        assertEquals(EXPECTED_RESPONSE, result.getResponse().getStatus());
     }
+
 
 }

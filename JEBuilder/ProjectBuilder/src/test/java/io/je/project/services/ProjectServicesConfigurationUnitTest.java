@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Profile;
 
 @Profile("test")
 @Configuration
-public class ProjectServicesTestConfiguration {
+public class ProjectServicesConfigurationUnitTest {
     @Bean
     @Primary
     public ProjectService productService() {
