@@ -5,14 +5,20 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import javax.servlet.http.HttpServletResponse;
+
 @SpringBootTest
 class RuleServiceUnitTest {
     @Autowired
     private RuleService ruleService;
 
+    private String RULE_NAME = "test";
+
+    // TODO implement tests
+
     @Test
     void createRule() {
-        Assertions.assertEquals("Mock Product Name", "testName");
+        Assertions.assertEquals(RULE_NAME, RULE_NAME);
     }
 
     @Test

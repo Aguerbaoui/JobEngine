@@ -20,6 +20,8 @@ class ProjectServiceUnitTest {
     @Autowired
     private ProjectService projectService;
 
+    // TODO implement tests
+
     @Test
     void saveProject() {
 
