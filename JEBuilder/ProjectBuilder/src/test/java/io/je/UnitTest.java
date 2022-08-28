@@ -17,14 +17,14 @@ import org.springframework.test.web.servlet.MockMvc;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.when;
+
 
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("unit-test")
 public class UnitTest {
-
-    @InjectMocks
-    LicenseProperties licenseProperties;
 
     @Autowired
     public MockMvc mockMvc;
@@ -37,9 +37,11 @@ public class UnitTest {
 
         try (MockedStatic<LicenseProperties> licenseProperties = Mockito.mockStatic(LicenseProperties.class)) {
 
-            licenseProperties.when(LicenseProperties::init).thenReturn("No License check for Unit Tests");
+            licenseProperties.when(LicenseProperties::init).thenThrow(NullPointerException.class);//Return(null);
 
             licenseProperties.when(LicenseProperties::licenseIsActive).thenReturn(true);
+
+            assertEquals(true, LicenseProperties.licenseIsActive(), "licenseIsActive mocked to true");
 
         }
 
