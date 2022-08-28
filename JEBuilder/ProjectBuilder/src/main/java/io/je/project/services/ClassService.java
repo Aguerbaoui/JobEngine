@@ -72,7 +72,7 @@ public class ClassService {
     ProjectService projectService;
 
     /*
-        FIXME commented as Exception below, check if OK?
+        FIXME commented as Exception below, check if OK? Also remove configurationService if not needed.
 
         Unsatisfied dependency expressed through field 'configurationService';
         nested exception is org.springframework.beans.factory.BeanCurrentlyInCreationException:
@@ -80,9 +80,10 @@ public class ClassService {
         Requested bean is currently in creation: Is there an unresolvable circular reference?
 
     @Autowired
+     */
+    @Lazy
     ConfigurationService configurationService;
 
-     */
 
     Map<String, JEClass> loadedClasses = new HashMap<String, JEClass>();
 

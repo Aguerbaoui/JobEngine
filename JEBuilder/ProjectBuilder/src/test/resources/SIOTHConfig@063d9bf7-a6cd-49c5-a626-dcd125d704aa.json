@@ -1,0 +1,121 @@
+{
+  "Nodes": {
+    "SIOTHMasterNode": "192.168.4.38",
+    "##RemoteNode##": "192.168.4.38"
+  },
+  "NodeManager": "SIOTHMasterNode",
+  "MongoConfiguration": {
+    "MongoServerHostName": "127.0.0.1",
+    "MongoServerPort": 27017,
+    "MongoUserName": "",
+    "MongoPassword": ""
+  },
+  "InfluxDBConfiguration": {
+    "InfluxDBURL": "http://127.0.0.1:8086",
+    "InfluxUserName": "SIOTHAdmin",
+    "InfluxDBPassword": "SIOTHAdmin",
+    "StoreAndForwardDBName": "myDb",
+    "LogMeasurementName": "SIOTHLog",
+    "MonitoringMeasurementName": "SIOTHMonitoring",
+    "DataModelMeasurementName": "SIOTHDataModel",
+    "InfluxRetentionDuration": "0h"
+  },
+  "RedisConfiguration": {
+    "HostAdress": "127.0.0.1",
+    "Port": 6379,
+    "Password": "",
+    "User": "",
+    "Channel": "SIOTH##RutimeLog"
+  },
+  "UAServerAddressSpaceSeparator": "~",
+  "PORTS": {
+    "NodeManagerPort": 59150,
+    "MonitoringPubPort": 59007,
+    "TrackingPort": 59089,
+    "SignalRHubPort": 59070,
+    "DF_ResponsePort": 59500,
+    "Tracker_ResponsePort": 59501,
+    "JE_ResponsePort": 59502,
+    "ProjectManagementRestAPI_ResponseAddress": 6690,
+    "JobEngine_ResponseAddress": 6680,
+    "SIOTHLicensePort": 59077
+  },
+  "JobEngine": {
+    "JERunner": "http://localhost:59088/RuntimeManager/",
+    "JEBuilder": "http://localhost:59088/ProjectBuilder/",
+    "CheckHealth": 5000,
+    "LibraryMaxFileSize": "100MB ",
+    "MaxMemory": 4096,
+    "GeneratedClassesPath": "C:\\"
+  },
+  "DataModelPORTS": {
+    "DMRestAPI_ConfigurationPubAddress": 59555,
+    "DMRestAPI_ReqAddress": 59638,
+    "DMService_ReqAddress": 59639,
+    "DMService_PubAddress": 59554
+  },
+  "Connectors": {
+    "Protocols": [
+      "MQTT",
+      "OPCUA",
+      "BACnet",
+      "CANBus",
+      "DNP3",
+      "HartIP",
+      "IEC 60870-5-104",
+      "Modbus",
+      "OPC",
+      "J1939",
+      "S7",
+      "FTP",
+      "S7",
+      "REST Client",
+      "SNMP"
+    ],
+    "Data Stores": [
+      "CSV",
+      "InfluxDB",
+      "MongoDB",
+      "MSAccess",
+      "MySQL",
+      "ODBC",
+      "OLEDB",
+      "ORACLE",
+      "PostgreSQL",
+      "Redis",
+      "SQLServer",
+      "Kafka",
+      "OSIsoft PI",
+      "OSIsoft PI AF"
+    ],
+    "Network Watchers": [
+      "Ping"
+    ],
+    "Brokers": [
+      "KNetBridge",
+      "MQTTBroker",
+      "OPCUASERVER"
+    ]
+  },
+  "DateFormat": "yyyy-MM-dd HH:mm:ss.SSS",
+  "APIS": {
+    "EmailAPI": {
+      "Address": "http://192.168.4.38:14003/api/SIOTHEmail/",
+      "Credentials": {
+        "Username": "",
+        "Password": "",
+        "useBasicAuth": false
+      }
+    },
+    "DatabaseAPI": {
+      "Address": "http://192.168.4.38:14002",
+      "Credentials": {
+        "Username": "",
+        "Password": "",
+        "useBasicAuth": false
+      }
+    }
+  },
+  "isKillProcess": true,
+  "waitForKill": 5000
+}
