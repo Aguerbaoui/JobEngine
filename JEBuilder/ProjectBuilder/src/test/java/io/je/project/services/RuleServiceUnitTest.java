@@ -1,15 +1,14 @@
 package io.je.project.services;
 
+import io.je.UnitTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.mockito.Mock;
 
-import javax.servlet.http.HttpServletResponse;
 
-@SpringBootTest
-class RuleServiceUnitTest {
-    @Autowired
+
+class RuleServiceUnitTest extends UnitTest {
+    @Mock
     private RuleService ruleService;
 
     private String RULE_NAME = "test";

@@ -1,12 +1,11 @@
-package io.je;
+package io.je.project.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.je.UnitTest;
 import io.je.project.controllers.WorkflowController;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -18,14 +17,11 @@ import javax.servlet.http.HttpServletResponse;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
-@AutoConfigureMockMvc
-public class AddWorkflowBlocksUnitTest {
-    private final ObjectMapper objectMapper = new ObjectMapper();
+
+public class WorkflowAddBlocksUnitTest extends UnitTest {
+
     @InjectMocks
     WorkflowController workflowController;
-    @Autowired
-    private MockMvc mockMvc;
 
     private int EXPECTED_RESPONSE = HttpServletResponse.SC_OK;
 

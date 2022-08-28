@@ -1,14 +1,13 @@
-package io.je;
+package io.je.project.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.je.UnitTest;
 import io.je.project.controllers.WorkflowController;
 import io.je.utilities.models.WorkflowBlockModel;
 import io.je.utilities.models.WorkflowModel;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -22,17 +21,16 @@ import java.util.HashMap;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
-@AutoConfigureMockMvc
-public class UpdateWorkflowBlocksUnitTest {
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
+public class WorkflowUpdateBlocksUnitTest extends UnitTest {
+
     @InjectMocks
     WorkflowController workflowController;
-    @Autowired
-    private MockMvc mockMvc;
 
     private int EXPECTED_RESPONSE = HttpServletResponse.SC_OK;
+
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
 
     @Test
     public void updateWorkflowTest() throws Exception {
