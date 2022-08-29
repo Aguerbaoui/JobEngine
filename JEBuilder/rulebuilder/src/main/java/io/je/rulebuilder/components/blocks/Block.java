@@ -91,12 +91,6 @@ public abstract class Block extends JEObject {
 
     public abstract String getAsOperandExpression() throws RuleBuildFailedException;
 
-
-    public String getBlockNameAsVariable() {
-        return blockName.replaceAll("\\s+", "");
-    }
-
-
     /*
      * get name of variable holding he value expressed by input number index: ex: $age, $block1 ...
      */
@@ -113,6 +107,9 @@ public abstract class Block extends JEObject {
         return var;
     }
 
+    public String getBlockNameAsVariable() {
+        return blockName.replaceAll("\\s+", "");
+    }
 
     public String getRuleId() {
         return ruleId;
@@ -316,4 +313,7 @@ public abstract class Block extends JEObject {
     }
 
 
+    public String asDouble(String val) {
+        return "JEMathUtils.castToDouble(\"" + this.jobEngineProjectID + "\",\"" + this.ruleId + "\",\"" + this.blockName + "\"," + val + " ) "; //" Double.valueOf( "+val+" )";
+    }
 }

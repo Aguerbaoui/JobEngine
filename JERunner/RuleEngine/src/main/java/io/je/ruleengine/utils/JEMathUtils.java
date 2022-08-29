@@ -10,7 +10,7 @@ import utils.log.LogSubModule;
 public class JEMathUtils {
 
 
-    public static double castToDouble(Object x) throws CastToDoubleException {
+    public static double castToDouble(String projectId, String ruleId, String blockId, Object x) throws CastToDoubleException {
         try {
             if (x instanceof Float) {
                 return ((Float) x).doubleValue();
@@ -23,10 +23,10 @@ public class JEMathUtils {
             } else if (x instanceof Byte) {
                 return ((Byte) x).doubleValue();
             }
-
+   
             return (double) x;
         } catch (Exception exp) {
-            JELogger.logException(exp);
+            JELogger.error(exp.getMessage(), null, projectId, LogSubModule.RULE, ruleId, blockId);
             throw new CastToDoubleException(exp.getMessage());
         }
     }

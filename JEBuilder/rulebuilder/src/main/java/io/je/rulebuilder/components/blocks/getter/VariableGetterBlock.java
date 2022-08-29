@@ -48,11 +48,6 @@ public class VariableGetterBlock extends ConditionBlock {
 
 
     @Override
-    public String getExpression() {
-        return blockName.replaceAll("\\s+", "") + " : JEVariable ( jobEngineElementID == \"" + variableId + "\", " + getAttributeVariableName() + " : value )";
-    }
-
-    @Override
     public String getNotExpression() throws RuleBuildFailedException {
         // FIXME check if OK
         StringBuilder expression = new StringBuilder();
@@ -62,17 +57,18 @@ public class VariableGetterBlock extends ConditionBlock {
         return expression.toString();
     }
 
+    public String getAttributeVariableName() {
+        return blockName.replaceAll("\\s+", "") + "Value";
+    }
+
     @Override
     public String getReference(String optional) {
         return getBlockNameAsVariable() + ".getValue()";
     }
 
-    public String asDouble(String val) {
-        return "JEMathUtils.castToDouble(" + val + " )"; //" Double.valueOf( "+val+" )";
-    }
-
-    public String getAttributeVariableName() {
-        return blockName.replaceAll("\\s+", "") + "Value";
+    @Override
+    public String getExpression() {
+        return blockName.replaceAll("\\s+", "") + " : JEVariable ( jobEngineElementID == \"" + variableId + "\"," + getAttributeVariableName() + " : value )";
     }
 
     @Override
