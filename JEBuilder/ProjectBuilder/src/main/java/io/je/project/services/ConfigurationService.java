@@ -13,8 +13,6 @@ import utils.log.LogSubModule;
 import utils.log.LoggerUtils;
 import utils.zmq.ZMQBind;
 
-import java.util.Arrays;
-
 import static io.je.utilities.constants.JEMessages.ZMQ_RESPONSE_STARTED;
 import static io.je.utilities.constants.JEMessages.ZMQ_RESPONSE_START_FAIL;
 
@@ -25,19 +23,41 @@ import static io.je.utilities.constants.JEMessages.ZMQ_RESPONSE_START_FAIL;
 public class ConfigurationService {
 
 
+    static boolean runnerStatus = true;
+    final int healthCheck = SIOTHConfigUtility.getSiothConfig().getJobEngine().getCheckHealthEveryMs();
     @Autowired
     ProjectService projectService;
-
     @Autowired
     ProjectZMQResponder responser;
-
     @Autowired
     ClassService classService;
 
-    static boolean runnerStatus = true;
+    /*
+     * check JERunner health
+     * */
+    private static boolean checkRunnerHealth() {
+        try {
+            runnerStatus = JERunnerAPIHandler.checkRunnerHealth();
+        } catch (Exception e) {
+            JEExceptionHandler.handleException(e);
+            return false;
+        }
+        return runnerStatus;
+    }
 
-    final int healthCheck = SIOTHConfigUtility.getSiothConfig().getJobEngine().getCheckHealthEveryMs();
+    /*
+     * Returns JERunner status
+     * */
+    public static boolean isRunnerStatus() {
+        return runnerStatus;
+    }
 
+    /*
+     * Set JERunner status
+     * */
+    public static void setRunnerStatus(boolean status) {
+        runnerStatus = status;
+    }
 
     /*
      * init configuration : > load config from database >update config
@@ -60,7 +80,6 @@ public class ConfigurationService {
 
     }
 
-
     /*
      * Initialize JE ZMQ responder
      * */
@@ -79,7 +98,6 @@ public class ConfigurationService {
         }
 
     }
-
 
     /*
      * Update JERunner with projects and classes data
@@ -127,33 +145,6 @@ public class ConfigurationService {
             }
         }).start();
 
-    }
-
-    /*
-     * check JERunner health
-     * */
-    private static boolean checkRunnerHealth() {
-        try {
-            runnerStatus = JERunnerAPIHandler.checkRunnerHealth();
-        } catch (Exception e) {
-            JEExceptionHandler.handleException(e);
-            return false;
-        }
-        return runnerStatus;
-    }
-
-    /*
-     * Returns JERunner status
-     * */
-    public static boolean isRunnerStatus() {
-        return runnerStatus;
-    }
-
-    /*
-     * Set JERunner status
-     * */
-    public static void setRunnerStatus(boolean status) {
-        runnerStatus = status;
     }
 
 }

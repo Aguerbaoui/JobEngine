@@ -10,59 +10,59 @@ import java.nio.file.Paths;
 
 public class SIOTHConfigUtility {
 
-	public static final String JSON = ".json";
-	private static SIOTHConfig siothConfig;
+    public static final String JSON = ".json";
+    private static SIOTHConfig siothConfig;
 
-	private static String siothId;
+    private static String siothId;
 
-	private SIOTHConfigUtility() {
-		
-	}
+    private SIOTHConfigUtility() {
 
-	public static void init() {
-		ObjectMapper objectMapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+    }
 
-		String jsonString = loadSIOTHConfig();
+    public static void init() {
+        ObjectMapper objectMapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
-		if (jsonString != null) {
-			try {
-				siothConfig =  objectMapper.readValue(jsonString, SIOTHConfig.class);
-			} catch (IOException e) {
-				LoggerUtils.logException(e);
-			}
-		}
-	}
+        String jsonString = loadSIOTHConfig();
 
-	private static String loadSIOTHConfig() {
-		String configPath = SIOTHConfigurationConstants.SIOTH_JSON_CONFIG + siothId + JSON;
-		try {
+        if (jsonString != null) {
+            try {
+                siothConfig = objectMapper.readValue(jsonString, SIOTHConfig.class);
+            } catch (IOException e) {
+                LoggerUtils.logException(e);
+            }
+        }
+    }
 
-			String json = new String(Files.readAllBytes(Paths.get(configPath)));
-			return json;
+    private static String loadSIOTHConfig() {
+        String configPath = SIOTHConfigurationConstants.SIOTH_JSON_CONFIG + siothId + JSON;
+        try {
 
-		} catch (Exception e) {
-			LoggerUtils.logException(e);
-			LoggerUtils.error("Failed to start application. [SIOTHConfig.json] was not found in : " + configPath);
-			return null;
-		}
+            String json = new String(Files.readAllBytes(Paths.get(configPath)));
+            return json;
 
-	}
+        } catch (Exception e) {
+            LoggerUtils.logException(e);
+            LoggerUtils.error("Failed to start application. [SIOTHConfig.json] was not found in : " + configPath);
+            return null;
+        }
 
-
-	public static SIOTHConfig getSiothConfig() {
-		if(siothConfig == null) {
-			init();
-		}
-		return siothConfig;
-	}
-
-	public static void setSiothConfig(SIOTHConfig siothConfig) {
-		SIOTHConfigUtility.siothConfig = siothConfig;
-	}
+    }
 
 
-	public static void setSiothId(String id) {
-		siothId = id;
-	}
+    public static SIOTHConfig getSiothConfig() {
+        if (siothConfig == null) {
+            init();
+        }
+        return siothConfig;
+    }
+
+    public static void setSiothConfig(SIOTHConfig siothConfig) {
+        SIOTHConfigUtility.siothConfig = siothConfig;
+    }
+
+
+    public static void setSiothId(String id) {
+        siothId = id;
+    }
 
 }

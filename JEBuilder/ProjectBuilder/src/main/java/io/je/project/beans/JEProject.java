@@ -23,6 +23,14 @@ import java.util.concurrent.ConcurrentHashMap;
 public class JEProject {
 
     /*
+     * block names
+     */
+    Map<String, String> blockNames = new ConcurrentHashMap<>();
+    /*
+     * block name counters
+     */
+    Map<String, Integer> blockNameCounters = new ConcurrentHashMap<>();
+    /*
      * Project ID
      * */
     @Id
@@ -65,26 +73,12 @@ public class JEProject {
      * */
     @Transient
     private ConcurrentHashMap<String, JEVariable> variables = new ConcurrentHashMap<>();
-
     private boolean autoReload = true;
-
-
     private boolean isRunning = false;
-
     /*
      * project Status
      * */
     private boolean isBuilt = false;
-
-    /*
-     * block names
-     */
-    Map<String, String> blockNames = new ConcurrentHashMap<>();
-    /*
-     * block name counters
-     */
-    Map<String, Integer> blockNameCounters = new ConcurrentHashMap<>();
-
 
 
     /*

@@ -15,6 +15,7 @@ import java.util.List;
 
 import static io.je.rulebuilder.config.AttributesMapping.SOURCE_GETTER_ATTRIBUTE_NAME;
 import static io.je.rulebuilder.config.AttributesMapping.SOURCE_LINKED_BLOCK_ID;
+import static io.je.utilities.constants.JEMessages.EXCEPTION_OCCURRED_WHILE_INITIALIZE;
 
 /**
  * Block used to writing in an instance's attribute (from DM)
@@ -103,7 +104,7 @@ public class SetterBlock extends ExecutionBlock {
             misConfigurationCause = "";
         } catch (Exception e) {
             isProperlyConfigured = false;
-            misConfigurationCause = "SetterBlock : exception occurred while initialize : " + e.getMessage();
+            misConfigurationCause = JEMessages.SETTER_BLOCK + EXCEPTION_OCCURRED_WHILE_INITIALIZE + e.getMessage();
             JELogger.logException(e);
         }
 

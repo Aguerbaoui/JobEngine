@@ -12,14 +12,13 @@ public class StringUtilities {
     public static boolean isEmpty(String str) {
         return org.apache.commons.lang3.StringUtils.isEmpty(str);
     }
-    
-    public static String capitalize(String str)
-    {
-    	return org.apache.commons.lang3.StringUtils.capitalize(str);
+
+    public static String capitalize(String str) {
+        return org.apache.commons.lang3.StringUtils.capitalize(str);
     }
 
     public static boolean isStringOnlyAlphabet(String str) {
-        return (str != null) &&((!str.equals(""))
+        return (str != null) && ((!str.equals(""))
                 && (str.matches("^[a-zA-Z]*$")));
     }
 
@@ -29,7 +28,7 @@ public class StringUtilities {
         StringBuilder sb = new StringBuilder();
         // create an object of Random class
         Random random = new Random();
-        for(int i = 0; i < length; i++) {
+        for (int i = 0; i < length; i++) {
 
             // generate random index number
             int index = random.nextInt(alphabet.length());
@@ -87,7 +86,6 @@ public class StringUtilities {
         }
         //commons-lang3-3.11
     }*/
-
 
 
 }

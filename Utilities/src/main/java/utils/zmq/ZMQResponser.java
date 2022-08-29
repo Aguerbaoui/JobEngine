@@ -7,105 +7,100 @@ import utils.log.LoggerUtils;
 
 public abstract class ZMQResponser implements Runnable {
 
-	protected ZContext context = null;
+    protected ZContext context = null;
+    protected String url;
+    protected int repPort;
+    protected volatile boolean listening = false;
+    protected ZMQBind bindType;
+    private ZMQ.Socket repSocket = null;
 
-	private ZMQ.Socket repSocket = null;
+    public ZMQResponser(String url, int subPort, ZMQBind bindType) {
+        this.url = url;
+        this.repPort = subPort;
+        this.context = new ZContext();
+        this.bindType = bindType;
+    }
 
-	protected String url;
+    protected ZMQResponser() {
+        super();
+        this.context = new ZContext();
+    }
 
-	protected int repPort;
+    public void closeSocket() {
+        if (this.repSocket != null) {
+            this.repSocket.close();
+            this.context.destroySocket(repSocket);
+            this.repSocket = null;
+        }
+    }
 
-	protected volatile boolean listening = false;
-	
-	protected ZMQBind bindType;
+    public void connectToAddress() throws ZMQConnectionFailedException {
+        try {
+            this.repSocket = this.context.createSocket(SocketType.REP);
+            this.repSocket.setReceiveTimeOut(30000);
 
-	public ZMQResponser(String url, int subPort,ZMQBind bindType) {
-		this.url = url;
-		this.repPort = subPort;
-		this.context = new ZContext();
-		this.bindType = bindType;
-	}
+            if (ZMQSecurity.isSecure()) {
+                this.repSocket.setCurveServer(true);
+                this.repSocket.setCurveSecretKey(ZMQSecurity.getServerPair().secretKey.getBytes());
+                this.repSocket.setCurvePublicKey(ZMQSecurity.getServerPair().publicKey.getBytes());
+            }
+            if (bindType == ZMQBind.CONNECT) {
+                this.repSocket.connect(url + ":" + repPort);
+            } else if (bindType == ZMQBind.BIND) {
+                this.repSocket.bind(url + ":" + repPort);
 
-	protected ZMQResponser() {
-		super();
-		this.context = new ZContext();
-	}
+            }
+        } catch (Exception e) {
+            LoggerUtils.logException(e);
+            closeSocket();
+            throw new ZMQConnectionFailedException(0, "Failed to connect to address [ " + url + ":" + repPort + "]: " + e.toString());
+        }
+    }
 
-	public void closeSocket() {
-		if (this.repSocket != null) {
-			this.repSocket.close();
-			this.context.destroySocket(repSocket);
-			this.repSocket = null;
-		}
-	}
+    public ZMQ.Socket getRepSocket(ZMQBind bindType) throws ZMQConnectionFailedException {
+        if (repSocket == null) {
 
-	public void connectToAddress() throws ZMQConnectionFailedException {
-		try {
-			this.repSocket = this.context.createSocket(SocketType.REP);
-			this.repSocket.setReceiveTimeOut(30000);
+            connectToAddress();
 
-			if (ZMQSecurity.isSecure()) {
-				this.repSocket.setCurveServer(true);
-				this.repSocket.setCurveSecretKey(ZMQSecurity.getServerPair().secretKey.getBytes());
-				this.repSocket.setCurvePublicKey(ZMQSecurity.getServerPair().publicKey.getBytes());
-			}
-			if (bindType == ZMQBind.CONNECT) {
-				this.repSocket.connect(url + ":" + repPort);
-			} else if (bindType == ZMQBind.BIND) {
-				this.repSocket.bind(url + ":" + repPort);
+        }
+        return repSocket;
+    }
 
-			}
-		} catch (Exception e) {
-			LoggerUtils.logException(e);
-			closeSocket();
-			throw new ZMQConnectionFailedException(0,"Failed to connect to address [ "+url + ":" + repPort+"]: "+ e.toString());
-		}
-	}
+    public boolean isListening() {
+        return listening;
+    }
 
-	public ZMQ.Socket getRepSocket(ZMQBind bindType) throws ZMQConnectionFailedException {
-		if (repSocket == null) {
+    public void setListening(boolean listening) {
+        this.listening = listening;
+    }
 
-			connectToAddress();
+    public ZContext getContext() {
+        return context;
+    }
 
-		}
-		return repSocket;
-	}
+    public void setContext(ZContext context) {
+        this.context = context;
+    }
 
-	public boolean isListening() {
-		return listening;
-	}
+    public void setRepSocket(ZMQ.Socket subSocket) {
+        this.repSocket = subSocket;
+    }
 
-	public void setListening(boolean listening) {
-		this.listening = listening;
-	}
+    public String getUrl() {
+        return url;
+    }
 
-	public ZContext getContext() {
-		return context;
-	}
+    public void setUrl(String url) {
+        this.url = url;
+    }
 
-	public void setContext(ZContext context) {
-		this.context = context;
-	}
+    public int getRepPort() {
+        return repPort;
+    }
 
-	public void setRepSocket(ZMQ.Socket subSocket) {
-		this.repSocket = subSocket;
-	}
-
-	public String getUrl() {
-		return url;
-	}
-
-	public void setUrl(String url) {
-		this.url = url;
-	}
-
-	public int getRepPort() {
-		return repPort;
-	}
-
-	public void setRepPort(int repPort) {
-		this.repPort = repPort;
-	}
+    public void setRepPort(int repPort) {
+        this.repPort = repPort;
+    }
 
 
 }

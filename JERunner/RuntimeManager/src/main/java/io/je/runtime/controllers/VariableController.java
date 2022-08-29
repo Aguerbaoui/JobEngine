@@ -19,7 +19,7 @@ import java.util.HashMap;
 public class VariableController {
 
     @Autowired
-    RuntimeDispatcher runtimeDispatcher ;
+    RuntimeDispatcher runtimeDispatcher;
 
     /*
      * add a new variable
@@ -29,8 +29,7 @@ public class VariableController {
 
         try {
             runtimeDispatcher.addVariable(variableModel);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return JEExceptionHandler.handleException(e);
         }
         return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.VAR_ADDED_SUCCESSFULLY));
@@ -42,9 +41,10 @@ public class VariableController {
      */
     @DeleteMapping(value = "/deleteVariable/{projectId}/{varId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> deleteVariable(@PathVariable("projectId") String projectId,
-                                         @PathVariable("varId") String varId) {
+                                            @PathVariable("varId") String varId) {
 
-        try {runtimeDispatcher.deleteVariable(projectId, varId);
+        try {
+            runtimeDispatcher.deleteVariable(projectId, varId);
 
         } catch (Exception e) {
             return JEExceptionHandler.handleException(e);
@@ -52,15 +52,15 @@ public class VariableController {
 
         return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.VAR_DELETED));
     }
-    
+
     /*
      * write to variable
      */
     @PostMapping(value = "/writeVariableValue/{projectId}/{variableId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> writeVariableValue(@PathVariable("projectId") String projectId,@PathVariable("variableId") String variableId, @RequestBody HashMap<String,Object> payload ) {
+    public ResponseEntity<?> writeVariableValue(@PathVariable("projectId") String projectId, @PathVariable("variableId") String variableId, @RequestBody HashMap<String, Object> payload) {
 
         try {
-        	runtimeDispatcher.writeVariableValue(projectId,variableId, String.valueOf(payload.get("value")),(boolean)payload.get("ignoreIfSameValue"));
+            runtimeDispatcher.writeVariableValue(projectId, variableId, String.valueOf(payload.get("value")), (boolean) payload.get("ignoreIfSameValue"));
         } catch (Exception e) {
             return JEExceptionHandler.handleException(e);
         }

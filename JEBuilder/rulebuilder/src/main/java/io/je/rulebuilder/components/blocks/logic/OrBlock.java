@@ -1,7 +1,6 @@
 package io.je.rulebuilder.components.blocks.logic;
 
 
-import io.je.rulebuilder.components.BlockLink;
 import io.je.rulebuilder.components.blocks.LogicBlock;
 import io.je.rulebuilder.models.BlockModel;
 import io.je.utilities.exceptions.RuleBuildFailedException;

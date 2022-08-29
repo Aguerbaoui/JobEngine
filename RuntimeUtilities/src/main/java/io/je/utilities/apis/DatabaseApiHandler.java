@@ -1,7 +1,7 @@
 package io.je.utilities.apis;
 
-import okhttp3.Response;
 import io.siothconfig.SIOTHConfigUtility;
+import okhttp3.Response;
 import utils.network.Network;
 
 import java.io.IOException;

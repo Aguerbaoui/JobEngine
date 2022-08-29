@@ -5,13 +5,15 @@ import io.je.utilities.monitoring.JEMonitor;
 import io.je.utilities.monitoring.MonitoringMessage;
 
 public class PulisherTest {
+    static ObjectMapper objectMapper = new ObjectMapper();
+
     public static void publish(MonitoringMessage msg) {
         //JEConfiguration.setLoggingSystemURL("tcp://localhost");
         //JEConfiguration.setLoggingSystemZmqPublishPort(15001);
         JEMonitor.publish(msg);
 
     }
-    static ObjectMapper objectMapper = new ObjectMapper();
+
     public static void main(String[] args) {
        /* ZMQ.Context  mContext  = ZMQ.context(1);
         ZMQ.Socket publisher = mContext.socket(ZMQ.PUB);

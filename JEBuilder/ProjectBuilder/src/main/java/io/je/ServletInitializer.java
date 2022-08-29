@@ -5,15 +5,15 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 
 /*
-* Tomcat ServletInitializer
-* */
+ * Tomcat ServletInitializer
+ * */
 public class ServletInitializer extends SpringBootServletInitializer {
 
-	@Override
-	protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
-		//SIOTHConfigUtility.init();
+    @Override
+    protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
+        //SIOTHConfigUtility.init();
 
-		return application.sources(ProjectBuilderApplication.class).bannerMode(Banner.Mode.OFF);
-	}
+        return application.sources(ProjectBuilderApplication.class).bannerMode(Banner.Mode.OFF);
+    }
 
 }

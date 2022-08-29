@@ -208,7 +208,7 @@ public class JERunnerAPIHandler {
 
     public static void addVariable(String projectId, String varId, Object body) throws JERunnerErrorException {
         String url = SIOTHConfigUtility.getSiothConfig().getJobEngine().getJeRunner() + APIConstants.ADD_VARIABLE;
-        JELogger.debug(JEMessages.NETWORK_ADD_VAR+" project id = " + projectId + " variable id = " + varId);
+        JELogger.debug(JEMessages.NETWORK_ADD_VAR + " project id = " + projectId + " variable id = " + varId);
         sendRequestWithBody(url, body);
     }
 

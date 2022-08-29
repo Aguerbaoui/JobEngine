@@ -7,10 +7,10 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface EventRepository extends MongoRepository<JEEvent,String>{
-	List<JEEvent> findByJobEngineProjectID (String projectId);
-	void deleteByJobEngineProjectID (String projectId);
+public interface EventRepository extends MongoRepository<JEEvent, String> {
+    List<JEEvent> findByJobEngineProjectID(String projectId);
 
-	
+    void deleteByJobEngineProjectID(String projectId);
+
 
 }

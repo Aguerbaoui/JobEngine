@@ -29,19 +29,20 @@ public class TypeConverterBlock extends SingleInputArithmeticBlock {
     @Override
     protected String getFormula() {
         // TODO add convert to Boolean ?
+        // FIXME convert boolean to int, float, double, ...
         if (typeToConvertTo.equalsIgnoreCase("string")) {
-            return "String.valueOf(" + inputBlockLinks.get(0).getReference() + ".toString())";
+            return "String.valueOf( ConversionUtilities.convertIfBoolean(\"\" + " + inputBlockLinks.get(0).getReference() + ") )";
         } else if (typeToConvertTo.equalsIgnoreCase("date")) {
-            return "ConversionUtilities.convertTypeDate(\"" + dateFormat + "\"," + inputBlockLinks.get(0).getReference() + ".toString())";
+            return "ConversionUtilities.convertTypeDate(\"" + dateFormat + "\", \"\" + " + inputBlockLinks.get(0).getReference() + " )";
         } else if (typeToConvertTo.equalsIgnoreCase("int")) {
-            // FIXME case input exceeds Integer range, not int (double, ...), case contains chars
-            return "Integer.valueOf((int)Float.valueOf(" + inputBlockLinks.get(0).getReference() + ".toString()))";
+            // FIXME case input exceeds Integer range, not int (double, ...), case contains chars ...
+            return "Integer.valueOf( (int)Double.valueOf( ConversionUtilities.convertIfBoolean(\"\" + " + inputBlockLinks.get(0).getReference() + ") ) )";
         } else if (typeToConvertTo.equalsIgnoreCase("float")) {
-            // FIXME case input exceeds Float range, case contains chars
-            return "Float.valueOf(" + inputBlockLinks.get(0).getReference() + ".toString())";
+            // FIXME case input exceeds Float range, case contains chars ...
+            return "Float.valueOf( ConversionUtilities.convertIfBoolean(\"\" + " + inputBlockLinks.get(0).getReference() + ") )";
         } else {
-            // FIXME case input exceeds Double range, case contains chars
-            return "Double.valueOf(" + inputBlockLinks.get(0).getReference() + ".toString())";
+            // FIXME case input exceeds Double range, case contains chars ...
+            return "Double.valueOf( ConversionUtilities.convertIfBoolean(\"\" + " + inputBlockLinks.get(0).getReference() + ") )";
         }
     }
 

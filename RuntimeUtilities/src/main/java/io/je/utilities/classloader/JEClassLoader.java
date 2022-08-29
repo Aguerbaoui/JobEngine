@@ -9,7 +9,6 @@ import utils.log.LogSubModule;
 import utils.string.StringUtilities;
 
 import java.io.*;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
@@ -18,13 +17,18 @@ import static io.je.utilities.config.ConfigurationConstants.JAVA_GENERATION_PATH
 
 public class JEClassLoader extends ClassLoader {
 
+    static Set<String> dataModelCustomClasses;
+    static JEClassLoader dataModelInstance;
+    static JEClassLoader currentRuleEngineClassLoader;
     HashMap<String, byte[]> streams = new HashMap<>();
 
-    static Set<String> dataModelCustomClasses;
-
-    static JEClassLoader dataModelInstance;
-
-    static JEClassLoader currentRuleEngineClassLoader;
+    private JEClassLoader(Set<String> dataModelCustomClasses) {
+        super(Thread.currentThread()
+                .getContextClassLoader());
+        if (dataModelCustomClasses != null) {
+            JEClassLoader.dataModelCustomClasses = dataModelCustomClasses;
+        }
+    }
 
     public static boolean classIsLoaded(String name) {
         return dataModelCustomClasses != null && dataModelCustomClasses.contains(name);
@@ -35,7 +39,7 @@ public class JEClassLoader extends ClassLoader {
             dataModelCustomClasses = new HashSet<>();
         }
         dataModelCustomClasses.add(classname);
-        JELogger.debug("added class "+classname +"now list is : " + dataModelCustomClasses);
+        JELogger.debug("added class " + classname + "now list is : " + dataModelCustomClasses);
     }
 
     public static void removeClassFromDataModelClassesSet(String name) {
@@ -43,14 +47,6 @@ public class JEClassLoader extends ClassLoader {
             dataModelCustomClasses.remove(name);
         } catch (Exception exp) {
             JELogger.logException(exp);
-        }
-    }
-
-    private JEClassLoader(Set<String> dataModelCustomClasses) {
-        super(Thread.currentThread()
-                .getContextClassLoader());
-        if (dataModelCustomClasses != null) {
-            JEClassLoader.dataModelCustomClasses = dataModelCustomClasses;
         }
     }
 
@@ -102,6 +98,26 @@ public class JEClassLoader extends ClassLoader {
         return dataModelInstance;
     }
 
+    public static JEClassLoader getCurrentRuleEngineClassLoader() {
+        return currentRuleEngineClassLoader;
+    }
+
+    public static void setCurrentRuleEngineClassLoader(JEClassLoader currentRuleEngineClassLoader) {
+        JEClassLoader.currentRuleEngineClassLoader = currentRuleEngineClassLoader;
+    }
+
+    public static String getJobEnginePackageName(String packageName) {
+        String imp = ConfigurationConstants.JAVA_GENERATION_PATH.replace(FileUtilities.getPathPrefix(ConfigurationConstants.JAVA_GENERATION_PATH), "");
+        imp = imp.replace("\\", ".");
+        imp = imp.replace("//", ".");
+        imp = imp.replace("/", ".");
+        if (StringUtilities.isEmpty(imp)) {
+            imp = packageName;
+        } else {
+            imp = imp + "." + packageName;
+        }
+        return imp.replace("..", ".");
+    }
 
     @Override
     public Class<?> loadClass(String className) throws ClassNotFoundException {
@@ -184,27 +200,6 @@ public class JEClassLoader extends ClassLoader {
 
         return super.getResourceAsStream(name);
 
-    }
-
-    public static JEClassLoader getCurrentRuleEngineClassLoader() {
-        return currentRuleEngineClassLoader;
-    }
-
-    public static void setCurrentRuleEngineClassLoader(JEClassLoader currentRuleEngineClassLoader) {
-        JEClassLoader.currentRuleEngineClassLoader = currentRuleEngineClassLoader;
-    }
-
-    public static String getJobEnginePackageName(String packageName) {
-        String imp = ConfigurationConstants.JAVA_GENERATION_PATH.replace(FileUtilities.getPathPrefix(ConfigurationConstants.JAVA_GENERATION_PATH), "");
-        imp = imp.replace("\\", ".");
-        imp = imp.replace("//", ".");
-        imp = imp.replace("/", ".");
-        if (StringUtilities.isEmpty(imp)) {
-            imp = packageName;
-        } else {
-            imp = imp + "." + packageName;
-        }
-        return imp.replace("..", ".");
     }
 
 }

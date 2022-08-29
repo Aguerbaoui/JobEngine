@@ -5,6 +5,7 @@ import io.je.rulebuilder.components.blocks.GetterBlock;
 import io.je.rulebuilder.config.AttributesMapping;
 import io.je.rulebuilder.config.Keywords;
 import io.je.rulebuilder.models.BlockModel;
+import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.RuleBuildFailedException;
 import org.springframework.data.annotation.Transient;
 import utils.log.LoggerUtils;
@@ -37,17 +38,17 @@ public class InstanceGetterBlock extends GetterBlock {
             isProperlyConfigured = true;
         } catch (Exception e) {
             isProperlyConfigured = false;
-            misConfigurationCause = "InstanceGetterBlock : Exception while loading Classes / Instances info : " + e.getMessage();
+            misConfigurationCause = JEMessages.INSTANCE_GETTER_BLOCK_EXCEPTION_WHILE_LOADING_CLASSES_INSTANCES_INFO + e.getMessage();
 
             LoggerUtils.logException(e);
         } finally {
             if (classId == null) {
                 isProperlyConfigured = false;
-                misConfigurationCause = "InstanceGetterBlock : Class Id is null";
+                misConfigurationCause = JEMessages.INSTANCE_GETTER_BLOCK_CLASS_ID_IS_NULL;
             }
             if (classPath == null) {
                 isProperlyConfigured = false;
-                misConfigurationCause = "InstanceGetterBlock : Class Path is null";
+                misConfigurationCause = JEMessages.INSTANCE_GETTER_BLOCK_CLASS_PATH_IS_NULL;
             }
         }
 
@@ -66,34 +67,34 @@ public class InstanceGetterBlock extends GetterBlock {
         StringBuilder expression = new StringBuilder();
         // FIXME check if no regressions
         //if (!alreadyScripted) {
-            // input blocks can be an event block
-            if (!inputBlockLinks.isEmpty()) {
-                expression.append(inputBlockLinks.get(0).getExpression());
-                expression.append("\n");
+        // input blocks can be an event block
+        if (!inputBlockLinks.isEmpty()) {
+            expression.append(inputBlockLinks.get(0).getExpression());
+            expression.append("\n");
 
-            }
-            expression.append(getBlockNameAsVariable() + " : " + classPath);
-            expression.append(" ( ");
-            if (specificInstances != null && !specificInstances.isEmpty()) {
-                expression.append("jobEngineElementID in ( " + getInstances() + ")");
-                expression.append(" , ");
-
-            }
-
-            for (String attributeName : attributeNames) {
-                expression.append(getAttributeVariableName(attributeName));
-                expression.append(" : ");
-                expression.append(attributeName);
-                expression.append(" , ");
-            }
-
-            // FIXME two lines below needed?
-            expression.replace(expression.length() - 3, expression.length() - 1, "");
+        }
+        expression.append(getBlockNameAsVariable() + " : " + classPath);
+        expression.append(" ( ");
+        if (specificInstances != null && !specificInstances.isEmpty()) {
+            expression.append("jobEngineElementID in ( " + getInstances() + ")");
             expression.append(" , ");
 
-            expression.append(Keywords.toBeReplaced);
-            expression.append(" ) ");
-            //setAlreadyScripted(true);
+        }
+
+        for (String attributeName : attributeNames) {
+            expression.append(getAttributeVariableName(attributeName));
+            expression.append(" : ");
+            expression.append(attributeName);
+            expression.append(" , ");
+        }
+
+        // FIXME two lines below needed?
+        expression.replace(expression.length() - 3, expression.length() - 1, "");
+        expression.append(" , ");
+
+        expression.append(Keywords.toBeReplaced);
+        expression.append(" ) ");
+        //setAlreadyScripted(true);
         //}
         return expression.toString();
     }
@@ -110,36 +111,36 @@ public class InstanceGetterBlock extends GetterBlock {
         // FIXME check if no regressions
         //if (!alreadyScripted) {
 
-            if (!inputBlockLinks.isEmpty()) {
-                expression.append(inputBlockLinks.get(0).getExpression());
-                expression.append("\n");
+        if (!inputBlockLinks.isEmpty()) {
+            expression.append(inputBlockLinks.get(0).getExpression());
+            expression.append("\n");
 
-            }
+        }
 
-            expression.append(getBlockNameAsVariable() + " : " + classPath);
-            expression.append(" ( ");
+        expression.append(getBlockNameAsVariable() + " : " + classPath);
+        expression.append(" ( ");
 
-            if (specificInstances != null && !specificInstances.isEmpty()) {
-                expression.append("jobEngineElementID in ( " + getInstances() + ")");
-                expression.append(" , ");
+        if (specificInstances != null && !specificInstances.isEmpty()) {
+            expression.append("jobEngineElementID in ( " + getInstances() + ")");
+            expression.append(" , ");
 
-            }
+        }
 
-            //if all outputs are unique
+        //if all outputs are unique
 
-            for (String attributeName : attributeNames) {
-                expression.append(getAttributeVariableName(attributeName));
-                expression.append(" : ");
-                expression.append(attributeName);
-                expression.append(" , ");
+        for (String attributeName : attributeNames) {
+            expression.append(getAttributeVariableName(attributeName));
+            expression.append(" : ");
+            expression.append(attributeName);
+            expression.append(" , ");
 
-            }
+        }
 
-            expression.replace(expression.length() - 3, expression.length() - 1, "");
+        expression.replace(expression.length() - 3, expression.length() - 1, "");
 
-            expression.append(" ) ");
+        expression.append(" ) ");
 
-            //setAlreadyScripted(true);
+        //setAlreadyScripted(true);
         //}
         return expression.toString();
 

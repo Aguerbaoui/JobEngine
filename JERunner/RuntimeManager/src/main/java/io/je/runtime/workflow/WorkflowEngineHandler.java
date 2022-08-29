@@ -37,7 +37,7 @@ public class WorkflowEngineHandler {
     private static final HashMap<String, ProcessManager> processManagerHashMap = new HashMap<>();
 
     // TODO init process manager with projects from DB even if no workflows defined yet
-    private static void checkProcessManager (String projectId) throws WorkflowBuildException {
+    private static void checkProcessManager(String projectId) throws WorkflowBuildException {
 
         // FIXME add suitable Exceptions for process manager if projectId not existing in DB
         if (!processManagerHashMap.containsKey(projectId)) {
@@ -133,7 +133,7 @@ public class WorkflowEngineHandler {
     public static void runAllWorkflows(String projectId, boolean runProject) throws WorkflowNotFoundException, WorkflowBuildException {
         checkProcessManager(projectId);
         processManagerHashMap.get(projectId)
-                    .runAll(projectId, runProject);
+                .runAll(projectId, runProject);
     }
 
     /*
@@ -150,9 +150,9 @@ public class WorkflowEngineHandler {
         checkProcessManager(projectId);
 
         /**/
-        JELogger.debug("[projectId = " + projectId +"]"+ JEMessages.STOPPING_WORKFLOW,
+        JELogger.debug("[projectId = " + projectId + "]" + JEMessages.STOPPING_WORKFLOW,
                 LogCategory.RUNTIME, projectId,
-                LogSubModule.WORKFLOW,null);
+                LogSubModule.WORKFLOW, null);
 
         processManagerHashMap.get(projectId)
                 .stopProjectWorkflows();
@@ -166,15 +166,16 @@ public class WorkflowEngineHandler {
         checkProcessManager(projectId);
 
         processManagerHashMap.get(projectId)
-                    .launchProcessByMessageWithoutVariables(messageEvent);
+                .launchProcessByMessageWithoutVariables(messageEvent);
 
     }
 
     /**/
     public static void deleteProjectProcesses(String projectId) throws WorkflowBuildException {
-        /**/  JELogger.debug("[projectId = " + projectId +"]"+JEMessages.REMOVING_WFS,
+        /**/
+        JELogger.debug("[projectId = " + projectId + "]" + JEMessages.REMOVING_WFS,
                 LogCategory.RUNTIME, projectId,
-                LogSubModule.WORKFLOW,null);
+                LogSubModule.WORKFLOW, null);
 
         checkProcessManager(projectId);
 
@@ -199,7 +200,7 @@ public class WorkflowEngineHandler {
         /* FIXME check if it spams */
         JELogger.debug("Parsing activiti task",
                 LogCategory.RUNTIME, projectId,
-                LogSubModule.WORKFLOW,workflowId);
+                LogSubModule.WORKFLOW, workflowId);
         if (task.getType()
                 .equals(WorkflowConstants.WEBSERVICETASK_TYPE)) {
             return parseWebApiTask(projectId, workflowId, workflowName, task);

@@ -1,16 +1,12 @@
 package io.je.serviceTasks;
 
-public class ScriptTask extends ActivitiTask{
-
-    private String script;
-
-    private String javaPath;
-
-    private String classPath;
-
-    private int timeout;
+public class ScriptTask extends ActivitiTask {
 
     long pid = -1;
+    private String script;
+    private String javaPath;
+    private String classPath;
+    private int timeout;
 
     public String getScript() {
         return script;

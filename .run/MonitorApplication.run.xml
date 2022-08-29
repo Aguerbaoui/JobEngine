@@ -1,15 +1,16 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="MonitorApplication" type="Application" factoryName="Application" nameIsGenerated="true">
-    <option name="MAIN_CLASS_NAME" value="io.je.Monitor.MonitorApplication" />
-    <module name="Monitor" />
-    <extension name="coverage">
-      <pattern>
-        <option name="PATTERN" value="io.je.Monitor.*" />
-        <option name="ENABLED" value="true" />
-      </pattern>
-    </extension>
-    <method v="2">
-      <option name="Make" enabled="true" />
-    </method>
-  </configuration>
+    <configuration default="false" name="MonitorApplication" type="Application" factoryName="Application"
+                   nameIsGenerated="true">
+        <option name="MAIN_CLASS_NAME" value="io.je.Monitor.MonitorApplication"/>
+        <module name="Monitor"/>
+        <extension name="coverage">
+            <pattern>
+                <option name="PATTERN" value="io.je.Monitor.*"/>
+                <option name="ENABLED" value="true"/>
+            </pattern>
+        </extension>
+        <method v="2">
+            <option name="Make" enabled="true"/>
+        </method>
+    </configuration>
 </component>

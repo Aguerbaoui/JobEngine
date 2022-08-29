@@ -28,7 +28,11 @@ public class MethodModel {
 
     String modifiedAt;
 
-    public MethodModel() {inputs = new ArrayList<>(); imports = new ArrayList<>();}
+    public MethodModel() {
+        inputs = new ArrayList<>();
+        imports = new ArrayList<>();
+    }
+
     public String getMethodName() {
         return methodName;
     }

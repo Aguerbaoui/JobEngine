@@ -8,7 +8,7 @@ import java.util.List;
 
 @Repository
 public interface ClassRepository extends MongoRepository<JEClass, String> {
-    void deleteByClassName (String className);
+    void deleteByClassName(String className);
 
     List<JEClass> findByClassAuthor(String classAuthor);
 }

@@ -9,6 +9,7 @@ import io.je.rulebuilder.config.AttributesMapping;
 import io.je.rulebuilder.config.Keywords;
 import io.je.rulebuilder.models.BlockModel;
 import io.je.rulebuilder.models.Operator;
+import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.RuleBuildFailedException;
 import io.je.utilities.log.JELogger;
 import utils.log.LogCategory;
@@ -17,6 +18,8 @@ import utils.log.LoggerUtils;
 
 import java.util.List;
 import java.util.Optional;
+
+import static io.je.utilities.constants.JEMessages.EXCEPTION_OCCURRED_WHILE_INITIALIZE;
 
 
 /**
@@ -94,13 +97,13 @@ public class ComparisonBlock extends PersistableBlock {
             misConfigurationCause = "";
             if (threshold == null && inputBlockIds.size() < 2) {
                 isProperlyConfigured = false;
-                misConfigurationCause = "ComparisonBlock : Unable to compare : Threshold is null and input blocks ID contains less than two elements";
+                misConfigurationCause = JEMessages.COMPARISON_BLOCK_UNABLE_TO_COMPARE_THRESHOLD_IS_NULL_AND_INPUT_BLOCKS_ID_CONTAINS_LESS_THAN_TWO_ELEMENTS;
             }
         } catch (Exception e) {
             LoggerUtils.logException(e);
             JELogger.error("Failed to build block : " + jobEngineElementName + " : " + e.getMessage(), LogCategory.DESIGN_MODE, jobEngineProjectID, LogSubModule.RULE, ruleId);
             isProperlyConfigured = false;
-            misConfigurationCause = "ComparisonBlock : Exception occurred while initialize : " + e.getMessage();
+            misConfigurationCause = JEMessages.COMPARISON_BLOCK + EXCEPTION_OCCURRED_WHILE_INITIALIZE + e.getMessage();
         }
 
     }

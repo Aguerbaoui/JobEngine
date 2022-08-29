@@ -19,7 +19,7 @@ public class TimerEvent extends WorkflowBlock {
     int occurrences = -1;
 
     public String getTimeDate() {
-    	return DateUtils.parseUTCStringToLocalTimeString(timeDate);
+        return DateUtils.parseUTCStringToLocalTimeString(timeDate);
     }
 
     public void setTimeDate(String timeDate) {
@@ -31,10 +31,9 @@ public class TimerEvent extends WorkflowBlock {
     }
 
     public void setTimeDuration(String timeDuration) {
-        if(timeDuration != null) {
+        if (timeDuration != null) {
             this.timeDuration = "PT" + timeDuration.toUpperCase();
-        }
-        else {
+        } else {
             this.timeDuration = null;
         }
     }
@@ -44,21 +43,19 @@ public class TimerEvent extends WorkflowBlock {
     }
 
     public void setTimeCycle(String timeCycle) {
-        if(timeCycle != null) {
-            if(occurrences != -1) {
+        if (timeCycle != null) {
+            if (occurrences != -1) {
                 this.timeCycle = "R" + occurrences + "/PT" + timeCycle.toUpperCase();
-            }
-            else {
+            } else {
                 this.timeCycle = "R100000/PT" + timeCycle.toUpperCase();
             }
-        }
-        else {
+        } else {
             this.timeCycle = null;
         }
     }
 
     public String getEndDate() {
-        return  DateUtils.parseUTCStringToLocalTimeString(endDate);
+        return DateUtils.parseUTCStringToLocalTimeString(endDate);
     }
 
     public void setEndDate(String endDate) {

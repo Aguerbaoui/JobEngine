@@ -83,6 +83,44 @@ public class ClassService {
      * Class Listener
      ***********************************************************************/
 
+    /*
+     * Return JEMethod object from MethodModel
+     */
+    public static JEMethod getMethodFromModel(MethodModel m) {
+        JEMethod method = new JEMethod();
+        method.setCode(m.getCode());
+        method.setReturnType(m.getReturnType());
+        method.setJobEngineElementID(m.getId());
+        method.setJobEngineElementName(m.getMethodName());
+        method.setJeObjectCreatedBy(m.getCreatedBy());
+        method.setJeObjectModifiedBy(m.getModifiedBy());
+        method.setJeObjectLastUpdate(Instant.now());
+        method.setJeObjectCreationDate(Instant.now());
+        method.setInputs(new ArrayList<>());
+        method.setScope(WorkflowConstants.STATIC);
+        if (!m.getInputs()
+                .isEmpty()) {
+            for (FieldModel f : m.getInputs()) {
+                method.getInputs()
+                        .add(getFieldFromModel(f));
+            }
+        }
+        method.setImports(m.getImports());
+        return method;
+    }
+
+    /*
+     * Return JEField object from FieldModel
+     */
+    public static JEField getFieldFromModel(FieldModel f) {
+        JEField field = new JEField();
+        field.setComment("");
+        field.setVisibility(f.getFieldVisibility());
+        field.setType(f.getType());
+        field.setName(f.getName());
+        return field;
+    }
+
     /**
      * Init a thread that listens to the DataModelRestApi for class definition updates
      */
@@ -92,7 +130,7 @@ public class ClassService {
                 "tcp://" + SIOTHConfigUtility.getSiothConfig()
                         .getNodes()
                         .getSiothMasterNode(),
-                    SIOTHConfigUtility.getSiothConfig()
+                SIOTHConfigUtility.getSiothConfig()
                         .getDataModelPORTS()
                         .getDmRestAPI_ConfigurationPubAddress());
 
@@ -333,32 +371,6 @@ public class ClassService {
     }
 
     /*
-     * Return JEMethod object from MethodModel
-     */
-    public static JEMethod getMethodFromModel(MethodModel m) {
-        JEMethod method = new JEMethod();
-        method.setCode(m.getCode());
-        method.setReturnType(m.getReturnType());
-        method.setJobEngineElementID(m.getId());
-        method.setJobEngineElementName(m.getMethodName());
-        method.setJeObjectCreatedBy(m.getCreatedBy());
-        method.setJeObjectModifiedBy(m.getModifiedBy());
-        method.setJeObjectLastUpdate(Instant.now());
-        method.setJeObjectCreationDate(Instant.now());
-        method.setInputs(new ArrayList<>());
-        method.setScope(WorkflowConstants.STATIC);
-        if (!m.getInputs()
-                .isEmpty()) {
-            for (FieldModel f : m.getInputs()) {
-                method.getInputs()
-                        .add(getFieldFromModel(f));
-            }
-        }
-        method.setImports(m.getImports());
-        return method;
-    }
-
-    /*
      * Compile code before injecting it to the JVM
      */
     public void compileCode(MethodModel m, String packageName) throws ClassLoadException, AddClassException, IOException, InterruptedException {
@@ -456,18 +468,6 @@ public class ClassService {
                 ConfigurationConstants.JAVA_GENERATION_PATH, ClassType.CLASS);
         c.setClassAuthor(ClassAuthor.PROCEDURE);
         return c;
-    }
-
-    /*
-     * Return JEField object from FieldModel
-     */
-    public static JEField getFieldFromModel(FieldModel f) {
-        JEField field = new JEField();
-        field.setComment("");
-        field.setVisibility(f.getFieldVisibility());
-        field.setType(f.getType());
-        field.setName(f.getName());
-        return field;
     }
 
     /*
@@ -719,7 +719,7 @@ public class ClassService {
         @Override
         public void run() {
 
-             synchronized (this) {
+            synchronized (this) {
 
                 final String ID_MSG = "ClassZMQSubscriber : ";
 
@@ -797,7 +797,7 @@ public class ClassService {
                     }
                 }
 
-                JELogger.debug( ID_MSG + JEMessages.CLOSING_SOCKET, LogCategory.DESIGN_MODE,
+                JELogger.debug(ID_MSG + JEMessages.CLOSING_SOCKET, LogCategory.DESIGN_MODE,
                         null, LogSubModule.CLASS, last_topic);
 
                 this.closeSocket();

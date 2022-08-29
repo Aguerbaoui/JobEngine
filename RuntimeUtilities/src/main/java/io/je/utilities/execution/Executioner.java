@@ -38,12 +38,11 @@ import static io.je.utilities.constants.WorkflowConstants.*;
 
 public class Executioner {
 
+    public static final String SEND_EMAIL_AUTH = "SendEmailAuth";
     static final int MAX_THREAD_COUNT = 100;
-
     static ObjectMapper objectMapper = new ObjectMapper();
     static ExecutorService executor = Executors.newCachedThreadPool();
     static int test = 0;
-    public static final String SEND_EMAIL_AUTH = "SendEmailAuth";
 
     private Executioner() {
     }

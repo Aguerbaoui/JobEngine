@@ -8,14 +8,6 @@ public class JEData extends JEObject {
 
     private String topic;
 
-    public String getData() {
-        return data;
-    }
-
-    public void setData(String data) {
-        this.data = data;
-    }
-
     public JEData() {
         super();
     }
@@ -25,6 +17,15 @@ public class JEData extends JEObject {
         this.data = data;
         this.topic = topic;
     }
+
+    public String getData() {
+        return data;
+    }
+
+    public void setData(String data) {
+        this.data = data;
+    }
+
     public String getTopic() {
         return topic;
     }
@@ -33,12 +34,10 @@ public class JEData extends JEObject {
         this.topic = topic;
     }
 
-	@Override
-	public String toString() {
-		return "JEData [data=" + data + ", topic=" + topic + "]";
-	}
-    
-    
-    
-    
+    @Override
+    public String toString() {
+        return "JEData [data=" + data + ", topic=" + topic + "]";
+    }
+
+
 }

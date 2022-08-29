@@ -2,11 +2,10 @@ package utils.log;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public enum LogLevel
-{
-	@JsonProperty("Error")
+public enum LogLevel {
+    @JsonProperty("Error")
     ERROR(0),
-	@JsonProperty("Control")
+    @JsonProperty("Control")
     CONTROL(1),
     @JsonProperty("Warning")
     WARNING(2),
@@ -15,10 +14,9 @@ public enum LogLevel
     @JsonProperty("Debug")
     DEBUG(4);
 
-	LogLevel(int i) {
-		// TODO Auto-generated constructor stub
-	}
-    
-    
+    LogLevel(int i) {
+        // TODO Auto-generated constructor stub
+    }
+
 
 }

@@ -10,42 +10,58 @@ import io.je.utilities.mapping.EventModelMapping;
 @JsonInclude(Include.NON_NULL)
 public class EventModel {
 
-    @JsonProperty(EventModelMapping.EVENTID)
-    private String eventId;
-
-    @JsonProperty(EventModelMapping.EVENTNAME)
-    private String name;
-
-    @JsonProperty(EventModelMapping.PROJECTID)
-    private String projectId;
-   
-    @JsonProperty(EventModelMapping.PROJECTNAME)
-    private String projectName;
-
-    @JsonProperty(EventModelMapping.EVENTTYPE)
-    private String eventType;
-
-    @JsonProperty(EventModelMapping.DESCRIPTION)
-    private String description;
-
     @JsonProperty(EventModelMapping.CREATEDAT)
     String createdAt;
-    
     @JsonProperty(EventModelMapping.LASTUPDATE)
     String lastModifiedAt;
-    
     @JsonProperty(EventModelMapping.TRIGGERED)
     boolean triggered;
-      
+    @JsonProperty(EventModelMapping.EVENTID)
+    private String eventId;
+    @JsonProperty(EventModelMapping.EVENTNAME)
+    private String name;
+    @JsonProperty(EventModelMapping.PROJECTID)
+    private String projectId;
+    @JsonProperty(EventModelMapping.PROJECTNAME)
+    private String projectName;
+    @JsonProperty(EventModelMapping.EVENTTYPE)
+    private String eventType;
+    @JsonProperty(EventModelMapping.DESCRIPTION)
+    private String description;
     @JsonProperty(EventModelMapping.TIMOUTVALUE)
-    private int timeout ;
-    
+    private int timeout;
+
     @JsonProperty(EventModelMapping.TIMEOUTUNIT)
     private String timeoutUnit;
 
     private String createdBy;
-   
+
     private String modifiedBy;
+
+    /*  public EventModel(String id, String projectId, EventType type, String name) {
+          super();
+          this.name = name;
+          this.eventId = id;
+          this.projectId = projectId;
+      }
+  */
+    public EventModel() {
+        super();
+    }
+
+    public EventModel(JEEvent event) {
+        this.name = event.getJobEngineElementName();
+        this.eventId = event.getJobEngineElementID();
+        this.projectId = event.getJobEngineProjectID();
+        this.description = event.getDescription();
+        this.createdAt = event.getJeObjectCreationDate().toString();
+        this.lastModifiedAt = event.getJeObjectLastUpdate().toString();
+        this.triggered = event.isTriggered();
+        this.timeout = event.getTimeoutValue();
+        this.timeoutUnit = event.getTimeoutUnit();
+        this.createdBy = event.getJeObjectCreatedBy();
+        this.modifiedBy = event.getJeObjectModifiedBy();
+    }
 
     public String getProjectId() {
         return projectId;
@@ -63,32 +79,7 @@ public class EventModel {
         this.name = name;
     }
 
-  /*  public EventModel(String id, String projectId, EventType type, String name) {
-        super();
-        this.name = name;
-        this.eventId = id;
-        this.projectId = projectId;
-    }
-*/
-    public EventModel() {
-        super();
-    }
-
-	public EventModel(JEEvent event) {
-		this.name = event.getJobEngineElementName();
-        this.eventId = event.getJobEngineElementID();
-        this.projectId = event.getJobEngineProjectID();
-        this.description = event.getDescription();
-        this.createdAt = event.getJeObjectCreationDate().toString();
-		this.lastModifiedAt =  event.getJeObjectLastUpdate().toString();
-        this.triggered = event.isTriggered();
-        this.timeout = event.getTimeoutValue();
-        this.timeoutUnit = event.getTimeoutUnit();
-		this.createdBy = event.getJeObjectCreatedBy();
-		this.modifiedBy = event.getJeObjectModifiedBy();
-	}
-
-	public String getEventId() {
+    public String getEventId() {
         return eventId;
     }
 
@@ -100,6 +91,10 @@ public class EventModel {
         return eventType;
     }
 
+    public void setEventType(String eventType) {
+        this.eventType = eventType;
+    }
+
     public String getDescription() {
         return description;
     }
@@ -108,74 +103,69 @@ public class EventModel {
         this.description = description;
     }
 
-    public void setEventType(String eventType) {
-        this.eventType = eventType;
+    public String getCreatedAt() {
+        return createdAt;
     }
 
-	public String getCreatedAt() {
-		return createdAt;
-	}
+    public void setCreatedAt(String createdAt) {
+        this.createdAt = createdAt;
+    }
 
-	public void setCreatedAt(String createdAt) {
-		this.createdAt = createdAt;
-	}
+    public String getLastModifiedAt() {
+        return lastModifiedAt;
+    }
 
-	public String getLastModifiedAt() {
-		return lastModifiedAt;
-	}
+    public void setLastModifiedAt(String lastModifiedAt) {
+        this.lastModifiedAt = lastModifiedAt;
+    }
 
-	public void setLastModifiedAt(String lastModifiedAt) {
-		this.lastModifiedAt = lastModifiedAt;
-	}
+    public boolean getTriggered() {
+        return triggered;
+    }
 
-	public boolean getTriggered() {
-		return triggered;
-	}
+    public void setTriggered(boolean triggered) {
+        this.triggered = triggered;
+    }
 
-	public void setTriggered(boolean triggered) {
-		this.triggered = triggered;
-	}
+    public int getTimeout() {
+        return timeout;
+    }
 
-	public int getTimeout() {
-		return timeout;
-	}
+    public void setTimeout(int timeout) {
+        this.timeout = timeout;
+    }
 
-	public void setTimeout(int timeout) {
-		this.timeout = timeout;
-	}
+    public String getTimeoutUnit() {
+        return timeoutUnit;
+    }
 
-	public String getTimeoutUnit() {
-		return timeoutUnit;
-	}
+    public void setTimeoutUnit(String timeoutUnit) {
+        this.timeoutUnit = timeoutUnit;
+    }
 
-	public void setTimeoutUnit(String timeoutUnit) {
-		this.timeoutUnit = timeoutUnit;
-	}
+    public String getCreatedBy() {
+        return createdBy;
+    }
 
-	public String getCreatedBy() {
-		return createdBy;
-	}
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
 
-	public void setCreatedBy(String createdBy) {
-		this.createdBy = createdBy;
-	}
+    public String getModifiedBy() {
+        return modifiedBy;
+    }
 
-	public String getModifiedBy() {
-		return modifiedBy;
-	}
+    public void setModifiedBy(String modifiedBy) {
+        this.modifiedBy = modifiedBy;
+    }
 
-	public void setModifiedBy(String modifiedBy) {
-		this.modifiedBy = modifiedBy;
-	}
+    public String getProjectName() {
+        return projectName;
+    }
 
-	public String getProjectName() {
-		return projectName;
-	}
+    public void setProjectName(String projectName) {
+        this.projectName = projectName;
+    }
 
-	public void setProjectName(String projectName) {
-		this.projectName = projectName;
-	}
-    
-    
-    
+
 }

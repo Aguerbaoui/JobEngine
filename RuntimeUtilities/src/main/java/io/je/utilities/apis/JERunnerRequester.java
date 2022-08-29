@@ -8,7 +8,6 @@ import io.siothconfig.SIOTHConfigUtility;
 import utils.log.LogMessage;
 import utils.zmq.ZMQRequester;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 

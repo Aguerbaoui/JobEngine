@@ -14,7 +14,7 @@ public class StartBlock extends WorkflowBlock {
     }
 
     public void setEventId(String eventId) {
-        this.eventId = eventId;            
+        this.eventId = eventId;
     }
 
     public TimerEvent getTimerEvent() {

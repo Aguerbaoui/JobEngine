@@ -1,7 +1,6 @@
 package io.je.ruleengine.impl;
 
 import io.je.ruleengine.control.PersistenceMap;
-import io.je.ruleengine.listener.AgendaEventListener;
 import io.je.ruleengine.loader.RuleLoader;
 import io.je.ruleengine.models.Rule;
 import io.je.utilities.classloader.JEClassLoader;
@@ -12,8 +11,6 @@ import io.je.utilities.log.JELogger;
 import io.je.utilities.ruleutils.IdManager;
 import io.je.utilities.runtimeobject.JEObject;
 import org.apache.commons.lang3.StringUtils;
-import org.drools.core.event.DebugAgendaEventListener;
-import org.drools.core.event.DebugProcessEventListener;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.builder.*;
@@ -24,7 +21,6 @@ import org.kie.api.conf.DeclarativeAgendaOption;
 import org.kie.api.conf.EqualityBehaviorOption;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.conf.KieBaseMutabilityOption;
-import org.kie.api.event.rule.DebugRuleRuntimeEventListener;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
@@ -59,11 +55,12 @@ public class ProjectContainer {
 
 
     Map<String, Rule> allRules = new ConcurrentHashMap<>();
-
+    // private boolean isInitialised = false;
+    // JEClassLoader loader = JEClassLoader.getInstance();
+    ConcurrentHashMap<String, FactHandle> facts = new ConcurrentHashMap<>();
     private String projectId;
     // A project can be either running, or stopped.
     private Status status = Status.STOPPED;
-
     /*
      * ------------------- kie configuration -------------------
      */
@@ -72,30 +69,26 @@ public class ProjectContainer {
     // The KieServices is a thread-safe singleton acting as a hub giving access
     // to the other services provided by Kie.
     private KieServices kieServices;
-
     // KieFileSystem is an in memory file system used to programmatically define
     // the resources composing a KieModule.
     private KieFileSystem kieFileSystem;
-
     // This second kieFileSystem instance is used to compile rules without
     // altering the original kieFileSystem.
     private KieFileSystem kfsToCompile;
-
     // A KieModule is a container of all the resources necessary to define a set of
     // KieBases
     private KieModuleModel kproj;
     // The KieContainer Holds all the knowledge. Each project container is defined
     // by a Kie Container.
     private KieContainer kieContainer;
-    // This represents the project container's version. It is updated whenever the
-    // project
-    // components are altered
-    private ReleaseId releaseId;
 
     // The KScanner is used to automatically discover if there are new releases for
     // a given KieModule
     //private KieScanner kScanner;
-
+    // This represents the project container's version. It is updated whenever the
+    // project
+    // components are altered
+    private ReleaseId releaseId;
     // A repository of all the application's knowledge definitions
     private KieBase kieBase;
     // We interact with the engine through a KieSession.
@@ -105,9 +98,6 @@ public class ProjectContainer {
     // This attribute is responsible for listening to the engine while it's active.
     //private RuleListener ruleListener;
     private boolean reloadContainer = false;
-    // private boolean isInitialised = false;
-    // JEClassLoader loader = JEClassLoader.getInstance();
-    ConcurrentHashMap<String, FactHandle> facts = new ConcurrentHashMap<>();
 
     /*
      * Constructor
@@ -279,8 +269,8 @@ public class ProjectContainer {
     public boolean stopRuleExecution(boolean destroySession, boolean removeAllRules) {
 
         JELogger.debugWithoutPublish(JEMessages.STOPPING_PROJECT_CONTAINER
-                + " , destroy session : " + Boolean.toString(destroySession)
-                + " , remove all project rules : " + Boolean.toString(removeAllRules), // FIXME msg
+                        + " , destroy session : " + Boolean.toString(destroySession)
+                        + " , remove all project rules : " + Boolean.toString(removeAllRules), // FIXME msg
                 LogCategory.RUNTIME, projectId, LogSubModule.RULE, null);
 
         // TODO : Add more control for stopping rules / catching exceptions (case rule stopped but still firing, ex : Issue 14962)
@@ -329,10 +319,15 @@ public class ProjectContainer {
 
         // TODO: only delete/re-add rule that have been modified
         // empty kie file system
-        if (!deleteAllRulesFromKieFileSystem()) { return false; }
+        if (!deleteAllRulesFromKieFileSystem()) {
+            return false;
+        }
 
         // add rules to kfs
-        if (!addAllRulesToKieFileSystem()) { return false; };
+        if (!addAllRulesToKieFileSystem()) {
+            return false;
+        }
+        ;
 
         // build all rules
         try {
@@ -439,7 +434,9 @@ public class ProjectContainer {
         boolean result = true;
         for (Rule rule : allRules.values()) {
 
-            if (!addRuleToKieFileSystem(rule)) { result = false; }
+            if (!addRuleToKieFileSystem(rule)) {
+                result = false;
+            }
 
         }
         return result;
@@ -498,7 +495,9 @@ public class ProjectContainer {
         boolean result = true;
         for (Rule rule : allRules.values()) {
 
-            if (!deleteRuleFromKieFileSystem(rule)) { result = false; }
+            if (!deleteRuleFromKieFileSystem(rule)) {
+                result = false;
+            }
 
         }
         return result;
@@ -622,7 +621,9 @@ public class ProjectContainer {
             // check that rule exists and add it if not
             if (!ruleExists(rule)) {
                 allRules.put(rule.getJobEngineElementID(), rule);
-                if (!addRuleToKieFileSystem(rule)) { return false; }
+                if (!addRuleToKieFileSystem(rule)) {
+                    return false;
+                }
                 updateContainer();
                 return true;
             }
@@ -630,9 +631,13 @@ public class ProjectContainer {
             // update rule in map
             allRules.put(rule.getJobEngineElementID(), rule);
 
-            if (!deleteRuleFromKieFileSystem(rule)) { return false; }
+            if (!deleteRuleFromKieFileSystem(rule)) {
+                return false;
+            }
 
-            if (!addRuleToKieFileSystem(rule)) { return false; }
+            if (!addRuleToKieFileSystem(rule)) {
+                return false;
+            }
 
             // if project is running, update container without interrupting project
             updateContainer();
@@ -652,7 +657,7 @@ public class ProjectContainer {
     public void deleteRule(String ruleId) throws DeleteRuleException {
         try {
             JELogger.debugWithoutPublish(
-                    "[projectId = " + projectId + "] [ruleId = " + ruleId + "] " + JEMessages.DELETING_RULE ,
+                    "[projectId = " + projectId + "] [ruleId = " + ruleId + "] " + JEMessages.DELETING_RULE,
                     LogCategory.RUNTIME, projectId, LogSubModule.RULE, ruleId);
             // check that rule exists
             if (!ruleExists(ruleId)) {
@@ -720,15 +725,15 @@ public class ProjectContainer {
                 .buildAll(null);
 
         Results results = kieBuilder.getResults();
-        
+
         JELogger.debug(getKieBuilderMessages(results.getMessages()));
-        
+
         //FIXME to check utility
         kfsToCompile.delete(filename);
 
         if (results.hasMessages(ERROR)) {
             JELogger.error(getKieBuilderMessages(results.getMessages(ERROR)), LogCategory.RUNTIME, projectId, LogSubModule.RULE,
-                    rule.getJobEngineElementID());
+                    rule.getJobEngineElementID().substring(1 , 37)); // FIXME get rule ID instead of substring
             throw new RuleCompilationException(JEMessages.RULE_CONTAINS_ERRORS, getKieBuilderMessages(results.getMessages(ERROR)));
         }
 
@@ -747,6 +752,7 @@ public class ProjectContainer {
         }
         return result;
     }
+
     /*
      * this method compiles all the rules in this project container
      */

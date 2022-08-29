@@ -10,10 +10,6 @@ public class WorkflowConstants {
     public static final String IMPORT_DATAMODEL = "importDataModelClasses";
     public static final String ERROR_REF = "errorRef";
     public static final String EVENT_TYPE = "eventType";
-
-    private WorkflowConstants() {
-    }
-
     public static final String PROCESS_LISTENER_IMPLEMENTATION = "io.je.executionListeners.ProcessListener";
     public static final String GATEWAYS_LISTENER_IMPLEMENTATION = "io.je.executionListeners.GatewaysListener";
     public static final String TASKS_LISTENER_IMPLEMENTATION = "io.je.executionListeners.TasksListener";
@@ -71,7 +67,6 @@ public class WorkflowConstants {
     public static final String PASSWORD = "strPassword";
     public static final String USERNAME = "strUserName";
     public static final String ENABLE_SSL = "bEnableSSL";
-
     //region SMS
     public static final String SERVER_TYPE = "serverType";
     public static final String RECEIVER_PHONE_NUMBERS = "receiverPhoneNumbers";
@@ -115,5 +110,7 @@ public class WorkflowConstants {
     public static final String CONDITION = "condition";
     public static final String IMPORTS = "imports";
     public static final String EXECUTE_SCRIPT = "executeScript";
+    private WorkflowConstants() {
+    }
 
 }

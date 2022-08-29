@@ -29,57 +29,57 @@ public class VariableController {
     @Autowired
     VariableService variableService;
     @Autowired
-	ProjectService projectService;
+    ProjectService projectService;
 
-    
-	/*
-	 * Retrieve all variables in a project
-	 */
-	@GetMapping(value = "{projectId}/getAllVariables")
-	@ResponseBody
-	public ResponseEntity<?> getAllVariables(@PathVariable("projectId") String projectId) {
-		Collection<?> variables = null;
-		try {
-			projectService.getProject(projectId);
 
-			variables = variableService.getAllVariables(projectId);
+    /*
+     * Retrieve all variables in a project
+     */
+    @GetMapping(value = "{projectId}/getAllVariables")
+    @ResponseBody
+    public ResponseEntity<?> getAllVariables(@PathVariable("projectId") String projectId) {
+        Collection<?> variables = null;
+        try {
+            projectService.getProject(projectId);
+
+            variables = variableService.getAllVariables(projectId);
 			/*if (variables.isEmpty()) {
 				return ResponseEntity.noContent().build();
 
 			}*/
-		} catch (Exception e) {
-			return JEExceptionHandler.handleException(e);
+        } catch (Exception e) {
+            return JEExceptionHandler.handleException(e);
 
-		}
+        }
 
-		return ResponseEntity.ok(variables);
+        return ResponseEntity.ok(variables);
 
-	}
+    }
 
-	/*
-	 * Retrieve an variable from a project
-	 */
-	@GetMapping(value = "{projectId}/getVariable/{variableId}")
-	@ResponseBody
-	public ResponseEntity<?> getVariable(@PathVariable("projectId") String projectId,
-			@PathVariable("variableId") String variableId) {
-		JEVariable variable = null;
+    /*
+     * Retrieve an variable from a project
+     */
+    @GetMapping(value = "{projectId}/getVariable/{variableId}")
+    @ResponseBody
+    public ResponseEntity<?> getVariable(@PathVariable("projectId") String projectId,
+                                         @PathVariable("variableId") String variableId) {
+        JEVariable variable = null;
 
 
-		try {
-			JEProject project = projectService.getProject(projectId);
-			variable = variableService.getVariable(project.getProjectId(), variableId);
-			if (variable == null) {
-				return ResponseEntity.noContent().build();
-			}
-		} catch (Exception e) {
-			return JEExceptionHandler.handleException(e);
+        try {
+            JEProject project = projectService.getProject(projectId);
+            variable = variableService.getVariable(project.getProjectId(), variableId);
+            if (variable == null) {
+                return ResponseEntity.noContent().build();
+            }
+        } catch (Exception e) {
+            return JEExceptionHandler.handleException(e);
 
-		}
+        }
 
-		return ResponseEntity.ok(variableService.getVariableModelFromBean(variable));
+        return ResponseEntity.ok(variableService.getVariableModelFromBean(variable));
 
-	}
+    }
 
     /*
      * add a new variable
@@ -88,9 +88,9 @@ public class VariableController {
     public ResponseEntity<?> addVariable(@RequestBody VariableModel variableModel) {
 
         try {
-			projectService.getProject(variableModel.getProjectId());
+            projectService.getProject(variableModel.getProjectId());
 
-        variableService.addVariable(variableModel);
+            variableService.addVariable(variableModel);
         } catch (Exception e) {
             return JEExceptionHandler.handleException(e);
         }
@@ -114,14 +114,14 @@ public class VariableController {
 
 
     /*
-     * delete variable 
+     * delete variable
      */
     @DeleteMapping(value = "/deleteVariable/{projectId}/{varId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> deleteVariable(@PathVariable("projectId") String projectId,
                                             @PathVariable("varId") String varId) {
 
         try {
-			projectService.getProject(projectId);
+            projectService.getProject(projectId);
 
             variableService.deleteVariable(projectId, varId);
 
@@ -139,7 +139,7 @@ public class VariableController {
     public ResponseEntity<?> updateVariable(@RequestBody VariableModel variableModel) {
 
         try {
-			projectService.getProject(variableModel.getProjectId());
+            projectService.getProject(variableModel.getProjectId());
             variableService.updateVariable(variableModel);
         } catch (Exception e) {
             return JEExceptionHandler.handleException(e);
@@ -150,20 +150,20 @@ public class VariableController {
     }
 
     /*
-    * write to variable
-    */
-   @PostMapping(value = "{projectId}/writeVariableValue/{variableId}", produces = MediaType.APPLICATION_JSON_VALUE)
-   public ResponseEntity<?> writeVariableValue(@PathVariable("projectId") String projectId,@PathVariable("variableId") String variableId, @RequestBody String value ) {
+     * write to variable
+     */
+    @PostMapping(value = "{projectId}/writeVariableValue/{variableId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> writeVariableValue(@PathVariable("projectId") String projectId, @PathVariable("variableId") String variableId, @RequestBody String value) {
 
-       try {
-			JEProject project = projectService.getProject(projectId);
+        try {
+            JEProject project = projectService.getProject(projectId);
             JEVariable jeVariable = variableService.getVariable(project.getProjectId(), variableId);
             variableService.writeVariableValue(jeVariable, value);
-       } catch (Exception e) {
-           return JEExceptionHandler.handleException(e);
-       }
-       return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.VAR_ADDED_SUCCESSFULLY));
-   }
+        } catch (Exception e) {
+            return JEExceptionHandler.handleException(e);
+        }
+        return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.VAR_ADDED_SUCCESSFULLY));
+    }
 
     /*
      * delete multiple variables

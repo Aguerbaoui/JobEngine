@@ -4,23 +4,20 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class MachineCredentials {
 
-	private MachineCredentials() {
-		// TODO Auto-generated constructor stub
-	}
-
     @JsonProperty("IPAddress")
-	private String ipAddress;
+    private String ipAddress;
 
-    
+    private MachineCredentials() {
+        // TODO Auto-generated constructor stub
+    }
 
-	public String getIpAddress() {
-		return ipAddress;
-	}
+    public String getIpAddress() {
+        return ipAddress;
+    }
 
-	public void setIpAddress(String iPAddress) {
-		this.ipAddress = iPAddress;
-	}
+    public void setIpAddress(String iPAddress) {
+        this.ipAddress = iPAddress;
+    }
 
 
-	
 }

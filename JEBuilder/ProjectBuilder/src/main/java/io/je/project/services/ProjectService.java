@@ -29,7 +29,6 @@ import utils.string.StringUtilities;
 import java.io.File;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -45,32 +44,39 @@ import static io.je.utilities.constants.JEMessages.BUILT_EVERYTHING_SUCCESSFULLY
 @Service
 public class ProjectService {
 
+    private static ConcurrentHashMap<String, JEProject> loadedProjects = new ConcurrentHashMap<>();
     @Autowired
     ProjectRepository projectRepository;
-
     @Autowired
     @Lazy
     WorkflowService workflowService;
-
     @Autowired
     @Lazy
     RuleService ruleService;
-
     @Autowired
     @Lazy
     EventService eventService;
-
     @Autowired
     @Lazy
     VariableService variableService;
 
+    /* project management */
     @Autowired
     @Lazy
     ClassService classService;
 
-    /* project management */
+    public static ConcurrentMap<String, JEProject> getLoadedProjects() {
+        return loadedProjects;
+    }
 
-    private static ConcurrentHashMap<String, JEProject> loadedProjects = new ConcurrentHashMap<>();
+    public static void setLoadedProjects(ConcurrentHashMap<String, JEProject> loadedProjects) {
+        ProjectService.loadedProjects = loadedProjects;
+
+    }
+
+    /*
+     * Get all loaded Projects
+     */
 
     /*
      * Add a new project
@@ -88,6 +94,10 @@ public class ProjectService {
     }
 
     /*
+     * Return a project loaded in memory
+     */
+
+    /*
      * delete project
      */
     @Async
@@ -95,7 +105,8 @@ public class ProjectService {
 
         try {
             stopProject(id);
-        } catch (ProjectNotFoundException | ProjectStopException | LicenseNotActiveException | ExecutionException exception) {
+        } catch (ProjectNotFoundException | ProjectStopException | LicenseNotActiveException |
+                 ExecutionException exception) {
             JELogger.logException(exception);
         } catch (InterruptedException exception) {
             JELogger.logException(exception);
@@ -150,29 +161,12 @@ public class ProjectService {
     }
 
     /*
-     * Get all loaded Projects
-     */
-
-    public static ConcurrentMap<String, JEProject> getLoadedProjects() {
-        return loadedProjects;
-    }
-
-    /*
-     * Return a project loaded in memory
+     * Set loaded project in memory
      */
 
     public JEProject getProjectById(String id)
             throws ProjectNotFoundException, ProjectLoadException, LicenseNotActiveException {
         return loadedProjects.containsKey(id) ? loadedProjects.get(id) : this.getProject(id);
-
-    }
-
-    /*
-     * Set loaded project in memory
-     */
-
-    public static void setLoadedProjects(ConcurrentHashMap<String, JEProject> loadedProjects) {
-        ProjectService.loadedProjects = loadedProjects;
 
     }
 

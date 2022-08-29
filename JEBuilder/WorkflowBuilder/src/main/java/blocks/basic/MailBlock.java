@@ -107,7 +107,7 @@ public class MailBlock extends WorkflowBlock {
     }
 
     public List<String> getLstAttachementPaths() {
-        if(lstAttachementPaths == null) lstAttachementPaths = new ArrayList<>();
+        if (lstAttachementPaths == null) lstAttachementPaths = new ArrayList<>();
         return lstAttachementPaths;
     }
 
@@ -116,7 +116,7 @@ public class MailBlock extends WorkflowBlock {
     }
 
     public List<String> getLstUploadedFiles() {
-        if(lstUploadedFiles == null) lstUploadedFiles = new ArrayList<>();
+        if (lstUploadedFiles == null) lstUploadedFiles = new ArrayList<>();
         return lstUploadedFiles;
     }
 
@@ -125,7 +125,7 @@ public class MailBlock extends WorkflowBlock {
     }
 
     public List<String> getLstCCs() {
-        if(lstCCs == null) lstCCs = new ArrayList<>();
+        if (lstCCs == null) lstCCs = new ArrayList<>();
         return lstCCs;
     }
 
@@ -134,7 +134,7 @@ public class MailBlock extends WorkflowBlock {
     }
 
     public List<String> getLstBCCs() {
-        if(lstBCCs == null) lstBCCs = new ArrayList<>();
+        if (lstBCCs == null) lstBCCs = new ArrayList<>();
         return lstBCCs;
     }
 

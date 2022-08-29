@@ -25,15 +25,13 @@ import java.util.concurrent.ExecutionException;
 @Service
 public class AsyncRuleService {
 
+    private static final LogSubModule RULE = LogSubModule.RULE;
+    private static final LogCategory CATEGORY = LogCategory.DESIGN_MODE;
     @Autowired
     RuleRepository ruleRepository;
-
     @Autowired
     @Lazy
     ProjectService projectService;
-
-    private static final LogSubModule RULE = LogSubModule.RULE;
-    private static final LogCategory CATEGORY = LogCategory.DESIGN_MODE;
 
     /*
      * build rule : create drl + check for compilation errors
@@ -186,8 +184,7 @@ public class AsyncRuleService {
             LoggerUtils.logException(e);
             result.setOperationSucceeded(false);
             result.setOperationError(e.getMessage());
-        }
-        catch (ExecutionException e) {
+        } catch (ExecutionException e) {
             LoggerUtils.logException(e);
             result.setOperationSucceeded(false);
             result.setOperationError(e.getCause().getMessage());
