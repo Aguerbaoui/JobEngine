@@ -49,6 +49,7 @@ public class ComparisonBlock extends PersistableBlock {
     boolean includeBounds = false;
     boolean formatToString = false;
     boolean isOperatorString = false;
+    boolean isOperatorDate = false;
 
     protected ComparisonBlock(String jobEngineElementID, String jobEngineProjectID, String ruleId, String blockName,
                               String blockDescription, int timePersistenceValue, String timePersistenceUnit, List<BlockLinkModel> inputBlockIds, List<BlockLinkModel> outputBlocksIds) {
@@ -104,13 +105,10 @@ public class ComparisonBlock extends PersistableBlock {
 
     }
 
-    public ComparisonBlock() {
-        super();
-    }
-
     public String getOperatorByOperationId(int operationId) {
         Optional<Operator> operation = Operator.getOperatorByCode(operationId);
         isOperatorString = Operator.isStringOperator(operationId);
+        isOperatorDate = Operator.isDateOperator(operationId);
         if (operation
                 .isPresent()) {
             return operation
@@ -118,6 +116,10 @@ public class ComparisonBlock extends PersistableBlock {
                     .getFullName();
         } else return "";
 
+    }
+
+    public ComparisonBlock() {
+        super();
     }
 
     @Override
@@ -222,7 +224,9 @@ public class ComparisonBlock extends PersistableBlock {
 
             return firstOperand + getOperator() + " ( (String) " + formatOperator(threshold) + " ) ";
         }
-
+        if (isOperatorDate) {
+            return getInputReferenceByOrder(0) + getOperator() + formatOperator(threshold);
+        }
         String firstOperand = (getInputBlockByOrder(0) instanceof VariableGetterBlock ? asDouble(getInputReferenceByOrder(0)) : getInputReferenceByOrder(0));
         return asDouble(firstOperand) + getOperator() + asDouble(formatOperator(threshold));
 
@@ -236,9 +240,6 @@ public class ComparisonBlock extends PersistableBlock {
         return formatToString ? "\"" + operator + "\"" : operator;
     }
 
-    public String asDouble(String val) {
-        return "JEMathUtils.castToDouble(" + val + " )"; //" Double.valueOf( "+val+" )";
-    }
 
     protected String getMaxRange() {
         return maxRange;
