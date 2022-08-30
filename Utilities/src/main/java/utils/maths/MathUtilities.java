@@ -1,7 +1,6 @@
 package utils.maths;
 
 import org.apache.commons.math3.util.CombinatoricsUtils;
-import utils.log.LoggerUtils;
 
 public class MathUtilities {
 
@@ -10,170 +9,150 @@ public class MathUtilities {
     /*
      * ln
      */
-    public static double ln(Object x) {
+    public static double ln(double x) {
 
-        return Math.log(castToDouble(x));
+        return Math.log(x);
     }
 
-    public static double castToDouble(Object x) {
-        try {
-            if (x instanceof Float) {
-                return ((Float) x).doubleValue();
-            } else if (x instanceof Integer) {
-                return ((Integer) x).doubleValue();
-            } else if (x instanceof Long) {
-                return ((Long) x).doubleValue();
-            } else if (x instanceof Short) {
-                return ((Short) x).doubleValue();
-            } else if (x instanceof Byte) {
-                return ((Byte) x).doubleValue();
-            }
-
-            return (double) x;
-        } catch (Exception e) {
-            LoggerUtils.logException(e);
-            throw new RuntimeException(e.getMessage());
-        }
-    }
 
     /*
      * ceil
      */
-    public static double ceil(Object x) {
+    public static double ceil(double x) {
 
-        return Math.ceil(castToDouble(x));
+        return Math.ceil(x);
     }
 
 
     /*
      * truncate
      */
-    public static double truncate(Object x) {
+    public static double truncate(double x) {
 
-        return Math.round(castToDouble(x));
+        return Math.round(x);
     }
 
     /*
      * floor
      */
-    public static double floor(Object x) {
+    public static double floor(double x) {
 
-        return Math.floor(castToDouble(x));
+        return Math.floor(x);
     }
 
     /*
      * sin
      */
-    public static double sin(Object x) {
+    public static double sin(double x) {
 
-        return Math.sin(castToDouble(x));
+        return Math.sin(x);
     }
 
     /*
      * cos
      */
-    public static double cos(Object x) {
+    public static double cos(double x) {
 
-        return Math.cos(castToDouble(x));
+        return Math.cos(x);
     }
 
     /*
      * asin
      */
-    public static double asin(Object x) {
+    public static double asin(double x) {
 
-        return Math.asin(castToDouble(x));
+        return Math.asin(x);
     }
 
 
     /*
      * arctan
      */
-    public static double atan(Object x) {
+    public static double atan(double x) {
 
-        return Math.atan(castToDouble(x));
+        return Math.atan(x);
     }
 
 
     /*
      * tan
      */
-    public static double tan(Object x) {
+    public static double tan(double x) {
 
-        return Math.tan(castToDouble(x));
+        return Math.tan(x);
     }
 
     /*
      * square
      */
-    public static double square(Object x) {
+    public static double square(double x) {
 
-        return Math.pow(castToDouble(x), 2);
+        return Math.pow(x, 2);
     }
 
     /*
      * sqrt
      */
-    public static double sqrt(Object x) {
+    public static double sqrt(double x) {
 
-        return Math.sqrt(castToDouble(x));
+        return Math.sqrt(x);
     }
 
     /*
      * acos
      */
-    public static double acos(Object x) {
+    public static double acos(double x) {
 
-        return Math.acos(castToDouble(x));
+        return Math.acos(x);
     }/*
      * abs
      */
 
-    public static double abs(Object x) {
-        return Math.abs(castToDouble(x));
+    public static double abs(double x) {
+        return Math.abs(x);
     }
 
 
     /*
      * log10
      */
-    public static double log10(Object x) {
+    public static double log10(double x) {
 
-        return Math.log10(castToDouble(x));
+        return Math.log10(x);
     }
 
 
     /*
      * power
      */
-    public static double power(Object x, int i) {
+    public static double power(double x, int i) {
 
-        return Math.pow(castToDouble(x), i);
+        return Math.pow(x, i);
     }
 
 
     /**
      * bias
      */
-    public static double bias(Object x, int i) {
+    public static double bias(double x, int i) {
 
-        return castToDouble(x) + i;
+        return x + i;
     }
 
     /**
      * gain
      */
-    public static double gain(Object x, int i) {
+    public static double gain(double x, int i) {
 
-        return castToDouble(x) * i;
+        return x * i;
     }
 
     /*
      * exp
      */
-    public static double exp(Object x) {
+    public static double exp(double x) {
 
-        return Math.exp(castToDouble(x));
+        return Math.exp(x);
 
     }
 
@@ -181,8 +160,8 @@ public class MathUtilities {
     /*
      * factorial
      */
-    public static double factorial(Object x) {
-        Double value = castToDouble(x);
+    public static double factorial(double x) {
+        Double value = x;
         if (value.intValue() > 0 && value <= 20) {
             return CombinatoricsUtils.factorial(value.intValue());
 
@@ -261,16 +240,6 @@ public class MathUtilities {
 
     }
 
-    /*
-     * Low Limiting returns max ( limitValue, min(Inputs..) )
-     */
-    public static double lowLimiting(double limit, double... numbers) {
-        double min = minimum(numbers);
-
-        return (double) Math.max(limit, min);
-
-    }
-
     public static double maximum(double... numbers) {
         double max = numbers[0];
         for (double number : numbers) {
@@ -280,6 +249,16 @@ public class MathUtilities {
         }
 
         return (double) max;
+
+    }
+
+    /*
+     * Low Limiting returns max ( limitValue, min(Inputs..) )
+     */
+    public static double lowLimiting(double limit, double... numbers) {
+        double min = minimum(numbers);
+
+        return (double) Math.max(limit, min);
 
     }
 

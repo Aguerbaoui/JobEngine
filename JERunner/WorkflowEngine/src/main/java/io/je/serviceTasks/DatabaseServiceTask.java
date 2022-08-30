@@ -15,14 +15,14 @@ public class DatabaseServiceTask extends ServiceTask {
         DatabaseTask databaseTask = (DatabaseTask) ActivitiTaskManager.getTask(execution.getCurrentActivityId());
         if (databaseTask != null) {
             try {
-                String response = DatabaseApiHandler.executeCommand(databaseTask.getDatabaseId(), databaseTask.getRequest());
+                String response = DatabaseApiHandler.executeCommand(databaseTask.getDatabaseId(), databaseTask.getRequest(), databaseTask.getProjectId(), databaseTask.getWorkflowId(), databaseTask.getTaskName());
                 if (response == null) {
                     throw new BpmnError("Error");
                 }
             } catch (Exception e) {
                 JELogger.logException(e);
-                JELogger.error(JEMessages.UNEXPECTED_ERROR + e.getMessage(), LogCategory.RUNTIME, null,
-                        LogSubModule.JERUNNER, null);
+                JELogger.error(JEMessages.UNEXPECTED_ERROR + e.getMessage(), LogCategory.RUNTIME, databaseTask.getProjectId(),
+                        LogSubModule.JERUNNER, databaseTask.getWorkflowId());
                 throw new BpmnError("Error");
             }
         }
