@@ -302,7 +302,6 @@ public class RuntimeDispatcher {
             throws WorkflowNotFoundException, WorkflowAlreadyRunningException,
             WorkflowBuildException, WorkflowRunException {
 
-        /**/
         JELogger.debug("[projectId = " + projectId + "] [workflow = " + key + "] " + JEMessages.RUNNING_WF,
                 LogCategory.RUNTIME, projectId, LogSubModule.WORKFLOW, key);
         //buildWorkflow(projectId, key);

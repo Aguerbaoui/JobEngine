@@ -113,7 +113,7 @@ public class WorkflowService {
      * Remove a workflow from a project
      */
 
-    public void removeWorkflow(String projectId, String workflowId)
+    public void removeWorkflow(String projectId, String key)
             throws WorkflowNotFoundException, LicenseNotActiveException, WorkflowException, ProjectNotFoundException, ProjectLoadException {
 
         //check if license is valid
@@ -123,17 +123,17 @@ public class WorkflowService {
         JEProject project = projectService.getProjectById(projectId);
 
         //check if workflow exists
-        if (!project.workflowExists(workflowId)) {
+        if (!project.workflowExists(key)) {
             throw new WorkflowNotFoundException(JEMessages.WORKFLOW_NOT_FOUND);
         }
 
         //delete workflow from runner
-        JEWorkflow wf = project.getWorkflowByIdOrName(workflowId);
+        JEWorkflow wf = project.getWorkflowByIdOrName(key);
         String wfName = wf.getJobEngineElementName()
                 .trim();
         JELogger.debug(
                 "[project=" + project.getProjectName() + " ][workflow = " + wfName + "]" + JEMessages.REMOVING_WF,
-                LogCategory.DESIGN_MODE, projectId, LogSubModule.WORKFLOW, workflowId);
+                LogCategory.DESIGN_MODE, projectId, LogSubModule.WORKFLOW, key);
         try {
             JERunnerAPIHandler.deleteWorkflow(projectId, wfName);
         } catch (JERunnerErrorException e) {
@@ -142,7 +142,7 @@ public class WorkflowService {
         }
 
         // delete workflow block names
-        Enumeration<String> blockIds = project.getWorkflowByIdOrName(workflowId)
+        Enumeration<String> blockIds = project.getWorkflowByIdOrName(key)
                 .getAllBlocks()
                 .keys();
         while (blockIds.hasMoreElements()) {
@@ -160,7 +160,7 @@ public class WorkflowService {
         }
 
         //delete workflow from db
-        workflowRepository.deleteById(workflowId);
+        workflowRepository.deleteById(key);
 
         //delete bpmn file from drive
         try {
@@ -174,7 +174,7 @@ public class WorkflowService {
                 wf.getJobEngineElementID());
 
         //delete workflow from memory
-        project.removeWorkflow(workflowId);
+        project.removeWorkflow(key);
     }
 
     /*
@@ -1219,17 +1219,17 @@ public class WorkflowService {
     /*
      * Add a scripted xml file to activiti engine
      */
-    public void addBpmn(String projectId, String workflowId, String bpmn)
+    public void addBpmn(String projectId, String key, String bpmn)
             throws LicenseNotActiveException, ProjectNotFoundException, ProjectLoadException {
         LicenseProperties.checkLicenseIsActive();
         JEProject project = projectService.getProjectById(projectId);
         JELogger.debug(JEMessages.ADDING_BPMN_SCRIPT,
                 LogCategory.DESIGN_MODE, projectId,
-                LogSubModule.WORKFLOW, workflowId);
+                LogSubModule.WORKFLOW, key);
         JEWorkflow wf = new JEWorkflow();
-        wf.setJobEngineElementName(workflowId);
+        wf.setJobEngineElementName(key);
         wf.setJobEngineProjectID(projectId);
-        wf.setJobEngineElementID(workflowId);
+        wf.setJobEngineElementID(key);
         wf.setJobEngineProjectName(project.getProjectName());
         wf.setBpmnPath(ConfigurationConstants.BPMN_PATH + wf.getJobEngineElementName()
                 .trim()
@@ -1245,19 +1245,19 @@ public class WorkflowService {
     /*
      * Update workflow
      */
-    public void updateWorkflow(String projectId, String workflowId, WorkflowModel workflowModel)
+    public void updateWorkflow(String projectId, String key, WorkflowModel workflowModel)
             throws WorkflowNotFoundException, LicenseNotActiveException, ProjectNotFoundException, ProjectLoadException {
         LicenseProperties.checkLicenseIsActive();
         JEProject project = projectService.getProjectById(projectId);
 
-        if (!project.workflowExists(workflowId)) {
+        if (!project.workflowExists(key)) {
             throw new WorkflowNotFoundException(JEMessages.WORKFLOW_NOT_FOUND);
         }
 
-        JEWorkflow wf = project.getWorkflowByIdOrName(workflowId);
+        JEWorkflow wf = project.getWorkflowByIdOrName(key);
         JELogger.debug("[project=" + workflowModel.getProjectName() + " ][workflow = " + workflowModel.getName() + "]" + JEMessages.UPDATING_WF,
                 LogCategory.DESIGN_MODE, projectId,
-                LogSubModule.WORKFLOW, workflowId);
+                LogSubModule.WORKFLOW, key);
         if (workflowModel.getName() != null) {
             wf.setJobEngineElementName(workflowModel.getName());
             try {
@@ -1314,19 +1314,19 @@ public class WorkflowService {
     /*
      * Set workflow ui config //TODO to be removed at some point
      */
-    public void setFrontConfig(String projectId, String workflowId, String config)
+    public void setFrontConfig(String projectId, String key, String config)
             throws WorkflowNotFoundException, LicenseNotActiveException, ProjectNotFoundException, ProjectLoadException {
 
         LicenseProperties.checkLicenseIsActive();
 
         JEProject project = projectService.getProjectById(projectId);
 
-        if (!project.workflowExists(workflowId)) {
+        if (!project.workflowExists(key)) {
             throw new WorkflowNotFoundException(JEMessages.WORKFLOW_NOT_FOUND);
         }
-        project.getWorkflowByIdOrName(workflowId)
+        project.getWorkflowByIdOrName(key)
                 .setFrontConfig(config);
-        workflowRepository.save(project.getWorkflowByIdOrName(workflowId));
+        workflowRepository.save(project.getWorkflowByIdOrName(key));
 
     }
 
@@ -1356,26 +1356,26 @@ public class WorkflowService {
      * Stop workflow execution
      */
     @Async
-    public CompletableFuture<OperationStatusDetails> stopWorkflow(String projectId, String workflowId)
+    public CompletableFuture<OperationStatusDetails> stopWorkflow(String projectId, String key)
             throws LicenseNotActiveException, ProjectNotFoundException, ProjectLoadException {
         LicenseProperties.checkLicenseIsActive();
 
         JEProject project = projectService.getProjectById(projectId);
-        OperationStatusDetails result = new OperationStatusDetails(workflowId);
-        if (!project.workflowExists(workflowId)) {
+        OperationStatusDetails result = new OperationStatusDetails(key);
+        if (!project.workflowExists(key)) {
             result.setOperationSucceeded(false);
             result.setOperationError(JEMessages.WORKFLOW_NOT_FOUND);
             return CompletableFuture.completedFuture(result);
         }
-        JEWorkflow wf = project.getWorkflowByIdOrName(workflowId);
+        JEWorkflow wf = project.getWorkflowByIdOrName(key);
         JELogger.control(
                 "[project=" + project.getProjectName() + " ][workflow = " + wf.getJobEngineElementName() + "]"
                         + JEMessages.STOPPING_WF,
                 LogCategory.DESIGN_MODE, projectId,
-                LogSubModule.WORKFLOW, workflowId);
+                LogSubModule.WORKFLOW, key);
         try {
             result.setItemName(wf.getJobEngineElementName());
-            result.setItemId(workflowId);
+            result.setItemId(key);
             JERunnerAPIHandler.deleteWorkflow(projectId, wf.getJobEngineElementName());
             //wf.setStatus(Status.STOPPING);
 
@@ -1551,7 +1551,6 @@ public class WorkflowService {
                 libraryRepository.save(jeLib);
             }
         }
-
 
     }
 

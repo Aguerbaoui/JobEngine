@@ -101,7 +101,6 @@ public class RuleController {
             return JEExceptionHandler.handleException(e);
         }
 
-
         return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.RULE_UPDATED));
     }
 

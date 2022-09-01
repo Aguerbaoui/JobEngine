@@ -63,9 +63,6 @@ public class JEMathUtils {
         return true;
     }
 
-    public static void main(String[] args) {
-    }
-
     public String asDouble(String val) {
         return "JEMathUtils.castToDouble(" + val + " )"; //" Double.valueOf( "+val+" )";
     }

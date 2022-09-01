@@ -36,6 +36,7 @@ public class InstanceManager {
         instanceModel.setModelName(instanceJson.getString(InstanceModelMapping.MODELNAME));
         instanceModel.setInstanceName(instanceJson.getString(InstanceModelMapping.INSTANCENAME));
         instanceModel.setPayload(instanceJson.getJSONObject(InstanceModelMapping.PAYLOAD));
+
         return instanceModel;
     }
 

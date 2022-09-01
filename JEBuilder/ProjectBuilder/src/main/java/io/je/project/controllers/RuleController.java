@@ -43,11 +43,11 @@ public class RuleController {
     ProjectService projectService;
 
 
-    /*  Retrieve Rules */
+    /*  Retrieve rules */
 
 
     /*
-     * Retrieve all rules in a project
+     * Get all project rules
      */
     @GetMapping(value = "{projectId}/getAllRules")
     @ResponseBody
@@ -70,7 +70,7 @@ public class RuleController {
 
 
     /*
-     * Retrieve a rule in a project, by its id
+     * Get a project rule
      */
     @GetMapping(value = "/{projectId}/getRule/{ruleId}")
     @ResponseBody
@@ -91,12 +91,12 @@ public class RuleController {
 
     }
 
-    /* rule management */
+    /* Rule management */
 
-    /* user defined rules : rules created graphically */
+    /* User defined rules : rules created graphically */
 
     /*
-     * add a new Rule
+     * Add a new rule
      */
     @PostMapping(value = "/{projectId}/addRule", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> addRule(@PathVariable("projectId") String projectId, @RequestBody RuleModel ruleModel) {
@@ -114,6 +114,9 @@ public class RuleController {
     }
 
 
+    /*
+     * Delete a list of rules
+     */
     @PostMapping(value = "/{projectId}/deleteRules", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> deleteRules(@PathVariable("projectId") String projectId, @RequestBody List<String> ruleIds) {
 
@@ -121,7 +124,6 @@ public class RuleController {
             projectService.getProject(projectId);
 
             ruleService.deleteRules(projectId, ruleIds);
-
 
         } catch (Exception e) {
             return JEExceptionHandler.handleException(e);
@@ -131,7 +133,7 @@ public class RuleController {
 
 
     /*
-     * Delete Rule
+     * Delete a rule
      */
     @DeleteMapping(value = "/{projectId}/deleteRule/{ruleId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> deleteRule(@PathVariable("projectId") String projectId,
@@ -150,7 +152,7 @@ public class RuleController {
     }
 
     /*
-     * update rule attributes
+     * Update a rule
      */
     @PatchMapping(value = "/{projectId}/updateRule", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> updateRule(@PathVariable("projectId") String projectId, @RequestBody RuleModel ruleModel) {
@@ -168,7 +170,7 @@ public class RuleController {
     }
 
     /*
-     * update rule : add block
+     * Add block to a rule
      */
     @PostMapping(value = "/{projectId}/{ruleId}/addBlock", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> addBlock(@PathVariable("projectId") String projectId,
@@ -193,6 +195,10 @@ public class RuleController {
         return ResponseEntity.ok(object);
     }
 
+
+    /*
+     * Update a rule block
+     */
     @PatchMapping(value = "/{projectId}/{ruleId}/updateBlock", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> updateBlock(@PathVariable("projectId") String projectId,
                                          @PathVariable("ruleId") String ruleId, @RequestBody BlockModel blockModel) {
@@ -214,7 +220,7 @@ public class RuleController {
 
 
     /*
-     * update rule : delete block
+     * Delete a rule block
      */
     @DeleteMapping(value = "/{projectId}/{ruleId}/deleteBlock/{blockId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> deleteBlock(@PathVariable("projectId") String projectId,
@@ -235,7 +241,7 @@ public class RuleController {
     }
 
     /*
-     * build rule
+     * Build a rule
      */
     @PostMapping(value = "/{projectId}/buildRule/{ruleId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> buildRule(@PathVariable("projectId") String projectId,
@@ -256,7 +262,7 @@ public class RuleController {
     }
 
     /*
-     * run rule
+     * Build a list of rules
      */
     @PostMapping(value = "/{projectId}/buildRules", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> buildRules(@PathVariable("projectId") String projectId,
@@ -280,7 +286,7 @@ public class RuleController {
 
 
     /*
-     * run rule
+     * Run rule
      */
     @PostMapping(value = "/{projectId}/runRule/{ruleId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> runRule(@PathVariable("projectId") String projectId,
@@ -302,7 +308,7 @@ public class RuleController {
 
 
     /*
-     * run rule
+     * Run a list of rules
      */
     @PostMapping(value = "/{projectId}/runRules", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> runRules(@PathVariable("projectId") String projectId,
@@ -324,7 +330,7 @@ public class RuleController {
 
 
     /*
-     * stop rule
+     * Stop a rule
      */
     @PostMapping(value = "/{projectId}/stopRule/{ruleId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> stopRule(@PathVariable("projectId") String projectId,
@@ -344,7 +350,7 @@ public class RuleController {
 
 
     /*
-     * stop rule
+     * Stop a list of rules
      */
     @PostMapping(value = "/{projectId}/stopRules", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> stopRules(@PathVariable("projectId") String projectId,
@@ -367,7 +373,7 @@ public class RuleController {
 
 
     /*
-     * temporary function until autosave is implemented
+     * Update rule editor config : Temporary function until auto-save is implemented
      */
     @PostMapping(value = "/{projectId}/saveRuleFrontConfig/{ruleId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> saveRuleFrontConfig(@PathVariable("projectId") String projectId,
@@ -386,11 +392,10 @@ public class RuleController {
     }
 
 
-    /* scripted rules */
-
+    /* Scripted rules */
 
     /*
-     * add a new scripted Rule
+     * Add a scripted rule
      */
     @PostMapping(value = "/{projectId}/addScriptedRule", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> addScriptedRule(@PathVariable("projectId") String projectId,
@@ -403,14 +408,13 @@ public class RuleController {
 
         } catch (Exception e) {
             return JEExceptionHandler.handleException(e);
-
         }
 
         return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.RULE_ADDED_SUCCESSFULLY));
     }
 
     /*
-     * update a  scripted Rule
+     * Update a scripted rule
      */
     @PostMapping(value = "/{projectId}/updateScriptedRule", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> updateScriptedRule(@PathVariable("projectId") String projectId,
@@ -429,6 +433,10 @@ public class RuleController {
         return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.RULE_ADDED_SUCCESSFULLY));
     }
 
+    // TODO Move to TwilioController
+    /*
+     * Get Twilio verified users for specific Id (Twilio account SID)
+     */
     @PostMapping(value = "/getTwilioUsers")
     @ResponseBody
     public ResponseEntity<?> getTwilioVerifiedUsers(@RequestBody Map<String, String> twilio) {
@@ -442,11 +450,11 @@ public class RuleController {
 
     }
 
+    // FIXME Move to Exceptions
     public class TwilioUsersError extends JEException {
 
         public TwilioUsersError(String message) {
             super(8888, message);
-
 
         }
 

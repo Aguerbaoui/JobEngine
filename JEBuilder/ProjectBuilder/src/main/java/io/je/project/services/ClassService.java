@@ -568,6 +568,7 @@ public class ClassService {
      * return library by id
      */
     public LibModel getLibraryById(String id) {
+        // FIXME check if Jar
         Optional<JELib> lib = libraryRepository.findById(id);
         return lib.map(ClassManager::getLibModel)
                 .orElse(null);

@@ -119,7 +119,7 @@ public class ProjectController {
     }
 
     /*
-     * Add new project
+     * Delete project
      */
     @DeleteMapping(value = "/deleteProject/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> deleteProject(@PathVariable String projectId) {
@@ -139,7 +139,7 @@ public class ProjectController {
 
 
     /*
-     * Build entire project files
+     * Build project
      */
     @PostMapping(value = "/buildProject/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> buildProject(@PathVariable String projectId) {
@@ -183,7 +183,7 @@ public class ProjectController {
     }
 
     /*
-     * Stop the project
+     * Get Job Engine Logger queue
      */
     @GetMapping(value = "/getLog", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getLog() {
@@ -195,9 +195,8 @@ public class ProjectController {
 
     }
 
-
     /*
-     * Add new project
+     * Set Project Auto Reload
      */
     @PostMapping(value = "/{projectId}/setProjectAutoReload", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> setProjectAutoReload(@RequestBody boolean autoReload, @PathVariable String projectId) {
@@ -218,6 +217,7 @@ public class ProjectController {
         return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, JEMessages.PROJECT_UPDATED));
     }
 
+    /* Update Runner */
     @GetMapping(value = "/updateRunner", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> updateRunner() {
 
@@ -229,6 +229,7 @@ public class ProjectController {
         return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, "Updated"));
     }
 
+    /* Clean Up */
     @GetMapping(value = "/cleanUp", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> cleanUpHouse() {
         try {
@@ -254,7 +255,7 @@ public class ProjectController {
     }
 
     /*
-     * send log message from workflow in runtime
+     * Send log message from workflow in runtime
      */
     @PostMapping(value = "/sendLog", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> informUser(@RequestBody LogMessage logMessage) {
