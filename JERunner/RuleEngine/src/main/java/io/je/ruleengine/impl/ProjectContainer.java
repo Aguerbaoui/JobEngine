@@ -728,12 +728,11 @@ public class ProjectContainer {
 
         JELogger.debug(getKieBuilderMessages(results.getMessages()));
 
-        //FIXME to check utility
         kfsToCompile.delete(filename);
 
         if (results.hasMessages(ERROR)) {
             JELogger.error(getKieBuilderMessages(results.getMessages(ERROR)), LogCategory.RUNTIME, projectId, LogSubModule.RULE,
-                    rule.getJobEngineElementID().substring(1 , 37)); // FIXME get rule ID instead of substring
+                    IdManager.retrieveIdFromSubRuleName(rule.getJobEngineElementID())); // FIXME check if ok
             throw new RuleCompilationException(JEMessages.RULE_CONTAINS_ERRORS, getKieBuilderMessages(results.getMessages(ERROR)));
         }
 

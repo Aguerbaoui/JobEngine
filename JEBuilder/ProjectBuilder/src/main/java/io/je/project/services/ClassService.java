@@ -71,8 +71,19 @@ public class ClassService {
     @Lazy
     ProjectService projectService;
 
+    /*
+        FIXME commented as Exception below, check if OK? Also remove configurationService if not needed.
+
+        Unsatisfied dependency expressed through field 'configurationService';
+        nested exception is org.springframework.beans.factory.BeanCurrentlyInCreationException:
+        Error creating bean with name 'configurationService':
+        Requested bean is currently in creation: Is there an unresolvable circular reference?
+
     @Autowired
+     */
+    @Lazy
     ConfigurationService configurationService;
+
 
     Map<String, JEClass> loadedClasses = new HashMap<String, JEClass>();
 
@@ -557,6 +568,7 @@ public class ClassService {
      * return library by id
      */
     public LibModel getLibraryById(String id) {
+        // FIXME check if Jar
         Optional<JELib> lib = libraryRepository.findById(id);
         return lib.map(ClassManager::getLibModel)
                 .orElse(null);

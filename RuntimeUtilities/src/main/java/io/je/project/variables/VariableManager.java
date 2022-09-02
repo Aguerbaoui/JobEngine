@@ -51,7 +51,6 @@ public class VariableManager {
         }
         throw new VariableNotFoundException(JEMessages.VARIABLE_NOT_FOUND);
 
-
     }
 
     public static JEVariable getVariableByName(String projectId, String variableName) throws VariableNotFoundException {

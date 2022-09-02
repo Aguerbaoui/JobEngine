@@ -23,13 +23,14 @@ public class ConversionUtilities {
         try {
             date1 = new SimpleDateFormat(dateFormat).parse(dateAsString);
         } catch (ParseException e) {
-            // FIXME may be log with JELogger
             LoggerUtils.logException(e);
-            throw e;
+            // FIXME log with JELogger
+            // throw e; TODO Issue 247 : throw exception stop Drools rule engine, need to call JELogger to send error to UI instead
         }
         return date1;
 
     }
+
     public static String convertIfBoolean(String var) {
         if (var.equalsIgnoreCase("true")) {
             return "1";

@@ -57,14 +57,13 @@ public class VariableController {
     }
 
     /*
-     * Retrieve an variable from a project
+     * Retrieve a variable from a project
      */
     @GetMapping(value = "{projectId}/getVariable/{variableId}")
     @ResponseBody
     public ResponseEntity<?> getVariable(@PathVariable("projectId") String projectId,
                                          @PathVariable("variableId") String variableId) {
         JEVariable variable = null;
-
 
         try {
             JEProject project = projectService.getProject(projectId);
@@ -82,7 +81,7 @@ public class VariableController {
     }
 
     /*
-     * add a new variable
+     * Add a new variable
      */
     @PostMapping(value = "/addVariable", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> addVariable(@RequestBody VariableModel variableModel) {
@@ -114,7 +113,7 @@ public class VariableController {
 
 
     /*
-     * delete variable
+     * Delete variable from a project
      */
     @DeleteMapping(value = "/deleteVariable/{projectId}/{varId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> deleteVariable(@PathVariable("projectId") String projectId,
@@ -133,7 +132,7 @@ public class VariableController {
     }
 
     /*
-     * Delete a workflow
+     * Update variable of a project
      */
     @PatchMapping(value = "/updateVariable", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> updateVariable(@RequestBody VariableModel variableModel) {
@@ -150,7 +149,7 @@ public class VariableController {
     }
 
     /*
-     * write to variable
+     * Write to a project variable
      */
     @PostMapping(value = "{projectId}/writeVariableValue/{variableId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> writeVariableValue(@PathVariable("projectId") String projectId, @PathVariable("variableId") String variableId, @RequestBody String value) {
@@ -166,7 +165,7 @@ public class VariableController {
     }
 
     /*
-     * delete multiple variables
+     * Delete a list of variables from a project
      */
     @PostMapping(value = "/deleteVariables/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> deleteVariables(@PathVariable("projectId") String projectId, @RequestBody(required = false) List<String> ids) {

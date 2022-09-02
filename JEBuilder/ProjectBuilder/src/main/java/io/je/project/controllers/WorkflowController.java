@@ -39,6 +39,10 @@ public class WorkflowController {
     @Lazy
     ProjectService projectService;
 
+
+    /*
+     * Add workflow
+     */
     @PostMapping(value = "/addWorkflow", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> addWorkflow(@RequestBody WorkflowModel m) {
         try {
@@ -69,7 +73,6 @@ public class WorkflowController {
 
         } catch (Exception e) {
             return JEExceptionHandler.handleException(e);
-
         }
 
     }
@@ -120,16 +123,16 @@ public class WorkflowController {
     }
 
     /*
-     * Delete a workflow
+     * Delete workflow
      */
-    @DeleteMapping(value = "/deleteWorkflow/{projectId}/{workflowId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(value = "/deleteWorkflow/{projectId}/{key}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> deleteWorkflow(@PathVariable("projectId") String projectId,
-                                            @PathVariable("workflowId") String workflowId) {
+                                            @PathVariable("key") String key) {
 
         try {
             projectService.getProject(projectId);
 
-            workflowService.removeWorkflow(projectId, workflowId);
+            workflowService.removeWorkflow(projectId, key);
         } catch (Exception e) {
             return JEExceptionHandler.handleException(e);
 
@@ -139,16 +142,16 @@ public class WorkflowController {
     }
 
     /*
-     * Update a workflow
+     * Update workflow
      */
-    @PatchMapping(value = "/updateWorkflow/{projectId}/{workflowId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PatchMapping(value = "/updateWorkflow/{projectId}/{key}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> updateWorkflow(@PathVariable("projectId") String projectId,
-                                            @PathVariable("workflowId") String workflowId, @RequestBody WorkflowModel m) {
+                                            @PathVariable("key") String key, @RequestBody WorkflowModel m) {
 
         try {
             projectService.getProject(projectId);
 
-            workflowService.updateWorkflow(projectId, workflowId, m);
+            workflowService.updateWorkflow(projectId, key, m);
         } catch (Exception e) {
             return JEExceptionHandler.handleException(e);
 
@@ -157,6 +160,9 @@ public class WorkflowController {
         return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, WORKFLOW_UPDATED_SUCCESS));
     }
 
+    /*
+     * Get all workflows
+     */
     @GetMapping(value = "/getAllWorkflows/{projectId}")
     @ResponseBody
     public ResponseEntity<?> getAllWorkflows(@PathVariable("projectId") String projectId) {
@@ -167,7 +173,6 @@ public class WorkflowController {
                     .get());
         } catch (Exception e) {
             return JEExceptionHandler.handleException(e);
-
         }
     }
 
@@ -189,15 +194,18 @@ public class WorkflowController {
         return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, WORKFLOW_UPDATED_SUCCESS));
     }
 
-    @GetMapping(value = "/getWorkflowById/{projectId}/{key}")
+    /*
+     * Get a workflow
+     */
+    @GetMapping(value = "/getWorkflowById/{projectId}/{workflowId}")
     @ResponseBody
     public ResponseEntity<?> getWorkflowById(@PathVariable("projectId") String projectId,
-                                             @PathVariable("key") String key) {
+                                             @PathVariable("workflowId") String workflowId) {
         WorkflowModel w = null;
         try {
             projectService.getProject(projectId);
 
-            w = workflowService.getWorkflow(key)
+            w = workflowService.getWorkflow(workflowId)
                     .get();
             return ResponseEntity.ok(w);
         } catch (Exception e) {
@@ -207,7 +215,7 @@ public class WorkflowController {
     }
 
     /*
-     * Add a new Workflow component
+     * Add a new block to workflow
      */
     @PostMapping(value = "/addWorkflowBlock", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> addWorkflowBlock(@RequestBody WorkflowBlockModel block) {
@@ -221,7 +229,6 @@ public class WorkflowController {
 
         } catch (Exception e) {
             return JEExceptionHandler.handleException(e);
-
         }
         HashMap<String, String> object = new HashMap<>();
 
@@ -229,6 +236,9 @@ public class WorkflowController {
         return ResponseEntity.ok(object);
     }
 
+    /*
+     * Update a workflow block
+     */
     @PatchMapping(value = "/updateWorkflowBlock")
     public ResponseEntity<?> updateWorkflowBlock(@RequestBody WorkflowBlockModel block) {
 
@@ -254,6 +264,7 @@ public class WorkflowController {
             projectService.getProject(projectId);
 
             workflowService.deleteWorkflowBlock(projectId, key, id);
+
             projectService.saveProject(projectId);
 
         } catch (Exception e) {
@@ -289,18 +300,17 @@ public class WorkflowController {
     }
 
     /**
-     * Not used
-     * add a new scripted Workflow
+     * Not used : add a new scripted Workflow
      */
 
-    @PostMapping(value = "/addBpmn/{projectId}/{workflowId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/addBpmn/{projectId}/{key}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> addScriptedRule(@PathVariable("projectId") String projectId,
-                                             @PathVariable("workflowId") String workflowId, @RequestBody String bpmn) {
+                                             @PathVariable("key") String key, @RequestBody String bpmn) {
 
         try {
             projectService.getProject(projectId);
 
-            workflowService.addBpmn(projectId, workflowId, bpmn);
+            workflowService.addBpmn(projectId, key, bpmn);
 
         } catch (Exception e) {
             return JEExceptionHandler.handleException(e);
@@ -311,22 +321,24 @@ public class WorkflowController {
     }
 
     /*
-     * temporary function until autosave is implemented
+     * Temporary function until auto-save is implemented
      */
-    @PostMapping(value = "/saveWorkflowFrontConfig/{projectId}/{workflowId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/saveWorkflowFrontConfig/{projectId}/{key}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> saveWorkflowFrontConfig(@PathVariable("projectId") String projectId,
-                                                     @PathVariable("workflowId") String workflowId, @RequestBody String config) {
+                                                     @PathVariable("key") String key, @RequestBody String config) {
         try {
             projectService.getProject(projectId);
 
-            workflowService.setFrontConfig(projectId, workflowId, config);
+            workflowService.setFrontConfig(projectId, key, config);
         } catch (Exception e) {
             return JEExceptionHandler.handleException(e);
-
         }
         return ResponseEntity.ok(new JEResponse(ResponseCodes.CODE_OK, FRONT_CONFIG));
     }
 
+    /*
+     * Delete a list of workflows
+     */
     @PostMapping(value = "/deleteWorkflows/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> deleteWorkflows(@PathVariable("projectId") String projectId,
                                              @RequestBody(required = false) List<String> ids) {
@@ -341,7 +353,7 @@ public class WorkflowController {
     }
 
     /*
-     * Build workflow
+     * Build a list of workflows
      */
     @PostMapping(value = "/buildWorkflows/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> buildWorkflows(@PathVariable String projectId,

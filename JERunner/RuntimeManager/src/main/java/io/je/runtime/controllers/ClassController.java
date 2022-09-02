@@ -33,7 +33,7 @@ public class ClassController {
 
 
     /*
-     * add a new class
+     * Add a new class
      */
     @PostMapping(value = "/addClass", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> addClass(@RequestBody ClassModel classModel) {
@@ -48,7 +48,7 @@ public class ClassController {
     }
 
     /*
-     * update class
+     * Update class
      */
     @PostMapping(value = "/updateClass", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> updateClass(@RequestBody ClassModel classModel, HttpServletRequest request) {

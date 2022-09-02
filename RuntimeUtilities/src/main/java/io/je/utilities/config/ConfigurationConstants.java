@@ -13,7 +13,8 @@ public class ConfigurationConstants {
 
     public static final String SIOTH_ENVIRONMENT_VARIABLE = "SIOTHJobEngine";
 
-    public static final String APPLICATION_PROPERTIES_PATH = "file:${" + SIOTH_ENVIRONMENT_VARIABLE + "}/JobEngine/jobengine.properties";
+    // FIXME remove if not needed
+    //public static final String APPLICATION_PROPERTIES_PATH = "file:${" + SIOTH_ENVIRONMENT_VARIABLE + "}/JobEngine/jobengine.properties";
     public static final String DROOLS_DATE_FORMAT = "MM/dd/yyyy HH:mm:ss.SSS";
     public static String SIOTHID = "";
     public static boolean dev = false;

@@ -151,7 +151,6 @@ public class EventManager {
             //update event in rule engine
             RuleEngineHandler.addEvent(event);
 
-
         } else {
             throw new EventException(JEMessages.EVENT_NOT_FOUND);
         }
