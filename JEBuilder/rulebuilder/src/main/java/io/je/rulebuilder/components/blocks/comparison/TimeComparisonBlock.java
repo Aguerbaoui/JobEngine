@@ -23,10 +23,12 @@ public class TimeComparisonBlock extends ComparisonBlock {
                 blockModel.getTimePersistenceValue(), blockModel.getTimePersistenceUnit(), blockModel.getInputBlocksIds(), blockModel.getOutputBlocksIds());
 
         if (blockModel.getBlockConfiguration() != null) {
-            LocalDateTime date = LocalDateTime.parse((String) blockModel.getBlockConfiguration()
-                    .get(AttributesMapping.VALUE), DateTimeFormatter.ISO_DATE_TIME);
+            if (blockModel.getBlockConfiguration().containsKey(AttributesMapping.VALUE)) {
+                LocalDateTime date = LocalDateTime.parse((String) blockModel.getBlockConfiguration()
+                        .get(AttributesMapping.VALUE), DateTimeFormatter.ISO_DATE_TIME);
 
-            threshold = "\"" + DateUtils.formatDate(date, ConfigurationConstants.DROOLS_DATE_FORMAT) + "\"";
+                threshold = "\"" + DateUtils.formatDate(date, ConfigurationConstants.DROOLS_DATE_FORMAT) + "\"";
+            }
         }
 
         operator = getOperatorByOperationId(blockModel.getOperationId());

@@ -3,6 +3,7 @@ package io.je.ruleengine.utils;
 import io.je.utilities.exceptions.CastToDoubleException;
 import io.je.utilities.log.JELogger;
 import utils.log.LogSubModule;
+import utils.log.LoggerUtils;
 
 /**
  * Validation of inputs used in DRLs
@@ -10,7 +11,7 @@ import utils.log.LogSubModule;
 public class JEMathUtils {
 
 
-    public static double castToDouble(Object x) throws CastToDoubleException {
+    public static double castToDouble(String projectId, String ruleId, String blockId, Object x) throws CastToDoubleException {
         try {
             if (x instanceof Float) {
                 return ((Float) x).doubleValue();
@@ -26,7 +27,8 @@ public class JEMathUtils {
 
             return (double) x;
         } catch (Exception exp) {
-            JELogger.logException(exp);
+            JELogger.error(exp.getMessage(), null, projectId, LogSubModule.RULE, ruleId, blockId);
+            LoggerUtils.logException(exp);
             throw new CastToDoubleException(exp.getMessage());
         }
     }

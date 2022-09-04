@@ -1,7 +1,7 @@
 <component name="ProjectRunConfigurationManager">
-    <configuration default="false" name="MonitorApplication" type="Application" factoryName="Application"
+    <configuration default="false" name="JEMonitorApplication" type="Application" factoryName="Application"
                    nameIsGenerated="true">
-        <option name="MAIN_CLASS_NAME" value="io.je.Monitor.MonitorApplication"/>
+        <option name="MAIN_CLASS_NAME" value="io.je.Monitor.JEMonitorApplication"/>
         <module name="Monitor"/>
         <extension name="coverage">
             <pattern>

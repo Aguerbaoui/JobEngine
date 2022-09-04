@@ -35,6 +35,11 @@ public enum Operator {
 
     }
 
+    public static Boolean isDateOperator(int operation) {
+        return (operation >= 2014 && operation <= 2015);
+
+    }
+
     // Reverse lookup methods
     public static Optional<Operator> getOperatorByCode(int code) {
         return Arrays.stream(Operator.values())

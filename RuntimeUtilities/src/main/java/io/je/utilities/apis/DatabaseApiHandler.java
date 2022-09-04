@@ -1,7 +1,11 @@
 package io.je.utilities.apis;
 
+import io.je.utilities.constants.JEMessages;
+import io.je.utilities.log.JELogger;
 import io.siothconfig.SIOTHConfigUtility;
 import okhttp3.Response;
+import utils.log.LogCategory;
+import utils.log.LogSubModule;
 import utils.network.Network;
 
 import java.io.IOException;
@@ -11,6 +15,13 @@ public class DatabaseApiHandler {
     public static final String EXECUTE_DATABASE_COMMAND = "/nonsense/nonsenseagain/api/database/execute/siothdb";
     public static String url = /*"http://njendoubi-pc:14002"*/SIOTHConfigUtility.getSiothConfig().getApis().getDatabaseAPI().getAddress() + EXECUTE_DATABASE_COMMAND;
 
+    public static String executeCommand(String dbId, String query, String projectId, String workflowId, String blockName) throws IOException {
+        String response = executeCommand(dbId, query);
+        JELogger.info(JEMessages.DB_API_RESPONSE + " = " + response, LogCategory.RUNTIME,
+                projectId, LogSubModule.WORKFLOW, workflowId, blockName);
+        return response;
+    }
+
     public static String executeCommand(String dbId, String query) throws IOException {
         HashMap<String, String> headers = new HashMap<>();
         headers.put("DBIdentifier", dbId);
@@ -19,11 +30,11 @@ public class DatabaseApiHandler {
                 .build();
         Response response = network.call();
         //System.out.println(response.body().string());
-        /*JELogger.info(JEMessages.DB_API_RESPONSE + " = " + response.body().string(), LogCategory.RUNTIME,
-                null, LogSubModule.WORKFLOW, null);*/
         String resp = response.body().string();
+    /*    JELogger.info(JEMessages.DB_API_RESPONSE + " = " + resp, LogCategory.RUNTIME,
+                null, LogSubModule.WORKFLOW, null);*/
+
         response.close();
         return resp;
     }
-
 }
