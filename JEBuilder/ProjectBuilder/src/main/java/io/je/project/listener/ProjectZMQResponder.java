@@ -11,13 +11,13 @@ import org.springframework.stereotype.Component;
 import utils.log.LogSubModule;
 import utils.log.LoggerUtils;
 import utils.zmq.ZMQBind;
-import utils.zmq.ZMQResponser;
+import utils.zmq.ZMQResponder;
 
 /**
  * Project management api ZMQ Responder
  */
 @Component
-public class ProjectZMQResponder extends ZMQResponser {
+public class ProjectZMQResponder extends ZMQResponder {
 
     @Autowired
     ProjectService projectService;

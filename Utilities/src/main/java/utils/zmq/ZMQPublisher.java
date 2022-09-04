@@ -17,15 +17,25 @@ public class ZMQPublisher {
         this.url = url;
         this.publishPort = publishPort;
         this.connectionUrl = url + ":" + publishPort;
+
         context = new ZContext();
+        context.setRcvHWM(0);
+        context.setSndHWM(0);
+
         socket = context.createSocket(SocketType.PUB);
-        socket.connect(connectionUrl);
-        socket.setHWM(ZMQConfiguration.SEND_HIGH_WATERMARK);
+
+        socket.setHeartbeatTimeout(ZMQConfiguration.HEARTBEAT_TIMEOUT);
+        socket.setHandshakeIvl(ZMQConfiguration.HANDSHAKE_INTERVAL);
+        socket.setRcvHWM(ZMQConfiguration.RECEIVE_HIGH_WATERMARK);
+        socket.setSndHWM(ZMQConfiguration.SEND_HIGH_WATERMARK);
+
         if (ZMQSecurity.isSecure()) {
             socket.setCurveServer(true);
             socket.setCurveSecretKey(ZMQSecurity.getServerPair().secretKey.getBytes());
             socket.setCurvePublicKey(ZMQSecurity.getServerPair().publicKey.getBytes());
         }
+
+        socket.connect(connectionUrl);
     }
 
     public void publish(String msgToBePublished, String topic) {

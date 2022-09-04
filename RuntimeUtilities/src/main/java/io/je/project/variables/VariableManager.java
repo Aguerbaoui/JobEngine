@@ -78,7 +78,7 @@ public class VariableManager {
     }
 
     /*
-     * Returns the equialent jevariable
+     * Returns the equivalent jevariable
      */
 	/*public static JEVariable getJeVariable(String projectId, String id) {
 		if(variablesByProjectId.containsKey(projectId)) {
