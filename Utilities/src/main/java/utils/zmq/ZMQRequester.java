@@ -35,7 +35,16 @@ public class ZMQRequester {
     public String sendRequest(String request, int timeout) {
         String reply = "";
         try {
+            context.setRcvHWM(0);
+            context.setSndHWM(0);
+
             ZMQ.Socket requestSocket = context.createSocket(SocketType.REQ);
+
+            requestSocket.setHeartbeatTimeout(ZMQConfiguration.HEARTBEAT_TIMEOUT);
+            requestSocket.setHandshakeIvl(ZMQConfiguration.HANDSHAKE_INTERVAL);
+            requestSocket.setRcvHWM(ZMQConfiguration.RECEIVE_HIGH_WATERMARK);
+            requestSocket.setSndHWM(ZMQConfiguration.SEND_HIGH_WATERMARK);
+
             if (ZMQSecurity.isSecure()) {
                 requestSocket.setCurveServerKey(ZMQSecurity.getServerPair().publicKey.getBytes());
                 requestSocket.setCurveSecretKey(ZMQSecurity.getServerPair().secretKey.getBytes());
@@ -65,15 +74,17 @@ public class ZMQRequester {
             try {
                 requestSocket = context.createSocket(SocketType.REQ);
 
-                if (ZMQSecurity.isSecure()) {
+                requestSocket.setHeartbeatTimeout(ZMQConfiguration.HEARTBEAT_TIMEOUT);
+                requestSocket.setHandshakeIvl(ZMQConfiguration.HANDSHAKE_INTERVAL);
+                requestSocket.setRcvHWM(ZMQConfiguration.RECEIVE_HIGH_WATERMARK);
+                requestSocket.setSndHWM(ZMQConfiguration.SEND_HIGH_WATERMARK);
+                requestSocket.setReceiveTimeOut(-1);
 
+                if (ZMQSecurity.isSecure()) {
                     requestSocket.setCurveServerKey(ZMQSecurity.getServerPair().publicKey.getBytes());
                     requestSocket.setCurveSecretKey(ZMQSecurity.getServerPair().secretKey.getBytes());
                     requestSocket.setCurvePublicKey(ZMQSecurity.getServerPair().publicKey.getBytes());
                 }
-                requestSocket.setRcvHWM(ZMQConfiguration.RECEIVE_HIGH_WATERMARK);
-                requestSocket.setSndHWM(ZMQConfiguration.SEND_HIGH_WATERMARK);
-                requestSocket.setReceiveTimeOut(-1);
 
                 requestSocket.connect(connectionUrl);
                 requestSocket.send(request, 0);
