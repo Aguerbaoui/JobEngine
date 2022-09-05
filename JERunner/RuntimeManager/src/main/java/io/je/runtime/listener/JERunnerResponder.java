@@ -19,14 +19,14 @@ import utils.log.LogMessage;
 import utils.log.LogSubModule;
 import utils.log.LoggerUtils;
 import utils.zmq.ZMQBind;
-import utils.zmq.ZMQResponser;
+import utils.zmq.ZMQResponder;
 
 import java.util.HashMap;
 import java.util.Locale;
 
 import static io.je.utilities.instances.InstanceManager.createInstance;
 
-public class JERunnerResponder extends ZMQResponser {
+public class JERunnerResponder extends ZMQResponder {
 
     @Autowired
     ObjectMapper objectMapper = new ObjectMapper();

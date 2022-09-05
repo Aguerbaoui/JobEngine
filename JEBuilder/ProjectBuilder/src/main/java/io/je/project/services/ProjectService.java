@@ -299,7 +299,7 @@ public class ProjectService {
         }
 
         project = p.get();
-        // FIXME does we need to reload all if loadedProjects filled?
+
         if (!loadedProjects.containsKey(project.getProjectId())) {
             project.setEvents(eventService.getAllJEEvents(project.getProjectId()));
             project.setRules(ruleService.getAllJERules(project.getProjectId()));

@@ -1,24 +1,21 @@
 package io.je.project.services;
 
+import io.je.UnitTest;
 import io.je.project.beans.JEProject;
 import io.je.utilities.exceptions.LicenseNotActiveException;
 import io.je.utilities.exceptions.ProjectLoadException;
 import io.je.utilities.exceptions.ProjectNotFoundException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-@SpringBootTest
-@ActiveProfiles("test")
-@RunWith(SpringJUnit4ClassRunner.class)
-class ProjectServiceTest {
-    @Autowired
+
+class ProjectServiceUnitTest extends UnitTest {
+    @Mock
     private ProjectService projectService;
+
+    // TODO implement tests
 
     @Test
     void saveProject() {

@@ -5,7 +5,7 @@ import org.zeromq.ZContext;
 import org.zeromq.ZMQ;
 import utils.log.LoggerUtils;
 
-public abstract class ZMQResponser implements Runnable {
+public abstract class ZMQResponder implements Runnable {
 
     protected ZContext context = null;
     protected String url;
@@ -14,14 +14,14 @@ public abstract class ZMQResponser implements Runnable {
     protected ZMQBind bindType;
     private ZMQ.Socket repSocket = null;
 
-    public ZMQResponser(String url, int subPort, ZMQBind bindType) {
+    public ZMQResponder(String url, int subPort, ZMQBind bindType) {
         this.url = url;
         this.repPort = subPort;
         this.context = new ZContext();
         this.bindType = bindType;
     }
 
-    protected ZMQResponser() {
+    protected ZMQResponder() {
         super();
         this.context = new ZContext();
     }
@@ -36,8 +36,17 @@ public abstract class ZMQResponser implements Runnable {
 
     public void connectToAddress() throws ZMQConnectionFailedException {
         try {
+            // TODO check if config OK for ZMQ responder
+            this.context.setRcvHWM(0);
+            this.context.setSndHWM(0);
+
             this.repSocket = this.context.createSocket(SocketType.REP);
             this.repSocket.setReceiveTimeOut(30000);
+
+            this.repSocket.setHeartbeatTimeout(ZMQConfiguration.HEARTBEAT_TIMEOUT);
+            this.repSocket.setHandshakeIvl(ZMQConfiguration.HANDSHAKE_INTERVAL);
+            this.repSocket.setRcvHWM(ZMQConfiguration.RECEIVE_HIGH_WATERMARK);
+            this.repSocket.setSndHWM(ZMQConfiguration.SEND_HIGH_WATERMARK);
 
             if (ZMQSecurity.isSecure()) {
                 this.repSocket.setCurveServer(true);
@@ -48,7 +57,6 @@ public abstract class ZMQResponser implements Runnable {
                 this.repSocket.connect(url + ":" + repPort);
             } else if (bindType == ZMQBind.BIND) {
                 this.repSocket.bind(url + ":" + repPort);
-
             }
         } catch (Exception e) {
             LoggerUtils.logException(e);

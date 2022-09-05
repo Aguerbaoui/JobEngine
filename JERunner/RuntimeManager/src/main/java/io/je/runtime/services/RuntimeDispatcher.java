@@ -62,7 +62,7 @@ public class RuntimeDispatcher {
 	}*/
 
     /**
-     * inject data into the rule/workflow engine according to the topics they are subscribed to (to prevent duplication)
+     * Inject data into the rule/workflow engine according to the topics they are subscribed to (to prevent duplication)
      */
     public static void injectData(JEData jeData) {
         JELogger.trace(JEMessages.INJECTING_DATA, LogCategory.RUNTIME, null, LogSubModule.JERUNNER, null);
@@ -302,7 +302,6 @@ public class RuntimeDispatcher {
             throws WorkflowNotFoundException, WorkflowAlreadyRunningException,
             WorkflowBuildException, WorkflowRunException {
 
-        /**/
         JELogger.debug("[projectId = " + projectId + "] [workflow = " + key + "] " + JEMessages.RUNNING_WF,
                 LogCategory.RUNTIME, projectId, LogSubModule.WORKFLOW, key);
         //buildWorkflow(projectId, key);

@@ -232,7 +232,7 @@ public class JEProject {
      * */
     public void setRules(ConcurrentHashMap<String, JERule> rules) {
         isBuilt = false;
-        if (rules != null) {
+        if (rules != null) { // FIXME why this control is needed
             this.rules = rules;
         }
     }

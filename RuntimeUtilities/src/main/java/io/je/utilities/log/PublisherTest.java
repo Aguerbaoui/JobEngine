@@ -4,7 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.je.utilities.monitoring.JEMonitor;
 import io.je.utilities.monitoring.MonitoringMessage;
 
-public class PulisherTest {
+// FIXME move to test java ...
+public class PublisherTest {
     static ObjectMapper objectMapper = new ObjectMapper();
 
     public static void publish(MonitoringMessage msg) {

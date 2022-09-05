@@ -21,7 +21,6 @@ public class ProjectBuilderApplication {
         app.setDefaultProperties(properties);
         app.run(args);
 
-//C:\Program Files\Integration Objects\Integration Objects' SmartIoT Highway\JobEngine\Builder\properties
     }
 
 

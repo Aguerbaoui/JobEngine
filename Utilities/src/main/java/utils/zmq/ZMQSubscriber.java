@@ -35,8 +35,8 @@ public abstract class ZMQSubscriber implements Runnable {
 
     protected void init() {
         this.context = new ZContext();
-        this.context.setRcvHWM(0);
-        this.context.setSndHWM(0);
+        this.context.setRcvHWM(ZMQConfiguration.RECEIVE_HIGH_WATERMARK);
+        this.context.setSndHWM(ZMQConfiguration.SEND_HIGH_WATERMARK);
 
         if (socket == null) {
             socket = this.context.createSocket(SocketType.SUB);

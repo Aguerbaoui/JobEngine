@@ -28,7 +28,7 @@ public class ConfigurationService {
     @Autowired
     ProjectService projectService;
     @Autowired
-    ProjectZMQResponder responser;
+    ProjectZMQResponder responder;
     @Autowired
     ClassService classService;
 
@@ -85,9 +85,9 @@ public class ConfigurationService {
      * */
     public void initResponder() {
         try {
-            responser.init("tcp://" + SIOTHConfigUtility.getSiothConfig().getNodes().getSiothMasterNode(), SIOTHConfigUtility.getSiothConfig().getPorts().getJeResponsePort(), ZMQBind.BIND);
-            responser.setListening(true);
-            Thread listener = new Thread(responser);
+            responder.init("tcp://" + SIOTHConfigUtility.getSiothConfig().getNodes().getSiothMasterNode(), SIOTHConfigUtility.getSiothConfig().getPorts().getJeResponsePort(), ZMQBind.BIND);
+            responder.setListening(true);
+            Thread listener = new Thread(responder);
             listener.start();
             JELogger.info(ZMQ_RESPONSE_STARTED + "tcp://" + SIOTHConfigUtility.getSiothConfig().getNodes().getSiothMasterNode() + ":" + SIOTHConfigUtility.getSiothConfig().getPorts().getJeResponsePort(), null, null, LogSubModule.JEBUILDER, null);
 

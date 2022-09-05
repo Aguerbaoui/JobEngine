@@ -24,7 +24,7 @@ public class EventController {
     RuntimeDispatcher runtimeDispatcher;
 
     /*
-     * add a new event
+     * Add a new event
      */
     @PostMapping(value = "/addEvent", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> addEvent(@RequestBody EventModel eventModel) {
@@ -35,7 +35,7 @@ public class EventController {
 
 
     /*
-     * trigger event
+     * Trigger event
      * */
     @GetMapping(value = "/triggerEvent/{projectId}/{eventId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> triggerEvent(@PathVariable String projectId, @PathVariable String eventId) {

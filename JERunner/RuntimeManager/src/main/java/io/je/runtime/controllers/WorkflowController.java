@@ -57,10 +57,10 @@ public class WorkflowController {
     /*
      * Run workflow
      * */
-    @GetMapping(value = "/runWorkflow/{projectId}/{key}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> runWorkflow(@PathVariable String projectId, @PathVariable String key) {
+    @GetMapping(value = "/runWorkflow/{projectId}/{workflowId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> runWorkflow(@PathVariable String projectId, @PathVariable String workflowId) {
         try {
-            dispatcher.launchProcessWithoutVariables(projectId, key, false);
+            dispatcher.launchProcessWithoutVariables(projectId, workflowId, false);
         } catch (Exception e) {
             return JEExceptionHandler.handleException(e);
         }
