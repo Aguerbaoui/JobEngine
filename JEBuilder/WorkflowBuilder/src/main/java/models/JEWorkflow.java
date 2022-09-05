@@ -5,6 +5,7 @@ import blocks.basic.EndBlock;
 import blocks.basic.ScriptBlock;
 import blocks.basic.StartBlock;
 import blocks.events.ErrorBoundaryEvent;
+import blocks.events.TimerEvent;
 import io.je.utilities.beans.Status;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.*;
@@ -240,18 +241,9 @@ public class JEWorkflow extends JEObject {
         if (allBlocks.get(to) instanceof ErrorBoundaryEvent) {
             ((ErrorBoundaryEvent) allBlocks.get(to)).setAttachedToRef(from);
         }
-        status = Status.NOT_BUILT;
-    }
-
-    /*
-     * Delete sequence flow from workflow
-     * */
-    public void deleteSequenceFlow(String sourceRef, String targetRef) throws InvalidSequenceFlowException {
-        if (!allBlocks.get(sourceRef).getOutFlows().containsKey(targetRef) || !allBlocks.get(targetRef).getInflows().containsKey(sourceRef)) {
-            throw new InvalidSequenceFlowException(JEMessages.INVALID_SEQUENCE_FLOW);
+        if (allBlocks.get(to) instanceof TimerEvent) {
+            ((TimerEvent) allBlocks.get(to)).setAttachedToRef(from);
         }
-        allBlocks.get(sourceRef).getOutFlows().remove(targetRef);
-        allBlocks.get(targetRef).getInflows().remove(sourceRef);
         status = Status.NOT_BUILT;
     }
 
@@ -281,6 +273,22 @@ public class JEWorkflow extends JEObject {
         }
     }
 
+    public WorkflowBlock getBlockById(String i) {
+        return allBlocks.get(i);
+    }
+
+    /*
+     * Delete sequence flow from workflow
+     * */
+    public void deleteSequenceFlow(String sourceRef, String targetRef) throws InvalidSequenceFlowException {
+        if (!allBlocks.get(sourceRef).getOutFlows().containsKey(targetRef) || !allBlocks.get(targetRef).getInflows().containsKey(sourceRef)) {
+            throw new InvalidSequenceFlowException(JEMessages.INVALID_SEQUENCE_FLOW);
+        }
+        allBlocks.get(sourceRef).getOutFlows().remove(targetRef);
+        allBlocks.get(targetRef).getInflows().remove(sourceRef);
+        status = Status.NOT_BUILT;
+    }
+
     public void cleanUpScriptTaskBlock(ScriptBlock b) {
         try {
             FileUtilities.deleteFileFromPath(b.getScriptPath());
@@ -293,10 +301,6 @@ public class JEWorkflow extends JEObject {
 
     public boolean blockExists(String bId) {
         return allBlocks.containsKey(bId);
-    }
-
-    public WorkflowBlock getBlockById(String i) {
-        return allBlocks.get(i);
     }
 
     public void resetBlocks() {

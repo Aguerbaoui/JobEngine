@@ -9,6 +9,7 @@ import io.je.utilities.apis.JERunnerRequester;
 import io.je.utilities.beans.JEZMQResponse;
 import io.je.utilities.beans.ZMQResponseType;
 import io.je.utilities.constants.JEMessages;
+import io.je.utilities.exceptions.CommandFailedException;
 import io.je.utilities.exceptions.VariableNotFoundException;
 import io.je.utilities.instances.ClassRepository;
 import io.je.utilities.instances.InstanceManager;
@@ -287,7 +288,7 @@ public class Executioner {
                 .replace("/", "\\");
     }
 
-    public static Thread executeScript(String filePath) throws IOException, InterruptedException {
+    public static Thread executeScript(String filePath) throws IOException, InterruptedException, CommandFailedException {
         //String classpathFolder = System.getenv(ConfigurationConstants.SIOTH_ENVIRONMENT_VARIABLE) + "\\..\\Job Engine\\libs\\*";
         //String command = "java" + " " + "-cp" + " \"" + classpathFolder  + getCurrentClassPath() + "\" " + filePath;
         return CommandExecutioner.runCode(filePath);

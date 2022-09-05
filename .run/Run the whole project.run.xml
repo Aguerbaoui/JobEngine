@@ -1,7 +1,7 @@
 <component name="ProjectRunConfigurationManager">
     <configuration default="false" name="Run the whole project" type="CompoundRunConfigurationType">
-        <toRun name="JERunnerApplication" type="Application"/>
-        <toRun name="MonitorApplication" type="Application"/>
+        <toRun name="RuntimeManagerApplication" type="Application"/>
+        <toRun name="JEMonitorApplication" type="Application"/>
         <toRun name="ProjectBuilderApplication" type="Application"/>
         <method v="2"/>
     </configuration>

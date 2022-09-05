@@ -11,6 +11,7 @@ public class WorkflowConstants {
     public static final String ERROR_REF = "errorRef";
     public static final String EVENT_TYPE = "eventType";
     public static final String PROCESS_LISTENER_IMPLEMENTATION = "io.je.executionListeners.ProcessListener";
+    public static final String ACTIVITY_LISTENER_IMPLEMENTATION = "io.je.executionListeners.ActivitiListener";
     public static final String GATEWAYS_LISTENER_IMPLEMENTATION = "io.je.executionListeners.GatewaysListener";
     public static final String TASKS_LISTENER_IMPLEMENTATION = "io.je.executionListeners.TasksListener";
     public static final String START_PROCESS = "start";
@@ -110,6 +111,7 @@ public class WorkflowConstants {
     public static final String CONDITION = "condition";
     public static final String IMPORTS = "imports";
     public static final String EXECUTE_SCRIPT = "executeScript";
+
     private WorkflowConstants() {
     }
 

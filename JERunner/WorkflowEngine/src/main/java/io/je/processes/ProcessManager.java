@@ -16,6 +16,7 @@ import io.je.utilities.monitoring.MonitoringMessage;
 import io.je.utilities.monitoring.ObjectType;
 import org.activiti.engine.*;
 import org.activiti.engine.delegate.BpmnError;
+import org.activiti.engine.impl.event.logger.EventLogger;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.DeploymentBuilder;
 import org.activiti.engine.runtime.Execution;
@@ -86,6 +87,12 @@ public class ProcessManager {
         deploymentBuilder = processEngine.getRepositoryService()
                 .createDeployment()
                 .name("DeploymentBuilder");
+        //! Debugging
+        io.je.executionListeners.ActivitiListener listener = new io.je.executionListeners.ActivitiListener();
+        runtimeService.addEventListener(listener);
+        EventLogger databaseEventLogger = new EventLogger();
+        runtimeService.addEventListener(databaseEventLogger);
+
         //taskService.createTaskQuery().taskId(id); not the same as execution.id this has to be the original task id from the bpmn so we can map them
     }
 
@@ -145,50 +152,34 @@ public class ProcessManager {
     }
 
     /*
-     * Deploy a process to engine
+     * Run all workflows ( in case runProject == false we run all kinds of workflows( scheduled or not ) )
      * */
-    public void deployProcess(String key) throws WorkflowBuildException {
-        ResourceBundle.clearCache(Thread.currentThread()
-                .getContextClassLoader());
-        //repoService.
-        try {
-           /* JELogger.debug(JEMessages.DEPLOYING_IN_RUNNER_WORKFLOW_WITH_ID + " = " + key,
-                    LogCategory.RUNTIME, processes.get(key).getProjectId(),
-                    LogSubModule.WORKFLOW, key);*/
-            String processXml = FileUtilities.getStringFromFile(processes.get(key)
-                    .getBpmnPath());
-            //DeploymentBuilder deploymentBuilder = processEngine.getRepositoryService().createDeployment().name(key);
-            deploymentBuilder = processEngine.getRepositoryService()
-                    .createDeployment()
-                    .name("DeploymentBuilder");
-            deploymentBuilder.addString(key + ".bpmn", processXml);
-            if (processes.get(key)
-                    .getDeploymentId() != null) {
+    public void runAll(String projectId, boolean runProject) throws WorkflowNotFoundException {
+        JELogger.debug(JEMessages.RUNNING_ALL_WORKFLOWS_IN_PROJECT_ID + " = " + projectId,
+                LogCategory.RUNTIME, projectId,
+                LogSubModule.WORKFLOW, null);
+        for (JEProcess process : processes.values()) {
+            if (process.getProjectId()
+                    .equals(projectId) && !process.isRunning()) {
                 try {
-                    repoService.deleteDeployment(processes.get(key)
-                            .getDeploymentId());
-                } catch (ActivitiObjectNotFoundException exp) {
-                    LoggerUtils.logException(exp);
+                    launchProcessByKeyWithoutVariables(process.getName(), runProject);
+                } catch (WorkflowAlreadyRunningException e) {
+                    LoggerUtils.logException(e);
+                    JELogger.error(JEMessages.WORKFLOW_ALREADY_RUNNING + process.getKey(),
+                            LogCategory.RUNTIME, projectId,
+                            LogSubModule.WORKFLOW, process.getKey());
+                } catch (WorkflowRunException e) {
+                    LoggerUtils.logException(e);
+                    /*JELogger.error(JEMessages.PROCESS_HAS_TO_BE_TRIGGERED_BY_EVENT + process.getKey(),
+                            LogCategory.RUNTIME, projectId,
+                            LogSubModule.WORKFLOW, process.getKey());*/
+                } catch (WorkflowBuildException e) {
+                    LoggerUtils.logException(e);
+                    JELogger.error(JEMessages.WORKFLOW_RUN_ERROR + process.getKey(),
+                            LogCategory.RUNTIME, projectId,
+                            LogSubModule.WORKFLOW, process.getKey());
                 }
             }
-            /*Deployment*/
-            deployment = deploymentBuilder.deploy();
-            //to debug it if needed
-            JELogger.trace("Test trace");
-            JELogger.debug("id = " + deployment.getId() + " key = " + deployment.getKey() + " category =" + deployment.getCategory() +
-                    " tenant id =" + deployment.getTenantId());
-
-            processes.get(key)
-                    .setDeployed(true);
-            processes.get(key)
-                    .setDeploymentId(deployment.getId());
-        } catch (Exception e) {
-            LoggerUtils.logException(e);
-            MonitoringMessage msg = new MonitoringMessage(LocalDateTime.now(), key, ObjectType.JEWORKFLOW,
-                    processes.get(key)
-                            .getProjectId(), Status.STOPPED.toString(), Status.STOPPED.toString());
-            JEMonitor.publish(msg);
-            throw new WorkflowBuildException(JEMessages.WORKFLOW_BUILD_ERROR + " with id = " + key);
         }
     }
 
@@ -233,6 +224,55 @@ public class ProcessManager {
     }
 
     /*
+     * Deploy a process to engine
+     * */
+    public void deployProcess(String key) throws WorkflowBuildException {
+        ResourceBundle.clearCache(Thread.currentThread()
+                .getContextClassLoader());
+        //repoService.
+        try {
+           /* JELogger.debug(JEMessages.DEPLOYING_IN_RUNNER_WORKFLOW_WITH_ID + " = " + key,
+                    LogCategory.RUNTIME, processes.get(key).getProjectId(),
+                    LogSubModule.WORKFLOW, key);*/
+            String processXml = FileUtilities.getStringFromFile(processes.get(key)
+                    .getBpmnPath());
+
+            //DeploymentBuilder deploymentBuilder = processEngine.getRepositoryService().createDeployment().name(key);
+            deploymentBuilder = processEngine.getRepositoryService()
+                    .createDeployment()
+                    .name("DeploymentBuilder");
+            deploymentBuilder.addString(key + ".bpmn", processXml);
+            if (processes.get(key)
+                    .getDeploymentId() != null) {
+                try {
+                    repoService.deleteDeployment(processes.get(key)
+                            .getDeploymentId());
+                } catch (ActivitiObjectNotFoundException exp) {
+                    LoggerUtils.logException(exp);
+                }
+            }
+            /*Deployment*/
+            deployment = deploymentBuilder.deploy();
+            //to debug it if needed
+            JELogger.trace("Test trace");
+            JELogger.debug("id = " + deployment.getId() + " key = " + deployment.getKey() + " category =" + deployment.getCategory() +
+                    " tenant id =" + deployment.getTenantId());
+
+            processes.get(key)
+                    .setDeployed(true);
+            processes.get(key)
+                    .setDeploymentId(deployment.getId());
+        } catch (Exception e) {
+            LoggerUtils.logException(e);
+            MonitoringMessage msg = new MonitoringMessage(LocalDateTime.now(), key, ObjectType.JEWORKFLOW,
+                    processes.get(key)
+                            .getProjectId(), Status.STOPPED.toString(), Status.STOPPED.toString());
+            JEMonitor.publish(msg);
+            throw new WorkflowBuildException(JEMessages.WORKFLOW_BUILD_ERROR + " with id = " + key);
+        }
+    }
+
+    /*
      * Launch process by key wit variables
      * */
     public void launchProcessByKeyWithVariables(String id, boolean runProject) throws WorkflowAlreadyRunningException, WorkflowBuildException {
@@ -256,6 +296,11 @@ public class ProcessManager {
                         ProcessInstance p = runtimeService.startProcessInstanceByKey(id, variables);
                     } catch (Exception ex) {
                         LoggerUtils.logException(ex);
+                        JELogger.error(ex.getMessage(),
+                                LogCategory.RUNTIME, processes.get(id)
+                                        .getProjectId(),
+                                LogSubModule.WORKFLOW, process.getKey());
+
                     }
                     //process.setRunning(true);
                 }));
@@ -279,49 +324,6 @@ public class ProcessManager {
 
     }
 
-    /*
-     * Launch process by message event without variables
-     * */
-    public void launchProcessByMessageWithoutVariables(String messageId) {
-
-        JEProcess workflow = null;
-        try {
-            for (JEProcess process : processes.values()) {
-                if (process.isTriggeredByEvent() && process.getTriggerMessage()
-                        .equals(messageId)) {
-                    deployProcess(process.getKey());
-                    workflow = process;
-                    Map<String, Object> variables = new HashMap<>();
-                    for (ActivitiTask task : process.getActivitiTasks()
-                            .values()) {
-                        if (task instanceof InformTask) {
-                            variables.put(task.getTaskId(), ((InformTask) task).getMessage());
-                        }
-                    }
-                    process.setActiveThread(new Thread(() -> {
-                        ProcessInstance p = runtimeService.startProcessInstanceByMessage(messageId, variables);
-                        //process.setRunning(true);
-                    }));
-                    process.getActiveThread()
-                            .start();
-                    break;
-                }
-            }
-        } catch (ActivitiObjectNotFoundException e) {
-            LoggerUtils.logException(e);
-            if (workflow != null) {
-                JELogger.error(JEMessages.PROCESS_EXITED,
-                        LogCategory.RUNTIME, workflow.getProjectId(),
-                        LogSubModule.WORKFLOW, workflow.getKey());
-            }
-        } catch (Exception e) {
-            LoggerUtils.logException(e);
-            JELogger.error("Error in launching a process by message " + e.getMessage(),
-                    LogCategory.RUNTIME, workflow.getProjectId(),
-                    LogSubModule.WORKFLOW, workflow.getKey());
-        }
-    }
-
     /*public void buildProjectWorkflows(String projectId) throws WorkflowBuildException {
         JELogger.debug(JEMessages.BUILDING_WORKFLOWS_IN_PROJECT + " id = " + projectId,
                 LogCategory.RUNTIME, projectId,
@@ -332,38 +334,6 @@ public class ProcessManager {
             }
         }
     }*/
-
-    /*
-     * Run all workflows ( in case runProject == false we run all kinds of workflows( scheduled or not ) )
-     * */
-    public void runAll(String projectId, boolean runProject) throws WorkflowNotFoundException {
-        JELogger.debug(JEMessages.RUNNING_ALL_WORKFLOWS_IN_PROJECT_ID + " = " + projectId,
-                LogCategory.RUNTIME, projectId,
-                LogSubModule.WORKFLOW, null);
-        for (JEProcess process : processes.values()) {
-            if (process.getProjectId()
-                    .equals(projectId) && !process.isRunning()) {
-                try {
-                    launchProcessByKeyWithoutVariables(process.getName(), runProject);
-                } catch (WorkflowAlreadyRunningException e) {
-                    LoggerUtils.logException(e);
-                    JELogger.error(JEMessages.WORKFLOW_ALREADY_RUNNING + process.getKey(),
-                            LogCategory.RUNTIME, projectId,
-                            LogSubModule.WORKFLOW, process.getKey());
-                } catch (WorkflowRunException e) {
-                    LoggerUtils.logException(e);
-                    /*JELogger.error(JEMessages.PROCESS_HAS_TO_BE_TRIGGERED_BY_EVENT + process.getKey(),
-                            LogCategory.RUNTIME, projectId,
-                            LogSubModule.WORKFLOW, process.getKey());*/
-                } catch (WorkflowBuildException e) {
-                    LoggerUtils.logException(e);
-                    JELogger.error(JEMessages.WORKFLOW_RUN_ERROR + process.getKey(),
-                            LogCategory.RUNTIME, projectId,
-                            LogSubModule.WORKFLOW, process.getKey());
-                }
-            }
-        }
-    }
 
     public void stopProjectWorkflows() {
 
@@ -386,7 +356,9 @@ public class ProcessManager {
         try {
 
             if (process != null) {
-                repoService.deleteDeployment(process.getDeploymentId());
+
+                // runtimeService.deleteProcessInstance(process.getName(), "because why not");
+                repoService.deleteDeployment(process.getDeploymentId(), true);
                 if (process.getActiveThread() != null) {
                     process.getActiveThread()
                             .interrupt();
@@ -436,14 +408,6 @@ public class ProcessManager {
     }
 
     /**
-     * Throw signal in workflow
-     * */
-    /**public void throwSignalInProcess(String signalId, String executionId) {
-
-     runtimeService.signalEventReceived(signalId, executionId);
-     }
-     */
-    /**
      * Returns a list of all signal event subscriptions
      */
     public List<Execution> getAllSignalEventSubscriptions(String signalId) {
@@ -454,12 +418,13 @@ public class ProcessManager {
     }
 
     /**
-     * Throw a message event in workflow
-     */
-    public void throwMessageEvent(String messageId, String executionId) {
+     * Throw signal in workflow
+     * */
+    /**public void throwSignalInProcess(String signalId, String executionId) {
 
-        runtimeService.messageEventReceived(messageId, executionId);
-    }
+     runtimeService.signalEventReceived(signalId, executionId);
+     }
+     */
 
     /**
      * Throw a message event
@@ -474,6 +439,57 @@ public class ProcessManager {
             throwMessageEvent(messageId, executionId);
         } else {
             launchProcessByMessageWithoutVariables(messageId);
+        }
+    }
+
+    /**
+     * Throw a message event in workflow
+     */
+    public void throwMessageEvent(String messageId, String executionId) {
+
+        runtimeService.messageEventReceived(messageId, executionId);
+    }
+
+    /*
+     * Launch process by message event without variables
+     * */
+    public void launchProcessByMessageWithoutVariables(String messageId) {
+
+        JEProcess workflow = null;
+        try {
+            for (JEProcess process : processes.values()) {
+                if (process.isTriggeredByEvent() && process.getTriggerMessage()
+                        .equals(messageId)) {
+                    deployProcess(process.getKey());
+                    workflow = process;
+                    Map<String, Object> variables = new HashMap<>();
+                    for (ActivitiTask task : process.getActivitiTasks()
+                            .values()) {
+                        if (task instanceof InformTask) {
+                            variables.put(task.getTaskId(), ((InformTask) task).getMessage());
+                        }
+                    }
+                    process.setActiveThread(new Thread(() -> {
+                        ProcessInstance p = runtimeService.startProcessInstanceByMessage(messageId, variables);
+                        //process.setRunning(true);
+                    }));
+                    process.getActiveThread()
+                            .start();
+                    break;
+                }
+            }
+        } catch (ActivitiObjectNotFoundException e) {
+            LoggerUtils.logException(e);
+            if (workflow != null) {
+                JELogger.error(JEMessages.PROCESS_EXITED,
+                        LogCategory.RUNTIME, workflow.getProjectId(),
+                        LogSubModule.WORKFLOW, workflow.getKey());
+            }
+        } catch (Exception e) {
+            LoggerUtils.logException(e);
+            JELogger.error("Error in launching a process by message " + e.getMessage(),
+                    LogCategory.RUNTIME, workflow.getProjectId(),
+                    LogSubModule.WORKFLOW, workflow.getKey());
         }
     }
 

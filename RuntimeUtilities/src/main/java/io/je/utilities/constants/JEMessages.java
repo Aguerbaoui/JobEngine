@@ -172,7 +172,7 @@ public class JEMessages {
 
     public static final String UPDATING_WF = "Updating workflow";
 
-    public static final String ADDING_BPMN_SCRIPT = "Adding a JE  script";
+    public static final String ADDING_BPMN_SCRIPT = "Adding a JE script";
 
     public static final String ADDING_LISTENERS_TO_PROCESS = "Adding listeners to process";
 
@@ -720,6 +720,7 @@ public class JEMessages {
     public static final String STARTED_LISTENING_FOR_MONITORING_DATA_FROM_THE_JOB_ENGINE = "Started listening for monitoring data from the JobEngine";
 
     public static final String CODE_COMPILATION_SUCCESSFUL = "Code was successfully compiled";
+    public static final String COMMAND_EXECUTION_FAILED = "Failed to run command";
     public static final String PROCEDURE_SHOULD_CONTAIN_CODE = "Procedure should contain code";
     public static final String FAILED_TO_DELETE_FILES = "Failed to delete files : ";
 
