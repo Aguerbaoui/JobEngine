@@ -32,6 +32,7 @@ import utils.log.LoggerUtils;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static org.kie.api.builder.Message.Level.ERROR;
@@ -596,7 +597,7 @@ public class ProjectContainer {
 
         updateContainer();
 
-        // if project is running
+        // FIXME if project is running
         if (status != Status.RUNNING) {
             buildStatus = BuildStatus.UNBUILT;
         }
@@ -732,7 +733,7 @@ public class ProjectContainer {
 
         if (results.hasMessages(ERROR)) {
             JELogger.error(getKieBuilderMessages(results.getMessages(ERROR)), LogCategory.RUNTIME, projectId, LogSubModule.RULE,
-                    IdManager.retrieveIdFromSubRuleName(rule.getJobEngineElementID())); // FIXME check if ok
+                    IdManager.retrieveIdFromSubRuleName(rule.getJobEngineElementID()));
             throw new RuleCompilationException(JEMessages.RULE_CONTAINS_ERRORS, getKieBuilderMessages(results.getMessages(ERROR)));
         }
 
