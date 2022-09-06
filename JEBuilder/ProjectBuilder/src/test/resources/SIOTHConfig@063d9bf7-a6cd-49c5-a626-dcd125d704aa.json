@@ -36,8 +36,8 @@
     "DF_ResponsePort": 59500,
     "Tracker_ResponsePort": 59501,
     "JE_ResponsePort": 59502,
-    "ProjectManagementRestAPI_ResponseAddress": 6690,
-    "JobEngine_ResponseAddress": 6680,
+    "ProjectManagementRestAPI_ResponseAddress": 59690,
+    "JobEngine_ResponseAddress": 59680,
     "SIOTHLicensePort": 59077
   },
   "JobEngine": {
@@ -45,7 +45,7 @@
     "JEBuilder": "http://localhost:59088/ProjectBuilder/",
     "CheckHealth": 5000,
     "LibraryMaxFileSize": "100MB ",
-    "MaxMemory": 4096,
+    "MaxMemory": 1024,
     "GeneratedClassesPath": "C:\\"
   },
   "DataModelPORTS": {
@@ -70,7 +70,8 @@
       "FTP",
       "S7",
       "REST Client",
-      "SNMP"
+      "SNMP",
+      "Allen Bradley"
     ],
     "Data Stores": [
       "CSV",
@@ -94,13 +95,14 @@
     "Brokers": [
       "KNetBridge",
       "MQTTBroker",
-      "OPCUASERVER"
+      "OPCUASERVER",
+      "REST Broker"
     ]
   },
   "DateFormat": "yyyy-MM-dd HH:mm:ss.SSS",
   "APIS": {
     "EmailAPI": {
-      "Address": "http://192.168.4.38:14003/api/SIOTHEmail/",
+      "Address": "http://192.168.4.38:59102/api/SIOTHEmail/",
       "Credentials": {
         "Username": "",
         "Password": "",
@@ -108,7 +110,7 @@
       }
     },
     "DatabaseAPI": {
-      "Address": "http://192.168.4.38:14002",
+      "Address": "http://192.168.4.38:59105",
       "Credentials": {
         "Username": "",
         "Password": "",

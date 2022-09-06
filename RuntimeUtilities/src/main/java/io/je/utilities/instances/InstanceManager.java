@@ -30,7 +30,9 @@ public class InstanceManager {
     private static InstanceModel getInstanceModel(String dataReceived) {
 
         JSONObject instanceJson = new JSONObject(dataReceived);
+
         InstanceModel instanceModel = new InstanceModel();
+
         instanceModel.setInstanceId(instanceJson.getString(InstanceModelMapping.INSTANCEID));
         instanceModel.setModelId(instanceJson.getString(InstanceModelMapping.MODELID));
         instanceModel.setModelName(instanceJson.getString(InstanceModelMapping.MODELNAME));

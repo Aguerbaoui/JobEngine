@@ -31,7 +31,6 @@ public class ZMQRequester {
 
     }
 
-
     public String sendRequest(String request, int timeout) {
         String reply = "";
         try {
@@ -66,7 +65,6 @@ public class ZMQRequester {
         }
         return reply;
     }
-
 
     public String sendRequest(String request) {
         String reply = "";
