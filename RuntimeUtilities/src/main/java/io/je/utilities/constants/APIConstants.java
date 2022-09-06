@@ -49,7 +49,7 @@ public class APIConstants {
 
     public static final String DELETE_RULE = "/rule/deleteRule";
 
-    public static final String ACTUATOR_HEALTH = "/actuator";
+    public static final String ACTUATOR_HEALTH = "/actuator/health";
 
     public static final String PROJECT_UPDATE_RUNNER = "/jeproject/updateRunner";
 

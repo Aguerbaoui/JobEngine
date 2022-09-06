@@ -154,6 +154,8 @@ public class JERunnerAPIHandler {
                     JELogger.error(JEMessages.NETWORK_CALL_ERROR + requestUrl, LogCategory.DESIGN_MODE,
                             null, LogSubModule.JEBUILDER, null);
                     throw new JERunnerErrorException(JEMessages.JERUNNER_ERROR + " : " + response.body().string());
+                } else {
+                    // TODO check {"status":"UP"}
                 }
                 response.body().close();
                 return true;
@@ -171,7 +173,7 @@ public class JERunnerAPIHandler {
                     null, LogSubModule.JEBUILDER, null);
             throw new JERunnerErrorException(JEMessages.JERUNNER_UNREACHABLE);
         } finally {
-            if (response != null) {
+            if (response != null && response.body() != null) {
                 response.close();
             }
         }
