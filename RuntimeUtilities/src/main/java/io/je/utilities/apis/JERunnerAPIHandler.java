@@ -143,7 +143,7 @@ public class JERunnerAPIHandler {
 
     }
 
-    // check runner health
+    // Check runner health
     public static boolean checkRunnerHealth() throws InterruptedException, JERunnerErrorException, ExecutionException {
         String requestUrl = runtimeManagerBaseApi + ACTUATOR_HEALTH;
         Response response = null;

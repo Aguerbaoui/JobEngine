@@ -28,8 +28,9 @@ public class MailServiceTask extends ServiceTask {
     public static final String SEND_EMAIL_AUTH = "SendEmailAuth";
     public static final String SEND_EMAIL = "SendEmail";
 
+    // FIXME move to test main java ...
+    /*
     public static void main(String... args) {
-        // FIXME move to test main java ...
         String json = "{\n" +
                 "\"strSenderAddress\": \"ikhdhiri@integrationobjects.com\",\n" +
                 "\"lstRecieverAddress\": [\n" +
@@ -75,6 +76,7 @@ public class MailServiceTask extends ServiceTask {
             }
         }
     }
+*/
 
     public void execute(DelegateExecution execution) {
 
