@@ -2,7 +2,6 @@ package io.je.serviceTasks;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.je.utilities.constants.JEMessages;
-import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.constants.WorkflowConstants;
 import io.je.utilities.log.JELogger;
 import io.siothconfig.SIOTHConfigUtility;
@@ -70,6 +69,7 @@ public class MailServiceTask extends ServiceTask {
             LoggerUtils.debug("MailServiceTask main response.body().string() : " + response.body().string());
         } catch (IOException exp) {
             LoggerUtils.logException(exp);
+
         } finally {
             if (response != null && response.body() != null) {
                 response.body().close();
@@ -116,6 +116,7 @@ public class MailServiceTask extends ServiceTask {
             if (code.isError()) {
                 JELogger.error(JEMessages.MAIL_SERVICE_TASK_RESPONSE + ": \n" + response.get("message"), LogCategory.RUNTIME, task.getProjectId(),
                         LogSubModule.JERUNNER, task.getWorkflowId(), task.getTaskName());
+                throw new BpmnError("Error");
 
             } else {
                 JELogger.control(JEMessages.EMAIL_SENT_SUCCESSFULLY, LogCategory.RUNTIME, task.getProjectId(),
@@ -124,9 +125,10 @@ public class MailServiceTask extends ServiceTask {
 
         } catch (Exception e) {
             LoggerUtils.logException(e);
+
             JELogger.error(JEMessages.UNEXPECTED_ERROR + e.getMessage(), LogCategory.RUNTIME, task.getProjectId(),
                     LogSubModule.JERUNNER, task.getWorkflowId(), task.getTaskName());
-            throw new BpmnError(String.valueOf(ResponseCodes.UNKNOWN_ERROR));
+            throw new BpmnError("Error");
         }
 
     }

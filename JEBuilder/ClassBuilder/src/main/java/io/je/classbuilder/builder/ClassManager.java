@@ -12,7 +12,6 @@ import io.je.utilities.config.ConfigurationConstants;
 import io.je.utilities.constants.ClassBuilderConfig;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.WorkflowConstants;
-import io.je.utilities.exceptions.AddClassException;
 import io.je.utilities.exceptions.ClassLoadException;
 import io.je.utilities.execution.CommandExecutioner;
 import io.je.utilities.log.JELogger;
@@ -24,7 +23,6 @@ import utils.log.LoggerUtils;
 import utils.zmq.ZMQPublisher;
 import utils.zmq.ZMQRequester;
 
-import java.io.IOException;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -58,7 +56,7 @@ public class ClassManager {
      * build class (generate .java then load Class )
      */
     public static List<JEClass> buildClass(ClassDefinition classDefinition, String packageName)
-            throws AddClassException, ClassLoadException, IOException, InterruptedException {
+            throws Exception {
 
         JELogger.debug(JEMessages.BUILDING_CLASS + "[className = " + classDefinition.getName() + "]",
                 LogCategory.DESIGN_MODE, null,
@@ -347,6 +345,33 @@ public class ClassManager {
     }
 
     /*
+     * Get ClassDefinition model from JEClass bean
+     * */
+    public static ClassDefinition getClassModel(JEClass clazz) {
+        ClassDefinition c = new ClassDefinition();
+        c.setClass(true);
+        c.setClassId(clazz.getClassId());
+        c.setName(clazz.getClassName());
+        c.setClassVisibility("public");
+        c.setClassAuthor(clazz.getClassAuthor());
+        List<MethodModel> methodModels = new ArrayList<>();
+        for (JEMethod method : clazz.getMethods()
+                .values()) {
+            if (method.isCompiled())
+                methodModels.add(getMethodModel(method));
+            if (method.getImports() != null && !method.getImports()
+                    .isEmpty()) {
+                c.getImports()
+                        .addAll(method.getImports());
+            }
+        }
+        c.setMethods(methodModels);
+
+        //Compile class first
+        return c;
+    }
+
+    /*
      * Get Method model from JEMethod bean
      * */
     public static MethodModel getMethodModel(JEMethod method) {
@@ -381,33 +406,6 @@ public class ClassManager {
         fieldModel.setName(f.getName());
         fieldModel.setType(f.getType());
         return fieldModel;
-    }
-
-    /*
-     * Get ClassDefinition model from JEClass bean
-     * */
-    public static ClassDefinition getClassModel(JEClass clazz) {
-        ClassDefinition c = new ClassDefinition();
-        c.setClass(true);
-        c.setClassId(clazz.getClassId());
-        c.setName(clazz.getClassName());
-        c.setClassVisibility("public");
-        c.setClassAuthor(clazz.getClassAuthor());
-        List<MethodModel> methodModels = new ArrayList<>();
-        for (JEMethod method : clazz.getMethods()
-                .values()) {
-            if (method.isCompiled())
-                methodModels.add(getMethodModel(method));
-            if (method.getImports() != null && !method.getImports()
-                    .isEmpty()) {
-                c.getImports()
-                        .addAll(method.getImports());
-            }
-        }
-        c.setMethods(methodModels);
-
-        //Compile class first
-        return c;
     }
 
     /*

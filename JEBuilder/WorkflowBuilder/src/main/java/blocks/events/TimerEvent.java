@@ -15,8 +15,8 @@ public class TimerEvent extends WorkflowBlock {
     String endDate;
 
     Timers timer;
-
     int occurrences = -1;
+    private String attachedToRef;
 
     public String getTimeDate() {
         return DateUtils.parseUTCStringToLocalTimeString(timeDate);
@@ -52,6 +52,14 @@ public class TimerEvent extends WorkflowBlock {
         } else {
             this.timeCycle = null;
         }
+    }
+
+    public String getAttachedToRef() {
+        return attachedToRef;
+    }
+
+    public void setAttachedToRef(String attachedToRef) {
+        this.attachedToRef = attachedToRef;
     }
 
     public String getEndDate() {

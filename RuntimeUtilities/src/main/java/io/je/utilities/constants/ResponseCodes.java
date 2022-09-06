@@ -65,6 +65,6 @@ public class ResponseCodes {
     public static final int WORKFLOW_START_BLOCK_NOT_UNIQUE = 1051;
     public static final int WORKFLOW_END_BLOCK_NOT_DEFINED = 1052;
     public static final int WORKFLOW_END_BLOCK_NOT_UNIQUE = 1053;
-
+    public static final int COMMAND_EXECUTION_FAILED = 1054;
 
 }
