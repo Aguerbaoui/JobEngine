@@ -90,48 +90,6 @@ public class ClassService {
     @Autowired
     private HttpServletRequest request;
 
-    /*****************************************************
-     * Class Listener
-     ***********************************************************************/
-
-    /*
-     * Return JEMethod object from MethodModel
-     */
-    public static JEMethod getMethodFromModel(MethodModel m) {
-        JEMethod method = new JEMethod();
-        method.setCode(m.getCode());
-        method.setReturnType(m.getReturnType());
-        method.setJobEngineElementID(m.getId());
-        method.setJobEngineElementName(m.getMethodName());
-        method.setJeObjectCreatedBy(m.getCreatedBy());
-        method.setJeObjectModifiedBy(m.getModifiedBy());
-        method.setJeObjectLastUpdate(Instant.now());
-        method.setJeObjectCreationDate(Instant.now());
-        method.setInputs(new ArrayList<>());
-        method.setScope(WorkflowConstants.STATIC);
-        if (!m.getInputs()
-                .isEmpty()) {
-            for (FieldModel f : m.getInputs()) {
-                method.getInputs()
-                        .add(getFieldFromModel(f));
-            }
-        }
-        method.setImports(m.getImports());
-        return method;
-    }
-
-    /*
-     * Return JEField object from FieldModel
-     */
-    public static JEField getFieldFromModel(FieldModel f) {
-        JEField field = new JEField();
-        field.setComment("");
-        field.setVisibility(f.getFieldVisibility());
-        field.setType(f.getType());
-        field.setName(f.getName());
-        return field;
-    }
-
     /**
      * Init a thread that listens to the DataModelRestApi for class definition updates
      */
@@ -150,6 +108,103 @@ public class ClassService {
 
     }
 
+    /*
+     * Load all classes
+     * */
+    public void loadAllClasses() {
+        JELogger.debug(JEMessages.LOADING_ALL_CLASSES_FROM_DB,
+                LogCategory.DESIGN_MODE, null,
+                LogSubModule.CLASS, null);
+
+        loadSIOTHProcedures();
+
+        loadDataModelClasses();
+
+    }
+
+    /*
+     * Load SIOTHProcedure class
+     * */
+    private void loadSIOTHProcedures() {
+        JEClass jeClass = getNewJEProcedureClass();
+        try {
+
+            loadMethods(jeClass);
+            ClassDefinition c = getClassModel(jeClass);
+            String filePath = ClassBuilder.buildClass(c, ConfigurationConstants.JAVA_GENERATION_PATH, JEClassLoader.getJobEnginePackageName(CLASS_PACKAGE));
+            c.setClassAuthor(ClassAuthor.PROCEDURE);
+            jeClass.setClassPath(filePath);
+            classRepository.save(jeClass);
+            CommandExecutioner.compileCode(filePath, ConfigurationConstants.isDev());
+            CommandExecutioner.buildJar();
+            //addClass(c, true, true);
+
+        } catch (Exception e) {
+            LoggerUtils.logException(e);
+            JELogger.error(JEMessages.FAILED_TO_LOAD_CLASS + " " + jeClass.getClassId(), LogCategory.DESIGN_MODE,
+                    null, LogSubModule.CLASS, null);
+        }
+    }
+
+    /*
+     * Load DM classes
+     * */
+    private void loadDataModelClasses() {
+        List<JEClass> classes = classRepository.findByClassAuthor(DATA_MODEL.toString());
+        for (JEClass clazz : classes) {
+            try {
+                loadClassFromDataModel(clazz.getWorkspaceId(), clazz.getClassId(), true);
+            } catch (Exception e) {
+                LoggerUtils.logException(e);
+                JELogger.error(JEMessages.FAILED_TO_LOAD_CLASS + " " + clazz.getClassName(), LogCategory.DESIGN_MODE,
+                        null, LogSubModule.CLASS, null);
+            }
+        }
+    }
+
+    /*
+     * Create new SIOTHProcedure class
+     */
+    private JEClass getNewJEProcedureClass() {
+        JEClass c = new JEClass(null, WorkflowConstants.JEPROCEDURES,
+                WorkflowConstants.JEPROCEDURES,
+                ConfigurationConstants.JAVA_GENERATION_PATH, ClassType.CLASS);
+        c.setClassAuthor(ClassAuthor.PROCEDURE);
+        return c;
+    }
+
+    /*
+     * Load user defined methods
+     * */
+    private void loadMethods(JEClass c) {
+        List<JEMethod> methods = methodRepository.findAll();
+        HashMap<String, JEMethod> methodHashMap = new HashMap<>();
+        for (JEMethod m : methods) {
+            if (m.isCompiled()) {
+                methodHashMap.put(m.getJobEngineElementID(), m);
+            }
+        }
+        c.setMethods(methodHashMap);
+
+    }
+
+    /*
+     * Add class to runner from datamodel
+     */
+    public void loadClassFromDataModel(String workspaceId, String classId, boolean sendToRunner)
+            throws ClassLoadException, AddClassException {
+
+        ClassDefinition classDefinition = ClassManager.loadClassDefinition(workspaceId, classId);
+
+        if (classDefinition != null) {
+            classDefinition.setWorkspaceId(workspaceId);
+            addClass(classDefinition, sendToRunner, (loadedClasses.containsKey(classId)));
+            JELogger.info("Class " + classDefinition.getName() + " loaded successfully.", null, null, null,
+                    classDefinition.getName());
+        }
+
+    }
+
     /*****************************************************
      * CRUD
      ***********************************************************************/
@@ -158,7 +213,7 @@ public class ClassService {
      * Add Class from Class definition
      */
     public void addClass(ClassDefinition classDefinition, boolean sendToRunner, boolean reloadClassDefinition)
-            throws AddClassException, ClassLoadException {
+            throws AddClassException {
         try {
             List<JEClass> builtClasses = ClassManager.buildClass(classDefinition, CLASS_PACKAGE);
             for (JEClass _class : builtClasses) {
@@ -177,27 +232,10 @@ public class ClassService {
                 }
 
             }
-        } catch (IOException | InterruptedException e) {
+        } catch (Exception e) {
             LoggerUtils.logException(e);
             JELogger.error(CLASS_LOAD_DENIED_ACCESS, LogCategory.DESIGN_MODE, "", LogSubModule.CLASS, "");
         }
-    }
-
-    /*
-     * Add class to runner from datamodel
-     */
-    public void loadClassFromDataModel(String workspaceId, String classId, boolean sendToRunner)
-            throws ClassLoadException, AddClassException {
-
-        ClassDefinition classDefinition = ClassManager.loadClassDefinition(workspaceId, classId);
-
-        if (classDefinition != null) {
-            classDefinition.setWorkspaceId(workspaceId);
-            addClass(classDefinition, sendToRunner, (loadedClasses.containsKey(classId)));
-            JELogger.info("Class " + classDefinition.getName() + " loaded successfully.", null, null, null,
-                    classDefinition.getName());
-        }
-
     }
 
     /*
@@ -235,75 +273,6 @@ public class ClassService {
             throw new AddClassException(JEMessages.CLASS_LOAD_FAILED);
         }
         loadedClasses.put(clazz.getClassId(), clazz);
-
-    }
-
-    /*
-     * Load all classes
-     * */
-    public void loadAllClasses() {
-        JELogger.debug(JEMessages.LOADING_ALL_CLASSES_FROM_DB,
-                LogCategory.DESIGN_MODE, null,
-                LogSubModule.CLASS, null);
-
-        loadSIOTHProcedures();
-
-        loadDataModelClasses();
-
-    }
-
-    /*
-     * Load DM classes
-     * */
-    private void loadDataModelClasses() {
-        List<JEClass> classes = classRepository.findByClassAuthor(DATA_MODEL.toString());
-        for (JEClass clazz : classes) {
-            try {
-                loadClassFromDataModel(clazz.getWorkspaceId(), clazz.getClassId(), true);
-            } catch (Exception e) {
-                LoggerUtils.logException(e);
-                JELogger.error(JEMessages.FAILED_TO_LOAD_CLASS + " " + clazz.getClassName(), LogCategory.DESIGN_MODE,
-                        null, LogSubModule.CLASS, null);
-            }
-        }
-    }
-
-    /*
-     * Load SIOTHProcedure class
-     * */
-    private void loadSIOTHProcedures() {
-        JEClass jeClass = getNewJEProcedureClass();
-        try {
-
-            loadMethods(jeClass);
-            ClassDefinition c = getClassModel(jeClass);
-            String filePath = ClassBuilder.buildClass(c, ConfigurationConstants.JAVA_GENERATION_PATH, JEClassLoader.getJobEnginePackageName(CLASS_PACKAGE));
-            c.setClassAuthor(ClassAuthor.PROCEDURE);
-            jeClass.setClassPath(filePath);
-            classRepository.save(jeClass);
-            CommandExecutioner.compileCode(filePath, ConfigurationConstants.isDev());
-            CommandExecutioner.buildJar();
-            //addClass(c, true, true);
-
-        } catch (Exception e) {
-            LoggerUtils.logException(e);
-            JELogger.error(JEMessages.FAILED_TO_LOAD_CLASS + " " + jeClass.getClassId(), LogCategory.DESIGN_MODE,
-                    null, LogSubModule.CLASS, null);
-        }
-    }
-
-    /*
-     * Load user defined methods
-     * */
-    private void loadMethods(JEClass c) {
-        List<JEMethod> methods = methodRepository.findAll();
-        HashMap<String, JEMethod> methodHashMap = new HashMap<>();
-        for (JEMethod m : methods) {
-            if (m.isCompiled()) {
-                methodHashMap.put(m.getJobEngineElementID(), m);
-            }
-        }
-        c.setMethods(methodHashMap);
 
     }
 
@@ -382,29 +351,9 @@ public class ClassService {
     }
 
     /*
-     * Compile code before injecting it to the JVM
-     */
-    public void compileCode(MethodModel m, String packageName) throws ClassLoadException, AddClassException, IOException, InterruptedException {
-        // create a temp class
-        if (StringUtilities.isEmpty(m.getCode())) {
-            throw new ClassLoadException(EMPTY_CODE);
-        }
-        ClassDefinition tempClass = getTempClassFromMethod(m);
-        tempClass.setImports(m.getImports());
-        // compile without saving or sending to the runner
-        //addClass(tempClass, false, true);
-        compileCode(tempClass, packageName);
-    }
-
-    public void compileCode(ClassDefinition c, String packageName) throws ClassLoadException, AddClassException, IOException, InterruptedException {
-        String filePath = ClassBuilder.buildClass(c, ConfigurationConstants.JAVA_GENERATION_PATH, JEClassLoader.getJobEnginePackageName(packageName));
-        CommandExecutioner.compileCode(filePath, ConfigurationConstants.isDev());
-    }
-
-    /*
      * Create new procedure
      */
-    public void addProcedure(MethodModel m) throws ClassLoadException, AddClassException, MethodException, IOException, InterruptedException {
+    public void addProcedure(MethodModel m) throws Exception {
 
         if (m.getCode()
                 .isEmpty())
@@ -471,14 +420,65 @@ public class ClassService {
     }
 
     /*
-     * Create new SIOTHProcedure class
+     * Compile code before injecting it to the JVM
      */
-    private JEClass getNewJEProcedureClass() {
-        JEClass c = new JEClass(null, WorkflowConstants.JEPROCEDURES,
-                WorkflowConstants.JEPROCEDURES,
-                ConfigurationConstants.JAVA_GENERATION_PATH, ClassType.CLASS);
-        c.setClassAuthor(ClassAuthor.PROCEDURE);
-        return c;
+    public void compileCode(MethodModel m, String packageName) throws Exception {
+        // create a temp class
+        if (StringUtilities.isEmpty(m.getCode())) {
+            throw new ClassLoadException(EMPTY_CODE);
+        }
+        ClassDefinition tempClass = getTempClassFromMethod(m);
+        tempClass.setImports(m.getImports());
+        // compile without saving or sending to the runner
+        //addClass(tempClass, false, true);
+        compileCode(tempClass, packageName);
+    }
+
+    /*****************************************************
+     * Class Listener
+     ***********************************************************************/
+
+    /*
+     * Return JEMethod object from MethodModel
+     */
+    public static JEMethod getMethodFromModel(MethodModel m) {
+        JEMethod method = new JEMethod();
+        method.setCode(m.getCode());
+        method.setReturnType(m.getReturnType());
+        method.setJobEngineElementID(m.getId());
+        method.setJobEngineElementName(m.getMethodName());
+        method.setJeObjectCreatedBy(m.getCreatedBy());
+        method.setJeObjectModifiedBy(m.getModifiedBy());
+        method.setJeObjectLastUpdate(Instant.now());
+        method.setJeObjectCreationDate(Instant.now());
+        method.setInputs(new ArrayList<>());
+        method.setScope(WorkflowConstants.STATIC);
+        if (!m.getInputs()
+                .isEmpty()) {
+            for (FieldModel f : m.getInputs()) {
+                method.getInputs()
+                        .add(getFieldFromModel(f));
+            }
+        }
+        method.setImports(m.getImports());
+        return method;
+    }
+
+    public void compileCode(ClassDefinition c, String packageName) throws Exception {
+        String filePath = ClassBuilder.buildClass(c, ConfigurationConstants.JAVA_GENERATION_PATH, JEClassLoader.getJobEnginePackageName(packageName));
+        CommandExecutioner.compileCode(filePath, ConfigurationConstants.isDev());
+    }
+
+    /*
+     * Return JEField object from FieldModel
+     */
+    public static JEField getFieldFromModel(FieldModel f) {
+        JEField field = new JEField();
+        field.setComment("");
+        field.setVisibility(f.getFieldVisibility());
+        field.setType(f.getType());
+        field.setName(f.getName());
+        return field;
     }
 
     /*

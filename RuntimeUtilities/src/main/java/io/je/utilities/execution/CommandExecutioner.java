@@ -3,6 +3,7 @@ package io.je.utilities.execution;
 import io.je.utilities.config.ConfigurationConstants;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.ClassLoadException;
+import io.je.utilities.exceptions.CommandFailedException;
 import io.je.utilities.log.JELogger;
 import utils.ProcessRunner;
 import utils.files.FileUtilities;
@@ -13,6 +14,7 @@ import utils.log.LoggerUtils;
 import java.io.IOException;
 
 import static io.je.utilities.config.ConfigurationConstants.JAVA_GENERATION_PATH;
+import static io.je.utilities.constants.JEMessages.COMMAND_EXECUTION_FAILED;
 import static io.je.utilities.constants.JEMessages.ERROR_BUILDING_JAR_FILE_AFTER_COMPILING_CLASSES_CHECK_ONGOING_PROCESSES;
 
 public class CommandExecutioner {
@@ -33,7 +35,7 @@ public class CommandExecutioner {
 
     private static Runtime rt = Runtime.getRuntime();
 
-    public static void compileCode(String filePath, boolean currentClassPath) throws InterruptedException, IOException, ClassLoadException {
+    public static void compileCode(String filePath, boolean currentClassPath) throws Exception {
         //currentClassPath = false;
         String command = !currentClassPath ? JAVAC + " " + CP + " \"" + classpathFolder + "\" " + "\"" + filePath + "\" "
                 :
@@ -53,31 +55,10 @@ public class CommandExecutioner {
         }
     }
 
-    public static Thread runCode(String filePath) throws IOException, InterruptedException {
+    public static Thread runCode(String filePath) throws IOException, InterruptedException, CommandFailedException {
         String command = JAVA + " " + CP + " \"" + classpathFolder + getCurrentClassPath() + "\" \"" + filePath + "\"";
-        return ProcessRunner.executeCommandWithPidOutput(command);
+        return executeCommandWithPidOutput(command);
         //return p.pid();
-    }
-
-    public static void KillProcessByPid(long pid) throws IOException, InterruptedException {
-        String command = TASKKILL_PID + pid;
-        ProcessRunner.executeCommandWithPidOutput(command);
-    }
-
-    public static void buildJar() throws IOException, InterruptedException {
-        StringBuilder command = new StringBuilder(JAR + " " + CVF + " \"" + ConfigurationConstants.EXTERNAL_LIB_PATH + "JEUtils.jar\"");
-        command.append(" \"")
-                .append(JAVA_GENERATION_PATH)
-                .append("\\jeclasses\"");
-        try {
-            FileUtilities.deleteFileFromPath(ConfigurationConstants.EXTERNAL_LIB_PATH + "JEUtils.jar");
-        } catch (Exception e) {
-            LoggerUtils.logException(e);
-            JELogger.error(ERROR_BUILDING_JAR_FILE_AFTER_COMPILING_CLASSES_CHECK_ONGOING_PROCESSES, LogCategory.DESIGN_MODE, "", LogSubModule.JEBUILDER, "");
-        }
-        ProcessRunner.executeCommandWithPidOutput(command.toString())
-                .join(50000);
-
     }
 
     public static String getCurrentClassPath() {
@@ -93,5 +74,36 @@ public class CommandExecutioner {
             sb.append(url.getFile().substring(1).replace("%20", " ")).append(File.pathSeparator);
         }
         return sb.toString().replace("/", "\\");*/
+    }
+
+    public static Thread executeCommandWithPidOutput(String command) throws CommandFailedException {
+        try {
+            return ProcessRunner.executeCommandWithPidOutput(command);
+        } catch (IOException e) {
+            throw new CommandFailedException(COMMAND_EXECUTION_FAILED);
+        } catch (Exception e) {
+            throw new CommandFailedException(COMMAND_EXECUTION_FAILED);
+        }
+    }
+
+    public static void KillProcessByPid(long pid) throws IOException, InterruptedException, CommandFailedException {
+        String command = TASKKILL_PID + pid;
+        executeCommandWithPidOutput(command);
+    }
+
+    public static void buildJar() throws IOException, InterruptedException, CommandFailedException {
+        StringBuilder command = new StringBuilder(JAR + " " + CVF + " \"" + ConfigurationConstants.EXTERNAL_LIB_PATH + "JEUtils.jar\"");
+        command.append(" \"")
+                .append(JAVA_GENERATION_PATH)
+                .append("\\jeclasses\"");
+        try {
+            FileUtilities.deleteFileFromPath(ConfigurationConstants.EXTERNAL_LIB_PATH + "JEUtils.jar");
+        } catch (Exception e) {
+            LoggerUtils.logException(e);
+            JELogger.error(ERROR_BUILDING_JAR_FILE_AFTER_COMPILING_CLASSES_CHECK_ONGOING_PROCESSES, LogCategory.DESIGN_MODE, "", LogSubModule.JEBUILDER, "");
+        }
+        executeCommandWithPidOutput(command.toString())
+                .join(50000);
+
     }
 }

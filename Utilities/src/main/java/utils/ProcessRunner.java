@@ -19,7 +19,7 @@ public class ProcessRunner {
 
     private static boolean dumpOutput;
 
-    public static String executeCommandWithErrorOutput(String command) throws IOException, InterruptedException {
+    public static String executeCommandWithErrorOutput(String command) throws Exception {
         String output = "";
         Process process = rt.exec(command);
         process.waitFor(30, TimeUnit.SECONDS);
@@ -28,34 +28,7 @@ public class ProcessRunner {
         //return output;
     }
 
-    public static Thread executeCommandWithPidOutput(String command) throws IOException, InterruptedException {
-        Process process = rt.exec(command);
-        //process.waitFor(30, TimeUnit.SECONDS);
-        long pid = process.pid();
-        //dumpProcessOutput(process, command, true, true);
-
-        Thread thread = new Thread(() -> {
-            try {
-                dumpProcessOutput(process, command, true, true);
-            } catch (IOException e) {
-                LoggerUtils.logException(e);
-            }
-        });
-        thread.setName(String.valueOf(pid));
-        thread.start();
-
-        return thread;
-    }
-
-    /*public static Process executeCommandWithProcessOutput(String command) throws IOException, InterruptedException {
-        Process process = rt.exec(command);
-        //process.waitFor(30, TimeUnit.SECONDS);
-        long pid = process.pid();
-        dumpProcessOutput(process, command, true, true);
-        return process;
-    }*/
-
-    private static String dumpProcessOutput(Process process, String command, boolean executionOutput, boolean errorOutput) throws IOException {
+    private static String dumpProcessOutput(Process process, String command, boolean executionOutput, boolean errorOutput) throws Exception {
         String output = "Executing command = " + command + "\n";
 
         if (executionOutput) {
@@ -86,6 +59,7 @@ public class ProcessRunner {
             if (errorTextBuilder.length() > 0) {
                 output += errorTextBuilder.toString() + "\n";
                 System.out.println(output);
+                throw new Exception("Error in executing command");
 
             }
         }
@@ -99,6 +73,36 @@ public class ProcessRunner {
         }
         // System.out.println("testing **************" + command);
         return output;
+    }
+
+    /*public static Process executeCommandWithProcessOutput(String command) throws IOException, InterruptedException {
+        Process process = rt.exec(command);
+        //process.waitFor(30, TimeUnit.SECONDS);
+        long pid = process.pid();
+        dumpProcessOutput(process, command, true, true);
+        return process;
+    }*/
+
+    public static Thread executeCommandWithPidOutput(String command) throws IOException {
+        Process process = rt.exec(command);
+        //process.waitFor(30, TimeUnit.SECONDS);
+        long pid = process.pid();
+        //dumpProcessOutput(process, command, true, true);
+
+        Thread thread = new Thread(() -> {
+            try {
+                dumpProcessOutput(process, command, true, true);
+            } catch (Exception e) {
+                LoggerUtils.logException(e);
+                throw new RuntimeException(e);
+
+            }
+        });
+
+        thread.setName(String.valueOf(pid));
+        thread.start();
+
+        return thread;
     }
 
     public static String getProcessDumpPath() {

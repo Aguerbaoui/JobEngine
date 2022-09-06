@@ -78,6 +78,8 @@ public class JEToBpmnMapper {
                 LogCategory.DESIGN_MODE, workflow.getJobEngineProjectID(),
                 LogSubModule.WORKFLOW, workflow.getJobEngineElementID());
         ArrayList<ActivitiListener> listeners = new ArrayList<ActivitiListener>();
+
+
         listeners.add(getListener(WorkflowConstants.PROCESS_LISTENER_IMPLEMENTATION, WorkflowConstants.START_PROCESS, ImplementationType.IMPLEMENTATION_TYPE_CLASS));
         listeners.add(getListener(WorkflowConstants.PROCESS_LISTENER_IMPLEMENTATION, WorkflowConstants.END_PROCESS, ImplementationType.IMPLEMENTATION_TYPE_CLASS));
         ModelBuilder.setListenersForProcess(process, listeners);
@@ -118,11 +120,11 @@ public class JEToBpmnMapper {
                 process.addFlowElement(ModelBuilder.createThrowSignalEvent(block.getJobEngineElementID(), block.getJobEngineElementName(),
                         ((SignalEvent) block).getEventId()));
             } else if (block instanceof ErrorBoundaryEvent && !block.isProcessed()) {
-                ServiceTask attachedTo = null;
+                Activity attachedTo = null;
                 for (FlowElement f : process.getFlowElements()) {
                     if (f.getId()
                             .equals(((ErrorBoundaryEvent) block).getAttachedToRef())) {
-                        attachedTo = (ServiceTask) f;
+                        attachedTo = (Activity) f;
                         break;
                     }
                 }
@@ -155,7 +157,15 @@ public class JEToBpmnMapper {
                 if (((TimerEvent) block).getTimer() == Timers.DATE_TIME) {
                     process.addFlowElement(ModelBuilder.createDateTimerEvent(block.getJobEngineElementID(), block.getJobEngineElementName(), ((TimerEvent) block).getTimeDate()));
                 } else if (((TimerEvent) block).getTimer() == Timers.CYCLIC) {
-                    process.addFlowElement(ModelBuilder.createCycleTimerEvent(block.getJobEngineElementID(), block.getJobEngineElementName(), ((TimerEvent) block).getTimeCycle(), ((TimerEvent) block).getEndDate()));
+                    Activity attachedTo = null;
+                    for (FlowElement f : process.getFlowElements()) {
+                        if (f.getId()
+                                .equals(((TimerEvent) block).getAttachedToRef())) {
+                            attachedTo = (Activity) f;
+                            break;
+                        }
+                    }
+                    process.addFlowElement(ModelBuilder.createCycleTimerEvent(block.getJobEngineElementID(), block.getJobEngineElementName(), ((TimerEvent) block).getTimeCycle(), ((TimerEvent) block).getEndDate(), ((TimerEvent) block).getAttachedToRef(), attachedTo));
                 } else {
                     process.addFlowElement(ModelBuilder.createDurationTimerEvent(block.getJobEngineElementID(), block.getJobEngineElementName(), ((TimerEvent) block).getTimeDuration()));
                 }

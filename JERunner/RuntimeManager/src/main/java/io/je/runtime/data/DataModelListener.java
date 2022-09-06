@@ -1,6 +1,5 @@
 package io.je.runtime.data;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.je.runtime.beans.DMListener;
 import io.je.runtime.beans.DMTopic;
@@ -53,6 +52,27 @@ public class DataModelListener {
         return topics;
     }
 
+    public static void stopListening(Set<String> topics) {
+
+        for (String topic : topics) {
+            stopListening(topic);
+        }
+
+    }
+
+    public static void stopListening(String topic) {
+
+        if (getDataZMQSubscriber().hasTopic(topic)) {
+
+            JELogger.debug(JEMessages.STOPPING_LISTENING_TO_TOPIC + topic, LogCategory.RUNTIME,
+                    null, LogSubModule.JERUNNER, null);
+
+            getDataZMQSubscriber().removeTopic(topic);
+
+        }
+
+    }
+
     /*
          Only one DataZMQSubscriber for all data topics
      */
@@ -66,6 +86,19 @@ public class DataModelListener {
         }
 
         return dataZMQSubscriber;
+    }
+
+    public static void updateDMListener(DMListener dMListener, Set<String> topics) {
+
+        for (String topic : topics) {
+            if (!allDMTopics.containsKey(topic)) {
+                allDMTopics.put(topic, new DMTopic(topic));
+            }
+            allDMTopics.get(topic).addListener(dMListener);
+        }
+
+        startListening(topics);
+
     }
 
     public static void startListening(Set<String> topics) {
@@ -113,46 +146,12 @@ public class DataModelListener {
 
         for (Object value : initialValues) {
             try {
-                RuntimeDispatcher.injectData(new JEData(topic, objectMapper.writeValueAsString(value)));
+                RuntimeDispatcher.injectData(new JEData(topic, (String) value));
 
-            } catch (JsonProcessingException e) {
+            } catch (Exception e) {
                 LoggerUtils.logException(e);
             }
         }
-    }
-
-    public static void stopListening(String topic) {
-
-        if (getDataZMQSubscriber().hasTopic(topic)) {
-
-            JELogger.debug(JEMessages.STOPPING_LISTENING_TO_TOPIC + topic, LogCategory.RUNTIME,
-                    null, LogSubModule.JERUNNER, null);
-
-            getDataZMQSubscriber().removeTopic(topic);
-
-        }
-
-    }
-
-    public static void stopListening(Set<String> topics) {
-
-        for (String topic : topics) {
-            stopListening(topic);
-        }
-
-    }
-
-    public static void updateDMListener(DMListener dMListener, Set<String> topics) {
-
-        for (String topic : topics) {
-            if (!allDMTopics.containsKey(topic)) {
-                allDMTopics.put(topic, new DMTopic(topic));
-            }
-            allDMTopics.get(topic).addListener(dMListener);
-        }
-
-        startListening(topics);
-
     }
 
     public static void removeDMListener(String listenerId) {
@@ -169,6 +168,12 @@ public class DataModelListener {
 
     }
 
+    public static void stopListeningOnTopicIfNoSubscribers(DMTopic topic) {
+        if (!topic.hasListeners()) {
+            stopListening(topic.getId());
+        }
+    }
+
     public static void removeListenersByProjectId(String projectId) {
         // FIXME check if ok
         for (Entry<String, DMTopic> topic : allDMTopics.entrySet()) {
@@ -176,12 +181,6 @@ public class DataModelListener {
             stopListeningOnTopicIfNoSubscribers(topic.getValue());
         }
 
-    }
-
-    public static void stopListeningOnTopicIfNoSubscribers(DMTopic topic) {
-        if (!topic.hasListeners()) {
-            stopListening(topic.getId());
-        }
     }
 
     public static List<String> getProjectsSubscribedToTopic(String topic) {

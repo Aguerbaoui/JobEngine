@@ -74,6 +74,14 @@ public class ModelBuilder {
         return serviceTask;
     }
 
+    public static ActivitiListener getListener(String implementation, String eventType, String implementationType) {
+        ActivitiListener listener = new ActivitiListener();
+        listener.setImplementation(implementation);
+        listener.setEvent(eventType);
+        listener.setImplementationType(implementationType);
+        return listener;
+    }
+
     /**
      * Create a sequence flow and return it
      */
@@ -111,6 +119,26 @@ public class ModelBuilder {
         return startEvent;
     }
 
+    public static TimerEventDefinition createTimerEvent(String timerDelay, String timerDate, String timerCycle, String endDate) {
+        TimerEventDefinition timerEventDefinition = new TimerEventDefinition();
+        if (timerDelay != null) {
+            timerEventDefinition.setTimeDuration(timerDelay);
+        }
+
+        if (timerDate != null) {
+            timerEventDefinition.setTimeDate(timerDate);
+        }
+
+        if (timerCycle != null) {
+            timerEventDefinition.setTimeCycle(timerCycle);
+            timerEventDefinition.setTimeDate(null);
+        }
+        if (endDate != null) {
+            timerEventDefinition.setEndDate(endDate);
+        }
+
+        return timerEventDefinition;
+    }
 
     /**
      * Create an end event and return it
@@ -184,8 +212,8 @@ public class ModelBuilder {
     /**
      * Create a date timer event and returns it
      */
-    public static ThrowEvent createDateTimerEvent(String id, String name, String timeDate) {
-        ThrowEvent event = new ThrowEvent();
+    public static IntermediateCatchEvent createDateTimerEvent(String id, String name, String timeDate) {
+        IntermediateCatchEvent event = new IntermediateCatchEvent();
         event.setName(name);
         event.setId(id);
         event.addEventDefinition(createTimerEvent(null, timeDate, null, null));
@@ -195,10 +223,13 @@ public class ModelBuilder {
     /**
      * Create a cycle timer event and returns it
      */
-    public static ThrowEvent createCycleTimerEvent(String id, String name, String timeCycle, String endDate) {
-        ThrowEvent event = new ThrowEvent();
+    public static BoundaryEvent createCycleTimerEvent(String id, String name, String timeCycle, String endDate, String attachedRef, Activity attachedTo) {
+        BoundaryEvent event = new BoundaryEvent();
         event.setName(name);
         event.setId(id);
+        event.setCancelActivity(true);
+        event.setAttachedToRefId(attachedRef);
+        event.setAttachedToRef(attachedTo);
         event.addEventDefinition(createTimerEvent(null, null, timeCycle, endDate));
         return event;
     }
@@ -206,41 +237,12 @@ public class ModelBuilder {
     /**
      * Create a cycle timer event and returns it
      */
-    public static ThrowEvent createDurationTimerEvent(String id, String name, String timeDuration) {
-        ThrowEvent event = new ThrowEvent();
+    public static IntermediateCatchEvent createDurationTimerEvent(String id, String name, String timeDuration) {
+        IntermediateCatchEvent event = new IntermediateCatchEvent();
         event.setName(name);
         event.setId(id);
         event.addEventDefinition(createTimerEvent(timeDuration, null, null, null));
         return event;
-    }
-
-    public static TimerEventDefinition createTimerEvent(String timerDelay, String timerDate, String timerCycle, String endDate) {
-        TimerEventDefinition timerEventDefinition = new TimerEventDefinition();
-        if (timerDelay != null) {
-            timerEventDefinition.setTimeDuration(timerDelay);
-        }
-
-        if (timerDate != null) {
-            timerEventDefinition.setTimeDate(timerDate);
-        }
-
-        if (timerCycle != null) {
-            timerEventDefinition.setTimeCycle(timerCycle);
-            timerEventDefinition.setTimeDate(null);
-        }
-        if (endDate != null) {
-            timerEventDefinition.setEndDate(endDate);
-        }
-
-        return timerEventDefinition;
-    }
-
-    public static ActivitiListener getListener(String implementation, String eventType, String implementationType) {
-        ActivitiListener listener = new ActivitiListener();
-        listener.setImplementation(implementation);
-        listener.setEvent(eventType);
-        listener.setImplementationType(implementationType);
-        return listener;
     }
 
     /**
@@ -292,15 +294,6 @@ public class ModelBuilder {
         return event;
     }
 
-    /**
-     * Create activiti error event
-     */
-    public static ErrorEventDefinition createErrorEventDefinition(String errorRef) {
-        ErrorEventDefinition errorEventDefinition = new ErrorEventDefinition();
-        errorEventDefinition.setErrorCode("Error");
-        return errorEventDefinition;
-    }
-
     /*
      * Create activit boundary event
      * */
@@ -312,6 +305,15 @@ public class ModelBuilder {
         b.setCancelActivity(true);
         b.addEventDefinition(createErrorEventDefinition(errorRef));
         return b;
+    }
+
+    /**
+     * Create activiti error event
+     */
+    public static ErrorEventDefinition createErrorEventDefinition(String errorRef) {
+        ErrorEventDefinition errorEventDefinition = new ErrorEventDefinition();
+        errorEventDefinition.setErrorCode("Error");
+        return errorEventDefinition;
     }
 
     /**

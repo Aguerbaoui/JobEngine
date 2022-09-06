@@ -1,7 +1,6 @@
 package io.je.serviceTasks;
 
 import io.je.utilities.constants.JEMessages;
-import io.je.utilities.constants.ResponseCodes;
 import io.je.utilities.log.JELogger;
 import okhttp3.Response;
 import org.activiti.engine.delegate.BpmnError;
@@ -31,7 +30,7 @@ public class WebApiServiceTask extends ServiceTask {
 
                 JELogger.error(JEMessages.UNEXPECTED_ERROR + e.getMessage(), LogCategory.RUNTIME, null,
                         LogSubModule.JERUNNER, null);
-                throw new BpmnError(String.valueOf(ResponseCodes.UNKNOWN_ERROR));
+                throw new BpmnError("Error");
             }
         } else {
             network = new Network.Builder(task.getUrl()).hasBody(task.hasBody())
@@ -49,7 +48,7 @@ public class WebApiServiceTask extends ServiceTask {
             JELogger.logException(e);
             JELogger.error(JEMessages.UNEXPECTED_ERROR + e.getMessage(), LogCategory.RUNTIME, null,
                     LogSubModule.JERUNNER, null);
-            throw new BpmnError(String.valueOf(ResponseCodes.UNKNOWN_ERROR));
+            throw new BpmnError("Error");
         } finally {
             if (response != null && response.body() != null) {
                 response.body().close();
