@@ -28,6 +28,9 @@ public class JobEngine {
 
 
     public String getJeRunner() {
+        if (jeRunner.endsWith("/")) {
+            return jeRunner.substring(0, jeRunner.length() - 1);
+        }
         return jeRunner;
     }
 
@@ -38,6 +41,9 @@ public class JobEngine {
 
 
     public String getJeBuilder() {
+        if (jeBuilder.endsWith("/")) {
+            return jeBuilder.substring(0, jeBuilder.length() - 1);
+        }
         return jeBuilder;
     }
 
