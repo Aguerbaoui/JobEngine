@@ -25,18 +25,15 @@ public class WebSecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        // WARNING authentication / CORS disabled as RuntimeManager not routed in Ocelot
-        // Should add authentication if RuntimeManager added to Gateway ...
+        // WARNING authentication / CSRF check disabled in RuntimeManager as not routed in Ocelot
+        // Should re-check configuration if RuntimeManager added to Gateway ...
         http
                 .authorizeHttpRequests((authz) -> {
                             try {
                                 authz
-                                        .anyRequest()
-                                        //.authenticated()
-                                        .permitAll()
+                                        .anyRequest().permitAll()//.authenticated()
                                         .and()
-                                        .csrf()
-                                        .disable();
+                                        .csrf().disable();
                             } catch (Exception e) {
                                 LoggerUtils.logException(e);
                                 throw new RuntimeException(e);
