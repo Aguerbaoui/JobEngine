@@ -24,14 +24,15 @@ public class JEBuilderApiHandler {
 
     //run workflow
     public static JEResponse runWorkflow(String projectId, String workflowName) throws JERunnerErrorException {
-        String requestUrl = SIOTHConfigUtility.getSiothConfig().getJobEngine().getJeBuilder() + APIConstants.RUN_WORKFLOW + projectId + "/" + workflowName;
+        String requestUrl = SIOTHConfigUtility.getSiothConfig().getJobEngine().getJeBuilder() + APIConstants.RUN_WORKFLOW + "/" + projectId + "/" + workflowName;
         return sendRequest(requestUrl);
 
     }
 
     //Stop workflow
     public static JEResponse stopWorkflow(String projectId, String workflowId) throws JERunnerErrorException {
-        String requestUrl = SIOTHConfigUtility.getSiothConfig().getJobEngine().getJeBuilder() + DELETE_WORKFLOW + "/" + projectId + "/" + workflowId;
+        String requestUrl = SIOTHConfigUtility.getSiothConfig().getJobEngine().getJeBuilder()
+                + STOP_WORKFLOW + "/" + projectId + "/" + workflowId;
 		JELogger.debug(JEMessages.NETWORK_DELETE_WF + " project id = " + projectId + "workflow id = " + workflowId);
         return sendDeleteRequest(requestUrl);
     }
@@ -45,13 +46,15 @@ public class JEBuilderApiHandler {
 
     // Remove workflow from project
     public static JEResponse removeWorkflow(String projectId, String workflowId) throws JERunnerErrorException {
-        String requestUrl = SIOTHConfigUtility.getSiothConfig().getJobEngine().getJeBuilder() + DELETE_WORKFLOW + "/" + projectId + workflowId;
+        String requestUrl = SIOTHConfigUtility.getSiothConfig().getJobEngine().getJeBuilder()
+                + DELETE_WORKFLOW + "/" + projectId + "/" + workflowId;
 		JELogger.debug(JEMessages.NETWORK_DELETE_WF + " project id = " + projectId + "workflow id = " + workflowId);
         return sendDeleteRequest(requestUrl);
     }
 
     //Remove rule from project
     public static JEResponse removeRule(String projectId, String ruleId) throws JERunnerErrorException {
+        // TODO enhance API
         String requestUrl = SIOTHConfigUtility.getSiothConfig().getJobEngine().getJeBuilder() + "rule/ " + projectId + "/" + "deleteRule" + "/" + ruleId;
 		JELogger.debug(JEMessages.NETWORK_DELETE + " project id = " + projectId + " rule id = " + ruleId);
         return sendDeleteRequest(requestUrl);
@@ -79,12 +82,14 @@ public class JEBuilderApiHandler {
     }
 
     public static JEResponse untriggerEvent(String eventId, String projectId) throws JERunnerErrorException {
-        String requestUrl = SIOTHConfigUtility.getSiothConfig().getJobEngine().getJeBuilder() + UNTRIGGER_EVENT + projectId + "/" + eventId;
+        String requestUrl = SIOTHConfigUtility.getSiothConfig().getJobEngine().getJeBuilder()
+                + UNTRIGGER_EVENT + "/" + projectId + "/" + eventId;
         return sendRequest(requestUrl);
     }
 
     public static JEResponse triggerEvent(String eventId, String projectId) throws JERunnerErrorException {
-        String requestUrl = SIOTHConfigUtility.getSiothConfig().getJobEngine().getJeBuilder() + TRIGGER_EVENT + projectId + "/" + eventId;
+        String requestUrl = SIOTHConfigUtility.getSiothConfig().getJobEngine().getJeBuilder()
+                + TRIGGER_EVENT + "/" + projectId + "/" + eventId;
         JELogger.debug(JEMessages.TRIGGERING_NOW + " project id = " + projectId + " event id = " + eventId);
         return sendRequest(requestUrl);
     }
@@ -119,16 +124,12 @@ public class JEBuilderApiHandler {
     }
 
     public static VariableModel getVariable(String projectName, String variableName) {
-        try {//http://njendoubi-pc:13020/ProjectBuilder//variable/test/getVariable//testVar
+        try {
             String requestUrl = SIOTHConfigUtility.getSiothConfig().getJobEngine().getJeBuilder()
                     + "/variable/" + projectName + GET_VARIABLE + "/" + variableName;
             VariableModel variableModel = (VariableModel) sendRequestWithReturnClass(requestUrl, VariableModel.class);
+
             return variableModel;
-			/*Response response = Network.makeGetNetworkCallWithResponse(requestUrl);
-			if (response == null || response.code() != ResponseCodes.CODE_OK) return null;
-			String respBody = response.body().string();
-			ObjectMapper objectMapper = new ObjectMapper();
-			return objectMapper.readValue(respBody, VariableModel.class);*/
         } catch (Exception exp) {
             JELogger.logException(exp);
             return null;
