@@ -4,7 +4,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.firewall.HttpFirewall;
 import org.springframework.security.web.firewall.StrictHttpFirewall;
@@ -16,7 +15,7 @@ import utils.log.LoggerUtils;
 import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
-@EnableWebSecurity
+@EnableWebSecurity(debug = true) // TODO remove debug
 public class WebSecurityConfig {
 
     /* extends WebSecurityConfigurerAdapter {
@@ -30,7 +29,7 @@ public class WebSecurityConfig {
                 .frameOptions().disable()
                 .and()
                 .csrf().disable()
-                .authorizeRequests()
+                .authorizeRequests() // FIXME Is it needed in filterChain?
                 .antMatchers("/ws/**").permitAll()
                 .anyRequest()
                 .authenticated();

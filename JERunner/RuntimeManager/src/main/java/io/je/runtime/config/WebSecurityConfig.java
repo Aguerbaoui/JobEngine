@@ -12,7 +12,7 @@ import utils.log.LoggerUtils;
 import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
-@EnableWebSecurity
+@EnableWebSecurity(debug = true) // TODO remove debug
 public class WebSecurityConfig {
 
     @Bean

@@ -12,7 +12,7 @@ import utils.log.LoggerUtils;
 import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
-@EnableWebSecurity
+@EnableWebSecurity(debug = true) // TODO remove debug
 public class WebSecurityConfig {
 
     @Bean
@@ -34,12 +34,9 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests((authz) -> {
                             try {
                                 authz
-                                        .anyRequest()
-                                        //.authenticated()
-                                        .permitAll()
+                                        .anyRequest().permitAll()//.authenticated()
                                         .and()
-                                        .csrf()
-                                        .disable();
+                                        .csrf().disable();
                             } catch (Exception e) {
                                 LoggerUtils.logException(e);
                                 throw new RuntimeException(e);
