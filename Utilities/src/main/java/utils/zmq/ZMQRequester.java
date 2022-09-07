@@ -34,8 +34,8 @@ public class ZMQRequester {
     public String sendRequest(String request, int timeout) {
         String reply = "";
         try {
-            context.setRcvHWM(0);
-            context.setSndHWM(0);
+            context.setRcvHWM(ZMQConfiguration.RECEIVE_HIGH_WATERMARK);
+            context.setSndHWM(ZMQConfiguration.SEND_HIGH_WATERMARK);
 
             ZMQ.Socket requestSocket = context.createSocket(SocketType.REQ);
 
@@ -43,13 +43,15 @@ public class ZMQRequester {
             requestSocket.setHandshakeIvl(ZMQConfiguration.HANDSHAKE_INTERVAL);
             requestSocket.setRcvHWM(ZMQConfiguration.RECEIVE_HIGH_WATERMARK);
             requestSocket.setSndHWM(ZMQConfiguration.SEND_HIGH_WATERMARK);
+            requestSocket.setReceiveTimeOut(timeout);
 
             if (ZMQSecurity.isSecure()) {
+                // Client specify server key
                 requestSocket.setCurveServerKey(ZMQSecurity.getServerPair().publicKey.getBytes());
+
                 requestSocket.setCurveSecretKey(ZMQSecurity.getServerPair().secretKey.getBytes());
                 requestSocket.setCurvePublicKey(ZMQSecurity.getServerPair().publicKey.getBytes());
             }
-            requestSocket.setReceiveTimeOut(timeout);
 
             requestSocket.connect(connectionUrl);
             requestSocket.send(request, 0);

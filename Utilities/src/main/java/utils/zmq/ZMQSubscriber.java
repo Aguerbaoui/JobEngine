@@ -47,7 +47,9 @@ public abstract class ZMQSubscriber implements Runnable {
             socket.setReceiveTimeOut(-1);
 
             if (ZMQSecurity.isSecure()) {
+                // Client specify server key
                 socket.setCurveServerKey(ZMQSecurity.getServerPair().publicKey.getBytes());
+
                 socket.setCurveSecretKey(ZMQSecurity.getServerPair().secretKey.getBytes());
                 socket.setCurvePublicKey(ZMQSecurity.getServerPair().publicKey.getBytes());
             }

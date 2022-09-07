@@ -36,17 +36,17 @@ public abstract class ZMQResponder implements Runnable {
 
     public void connectToAddress() throws ZMQConnectionFailedException {
         try {
-            // TODO check if config OK for ZMQ responder
-            this.context.setRcvHWM(0);
-            this.context.setSndHWM(0);
+            this.context.setRcvHWM(ZMQConfiguration.RECEIVE_HIGH_WATERMARK);
+            this.context.setSndHWM(ZMQConfiguration.SEND_HIGH_WATERMARK);
 
             this.repSocket = this.context.createSocket(SocketType.REP);
-            this.repSocket.setReceiveTimeOut(30000);
 
             this.repSocket.setHeartbeatTimeout(ZMQConfiguration.HEARTBEAT_TIMEOUT);
             this.repSocket.setHandshakeIvl(ZMQConfiguration.HANDSHAKE_INTERVAL);
             this.repSocket.setRcvHWM(ZMQConfiguration.RECEIVE_HIGH_WATERMARK);
             this.repSocket.setSndHWM(ZMQConfiguration.SEND_HIGH_WATERMARK);
+            // TODO check if config OK for ZMQ responder
+            this.repSocket.setReceiveTimeOut(ZMQConfiguration.RECEIVE_TIMEOUT);
 
             if (ZMQSecurity.isSecure()) {
                 this.repSocket.setCurveServer(true);

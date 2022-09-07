@@ -19,8 +19,8 @@ public class ZMQPublisher {
         this.connectionUrl = url + ":" + publishPort;
 
         context = new ZContext();
-        context.setRcvHWM(0);
-        context.setSndHWM(0);
+        context.setRcvHWM(ZMQConfiguration.RECEIVE_HIGH_WATERMARK);
+        context.setSndHWM(ZMQConfiguration.SEND_HIGH_WATERMARK);
 
         socket = context.createSocket(SocketType.PUB);
 
@@ -28,6 +28,7 @@ public class ZMQPublisher {
         socket.setHandshakeIvl(ZMQConfiguration.HANDSHAKE_INTERVAL);
         socket.setRcvHWM(ZMQConfiguration.RECEIVE_HIGH_WATERMARK);
         socket.setSndHWM(ZMQConfiguration.SEND_HIGH_WATERMARK);
+        // Publisher has no receive timeout?
 
         if (ZMQSecurity.isSecure()) {
             socket.setCurveServer(true);

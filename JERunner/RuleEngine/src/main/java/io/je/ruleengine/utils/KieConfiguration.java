@@ -1,5 +1,5 @@
 package io.je.ruleengine.utils;
 
-public class kieConfiguration {
+public class KieConfiguration {
 
 }

@@ -31,8 +31,9 @@ public class JEMonitorInitializingBean implements InitializingBean {
             JELogger.control(JEMessages.LOGGER_INITIALIZED,
                     LogCategory.MONITOR, null,
                     LogSubModule.JEMONITOR, null);
-            ZMQConfiguration.setHeartbeatTimeout(monitorProperties.getZmqHeartbeatValue());
+            ZMQConfiguration.setHeartbeatTimeout(monitorProperties.getZmqHeartbeatTimeout());
             ZMQConfiguration.setHandshakeInterval(monitorProperties.getZmqHandshakeInterval());
+            ZMQConfiguration.setReceiveTimeout(monitorProperties.getZmqReceiveTimeout());
             ZMQConfiguration.setReceiveHighWatermark(monitorProperties.getZmqReceiveHighWatermark());
             ZMQConfiguration.setSendHighWatermark(monitorProperties.getZmqSendHighWatermark());
             subscriber.initSubscriber();
