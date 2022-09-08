@@ -63,13 +63,13 @@ public class OrBlock extends LogicBlock {
             expression.append(
                     "then"
                             + "\n"
-                            + "    System.err.println(\"OrLogicManager.getRuleMatchCounter('@{ruleName}') : \""
-                            + "  +  OrLogicManager.getRuleMatchCounter(\"@{ruleName}\") );" + "\n"
+                            //+ "    System.err.println(\"OrLogicManager.getRuleMatchCounter('@{ruleName}') : \""
+                            //+ "  +  OrLogicManager.getRuleMatchCounter(\"@{ruleName}\") );" + "\n"
 
                             + "    OrLogicManager.addRuleMatch(\"@{ruleName}\");" + "\n"
 
-                            + "    System.err.println(\"OrLogicManager.getRuleMatchCounter('@{ruleName}') after ADD : \""
-                            + "  +  OrLogicManager.getRuleMatchCounter(\"@{ruleName}\") );" + "\n"
+                            //+ "    System.err.println(\"OrLogicManager.getRuleMatchCounter('@{ruleName}') after ADD : \""
+                            //+ "  +  OrLogicManager.getRuleMatchCounter(\"@{ruleName}\") );" + "\n"
 
                             + "end"
                             + "\n\n"
@@ -127,6 +127,5 @@ public class OrBlock extends LogicBlock {
 
         return expression.toString();
     }
-
-
+    
 }

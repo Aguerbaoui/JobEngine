@@ -652,6 +652,7 @@ public class JEMessages {
     public static final String ERROR_REMOVING_RULE = "Error while removing rule";
     public static final String ERROR_EXECUTING_DB_QUERY = "Error while executing the database query";
     public static final String ERROR_GETTING_CLASS_UPDATES = "Error while getting class updates";
+    public static final String ERROR_INITIALIZING_ZMQ_SUBSCRIBER = "Error while initializing ZMQ subscriber";
     public static final String FAILED_TO_SEND_LOG_MESSAGE_TO_THE_LOGGING_SYSTEM = "Failed to send log message to the Tracker module: ";
     public static final String FAILED_TO_SEND_MONITORING_MESSAGE_TO_THE_LOGGING_SYSTEM = "Failed to send monitoring data to the JEMonitor module: ";
     public static final String CHECK_DM_FOR_DETAILS = "Check Integration Objects' SIOTH Data Model service's log file for more details. ";
@@ -679,7 +680,7 @@ public class JEMessages {
 
     public static final String FAILED_TO_INJECT_DATA = "Failed to inject data: ";
 
-    public static final String DATA_LISTENTING_STARTED = "Started listening for data... ";
+    public static final String STARTED_LISTENING_FOR_DATA = "Started listening for data... ";
 
     public static final String ERROR_IMPORTING_FILE = "Error while importing file ";
 

@@ -44,7 +44,7 @@ public class LicenseStatusWatcher implements Runnable {
         } catch (InterruptedException e) {
             LoggerUtils.logException(e);
         }
-        int requestTimeout = 20000;
+        //int requestTimeout = 20000;
         while (listening) {
             try {
 

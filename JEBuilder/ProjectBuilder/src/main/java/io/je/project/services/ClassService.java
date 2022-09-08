@@ -30,7 +30,7 @@ import utils.log.LogCategory;
 import utils.log.LogSubModule;
 import utils.log.LoggerUtils;
 import utils.string.StringUtilities;
-import utils.zmq.ZMQBind;
+import utils.zmq.ZMQConnectionFailedException;
 import utils.zmq.ZMQSubscriber;
 
 import javax.servlet.http.HttpServletRequest;
@@ -725,7 +725,6 @@ public class ClassService {
 
         public ClassZMQSubscriber(String url, int subPort) {
             super(url, subPort);
-            addTopic(MODEL_TOPIC);
         }
 
         @Override
@@ -735,18 +734,31 @@ public class ClassService {
 
                 final String ID_MSG = "ClassZMQSubscriber : ";
 
-                JELogger.debug(ID_MSG + "topics : " + this.topics + " : " + JEMessages.DATA_LISTENTING_STARTED,
+                JELogger.debug(ID_MSG + "topics : " + this.topics + " : " + JEMessages.STARTED_LISTENING_FOR_DATA,
                         LogCategory.DESIGN_MODE, null, LogSubModule.CLASS, null);
 
                 String last_topic = null;
 
+                try {
+
+                    addTopic(MODEL_TOPIC);
+
+                } catch (ZMQConnectionFailedException e) {
+                    LoggerUtils.logException(e);
+                    JELogger.error(JEMessages.ERROR_INITIALIZING_ZMQ_SUBSCRIBER, LogCategory.DESIGN_MODE, null,
+                            LogSubModule.CLASS, e.getMessage());
+                }
+
                 while (this.listening) {
 
-                    //  JELogger.info(ClassUpdateListener.class, "--------------------------------------");
+                    JELogger.trace(this.getClass().toString() + " : start listening");
 
                     String data = null;
+
                     try {
-                        data = this.getSubSocket(ZMQBind.CONNECT).recvStr();
+
+                        data = this.getSubSocket().recvStr();
+
                     } catch (Exception e) {
                         LoggerUtils.logException(e);
                         continue;

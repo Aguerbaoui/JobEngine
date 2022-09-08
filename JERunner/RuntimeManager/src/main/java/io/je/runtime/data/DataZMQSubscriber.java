@@ -7,7 +7,6 @@ import io.je.utilities.log.JELogger;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
 import utils.log.LoggerUtils;
-import utils.zmq.ZMQBind;
 import utils.zmq.ZMQSubscriber;
 
 import java.util.Iterator;
@@ -27,7 +26,7 @@ public class DataZMQSubscriber extends ZMQSubscriber {
 
             final String ID_MSG = "DataZMQSubscriber : ";
 
-            JELogger.debug(ID_MSG + JEMessages.DATA_LISTENTING_STARTED,
+            JELogger.debug(ID_MSG + JEMessages.STARTED_LISTENING_FOR_DATA,
                     LogCategory.RUNTIME, null, LogSubModule.JERUNNER, null);
 
             String last_topic = null;
@@ -35,7 +34,7 @@ public class DataZMQSubscriber extends ZMQSubscriber {
             while (this.listening) {
                 String data = null;
                 try {
-                    data = this.getSubSocket(ZMQBind.CONNECT).recvStr();
+                    data = this.getSubSocket().recvStr();
                 } catch (Exception ex) {
                     LoggerUtils.logException(ex);
                     continue;

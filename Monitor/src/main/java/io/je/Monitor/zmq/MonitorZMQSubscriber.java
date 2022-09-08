@@ -27,21 +27,21 @@ public class MonitorZMQSubscriber extends ZMQSubscriber {
     }
 
     @Override
-    public ZMQ.Socket getSubSocket(ZMQBind bindType) {
+    public ZMQ.Socket getSubSocket() {
         boolean connectionSucceeded = false;
 
         if (socket == null) {
-
-            this.init();
-            this.addTopic(JEMONITOR_TOPIC);
 
             JELogger.debug("MonitorZMQSubscriber : topic added : " + JEMONITOR_TOPIC,
                     LogCategory.MONITOR, null, LogSubModule.JEMONITOR, null);
 
             try {
-                JELogger.info("Attempting to connect to address: " + url + ":" + port + "...", null, "", null, "");
+                JELogger.info("Attempting to connect to address : " + url + ":" + port + "...", null, "", null, "");
 
-                connectToAddress(bindType);
+                this.getSubSocket(ZMQBind.BIND);
+
+                this.addTopic(JEMONITOR_TOPIC);
+
                 // FIXME externalize messages
                 JELogger.info("Connection succeeded", null, "", null, "");
 
@@ -49,16 +49,24 @@ public class MonitorZMQSubscriber extends ZMQSubscriber {
 
             } catch (Exception e) {
                 connectionSucceeded = false;
+
                 JELogger.error(e.getMessage(), null, "", null, "");
 
+                this.closeSocket();
             }
+
             if (!connectionSucceeded) {
                 JELogger.info(" Trying to establish connection with address: " + url + ":" + port + "...", null, "",
                         null, "");
             }
+
             while (!connectionSucceeded) {
                 try {
-                    connectToAddress(bindType);
+
+                    this.getSubSocket(ZMQBind.BIND);
+
+                    this.addTopic(JEMONITOR_TOPIC);
+
                     connectionSucceeded = true;
                     JELogger.info("Connection succeeded", null, "", null, "");
 
@@ -66,7 +74,11 @@ public class MonitorZMQSubscriber extends ZMQSubscriber {
                     connectionSucceeded = false;
 
                     LoggerUtils.logException(e);
+
+                    this.closeSocket();
+
                 }
+
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException e) {
@@ -90,7 +102,7 @@ public class MonitorZMQSubscriber extends ZMQSubscriber {
 
             final String ID_MSG = "Monitor Subscriber : ";
 
-            JELogger.debug(ID_MSG + JEMessages.DATA_LISTENTING_STARTED,
+            JELogger.debug(ID_MSG + JEMessages.STARTED_LISTENING_FOR_DATA,
                     LogCategory.MONITOR, null, LogSubModule.JEMONITOR, null);
 
             String last_topic = null;
@@ -99,7 +111,7 @@ public class MonitorZMQSubscriber extends ZMQSubscriber {
                 String data = null;
 
                 try {
-                    data = this.getSubSocket(ZMQBind.BIND).recvStr();
+                    data = this.getSubSocket().recvStr();
 
                     if (data == null) continue;
 

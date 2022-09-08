@@ -36,28 +36,32 @@ public abstract class ZMQResponder implements Runnable {
 
     public void connectToAddress() throws ZMQConnectionFailedException {
         try {
-            this.context.setRcvHWM(ZMQConfiguration.RECEIVE_HIGH_WATERMARK);
-            this.context.setSndHWM(ZMQConfiguration.SEND_HIGH_WATERMARK);
+            if (this.repSocket == null) {
+                this.context.setRcvHWM(ZMQConfiguration.RECEIVE_HIGH_WATERMARK);
+                this.context.setSndHWM(ZMQConfiguration.SEND_HIGH_WATERMARK);
 
-            this.repSocket = this.context.createSocket(SocketType.REP);
+                this.repSocket = this.context.createSocket(SocketType.REP);
 
-            this.repSocket.setHeartbeatTimeout(ZMQConfiguration.HEARTBEAT_TIMEOUT);
-            this.repSocket.setHandshakeIvl(ZMQConfiguration.HANDSHAKE_INTERVAL);
-            this.repSocket.setRcvHWM(ZMQConfiguration.RECEIVE_HIGH_WATERMARK);
-            this.repSocket.setSndHWM(ZMQConfiguration.SEND_HIGH_WATERMARK);
-            // TODO check if config OK for ZMQ responder
-            this.repSocket.setReceiveTimeOut(ZMQConfiguration.RECEIVE_TIMEOUT);
+                this.repSocket.setHeartbeatTimeout(ZMQConfiguration.HEARTBEAT_TIMEOUT);
+                this.repSocket.setHandshakeIvl(ZMQConfiguration.HANDSHAKE_INTERVAL);
+                this.repSocket.setRcvHWM(ZMQConfiguration.RECEIVE_HIGH_WATERMARK);
+                this.repSocket.setSndHWM(ZMQConfiguration.SEND_HIGH_WATERMARK);
+                // TODO check if config OK for ZMQ responder
+                this.repSocket.setReceiveTimeOut(ZMQConfiguration.RECEIVE_TIMEOUT);
 
-            if (ZMQSecurity.isSecure()) {
-                this.repSocket.setCurveServer(true);
-                this.repSocket.setCurveSecretKey(ZMQSecurity.getServerPair().secretKey.getBytes());
-                this.repSocket.setCurvePublicKey(ZMQSecurity.getServerPair().publicKey.getBytes());
+                if (ZMQSecurity.isSecure()) {
+                    this.repSocket.setCurveServer(true);
+                    this.repSocket.setCurveSecretKey(ZMQSecurity.getServerPair().secretKey.getBytes());
+                    this.repSocket.setCurvePublicKey(ZMQSecurity.getServerPair().publicKey.getBytes());
+                }
+
+                if (bindType == ZMQBind.CONNECT) {
+                    this.repSocket.connect(url + ":" + repPort);
+                } else if (bindType == ZMQBind.BIND) {
+                    this.repSocket.bind(url + ":" + repPort);
+                }
             }
-            if (bindType == ZMQBind.CONNECT) {
-                this.repSocket.connect(url + ":" + repPort);
-            } else if (bindType == ZMQBind.BIND) {
-                this.repSocket.bind(url + ":" + repPort);
-            }
+
         } catch (Exception e) {
             LoggerUtils.logException(e);
             closeSocket();
@@ -66,11 +70,9 @@ public abstract class ZMQResponder implements Runnable {
     }
 
     public ZMQ.Socket getRepSocket(ZMQBind bindType) throws ZMQConnectionFailedException {
-        if (repSocket == null) {
 
-            connectToAddress();
+        connectToAddress();
 
-        }
         return repSocket;
     }
 
@@ -109,6 +111,5 @@ public abstract class ZMQResponder implements Runnable {
     public void setRepPort(int repPort) {
         this.repPort = repPort;
     }
-
 
 }
