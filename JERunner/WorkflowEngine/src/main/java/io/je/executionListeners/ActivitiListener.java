@@ -2,23 +2,28 @@ package io.je.executionListeners;
 
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
+import utils.log.LoggerUtils;
 
 public class ActivitiListener implements ActivitiEventListener {
 
+
+    //https://programming.vip/docs/activiti7-event-listening.html
     @Override
     public void onEvent(ActivitiEvent event) {
         switch (event.getType()) {
 
             case JOB_EXECUTION_SUCCESS:
-                System.out.println("A job well done!");
+                LoggerUtils.trace("TASK completed " + event.getProcessDefinitionId());
                 break;
 
             case JOB_EXECUTION_FAILURE:
-                System.out.println("A job has failed...");
+                LoggerUtils.trace("TASK has failed...");
                 break;
-
+            case PROCESS_COMPLETED:
+                LoggerUtils.trace("Process finished" + event.getProcessDefinitionId());
+                break;
             default:
-                System.out.println("Event received: " + event.getType());
+                LoggerUtils.trace("Event received: " + event.getType());
         }
     }
 
