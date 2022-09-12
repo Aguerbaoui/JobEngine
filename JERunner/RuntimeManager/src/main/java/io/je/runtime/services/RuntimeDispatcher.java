@@ -44,11 +44,9 @@ import static io.je.utilities.constants.JEMessages.ADDING_JAR_FILE_TO_RUNNER;
 @Service
 public class RuntimeDispatcher {
 
-    //
-
-    // projects
-    static Map<String, Boolean> projectStatus = new HashMap<>(); // key: projectId , value : true if project is running,
-    // false if not
+    // Projects
+    // key: projectId , value : true if project is running, false if not
+    static Map<String, Boolean> projectStatus = new HashMap<>();
     static Map<String, String> projectNameToId = new HashMap<>();
 
     ///////////////////////////////// PROJECT
@@ -109,31 +107,36 @@ public class RuntimeDispatcher {
         new Thread(() -> JELogger.sendLog(logMessage)).start();
     }
 
-    // run project
+    // Run project
     public void runProject(String projectId, String projectName) throws JEException {
 
         projectStatus.put(projectId, true);
-        Set<String> topics = DataModelListener.getTopicsByProjectId(projectId);
 
         JELogger.control("[project  = " + projectName + "]" + JEMessages.RUNNING_PROJECT, LogCategory.RUNTIME, projectId,
                 LogSubModule.JERUNNER, null);
-        try {
-            // start listening to datasources
-            DataModelListener.startListening(topics);
 
-            // reset variables TODO: make it configurable//Same for events
+        Set<String> topics = DataModelListener.getTopicsByProjectId(projectId);
+
+        try {
+
+            // Reset variables TODO: make it configurable//Same for events
             VariableManager.resetVariableValues(projectId);
 
-            // run workflows
+            // Run workflows
             WorkflowEngineHandler.runAllWorkflows(projectId, true);
 
-            // run rules
+            // Run rules
             RuleEngineHandler.runRuleEngineProject(projectId); // FIXME should launch all rules not just rule engine
 
-            // add variables
+            // Add variables
             for (JEVariable variable : VariableManager.getAllVariables(projectId)) {
                 RuleEngineHandler.addVariable(variable);
             }
+
+            // Start listening to datasources
+            // Put it at the end to avoid loosing data
+            // FIXME should we add a wait till rule engine is started ...?
+            DataModelListener.startListening(topics);
 
         } catch (JEException e) {
             LoggerUtils.logException(e);
@@ -520,9 +523,7 @@ public class RuntimeDispatcher {
     public void runProjectRules(String projectId)
             throws RulesNotFiredException, RuleBuildFailedException {
 
-        Set<String> topics = DataModelListener.getRuleTopicsByProjectId(projectId);
-
-        DataModelListener.startListening(topics);
+        projectStatus.put(projectId, true);
 
         RuleEngineHandler.runRuleEngineProject(projectId);
 
@@ -530,11 +531,17 @@ public class RuntimeDispatcher {
             RuleEngineHandler.addVariable(variable);
         }
 
-        projectStatus.put(projectId, true);
+        // Start listening to datasources
+        // Put it at the end to avoid loosing data
+        // FIXME should we add a wait till rule engine is started ...?
+        Set<String> topics = DataModelListener.getRuleTopicsByProjectId(projectId);
+        DataModelListener.startListening(topics);
 
     }
 
     public void runRuleEngine(String projectId) throws RulesNotFiredException, RuleBuildFailedException {
+
+        projectStatus.put(projectId, true);
 
         RuleEngineHandler.startRuleEngineProjectExecution(projectId);
 
@@ -542,18 +549,18 @@ public class RuntimeDispatcher {
             RuleEngineHandler.addVariable(variable);
         }
 
-        projectStatus.put(projectId, true);
-
     }
 
     public void shutDownRuleEngine(String projectId) {
 
         RuleEngineHandler.stopProjectRuleEngineExecution(projectId);
+
         projectStatus.put(projectId, false);
 
     }
 
     public JEVariable getVariable(String projectId, String variableId) throws VariableNotFoundException {
+
         return VariableManager.getVariableValue(projectId, variableId);
 
     }

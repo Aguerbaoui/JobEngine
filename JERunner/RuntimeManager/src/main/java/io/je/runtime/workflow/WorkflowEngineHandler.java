@@ -122,12 +122,6 @@ public class WorkflowEngineHandler {
     }
 
     /*
-     * Main test
-     * */
-    public static void main(String[] args) {
-    }
-
-    /*
      * Run all deployed workflows
      * */
     public static void runAllWorkflows(String projectId, boolean runProject) throws WorkflowNotFoundException, WorkflowBuildException {

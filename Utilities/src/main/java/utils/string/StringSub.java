@@ -38,6 +38,8 @@ public class StringSub {
         return StringSubstitutor.replace(toBeReplaced, vars);
     }
 
+    // TODO move to test
+    /*
     public static void main(String[] args) {
         try {
             //String templateString = "The account ${accountNumber} balance is ${balance} dollars.";
@@ -68,4 +70,5 @@ public class StringSub {
             LoggerUtils.logException(ex);
         }
     }
+    */
 }
