@@ -35,13 +35,21 @@ public class SMSBlock extends ExecutionBlock {
     private String accountToken;
     private String senderPhoneNumber;
     private String message;
-
+    private String inputType;
+    private String URI;
+    private String validity;
+    private String smsType;
+    private String modem;
+    private boolean priority;
+    private boolean sendAsUnicode;
+    private boolean twilioServer;
 
     public SMSBlock(BlockModel blockModel) {
         super(blockModel);
 
         try {
             //FIXME: change string to constants
+            twilioServer = (boolean) blockModel.getBlockConfiguration().get("twilioServer");
             serverType = (String) blockModel.getBlockConfiguration()
                     .get(SERVER_TYPE);
             accountToken = (String) blockModel.getBlockConfiguration()
@@ -56,6 +64,20 @@ public class SMSBlock extends ExecutionBlock {
                     .get(SMS_MESSAGE);
             receiverPhoneNumbers = (List<String>) blockModel.getBlockConfiguration()
                     .get(RECEIVER_PHONE_NUMBERS);
+
+            if (!twilioServer) {
+                inputType = (String) blockModel.getBlockConfiguration()
+                        .get("inputType");
+                validity = (String) blockModel.getBlockConfiguration()
+                        .get("validity");
+                modem = (String) blockModel.getBlockConfiguration()
+                        .get("modem");
+                priority = (boolean) blockModel.getBlockConfiguration().get("priority");
+                sendAsUnicode = (boolean) blockModel.getBlockConfiguration().get("sendAsUnicode");
+                smsType = (String) blockModel.getBlockConfiguration().get("smsType");
+                URI = (String) blockModel.getBlockConfiguration().get("URI");
+
+            }
 
             if (serverType != null) {
                 isProperlyConfigured = true;
@@ -87,6 +109,17 @@ public class SMSBlock extends ExecutionBlock {
         attributes.put(TWILIO_ACCOUNT_TOKEN, getAccountToken());
         attributes.put(RECEIVER_PHONE_NUMBERS, getReceiverPhoneNumbers());
         attributes.put(TWILIO_SENDER_PHONE_NUMBER, getSenderPhoneNumber());
+        attributes.put("twilioServer", isTwilioServer());
+
+        if (isTwilioServer() == false ) {
+            attributes.put("validity", getValidity());
+            attributes.put("inputType", getInputType());
+            attributes.put("modem", getModem());
+            attributes.put("sendAsUnicode", isSendAsUnicode());
+            attributes.put("priority", isPriority());
+            attributes.put("smsType", getSmsType());
+            attributes.put("URI", getURI());
+        }
 
         String json = null;
         try {
@@ -117,5 +150,20 @@ public class SMSBlock extends ExecutionBlock {
 
     }
 
+    public String formatMessage() {
+        String msg = getMessage();
+        Pattern pattern = Pattern.compile("\\$\\{(.*?)\\}");
 
+        Matcher matcher = pattern.matcher(msg);
+        ArrayList<String> wordsToBeReplaced = new ArrayList<String>();
+        while (matcher.find()) {
+            wordsToBeReplaced.add(matcher.group());
+        }
+        for (String word : wordsToBeReplaced) {
+            String tword = word.replace("${", "");
+            String tword2 = tword.replace("}", "");
+            msg = msg.replace(word, "\" + " + tword2 + " + \"");
+        }
+        return msg;
+    }
 }
