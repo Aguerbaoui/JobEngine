@@ -66,11 +66,11 @@ public class LicenseProperties {
      * */
     public static void checkLicenseIsActive() throws LicenseNotActiveException {
 
-        /*if (!licenseIsActive()) {
+        if (!licenseIsActive()) {
             JELogger.info("License is not active ", LogCategory.SIOTH_APPLICATION, "",
                     LogSubModule.JEBUILDER, "");
             throw new LicenseNotActiveException(String.valueOf(licenseStatus));
-        }*/
+        }
     }
 
     /*

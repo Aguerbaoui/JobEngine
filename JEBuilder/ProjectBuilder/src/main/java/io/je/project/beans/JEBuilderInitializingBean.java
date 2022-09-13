@@ -54,7 +54,7 @@ public class JEBuilderInitializingBean implements InitializingBean {
             AuthenticationInterceptor.init(builderProperties.getIssuer());
 
             //Initialize License
-            /*LicenseProperties.init();
+            LicenseProperties.init();
 
             while (!LicenseProperties.licenseIsActive()) {
                 try {
@@ -66,7 +66,7 @@ public class JEBuilderInitializingBean implements InitializingBean {
                 } catch (InterruptedException e) {
                     LoggerUtils.logException(e);
                 }
-            }*/
+            }
 
             JEMonitor.setPort(builderProperties.getMonitoringPort());
             ZMQSecurity.setSecure(builderProperties.getUseZmqSecurity());
