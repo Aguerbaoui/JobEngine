@@ -11,11 +11,8 @@ import lombok.Getter;
 import lombok.Setter;
 import utils.log.LoggerUtils;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static io.je.utilities.constants.JEMessages.EXCEPTION_OCCURRED_WHILE_INITIALIZE;
 import static io.je.utilities.constants.WorkflowConstants.*;
@@ -112,7 +109,7 @@ public class SMSBlock extends ExecutionBlock {
                 .append(json)
                 .append(",")
                 .append("\"")
-                .append(formatMessage())
+                .append(formatMessage(getMessage()))
                 .append("\");\r\n");
         expression.append("\n");
 
@@ -120,21 +117,5 @@ public class SMSBlock extends ExecutionBlock {
 
     }
 
-    public String formatMessage() {
-        String msg = getMessage();
-        Pattern pattern = Pattern.compile("\\$\\{(.*?)\\}");
-
-        Matcher matcher = pattern.matcher(msg);
-        ArrayList<String> wordsToBeReplaced = new ArrayList<String>();
-        while (matcher.find()) {
-            wordsToBeReplaced.add(matcher.group());
-        }
-        for (String word : wordsToBeReplaced) {
-            String tword = word.replace("${", "");
-            String tword2 = tword.replace("}", "");
-            msg = msg.replace(word, "\" + " + tword2 + " + \"");
-        }
-        return msg;
-    }
 
 }
