@@ -447,7 +447,6 @@ public class RuleController {
             return JEExceptionHandler.handleException(new TwilioUsersError("Could not fetch verified users for this Twilio account"));
         }
         return new ResponseEntity<>(users, HttpStatus.OK);
-
     }
 
     // FIXME Move to Exceptions
@@ -455,9 +454,28 @@ public class RuleController {
 
         public TwilioUsersError(String message) {
             super(8888, message);
-
         }
-
     }
 
+    @PostMapping(value = "/getSMSEagleContact")
+    @ResponseBody
+    public ResponseEntity<?> getSMSEagleContact(@RequestBody Map<String, String> smsEagle) {
+        try {
+            return new ResponseEntity<>(this.ruleService.getSMSEagleContacts(smsEagle), HttpStatus.OK);
+        } catch (Exception e) {
+            return JEExceptionHandler.handleException(new TwilioUsersError("Could not fetch verified users for this SMSEagle account"));
+        }
+        //return new ResponseEntity<>(users, HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/getSMSEagleGroup")
+    @ResponseBody
+    public ResponseEntity<?> getSMSEagleGroup(@RequestBody Map<String, String> smsEagle) {
+        try {
+            return new ResponseEntity<>(this.ruleService.getSMSEagleGroups(smsEagle), HttpStatus.OK);
+        } catch (Exception e) {
+            return JEExceptionHandler.handleException(new TwilioUsersError("Could not fetch verified users for this SMSEagle account"));
+        }
+        //return new ResponseEntity<>(users, HttpStatus.OK);
+    }
 }

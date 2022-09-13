@@ -427,14 +427,18 @@ public class JobEngine {
 
     public static void main(String... args) throws IOException {
 
-        sendLogMessage("test", "DM", LogLevel.INFORM, "testwf",
+        /*sendLogMessage("test", "DM", LogLevel.INFORM, "testwf",
                 LogCategory.RUNTIME, LogSubModule.WORKFLOW);
 
         JobEngine.informUser("test", "DM", "testwf");
 
         setDataModelInstanceAttribute("23aa0c9c-ee34-c9e6-bbeb-7d407f0139b1", "fuelLevel", 110);
 
-        JEObject a = JobEngine.getDataModelInstance("azerty");
+        JEObject a = JobEngine.getDataModelInstance("azerty");*/
+        LoggerUtils.debug("test");
+        LoggerUtils.debug("test");
+        LoggerUtils.debug("test");
+        LoggerUtils.debug("test");
 
         /*while(true) {
             informUser("test message", "DM", "testwf");
