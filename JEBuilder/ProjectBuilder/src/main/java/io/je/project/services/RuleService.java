@@ -1077,6 +1077,12 @@ public class RuleService {
             String line;
             String result = "";
             String baseUrl = smsEagle.get("URI") + "/http_api/contact_read?access_token=" + smsEagle.get("accountToken") + "&responsetype=xml";
+            if (smsEagle.get("accountSID") != null) {
+                baseUrl = smsEagle.get("URI") + "/http_api/contact_read?login=" + smsEagle.get("accountSID") + "&pass=" + smsEagle.get("accountToken") + "&responsetype=xml" ;
+            }
+            else {
+                baseUrl = smsEagle.get("URI") + "/http_api/contact_read?access_token=" + smsEagle.get("accountToken") + "&responsetype=xml" ;
+            }
             try {
                 URL url = new URL(baseUrl);
                 conn = (HttpURLConnection) url.openConnection();
@@ -1112,7 +1118,13 @@ public class RuleService {
             String line;
             String result = "";
             String jsonPrettyPrintString;
-            String  baseUrl = smsEagle.get("URI") + "/http_api/group_read?access_token=" + smsEagle.get("accountToken") + "&responsetype=xml" ;
+            String  baseUrl; //smsEagle.get("URI") + "/http_api/group_read?access_token=" + smsEagle.get("accountToken") + "&responsetype=xml" ;
+            if (smsEagle.get("accountSID") != null) {
+                baseUrl = smsEagle.get("URI") + "/http_api/group_read?login=" + smsEagle.get("accountSID") + "&pass=" + smsEagle.get("accountToken") + "&responsetype=xml" ;
+            }
+            else {
+                baseUrl = smsEagle.get("URI") + "/http_api/group_read?access_token=" + smsEagle.get("accountToken") + "&responsetype=xml" ;
+            }
             try {
                 URL url = new URL(baseUrl);
                 conn = (HttpURLConnection) url.openConnection();

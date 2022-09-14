@@ -9,10 +9,8 @@ import blocks.control.ParallelGatewayBlock;
 import blocks.events.ErrorBoundaryEvent;
 import blocks.events.MessageEvent;
 import blocks.events.SignalEvent;
-import blocks.events.TimerEvent;
 import io.je.utilities.config.ConfigurationConstants;
 import io.je.utilities.constants.JEMessages;
-import io.je.utilities.constants.Timers;
 import io.je.utilities.constants.WorkflowConstants;
 import io.je.utilities.exceptions.WorkflowStartBlockNotDefinedException;
 import io.je.utilities.exceptions.WorkflowStartBlockNotUniqueException;
@@ -153,7 +151,7 @@ public class JEToBpmnMapper {
                 process.addFlowElement(ModelBuilder.createInclusiveGateway(block.getJobEngineElementID(), block.getJobEngineElementName(),
                         ((InclusiveGatewayBlock) block).isExclusive(), block.generateBpmnInflows(wf),
                         block.generateBpmnOutflows(wf)));
-            } else if (block instanceof TimerEvent && !block.isProcessed()) {
+            } /*else if (block instanceof TimerEvent && !block.isProcessed()) {
                 if (((TimerEvent) block).getTimer() == Timers.DATE_TIME) {
                     process.addFlowElement(ModelBuilder.createDateTimerEvent(block.getJobEngineElementID(), block.getJobEngineElementName(), ((TimerEvent) block).getTimeDate()));
                 } else if (((TimerEvent) block).getTimer() == Timers.CYCLIC) {
@@ -169,7 +167,7 @@ public class JEToBpmnMapper {
                 } else {
                     process.addFlowElement(ModelBuilder.createDurationTimerEvent(block.getJobEngineElementID(), block.getJobEngineElementName(), ((TimerEvent) block).getTimeDuration()));
                 }
-            }
+            }*/
 
             /*else if (block instanceof CycleTimerEvent && !block.isProcessed()) {
                 process.addFlowElement(ModelBuilder.createCycleTimerEvent(block.getJobEngineElementID(), block.getName(), ((CycleTimerEvent) block).getTimeCycle(), ((CycleTimerEvent) block).getEndDate()));
