@@ -21,12 +21,16 @@ import utils.log.LogSubModule;
 import utils.log.LoggerUtils;
 import utils.network.Network;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -347,32 +351,12 @@ public class Executioner {
         try {
 
             executor.submit(() -> {
-
-                Twilio.init((String) body.get(TWILIO_ACCOUNT_SID), (String) body.get(TWILIO_ACCOUNT_TOKEN));
-                List<String> phoneNumbers = (List<String>) body.get(RECEIVER_PHONE_NUMBERS);
-                String twilioPhoneNumber = (String) body.get(TWILIO_SENDER_PHONE_NUMBER);
-
-                phoneNumbers.forEach(number -> {
-
-
-                    try {
-                        Message message = Message.creator(
-                                        new PhoneNumber(number),
-                                        new PhoneNumber(twilioPhoneNumber),
-                                        messageBody)
-                                .create();
-                        JELogger.control(SENT_MESSAGE_SUCCESSFULLY_TO + new PhoneNumber(number), LogCategory.RUNTIME, projectId,
-                                LogSubModule.JERUNNER, ruleId, blockName);
-                    } catch (Exception e) {
-                        LoggerUtils.logException(e);
-                        JELogger.error(ERROR_OCCURRED_WHEN_SENDING_MESSAGE_TO + new PhoneNumber(number) + ": " + e.getMessage(), LogCategory.RUNTIME, projectId,
-                                LogSubModule.JERUNNER, ruleId, blockName);
-
-                    }
-
-
-                });
-
+                if ((boolean) body.get("twilioServer") == true) {
+                    sendTwilioSMS(projectId, ruleId, blockName, body, messageBody);
+                }
+                if ((boolean) body.get("twilioServer") == false) {
+                    sendSMSEagle(projectId, ruleId, blockName, body, messageBody);
+                }
             });
 
         } catch (Exception e) {
@@ -381,6 +365,99 @@ public class Executioner {
 
         }
 
+    }
+
+    private static void sendSMSEagle(String projectId, String ruleId, String blockName, Map body, String messageBody) {
+        String sendTo ="";
+        List<String> phoneNumbers = (List<String>) body.get(RECEIVER_PHONE_NUMBERS);
+        phoneNumbers.removeAll(Collections.singleton(null));
+        String validity = (String) body.get("validity");
+        String inputType = (String) body.get("inputType");
+        String modem = (String) body.get("modem");
+        boolean sendAsUnicode = (boolean) body.get("sendAsUnicode");
+        boolean priority = (boolean) body.get("priority");
+        String smsType = (String) body.get("smsType");
+        String accountSID = (String) body.get("accountSID");
+        String accountToken = (String) body.get("accountToken");
+        String URI = (String) body.get("URI");
+        String prio = "";
+        String uni = "";
+        if (modem.equals("0")) modem = "";
+        if (modem.equals("1") || modem.equals("2")) modem = "&modem_no=" + modem;
+        if (smsType.equals("flash")) smsType = "1";
+        if (smsType.equals("sms")) smsType = "0";
+        if (priority) prio = "1";
+        if (!priority) prio = "0";
+        if (sendAsUnicode) uni = "1";
+        if (!sendAsUnicode) uni = "0";
+        if (inputType.equals("1")) {
+            URI = URI + "/http_api/send_sms";
+            sendTo = "&to=";
+        }
+        if (inputType.equals("2")) {
+            URI = URI + "/http_api/send_tocontact";
+            sendTo = "&contactname=";
+        }
+        if (inputType.equals("3")) {
+            URI = URI + "/http_api/send_togroup";
+            sendTo = "&groupname=";
+        }
+        if (accountSID == null) URI = URI + "?access_token=" + accountToken;
+        if (accountSID != null) URI = URI + "?login=" + accountSID + "&pass=" + accountToken;
+        URI = URI + "&unicode=" + uni + "&highpriority=" + prio + "&flash=" + smsType + modem + "&validity=" + validity + "&message=" + messageBody;
+        final String base = URI + sendTo;
+        phoneNumbers.forEach(number -> {
+            HttpURLConnection conn;
+            BufferedReader reader;
+            String line;
+            String result = "";
+            String  baseUrl = base + number.replace(" ", "%20") ;
+            URL url = null;
+            try {
+                url = new URL(baseUrl);
+                conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("GET");
+                conn.connect();
+                reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+
+                while ((line = reader.readLine()) != null) {
+                    result += line;
+                }
+                reader.close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            conn.disconnect();
+            if (result.toLowerCase().indexOf("OK".toLowerCase()) != -1 ) {
+                JELogger.control(SENT_MESSAGE_SUCCESSFULLY_TO + new PhoneNumber(number), LogCategory.RUNTIME, projectId,
+                        LogSubModule.JERUNNER, ruleId, blockName);
+            }
+            System.out.println(result);
+        });
+    }
+
+    private static void sendTwilioSMS(String projectId, String ruleId, String blockName, Map body, String messageBody) {
+        Twilio.init((String) body.get(TWILIO_ACCOUNT_SID), (String) body.get(TWILIO_ACCOUNT_TOKEN));
+        List<String> phoneNumbers = (List<String>) body.get(RECEIVER_PHONE_NUMBERS);
+        String twilioPhoneNumber = (String) body.get(TWILIO_SENDER_PHONE_NUMBER);
+
+        phoneNumbers.forEach(number -> {
+
+
+            try {
+                Message message = Message.creator(
+                                new PhoneNumber(number),
+                                new PhoneNumber(twilioPhoneNumber),
+                                messageBody)
+                        .create();
+                JELogger.control(SENT_MESSAGE_SUCCESSFULLY_TO + new PhoneNumber(number), LogCategory.RUNTIME, projectId,
+                        LogSubModule.JERUNNER, ruleId, blockName);
+            } catch (Exception e) {
+                LoggerUtils.logException(e);
+                JELogger.error(ERROR_OCCURRED_WHEN_SENDING_MESSAGE_TO + new PhoneNumber(number) + ": " + e.getMessage(), LogCategory.RUNTIME, projectId,
+                        LogSubModule.JERUNNER, ruleId, blockName);
+            }
+        });
     }
 
     public static void executeScript(String name, String processId, String projectId, int timeout) {

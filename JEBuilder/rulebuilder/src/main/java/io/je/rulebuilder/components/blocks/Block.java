@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /*
@@ -124,41 +126,17 @@ public abstract class Block extends JEObject {
         this.ruleId = ruleId;
     }
 
-
-    public String getBlockName() {
-        return blockName;
-    }
-
-
-    public void setBlockName(String blockName) {
-        this.blockName = blockName;
-    }
-
-
-    public List<BlockLink> getInputBlockLinks() {
-        return inputBlockLinks;
-    }
-
-
-    public void setInputBlockLinks(List<BlockLink> inputBlockLinks) {
-        this.inputBlockLinks = inputBlockLinks;
-    }
-
-
     public List<BlockLink> getOutputBlockLinks() {
         return outputBlockLinks;
     }
-
 
     public void setOutputBlockLinks(List<BlockLink> outputBlockLinks) {
         this.outputBlockLinks = outputBlockLinks;
     }
 
-
     public String getBlockDescription() {
         return blockDescription;
     }
-
 
     public void setBlockDescription(String blockDescription) {
         this.blockDescription = blockDescription;
@@ -190,7 +168,6 @@ public abstract class Block extends JEObject {
             outputBlock.getBlock().inputBlockLinks.addAll(inputBlockLinks);
         }
     }
-
 
     public boolean isProperlyConfigured() {
         return this.isProperlyConfigured;
@@ -240,7 +217,6 @@ public abstract class Block extends JEObject {
         return null;
     }
 
-
     public Block getInputBlockByOrder(int order) {
         var input = inputBlockLinks.stream()
                 .filter(x -> x.getOrder() == order)
@@ -257,14 +233,12 @@ public abstract class Block extends JEObject {
                 .orElse(null);
     }
 
-
     public List<Block> getInputsByOrder(int order) {
         return inputBlockLinks.stream()
                 .filter(x -> x.getOrder() == order)
                 .map(BlockLink::getBlock)
                 .collect(Collectors.toList());
     }
-
 
     public boolean hasPrecedent(Block block) {
         if (inputBlockLinks.isEmpty()) {
@@ -301,6 +275,14 @@ public abstract class Block extends JEObject {
         return allInputBlocksExpressions;
     }
 
+    public List<BlockLink> getInputBlockLinks() {
+        return inputBlockLinks;
+    }
+
+    public void setInputBlockLinks(List<BlockLink> inputBlockLinks) {
+        this.inputBlockLinks = inputBlockLinks;
+    }
+
     // TODO finish and use in getAllInputBlocksExpressions
     public Set<Block> getAllGetterBlocksExpressions() {
         Set<Block> getterInputBlocks = new HashSet<>();
@@ -316,6 +298,30 @@ public abstract class Block extends JEObject {
         return getterInputBlocks.stream().sorted((o1, o2) -> o1.getBlockName().compareTo(o2.getBlockName())).collect(Collectors.toSet());
     }
 
+    public String getBlockName() {
+        return blockName;
+    }
+
+    public void setBlockName(String blockName) {
+        this.blockName = blockName;
+    }
+
+    public String formatMessage(String message) {
+        String msg = message;
+        Pattern pattern = Pattern.compile("\\$\\{(.*?)\\}");
+
+        Matcher matcher = pattern.matcher(msg);
+        ArrayList<String> wordsToBeReplaced = new ArrayList<String>();
+        while (matcher.find()) {
+            wordsToBeReplaced.add(matcher.group());
+        }
+        for (String word : wordsToBeReplaced) {
+            String tword = word.replace("${", "");
+            String tword2 = tword.replace("}", "");
+            msg = msg.replace(word, "\" + " + tword2 + " + \"");
+        }
+        return msg;
+    }
 
     public String asDouble(String val) {
         return "JEMathUtils.castToDouble(\"" + this.jobEngineProjectID + "\",\"" + this.ruleId + "\",\"" + this.blockName + "\"," + val + " ) "; //" Double.valueOf( "+val+" )";

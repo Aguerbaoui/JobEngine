@@ -21,6 +21,8 @@ import io.je.utilities.exceptions.*;
 import io.je.utilities.log.JELogger;
 import io.je.utilities.ruleutils.IdManager;
 import io.je.utilities.ruleutils.OperationStatusDetails;
+import org.activiti.engine.impl.util.json.JSONObject;
+import org.activiti.engine.impl.util.json.XML;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
@@ -29,6 +31,13 @@ import utils.log.LogCategory;
 import utils.log.LogSubModule;
 import utils.log.LoggerUtils;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
+import java.net.URL;
 import java.time.Instant;
 import java.util.*;
 import java.util.Map.Entry;
@@ -1062,6 +1071,79 @@ public class RuleService {
         }
         return users;
     }
+    public String getSMSEagleContacts(Map<String, String> smsEagle) {
+        try {
+            HttpURLConnection conn;
+            BufferedReader reader;
+            String jsonPrettyPrintString;
+            String line;
+            String result = "";
+            String baseUrl = smsEagle.get("URI") + "/http_api/contact_read?access_token=" + smsEagle.get("accountToken") + "&responsetype=xml";
+            try {
+                URL url = new URL(baseUrl);
+                conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("GET");
+                conn.connect();
+                reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                while ((line = reader.readLine()) != null) {
+                    result += line;
+                }
+                reader.close();
+                conn.disconnect();
+
+                JSONObject xmlJSONObj = XML.toJSONObject(result);
+                jsonPrettyPrintString = xmlJSONObj.toString();
+                System.out.println(jsonPrettyPrintString);
+
+            } catch (ProtocolException e) {
+                throw new RuntimeException(e);
+            } catch (MalformedURLException e) {
+                throw new RuntimeException(e);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            return jsonPrettyPrintString;
+        } catch (RuntimeException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    public String getSMSEagleGroups(Map<String, String> smsEagle) {
+        try {
+            HttpURLConnection conn;
+            BufferedReader reader;
+            String line;
+            String result = "";
+            String jsonPrettyPrintString;
+            String  baseUrl = smsEagle.get("URI") + "/http_api/group_read?access_token=" + smsEagle.get("accountToken") + "&responsetype=xml" ;
+            try {
+                URL url = new URL(baseUrl);
+                conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("GET");
+                conn.connect();
+                reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                while ((line = reader.readLine()) != null) {
+                    result += line;
+                }
+                reader.close();
+                conn.disconnect();
+
+                JSONObject xmlJSONObj = XML.toJSONObject(result);
+                jsonPrettyPrintString = xmlJSONObj.toString();
+                System.out.println(jsonPrettyPrintString);
+
+            } catch (ProtocolException e) {
+                throw new RuntimeException(e);
+            } catch (MalformedURLException e) {
+                throw new RuntimeException(e);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            return jsonPrettyPrintString;
+        } catch (RuntimeException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     /*
      * public List<OperationStatusDetails> compileRules3(String projectId,
      * List<String> ruleIds) throws LicenseNotActiveException,

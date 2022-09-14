@@ -102,7 +102,12 @@ public class EmailBlock extends ExecutionBlock {
         attributes.put(SENDER_ADDRESS, getStrSenderAddress());
         attributes.put(SEND_TIME_OUT, getISendTimeOut());
         attributes.put(RECEIVER_ADDRESS, getLstRecieverAddress());
-        attributes.put(EMAIL_MESSAGE, getEmailMessage());
+        var subject = formatMessage(getEmailMessage().get("strSubject"));
+        var body = formatMessage(getEmailMessage().get("strBody"));
+        var emailBody = new HashMap<String, String>();
+        emailBody.put("strSubject", subject);
+        emailBody.put("strBody", body);
+        attributes.put(EMAIL_MESSAGE, emailBody);
         attributes.put(SMTP_SERVER, getStrSMTPServer());
         attributes.put(CC_LIST, getLstCCs());
         attributes.put(BCC_LIST, getLstBCCs());
@@ -110,13 +115,14 @@ public class EmailBlock extends ExecutionBlock {
         attributes.put(UPLOADED_FILES_PATHS, getLstUploadedFiles());
         String json = null;
         try {
-            ObjectWriter ow = new ObjectMapper().writer()
-                    .withDefaultPrettyPrinter();
+            ObjectWriter ow = new ObjectMapper().writer();
+
             json = ow.writeValueAsString(attributes);
         } catch (JsonProcessingException e) {
             LoggerUtils.logException(e);
             throw new RuntimeException(e);
         }
+   
         expression.append("Executioner.sendEmail( " + "\"")
                 .append(this.jobEngineProjectID)
                 .append("\",")
@@ -126,7 +132,7 @@ public class EmailBlock extends ExecutionBlock {
                 .append("\"")
                 .append(this.blockName)
                 .append("\",")
-                .append(json)
+                .append(json.replace("\\\"", "\""))
                 .append(");\r\n");
         expression.append("\n");
 

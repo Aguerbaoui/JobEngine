@@ -479,7 +479,7 @@ public class JEMessages {
 
     public static final String RULE_PROJECT_ID_NULL = "Rule's project Id was not found";
 
-    public static final String NO_EXECUTION_BLOCK = "Rule must have at least one function block";
+    public static final String NO_EXECUTION_BLOCK = "Rule must have at least one action block";
 
     public static final String RULE_NOT_FOUND = "No rule with this Id was found";
 

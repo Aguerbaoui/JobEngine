@@ -26,11 +26,6 @@ public abstract class ArithmeticBlock extends ConditionBlock {
     }
 
 
-    public String asDouble(String val) {
-        return "JEMathUtils.castToDouble(" + val + " )"; //" Double.valueOf( "+val+" )";
-    }
-
-
     /*
      * returns the block expression
      * level : to test if it's a comparable expression or not
