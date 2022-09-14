@@ -18,7 +18,7 @@ import utils.log.LogLevel;
 import utils.log.LogMessage;
 import utils.log.LogSubModule;
 import utils.log.LoggerUtils;
-import utils.zmq.ZMQBind;
+import utils.zmq.ZMQType;
 import utils.zmq.ZMQResponder;
 
 import java.util.HashMap;
@@ -33,19 +33,10 @@ public class JERunnerResponder extends ZMQResponder {
 
     RuntimeDispatcher runtimeDispatcher = new RuntimeDispatcher();
 
-    public JERunnerResponder(String url, int repPort, ZMQBind bind) {
+    public JERunnerResponder(String url, int repPort, ZMQType bind) {
         super(url, repPort, bind);
     }
 
-    public JERunnerResponder() {
-        super();
-    }
-
-    public void init(String url, int repPort, ZMQBind bind) {
-        this.url = url;
-        this.repPort = repPort;
-        this.bindType = bind;
-    }
 
     @Override
     public void run() {
@@ -53,7 +44,7 @@ public class JERunnerResponder extends ZMQResponder {
             JEZMQResponse response = new JEZMQResponse(ZMQResponseType.FAIL);
             RunnerRequestObject request;
             try {
-                String data = this.getRepSocket(ZMQBind.BIND)
+                String data = this.getResponderSocket(ZMQType.BIND)
                         .recvStr(0);
                 if (data != null && !data.isEmpty() && !data.equals("null")) {
 
@@ -84,6 +75,9 @@ public class JERunnerResponder extends ZMQResponder {
                             break;
 
                     }
+
+                    LoggerUtils.trace("JERunnerResponder : " + url + ":" + responderPort + " : sending : " + response);
+
                     sendResponse(response);
 
                 }
@@ -219,7 +213,7 @@ public class JERunnerResponder extends ZMQResponder {
         try {
             JELogger.debug(JEMessages.ZMQ_SENDING_RESPONSE + objectMapper.writeValueAsString(response), null, null, LogSubModule.JERUNNER, null);
 
-            this.getRepSocket(ZMQBind.BIND)
+            this.getResponderSocket(ZMQType.BIND)
                     .send(objectMapper.writeValueAsString(response));
         } catch (Exception e) {
             LoggerUtils.logException(e);

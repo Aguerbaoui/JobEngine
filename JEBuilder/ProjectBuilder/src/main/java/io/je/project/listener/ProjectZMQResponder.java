@@ -6,40 +6,37 @@ import io.je.project.beans.project.response.CleanUpResponseModel;
 import io.je.project.exception.JEExceptionHandler;
 import io.je.project.services.ProjectService;
 import io.je.utilities.log.JELogger;
+import io.siothconfig.SIOTHConfigUtility;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import utils.log.LogSubModule;
 import utils.log.LoggerUtils;
-import utils.zmq.ZMQBind;
+import utils.zmq.ZMQType;
 import utils.zmq.ZMQResponder;
 
 /**
  * Project management api ZMQ Responder
  */
 @Component
+@Lazy
 public class ProjectZMQResponder extends ZMQResponder {
 
     @Autowired
-    ProjectService projectService;
-
-    @Autowired
+    @Lazy
     ObjectMapper objectMapper = new ObjectMapper();
 
+    @Autowired
+    @Lazy
+    ProjectService projectService;
 
-    public ProjectZMQResponder(String url, int repPort, ZMQBind bind) {
-        super(url, repPort, bind);
-    }
 
 
     public ProjectZMQResponder() {
-        super();
+        super("tcp://" + SIOTHConfigUtility.getSiothConfig().getNodes().getSiothMasterNode(),
+                SIOTHConfigUtility.getSiothConfig().getPorts().getJeResponsePort(), ZMQType.BIND);
     }
 
-    public void init(String url, int repPort, ZMQBind bind) {
-        this.url = url;
-        this.repPort = repPort;
-        this.bindType = bind;
-    }
 
     @Override
     public void run() {
@@ -48,8 +45,10 @@ public class ProjectZMQResponder extends ZMQResponder {
             String response = "";
             ProjectRequestObject request = new ProjectRequestObject();
             try {
-                String data = this.getRepSocket(ZMQBind.BIND)
+
+                String data = this.getResponderSocket(ZMQType.BIND)
                         .recvStr(0);
+
                 if (data != null && !data.isEmpty() && !data.equals("null")) {
 
                     JELogger.info("Received ZMQ request: " + data, null, null, LogSubModule.JEBUILDER, null);
@@ -75,11 +74,12 @@ public class ProjectZMQResponder extends ZMQResponder {
                         default:
                             break;
 
-
                     }
+
+                    LoggerUtils.trace("ProjectZMQResponder : " + url + ":" + responderPort + " : sending : " + response);
+
                     sendResponse(response);
                 }
-
 
             } catch (Exception e) {
                 String errorMsg = JEExceptionHandler.getExceptionMessage(e);
@@ -119,7 +119,7 @@ public class ProjectZMQResponder extends ZMQResponder {
 
         } catch (Exception e) {
             LoggerUtils.logException(e);
-            JELogger.error("Failed to generate response: " + e.getMessage(), null, null, LogSubModule.JEBUILDER, null);
+            JELogger.error("Failed to generate response : " + e.getMessage(), null, null, LogSubModule.JEBUILDER, null);
         }
 
         return responseStr;
@@ -128,17 +128,15 @@ public class ProjectZMQResponder extends ZMQResponder {
     private void sendResponse(String response) {
 
         try {
-            JELogger.debug("Sending response: " + response, null, null, LogSubModule.JEBUILDER, null);
+            JELogger.debug("Sending response : " + response, null, null, LogSubModule.JEBUILDER, null);
 
-            this.getRepSocket(ZMQBind.BIND)
+            this.getResponderSocket(ZMQType.BIND)
                     .send(response);
         } catch (Exception e) {
             LoggerUtils.logException(e);
-            JELogger.error("Failed to send ZMQ response: " + e.getMessage(), null, null, LogSubModule.JEBUILDER, null);
+            JELogger.error("Failed to send ZMQ response : " + e.getMessage(), null, null, LogSubModule.JEBUILDER, null);
         }
 
-
     }
-
 
 }

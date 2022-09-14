@@ -29,7 +29,7 @@ public class DataModelRequester {
 
 
     /*
-     * request to write in an instance's attribute
+     * Request to write in an instance's attribute
      */
     public static String writeToInstance(String instanceId, String attributeName, Object attributeNewValue) {
 
@@ -56,7 +56,7 @@ public class DataModelRequester {
     }
 
     /*
-     * request to get last values by class Id
+     * Request to get last values by class Id
      */
     public static List<Object> readInitialValues(String modelId) {
         JELogger.trace("Requesting last values for modelId = " + modelId, LogCategory.RUNTIME,

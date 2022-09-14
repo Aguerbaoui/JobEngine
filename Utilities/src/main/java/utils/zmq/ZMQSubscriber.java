@@ -17,7 +17,9 @@ public abstract class ZMQSubscriber implements Runnable {
 
     protected String url = null;
 
-    protected int port = 0;
+    protected int subscriberPort = 0;
+
+    protected String connectionAddress = null;
 
     protected Set<String> topics = Collections.synchronizedSet(new HashSet());
 
@@ -26,25 +28,30 @@ public abstract class ZMQSubscriber implements Runnable {
 
     public ZMQSubscriber(String url, int subPort) {
         this.url = url;
-        this.port = subPort;
+        this.subscriberPort = subPort;
+        this.connectionAddress = url + ":" + subscriberPort;
+
         this.context = new ZContext();
     }
 
     public ZMQSubscriber() {
-        super();
         this.context = new ZContext();
     }
 
-    protected Socket getSubSocket() throws ZMQConnectionFailedException {
-        return getSubSocket(null);
+    protected Socket getSubscriberSocket() throws ZMQConnectionFailedException {
+        return getSubscriberSocket(null);
     }
 
-    protected Socket getSubSocket(ZMQBind bindType) throws ZMQConnectionFailedException {
+    protected Socket getSubscriberSocket(ZMQType bindType) throws ZMQConnectionFailedException {
 
         if (socket == null) {
+
+            LoggerUtils.info("ZMQSubscriber : Create socket for address : " + connectionAddress);
+
+            this.context.setRcvHWM(ZMQConfiguration.RECEIVE_HIGH_WATERMARK);
+            this.context.setSndHWM(ZMQConfiguration.SEND_HIGH_WATERMARK);
+
             try {
-                this.context.setRcvHWM(ZMQConfiguration.RECEIVE_HIGH_WATERMARK);
-                this.context.setSndHWM(ZMQConfiguration.SEND_HIGH_WATERMARK);
 
                 socket = this.context.createSocket(SocketType.SUB);
 
@@ -62,17 +69,36 @@ public abstract class ZMQSubscriber implements Runnable {
                     socket.setCurvePublicKey(ZMQSecurity.getServerPair().publicKey.getBytes());
                 }
 
-                if (bindType == ZMQBind.BIND) {
-                    socket.bind(url + ":" + port);
+                if (bindType == ZMQType.BIND) {
+                    socket.bind(connectionAddress);
+                    LoggerUtils.info("ZMQSubscriber : Bind succeeded to : " + connectionAddress);
                 } else {
-                    socket.connect(url + ":" + port);
+                    socket.connect(connectionAddress);
+                    LoggerUtils.info("ZMQSubscriber : Connection succeeded to : " + connectionAddress);
                 }
 
-            } catch (Exception exp) {
-                LoggerUtils.logException(exp);
-                closeSocket();
-                throw new ZMQConnectionFailedException(0, "Failed to connect to address [ " + url + ":" + port + "]: " + exp);
+            } catch (Exception e) {
+
+                LoggerUtils.logException(e);
+
+                this.closeSocket();
+
+                LoggerUtils.error("ZMQSubscriber : Failed to connect to address : " + connectionAddress + " : " + e.getMessage());
+
+                try {
+                    int wait_ms = 15000;
+
+                    LoggerUtils.info("ZMQSubscriber : Socket closed. Will wait in milliseconds for : " + wait_ms);
+
+                    Thread.sleep(wait_ms);
+                } catch (InterruptedException ie) {
+                    LoggerUtils.logException(ie);
+                    Thread.currentThread().interrupt();
+                }
+
+                throw new ZMQConnectionFailedException(0, "Failed to connect to address " + connectionAddress + " : " + e.getMessage());
             }
+
         }
 
         return socket;
@@ -86,22 +112,56 @@ public abstract class ZMQSubscriber implements Runnable {
         }
     }
 
+    public void addTopic(String topic, ZMQType bindType) throws ZMQConnectionFailedException {
+        if (!topics.contains(topic)) {
+            topics.add(topic);
+        }
+        // FIXME could be dangerous re-subscribing
+        getSubscriberSocket(bindType).subscribe(topic.getBytes());
+    }
+
     public void addTopic(String topic) throws ZMQConnectionFailedException {
         if (!topics.contains(topic)) {
             topics.add(topic);
-            getSubSocket().subscribe(topic.getBytes());
         }
+        // FIXME could be dangerous re-subscribing
+        getSubscriberSocket().subscribe(topic.getBytes());
     }
 
     public void removeTopic(String topic) throws ZMQConnectionFailedException {
         if (topics.contains(topic)) {
             topics.remove(topic);
-            getSubSocket().unsubscribe(topic.getBytes());
         }
+        // FIXME could be dangerous re-unsubscribing
+        getSubscriberSocket().unsubscribe(topic.getBytes());
     }
 
     public boolean hasTopic(String topic) {
         return topics.contains(topic);
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public int getSubscriberPort() {
+        return subscriberPort;
+    }
+
+    public void setSubscriberPort(int subscriberPort) {
+        this.subscriberPort = subscriberPort;
+    }
+
+    public String getConnectionAddress() {
+        return connectionAddress;
+    }
+
+    public void setConnectionAddress(String connectionAddress) {
+        this.connectionAddress = connectionAddress;
     }
 
 	/*
@@ -133,23 +193,8 @@ public abstract class ZMQSubscriber implements Runnable {
 	public void setSubSocket(ZMQ.Socket _subSocket) {
 		subSocket = _subSocket;
 	}
-
-	public String getUrl() {
-		return url;
-	}
-
-	public void setUrl(String url) {
-		this.url = url;
-	}
-
-	public int getSubPort() {
-		return subPort;
-	}
-
-	public void setSubPort(int subPort) {
-		this.subPort = subPort;
-	}
 */
+
 
     // public abstract void handleConnectionFail();
 

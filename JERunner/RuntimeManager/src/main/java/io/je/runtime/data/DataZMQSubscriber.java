@@ -33,8 +33,9 @@ public class DataZMQSubscriber extends ZMQSubscriber {
 
             while (this.listening) {
                 String data = null;
+
                 try {
-                    data = this.getSubSocket().recvStr();
+                    data = this.getSubscriberSocket().recvStr();
                 } catch (Exception ex) {
                     LoggerUtils.logException(ex);
                     continue;

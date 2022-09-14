@@ -3,23 +3,29 @@ package io.je.Monitor.zmq;
 import io.je.Monitor.config.MonitorProperties;
 import io.siothconfig.SIOTHConfigUtility;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 @Component
 public class JEMonitorSubscriber {
 
     public static final String JEMONITOR_TOPIC = "JEMonitorTopic";
+
     @Autowired
     MonitorZMQSubscriber monitorZMQSubscriber;
-    @Autowired
-    MonitorProperties monitorProperties;
 
-    public void initSubscriber() {
-        monitorZMQSubscriber.setConfig("tcp://" + SIOTHConfigUtility.getSiothConfig().getNodes().getSiothMasterNode(),
-                monitorProperties.getMonitoringPort());
+
+    public void initSubscriber(int monitoringPort) {
+
+        // TODO enhance code
+        monitorZMQSubscriber.setUrl("tcp://" + SIOTHConfigUtility.getSiothConfig().getNodes().getSiothMasterNode());
+        monitorZMQSubscriber.setSubscriberPort(monitoringPort);
+
+        monitorZMQSubscriber.setConnectionAddress(monitorZMQSubscriber.getUrl() + ":" + monitorZMQSubscriber.getSubscriberPort());
 
         Thread thread = new Thread(monitorZMQSubscriber);
         thread.start();
+
     }
 
 }

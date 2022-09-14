@@ -42,10 +42,12 @@ import static io.je.utilities.constants.JEMessages.BUILT_EVERYTHING_SUCCESSFULLY
  * */
 
 @Service
+@Lazy
 public class ProjectService {
 
     private static ConcurrentHashMap<String, JEProject> loadedProjects = new ConcurrentHashMap<>();
     @Autowired
+    @Lazy
     ProjectRepository projectRepository;
     @Autowired
     @Lazy
@@ -377,10 +379,15 @@ public class ProjectService {
                 Optional<JEProject> p = projectRepository.findById(project.getProjectId());
                 project = p.isEmpty() ? null : p.get();
                 if (project != null) {
-                    project.setEvents(eventService.getAllJEEvents(project.getProjectId()));
+
                     project.setRules(ruleService.getAllJERules(project.getProjectId()));
-                    project.setVariables(variableService.getAllJEVariables(project.getProjectId()));
+
                     project.setWorkflows(workflowService.getAllJEWorkflows(project.getProjectId()));
+
+                    project.setVariables(variableService.getAllJEVariables(project.getProjectId()));
+
+                    project.setEvents(eventService.getAllJEEvents(project.getProjectId()));
+
                     // project.setBuilt(false);
                     loadedProjects.put(project.getProjectId(), project);
                     for (JEEvent event : project.getEvents()

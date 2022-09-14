@@ -33,7 +33,6 @@ import utils.string.StringUtilities;
 import utils.zmq.ZMQConnectionFailedException;
 import utils.zmq.ZMQSubscriber;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
 import java.time.Instant;
@@ -49,6 +48,7 @@ import static io.je.utilities.constants.JEMessages.*;
  * Service class to handle classes from datamodel
  */
 @Service
+@Lazy
 public class ClassService {
 
     public static final String CLASS_NAME = "className";
@@ -59,36 +59,19 @@ public class ClassService {
     public static final String MODEL_TOPIC = "ModelTopic";
 
     @Autowired
+    @Lazy
     ClassRepository classRepository;
 
     @Autowired
+    @Lazy
     LibraryRepository libraryRepository;
 
     @Autowired
+    @Lazy
     MethodRepository methodRepository;
-
-    @Autowired
-    @Lazy
-    ProjectService projectService;
-
-    /*
-        FIXME commented as Exception below, check if OK? Also remove configurationService if not needed.
-
-        Unsatisfied dependency expressed through field 'configurationService';
-        nested exception is org.springframework.beans.factory.BeanCurrentlyInCreationException:
-        Error creating bean with name 'configurationService':
-        Requested bean is currently in creation: Is there an unresolvable circular reference?
-
-    @Autowired
-     */
-    @Lazy
-    ConfigurationService configurationService;
-
 
     Map<String, JEClass> loadedClasses = new HashMap<String, JEClass>();
 
-    @Autowired
-    private HttpServletRequest request;
 
     /**
      * Init a thread that listens to the DataModelRestApi for class definition updates
@@ -116,10 +99,26 @@ public class ClassService {
                 LogCategory.DESIGN_MODE, null,
                 LogSubModule.CLASS, null);
 
-        loadSIOTHProcedures();
-
         loadDataModelClasses();
 
+        loadSIOTHProcedures();
+
+    }
+
+    /*
+     * Load DM classes
+     * */
+    private void loadDataModelClasses() {
+        List<JEClass> classes = classRepository.findByClassAuthor(DATA_MODEL.toString());
+        for (JEClass clazz : classes) {
+            try {
+                loadClassFromDataModel(clazz.getWorkspaceId(), clazz.getClassId(), true);
+            } catch (Exception e) {
+                LoggerUtils.logException(e);
+                JELogger.error(JEMessages.FAILED_TO_LOAD_CLASS + " " + clazz.getClassName(), LogCategory.DESIGN_MODE,
+                        null, LogSubModule.CLASS, null);
+            }
+        }
     }
 
     /*
@@ -143,22 +142,6 @@ public class ClassService {
             LoggerUtils.logException(e);
             JELogger.error(JEMessages.FAILED_TO_LOAD_CLASS + " " + jeClass.getClassId(), LogCategory.DESIGN_MODE,
                     null, LogSubModule.CLASS, null);
-        }
-    }
-
-    /*
-     * Load DM classes
-     * */
-    private void loadDataModelClasses() {
-        List<JEClass> classes = classRepository.findByClassAuthor(DATA_MODEL.toString());
-        for (JEClass clazz : classes) {
-            try {
-                loadClassFromDataModel(clazz.getWorkspaceId(), clazz.getClassId(), true);
-            } catch (Exception e) {
-                LoggerUtils.logException(e);
-                JELogger.error(JEMessages.FAILED_TO_LOAD_CLASS + " " + clazz.getClassName(), LogCategory.DESIGN_MODE,
-                        null, LogSubModule.CLASS, null);
-            }
         }
     }
 
@@ -734,31 +717,26 @@ public class ClassService {
 
                 final String ID_MSG = "ClassZMQSubscriber : ";
 
-                JELogger.debug(ID_MSG + "topics : " + this.topics + " : " + JEMessages.STARTED_LISTENING_FOR_DATA,
+                JELogger.debug(ID_MSG //+ "topics : " + this.topics + " : "
+                        + JEMessages.STARTED_LISTENING_FOR_DATA,
                         LogCategory.DESIGN_MODE, null, LogSubModule.CLASS, null);
 
                 String last_topic = null;
 
-                try {
-
-                    addTopic(MODEL_TOPIC);
-
-                } catch (ZMQConnectionFailedException e) {
-                    LoggerUtils.logException(e);
-                    JELogger.error(JEMessages.ERROR_INITIALIZING_ZMQ_SUBSCRIBER, LogCategory.DESIGN_MODE, null,
-                            LogSubModule.CLASS, e.getMessage());
-                }
-
                 while (this.listening) {
-
-                    JELogger.trace(this.getClass().toString() + " : start listening");
 
                     String data = null;
 
                     try {
 
-                        data = this.getSubSocket().recvStr();
+                        addTopic(MODEL_TOPIC);
 
+                        data = this.getSubscriberSocket().recvStr();
+
+                    } catch (ZMQConnectionFailedException e) {
+                        LoggerUtils.logException(e);
+                        JELogger.error(ID_MSG + JEMessages.ZMQ_CONNECTION_FAILED, LogCategory.DESIGN_MODE, null,
+                                LogSubModule.CLASS, e.getMessage());
                     } catch (Exception e) {
                         LoggerUtils.logException(e);
                         continue;
@@ -813,12 +791,14 @@ public class ClassService {
                     }
 
                     try {
+                        // FIXME could slow Class loading
                         Thread.sleep(100);
                     } catch (InterruptedException e) {
                         LoggerUtils.logException(e);
                         JELogger.error(JEMessages.THREAD_INTERRUPTED, LogCategory.DESIGN_MODE, null,
                                 LogSubModule.CLASS, null);
                     }
+
                 }
 
                 JELogger.debug(ID_MSG + JEMessages.CLOSING_SOCKET, LogCategory.DESIGN_MODE,

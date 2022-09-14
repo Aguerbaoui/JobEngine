@@ -23,11 +23,11 @@ import java.util.concurrent.ConcurrentHashMap;
 public class JEProject {
 
     /*
-     * block names
+     * Block names
      */
     Map<String, String> blockNames = new ConcurrentHashMap<>();
     /*
-     * block name counters
+     * Block name counters
      */
     Map<String, Integer> blockNameCounters = new ConcurrentHashMap<>();
     /*

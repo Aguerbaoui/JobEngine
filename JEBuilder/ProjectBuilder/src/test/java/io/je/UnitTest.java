@@ -1,28 +1,13 @@
 package io.je;
 
-import io.je.project.config.LicenseProperties;
-import io.je.project.controllers.WorkflowController;
-import io.je.utilities.log.JELogger;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
-import org.mockito.InjectMocks;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.event.annotation.BeforeTestClass;
-import org.springframework.test.context.event.annotation.BeforeTestExecution;
 import org.springframework.test.web.servlet.MockMvc;
-import utils.log.LogCategory;
-import utils.log.LogSubModule;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.when;
 
 
 @SpringBootTest
@@ -43,6 +28,8 @@ public class UnitTest {
 
         System.err.println("=== UnitTest : mock : LicenseProperties ===");
 
+        //FIXME :
+/*
         try (MockedStatic<LicenseProperties> licenseProperties = Mockito.mockStatic(LicenseProperties.class)) {
 
             licenseProperties.when(LicenseProperties::init).thenThrow(NullPointerException.class);//Return(null);
@@ -53,7 +40,7 @@ public class UnitTest {
             "=== UnitTest : openMocks : failure : licenseIsActive is not mocked to true");
 
         }
-
+*/
     }
 
     @AfterAll

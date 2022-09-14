@@ -3,49 +3,99 @@ package utils.zmq;
 import org.zeromq.SocketType;
 import org.zeromq.ZContext;
 import org.zeromq.ZMQ.Socket;
+import utils.log.LoggerUtils;
 
 public class ZMQPublisher {
 
     protected ZContext context;
-    protected Socket socket = null;
+    protected Socket socket;
     protected String url;
-    protected int publishPort;
-    private String connectionUrl;
+    protected int publisherPort;
+    private String connectionAddress;
 
-    public ZMQPublisher(String url, int publishPort) {
+
+    public ZMQPublisher(String url, int publisherPort) {
 
         this.url = url;
-        this.publishPort = publishPort;
-        this.connectionUrl = url + ":" + publishPort;
+        this.publisherPort = publisherPort;
+        this.connectionAddress = url + ":" + publisherPort;
 
-        context = new ZContext();
-        context.setRcvHWM(ZMQConfiguration.RECEIVE_HIGH_WATERMARK);
-        context.setSndHWM(ZMQConfiguration.SEND_HIGH_WATERMARK);
+    }
+
+    protected Socket getPublisherSocket() {
 
         if (socket == null) {
-            socket = context.createSocket(SocketType.PUB);
 
-            socket.setHeartbeatTimeout(ZMQConfiguration.HEARTBEAT_TIMEOUT);
-            socket.setHandshakeIvl(ZMQConfiguration.HANDSHAKE_INTERVAL);
-            socket.setRcvHWM(ZMQConfiguration.RECEIVE_HIGH_WATERMARK);
-            socket.setSndHWM(ZMQConfiguration.SEND_HIGH_WATERMARK);
-            // Publisher has no receive timeout?
+            LoggerUtils.info("ZMQPublisher : Attempting to connect to address : " + connectionAddress);
 
-            if (ZMQSecurity.isSecure()) {
-                socket.setCurveServer(true);
-                socket.setCurveSecretKey(ZMQSecurity.getServerPair().secretKey.getBytes());
-                socket.setCurvePublicKey(ZMQSecurity.getServerPair().publicKey.getBytes());
+            try {
+
+                context = new ZContext();
+                context.setRcvHWM(ZMQConfiguration.RECEIVE_HIGH_WATERMARK);
+                context.setSndHWM(ZMQConfiguration.SEND_HIGH_WATERMARK);
+
+                socket = context.createSocket(SocketType.PUB);
+
+                socket.setHeartbeatTimeout(ZMQConfiguration.HEARTBEAT_TIMEOUT);
+                socket.setHandshakeIvl(ZMQConfiguration.HANDSHAKE_INTERVAL);
+                socket.setRcvHWM(ZMQConfiguration.RECEIVE_HIGH_WATERMARK);
+                socket.setSndHWM(ZMQConfiguration.SEND_HIGH_WATERMARK);
+                // Publisher has no receive timeout?
+
+                if (ZMQSecurity.isSecure()) {
+                    socket.setCurveServer(true);
+                    socket.setCurveSecretKey(ZMQSecurity.getServerPair().secretKey.getBytes());
+                    socket.setCurvePublicKey(ZMQSecurity.getServerPair().publicKey.getBytes());
+                }
+
+                socket.connect(connectionAddress);
+
+                LoggerUtils.info("ZMQPublisher : Connection succeeded to : " + connectionAddress);
+
+            } catch (Exception e) {
+
+                LoggerUtils.logException(e);
+
+                this.closeSocket();
+
+                LoggerUtils.error("ZMQPublisher : Failed to connect to address : " + connectionAddress + " : " + e.getMessage());
+
+                try {
+                    int wait_ms = 15000;
+
+                    LoggerUtils.info("ZMQPublisher : Socket closed. Will wait in milliseconds for : " + wait_ms);
+
+                    Thread.sleep(wait_ms);
+                } catch (InterruptedException ie) {
+                    LoggerUtils.logException(ie);
+                    Thread.currentThread().interrupt();
+                }
+
+                // FIXME throw new ZMQConnectionFailedException(0, "Failed to connect to address : " + connectionUrl + " : " + e.getMessage());
             }
+
         }
 
-        socket.connect(connectionUrl);
+        return socket;
     }
 
     public void publish(String msgToBePublished, String topic) {
-        synchronized (socket) {
-            socket.sendMore(topic);
-            socket.send(msgToBePublished, 0);
+        synchronized (getPublisherSocket()) {
+            getPublisherSocket().sendMore(topic);
+            getPublisherSocket().send(msgToBePublished, 0);
         }
+    }
+
+    public void closeSocket() {
+        if (socket != null) {
+            socket.close();
+            context.destroySocket(socket);
+            socket = null;
+        }
+    }
+
+    public String getConnectionAddress() {
+        return connectionAddress;
     }
 
 }

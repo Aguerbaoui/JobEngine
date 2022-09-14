@@ -1,12 +1,9 @@
 package io.je.project.beans;
 
-//import io.je.project.config.AuthenticationInterceptor;
-
 import io.je.project.config.AuthenticationInterceptor;
 import io.je.project.config.BuilderProperties;
 import io.je.project.config.LicenseProperties;
 import io.je.project.services.ConfigurationService;
-import io.je.project.services.ProjectService;
 import io.je.utilities.config.ConfigurationConstants;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.LicenseNotActiveException;
@@ -27,17 +24,12 @@ import utils.zmq.ZMQSecurity;
 @Component
 public class JEBuilderInitializingBean implements InitializingBean {
 
-
     @Autowired
-    @Lazy
-    ProjectService projectService;
+    BuilderProperties builderProperties;
 
     @Autowired
     @Lazy
     ConfigurationService configService;
-
-    @Autowired
-    BuilderProperties builderProperties;
 
     @Override
     public void afterPropertiesSet() {
@@ -47,7 +39,9 @@ public class JEBuilderInitializingBean implements InitializingBean {
             SIOTHConfigUtility.setSiothId(builderProperties.getSiothId());
 
             //Initialize logger
-            JELogger.initLogger("JEBuilder", builderProperties.getJeBuilderLogPath(), builderProperties.getJeBuilderLogLevel(), builderProperties.isDev());
+            JELogger.initLogger("JEBuilder", builderProperties.getJeBuilderLogPath(),
+                    builderProperties.getJeBuilderLogLevel(), builderProperties.isDev());
+
             ConfigurationConstants.setJavaGenerationPath(SIOTHConfigUtility.getSiothConfig().getJobEngine().getGeneratedClassesPath());
 
             //Initialize authentication interceptor
@@ -69,6 +63,7 @@ public class JEBuilderInitializingBean implements InitializingBean {
             }
 
             JEMonitor.setPort(builderProperties.getMonitoringPort());
+
             ZMQSecurity.setSecure(builderProperties.getUseZmqSecurity());
             ZMQConfiguration.setHeartbeatTimeout(builderProperties.getZmqHeartbeatTimeout());
             ZMQConfiguration.setHandshakeInterval(builderProperties.getZmqHandshakeInterval());
@@ -79,11 +74,14 @@ public class JEBuilderInitializingBean implements InitializingBean {
 
             //Initialize JE configurations
             configService.init();
+
             JELogger.control(JEMessages.LOGGER_INITIALIZED,
                     LogCategory.DESIGN_MODE, null,
                     LogSubModule.JEBUILDER, null);
+
             JELogger.control(JEMessages.BUILDER_STARTED, LogCategory.DESIGN_MODE,
                     null, LogSubModule.JEBUILDER, null);
+
             configService.initResponder();
 
         } catch (Exception e) {

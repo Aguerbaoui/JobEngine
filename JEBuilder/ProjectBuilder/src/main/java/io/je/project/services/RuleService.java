@@ -41,12 +41,14 @@ import java.util.stream.Collectors;
  * Service class to handle business logic for rules
  */
 @Service
+@Lazy
 public class RuleService {
 
     private static final String DEFAULT_DELETE_CONSTANT = "DELETED";
     private static final LogSubModule RULE = LogSubModule.RULE;
     private static final LogCategory CATEGORY = LogCategory.DESIGN_MODE;
     @Autowired
+    @Lazy
     RuleRepository ruleRepository;
     @Autowired
     @Lazy
@@ -360,7 +362,7 @@ public class RuleService {
             throw new AddRuleBlockException(JEMessages.BLOCK_PROJECT_ID_NULL);
         }
 
-        // check rule is is not null
+        // check rule id is not null
         if (blockModel.getRuleId() == null) {
             throw new AddRuleBlockException(JEMessages.BLOCK_RULE_ID_NULL);
         }
