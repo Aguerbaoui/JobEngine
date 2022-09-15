@@ -156,16 +156,6 @@ public class JEToBpmnMapper {
             } else if (block instanceof TimerEvent && !block.isProcessed()) {
                 if (((TimerEvent) block).getTimer() == Timers.DATE_TIME) {
                     process.addFlowElement(ModelBuilder.createDateTimerEvent(block.getJobEngineElementID(), block.getJobEngineElementName(), ((TimerEvent) block).getTimeDate()));
-                } else if (((TimerEvent) block).getTimer() == Timers.CYCLIC) {
-                    Activity attachedTo = null;
-                    for (FlowElement f : process.getFlowElements()) {
-                        if (f.getId()
-                                .equals(((TimerEvent) block).getAttachedToRef())) {
-                            attachedTo = (Activity) f;
-                            break;
-                        }
-                    }
-                    process.addFlowElement(ModelBuilder.createCycleTimerEvent(block.getJobEngineElementID(), block.getJobEngineElementName(), ((TimerEvent) block).getTimeCycle(), ((TimerEvent) block).getEndDate(), ((TimerEvent) block).getAttachedToRef(), attachedTo));
                 } else {
                     process.addFlowElement(ModelBuilder.createDurationTimerEvent(block.getJobEngineElementID(), block.getJobEngineElementName(), ((TimerEvent) block).getTimeDuration()));
                 }
