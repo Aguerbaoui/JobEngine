@@ -7,30 +7,36 @@ import io.je.utilities.constants.JEMessages;
 import io.je.utilities.log.JELogger;
 import io.siothconfig.SIOTHConfigUtility;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
 import utils.log.LoggerUtils;
-import utils.zmq.ZMQBind;
 
 import static io.je.utilities.constants.JEMessages.ZMQ_RESPONSE_STARTED;
 import static io.je.utilities.constants.JEMessages.ZMQ_RESPONSE_START_FAIL;
 
 /*
- * class responsible for application configuration
+ * Class responsible for application configuration
  */
 @Service
+@Lazy
 public class ConfigurationService {
 
-
-    static boolean runnerStatus = true;
-    final int healthCheck = SIOTHConfigUtility.getSiothConfig().getJobEngine().getCheckHealthEveryMs();
     @Autowired
+    @Lazy
     ProjectService projectService;
     @Autowired
-    ProjectZMQResponder responder;
-    @Autowired
+    @Lazy
     ClassService classService;
+    @Autowired
+    @Lazy
+    ProjectZMQResponder responder;
+
+    static boolean runnerStatus = true;
+
+    final int healthCheck = SIOTHConfigUtility.getSiothConfig().getJobEngine().getCheckHealthEveryMs();
+
 
     /*
      * check JERunner health
@@ -85,10 +91,11 @@ public class ConfigurationService {
      * */
     public void initResponder() {
         try {
-            responder.init("tcp://" + SIOTHConfigUtility.getSiothConfig().getNodes().getSiothMasterNode(), SIOTHConfigUtility.getSiothConfig().getPorts().getJeResponsePort(), ZMQBind.BIND);
-            responder.setListening(true);
+
             Thread listener = new Thread(responder);
+
             listener.start();
+
             JELogger.info(ZMQ_RESPONSE_STARTED + "tcp://" + SIOTHConfigUtility.getSiothConfig().getNodes().getSiothMasterNode() + ":" + SIOTHConfigUtility.getSiothConfig().getPorts().getJeResponsePort(), null, null, LogSubModule.JEBUILDER, null);
 
         } catch (Exception e) {

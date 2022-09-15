@@ -12,6 +12,7 @@ import io.siothconfig.SIOTHConfigUtility;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
 import utils.log.LoggerUtils;
+import utils.zmq.ZMQConnectionFailedException;
 
 import java.util.*;
 import java.util.Map.Entry;
@@ -67,7 +68,16 @@ public class DataModelListener {
             JELogger.debug(JEMessages.STOPPING_LISTENING_TO_TOPIC + topic, LogCategory.RUNTIME,
                     null, LogSubModule.JERUNNER, null);
 
-            getDataZMQSubscriber().removeTopic(topic);
+            try {
+
+                getDataZMQSubscriber().removeTopic(topic);
+
+            } catch (ZMQConnectionFailedException exp) {
+                JELogger.logException(exp);
+
+                JELogger.error(exp.getMessage(),
+                        LogCategory.RUNTIME, null, LogSubModule.JERUNNER, null);
+            }
 
         }
 
@@ -118,7 +128,16 @@ public class DataModelListener {
             JELogger.debug(JEMessages.LAUNCHING_LISTENING_TO_TOPIC + topic, LogCategory.RUNTIME,
                     null, LogSubModule.JERUNNER, null);
 
-            getDataZMQSubscriber().addTopic(topic);
+            try {
+
+                getDataZMQSubscriber().addTopic(topic);
+
+            } catch (ZMQConnectionFailedException exp) {
+                JELogger.logException(exp);
+
+                JELogger.error(exp.getMessage(),
+                        LogCategory.RUNTIME, null, LogSubModule.JERUNNER, null);
+            }
 
             Thread thread = new Thread(() -> requestInitialValues(topic));
             thread.start();

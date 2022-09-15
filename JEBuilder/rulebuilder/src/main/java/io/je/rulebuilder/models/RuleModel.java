@@ -85,7 +85,6 @@ public class RuleModel {
                     .getTimer();
             this.ruleFrontConfig = ((UserDefinedRule) rule).getRuleFrontConfig();
 
-
         }
 
     }

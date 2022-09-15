@@ -20,7 +20,6 @@ import io.siothconfig.SIOTHConfigUtility;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
 import utils.log.LoggerUtils;
-import utils.zmq.ZMQPublisher;
 import utils.zmq.ZMQRequester;
 
 import java.time.Instant;
@@ -37,16 +36,20 @@ public class ClassManager {
 
     static Map<String, JEClass> jeClasses = new ConcurrentHashMap<>(); // key = is, value = jeclass
     static Map<String, Class<?>> builtClasses = new ConcurrentHashMap<>(); // key = id , value = class
+
+    /* FIXME not used?
     static ZMQPublisher publisher = new ZMQPublisher("tcp://" + SIOTHConfigUtility.getSiothConfig()
             .getNodes()
             .getSiothMasterNode(),
             SIOTHConfigUtility.getSiothConfig()
                     .getPorts()
                     .getTrackingPort());
+
+     */
+
     static ObjectMapper objectMapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
-    // TODO: see with islem if possible to change field type to class id instead of
-    // name
+    // TODO: see with islem if possible to change field type to class id instead of name
     static Map<String, String> classNames = new ConcurrentHashMap<>(); // key = name, value = classid
     //static ClassLoader classLoader =   //ClassManager.class.getClassLoader();
     //static String loadPath = ConfigurationConstants.JAVA_GENERATION_PATH;
@@ -241,6 +244,7 @@ public class ClassManager {
         try {
             GetModelObject request = new GetModelObject(classId, workspaceId);
             String jsonMsg = objectMapper.writeValueAsString(request);
+
             JELogger.debug(JEMessages.SENDING_REQUEST_TO_DATA_MODEL + "[" + "tcp://" + SIOTHConfigUtility.getSiothConfig()
                             .getNodes()
                             .getSiothMasterNode() + ":" + SIOTHConfigUtility.getSiothConfig()
@@ -248,11 +252,13 @@ public class ClassManager {
                             .getDmRestAPI_ReqAddress() + " ] : " + request.toString(),
                     LogCategory.DESIGN_MODE, null,
                     LogSubModule.JEBUILDER, null);
+
             ZMQRequester requester = new ZMQRequester("tcp://" + SIOTHConfigUtility.getSiothConfig()
                     .getNodes()
                     .getSiothMasterNode(), SIOTHConfigUtility.getSiothConfig()
                     .getDataModelPORTS()
                     .getDmRestAPI_ReqAddress());
+
             response = requester.sendRequest(jsonMsg);
             if (response == null) {
 

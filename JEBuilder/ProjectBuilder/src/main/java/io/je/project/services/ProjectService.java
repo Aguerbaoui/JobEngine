@@ -42,10 +42,12 @@ import static io.je.utilities.constants.JEMessages.BUILT_EVERYTHING_SUCCESSFULLY
  * */
 
 @Service
+@Lazy
 public class ProjectService {
 
     private static ConcurrentHashMap<String, JEProject> loadedProjects = new ConcurrentHashMap<>();
     @Autowired
+    @Lazy
     ProjectRepository projectRepository;
     @Autowired
     @Lazy
@@ -301,12 +303,14 @@ public class ProjectService {
         project = p.get();
 
         if (!loadedProjects.containsKey(project.getProjectId())) {
+
             project.setEvents(eventService.getAllJEEvents(project.getProjectId()));
             project.setRules(ruleService.getAllJERules(project.getProjectId()));
             project.setVariables(variableService.getAllJEVariables(project.getProjectId()));
             project.setWorkflows(workflowService.getAllJEWorkflows(project.getProjectId()));
             project.setConfigurationPath(ConfigurationConstants.PROJECTS_PATH + project.getProjectName());
             project.setBuilt(false);
+
             loadedProjects.put(project.getProjectId(), project);
             for (JEEvent event : project.getEvents()
                     .values()) {
@@ -317,6 +321,7 @@ public class ProjectService {
                     throw new ProjectLoadException(JEMessages.PROJECT_LOAD_ERROR);
                 }
             }
+
             for (JEVariable variable : project.getVariables()
                     .values()) {
                 try {
@@ -327,6 +332,7 @@ public class ProjectService {
                 }
 
             }
+
             JELogger.debug("[project= " + project.getProjectName() + "] " + JEMessages.PROJECT_FOUND,
                     LogCategory.DESIGN_MODE, project.getProjectId(), LogSubModule.JEBUILDER, null);
 
@@ -377,10 +383,15 @@ public class ProjectService {
                 Optional<JEProject> p = projectRepository.findById(project.getProjectId());
                 project = p.isEmpty() ? null : p.get();
                 if (project != null) {
-                    project.setEvents(eventService.getAllJEEvents(project.getProjectId()));
+
                     project.setRules(ruleService.getAllJERules(project.getProjectId()));
-                    project.setVariables(variableService.getAllJEVariables(project.getProjectId()));
+
                     project.setWorkflows(workflowService.getAllJEWorkflows(project.getProjectId()));
+
+                    project.setVariables(variableService.getAllJEVariables(project.getProjectId()));
+
+                    project.setEvents(eventService.getAllJEEvents(project.getProjectId()));
+
                     // project.setBuilt(false);
                     loadedProjects.put(project.getProjectId(), project);
                     for (JEEvent event : project.getEvents()

@@ -7,6 +7,7 @@ import io.je.utilities.log.JELogger;
 import io.siothconfig.SIOTHConfigUtility;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
@@ -17,25 +18,35 @@ import utils.zmq.ZMQConfiguration;
 public class JEMonitorInitializingBean implements InitializingBean {
 
     @Autowired
-    JEMonitorSubscriber subscriber;
+    MonitorProperties monitorProperties;
 
     @Autowired
-    MonitorProperties monitorProperties;
+    JEMonitorSubscriber subscriber;
+
 
     @Override
     public void afterPropertiesSet() {
         try {
+
             ConfigurationConstants.initConstants(monitorProperties.getSiothId(), monitorProperties.isDev());
-            JELogger.initLogger("JEMonitor", monitorProperties.getJeMonitorLogPath(), monitorProperties.getJeMonitorLogLevel(), monitorProperties.isDev());
+
+            JELogger.initLogger("JEMonitor", monitorProperties.getJeMonitorLogPath(),
+                    monitorProperties.getJeMonitorLogLevel(), monitorProperties.isDev());
+
             SIOTHConfigUtility.setSiothId(monitorProperties.getSiothId());
-            JELogger.control(JEMessages.LOGGER_INITIALIZED,
-                    LogCategory.MONITOR, null,
+
+            JELogger.control(JEMessages.LOGGER_INITIALIZED, LogCategory.MONITOR, null,
                     LogSubModule.JEMONITOR, null);
-            ZMQConfiguration.setHeartbeatTimeout(monitorProperties.getZmqHeartbeatValue());
+
+            ZMQConfiguration.setHeartbeatTimeout(monitorProperties.getZmqHeartbeatTimeout());
             ZMQConfiguration.setHandshakeInterval(monitorProperties.getZmqHandshakeInterval());
             ZMQConfiguration.setReceiveHighWatermark(monitorProperties.getZmqReceiveHighWatermark());
             ZMQConfiguration.setSendHighWatermark(monitorProperties.getZmqSendHighWatermark());
-            subscriber.initSubscriber();
+            ZMQConfiguration.setReceiveTimeout(monitorProperties.getZmqReceiveTimeout());
+            ZMQConfiguration.setSendTimeout(monitorProperties.getZmqSendTimeout());
+
+            subscriber.initSubscriber(monitorProperties.getMonitoringPort());
+
         } catch (Exception e) {
             LoggerUtils.logException(e);
         }

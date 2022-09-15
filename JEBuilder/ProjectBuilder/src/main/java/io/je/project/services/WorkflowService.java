@@ -61,19 +61,24 @@ import static io.je.utilities.constants.JEMessages.THREAD_INTERRUPTED_WHILE_EXEC
 import static io.je.utilities.constants.WorkflowConstants.*;
 
 @Service
+@Lazy
 public class WorkflowService {
 
     @Autowired
+    @Lazy
     WorkflowRepository workflowRepository;
 
     @Autowired
+    @Lazy
+    LibraryRepository libraryRepository;
+
+    @Autowired
+    @Lazy
     EventService eventService;
 
     @Autowired
+    @Lazy
     ClassService classService;
-
-    @Autowired
-    LibraryRepository libraryRepository;
 
     @Autowired
     @Lazy
@@ -1418,7 +1423,7 @@ public class WorkflowService {
     }
 
     /*
-     * run multiple workflows
+     * Run multiple workflows
      */
     @Async
     public CompletableFuture<List<OperationStatusDetails>> runWorkflows(String projectId, List<String> ids)
@@ -1585,14 +1590,14 @@ public class WorkflowService {
         return CompletableFuture.completedFuture(result);
     }
 
-    //add email attachments
+    //Add email attachments
     public void addAttachments(List<LibModel> libModels) throws LibraryException, IOException, ExecutionException, InterruptedException {
         for (LibModel libModel : libModels) {
             addAttachment(libModel);
         }
     }
 
-    //add email attachment
+    //Add email attachment
     public void addAttachment(LibModel libModel) throws LibraryException, ExecutionException, InterruptedException, IOException {
         JELib jeLib = projectService.addFile(libModel);
         if (jeLib != null) {
@@ -1612,7 +1617,7 @@ public class WorkflowService {
 
     }
 
-    //delete email attachment
+    //Delete email attachment
     public void deleteAttachmentByName(String libName) throws IOException {
         try {
             JELib lib = libraryRepository.findByJobEngineElementName(libName);
@@ -1625,7 +1630,7 @@ public class WorkflowService {
         }
     }
 
-    //clean up workflow data
+    //Clean up workflow data
     public void cleanUpHouse() {
         try {
             workflowRepository.deleteAll();
@@ -1636,7 +1641,7 @@ public class WorkflowService {
         }
     }
 
-    //return workflow by name
+    //Return workflow by name
     public List<JEWorkflow> getWorkflowByName(String workflowName) {
         return workflowRepository.findByJobEngineElementName(workflowName);
     }

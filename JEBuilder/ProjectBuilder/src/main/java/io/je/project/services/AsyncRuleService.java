@@ -23,11 +23,13 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 @Service
+@Lazy
 public class AsyncRuleService {
 
     private static final LogSubModule RULE = LogSubModule.RULE;
     private static final LogCategory CATEGORY = LogCategory.DESIGN_MODE;
     @Autowired
+    @Lazy
     RuleRepository ruleRepository;
     @Autowired
     @Lazy

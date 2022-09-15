@@ -1,6 +1,7 @@
 package utils.zmq;
 
-public enum ZMQBind {
+public enum ZMQType {
+
     CONNECT, BIND
 
 }

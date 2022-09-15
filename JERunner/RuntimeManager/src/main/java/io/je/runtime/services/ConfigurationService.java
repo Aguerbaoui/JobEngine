@@ -14,7 +14,7 @@ import utils.ProcessRunner;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
 import utils.log.LoggerUtils;
-import utils.zmq.ZMQBind;
+import utils.zmq.ZMQType;
 import utils.zmq.ZMQSecurity;
 
 @Service
@@ -39,20 +39,23 @@ public class ConfigurationService {
         System.setProperty("drools.dateformat", ConfigurationConstants.DROOLS_DATE_FORMAT);
         ProcessRunner.setProcessDumpPath(properties.getProcessesDumpPath(), properties.isDumpJavaProcessExecution());
 
-        initResponser(properties.getJeRunnerZMQResponsePort());
+        initResponder(properties.getJeRunnerZMQResponsePort());
         JERunnerRequester.setRequesterPort(properties.getJeRunnerZMQResponsePort());
 
 
     }
 
 
-    public void initResponser(int responsePort) {
+    public void initResponder(int responsePort) {
+
         try {
-            JERunnerResponder responser = new JERunnerResponder();
-            responser.init("tcp://" + SIOTHConfigUtility.getSiothConfig().getNodes().getSiothMasterNode(), responsePort, ZMQBind.BIND);
-            responser.setListening(true);
+
+            JERunnerResponder responser = new JERunnerResponder("tcp://" + SIOTHConfigUtility.getSiothConfig().getNodes().getSiothMasterNode(), responsePort, ZMQType.BIND);
+
             Thread listener = new Thread(responser);
+
             listener.start();
+
             JELogger.info(JEMessages.ZMQ_RESPONSE_STARTED + "tcp://" + SIOTHConfigUtility.getSiothConfig().getNodes().getSiothMasterNode() + ":" + responsePort, null, null, LogSubModule.JEBUILDER, null);
 
         } catch (Exception e) {

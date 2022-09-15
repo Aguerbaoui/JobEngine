@@ -34,32 +34,25 @@ public class MongoConfig extends AbstractMongoClientConfiguration {
 
         String username = SIOTHConfigUtility.getSiothConfig().getMongoConfiguration().getMongoUserName();
         String password = SIOTHConfigUtility.getSiothConfig().getMongoConfiguration().getMongoPassword();
+
         String host = SIOTHConfigUtility.getSiothConfig().getMongoConfiguration().getMongoServerHostName();
         int port = SIOTHConfigUtility.getSiothConfig().getMongoConfiguration().getMongoServerPort();
+
         final ConnectionString connectionString;
+
         if (StringUtilities.isEmpty(username) || StringUtilities.isEmpty(password)) {
             connectionString = new ConnectionString("mongodb://" + host + ":" + port + "/" + getDatabaseName());
         } else {
             connectionString = new ConnectionString("mongodb://" + username + ":" + password + "@" + host + ":" + port);
         }
-        //MongoCredential credential = MongoCredential.createCredential(username, getDatabaseName(), password.toCharArray() );
+
         final MongoClientSettings mongoClientSettings = MongoClientSettings.builder()
-                /*.applyToClusterSettings(builder ->
-                        builder.hosts(Arrays.asList(new ServerAddress(SIOTHConfigUtility.getSiothConfig().getMongoConfiguration().getMongoServerHostName(),
-                                SIOTHConfigUtility.getSiothConfig().getMongoConfiguration().getMongoServerPort()))))*/
                 .applyConnectionString(connectionString)
-                //.credential(credential)
                 .build();
 
         return MongoClients.create(mongoClientSettings);
     }
 
-    /*db.createUser(
-    {	user: "sa",
-        pwd: "io.123",
-
-        roles:[{role: "readWrite" , db:"SIOTHDatabase"}]})
-    * */
     @Override
     public Collection<String> getMappingBasePackages() {
         return Collections.singleton("io.je.project");

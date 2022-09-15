@@ -1,15 +1,9 @@
 package io.je.project.controllers;
 
 import io.je.UnitTest;
-import io.je.project.config.LicenseProperties;
-import io.je.project.controllers.WorkflowController;
-import org.junit.Before;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -25,9 +19,14 @@ import javax.servlet.http.HttpServletResponse;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
-@SpringBootTest
+/*
+@WebMvcTest(WorkflowController.class)
+@AutoConfigureBefore
+@AutoConfigureAfter
+*/
 @AutoConfigureMockMvc
 @ActiveProfiles("unit-test")
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 public class WorkflowControllerUnitTest extends UnitTest {
 
     @InjectMocks
@@ -37,6 +36,7 @@ public class WorkflowControllerUnitTest extends UnitTest {
     public MockMvc mockMvc;
 
     private int EXPECTED_RESPONSE = HttpServletResponse.SC_UNAUTHORIZED; // FIXME manage authentication to get : 200 OK
+
 
     /******************************************** ADD BLOCKS TESTS *****************************************************/
 

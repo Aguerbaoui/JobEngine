@@ -9,7 +9,8 @@ public class LogicBlock extends PersistableBlock {
 
     public LogicBlock(BlockModel blockModel) {
         super(blockModel.getBlockId(), blockModel.getProjectId(), blockModel.getRuleId(),
-                blockModel.getBlockName(), blockModel.getDescription(), blockModel.getTimePersistenceValue(), blockModel.getTimePersistenceUnit(), blockModel.getInputBlocksIds(), blockModel.getOutputBlocksIds());
+                blockModel.getBlockName(), blockModel.getDescription(), blockModel.getTimePersistenceValue(),
+                blockModel.getTimePersistenceUnit(), blockModel.getInputBlocksIds(), blockModel.getOutputBlocksIds());
 
         switch (blockModel.getOperationId()) {
             //and

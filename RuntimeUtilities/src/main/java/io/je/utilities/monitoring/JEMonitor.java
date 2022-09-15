@@ -5,13 +5,13 @@ import io.je.utilities.log.JELogger;
 import io.siothconfig.SIOTHConfigUtility;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
+import utils.log.LoggerUtils;
 import utils.zmq.ZMQPublisher;
 
 public class JEMonitor {
 
-
     static int port;
-    static ZMQPublisher publisher;
+    static ZMQPublisher publisher = null;
     static ObjectMapper objectMapper = new ObjectMapper();
 
     public static void publish(MonitoringMessage msg) {
@@ -22,12 +22,13 @@ public class JEMonitor {
 
             String jsonMsg = objectMapper.writeValueAsString(msg);
             publisher.publish(jsonMsg, "JEMonitorTopic");
-            //System.out.println(jsonMsg);
+
+            LoggerUtils.trace("Publish json Monitor message on : " + publisher.getConnectionAddress() + " : " + jsonMsg);
 
         } catch (Exception e) {
             JELogger.logException(e);
             // TODO : replace with custom exception
-            JELogger.error("Failed to publish monitoring value. " + e.getMessage(),
+            JELogger.error("Failed to publish monitoring value : " + e.getMessage(),
                     LogCategory.RUNTIME, null,
                     LogSubModule.JERUNNER, null);
         }

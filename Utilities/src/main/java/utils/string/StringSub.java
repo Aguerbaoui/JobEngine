@@ -1,10 +1,8 @@
 package utils.string;
 
 import org.apache.commons.text.StringSubstitutor;
-import utils.log.LoggerUtils;
 
 import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class StringSub {

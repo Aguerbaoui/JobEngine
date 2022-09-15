@@ -256,7 +256,7 @@ public class WorkflowController {
     /*
      * Delete a workflow block
      */
-    @DeleteMapping(value = "deleteWorkflowBlock/{projectId}/{key}/{id}")
+    @DeleteMapping(value = "deleteWorkflowBlock/{projectId}/{key}/{id}") // FIXME need slash at the beginning?
     public ResponseEntity<?> deleteWorkflowBlock(@PathVariable String projectId, @PathVariable String key,
                                                  @PathVariable String id) {
 
@@ -283,7 +283,7 @@ public class WorkflowController {
      * @param to
      * @return
      */
-    @DeleteMapping(value = "deleteSequenceFlow/{projectId}/{key}/{from}/{to}")
+    @DeleteMapping(value = "deleteSequenceFlow/{projectId}/{key}/{from}/{to}") // FIXME need slash at the beginning?
     public ResponseEntity<?> deleteSequenceFlow(@PathVariable String projectId, @PathVariable String key,
                                                 @PathVariable String from, @PathVariable String to) {
 
