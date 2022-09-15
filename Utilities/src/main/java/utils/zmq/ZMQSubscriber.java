@@ -14,6 +14,7 @@ public abstract class ZMQSubscriber implements Runnable {
     protected ZContext context = null;
 
     protected Socket socket = null;
+    protected ZMQType bindType = null;
 
     protected String url = null;
 
@@ -46,7 +47,9 @@ public abstract class ZMQSubscriber implements Runnable {
 
         if (socket == null) {
 
-            LoggerUtils.info("ZMQSubscriber : Create socket for address : " + connectionAddress);
+            this.bindType = bindType;
+
+            LoggerUtils.info("ZMQ subscriber : Create socket for address : " + connectionAddress);
 
             this.context.setRcvHWM(ZMQConfiguration.RECEIVE_HIGH_WATERMARK);
             this.context.setSndHWM(ZMQConfiguration.SEND_HIGH_WATERMARK);
@@ -59,7 +62,8 @@ public abstract class ZMQSubscriber implements Runnable {
                 socket.setHandshakeIvl(ZMQConfiguration.HANDSHAKE_INTERVAL);
                 socket.setRcvHWM(ZMQConfiguration.RECEIVE_HIGH_WATERMARK);
                 socket.setSndHWM(ZMQConfiguration.SEND_HIGH_WATERMARK);
-                socket.setReceiveTimeOut(-1);
+                socket.setReceiveTimeOut(ZMQConfiguration.RECEIVE_TIMEOUT);
+                socket.setSendTimeOut(ZMQConfiguration.SEND_TIMEOUT);
 
                 if (ZMQSecurity.isSecure()) {
                     // Client specify server key
@@ -71,10 +75,10 @@ public abstract class ZMQSubscriber implements Runnable {
 
                 if (bindType == ZMQType.BIND) {
                     socket.bind(connectionAddress);
-                    LoggerUtils.info("ZMQSubscriber : Bind succeeded to : " + connectionAddress);
+                    LoggerUtils.info("ZMQ subscriber : Bind succeeded to : " + connectionAddress);
                 } else {
                     socket.connect(connectionAddress);
-                    LoggerUtils.info("ZMQSubscriber : Connection succeeded to : " + connectionAddress);
+                    LoggerUtils.info("ZMQ subscriber : Connection succeeded to : " + connectionAddress);
                 }
 
             } catch (Exception e) {
@@ -83,12 +87,12 @@ public abstract class ZMQSubscriber implements Runnable {
 
                 this.closeSocket();
 
-                LoggerUtils.error("ZMQSubscriber : Failed to connect to address : " + connectionAddress + " : " + e.getMessage());
+                LoggerUtils.error("ZMQ subscriber : Failed to connect to address : " + connectionAddress + " : " + e.getMessage());
 
                 try {
                     int wait_ms = 15000;
 
-                    LoggerUtils.info("ZMQSubscriber : Socket closed. Will wait in milliseconds for : " + wait_ms);
+                    LoggerUtils.info("ZMQ subscriber : Socket closed. Will wait in milliseconds for : " + wait_ms);
 
                     Thread.sleep(wait_ms);
                 } catch (InterruptedException ie) {
@@ -106,6 +110,15 @@ public abstract class ZMQSubscriber implements Runnable {
 
     public void closeSocket() {
         if (socket != null) {
+
+            if (bindType == ZMQType.BIND) {
+                this.socket.unbind(connectionAddress);
+                LoggerUtils.info("ZMQ subscriber : Unbind succeeded from : " + connectionAddress);
+            } else {
+                this.socket.disconnect(connectionAddress);
+                LoggerUtils.info("ZMQ subscriber : Disconnection succeeded from : " + connectionAddress);
+            }
+
             socket.close();
             context.destroySocket(socket);
             socket = null;

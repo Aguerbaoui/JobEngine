@@ -26,7 +26,7 @@ public class ZMQPublisher {
 
         if (socket == null) {
 
-            LoggerUtils.info("ZMQPublisher : Attempting to connect to address : " + connectionAddress);
+            LoggerUtils.info("ZMQ publisher : Attempting to connect to address : " + connectionAddress);
 
             try {
 
@@ -40,7 +40,8 @@ public class ZMQPublisher {
                 socket.setHandshakeIvl(ZMQConfiguration.HANDSHAKE_INTERVAL);
                 socket.setRcvHWM(ZMQConfiguration.RECEIVE_HIGH_WATERMARK);
                 socket.setSndHWM(ZMQConfiguration.SEND_HIGH_WATERMARK);
-                // Publisher has no receive timeout?
+                socket.setReceiveTimeOut(ZMQConfiguration.RECEIVE_TIMEOUT);
+                socket.setSendTimeOut(ZMQConfiguration.SEND_TIMEOUT);
 
                 if (ZMQSecurity.isSecure()) {
                     socket.setCurveServer(true);
@@ -50,7 +51,7 @@ public class ZMQPublisher {
 
                 socket.connect(connectionAddress);
 
-                LoggerUtils.info("ZMQPublisher : Connection succeeded to : " + connectionAddress);
+                LoggerUtils.info("ZMQ publisher : Connection succeeded to : " + connectionAddress);
 
             } catch (Exception e) {
 
@@ -58,12 +59,12 @@ public class ZMQPublisher {
 
                 this.closeSocket();
 
-                LoggerUtils.error("ZMQPublisher : Failed to connect to address : " + connectionAddress + " : " + e.getMessage());
+                LoggerUtils.error("ZMQ publisher : Failed to connect to address : " + connectionAddress + " : " + e.getMessage());
 
                 try {
                     int wait_ms = 15000;
 
-                    LoggerUtils.info("ZMQPublisher : Socket closed. Will wait in milliseconds for : " + wait_ms);
+                    LoggerUtils.info("ZMQ publisher : Socket closed. Will wait in milliseconds for : " + wait_ms);
 
                     Thread.sleep(wait_ms);
                 } catch (InterruptedException ie) {
@@ -88,6 +89,10 @@ public class ZMQPublisher {
 
     public void closeSocket() {
         if (socket != null) {
+
+            socket.disconnect(connectionAddress);
+            LoggerUtils.info("ZMQ responder : Disconnection succeeded from : " + connectionAddress);
+
             socket.close();
             context.destroySocket(socket);
             socket = null;

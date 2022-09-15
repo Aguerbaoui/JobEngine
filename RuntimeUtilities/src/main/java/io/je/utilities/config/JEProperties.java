@@ -10,6 +10,18 @@ public class JEProperties {
     @Value("${jobenginebuilder.log.level}")
     String jeBuilderLogLevel;
 
+    @Value("${jobenginerunner.log.path}")
+    String jeRunnerLogPath;
+
+    @Value("${jobenginerunner.log.level}")
+    String jeRunnerLogLevel;
+
+    @Value("${jobenginemonitor.log.path}")
+    String jeMonitorLogPath;
+
+    @Value("${jobenginemonitor.log.level}")
+    String jeMonitorLogLevel;
+
     @Value("${ids4.issuer}")
     String issuer;
 
@@ -29,18 +41,6 @@ public class JEProperties {
     @Value("${jobengine.processesdump.path}")
     String processesDumpPath;
 
-    @Value("${jobenginerunner.log.path}")
-    String jeRunnerLogPath;
-
-    @Value("${jobenginerunner.log.level}")
-    String jeRunnerLogLevel;
-
-    @Value("${jobenginemonitor.log.path}")
-    String jeMonitorLogPath;
-
-    @Value("${jobenginemonitor.log.level}")
-    String jeMonitorLogLevel;
-
     //ZMQ Config
     @Value("${use.ZMQ.Security}")
     Boolean useZmqSecurity;
@@ -53,6 +53,9 @@ public class JEProperties {
 
     @Value("${zmq.receive.timeout}")
     int zmqReceiveTimeout;
+
+    @Value("${zmq.send.timeout}")
+    int zmqSendTimeout;
 
     @Value("${zmq.receive.high.watermark}")
     int zmqReceiveHighWatermark;
@@ -191,6 +194,14 @@ public class JEProperties {
 
     public void setZmqReceiveTimeout(int zmqReceiveTimeout) {
         this.zmqReceiveTimeout = zmqReceiveTimeout;
+    }
+
+    public int getZmqSendTimeout() {
+        return zmqSendTimeout;
+    }
+
+    public void setZmqSendTimeout(int zmqSendTimeout) {
+        this.zmqSendTimeout = zmqSendTimeout;
     }
 
     public int getZmqReceiveHighWatermark() {

@@ -744,7 +744,7 @@ public class JEMessages {
 
     public static final String ZMQ_REQUEST_RECEIVED = "Received ZMQ request : ";
     public static final String ZMQ_RESPONSE_STARTED = "ZMQ responder : Started  on address : ";
-    public static final String ZMQ_RESPONSE_START_FAIL = "ZMQ responder : Failed to start ";
+    public static final String ZMQ_RESPONSE_START_FAIL = "ZMQ responder : Failed to start : ";
 
     public static final String ZMQ_SENDING_RESPONSE = "Sending response : ";
     public static final String ZMQ_FAILED_TO_RESPOND = "Failed to send ZMQ response : ";

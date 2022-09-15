@@ -9,13 +9,13 @@ import utils.log.LoggerUtils;
 public class ZMQRequester {
 
     private ZContext context = null;
+    private Socket socket = null;
 
     private String url;
 
     private int requesterPort;
 
     private String connectionAddress;
-    private Socket socket = null;
 
     //private int requestCounter = 0;
 
@@ -37,7 +37,7 @@ public class ZMQRequester {
 
         if (socket == null) {
 
-            LoggerUtils.info("ZMQRequester : Attempting to connect to address : " + connectionAddress);
+            LoggerUtils.info("ZMQ requester : Attempting to connect to address : " + connectionAddress);
 
             context.setRcvHWM(ZMQConfiguration.RECEIVE_HIGH_WATERMARK);
             context.setSndHWM(ZMQConfiguration.SEND_HIGH_WATERMARK);
@@ -51,6 +51,7 @@ public class ZMQRequester {
                 socket.setRcvHWM(ZMQConfiguration.RECEIVE_HIGH_WATERMARK);
                 socket.setSndHWM(ZMQConfiguration.SEND_HIGH_WATERMARK);
                 socket.setReceiveTimeOut(ZMQConfiguration.RECEIVE_TIMEOUT);
+                socket.setSendTimeOut(ZMQConfiguration.SEND_TIMEOUT);
 
                 if (ZMQSecurity.isSecure()) {
                     // Client specify server key
@@ -62,7 +63,7 @@ public class ZMQRequester {
 
                 socket.connect(connectionAddress);
 
-                LoggerUtils.info("ZMQRequester : Connection succeeded to : " + connectionAddress);
+                LoggerUtils.info("ZMQ requester : Connection succeeded to : " + connectionAddress);
 
             } catch (Exception e) {
 
@@ -70,12 +71,12 @@ public class ZMQRequester {
 
                 this.closeSocket();
 
-                LoggerUtils.error("ZMQRequester : Failed to connect to address : " + connectionAddress + " : " + e.getMessage());
+                LoggerUtils.error("ZMQ requester : Failed to connect to address : " + connectionAddress + " : " + e.getMessage());
 
                 try {
                     int wait_ms = 15000;
 
-                    LoggerUtils.info("ZMQRequester : Socket closed. Will wait in milliseconds for : " + wait_ms);
+                    LoggerUtils.info("ZMQ requester : Socket closed. Will wait in milliseconds for : " + wait_ms);
 
                     Thread.sleep(wait_ms);
                 } catch (InterruptedException ie) {
@@ -93,6 +94,10 @@ public class ZMQRequester {
 
     public void closeSocket() {
         if (socket != null) {
+
+            socket.disconnect(connectionAddress);
+            LoggerUtils.info("ZMQ responder : Disconnection succeeded from : " + connectionAddress);
+
             socket.close();
             context.destroySocket(socket);
             socket = null;
@@ -106,7 +111,7 @@ public class ZMQRequester {
 
                 //System.err.println("Requests number : " + this.requestCounter++);
 
-                LoggerUtils.trace("ZMQRequester : sending request : " + request);
+                LoggerUtils.trace("ZMQ requester : sending request : " + request);
 
                 this.getRequesterSocket().send(request, 0);
 

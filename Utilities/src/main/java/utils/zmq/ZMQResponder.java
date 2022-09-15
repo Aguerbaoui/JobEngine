@@ -31,7 +31,9 @@ public abstract class ZMQResponder implements Runnable {
 
         if (this.socket == null) {
 
-            LoggerUtils.info("ZMQResponder : Attempting to connect to address : " + connectionAddress);
+            this.bindType = bindType;
+
+            LoggerUtils.info("ZMQ responder : Attempting to connect to address : " + connectionAddress);
 
             this.context.setRcvHWM(ZMQConfiguration.RECEIVE_HIGH_WATERMARK);
             this.context.setSndHWM(ZMQConfiguration.SEND_HIGH_WATERMARK);
@@ -44,8 +46,8 @@ public abstract class ZMQResponder implements Runnable {
                 this.socket.setHandshakeIvl(ZMQConfiguration.HANDSHAKE_INTERVAL);
                 this.socket.setRcvHWM(ZMQConfiguration.RECEIVE_HIGH_WATERMARK);
                 this.socket.setSndHWM(ZMQConfiguration.SEND_HIGH_WATERMARK);
-                // TODO check if config OK for ZMQ responder
                 this.socket.setReceiveTimeOut(ZMQConfiguration.RECEIVE_TIMEOUT);
+                this.socket.setSendTimeOut(ZMQConfiguration.SEND_TIMEOUT);
 
                 if (ZMQSecurity.isSecure()) {
                     this.socket.setCurveServer(true);
@@ -55,10 +57,10 @@ public abstract class ZMQResponder implements Runnable {
 
                 if (bindType == ZMQType.BIND) {
                     this.socket.bind(connectionAddress);
-                    LoggerUtils.info("ZMQResponder : Bind succeeded to : " + connectionAddress);
+                    LoggerUtils.info("ZMQ responder : Bind succeeded to : " + connectionAddress);
                 } else {
                     this.socket.connect(connectionAddress);
-                    LoggerUtils.info("ZMQResponder : Connection succeeded to : " + connectionAddress);
+                    LoggerUtils.info("ZMQ responder : Connection succeeded to : " + connectionAddress);
                 }
 
             } catch (Exception e) {
@@ -67,12 +69,12 @@ public abstract class ZMQResponder implements Runnable {
 
                 this.closeSocket();
 
-                LoggerUtils.error("ZMQResponder : Failed to connect to address : " + connectionAddress + " : " + e.getMessage());
+                LoggerUtils.error("ZMQ responder : Failed to connect to address : " + connectionAddress + " : " + e.getMessage());
 
                 try {
                     int wait_ms = 15000;
 
-                    LoggerUtils.info("ZMQResponder : Socket closed. Will wait in milliseconds for : " + wait_ms);
+                    LoggerUtils.info("ZMQ responder : Socket closed. Will wait in milliseconds for : " + wait_ms);
 
                     Thread.sleep(wait_ms);
                 } catch (InterruptedException ie) {
@@ -96,6 +98,15 @@ public abstract class ZMQResponder implements Runnable {
 
     public void closeSocket() {
         if (socket != null) {
+
+            if (bindType == ZMQType.BIND) {
+                this.socket.unbind(connectionAddress);
+                LoggerUtils.info("ZMQ responder : Unbind succeeded from : " + connectionAddress);
+            } else {
+                this.socket.disconnect(connectionAddress);
+                LoggerUtils.info("ZMQ responder : Disconnection succeeded from : " + connectionAddress);
+            }
+
             socket.close();
             context.destroySocket(socket);
             socket = null;
