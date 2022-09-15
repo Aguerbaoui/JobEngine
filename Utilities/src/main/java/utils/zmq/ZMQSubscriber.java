@@ -83,13 +83,14 @@ public abstract class ZMQSubscriber implements Runnable {
 
             } catch (Exception e) {
 
-                LoggerUtils.logException(e);
-
-                this.closeSocket();
-
                 LoggerUtils.error("ZMQ subscriber : Failed to connect to address : " + connectionAddress + " : " + e.getMessage());
 
+                LoggerUtils.logException(e);
+
+
                 try {
+                    this.closeSocket();
+
                     int wait_ms = 15000;
 
                     LoggerUtils.info("ZMQ subscriber : Socket closed. Will wait in milliseconds for : " + wait_ms);
