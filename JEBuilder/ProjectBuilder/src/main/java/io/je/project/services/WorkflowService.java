@@ -575,6 +575,7 @@ public class WorkflowService {
             timerEvent.setWorkflowId(block.getWorkflowId());
             timerEvent.setJobEngineElementID(block.getId());
             timerEvent.setTimer(timerType);
+            setTimerEventSpecsFromModel(timerEvent, block);
         } else {
             timerEvent = (TimerEvent) wf.getAllBlocks()
                     .get(block.getId());
@@ -799,6 +800,7 @@ public class WorkflowService {
                     timerEvent.setEndDate(null);
                     timerEvent.setTimeCycle(null);
                     timerEvent.setOccurrences(-1);
+                    break;
                 }
 
                 case DELAY: {
@@ -809,6 +811,7 @@ public class WorkflowService {
                     timerEvent.setTimeCycle(null);
                     timerEvent.setEndDate(null);
                     timerEvent.setOccurrences(-1);
+                    break;
                 }
 
                 case CYCLIC: {
@@ -822,6 +825,7 @@ public class WorkflowService {
                     timerEvent.setEndDate((String) block.getAttributes()
                             .get(ENDDATE));
                     timerEvent.setTimeDuration(null);
+                    break;
                 }
             }
         }
