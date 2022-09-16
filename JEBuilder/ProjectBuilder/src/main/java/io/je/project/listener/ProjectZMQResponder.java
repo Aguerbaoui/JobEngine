@@ -12,8 +12,8 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import utils.log.LogSubModule;
 import utils.log.LoggerUtils;
-import utils.zmq.ZMQType;
 import utils.zmq.ZMQResponder;
+import utils.zmq.ZMQType;
 
 /**
  * Project management api ZMQ Responder
@@ -87,6 +87,7 @@ public class ProjectZMQResponder extends ZMQResponder {
 
             }
             try {
+                // FIXME could block/slow Project ZMQ Responder
                 Thread.sleep(500);
             } catch (InterruptedException e) {
                 LoggerUtils.logException(e);

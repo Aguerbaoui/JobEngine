@@ -8,9 +8,9 @@ import org.springframework.stereotype.Component;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
 import utils.log.LoggerUtils;
-import utils.zmq.ZMQType;
 import utils.zmq.ZMQConnectionFailedException;
 import utils.zmq.ZMQSubscriber;
+import utils.zmq.ZMQType;
 
 import static io.je.Monitor.zmq.JEMonitorSubscriber.JEMONITOR_TOPIC;
 

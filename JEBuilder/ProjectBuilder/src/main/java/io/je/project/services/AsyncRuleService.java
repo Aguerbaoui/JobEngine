@@ -36,14 +36,14 @@ public class AsyncRuleService {
     ProjectService projectService;
 
     /*
-     * build rule : create drl + check for compilation errors
+     * Build rule : create drl + check for compilation errors
      */
     @Async
     public CompletableFuture<OperationStatusDetails> compileRule(String projectId, String ruleId, boolean compileOnly) {
         OperationStatusDetails result = new OperationStatusDetails(ruleId);
         JEProject project = null;
         JERule rule = null;
-        // check rule exists
+        // Check rule exists
         try {
             project = getProject(projectId);
             rule = project.getRule(ruleId);
@@ -54,7 +54,7 @@ public class AsyncRuleService {
             return CompletableFuture.completedFuture(result);
         }
         result.setItemName(rule.getJobEngineElementName());
-        //set rule topics
+        // Set rule topics
         rule.loadTopics();
 
         try {
@@ -62,8 +62,8 @@ public class AsyncRuleService {
 
                 RuleBuilder.buildRule(rule, getProject(projectId).getConfigurationPath(), compileOnly);
 
-                // update rule status
-                // rule built
+                // Update rule status
+                // Rule built
                 if (!compileOnly) {
                     rule.setAdded(true);
                     rule.setBuilt(true);
@@ -112,7 +112,7 @@ public class AsyncRuleService {
 
     @Async
     /*
-     * run a specific rule.
+     * Run a specific rule.
      */
     public CompletableFuture<OperationStatusDetails> runRule(String projectId, String ruleId)
             throws LicenseNotActiveException {
