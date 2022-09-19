@@ -51,7 +51,10 @@ public class WebApiTask extends ActivitiTask {
     }
 
     public void setBody(HashMap<String, String> body) {
-        this.body = body;
+        if (body != null) {
+            this.body = body;
+            this.hasBody = true;
+        }
     }
 
     public String getResponseClass() {
