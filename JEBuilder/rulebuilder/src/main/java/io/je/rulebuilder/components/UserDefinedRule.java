@@ -26,8 +26,7 @@ public class UserDefinedRule extends JERule {
     BlockManager blocks = new BlockManager();
 
     /*
-     * * One UserDefinedRule can be equivalents to multiple drl rules List of all
-     * the subRules
+     * One UserDefinedRule can be equivalents to multiple drl rules List of all the subRules
      */
 
     @Transient
@@ -41,7 +40,7 @@ public class UserDefinedRule extends JERule {
 
 
     /*
-     * add a block to this user defined rule
+     * Add a block to this user defined rule
      */
     public void addBlock(Block block) {
         blocks.addBlock(block);
@@ -49,7 +48,7 @@ public class UserDefinedRule extends JERule {
     }
 
     /*
-     * update a block in this user defined rule
+     * Update a block in this user defined rule
      */
     public void updateBlock(Block block) {
         blocks.updateBlock(block);
@@ -88,7 +87,7 @@ public class UserDefinedRule extends JERule {
 
 
     /*
-     * delete a block in this user defined rule
+     * Delete a block in this user defined rule
      */
     public void deleteBlock(String blockId) {
 		/*if (blocks.getBlock(blockId) instanceof AttributeGetterBlock) {

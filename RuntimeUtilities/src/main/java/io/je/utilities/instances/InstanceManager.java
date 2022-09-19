@@ -29,15 +29,26 @@ public class InstanceManager {
 
     private static InstanceModel getInstanceModel(String dataReceived) {
 
-        JSONObject instanceJson = new JSONObject(dataReceived);
-
         InstanceModel instanceModel = new InstanceModel();
 
-        instanceModel.setInstanceId(instanceJson.getString(InstanceModelMapping.INSTANCEID));
-        instanceModel.setModelId(instanceJson.getString(InstanceModelMapping.MODELID));
-        instanceModel.setModelName(instanceJson.getString(InstanceModelMapping.MODELNAME));
-        instanceModel.setInstanceName(instanceJson.getString(InstanceModelMapping.INSTANCENAME));
-        instanceModel.setPayload(instanceJson.getJSONObject(InstanceModelMapping.PAYLOAD));
+        try {
+            //System.err.println("getInstanceModel : dataReceived : " + dataReceived);
+
+            JSONObject instanceJson = new JSONObject(dataReceived);
+
+            instanceModel.setInstanceId(instanceJson.getString(InstanceModelMapping.INSTANCEID));
+            instanceModel.setInstanceName(instanceJson.getString(InstanceModelMapping.INSTANCENAME));
+
+            instanceModel.setModelId(instanceJson.getString(InstanceModelMapping.MODELID));
+            instanceModel.setModelName(instanceJson.getString(InstanceModelMapping.MODELNAME));
+
+            instanceModel.setPayload(instanceJson.getJSONObject(InstanceModelMapping.PAYLOAD));
+
+        } catch (Exception exp) {
+            LoggerUtils.logException(exp);
+        }
+
+        //System.err.println("getInstanceModel : instanceModel : " + instanceModel);
 
         return instanceModel;
     }

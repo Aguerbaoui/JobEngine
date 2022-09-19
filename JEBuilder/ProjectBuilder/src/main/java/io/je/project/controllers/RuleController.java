@@ -208,7 +208,9 @@ public class RuleController {
 
             blockModel.setRuleId(ruleId);
             blockModel.setProjectId(projectId);
+
             ruleService.updateBlockInRule(blockModel);
+
             projectService.saveProject(projectId);
         } catch (Exception e) {
             JELogger.error("Exception occurred while updating Block.");

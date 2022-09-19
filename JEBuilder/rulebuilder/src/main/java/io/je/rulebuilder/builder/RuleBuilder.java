@@ -139,7 +139,7 @@ public class RuleBuilder {
     }
 
     /*
-     * generate script rules
+     * Generate script rules
      */
     public static List<ScriptedRule> scriptRule(UserDefinedRule uRule) throws RuleBuildFailedException {
 
@@ -152,9 +152,17 @@ public class RuleBuilder {
         List<ScriptedRule> scriptedRules = new ArrayList<>();
         Set<Block> rootBlocks = getRootBlocks(uRule);
         String subRulePrefix = IdManager.generateSubRulePrefix(uRule.getJobEngineElementID());
+
         for (Block root : rootBlocks) {
-            uRule.getBlocks()
-                    .resetAllBlocks();
+            uRule.getBlocks().resetAllBlocks();
+
+            // TODO better management of font/back-end rule config desynchronization
+            /*
+            if (!uRule.getRuleFrontConfig().contains("\"block_name\":\"" + root.getBlockName() + "\"")) {
+                continue;
+            }
+            */
+
             scriptedRuleId = subRulePrefix + uRule.getJobEngineElementName() + ++scriptedRulesCounter;
 
             String condition = "";
@@ -198,7 +206,7 @@ public class RuleBuilder {
 
             }
 
-            // add time persistence
+            // Add time persistence
             String rootDuration = root.getPersistence();
 
             String script = generateScript(uRule.getRuleParameters(), scriptedRuleId, rootDuration, condition, consequences, notCondition);
@@ -215,6 +223,7 @@ public class RuleBuilder {
             uRule.setSubRules(subRules);
 
         }
+
         return scriptedRules;
     }
 
@@ -335,25 +344,25 @@ public class RuleBuilder {
 
                 executionBlockCounter++;
 
-                for (var rootBlock : ruleBlock.getInputBlockLinks()) {
+                for (var rootInputBlockLink : ruleBlock.getInputBlockLinks()) {
 
-                    // FIXME error message if rootBlock.getBlock() == null
-                    if (rootBlock != null && rootBlock.getBlock() != null) {
+                    // FIXME error message if rootInputBlockLink.getBlock() == null
+                    if (rootInputBlockLink != null && rootInputBlockLink.getBlock() != null) {
 
                         if (uRule.getBlocks() != null) {
                             roots.add(uRule.getBlocks()
-                                    .getBlock(rootBlock.getBlock()
+                                    .getBlock(rootInputBlockLink.getBlock()
                                             .getJobEngineElementID()));
                         }
 
                         for (var b : uRule.getBlocks()
-                                .getBlock(rootBlock.getBlock()
+                                .getBlock(rootInputBlockLink.getBlock()
                                         .getJobEngineElementID())
                                 .getInputBlockLinks()) {
 
                             if (b.getBlock() instanceof PersistableBlock) {
-                                ((PersistableBlock) b.getBlock()).setTimePersistenceValue(((PersistableBlock) rootBlock.getBlock()).getTimePersistenceValue());
-                                ((PersistableBlock) b.getBlock()).setTimePersistenceUnit(((PersistableBlock) rootBlock.getBlock()).getTimePersistenceUnit());
+                                ((PersistableBlock) b.getBlock()).setTimePersistenceValue(((PersistableBlock) rootInputBlockLink.getBlock()).getTimePersistenceValue());
+                                ((PersistableBlock) b.getBlock()).setTimePersistenceUnit(((PersistableBlock) rootInputBlockLink.getBlock()).getTimePersistenceUnit());
                             }
 
                         }

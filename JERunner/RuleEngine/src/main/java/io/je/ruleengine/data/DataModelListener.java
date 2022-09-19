@@ -1,13 +1,14 @@
-package io.je.runtime.data;
+package io.je.ruleengine.data;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.je.runtime.beans.DMListener;
-import io.je.runtime.beans.DMTopic;
-import io.je.runtime.services.RuntimeDispatcher;
+import io.je.ruleengine.impl.RuleEngine;
 import io.je.utilities.beans.JEData;
 import io.je.utilities.constants.JEMessages;
+import io.je.utilities.exceptions.InstanceCreationFailedException;
 import io.je.utilities.instances.DataModelRequester;
+import io.je.utilities.instances.InstanceManager;
 import io.je.utilities.log.JELogger;
+import io.je.utilities.runtimeobject.JEObject;
 import io.siothconfig.SIOTHConfigUtility;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
@@ -16,6 +17,7 @@ import utils.zmq.ZMQConnectionFailedException;
 
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.concurrent.CompletableFuture;
 
 public class DataModelListener {
 
@@ -139,7 +141,7 @@ public class DataModelListener {
                         LogCategory.RUNTIME, null, LogSubModule.JERUNNER, null);
             }
 
-            Thread thread = new Thread(() -> requestInitialValues(topic));
+            Thread thread = new Thread(() -> requestInitialValue(topic));
             thread.start();
         }
 
@@ -151,26 +153,67 @@ public class DataModelListener {
 
         We do it by requestInitialValues
      */
-    public static void requestInitialValues(String topic) {
-        List<Object> initialValues = new ArrayList<>();
+    // TODO check if it is better to request initial values in single request by sending all topics
+    public static void requestInitialValue(String topic) {
+        String initialValue = null;
 
         String[] splittedTopic = topic.split("#");
         if (splittedTopic.length > 1) {
             // Case topic containing instance Id
-            initialValues = Arrays.asList(DataModelRequester.getLastInstanceValue(splittedTopic[1], false));
+            initialValue = DataModelRequester.getLastInstanceValue(splittedTopic[1], false);
         } else if (splittedTopic.length == 1) {
             // Case topic containing just modelId (Class)
-            initialValues = DataModelRequester.readInitialValues(splittedTopic[0]);
+            initialValue = DataModelRequester.readInitialValues(splittedTopic[0]);
         }
 
-        for (Object value : initialValues) {
-            try {
-                RuntimeDispatcher.injectData(new JEData(topic, (String) value));
+        try {
 
-            } catch (Exception e) {
-                LoggerUtils.logException(e);
-            }
+            //System.err.println("requestInitialValue : value : " + initialValue);
+
+            injectData(new JEData(topic, initialValue));
+
+        } catch (Exception e) {
+            LoggerUtils.logException(e);
         }
+
+    }
+
+    /**
+     * Inject data into the rule/workflow engine according to the topics they are subscribed to (to prevent duplication)
+     */
+    public static void injectData(JEData jeData) {
+        JELogger.trace(JEMessages.INJECTING_DATA, LogCategory.RUNTIME, null, LogSubModule.JERUNNER, null);
+        try {
+            CompletableFuture.runAsync(() -> {
+                JEObject instanceData;
+                String projectId = null;
+
+                try {
+
+                    //System.err.println("injectData : jeData.getData() : " + jeData.getData());
+
+                    instanceData = InstanceManager.createInstance(jeData.getData());
+
+                    for (String id : DataModelListener.getProjectsSubscribedToTopic(jeData.getTopic())) {
+                        projectId = id;
+
+                        RuleEngine.assertFact(projectId, instanceData);
+
+                    }
+                } catch (InstanceCreationFailedException e) {
+                    LoggerUtils.logException(e);
+                    JELogger.warn(JEMessages.ADD_INSTANCE_FAILED + e.getMessage(),
+                        LogCategory.RUNTIME, projectId,
+                        LogSubModule.RULE, null);
+                }
+
+            });
+        } catch (Exception e) {
+            LoggerUtils.logException(e);
+            JELogger.error(JEMessages.FAILED_TO_INJECT_DATA + e.getMessage(), LogCategory.RUNTIME, null,
+                    LogSubModule.JERUNNER, null);
+        }
+
     }
 
     public static void removeDMListener(String listenerId) {

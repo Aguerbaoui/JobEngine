@@ -41,22 +41,23 @@ public class RuleEngine {
 
     }
 
-    public static boolean fireRules(String projectId)
+    public static boolean start(String projectId)
             throws RulesNotFiredException, RuleBuildFailedException {
 
         ProjectContainer project = projectManager.getProjectContainer(projectId);
-        project.fireRules();
+        project.startRules();
         return true;
     }
 
-    public static boolean stopRuleExecution(String projectId) {
+    public static boolean stop(String projectId) {
 
         ProjectContainer project = projectManager.getProjectContainer(projectId);
-        return project.stopRuleExecution(true, false);
+
+        return project.stopRules(true, false);
 
     }
 
-    public static boolean fireRules(String projectId, List<Rule> rules, boolean removePreviouslyAddedRules) {
+    public static boolean start(String projectId, List<Rule> rules, boolean removePreviouslyAddedRules) {
         // TODO Auto-generated method stub
         return false;
     }

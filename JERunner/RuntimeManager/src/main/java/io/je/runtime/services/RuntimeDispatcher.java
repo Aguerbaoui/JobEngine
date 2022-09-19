@@ -2,8 +2,8 @@ package io.je.runtime.services;
 
 import io.je.JEProcess;
 import io.je.project.variables.VariableManager;
-import io.je.runtime.beans.DMListener;
-import io.je.runtime.data.DataModelListener;
+import io.je.ruleengine.data.DMListener;
+import io.je.ruleengine.data.DataModelListener;
 import io.je.runtime.events.EventManager;
 import io.je.runtime.models.ClassModel;
 import io.je.runtime.models.RunnerRuleModel;
@@ -11,20 +11,21 @@ import io.je.runtime.ruleenginehandler.RuleEngineHandler;
 import io.je.runtime.workflow.WorkflowEngineHandler;
 import io.je.serviceTasks.ActivitiTask;
 import io.je.serviceTasks.ActivitiTaskManager;
-import io.je.utilities.beans.*;
+import io.je.utilities.beans.ClassAuthor;
+import io.je.utilities.beans.JEEvent;
+import io.je.utilities.beans.JEVariable;
+import io.je.utilities.beans.Status;
 import io.je.utilities.classloader.JEClassLoader;
 import io.je.utilities.constants.ClassBuilderConfig;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.*;
 import io.je.utilities.instances.ClassRepository;
-import io.je.utilities.instances.InstanceManager;
 import io.je.utilities.log.JELogger;
 import io.je.utilities.models.*;
 import io.je.utilities.monitoring.JEMonitor;
 import io.je.utilities.monitoring.MonitoringMessage;
 import io.je.utilities.monitoring.ObjectType;
 import io.je.utilities.ruleutils.OperationStatusDetails;
-import io.je.utilities.runtimeobject.JEObject;
 import org.springframework.stereotype.Service;
 import utils.log.LogCategory;
 import utils.log.LogMessage;
@@ -34,7 +35,6 @@ import utils.log.LoggerUtils;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
 
 import static io.je.utilities.constants.JEMessages.ADDING_JAR_FILE_TO_RUNNER;
 
@@ -59,33 +59,6 @@ public class RuntimeDispatcher {
 		WorkflowEngineHandler.buildProject(projectId);
 	}*/
 
-    /**
-     * Inject data into the rule/workflow engine according to the topics they are subscribed to (to prevent duplication)
-     */
-    public static void injectData(JEData jeData) {
-        JELogger.trace(JEMessages.INJECTING_DATA, LogCategory.RUNTIME, null, LogSubModule.JERUNNER, null);
-        try {
-            CompletableFuture.runAsync(() -> {
-                JEObject instanceData;
-                try {
-                    instanceData = InstanceManager.createInstance(jeData.getData());
-                    for (String projectId : DataModelListener.getProjectsSubscribedToTopic(jeData.getTopic())) {
-                        if (Boolean.TRUE.equals(projectStatus.get(projectId))) {
-                            RuleEngineHandler.injectData(projectId, instanceData);
-                        }
-                    }
-                } catch (InstanceCreationFailedException e) {
-                    LoggerUtils.logException(e);
-                }
-
-            });
-        } catch (Exception e) {
-            LoggerUtils.logException(e);
-            JELogger.error(JEMessages.FAILED_TO_INJECT_DATA + e.getMessage(), LogCategory.RUNTIME, null,
-                    LogSubModule.JERUNNER, null);
-        }
-
-    }
 
     public static void informUser(String message, String projectName, String workflowName) {
         new Thread(() -> {
@@ -115,8 +88,6 @@ public class RuntimeDispatcher {
         JELogger.control("[project  = " + projectName + "]" + JEMessages.RUNNING_PROJECT, LogCategory.RUNTIME, projectId,
                 LogSubModule.JERUNNER, null);
 
-        Set<String> topics = DataModelListener.getTopicsByProjectId(projectId);
-
         try {
 
             // Reset variables TODO: make it configurable//Same for events
@@ -126,32 +97,29 @@ public class RuntimeDispatcher {
             WorkflowEngineHandler.runAllWorkflows(projectId, true);
 
             // Run rules
-            RuleEngineHandler.runRuleEngineProject(projectId); // FIXME should launch all rules not just rule engine
+            RuleEngineHandler.startProjectRuleEngine(projectId); // FIXME should launch all rules not just rule engine
 
             // Add variables
             for (JEVariable variable : VariableManager.getAllVariables(projectId)) {
                 RuleEngineHandler.addVariable(variable);
             }
 
-            // Start listening to datasources
-            // Put it at the end to avoid loosing data
-            // FIXME should we add a wait till rule engine is started ...?
-            DataModelListener.startListening(topics);
-
         } catch (JEException e) {
             LoggerUtils.logException(e);
             JELogger.error(" [project  = " + projectName + "]" + JEMessages.PROJECT_RUN_FAILED, LogCategory.RUNTIME,
                     projectId, LogSubModule.JERUNNER, null);
-            DataModelListener.stopListening(topics);
-            RuleEngineHandler.stopProjectRuleEngineExecution(projectId);
+
+            RuleEngineHandler.stopProjectRuleEngine(projectId);
+
             WorkflowEngineHandler.stopProjectWorkflows(projectId);
+
             projectStatus.put(projectId, false);
             throw e;
         }
 
     }
 
-    // stop project
+    // Stop project
     public void stopProject(String projectId, String projectName) {
 
         String msg = "[project = " + projectName + "] ";
@@ -159,15 +127,17 @@ public class RuntimeDispatcher {
         JELogger.control(msg + JEMessages.STOPPING_PROJECT, LogCategory.RUNTIME, projectId,
                 LogSubModule.JERUNNER, null);
         try {
+
+            RuleEngineHandler.stopProjectRuleEngine(projectId);
+
             WorkflowEngineHandler.stopProjectWorkflows(projectId);
+
         } catch (WorkflowBuildException ex) {
             LoggerUtils.logException(ex);
             JELogger.error(msg, LogCategory.RUNTIME, projectId,
                     LogSubModule.WORKFLOW, ex.getMessage(), ex.toString());
         }
 
-        Set<String> topics = DataModelListener.getTopicsByProjectId(projectId);
-        DataModelListener.stopListening(topics);
         projectStatus.put(projectId, false);
 
     }
@@ -525,17 +495,11 @@ public class RuntimeDispatcher {
 
         projectStatus.put(projectId, true);
 
-        RuleEngineHandler.runRuleEngineProject(projectId);
+        RuleEngineHandler.startProjectRuleEngine(projectId);
 
         for (JEVariable variable : VariableManager.getAllVariables(projectId)) {
             RuleEngineHandler.addVariable(variable);
         }
-
-        // Start listening to datasources
-        // Put it at the end to avoid loosing data
-        // FIXME should we add a wait till rule engine is started ...?
-        Set<String> topics = DataModelListener.getRuleTopicsByProjectId(projectId);
-        DataModelListener.startListening(topics);
 
     }
 
@@ -543,7 +507,7 @@ public class RuntimeDispatcher {
 
         projectStatus.put(projectId, true);
 
-        RuleEngineHandler.startRuleEngineProjectExecution(projectId);
+        RuleEngineHandler.startProjectRuleEngine(projectId);
 
         for (JEVariable variable : VariableManager.getAllVariables(projectId)) {
             RuleEngineHandler.addVariable(variable);
@@ -553,7 +517,7 @@ public class RuntimeDispatcher {
 
     public void shutDownRuleEngine(String projectId) {
 
-        RuleEngineHandler.stopProjectRuleEngineExecution(projectId);
+        RuleEngineHandler.stopProjectRuleEngine(projectId);
 
         projectStatus.put(projectId, false);
 
