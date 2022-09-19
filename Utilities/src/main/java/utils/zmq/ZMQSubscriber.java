@@ -87,7 +87,6 @@ public abstract class ZMQSubscriber implements Runnable {
 
                 LoggerUtils.logException(e);
 
-
                 try {
                     this.closeSocket();
 

@@ -1,6 +1,5 @@
-package io.je.runtime.data;
+package io.je.ruleengine.data;
 
-import io.je.runtime.services.RuntimeDispatcher;
 import io.je.utilities.beans.JEData;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.log.JELogger;
@@ -64,7 +63,7 @@ public class DataZMQSubscriber extends ZMQSubscriber {
 
                     } else {
 
-                        RuntimeDispatcher.injectData(new JEData(last_topic, data));
+                        DataModelListener.injectData(new JEData(last_topic, data));
 
                         last_topic = null;
                     }

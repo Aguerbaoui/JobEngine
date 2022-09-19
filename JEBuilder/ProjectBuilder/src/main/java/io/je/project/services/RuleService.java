@@ -512,13 +512,19 @@ public class RuleService {
     private void cleanUpRule(JEProject project, String ruleId) throws JERunnerErrorException {
 
         String rulePrefix = IdManager.generateSubRulePrefix(ruleId);
+
         FileUtilities.deleteFilesInPathByPrefix(project.getConfigurationPath(), rulePrefix);
+
         JELogger.debug(JEMessages.DELETING_RULE_RUNNER, CATEGORY, project.getProjectId(), RULE, ruleId);
+
         if (project.getRule(ruleId) instanceof UserDefinedRule) {
+
             UserDefinedRule rule = (UserDefinedRule) project.getRule(ruleId);
+
             for (String subRuleId : rule.getSubRules()) {
                 JERunnerAPIHandler.deleteRule(project.getProjectId(), subRuleId);
             }
+
         }
 
     }
@@ -610,14 +616,16 @@ public class RuleService {
         if (!project.ruleExists(ruleId)) {
             throw new RuleNotFoundException(projectId, ruleId);
         }
+
         JELogger.debug(
                 "[project = " + project.getProjectName() + "] [rule = "
                         + project.getRules()
                         .get(ruleId)
                         .getJobEngineElementName() + "]" + JEMessages.FRONT_CONFIG,
                 CATEGORY, projectId, RULE, ruleId);
-        project.getRule(ruleId)
-                .setRuleFrontConfig(config);
+
+        project.getRule(ruleId).setRuleFrontConfig(config);
+
         ruleRepository.save(project.getRule(ruleId));
     }
 

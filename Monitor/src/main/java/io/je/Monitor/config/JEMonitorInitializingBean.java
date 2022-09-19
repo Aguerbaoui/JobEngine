@@ -7,7 +7,6 @@ import io.je.utilities.log.JELogger;
 import io.siothconfig.SIOTHConfigUtility;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;

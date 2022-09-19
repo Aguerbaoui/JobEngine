@@ -1,4 +1,4 @@
-package io.je.runtime.beans;
+package io.je.ruleengine.data;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,7 +52,7 @@ public class DMTopic {
 
     public void addListener(DMListener dMListener) {
 
-        if (!dMListeners.containsKey(dMListener.id)) { // FIXME if should be removed
+        if (!dMListeners.containsKey(dMListener.id)) {
 
             dMListeners.put(dMListener.id, dMListener);
 
@@ -67,6 +67,7 @@ public class DMTopic {
         if (dMListeners.containsKey(listenerId)) {
 
             projects.remove(dMListeners.get(listenerId).projectId);
+
             dMListeners.remove(listenerId);
 
         }

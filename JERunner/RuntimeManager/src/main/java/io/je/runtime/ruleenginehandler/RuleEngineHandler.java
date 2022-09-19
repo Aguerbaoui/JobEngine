@@ -9,10 +9,8 @@ import io.je.utilities.beans.JEVariable;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.*;
 import io.je.utilities.log.JELogger;
-import io.je.utilities.runtimeobject.JEObject;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
-import utils.log.LoggerUtils;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -84,40 +82,19 @@ public class RuleEngineHandler {
     }
 
 
-    public static void injectData(String projectId, JEObject instance) {
-        try {
-
-            RuleEngine.assertFact(projectId, instance);
-
-        } catch (Exception e) {
-            LoggerUtils.logException(e);
-            JELogger.warn(JEMessages.ADD_INSTANCE_FAILED + e.getMessage(),
-                    LogCategory.RUNTIME, projectId,
-                    LogSubModule.RULE, null);
-        }
-
-    }
-
     /*
-     * FIXME (function? duplicated?) start running a project given a project id
+     * Start running a project rule engine given a project id
      */
-    public static void runRuleEngineProject(String projectId) throws RulesNotFiredException, RuleBuildFailedException {
-        RuleEngine.fireRules(projectId);
-    }
-
-    /*
-     * Start running the rule engine given a project id
-     */
-    public static void startRuleEngineProjectExecution(String projectId) throws RulesNotFiredException, RuleBuildFailedException {
-        RuleEngine.fireRules(projectId);
+    public static void startProjectRuleEngine(String projectId) throws RulesNotFiredException, RuleBuildFailedException {
+        RuleEngine.start(projectId);
     }
 
 
     /*
-     * FIXME (stop Rule engine not project) stop running a project given a project id
+     * Stop running a project given a project id
      */
-    public static void stopProjectRuleEngineExecution(String projectId) {
-        RuleEngine.stopRuleExecution(projectId);
+    public static void stopProjectRuleEngine(String projectId) {
+        RuleEngine.stop(projectId);
     }
 
 

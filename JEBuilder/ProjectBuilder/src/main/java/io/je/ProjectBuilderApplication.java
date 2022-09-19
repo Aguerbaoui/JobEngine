@@ -2,11 +2,6 @@ package io.je;
 
 import org.springframework.boot.Banner;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.actuate.autoconfigure.metrics.*;
-import org.springframework.boot.actuate.autoconfigure.metrics.export.simple.SimpleMetricsExportAutoConfiguration;
-import org.springframework.boot.actuate.autoconfigure.metrics.jdbc.DataSourcePoolMetricsAutoConfiguration;
-import org.springframework.boot.actuate.autoconfigure.metrics.web.client.HttpClientMetricsAutoConfiguration;
-import org.springframework.boot.actuate.autoconfigure.metrics.web.tomcat.TomcatMetricsAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.util.HashMap;

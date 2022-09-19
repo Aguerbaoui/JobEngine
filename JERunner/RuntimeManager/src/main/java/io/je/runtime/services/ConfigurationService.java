@@ -14,8 +14,8 @@ import utils.ProcessRunner;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
 import utils.log.LoggerUtils;
-import utils.zmq.ZMQType;
 import utils.zmq.ZMQSecurity;
+import utils.zmq.ZMQType;
 
 @Service
 public class ConfigurationService {

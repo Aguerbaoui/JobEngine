@@ -18,8 +18,8 @@ import utils.log.LogLevel;
 import utils.log.LogMessage;
 import utils.log.LogSubModule;
 import utils.log.LoggerUtils;
-import utils.zmq.ZMQType;
 import utils.zmq.ZMQResponder;
+import utils.zmq.ZMQType;
 
 import java.util.HashMap;
 import java.util.Locale;
