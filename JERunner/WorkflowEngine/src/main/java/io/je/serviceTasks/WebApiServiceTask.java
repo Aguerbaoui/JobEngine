@@ -1,5 +1,6 @@
 package io.je.serviceTasks;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.log.JELogger;
 import okhttp3.Response;
@@ -10,6 +11,8 @@ import utils.log.LogSubModule;
 import utils.network.Network;
 import utils.string.StringSub;
 
+import java.util.HashMap;
+
 public class WebApiServiceTask extends ServiceTask {
     @Override
     public void execute(DelegateExecution execution) {
@@ -18,6 +21,18 @@ public class WebApiServiceTask extends ServiceTask {
                 LogCategory.RUNTIME, task.getProjectId(),
                 LogSubModule.WORKFLOW, task.getTaskId());
         Network network = null;
+        if (task.getStringBody() != null && task.getStringBody() != "") {
+            try{
+                HashMap<String, String> body = new ObjectMapper().readValue(task.getStringBody(), HashMap.class);
+                task.setBody(body);
+            } catch(Exception e) {
+                JELogger.logException(e);
+
+                JELogger.error(JEMessages.UNEXPECTED_ERROR + e.getMessage(), LogCategory.RUNTIME, task.getProjectId(),
+                        LogSubModule.JERUNNER, task.getWorkflowId());
+                throw new BpmnError("Error");
+            }
+        }
         if (task.hasBody()) {
             try {
                 String json = task.getBody();
@@ -28,8 +43,8 @@ public class WebApiServiceTask extends ServiceTask {
             } catch (Exception e) {
                 JELogger.logException(e);
 
-                JELogger.error(JEMessages.UNEXPECTED_ERROR + e.getMessage(), LogCategory.RUNTIME, null,
-                        LogSubModule.JERUNNER, null);
+                JELogger.error(JEMessages.UNEXPECTED_ERROR + e.getMessage(), LogCategory.RUNTIME, task.getProjectId(),
+                        LogSubModule.JERUNNER, task.getWorkflowId());
                 throw new BpmnError("Error");
             }
         } else {
@@ -42,12 +57,12 @@ public class WebApiServiceTask extends ServiceTask {
             response = network.call();
             if (response != null && response.body() != null) {
                 JELogger.info(JEMessages.NETWORK_CALL_RESPONSE_IN_WEB_SERVICE_TASK + " = " + response.body().string(), LogCategory.RUNTIME,
-                        task.getProjectId(), LogSubModule.WORKFLOW, null);
+                        task.getProjectId(), LogSubModule.WORKFLOW, task.getWorkflowId());
             }
         } catch (Exception e) {
             JELogger.logException(e);
-            JELogger.error(JEMessages.UNEXPECTED_ERROR + e.getMessage(), LogCategory.RUNTIME, null,
-                    LogSubModule.JERUNNER, null);
+            JELogger.error(JEMessages.UNEXPECTED_ERROR + e.getMessage(), LogCategory.RUNTIME, task.getProjectId(),
+                    LogSubModule.JERUNNER, task.getWorkflowId());
             throw new BpmnError("Error");
         } finally {
             if (response != null && response.body() != null) {
