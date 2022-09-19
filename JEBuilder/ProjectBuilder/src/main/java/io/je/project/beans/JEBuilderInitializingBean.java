@@ -21,6 +21,8 @@ import utils.log.LoggerUtils;
 import utils.zmq.ZMQConfiguration;
 import utils.zmq.ZMQSecurity;
 
+import javax.annotation.PreDestroy;
+
 @Component
 public class JEBuilderInitializingBean implements InitializingBean {
 
@@ -29,7 +31,7 @@ public class JEBuilderInitializingBean implements InitializingBean {
 
     @Autowired
     @Lazy
-    ConfigurationService configService;
+    ConfigurationService configurationService;
 
     @Override
     public void afterPropertiesSet() {
@@ -76,7 +78,7 @@ public class JEBuilderInitializingBean implements InitializingBean {
             ProcessRunner.setProcessDumpPath(builderProperties.getProcessesDumpPath(), builderProperties.isDumpJavaProcessExecution());
 
             //Initialize JE configurations
-            configService.init();
+            configurationService.init();
 
             JELogger.control(JEMessages.LOGGER_INITIALIZED,
                     LogCategory.DESIGN_MODE, null,
@@ -85,7 +87,7 @@ public class JEBuilderInitializingBean implements InitializingBean {
             JELogger.control(JEMessages.BUILDER_STARTED, LogCategory.DESIGN_MODE,
                     null, LogSubModule.JEBUILDER, null);
 
-            configService.initResponder();
+            configurationService.initResponder();
 
         } catch (Exception e) {
 
@@ -95,6 +97,14 @@ public class JEBuilderInitializingBean implements InitializingBean {
                     LogSubModule.JEBUILDER, null);
         }
 
+    }
+
+    @PreDestroy
+    public void destroy() {
+        System.err.println(
+                "Callback triggered - @PreDestroy");
+
+        configurationService.close();
     }
 
 }

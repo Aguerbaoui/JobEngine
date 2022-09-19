@@ -13,6 +13,8 @@ import utils.log.LogSubModule;
 import utils.log.LoggerUtils;
 import utils.zmq.ZMQConfiguration;
 
+import javax.annotation.PreDestroy;
+
 @Component
 public class JEMonitorInitializingBean implements InitializingBean {
 
@@ -20,7 +22,7 @@ public class JEMonitorInitializingBean implements InitializingBean {
     MonitorProperties monitorProperties;
 
     @Autowired
-    JEMonitorSubscriber subscriber;
+    JEMonitorSubscriber jeMonitorSubscriber;
 
 
     @Override
@@ -44,10 +46,21 @@ public class JEMonitorInitializingBean implements InitializingBean {
             ZMQConfiguration.setReceiveTimeout(monitorProperties.getZmqReceiveTimeout());
             ZMQConfiguration.setSendTimeout(monitorProperties.getZmqSendTimeout());
 
-            subscriber.initSubscriber(monitorProperties.getMonitoringPort());
+            jeMonitorSubscriber.init(monitorProperties.getMonitoringPort());
 
         } catch (Exception e) {
             LoggerUtils.logException(e);
         }
     }
+
+
+    @PreDestroy
+    public void destroy() {
+        System.err.println(
+                "Callback triggered - @PreDestroy");
+
+        jeMonitorSubscriber.close();
+
+    }
+
 }

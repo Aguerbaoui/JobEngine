@@ -20,8 +20,12 @@ import utils.zmq.ZMQType;
 @Service
 public class ConfigurationService {
 
-    public void init(RunnerProperties properties) {
+    private JERunnerResponder jeRunnerResponder = null;
 
+    private Thread jeRunnerResponderThread = null;
+
+
+    public void init(RunnerProperties properties) {
 
         //init constants
         initConstants(properties.getSiothId(), properties.isDev());
@@ -40,8 +44,8 @@ public class ConfigurationService {
         ProcessRunner.setProcessDumpPath(properties.getProcessesDumpPath(), properties.isDumpJavaProcessExecution());
 
         initResponder(properties.getJeRunnerZMQResponsePort());
-        JERunnerRequester.setRequesterPort(properties.getJeRunnerZMQResponsePort());
 
+        JERunnerRequester.setRequesterPort(properties.getJeRunnerZMQResponsePort());
 
     }
 
@@ -50,11 +54,11 @@ public class ConfigurationService {
 
         try {
 
-            JERunnerResponder responser = new JERunnerResponder("tcp://" + SIOTHConfigUtility.getSiothConfig().getNodes().getSiothMasterNode(), responsePort, ZMQType.BIND);
+            jeRunnerResponder = new JERunnerResponder("tcp://" + SIOTHConfigUtility.getSiothConfig().getNodes().getSiothMasterNode(), responsePort, ZMQType.BIND);
 
-            Thread listener = new Thread(responser);
+            jeRunnerResponderThread = new Thread(jeRunnerResponder);
 
-            listener.start();
+            jeRunnerResponderThread.start();
 
             JELogger.info(JEMessages.ZMQ_RESPONSE_STARTED + "tcp://" + SIOTHConfigUtility.getSiothConfig().getNodes().getSiothMasterNode() + ":" + responsePort, null, null, LogSubModule.JEBUILDER, null);
 
@@ -80,6 +84,21 @@ public class ConfigurationService {
         JELogger.control(JEMessages.LOGGER_INITIALIZED,
                 LogCategory.DESIGN_MODE, null,
                 LogSubModule.JERUNNER, null);
+    }
+
+    public void close() {
+
+        if (jeRunnerResponder != null) {
+            jeRunnerResponder.setListening(false);
+            jeRunnerResponder.closeSocket();
+        }
+
+        if (jeRunnerResponderThread != null) {
+            if (jeRunnerResponderThread.isAlive()) {
+                jeRunnerResponderThread.interrupt();
+            }
+        }
+
     }
 
 }

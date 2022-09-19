@@ -31,12 +31,14 @@ public class ConfigurationService {
     ClassService classService;
     @Autowired
     @Lazy
-    ProjectZMQResponder responder;
+    ProjectZMQResponder projectZMQResponder;
 
     static boolean runnerStatus = true;
 
     final int healthCheck = SIOTHConfigUtility.getSiothConfig().getJobEngine().getCheckHealthEveryMs();
 
+    Thread classZMQSubscriberThread = null;
+    Thread projectZMQResponderThread = null;
 
     /*
      * check JERunner health
@@ -76,7 +78,7 @@ public class ConfigurationService {
 
             updateRunner();
 
-            classService.initClassZMQSubscriber();
+            classZMQSubscriberThread = classService.initClassZMQSubscriber();
 
         } catch (Exception exception) {
             JELogger.logException(exception);
@@ -92,9 +94,9 @@ public class ConfigurationService {
     public void initResponder() {
         try {
 
-            Thread listener = new Thread(responder);
+            projectZMQResponderThread = new Thread(projectZMQResponder);
 
-            listener.start();
+            projectZMQResponderThread.start();
 
             JELogger.info(ZMQ_RESPONSE_STARTED + "tcp://" + SIOTHConfigUtility.getSiothConfig().getNodes().getSiothMasterNode() + ":" + SIOTHConfigUtility.getSiothConfig().getPorts().getJeResponsePort(), null, null, LogSubModule.JEBUILDER, null);
 
@@ -102,6 +104,35 @@ public class ConfigurationService {
             LoggerUtils.logException(e);
             JELogger.error(ZMQ_RESPONSE_START_FAIL + JEExceptionHandler.getExceptionMessage(e), null, null, LogSubModule.JEBUILDER, null);
 
+        }
+
+    }
+
+    /*
+     * Close
+     */
+    public void close() {
+
+        if (projectZMQResponder != null) {
+            projectZMQResponder.setListening(false);
+            projectZMQResponder.closeSocket();
+        }
+
+        if (classService.getClassZMQSubscriber() != null) {
+            classService.getClassZMQSubscriber().setListening(false);
+            classService.getClassZMQSubscriber().closeSocket();
+        }
+
+        if (classZMQSubscriberThread != null) {
+            if (classZMQSubscriberThread.isAlive()) {
+                classZMQSubscriberThread.interrupt();
+            }
+        }
+
+        if (projectZMQResponderThread != null) {
+            if (projectZMQResponderThread.isAlive()) {
+                projectZMQResponderThread.interrupt();
+            }
         }
 
     }
