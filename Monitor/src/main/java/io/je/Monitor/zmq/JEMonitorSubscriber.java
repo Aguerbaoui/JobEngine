@@ -12,8 +12,10 @@ public class JEMonitorSubscriber {
     @Autowired
     MonitorZMQSubscriber monitorZMQSubscriber;
 
+    Thread monitorZMQSubscriberThread = null;
 
-    public void initSubscriber(int monitoringPort) {
+
+    public void init(int monitoringPort) {
 
         // TODO enhance code
         monitorZMQSubscriber.setUrl("tcp://" + SIOTHConfigUtility.getSiothConfig().getNodes().getSiothMasterNode());
@@ -21,8 +23,23 @@ public class JEMonitorSubscriber {
 
         monitorZMQSubscriber.setConnectionAddress(monitorZMQSubscriber.getUrl() + ":" + monitorZMQSubscriber.getSubscriberPort());
 
-        Thread thread = new Thread(monitorZMQSubscriber);
-        thread.start();
+        monitorZMQSubscriberThread = new Thread(monitorZMQSubscriber);
+        monitorZMQSubscriberThread.start();
+
+    }
+
+    public void close() {
+
+        if (monitorZMQSubscriber != null) {
+            monitorZMQSubscriber.setListening(false);
+            monitorZMQSubscriber.closeSocket();
+        }
+
+        if (monitorZMQSubscriberThread != null) {
+            if (monitorZMQSubscriberThread.isAlive()) {
+                monitorZMQSubscriberThread.interrupt();
+            }
+        }
 
     }
 

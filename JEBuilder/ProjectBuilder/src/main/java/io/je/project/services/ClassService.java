@@ -72,13 +72,20 @@ public class ClassService {
 
     Map<String, JEClass> loadedClasses = new HashMap<String, JEClass>();
 
+    private ClassZMQSubscriber classZMQSubscriber = null;
+
+
+    public ClassZMQSubscriber getClassZMQSubscriber() {
+        return classZMQSubscriber;
+    }
+
 
     /**
      * Init a thread that listens to the DataModelRestApi for class definition updates
      */
-    public void initClassZMQSubscriber() {
+    public Thread initClassZMQSubscriber() {
         // TODO make runnable static
-        ClassZMQSubscriber runnable = new ClassZMQSubscriber(
+        classZMQSubscriber = new ClassZMQSubscriber(
                 "tcp://" + SIOTHConfigUtility.getSiothConfig()
                         .getNodes()
                         .getSiothMasterNode(),
@@ -86,9 +93,10 @@ public class ClassService {
                         .getDataModelPORTS()
                         .getDmRestAPI_ConfigurationPubAddress());
 
-        Thread listener = new Thread(runnable);
+        Thread listener = new Thread(classZMQSubscriber);
         listener.start();
 
+        return listener;
     }
 
     /*

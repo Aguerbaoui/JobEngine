@@ -51,7 +51,7 @@ public class ProjectZMQResponder extends ZMQResponder {
 
                 if (data != null && !data.isEmpty() && !data.equals("null")) {
 
-                    JELogger.info("Received ZMQ request: " + data, null, null, LogSubModule.JEBUILDER, null);
+                    JELogger.info("Received ZMQ request : " + data, null, null, LogSubModule.JEBUILDER, null);
 
                     request = objectMapper.readValue(data, ProjectRequestObject.class);
 
@@ -83,7 +83,7 @@ public class ProjectZMQResponder extends ZMQResponder {
 
             } catch (Exception e) {
                 String errorMsg = JEExceptionHandler.getExceptionMessage(e);
-                JELogger.error("Failed to send ZMQ response: " + errorMsg, null, null, LogSubModule.JEBUILDER, null);
+                JELogger.error("Failed to send ZMQ response : " + errorMsg, null, null, LogSubModule.JEBUILDER, null);
 
             }
             try {
@@ -108,7 +108,7 @@ public class ProjectZMQResponder extends ZMQResponder {
             response.setResult(true);
             response.setStrError("");
         } catch (Exception e) {
-            JELogger.error("Failed to clean all: " + e.getMessage(), null, null, LogSubModule.JEBUILDER, null);
+            JELogger.error("Failed to clean all : " + e.getMessage(), null, null, LogSubModule.JEBUILDER, null);
             response.setResult(false);
             response.setStrError(JEExceptionHandler.getExceptionMessage(e));
         }

@@ -177,15 +177,15 @@ public abstract class ZMQSubscriber implements Runnable {
         this.connectionAddress = connectionAddress;
     }
 
+    public boolean isListening() {
+        return listening;
+    }
+
+    public void setListening(boolean listening) {
+        this.listening = listening;
+    }
+
 	/*
-
-	public boolean isListening() {
-		return listening;
-	}
-
-	public void stopListening() {
-		this.listening = false;
-	}
 
 	public Set<String> getTopics() {
 		return topics;

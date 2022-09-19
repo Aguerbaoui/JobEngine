@@ -22,4 +22,5 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         config.enableSimpleBroker("/rule/", "/workflow/", "/event/", "/variable/");
         config.setApplicationDestinationPrefixes("/app");
     }
+
 }
