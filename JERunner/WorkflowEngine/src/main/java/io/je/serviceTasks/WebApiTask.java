@@ -81,10 +81,6 @@ public class WebApiTask extends ActivitiTask {
         this.stringBody = stringBody;
     }
 
-    public boolean isHasBody() {
-        return hasBody;
-    }
-
     public void setHasBody(boolean hasBody) {
         this.hasBody = hasBody;
     }
