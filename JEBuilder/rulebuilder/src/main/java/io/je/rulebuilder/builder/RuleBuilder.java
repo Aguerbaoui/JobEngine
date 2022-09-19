@@ -157,11 +157,9 @@ public class RuleBuilder {
             uRule.getBlocks().resetAllBlocks();
 
             // TODO better management of font/back-end rule config desynchronization
-            /*
             if (!uRule.getRuleFrontConfig().contains("\"block_name\":\"" + root.getBlockName() + "\"")) {
                 continue;
             }
-            */
 
             scriptedRuleId = subRulePrefix + uRule.getJobEngineElementName() + ++scriptedRulesCounter;
 
