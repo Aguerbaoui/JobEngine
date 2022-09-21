@@ -28,12 +28,12 @@ public class JEProject {
     public Map<String, String> addedblockNames;
     public List<String> deletedBlockNames;
     /*
-     * block names
+     * Block names
      */
     Map<String, String> blockNames = new ConcurrentHashMap<>();
     // enum
     /*
-     * block name counters
+     * Block name counters
      */
     Map<String, Integer> blockNameCounters = new ConcurrentHashMap<>();
     /*

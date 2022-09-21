@@ -1,12 +1,9 @@
 package io.je.project.beans;
 
-//import io.je.project.config.AuthenticationInterceptor;
-
 import io.je.project.config.AuthenticationInterceptor;
 import io.je.project.config.BuilderProperties;
 import io.je.project.config.LicenseProperties;
 import io.je.project.services.ConfigurationService;
-import io.je.project.services.ProjectService;
 import io.je.utilities.config.ConfigurationConstants;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.LicenseNotActiveException;
@@ -24,20 +21,17 @@ import utils.log.LoggerUtils;
 import utils.zmq.ZMQConfiguration;
 import utils.zmq.ZMQSecurity;
 
+import javax.annotation.PreDestroy;
+
 @Component
 public class JEBuilderInitializingBean implements InitializingBean {
 
-
-    @Autowired
-    @Lazy
-    ProjectService projectService;
-
-    @Autowired
-    @Lazy
-    ConfigurationService configService;
-
     @Autowired
     BuilderProperties builderProperties;
+
+    @Autowired
+    @Lazy
+    ConfigurationService configurationService;
 
     @Override
     public void afterPropertiesSet() {
@@ -47,7 +41,9 @@ public class JEBuilderInitializingBean implements InitializingBean {
             SIOTHConfigUtility.setSiothId(builderProperties.getSiothId());
 
             //Initialize logger
-            JELogger.initLogger("JEBuilder", builderProperties.getJeBuilderLogPath(), builderProperties.getJeBuilderLogLevel(), builderProperties.isDev());
+            JELogger.initLogger("JEBuilder", builderProperties.getJeBuilderLogPath(),
+                    builderProperties.getJeBuilderLogLevel(), builderProperties.isDev());
+
             ConfigurationConstants.setJavaGenerationPath(SIOTHConfigUtility.getSiothConfig().getJobEngine().getGeneratedClassesPath());
 
             //Initialize authentication interceptor
@@ -69,21 +65,29 @@ public class JEBuilderInitializingBean implements InitializingBean {
             }
 
             JEMonitor.setPort(builderProperties.getMonitoringPort());
+
             ZMQSecurity.setSecure(builderProperties.getUseZmqSecurity());
-            ZMQConfiguration.setHeartbeatTimeout(builderProperties.getZmqHeartbeatValue());
+
+            ZMQConfiguration.setHeartbeatTimeout(builderProperties.getZmqHeartbeatTimeout());
             ZMQConfiguration.setHandshakeInterval(builderProperties.getZmqHandshakeInterval());
+            ZMQConfiguration.setReceiveTimeout(builderProperties.getZmqReceiveTimeout());
+            ZMQConfiguration.setSendTimeout(builderProperties.getZmqSendTimeout());
             ZMQConfiguration.setReceiveHighWatermark(builderProperties.getZmqReceiveHighWatermark());
             ZMQConfiguration.setSendHighWatermark(builderProperties.getZmqSendHighWatermark());
+
             ProcessRunner.setProcessDumpPath(builderProperties.getProcessesDumpPath(), builderProperties.isDumpJavaProcessExecution());
 
             //Initialize JE configurations
-            configService.init();
+            configurationService.init();
+
             JELogger.control(JEMessages.LOGGER_INITIALIZED,
                     LogCategory.DESIGN_MODE, null,
                     LogSubModule.JEBUILDER, null);
+
             JELogger.control(JEMessages.BUILDER_STARTED, LogCategory.DESIGN_MODE,
                     null, LogSubModule.JEBUILDER, null);
-            configService.initResponder();
+
+            configurationService.initResponder();
 
         } catch (Exception e) {
 
@@ -93,6 +97,14 @@ public class JEBuilderInitializingBean implements InitializingBean {
                     LogSubModule.JEBUILDER, null);
         }
 
+    }
+
+    @PreDestroy
+    public void destroy() {
+        System.err.println(
+                "Callback triggered - @PreDestroy");
+
+        configurationService.close();
     }
 
 }

@@ -1,6 +1,7 @@
 package io.je.ruleengine.impl;
 
 import io.je.ruleengine.control.PersistenceMap;
+import io.je.ruleengine.data.DataModelListener;
 import io.je.ruleengine.loader.RuleLoader;
 import io.je.ruleengine.models.Rule;
 import io.je.utilities.classloader.JEClassLoader;
@@ -35,6 +36,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static io.je.ruleengine.data.DataModelListener.requestInitialValue;
 import static org.kie.api.builder.Message.Level.ERROR;
 
 enum Status {
@@ -147,9 +149,9 @@ public class ProjectContainer {
                 }
             }
         }*/
-        stopRuleExecution(true, true);
+        stopRules(true, true);
         try {
-            fireRules();
+            startRules();
         } catch (RulesNotFiredException | RuleBuildFailedException exp) {
             logError(exp, JEMessages.FAILED_TO_FIRE_RULES);
         }
@@ -188,9 +190,9 @@ public class ProjectContainer {
     }
 
     /*
-     * This method fires until halt the kiesession of this project.
+     * This method start rules : fires until halt the kiesession of this project.
      */
-    public void fireRules() throws RulesNotFiredException, RuleBuildFailedException {
+    public void startRules() throws RulesNotFiredException, RuleBuildFailedException {
 
         JELogger.debugWithoutPublish("[projectId =" + projectId + "] " + JEMessages.FIRING_ALL_RULES,
                 LogCategory.RUNTIME, projectId, LogSubModule.RULE, null);
@@ -208,7 +210,7 @@ public class ProjectContainer {
 
         // check that project is not already running
         if (status == Status.RUNNING) {
-            stopRuleExecution(false, false);
+            stopRules(false, false);
         }
 
         // fire rules
@@ -240,7 +242,7 @@ public class ProjectContainer {
                     logError(exp, JEMessages.RULE_EXECUTION_ERROR + StringUtils.substringBefore(exp.getMessage(), " in "), ruleId);
 
                     try {
-                        fireRules();
+                        startRules();
                     } catch (RulesNotFiredException | RuleBuildFailedException exp1) {
                         logError(exp1, JEMessages.FAILED_TO_FIRE_RULES);
                     }
@@ -250,6 +252,19 @@ public class ProjectContainer {
             t1 = new Thread(runnable);
             t1.start();
             status = Status.RUNNING;
+
+            Set<String> topics = DataModelListener.getTopicsByProjectId(projectId);
+
+            Thread thread = new Thread(() -> {
+
+                for (String topic : topics) {
+
+                    requestInitialValue(topic);
+
+                }
+            });
+
+            thread.start();
 
         } catch (Exception exp) {
             if (t1 != null) {
@@ -265,14 +280,18 @@ public class ProjectContainer {
     }
 
     /*
-     * This method stops the rule (engine?) execution
+     * This method stops the rule engine
      */
-    public boolean stopRuleExecution(boolean destroySession, boolean removeAllRules) {
+    public boolean stopRules(boolean destroySession, boolean removeAllRules) {
 
         JELogger.debugWithoutPublish(JEMessages.STOPPING_PROJECT_CONTAINER
                         + " , destroy session : " + Boolean.toString(destroySession)
                         + " , remove all project rules : " + Boolean.toString(removeAllRules), // FIXME msg
                 LogCategory.RUNTIME, projectId, LogSubModule.RULE, null);
+
+        Set<String> topics = DataModelListener.getTopicsByProjectId(projectId);
+
+        DataModelListener.stopListening(topics);
 
         // TODO : Add more control for stopping rules / catching exceptions (case rule stopped but still firing, ex : Issue 14962)
         // destroySession=false;
@@ -873,6 +892,8 @@ public class ProjectContainer {
 
             }
 
+        } else {
+            LoggerUtils.warn("Trying to insert fact : " + fact.toString() + ", but project is not running. Project Id : " + projectId);
         }
 
     }

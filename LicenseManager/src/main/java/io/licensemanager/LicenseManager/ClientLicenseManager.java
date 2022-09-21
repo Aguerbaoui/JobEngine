@@ -67,8 +67,8 @@ public class ClientLicenseManager {
 
                     String cipheredSIOTHRequest = cipheredData; /* new String(Base64Utils.encode(cipheredData)); */
 
-                    requestTimeout = 20000;
-                    String rcvData = objZMQRequest.sendRequest(cipheredSIOTHRequest, -1);// requestTimeout);
+                    //requestTimeout = 20000;
+                    String rcvData = objZMQRequest.sendRequest(cipheredSIOTHRequest);
 
                     if (rcvData != null && !rcvData.isEmpty()) {
                         // Decrypt rcvData

@@ -13,31 +13,54 @@ import utils.log.LogSubModule;
 import utils.log.LoggerUtils;
 import utils.zmq.ZMQConfiguration;
 
+import javax.annotation.PreDestroy;
+
 @Component
 public class JEMonitorInitializingBean implements InitializingBean {
 
     @Autowired
-    JEMonitorSubscriber subscriber;
+    MonitorProperties monitorProperties;
 
     @Autowired
-    MonitorProperties monitorProperties;
+    JEMonitorSubscriber jeMonitorSubscriber;
+
 
     @Override
     public void afterPropertiesSet() {
         try {
+
             ConfigurationConstants.initConstants(monitorProperties.getSiothId(), monitorProperties.isDev());
-            JELogger.initLogger("JEMonitor", monitorProperties.getJeMonitorLogPath(), monitorProperties.getJeMonitorLogLevel(), monitorProperties.isDev());
+
+            JELogger.initLogger("JEMonitor", monitorProperties.getJeMonitorLogPath(),
+                    monitorProperties.getJeMonitorLogLevel(), monitorProperties.isDev());
+
             SIOTHConfigUtility.setSiothId(monitorProperties.getSiothId());
-            JELogger.control(JEMessages.LOGGER_INITIALIZED,
-                    LogCategory.MONITOR, null,
+
+            JELogger.control(JEMessages.LOGGER_INITIALIZED, LogCategory.MONITOR, null,
                     LogSubModule.JEMONITOR, null);
-            ZMQConfiguration.setHeartbeatTimeout(monitorProperties.getZmqHeartbeatValue());
+
+            ZMQConfiguration.setHeartbeatTimeout(monitorProperties.getZmqHeartbeatTimeout());
             ZMQConfiguration.setHandshakeInterval(monitorProperties.getZmqHandshakeInterval());
             ZMQConfiguration.setReceiveHighWatermark(monitorProperties.getZmqReceiveHighWatermark());
             ZMQConfiguration.setSendHighWatermark(monitorProperties.getZmqSendHighWatermark());
-            subscriber.initSubscriber();
+            ZMQConfiguration.setReceiveTimeout(monitorProperties.getZmqReceiveTimeout());
+            ZMQConfiguration.setSendTimeout(monitorProperties.getZmqSendTimeout());
+
+            jeMonitorSubscriber.init(monitorProperties.getMonitoringPort());
+
         } catch (Exception e) {
             LoggerUtils.logException(e);
         }
     }
+
+
+    @PreDestroy
+    public void destroy() {
+        System.err.println(
+                "Callback triggered - @PreDestroy");
+
+        jeMonitorSubscriber.close();
+
+    }
+
 }

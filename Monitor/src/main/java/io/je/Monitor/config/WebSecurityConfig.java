@@ -15,27 +15,8 @@ import utils.log.LoggerUtils;
 import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
-@EnableWebSecurity(debug = true) // TODO remove debug
+@EnableWebSecurity //(debug = true) // TODO code debug mode option
 public class WebSecurityConfig {
-
-    /* extends WebSecurityConfigurerAdapter {
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        // @formatter:off
-        http
-                .cors()
-                .and()
-                .headers()
-                .frameOptions().disable()
-                .and()
-                .csrf().disable()
-                .authorizeRequests() // FIXME Is it needed in filterChain?
-                .antMatchers("/ws/**").permitAll()
-                .anyRequest()
-                .authenticated();
-        // @formatter:on
-    }
-*/
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -43,7 +24,7 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests((authz) -> {
                             try {
                                 authz
-                                        //.authorizeRequests()
+                                        //.authorizeRequests() // FIXME Is it needed in filterChain?
                                         .antMatchers("/ws/**").permitAll()
                                         .anyRequest().authenticated()
                                         .and()

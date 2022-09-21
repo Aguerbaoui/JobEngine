@@ -45,7 +45,7 @@ public class ProjectContainerRepository {
             ProjectContainer project = allProjects.get(projectId);
             if (project.getStatus() == Status.RUNNING) {
                 //TODO: error management
-                project.stopRuleExecution(true, false);
+                project.stopRules(true, false);
             }
             project = null;
             allProjects.remove(projectId);

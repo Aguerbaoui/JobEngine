@@ -404,7 +404,7 @@ public class Executioner {
         }
         if (accountSID == null) URI = URI + "?access_token=" + accountToken;
         if (accountSID != null) URI = URI + "?login=" + accountSID + "&pass=" + accountToken;
-        URI = URI + "&unicode=" + uni + "&highpriority=" + prio + "&flash=" + smsType + modem + "&validity=" + validity + "&message=" + messageBody;
+        URI = URI + "&unicode=" + uni + "&highpriority=" + prio + "&flash=" + smsType + modem + "&validity=" + validity + "&message=" + messageBody.replace(" ", "%20");
         final String base = URI + sendTo;
         phoneNumbers.forEach(number -> {
             HttpURLConnection conn;
@@ -428,8 +428,12 @@ public class Executioner {
                 throw new RuntimeException(e);
             }
             conn.disconnect();
-            if (result.toLowerCase().indexOf("OK".toLowerCase()) != -1 ) {
+            if (result.toLowerCase().indexOf("OK;".toLowerCase()) != -1 ) {
                 JELogger.control(SENT_MESSAGE_SUCCESSFULLY_TO + new PhoneNumber(number), LogCategory.RUNTIME, projectId,
+                        LogSubModule.JERUNNER, ruleId, blockName);
+            }
+            else {
+                JELogger.error(ERROR_OCCURRED_WHEN_SENDING_MESSAGE_TO + new PhoneNumber(number) + ": " + result, LogCategory.RUNTIME, projectId,
                         LogSubModule.JERUNNER, ruleId, blockName);
             }
             System.out.println(result);

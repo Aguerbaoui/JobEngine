@@ -1,6 +1,5 @@
 package io.je.Monitor.zmq;
 
-import io.je.Monitor.config.MonitorProperties;
 import io.siothconfig.SIOTHConfigUtility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -9,17 +8,39 @@ import org.springframework.stereotype.Component;
 public class JEMonitorSubscriber {
 
     public static final String JEMONITOR_TOPIC = "JEMonitorTopic";
+
     @Autowired
     MonitorZMQSubscriber monitorZMQSubscriber;
-    @Autowired
-    MonitorProperties monitorProperties;
 
-    public void initSubscriber() {
-        monitorZMQSubscriber.setConfig("tcp://" + SIOTHConfigUtility.getSiothConfig().getNodes().getSiothMasterNode(),
-                monitorProperties.getMonitoringPort());
+    Thread monitorZMQSubscriberThread = null;
 
-        Thread thread = new Thread(monitorZMQSubscriber);
-        thread.start();
+
+    public void init(int monitoringPort) {
+
+        // TODO enhance code
+        monitorZMQSubscriber.setUrl("tcp://" + SIOTHConfigUtility.getSiothConfig().getNodes().getSiothMasterNode());
+        monitorZMQSubscriber.setSubscriberPort(monitoringPort);
+
+        monitorZMQSubscriber.setConnectionAddress(monitorZMQSubscriber.getUrl() + ":" + monitorZMQSubscriber.getSubscriberPort());
+
+        monitorZMQSubscriberThread = new Thread(monitorZMQSubscriber);
+        monitorZMQSubscriberThread.start();
+
+    }
+
+    public void close() {
+
+        if (monitorZMQSubscriber != null) {
+            monitorZMQSubscriber.setListening(false);
+            monitorZMQSubscriber.closeSocket();
+        }
+
+        if (monitorZMQSubscriberThread != null) {
+            if (monitorZMQSubscriberThread.isAlive()) {
+                monitorZMQSubscriberThread.interrupt();
+            }
+        }
+
     }
 
 }

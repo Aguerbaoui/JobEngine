@@ -3,6 +3,7 @@ package io.je.utilities.constants;
 
 public class JEMessages {
 
+    // FIXME externalize All messages
 
     //*****************************************GLobalMessages******************************//
     public static final String BUILDER_STARTED = "Builder started successfully";
@@ -652,6 +653,7 @@ public class JEMessages {
     public static final String ERROR_REMOVING_RULE = "Error while removing rule";
     public static final String ERROR_EXECUTING_DB_QUERY = "Error while executing the database query";
     public static final String ERROR_GETTING_CLASS_UPDATES = "Error while getting class updates";
+    public static final String ZMQ_CONNECTION_FAILED = "ZMQ connection failed";
     public static final String FAILED_TO_SEND_LOG_MESSAGE_TO_THE_LOGGING_SYSTEM = "Failed to send log message to the Tracker module: ";
     public static final String FAILED_TO_SEND_MONITORING_MESSAGE_TO_THE_LOGGING_SYSTEM = "Failed to send monitoring data to the JEMonitor module: ";
     public static final String CHECK_DM_FOR_DETAILS = "Check Integration Objects' SIOTH Data Model service's log file for more details. ";
@@ -679,7 +681,7 @@ public class JEMessages {
 
     public static final String FAILED_TO_INJECT_DATA = "Failed to inject data: ";
 
-    public static final String DATA_LISTENTING_STARTED = "Started listening for data... ";
+    public static final String STARTED_LISTENING_FOR_DATA = "Started listening for data... ";
 
     public static final String ERROR_IMPORTING_FILE = "Error while importing file ";
 
@@ -741,8 +743,8 @@ public class JEMessages {
     public static final String FAILED_TO_CAST_DATA_CHECK_THE_TYPE_OF_THE_VARIABLE_AND_THE_INCOMING_DATA = "Failed to cast data check the type of the variable and the incoming data";
 
     public static final String ZMQ_REQUEST_RECEIVED = "Received ZMQ request : ";
-    public static final String ZMQ_RESPONSE_STARTED = "Started ZMQ responser on address : ";
-    public static final String ZMQ_RESPONSE_START_FAIL = "Failed to start ZMQ Responser ";
+    public static final String ZMQ_RESPONSE_STARTED = "ZMQ responder : Started  on address : ";
+    public static final String ZMQ_RESPONSE_START_FAIL = "ZMQ responder : Failed to start : ";
 
     public static final String ZMQ_SENDING_RESPONSE = "Sending response : ";
     public static final String ZMQ_FAILED_TO_RESPOND = "Failed to send ZMQ response : ";

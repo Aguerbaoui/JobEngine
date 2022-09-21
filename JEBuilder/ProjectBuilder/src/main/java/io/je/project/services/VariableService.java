@@ -23,9 +23,11 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Service
+@Lazy
 public class VariableService {
 
     @Autowired
+    @Lazy
     VariableRepository variableRepository;
 
     @Autowired
@@ -113,15 +115,22 @@ public class VariableService {
         if (project.variableExists(variableModel.getId())) {
             throw new VariableAlreadyExistsException(JEMessages.VARIABLE_EXISTS);
         }
+
         variableModel.setProjectName(project.getProjectName());
-        JEVariable var = new JEVariable(variableModel.getId(), variableModel.getProjectId(), variableModel.getName(), variableModel.getType(), variableModel.getInitialValue(), variableModel.getDescription(), variableModel.getCreatedBy(), variableModel.getModifiedBy());
+
+        JEVariable var = new JEVariable(variableModel.getId(), variableModel.getProjectId(), variableModel.getName(),
+                variableModel.getType(), variableModel.getInitialValue(), variableModel.getDescription(),
+                variableModel.getCreatedBy(), variableModel.getModifiedBy());
+
         var.setJobEngineProjectName(project.getProjectName());
+
         try {
             JERunnerAPIHandler.addVariable(variableModel.getProjectId(), variableModel.getId(), variableModel);
         } catch (JERunnerErrorException e) {
             LoggerUtils.logException(e);
             throw new VariableException(JEMessages.ERROR_ADDING_VARIABLE_TO_PROJECT);
         }
+
         project.addVariable(var);
         variableRepository.save(var);
     }
@@ -129,7 +138,9 @@ public class VariableService {
     /*
      * Delete a variable from the project
      * */
-    public void deleteVariable(String projectId, String varId) throws ProjectNotFoundException, VariableNotFoundException, LicenseNotActiveException, VariableException, ProjectLoadException {
+    public void deleteVariable(String projectId, String varId) throws ProjectNotFoundException, VariableNotFoundException,
+            LicenseNotActiveException, VariableException, ProjectLoadException {
+
         LicenseProperties.checkLicenseIsActive();
 
         JELogger.debug(JEMessages.DELETING_VARIABLE,
@@ -156,7 +167,9 @@ public class VariableService {
     /*
      * Update an existing variable in the project
      * */
-    public void updateVariable(VariableModel variableModel) throws ProjectNotFoundException, VariableNotFoundException, LicenseNotActiveException, VariableException, ProjectLoadException {
+    public void updateVariable(VariableModel variableModel) throws ProjectNotFoundException, VariableNotFoundException,
+            LicenseNotActiveException, VariableException, ProjectLoadException {
+
         LicenseProperties.checkLicenseIsActive();
 
         JELogger.debug(JEMessages.ADDING_VARIABLE,
@@ -171,7 +184,11 @@ public class VariableService {
             throw new VariableNotFoundException(JEMessages.VARIABLE_NOT_FOUND);
         }
         variableModel.setProjectName(project.getProjectName());
-        JEVariable var = new JEVariable(variableModel.getId(), variableModel.getProjectId(), variableModel.getName(), variableModel.getType(), variableModel.getInitialValue(), variableModel.getDescription(), variableModel.getCreatedBy(), variableModel.getModifiedBy());
+
+        JEVariable var = new JEVariable(variableModel.getId(), variableModel.getProjectId(), variableModel.getName(),
+                variableModel.getType(), variableModel.getInitialValue(), variableModel.getDescription(),
+                variableModel.getCreatedBy(), variableModel.getModifiedBy());
+
         var.setJobEngineProjectName(project.getProjectName());
         var.setJeObjectCreationDate(Instant.now());
         var.setJeObjectLastUpdate(Instant.now());
@@ -197,7 +214,6 @@ public class VariableService {
             LoggerUtils.logException(e);
             throw new VariableException(JEMessages.ERROR_WRITING_VALUE_TO_VARIABLE);
         }
-
 
     }
 
@@ -238,7 +254,9 @@ public class VariableService {
     /*
      * Delete list of variables
      * */
-    public void deleteVariables(String projectId, List<String> ids) throws LicenseNotActiveException, ProjectNotFoundException, VariableNotFoundException, ProjectLoadException {
+    public void deleteVariables(String projectId, List<String> ids) throws LicenseNotActiveException,
+            ProjectNotFoundException, VariableNotFoundException, ProjectLoadException {
+
         LicenseProperties.checkLicenseIsActive();
 
         JELogger.debug(JEMessages.DELETING_VARIABLES,

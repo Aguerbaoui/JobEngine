@@ -5,18 +5,14 @@ import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.WorkflowConstants;
 import io.je.utilities.log.JELogger;
 import io.siothconfig.SIOTHConfigUtility;
-import okhttp3.Response;
 import org.activiti.engine.delegate.BpmnError;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.springframework.http.HttpStatus;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
 import utils.log.LoggerUtils;
-import utils.network.BodyType;
-import utils.network.HttpMethod;
 import utils.network.Network;
 
-import java.io.IOException;
 import java.util.HashMap;
 
 import static io.je.utilities.constants.WorkflowConstants.*;

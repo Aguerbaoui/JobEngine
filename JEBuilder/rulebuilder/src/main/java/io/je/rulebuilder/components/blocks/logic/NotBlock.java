@@ -7,8 +7,6 @@ import io.je.utilities.exceptions.RuleBuildFailedException;
 
 public class NotBlock extends LogicBlock {
 
-    String operator;
-
     // TODO constants
     public NotBlock(BlockModel blockModel) {
         super(blockModel);

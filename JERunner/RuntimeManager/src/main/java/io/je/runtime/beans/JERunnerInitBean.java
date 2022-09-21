@@ -8,6 +8,8 @@ import org.springframework.stereotype.Component;
 import utils.log.LoggerUtils;
 import utils.zmq.ZMQConfiguration;
 
+import javax.annotation.PreDestroy;
+
 @Component
 public class JERunnerInitBean implements InitializingBean {
 
@@ -21,13 +23,24 @@ public class JERunnerInitBean implements InitializingBean {
     public void afterPropertiesSet() {
         try {
             configurationService.init(runnerProperties);
-            ZMQConfiguration.setHeartbeatTimeout(runnerProperties.getZmqHeartbeatValue());
+
+            ZMQConfiguration.setHeartbeatTimeout(runnerProperties.getZmqHeartbeatTimeout());
             ZMQConfiguration.setHandshakeInterval(runnerProperties.getZmqHandshakeInterval());
+            ZMQConfiguration.setReceiveTimeout(runnerProperties.getZmqReceiveTimeout());
+            ZMQConfiguration.setSendTimeout(runnerProperties.getZmqSendTimeout());
             ZMQConfiguration.setReceiveHighWatermark(runnerProperties.getZmqReceiveHighWatermark());
             ZMQConfiguration.setSendHighWatermark(runnerProperties.getZmqSendHighWatermark());
+
         } catch (Exception e) {
             LoggerUtils.logException(e);
         }
     }
 
+    @PreDestroy
+    public void destroy() {
+        System.err.println(
+                "Callback triggered - @PreDestroy");
+
+        configurationService.close();
+    }
 }

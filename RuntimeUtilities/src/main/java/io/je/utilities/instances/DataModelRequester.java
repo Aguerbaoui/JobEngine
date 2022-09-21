@@ -13,6 +13,7 @@ import utils.zmq.ZMQRequester;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -29,7 +30,7 @@ public class DataModelRequester {
 
 
     /*
-     * request to write in an instance's attribute
+     * Request to write in an instance's attribute
      */
     public static String writeToInstance(String instanceId, String attributeName, Object attributeNewValue) {
 
@@ -56,12 +57,13 @@ public class DataModelRequester {
     }
 
     /*
-     * request to get last values by class Id
+     * Request to get last values by class Id
      */
-    public static List<Object> readInitialValues(String modelId) {
+    public static String readInitialValues(String modelId) {
         JELogger.trace("Requesting last values for modelId = " + modelId, LogCategory.RUNTIME,
                 null, LogSubModule.JERUNNER, null);
-        List<Object> values = new ArrayList<>();
+
+        String value = null; // Single value as single modelID TODO check if we need managing list : check below
 
         try {
             HashMap<String, String> requestMap = new HashMap<>();
@@ -73,14 +75,21 @@ public class DataModelRequester {
                     null, LogSubModule.JERUNNER, null);
 
             if (data != null) {
-                values = objectMapper.readValue(data, typeFactory.constructCollectionType(List.class, Object.class));
 
+                value = data.substring(1, data.length()-1);
+/*
+FIXME is it needed?
+TODO remove if useless
+                List<String> values = new ArrayList<>();
+                values = objectMapper.readValue(data, typeFactory.constructCollectionType(List.class, String.class));
+*/
             }
+
         } catch (IOException e) {
             LoggerUtils.logException(e);
             JELogger.error(JEMessages.FAILED_INIT_DATAMODEL + modelId, null, "", LogSubModule.JERUNNER, modelId);
         }
-        return values;
+        return value;
 
     }
 
@@ -99,6 +108,7 @@ public class DataModelRequester {
             requestMap.put("Type", "ReadInstance");
 
             requestMap.put(isName.length > 0 && Boolean.TRUE.equals(isName[0]) ? "InstanceName" : "InstanceId", instanceId);
+
             String data = requester.sendRequest(objectMapper.writeValueAsString(requestMap));
 
             JELogger.trace("Request ReadInstance : " + JEMessages.DATA_RECEIVED + " : " + data, LogCategory.RUNTIME,
@@ -106,8 +116,8 @@ public class DataModelRequester {
 
             if (data != null) {
                 return data;
-
             }
+
         } catch (JsonProcessingException e) {
             LoggerUtils.logException(e);
             JELogger.error(JEMessages.FAILED_INIT_DATAMODEL + instanceId, null, "", LogSubModule.JERUNNER, instanceId);

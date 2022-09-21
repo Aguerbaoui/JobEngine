@@ -62,8 +62,8 @@ public class ComparisonBlock extends PersistableBlock {
 
     public ComparisonBlock(BlockModel blockModel) {
         super(blockModel.getBlockId(), blockModel.getProjectId(), blockModel.getRuleId(), blockModel.getBlockName(),
-                blockModel.getDescription(),
-                blockModel.getTimePersistenceValue(), blockModel.getTimePersistenceUnit(), blockModel.getInputBlocksIds(), blockModel.getOutputBlocksIds());
+                blockModel.getDescription(), blockModel.getTimePersistenceValue(), blockModel.getTimePersistenceUnit(),
+                blockModel.getInputBlocksIds(), blockModel.getOutputBlocksIds());
 
 
         try {

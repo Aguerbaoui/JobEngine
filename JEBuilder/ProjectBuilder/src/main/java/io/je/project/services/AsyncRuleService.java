@@ -23,19 +23,96 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 @Service
+@Lazy
 public class AsyncRuleService {
 
     private static final LogSubModule RULE = LogSubModule.RULE;
     private static final LogCategory CATEGORY = LogCategory.DESIGN_MODE;
     @Autowired
+    @Lazy
     RuleRepository ruleRepository;
     @Autowired
     @Lazy
     ProjectService projectService;
 
+    /*
+     * Build rule : create drl + check for compilation errors
+     */
+    @Async
+    public CompletableFuture<OperationStatusDetails> compileRule(String projectId, String ruleId, boolean compileOnly) {
+        OperationStatusDetails result = new OperationStatusDetails(ruleId);
+        JEProject project = null;
+        JERule rule = null;
+        // Check rule exists
+        try {
+            project = getProject(projectId);
+            rule = project.getRule(ruleId);
+        } catch (Exception e) {
+            LoggerUtils.logException(e);
+            result.setOperationSucceeded(false);
+            result.setOperationError(e.getMessage());
+            return CompletableFuture.completedFuture(result);
+        }
+        result.setItemName(rule.getJobEngineElementName());
+        // Set rule topics
+        rule.loadTopics();
+
+        try {
+            if (rule.isEnabled()) {
+
+                RuleBuilder.buildRule(rule, getProject(projectId).getConfigurationPath(), compileOnly);
+
+                // Update rule status
+                // Rule built
+                if (!compileOnly) {
+                    rule.setAdded(true);
+                    rule.setBuilt(true);
+                    project.getRuleEngine().add(ruleId);
+                }
+
+                rule.setCompiled(true);
+                result.setOperationSucceeded(true);
+                rule.setContainsErrors(false);
+
+            }
+        } catch (RuleBuildFailedException | JERunnerErrorException | ProjectNotFoundException | ProjectLoadException |
+                 LicenseNotActiveException e) {
+            LoggerUtils.logException(e);
+
+            rule.setBuilt(false);
+            rule.setContainsErrors(true);
+            result.setOperationSucceeded(false);
+            result.setOperationError(e.getMessage());
+
+            return CompletableFuture.completedFuture(result);
+        }
+
+        try {
+            RuleService.updateRuleStatus(rule);
+            ruleRepository.save(rule);
+        } catch (Exception e) {
+            LoggerUtils.logException(e);
+            JELogger.error("[rule = " + rule.getJobEngineElementName() + "]" + JEMessages.STATUS_UPDATE_FAILED,
+                    CATEGORY, projectId, RULE, null);
+
+        }
+
+        return CompletableFuture.completedFuture(result);
+
+    }
+
+    /*
+     * Build rule
+     * */
+    @Async
+    public CompletableFuture<OperationStatusDetails> buildRule(String projectId, String ruleId) {
+        return compileRule(projectId, ruleId, false);
+
+    }
+
     @Async
     /*
-     * run a specific rule.
+     * Run a specific rule.
      */
     public CompletableFuture<OperationStatusDetails> runRule(String projectId, String ruleId)
             throws LicenseNotActiveException {
@@ -82,13 +159,13 @@ public class AsyncRuleService {
             return CompletableFuture.completedFuture(result);
 
         }
-
+		
 		/*if(rule.getStatus()==RuleStatus.RUNNING)
 		{
 			result.setOperationSucceeded(false);
 			result.setOperationError(JEMessages.RULE_ALREADY_RUNNING);
 			return CompletableFuture.completedFuture(result);
-
+			
 		}*/
         try {
 
@@ -134,6 +211,7 @@ public class AsyncRuleService {
 
     }
 
+
     private JEProject getProject(String projectId) throws ProjectNotFoundException, ProjectLoadException, LicenseNotActiveException {
         JEProject project = projectService.getProjectById(projectId);
         if (project == null) {
@@ -143,82 +221,6 @@ public class AsyncRuleService {
             throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
         }
         return project;
-    }
-
-    /*
-     * Build rule
-     * */
-    @Async
-    public CompletableFuture<OperationStatusDetails> buildRule(String projectId, String ruleId) {
-        return compileRule(projectId, ruleId, false);
-
-    }
-
-    /*
-     * build rule : create drl + check for compilation errors
-     */
-    @Async
-    public CompletableFuture<OperationStatusDetails> compileRule(String projectId, String ruleId, boolean compileOnly) {
-        OperationStatusDetails result = new OperationStatusDetails(ruleId);
-        JEProject project = null;
-        JERule rule = null;
-        // check rule exists
-        try {
-            project = getProject(projectId);
-            rule = project.getRule(ruleId);
-            rule.setJobEngineProjectName(project.getProjectName()); //in case the project name was updated
-        } catch (Exception e) {
-            LoggerUtils.logException(e);
-            result.setOperationSucceeded(false);
-            result.setOperationError(e.getMessage());
-            return CompletableFuture.completedFuture(result);
-        }
-        result.setItemName(rule.getJobEngineElementName());
-        //set rule topics
-        rule.loadTopics();
-
-        try {
-            if (rule.isEnabled()) {
-
-                RuleBuilder.buildRule(rule, getProject(projectId).getConfigurationPath(), compileOnly);
-
-                // update rule status
-                // rule built
-                if (!compileOnly) {
-                    rule.setAdded(true);
-                    rule.setBuilt(true);
-                    project.getRuleEngine().add(ruleId);
-                }
-
-                rule.setCompiled(true);
-                result.setOperationSucceeded(true);
-                rule.setContainsErrors(false);
-
-            }
-        } catch (RuleBuildFailedException | JERunnerErrorException | ProjectNotFoundException | ProjectLoadException |
-                 LicenseNotActiveException e) {
-            LoggerUtils.logException(e);
-
-            rule.setBuilt(false);
-            rule.setContainsErrors(true);
-            result.setOperationSucceeded(false);
-            result.setOperationError(e.getMessage());
-
-            return CompletableFuture.completedFuture(result);
-        }
-
-        try {
-            RuleService.updateRuleStatus(rule);
-            ruleRepository.save(rule);
-        } catch (Exception e) {
-            LoggerUtils.logException(e);
-            JELogger.error("[rule = " + rule.getJobEngineElementName() + "]" + JEMessages.STATUS_UPDATE_FAILED,
-                    CATEGORY, projectId, RULE, null);
-
-        }
-
-        return CompletableFuture.completedFuture(result);
-
     }
 
     /*

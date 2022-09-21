@@ -25,9 +25,11 @@ import java.util.concurrent.ConcurrentHashMap;
 import static io.je.utilities.constants.JEMessages.UPDATING_EVENT;
 
 @Service
+@Lazy
 public class EventService {
 
     @Autowired
+    @Lazy
     EventRepository eventRepository;
 
     @Autowired
@@ -105,7 +107,8 @@ public class EventService {
         if (!StringUtilities.isStringOnlyAlphabet(eventModel.getName())) {
             throw new EventException(JEMessages.NOT_ALPHABETICAL);
         }
-        JEEvent event = new JEEvent(eventModel.getEventId(), projectId, eventModel.getName(), EventType.GENERIC_EVENT, eventModel.getDescription(), eventModel.getTimeout(), eventModel.getTimeoutUnit(), eventModel.getCreatedBy(), eventModel.getModifiedBy());
+        JEEvent event = new JEEvent(eventModel.getEventId(), projectId, eventModel.getName(), EventType.GENERIC_EVENT,
+                eventModel.getDescription(), eventModel.getTimeout(), eventModel.getTimeoutUnit(), eventModel.getCreatedBy(), eventModel.getModifiedBy());
         registerEvent(event);
         eventRepository.save(event);
 
@@ -134,7 +137,8 @@ public class EventService {
         if (!StringUtilities.isStringOnlyAlphabet(eventModel.getName())) {
             throw new EventException(JEMessages.NOT_ALPHABETICAL);
         }
-        JEEvent event = new JEEvent(eventModel.getEventId(), projectId, eventModel.getName(), EventType.GENERIC_EVENT, eventModel.getDescription(), eventModel.getTimeout(), eventModel.getTimeoutUnit(), eventModel.getCreatedBy(), eventModel.getModifiedBy());
+        JEEvent event = new JEEvent(eventModel.getEventId(), projectId, eventModel.getName(), EventType.GENERIC_EVENT,
+                eventModel.getDescription(), eventModel.getTimeout(), eventModel.getTimeoutUnit(), eventModel.getCreatedBy(), eventModel.getModifiedBy());
         registerEvent(event);
         eventRepository.save(event);
 

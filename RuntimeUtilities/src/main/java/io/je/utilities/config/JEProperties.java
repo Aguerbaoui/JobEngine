@@ -10,6 +10,18 @@ public class JEProperties {
     @Value("${jobenginebuilder.log.level}")
     String jeBuilderLogLevel;
 
+    @Value("${jobenginerunner.log.path}")
+    String jeRunnerLogPath;
+
+    @Value("${jobenginerunner.log.level}")
+    String jeRunnerLogLevel;
+
+    @Value("${jobenginemonitor.log.path}")
+    String jeMonitorLogPath;
+
+    @Value("${jobenginemonitor.log.level}")
+    String jeMonitorLogLevel;
+
     @Value("${ids4.issuer}")
     String issuer;
 
@@ -29,30 +41,21 @@ public class JEProperties {
     @Value("${jobengine.processesdump.path}")
     String processesDumpPath;
 
-    @Value("${jobenginerunner.log.path}")
-    String jeRunnerLogPath;
-
-    @Value("${jobenginerunner.log.level}")
-    String jeRunnerLogLevel;
-
-    @Value("${jobenginemonitor.log.path}")
-    String jeMonitorLogPath;
-
-    @Value("${jobenginemonitor.log.level}")
-    String jeMonitorLogLevel;
-
     //ZMQ Config
     @Value("${use.ZMQ.Security}")
     Boolean useZmqSecurity;
 
-    @Value("${zmq.heartbeat.value}")
-    int zmqHeartbeatValue;
+    @Value("${zmq.heartbeat.timeout}")
+    int zmqHeartbeatTimeout;
 
     @Value("${zmq.handshake.interval}")
     int zmqHandshakeInterval;
 
-    @Value("${zmq.receive.interval}")
-    int zmqReceiveInterval;
+    @Value("${zmq.receive.timeout}")
+    int zmqReceiveTimeout;
+
+    @Value("${zmq.send.timeout}")
+    int zmqSendTimeout;
 
     @Value("${zmq.receive.high.watermark}")
     int zmqReceiveHighWatermark;
@@ -169,12 +172,12 @@ public class JEProperties {
         this.jeMonitorLogLevel = jeMonitorLogLevel;
     }
 
-    public int getZmqHeartbeatValue() {
-        return zmqHeartbeatValue;
+    public int getZmqHeartbeatTimeout() {
+        return zmqHeartbeatTimeout;
     }
 
-    public void setZmqHeartbeatValue(int zmqHeartbeatValue) {
-        this.zmqHeartbeatValue = zmqHeartbeatValue;
+    public void setZmqHeartbeatTimeout(int zmqHeartbeatTimeout) {
+        this.zmqHeartbeatTimeout = zmqHeartbeatTimeout;
     }
 
     public int getZmqHandshakeInterval() {
@@ -185,12 +188,20 @@ public class JEProperties {
         this.zmqHandshakeInterval = zmqHeartbeatInterval;
     }
 
-    public int getZmqReceiveInterval() {
-        return zmqReceiveInterval;
+    public int getZmqReceiveTimeout() {
+        return zmqReceiveTimeout;
     }
 
-    public void setZmqReceiveInterval(int zmqReceiveInterval) {
-        this.zmqReceiveInterval = zmqReceiveInterval;
+    public void setZmqReceiveTimeout(int zmqReceiveTimeout) {
+        this.zmqReceiveTimeout = zmqReceiveTimeout;
+    }
+
+    public int getZmqSendTimeout() {
+        return zmqSendTimeout;
+    }
+
+    public void setZmqSendTimeout(int zmqSendTimeout) {
+        this.zmqSendTimeout = zmqSendTimeout;
     }
 
     public int getZmqReceiveHighWatermark() {

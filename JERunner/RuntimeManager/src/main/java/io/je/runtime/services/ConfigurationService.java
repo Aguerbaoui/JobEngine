@@ -14,14 +14,18 @@ import utils.ProcessRunner;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
 import utils.log.LoggerUtils;
-import utils.zmq.ZMQBind;
 import utils.zmq.ZMQSecurity;
+import utils.zmq.ZMQType;
 
 @Service
 public class ConfigurationService {
 
-    public void init(RunnerProperties properties) {
+    private JERunnerResponder jeRunnerResponder = null;
 
+    private Thread jeRunnerResponderThread = null;
+
+
+    public void init(RunnerProperties properties) {
 
         //init constants
         initConstants(properties.getSiothId(), properties.isDev());
@@ -39,20 +43,23 @@ public class ConfigurationService {
         System.setProperty("drools.dateformat", ConfigurationConstants.DROOLS_DATE_FORMAT);
         ProcessRunner.setProcessDumpPath(properties.getProcessesDumpPath(), properties.isDumpJavaProcessExecution());
 
-        initResponser(properties.getJeRunnerZMQResponsePort());
-        JERunnerRequester.setRequesterPort(properties.getJeRunnerZMQResponsePort());
+        initResponder(properties.getJeRunnerZMQResponsePort());
 
+        JERunnerRequester.setRequesterPort(properties.getJeRunnerZMQResponsePort());
 
     }
 
 
-    public void initResponser(int responsePort) {
+    public void initResponder(int responsePort) {
+
         try {
-            JERunnerResponder responser = new JERunnerResponder();
-            responser.init("tcp://" + SIOTHConfigUtility.getSiothConfig().getNodes().getSiothMasterNode(), responsePort, ZMQBind.BIND);
-            responser.setListening(true);
-            Thread listener = new Thread(responser);
-            listener.start();
+
+            jeRunnerResponder = new JERunnerResponder("tcp://" + SIOTHConfigUtility.getSiothConfig().getNodes().getSiothMasterNode(), responsePort, ZMQType.BIND);
+
+            jeRunnerResponderThread = new Thread(jeRunnerResponder);
+
+            jeRunnerResponderThread.start();
+
             JELogger.info(JEMessages.ZMQ_RESPONSE_STARTED + "tcp://" + SIOTHConfigUtility.getSiothConfig().getNodes().getSiothMasterNode() + ":" + responsePort, null, null, LogSubModule.JEBUILDER, null);
 
         } catch (Exception e) {
@@ -77,6 +84,21 @@ public class ConfigurationService {
         JELogger.control(JEMessages.LOGGER_INITIALIZED,
                 LogCategory.DESIGN_MODE, null,
                 LogSubModule.JERUNNER, null);
+    }
+
+    public void close() {
+
+        if (jeRunnerResponder != null) {
+            jeRunnerResponder.setListening(false);
+            jeRunnerResponder.closeSocket();
+        }
+
+        if (jeRunnerResponderThread != null) {
+            if (jeRunnerResponderThread.isAlive()) {
+                jeRunnerResponderThread.interrupt();
+            }
+        }
+
     }
 
 }
