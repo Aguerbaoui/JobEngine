@@ -33,6 +33,127 @@ public class AsyncRuleService {
     @Lazy
     ProjectService projectService;
 
+    @Async
+    /*
+     * run a specific rule.
+     */
+    public CompletableFuture<OperationStatusDetails> runRule(String projectId, String ruleId)
+            throws LicenseNotActiveException {
+        //LicenseProperties.checkLicenseIsActive();
+        OperationStatusDetails result = new OperationStatusDetails(ruleId);
+
+        JEProject project = null;
+        JERule rule = null;
+
+        // check rule exists
+        try {
+            project = getProject(projectId);
+            rule = project.getRule(ruleId);
+        } catch (Exception e) {
+            LoggerUtils.logException(e);
+            result.setOperationSucceeded(false);
+            result.setOperationError(e.getMessage());
+            return CompletableFuture.completedFuture(result);
+        }
+        result.setItemName(rule.getJobEngineElementName());
+
+        if (rule.getStatus() == Status.RUNNING) {
+            result.setOperationSucceeded(false);
+            result.setOperationError(JEMessages.RULE_ALREADY_RUNNING);
+            return CompletableFuture.completedFuture(result);
+        }
+
+        if (!rule.isEnabled()) {
+            result.setOperationSucceeded(false);
+            result.setOperationError(JEMessages.RULE_DISABLED);
+            return CompletableFuture.completedFuture(result);
+        }
+
+        if (!rule.isCompiled()) {
+            result.setOperationSucceeded(false);
+            result.setOperationError(JEMessages.RULE_NOT_BUILT);
+            return CompletableFuture.completedFuture(result);
+
+        }
+
+        if (rule.getStatus() == Status.ERROR) {
+            result.setOperationSucceeded(false);
+            result.setOperationError(JEMessages.RULE_CONTAINS_ERRORS);
+            return CompletableFuture.completedFuture(result);
+
+        }
+
+		/*if(rule.getStatus()==RuleStatus.RUNNING)
+		{
+			result.setOperationSucceeded(false);
+			result.setOperationError(JEMessages.RULE_ALREADY_RUNNING);
+			return CompletableFuture.completedFuture(result);
+
+		}*/
+        try {
+
+            // FIXME to be removed, no build on run
+            buildRule(projectId, ruleId).get();
+
+            if (!project.getRuleEngine().isRunning()) {
+                JERunnerAPIHandler.runRuleEngine(projectId);
+                project.getRuleEngine().setRunning(true);
+            }
+
+            project.getRule(ruleId).setRunning(false);
+            rule.setRunning(true);
+            result.setOperationSucceeded(true);
+            JELogger.control("[rule = " + rule.getJobEngineElementName() + "]" + JEMessages.RULE_RUNNING,
+                    CATEGORY, projectId, RULE, null);
+        } catch (JERunnerErrorException e) {
+            LoggerUtils.logException(e);
+            result.setOperationSucceeded(false);
+            result.setOperationError(e.getMessage());
+        } catch (ExecutionException e) {
+            LoggerUtils.logException(e);
+            result.setOperationSucceeded(false);
+            result.setOperationError(e.getCause().getMessage());
+        } catch (InterruptedException e) {
+            LoggerUtils.logException(e);
+            Thread.currentThread().interrupt();
+            result.setOperationSucceeded(false);
+            result.setOperationError(e.getMessage());
+        }
+
+        try {
+            RuleService.updateRuleStatus(rule);
+            ruleRepository.save(rule);
+        } catch (Exception e) {
+            LoggerUtils.logException(e);
+
+            JELogger.error("[rule = " + rule.getJobEngineElementName() + "]" + JEMessages.STATUS_UPDATE_FAILED,
+                    CATEGORY, projectId, RULE, null);
+
+        }
+        return CompletableFuture.completedFuture(result);
+
+    }
+
+    private JEProject getProject(String projectId) throws ProjectNotFoundException, ProjectLoadException, LicenseNotActiveException {
+        JEProject project = projectService.getProjectById(projectId);
+        if (project == null) {
+            JELogger.error(
+                    "[projectId = " + projectId + "] " + JEMessages.PROJECT_NOT_FOUND,
+                    CATEGORY, projectId, RULE, projectId);
+            throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
+        }
+        return project;
+    }
+
+    /*
+     * Build rule
+     * */
+    @Async
+    public CompletableFuture<OperationStatusDetails> buildRule(String projectId, String ruleId) {
+        return compileRule(projectId, ruleId, false);
+
+    }
+
     /*
      * build rule : create drl + check for compilation errors
      */
@@ -45,6 +166,7 @@ public class AsyncRuleService {
         try {
             project = getProject(projectId);
             rule = project.getRule(ruleId);
+            rule.setJobEngineProjectName(project.getProjectName()); //in case the project name was updated
         } catch (Exception e) {
             LoggerUtils.logException(e);
             result.setOperationSucceeded(false);
@@ -97,128 +219,6 @@ public class AsyncRuleService {
 
         return CompletableFuture.completedFuture(result);
 
-    }
-
-    /*
-     * Build rule
-     * */
-    @Async
-    public CompletableFuture<OperationStatusDetails> buildRule(String projectId, String ruleId) {
-        return compileRule(projectId, ruleId, false);
-
-    }
-
-    @Async
-    /*
-     * run a specific rule.
-     */
-    public CompletableFuture<OperationStatusDetails> runRule(String projectId, String ruleId)
-            throws LicenseNotActiveException {
-        //LicenseProperties.checkLicenseIsActive();
-        OperationStatusDetails result = new OperationStatusDetails(ruleId);
-
-        JEProject project = null;
-        JERule rule = null;
-
-        // check rule exists
-        try {
-            project = getProject(projectId);
-            rule = project.getRule(ruleId);
-        } catch (Exception e) {
-            LoggerUtils.logException(e);
-            result.setOperationSucceeded(false);
-            result.setOperationError(e.getMessage());
-            return CompletableFuture.completedFuture(result);
-        }
-        result.setItemName(rule.getJobEngineElementName());
-
-        if (rule.getStatus() == Status.RUNNING) {
-            result.setOperationSucceeded(false);
-            result.setOperationError(JEMessages.RULE_ALREADY_RUNNING);
-            return CompletableFuture.completedFuture(result);
-        }
-
-        if (!rule.isEnabled()) {
-            result.setOperationSucceeded(false);
-            result.setOperationError(JEMessages.RULE_DISABLED);
-            return CompletableFuture.completedFuture(result);
-        }
-
-        if (!rule.isCompiled()) {
-            result.setOperationSucceeded(false);
-            result.setOperationError(JEMessages.RULE_NOT_BUILT);
-            return CompletableFuture.completedFuture(result);
-
-        }
-
-        if (rule.getStatus() == Status.ERROR) {
-            result.setOperationSucceeded(false);
-            result.setOperationError(JEMessages.RULE_CONTAINS_ERRORS);
-            return CompletableFuture.completedFuture(result);
-
-        }
-		
-		/*if(rule.getStatus()==RuleStatus.RUNNING)
-		{
-			result.setOperationSucceeded(false);
-			result.setOperationError(JEMessages.RULE_ALREADY_RUNNING);
-			return CompletableFuture.completedFuture(result);
-			
-		}*/
-        try {
-
-            // FIXME to be removed, no build on run
-            buildRule(projectId, ruleId).get();
-
-            if (!project.getRuleEngine().isRunning()) {
-                JERunnerAPIHandler.runRuleEngine(projectId);
-                project.getRuleEngine().setRunning(true);
-            }
-
-            project.getRule(ruleId).setRunning(false);
-            rule.setRunning(true);
-            result.setOperationSucceeded(true);
-            JELogger.control("[rule = " + rule.getJobEngineElementName() + "]" + JEMessages.RULE_RUNNING,
-                    CATEGORY, projectId, RULE, null);
-        } catch (JERunnerErrorException e) {
-            LoggerUtils.logException(e);
-            result.setOperationSucceeded(false);
-            result.setOperationError(e.getMessage());
-        } catch (ExecutionException e) {
-            LoggerUtils.logException(e);
-            result.setOperationSucceeded(false);
-            result.setOperationError(e.getCause().getMessage());
-        } catch (InterruptedException e) {
-            LoggerUtils.logException(e);
-            Thread.currentThread().interrupt();
-            result.setOperationSucceeded(false);
-            result.setOperationError(e.getMessage());
-        }
-
-        try {
-            RuleService.updateRuleStatus(rule);
-            ruleRepository.save(rule);
-        } catch (Exception e) {
-            LoggerUtils.logException(e);
-
-            JELogger.error("[rule = " + rule.getJobEngineElementName() + "]" + JEMessages.STATUS_UPDATE_FAILED,
-                    CATEGORY, projectId, RULE, null);
-
-        }
-        return CompletableFuture.completedFuture(result);
-
-    }
-
-
-    private JEProject getProject(String projectId) throws ProjectNotFoundException, ProjectLoadException, LicenseNotActiveException {
-        JEProject project = projectService.getProjectById(projectId);
-        if (project == null) {
-            JELogger.error(
-                    "[projectId = " + projectId + "] " + JEMessages.PROJECT_NOT_FOUND,
-                    CATEGORY, projectId, RULE, projectId);
-            throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
-        }
-        return project;
     }
 
     /*

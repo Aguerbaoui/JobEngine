@@ -1,4 +1,4 @@
-package io.je.project.beans.project.response;
+package io.je.project.beans.project.receivedrequest.response;
 
 
 import lombok.Data;

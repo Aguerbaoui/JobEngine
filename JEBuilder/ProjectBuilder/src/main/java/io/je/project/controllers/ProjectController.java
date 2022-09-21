@@ -209,7 +209,7 @@ public class ProjectController {
                 JELogger.debug("[project =" + project.getProjectName() + " ]  " + JEMessages.PROJECT_AUTO_RELOAD + autoReload, LogCategory.DESIGN_MODE,
                         projectId, LogSubModule.JEBUILDER, null);
                 project.setAutoReload(autoReload);
-                projectService.saveProject(project).get();
+             
             }
         } catch (Exception e) {
             return JEExceptionHandler.handleException(e);
