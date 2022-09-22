@@ -88,15 +88,16 @@ public class ConfigurationService {
 
     public void close() {
 
-        if (jeRunnerResponder != null) {
-            jeRunnerResponder.setListening(false);
-            jeRunnerResponder.closeSocket();
-        }
-
+        // Interrupt Thread before closing socket to avoid org.zeromq.ZMQException: Errno 4
         if (jeRunnerResponderThread != null) {
             if (jeRunnerResponderThread.isAlive()) {
                 jeRunnerResponderThread.interrupt();
             }
+        }
+
+        if (jeRunnerResponder != null) {
+            jeRunnerResponder.setListening(false);
+            jeRunnerResponder.closeSocket();
         }
 
     }

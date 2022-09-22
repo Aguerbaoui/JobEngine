@@ -92,7 +92,7 @@ public class RuleService {
                 rule.setStatus(Status.ERROR);
             } else if (rule.isCompiled()) {
                 rule.setStatus(Status.STOPPED);
-            } else {
+            } else { // FIXME case status equals Status.ERROR
                 rule.setStatus(Status.NOT_BUILT);
             }
 
@@ -139,7 +139,9 @@ public class RuleService {
         ruleParameters.setDateEffective(ruleModel.getDateEffective());
         ruleParameters.setDateExpires(ruleModel.getDateExpires());
         rule.setRuleParameters(ruleParameters);
+
         rule.setStatus(Status.NOT_BUILT);
+
         project.addRule(rule);
         ruleRepository.save(rule);
     }

@@ -113,6 +113,20 @@ public class ConfigurationService {
      */
     public void close() {
 
+        // FIXME Interrupt Thread before closing socket to avoid org.zeromq.ZMQException: Errno 4
+        if (classZMQSubscriberThread != null) {
+            if (classZMQSubscriberThread.isAlive()) {
+                classZMQSubscriberThread.interrupt();
+            }
+        }
+
+        // FIXME Interrupt Thread before closing socket to avoid org.zeromq.ZMQException: Errno 4
+        if (projectZMQResponderThread != null) {
+            if (projectZMQResponderThread.isAlive()) {
+                projectZMQResponderThread.interrupt();
+            }
+        }
+
         if (projectZMQResponder != null) {
             projectZMQResponder.setListening(false);
             projectZMQResponder.closeSocket();
@@ -121,18 +135,6 @@ public class ConfigurationService {
         if (classService.getClassZMQSubscriber() != null) {
             classService.getClassZMQSubscriber().setListening(false);
             classService.getClassZMQSubscriber().closeSocket();
-        }
-
-        if (classZMQSubscriberThread != null) {
-            if (classZMQSubscriberThread.isAlive()) {
-                classZMQSubscriberThread.interrupt();
-            }
-        }
-
-        if (projectZMQResponderThread != null) {
-            if (projectZMQResponderThread.isAlive()) {
-                projectZMQResponderThread.interrupt();
-            }
         }
 
     }

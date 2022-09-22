@@ -1027,11 +1027,15 @@ public class WorkflowService {
 
             result.setOperationError(msg);
             result.setOperationSucceeded(false);
+
             workflow.setStatus(Status.ERROR);
+
             // FIXME check getJobEngineElementID modification regression
             MonitoringMessage statusMessage = new MonitoringMessage(LocalDateTime.now(), workflow.getJobEngineElementID(), ObjectType.JEWORKFLOW,
                     projectId, workflow.getJobEngineElementName(), Status.ERROR.toString());
+
             JEMonitor.publish(statusMessage);
+
             JELogger.error(msg, LogCategory.DESIGN_MODE, projectId, LogSubModule.WORKFLOW, workflowId);
 
             throw new WorkflowBuildException(msg);

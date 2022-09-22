@@ -160,8 +160,10 @@ public abstract class JERule extends JEObject {
 
     public void setStatus(Status status) {
         this.status = status;
+
         MonitoringMessage msg = new MonitoringMessage(LocalDateTime.now(), getJobEngineElementName(), ObjectType.JERULE,
                 getJobEngineProjectName(), status.toString(), status.toString());
+
         JEMonitor.publish(msg);
     }
 

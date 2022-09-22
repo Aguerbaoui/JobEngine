@@ -168,16 +168,17 @@ public class RuleBuilder {
             String consequences = "";
 
             if (root instanceof ConditionBlock) {
+
                 ConditionBlock conditionBlock = (ConditionBlock) root;
-
-                condition = conditionBlock.getExpression();
-
-                consequences = conditionBlock.getConsequences();
 
                 // Do not change unless aware
                 if (root instanceof OrBlock) {
 
                     OrBlock orBlock = (OrBlock) root;
+
+                    condition = orBlock.getExpression();
+
+                    consequences = orBlock.getConsequences();
 
                     notCondition = orBlock.getNotExpression();
 
@@ -185,17 +186,30 @@ public class RuleBuilder {
 
                     AndBlock andBlock = (AndBlock) root;
 
+                    condition = andBlock.getExpression();
+
+                    consequences = andBlock.getConsequences();
+
                     notCondition = andBlock.getNotExpression();
 
                 } else if (root instanceof NotBlock) {
 
                     NotBlock notBlock = (NotBlock) root;
 
+                    condition = notBlock.getExpression();
+
+                    consequences = notBlock.getConsequences();
+
                     notCondition = notBlock.getNotExpression();
 
                 } else {
+
+                    condition = conditionBlock.getExpression();
+
+                    consequences = conditionBlock.getConsequences();
+
                     // TODO check if need for more specific blocks cast
-                    notCondition = " not ( " + condition.replaceAll("\n", " and ") + " ) ";
+                    notCondition = " not ( " + condition.replaceAll("\n", " and \n") + " ) ";
                 }
 
             } else {
@@ -215,9 +229,13 @@ public class RuleBuilder {
 
             ScriptedRule scriptedRule = new ScriptedRule(uRule.getJobEngineProjectID(), scriptedRuleId, script,
                     uRule.getJobEngineElementName() + scriptedRulesCounter, uRule.getJobEngineProjectName());
+
             scriptedRule.setTopics(uRule.getTopics());
+
             scriptedRules.add(scriptedRule);
+
             subRules.add(scriptedRuleId);
+
             uRule.setSubRules(subRules);
 
         }

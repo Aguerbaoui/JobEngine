@@ -2,6 +2,7 @@ package io.je.ruleengine.utils;
 
 import io.je.utilities.exceptions.CastToDoubleException;
 import io.je.utilities.log.JELogger;
+import utils.log.LogCategory;
 import utils.log.LogSubModule;
 import utils.log.LoggerUtils;
 
@@ -27,7 +28,7 @@ public class JEMathUtils {
 
             return (double) x;
         } catch (Exception exp) {
-            JELogger.error(exp.getMessage(), null, projectId, LogSubModule.RULE, ruleId, blockId);
+            JELogger.error(exp.getMessage(), LogCategory.RUNTIME, projectId, LogSubModule.RULE, ruleId, blockId);
             LoggerUtils.logException(exp);
             throw new CastToDoubleException(exp.getMessage());
         }
@@ -35,7 +36,7 @@ public class JEMathUtils {
 
     public static boolean divisionByZero(String projectId, String ruleId, String blockId, double a) {
         if (a == 0) {
-            JELogger.error(blockId + ": Division by 0 is not allowed", null, projectId, LogSubModule.RULE, ruleId, blockId);
+            JELogger.error(blockId + ": Division by 0 is not allowed", LogCategory.RUNTIME, projectId, LogSubModule.RULE, ruleId, blockId);
             return false;
         }
         return true;
@@ -43,7 +44,7 @@ public class JEMathUtils {
 
     public static boolean factorialConstraint(String projectId, String ruleId, String blockId, double a) {
         if (a <= 0 || a > 20) {
-            JELogger.error(blockId + ": Input must be between 0 and 20.", null, projectId, LogSubModule.RULE, ruleId, blockId);
+            JELogger.error(blockId + ": Input must be between 0 and 20.", LogCategory.RUNTIME, projectId, LogSubModule.RULE, ruleId, blockId);
             return false;
         }
         return true;
@@ -51,7 +52,7 @@ public class JEMathUtils {
 
     public static boolean strictlyPositive(String projectId, String ruleId, String blockId, double a) {
         if (a <= 0) {
-            JELogger.error(blockId + ": Input has to be strictly positive.", null, projectId, LogSubModule.RULE, ruleId, blockId);
+            JELogger.error(blockId + ": Input has to be strictly positive.", LogCategory.RUNTIME, projectId, LogSubModule.RULE, ruleId, blockId);
             return false;
         }
         return true;
@@ -59,7 +60,7 @@ public class JEMathUtils {
 
     public static boolean positive(String projectId, String ruleId, String blockId, double a) {
         if (a < 0) {
-            JELogger.error(blockId + ": Input has to be  positive.", null, projectId, LogSubModule.RULE, ruleId, blockId);
+            JELogger.error(blockId + ": Input has to be  positive.", LogCategory.RUNTIME, projectId, LogSubModule.RULE, ruleId, blockId);
             return false;
         }
         return true;

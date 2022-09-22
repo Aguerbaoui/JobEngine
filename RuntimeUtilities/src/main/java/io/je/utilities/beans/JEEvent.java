@@ -123,16 +123,18 @@ public class JEEvent extends JEMonitoredData {
     public void trigger() {
         isTriggered = true;
         lastTriggerTime = System.nanoTime();
-        JEMonitor.publish(MonitoringMessage.getMonitoringMessage(LocalDateTime.now(), jobEngineElementID, ObjectType.JEEVENT, jobEngineProjectID, String.valueOf(isTriggered), Status.TRIGGERED));
 
+        JEMonitor.publish(MonitoringMessage.getMonitoringMessage(LocalDateTime.now(), jobEngineElementID,
+                ObjectType.JEEVENT, jobEngineProjectID, String.valueOf(isTriggered), Status.TRIGGERED));
 
     }
 
     public void untrigger() {
         isTriggered = false;
         lastTriggerTime = System.nanoTime();
-        JEMonitor.publish(MonitoringMessage.getMonitoringMessage(LocalDateTime.now(), jobEngineElementID, ObjectType.JEEVENT, jobEngineProjectID, String.valueOf(isTriggered), Status.NOT_TRIGGERED));
 
+        JEMonitor.publish(MonitoringMessage.getMonitoringMessage(LocalDateTime.now(), jobEngineElementID,
+                ObjectType.JEEVENT, jobEngineProjectID, String.valueOf(isTriggered), Status.NOT_TRIGGERED));
 
     }
 
