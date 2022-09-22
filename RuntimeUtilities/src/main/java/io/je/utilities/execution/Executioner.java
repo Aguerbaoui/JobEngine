@@ -351,10 +351,10 @@ public class Executioner {
         try {
 
             executor.submit(() -> {
-                if ((boolean) body.get("twilioServer") == true) {
+                if ((boolean) body.get(TWILIO_SERVER) == true) {
                     sendTwilioSMS(projectId, ruleId, blockName, body, messageBody);
                 }
-                if ((boolean) body.get("twilioServer") == false) {
+                if ((boolean) body.get(TWILIO_SERVER) == false) {
                     sendSMSEagle(projectId, ruleId, blockName, body, messageBody);
                 }
             });
@@ -371,15 +371,15 @@ public class Executioner {
         String sendTo ="";
         List<String> phoneNumbers = (List<String>) body.get(RECEIVER_PHONE_NUMBERS);
         phoneNumbers.removeAll(Collections.singleton(null));
-        String validity = (String) body.get("validity");
-        String inputType = (String) body.get("inputType");
-        String modem = (String) body.get("modem");
-        boolean sendAsUnicode = (boolean) body.get("sendAsUnicode");
-        boolean priority = (boolean) body.get("priority");
-        String smsType = (String) body.get("smsType");
-        String accountSID = (String) body.get("accountSID");
-        String accountToken = (String) body.get("accountToken");
-        String URI = (String) body.get("URI");
+        String validity = (String) body.get(VALIDITY);
+        String inputType = (String) body.get(INPUT_TYPE);
+        String modem = (String) body.get(MODEM);
+        boolean sendAsUnicode = (boolean) body.get(SEND_AS_UNICODE);
+        boolean priority = (boolean) body.get(PRIORITY);
+        String smsType = (String) body.get(SMS_EAGLE_TYPE);
+        String accountSID = (String) body.get(TWILIO_ACCOUNT_SID);
+        String accountToken = (String) body.get(TWILIO_ACCOUNT_TOKEN);
+        String URI = (String) body.get(SMS_URI);
         String prio = "";
         String uni = "";
         if (modem.equals("0")) modem = "";

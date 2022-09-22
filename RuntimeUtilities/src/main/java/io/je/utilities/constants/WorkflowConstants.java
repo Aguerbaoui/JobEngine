@@ -12,7 +12,8 @@ public class WorkflowConstants {
     public static final String EVENT_TYPE = "eventType";
     public static final String PROCESS_LISTENER_IMPLEMENTATION = "io.je.executionListeners.ProcessListener";
     public static final String ACTIVITY_LISTENER_IMPLEMENTATION = "io.je.executionListeners.ActivitiListener";
-    public static final String GATEWAYS_LISTENER_IMPLEMENTATION = "io.je.executionListeners.GatewaysListener";
+    public static final String GATEWAYS_LISTENER_IMPLEMENTATION = "io.je.executionListener" +
+            "s.GatewaysListener";
     public static final String TASKS_LISTENER_IMPLEMENTATION = "io.je.executionListeners.TasksListener";
     public static final String START_PROCESS = "start";
     public static final String END_PROCESS = "end";
@@ -37,6 +38,7 @@ public class WorkflowConstants {
     public static final String DBREADSERVICETASK_TYPE = "dbreadservicetask";
     public static final String DBWRITESERVICETASK_TYPE = "dbwriteservicetask";
     public static final String DBEDITSERVICETASK_TYPE = "dbeditservicetask";
+    public static final String SMS_TYPE = "sms";
     public static final String MAILSERVICETASK_TYPE = "mailservicetask";
     public static final String BUILDING = "building";
     public static final String RUNNING = "running";
@@ -75,10 +77,19 @@ public class WorkflowConstants {
     public static final String TWILIO_ACCOUNT_TOKEN = "accountToken";
     public static final String TWILIO_SENDER_PHONE_NUMBER = "senderPhoneNumber";
     public static final String SMS_MESSAGE = "message";
+    public static final String TWILIO_SERVER = "twilioServer";
+    public static final String INPUT_TYPE = "inputType";
+    public static final String VALIDITY = "validity";
+    public static final String MODEM = "modem";
+    public static final String SEND_AS_UNICODE = "sendAsUnicode";
+    public static final String PRIORITY = "priority";
+    public static final String SMS_EAGLE_TYPE = "smsType";
+    public static final String SMS_URI = "URI";
     //endregion
     public static final String WEB_TASK_IMPLEMENTATION = "io.je.serviceTasks.WebApiServiceTask";
     public static final String SCRIPT_TASK_IMPLEMENTATION = "io.je.serviceTasks.ScriptServiceTask";
     public static final String INFORM_TASK_IMPLEMENTATION = "io.je.serviceTasks.InformServiceTask";
+    public static final String SMS_TASK_IMPLEMENTATION = "io.je.serviceTasks.SMSTaskService";
     public static final String PUBLIC = "PUBLIC";
     public static final String PRIVATE = "PRIVATE";
     public static final String PROTECTED = "PROTECTED";

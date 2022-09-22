@@ -116,6 +116,29 @@ public class WorkflowBuilder {
         return attributes;
     }
 
+    /*Get attributes map for SMS task*/
+    private static HashMap<String, Object> getSMSTaskAttributeMap(SMSBlock block) {
+        HashMap<String, Object> attributes = new HashMap<>();
+        attributes.put(SERVER_TYPE, block.getServerType());
+        attributes.put(TWILIO_ACCOUNT_SID, block.getAccountSID());
+        attributes.put(TWILIO_ACCOUNT_TOKEN, block.getAccountToken());
+        attributes.put(RECEIVER_PHONE_NUMBERS, block.getReceiverPhoneNumbers());
+        attributes.put(TWILIO_SENDER_PHONE_NUMBER, block.getSenderPhoneNumber());
+        attributes.put("twilioServer", block.isTwilioServer());
+        attributes.put(MESSAGE, block.getMessage());
+
+        if (block.isTwilioServer() == false ) {
+            attributes.put(VALIDITY, block.getValidity());
+            attributes.put(INPUT_TYPE, block.getInputType());
+            attributes.put(MODEM, block.getModem());
+            attributes.put(SEND_AS_UNICODE, block.isSendAsUnicode());
+            attributes.put(PRIORITY, block.isPriority());
+            attributes.put(SMS_EAGLE_TYPE, block.getSmsType());
+            attributes.put(SMS_URI, block.getURI());
+        }
+        return attributes;
+    }
+
     /*Get attributes map for email task*/
     private static HashMap<String, Object> getEmailTaskAttributesMap(MailBlock block) {
         HashMap<String, Object> attributes = new HashMap<>();
@@ -208,6 +231,11 @@ public class WorkflowBuilder {
                 if (block instanceof MailBlock) {
                     TaskModel t = getTaskModel(block.getJobEngineElementID(), block.getJobEngineElementName(), block.getDescription(), WorkflowConstants.MAILSERVICETASK_TYPE);
                     t.setAttributes(getEmailTaskAttributesMap((MailBlock) block));
+                    tasks.add(t);
+                }
+                if (block instanceof SMSBlock) {
+                    TaskModel t = getTaskModel(block.getJobEngineElementID(), block.getJobEngineElementName(), block.getDescription(), SMS_TYPE);
+                    t.setAttributes(getSMSTaskAttributeMap((SMSBlock) block));
                     tasks.add(t);
                 }
 

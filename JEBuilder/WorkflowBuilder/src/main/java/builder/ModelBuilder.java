@@ -260,7 +260,6 @@ public class ModelBuilder {
         return gateway;
     }
 
-
     /**
      * Create a message catch event and return it
      */
@@ -317,7 +316,7 @@ public class ModelBuilder {
     }
 
     /**
-     * Create activit throw signal event
+     * Create activiti throw signal event
      */
     public static ThrowEvent createThrowSignalEvent(String id, String name, String reference) {
         ThrowEvent event = new ThrowEvent();

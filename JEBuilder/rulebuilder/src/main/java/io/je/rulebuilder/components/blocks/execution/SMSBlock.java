@@ -52,7 +52,7 @@ public class SMSBlock extends ExecutionBlock {
 
         try {
             //FIXME: change string to constants
-            twilioServer = (boolean) blockModel.getBlockConfiguration().get("twilioServer");
+            twilioServer = (boolean) blockModel.getBlockConfiguration().get(TWILIO_SERVER);
             serverType = (String) blockModel.getBlockConfiguration()
                     .get(SERVER_TYPE);
             accountToken = (String) blockModel.getBlockConfiguration()
@@ -70,15 +70,15 @@ public class SMSBlock extends ExecutionBlock {
 
             if (!twilioServer) {
                 inputType = (String) blockModel.getBlockConfiguration()
-                        .get("inputType");
+                        .get(INPUT_TYPE);
                 validity = (String) blockModel.getBlockConfiguration()
-                        .get("validity");
+                        .get(VALIDITY);
                 modem = (String) blockModel.getBlockConfiguration()
-                        .get("modem");
-                priority = (boolean) blockModel.getBlockConfiguration().get("priority");
-                sendAsUnicode = (boolean) blockModel.getBlockConfiguration().get("sendAsUnicode");
-                smsType = (String) blockModel.getBlockConfiguration().get("smsType");
-                URI = (String) blockModel.getBlockConfiguration().get("URI");
+                        .get(MODEM);
+                priority = (boolean) blockModel.getBlockConfiguration().get(PRIORITY);
+                sendAsUnicode = (boolean) blockModel.getBlockConfiguration().get(SEND_AS_UNICODE);
+                smsType = (String) blockModel.getBlockConfiguration().get(SMS_EAGLE_TYPE);
+                URI = (String) blockModel.getBlockConfiguration().get(URI);
 
             }
 
@@ -115,13 +115,13 @@ public class SMSBlock extends ExecutionBlock {
         attributes.put("twilioServer", isTwilioServer());
 
         if (isTwilioServer() == false ) {
-            attributes.put("validity", getValidity());
-            attributes.put("inputType", getInputType());
-            attributes.put("modem", getModem());
-            attributes.put("sendAsUnicode", isSendAsUnicode());
-            attributes.put("priority", isPriority());
-            attributes.put("smsType", getSmsType());
-            attributes.put("URI", getURI());
+            attributes.put(VALIDITY, getValidity());
+            attributes.put(INPUT_TYPE, getInputType());
+            attributes.put(MODEM, getModem());
+            attributes.put(SEND_AS_UNICODE, isSendAsUnicode());
+            attributes.put(PRIORITY, isPriority());
+            attributes.put(SMS_EAGLE_TYPE, getSmsType());
+            attributes.put(SMS_URI, getURI());
         }
 
         String json = null;
