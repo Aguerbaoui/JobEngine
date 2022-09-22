@@ -81,6 +81,9 @@ public class AsyncRuleService {
 
             rule.setBuilt(false);
             rule.setContainsErrors(true);
+            rule.setStatus(Status.ERROR);
+            ruleRepository.save(rule);
+
             result.setOperationSucceeded(false);
             result.setOperationError(e.getMessage());
 

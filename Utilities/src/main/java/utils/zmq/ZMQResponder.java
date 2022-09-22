@@ -82,7 +82,7 @@ public abstract class ZMQResponder implements Runnable {
                     Thread.currentThread().interrupt();
                 }
 
-                throw new ZMQConnectionFailedException(0, "Failed to connect to address [ " + connectionAddress + " ] : " + e.getMessage());
+                throw new ZMQConnectionFailedException(0, "Failed to connect to address : " + connectionAddress + " : " + e.getMessage());
             }
 
         }

@@ -113,14 +113,14 @@ public class ConfigurationService {
      */
     public void close() {
 
-        // Interrupt Thread before closing socket to avoid org.zeromq.ZMQException: Errno 4
+        // FIXME Interrupt Thread before closing socket to avoid org.zeromq.ZMQException: Errno 4
         if (classZMQSubscriberThread != null) {
             if (classZMQSubscriberThread.isAlive()) {
                 classZMQSubscriberThread.interrupt();
             }
         }
 
-        // Interrupt Thread before closing socket to avoid org.zeromq.ZMQException: Errno 4
+        // FIXME Interrupt Thread before closing socket to avoid org.zeromq.ZMQException: Errno 4
         if (projectZMQResponderThread != null) {
             if (projectZMQResponderThread.isAlive()) {
                 projectZMQResponderThread.interrupt();

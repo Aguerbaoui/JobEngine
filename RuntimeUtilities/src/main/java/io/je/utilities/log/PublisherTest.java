@@ -15,8 +15,9 @@ public class PublisherTest {
 
     }
 
+/*
     public static void main(String[] args) {
-       /* ZMQ.Context  mContext  = ZMQ.context(1);
+       ZMQ.Context  mContext  = ZMQ.context(1);
         ZMQ.Socket publisher = mContext.socket(ZMQ.PUB);
         publisher.bind("tcp://*:15020");
         /*int theCounter = 0 ;
@@ -57,7 +58,8 @@ public class PublisherTest {
         };
 
         Thread t = new Thread(runnable);
-        t.start();*/
+        t.start();
     }
+*/
 
 }
