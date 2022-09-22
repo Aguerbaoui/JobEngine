@@ -160,6 +160,10 @@ public class JEToBpmnMapper {
                     process.addFlowElement(ModelBuilder.createDurationTimerEvent(block.getJobEngineElementID(), block.getJobEngineElementName(), ((TimerEvent) block).getTimeDuration()));
                 }
             }
+            else if (block instanceof  SMSBlock && !block.isProcessed()) {
+                process.addFlowElement(ModelBuilder.createServiceTask(block.getJobEngineElementID(), block.getJobEngineElementName(),
+                        WorkflowConstants.SMS_TASK_IMPLEMENTATION));
+            }
 
             /*else if (block instanceof CycleTimerEvent && !block.isProcessed()) {
                 process.addFlowElement(ModelBuilder.createCycleTimerEvent(block.getJobEngineElementID(), block.getName(), ((CycleTimerEvent) block).getTimeCycle(), ((CycleTimerEvent) block).getEndDate()));
