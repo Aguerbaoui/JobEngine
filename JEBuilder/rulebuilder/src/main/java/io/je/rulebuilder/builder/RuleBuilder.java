@@ -42,15 +42,61 @@ import java.util.stream.Collectors;
  */
 public class RuleBuilder {
 
+    public static final String LINE_SEPERATOR = "\n";
+    public static final String AND_DROOLS = "and";
+    public static final String AND_DROOLS_CONDITION = LINE_SEPERATOR + AND_DROOLS + LINE_SEPERATOR;
+
+    public static final String OR_DROOLS = "or";
+    public static final String OR_DROOLS_CONDITION = LINE_SEPERATOR + OR_DROOLS + LINE_SEPERATOR;
+
+    public static final String NOT_DROOLS_PREFIX = "not (";
+
+    public static final String NOT_DROOLS_PREFIX_CONDITION = LINE_SEPERATOR + NOT_DROOLS_PREFIX + LINE_SEPERATOR;
+
+    public static final String NOT_DROOLS_SUFFIX = ")";
+
+    public static final String NOT_DROOLS_SUFFIX_CONDITION = LINE_SEPERATOR + NOT_DROOLS_SUFFIX + LINE_SEPERATOR;
+
     //static boolean eliminateCombinatoryBehaviour = true;
 
-    /* private constructor */
+    /* Private constructor */
     private RuleBuilder() {
 
     }
 
+    // Avoid Drools error : Duplicate declaration for variable '... ' in the rule
+    public static String getDroolsConditionWithoutRepeatedDeclarations(String condition) {
+        String conditionWithoutDuplication = "";
+
+        String[] splittedCondition = condition.split(LINE_SEPERATOR);
+
+        // Outer loop
+        outer_loop: for (int i = 0; i < splittedCondition.length; i++) {
+
+            String line = splittedCondition[i];
+
+            if (line.equals(AND_DROOLS) || line.equals(OR_DROOLS) || line.equals(NOT_DROOLS_PREFIX) || line.equals(NOT_DROOLS_SUFFIX)) {
+
+                conditionWithoutDuplication += line + LINE_SEPERATOR;
+
+                continue;
+            }
+
+            for (int j = 0; j < i; j++) {
+                if (line.equals(splittedCondition[j])) {
+                    continue outer_loop;
+                }
+            }
+
+            conditionWithoutDuplication += line + LINE_SEPERATOR;
+
+        }
+
+        return conditionWithoutDuplication;
+    }
+
     /*
-     * generate drl file from rules and saves them to the provided path
+     * Generate drl file from rules and saves them to the provided path
      */
     public static void buildRule(JERule jeRule, String buildPath, boolean compileOnly)
             throws RuleBuildFailedException, JERunnerErrorException {
@@ -156,7 +202,7 @@ public class RuleBuilder {
         for (Block root : rootBlocks) {
             uRule.getBlocks().resetAllBlocks();
 
-            // TODO better management of font/back-end rule config desynchronization
+            // TODO better management of font/back-end rule config de-synchronization
             if (!uRule.getRuleFrontConfig().contains("\"block_name\":\"" + root.getBlockName() + "\"")) {
                 continue;
             }
@@ -176,40 +222,43 @@ public class RuleBuilder {
 
                     OrBlock orBlock = (OrBlock) root;
 
+                    // WARNING getDroolsConditionWithoutRepeatedDeclarations is called inside OrBlock
                     condition = orBlock.getExpression();
 
-                    consequences = orBlock.getConsequences();
-
+                    // WARNING getDroolsConditionWithoutRepeatedDeclarations is called inside OrBlock
                     notCondition = orBlock.getNotExpression();
+
+                    consequences = orBlock.getConsequences();
 
                 } else if (root instanceof AndBlock) {
 
                     AndBlock andBlock = (AndBlock) root;
 
-                    condition = andBlock.getExpression();
+                    condition = getDroolsConditionWithoutRepeatedDeclarations(andBlock.getExpression());
+
+                    notCondition = getDroolsConditionWithoutRepeatedDeclarations(andBlock.getNotExpression());
 
                     consequences = andBlock.getConsequences();
-
-                    notCondition = andBlock.getNotExpression();
 
                 } else if (root instanceof NotBlock) {
 
                     NotBlock notBlock = (NotBlock) root;
 
-                    condition = notBlock.getExpression();
+                    condition = getDroolsConditionWithoutRepeatedDeclarations(notBlock.getExpression());
+
+                    notCondition = getDroolsConditionWithoutRepeatedDeclarations(notBlock.getNotExpression());
 
                     consequences = notBlock.getConsequences();
 
-                    notCondition = notBlock.getNotExpression();
-
                 } else {
 
-                    condition = conditionBlock.getExpression();
+                    condition = getDroolsConditionWithoutRepeatedDeclarations(conditionBlock.getExpression());
+
+                    // TODO check if need for more specific blocks cast
+                    notCondition = " not ( \n" + condition.replaceAll("\n", AND_DROOLS_CONDITION) + "\n ) ";
 
                     consequences = conditionBlock.getConsequences();
 
-                    // TODO check if need for more specific blocks cast
-                    notCondition = " not ( " + condition.replaceAll("\n", " and \n") + " ) ";
                 }
 
             } else {
