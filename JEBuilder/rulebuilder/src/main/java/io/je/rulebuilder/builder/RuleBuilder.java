@@ -399,35 +399,50 @@ public class RuleBuilder {
     public static Set<Block> getRootBlocks(UserDefinedRule uRule) throws RuleBuildFailedException {
         Set<Block> roots = new HashSet<>();
 
-        // number of execution blocks
+        // Number of execution blocks
         int executionBlockCounter = 0;
 
-        // get root blocks
-        for (Block ruleBlock : uRule.getBlocks().getAll()) {
+        if (uRule.getBlocks() != null && uRule.getBlocks().getAll() != null) {
 
-            if (ruleBlock instanceof ExecutionBlock) {
+            // Get root blocks
+            for (Block executionBlock : uRule.getBlocks().getAll()) {
 
-                executionBlockCounter++;
+                if (executionBlock instanceof ExecutionBlock) {
 
-                for (var rootInputBlockLink : ruleBlock.getInputBlockLinks()) {
+                    executionBlockCounter++;
 
-                    // FIXME error message if rootInputBlockLink.getBlock() == null
-                    if (rootInputBlockLink != null && rootInputBlockLink.getBlock() != null) {
+                    // If exec block has no input block link, it's a root FIXME is it true?
+                    if (executionBlock.getInputBlockLinks() == null || executionBlock.getInputBlockLinks().isEmpty()) {
 
-                        if (uRule.getBlocks() != null) {
-                            roots.add(uRule.getBlocks()
-                                    .getBlock(rootInputBlockLink.getBlock()
-                                            .getJobEngineElementID()));
-                        }
+                        roots.add(executionBlock);
 
-                        for (var b : uRule.getBlocks()
-                                .getBlock(rootInputBlockLink.getBlock()
-                                        .getJobEngineElementID())
-                                .getInputBlockLinks()) {
+                    } else {
 
-                            if (b.getBlock() instanceof PersistableBlock) {
-                                ((PersistableBlock) b.getBlock()).setTimePersistenceValue(((PersistableBlock) rootInputBlockLink.getBlock()).getTimePersistenceValue());
-                                ((PersistableBlock) b.getBlock()).setTimePersistenceUnit(((PersistableBlock) rootInputBlockLink.getBlock()).getTimePersistenceUnit());
+                        for (var rootInputBlockLink : executionBlock.getInputBlockLinks()) {
+
+                            if (rootInputBlockLink != null && rootInputBlockLink.getBlock() != null) {
+
+                                Block block = uRule.getBlocks().getBlock(rootInputBlockLink.getBlock().getJobEngineElementID());
+
+                                if (block != null) {
+
+                                    roots.add(block);
+
+                                }
+
+                                if (block.getInputBlockLinks() != null) {
+
+                                    for (var b : block.getInputBlockLinks()) {
+
+                                        if (b.getBlock() instanceof PersistableBlock) {
+                                            ((PersistableBlock) b.getBlock()).setTimePersistenceValue(((PersistableBlock) rootInputBlockLink.getBlock()).getTimePersistenceValue());
+                                            ((PersistableBlock) b.getBlock()).setTimePersistenceUnit(((PersistableBlock) rootInputBlockLink.getBlock()).getTimePersistenceUnit());
+                                        }
+
+                                    }
+
+                                }
+
                             }
 
                         }
@@ -436,17 +451,11 @@ public class RuleBuilder {
 
                 }
 
-                // if exec block has no root, it's a root
-                if (ruleBlock.getInputBlockLinks()
-                        .isEmpty()) {
-                    roots.add(ruleBlock);
-                }
-
             }
 
         }
 
-        // if this rule has no execution block, then it is not valid.
+        // If this rule has no execution block, then it is not valid.
         if (executionBlockCounter == 0) {
             JELogger.error("[project = " + uRule.getJobEngineProjectName() + "][rule = " + uRule.getJobEngineElementName() + "] " + JEMessages.NO_EXECUTION_BLOCK,
                     LogCategory.DESIGN_MODE, uRule.getJobEngineProjectID(),

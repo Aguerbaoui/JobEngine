@@ -44,7 +44,7 @@ public abstract class Block extends JEObject {
 
 
     /*
-     * to be persisted in mongo
+     * To be persisted in mongo
      */
     protected List<BlockLinkModel> inputBlockIds = new ArrayList<>();
 
