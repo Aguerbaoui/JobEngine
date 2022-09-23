@@ -108,9 +108,11 @@ public class FileUtilities {
         return "\\";
     }
 
+    /*
     public static void main(String... args) {
         //System.out.println(getPathWithSeparator("D:\\jobengine\\"));
     }
+    */
 
     public String getExtension(String filename) {
         return FilenameUtils.getExtension(filename);

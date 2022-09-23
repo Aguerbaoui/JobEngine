@@ -42,15 +42,61 @@ import java.util.stream.Collectors;
  */
 public class RuleBuilder {
 
+    public static final String LINE_SEPERATOR = "\n";
+    public static final String AND_DROOLS = "and";
+    public static final String AND_DROOLS_CONDITION = LINE_SEPERATOR + AND_DROOLS + LINE_SEPERATOR;
+
+    public static final String OR_DROOLS = "or";
+    public static final String OR_DROOLS_CONDITION = LINE_SEPERATOR + OR_DROOLS + LINE_SEPERATOR;
+
+    public static final String NOT_DROOLS_PREFIX = "not (";
+
+    public static final String NOT_DROOLS_PREFIX_CONDITION = LINE_SEPERATOR + NOT_DROOLS_PREFIX + LINE_SEPERATOR;
+
+    public static final String NOT_DROOLS_SUFFIX = ")";
+
+    public static final String NOT_DROOLS_SUFFIX_CONDITION = LINE_SEPERATOR + NOT_DROOLS_SUFFIX + LINE_SEPERATOR;
+
     //static boolean eliminateCombinatoryBehaviour = true;
 
-    /* private constructor */
+    /* Private constructor */
     private RuleBuilder() {
 
     }
 
+    // Avoid Drools error : Duplicate declaration for variable '... ' in the rule
+    public static String getDroolsConditionWithoutRepeatedDeclarations(String condition) {
+        String conditionWithoutDuplication = "";
+
+        String[] splittedCondition = condition.split(LINE_SEPERATOR);
+
+        // Outer loop
+        outer_loop: for (int i = 0; i < splittedCondition.length; i++) {
+
+            String line = splittedCondition[i];
+
+            if (line.equals(AND_DROOLS) || line.equals(OR_DROOLS) || line.equals(NOT_DROOLS_PREFIX) || line.equals(NOT_DROOLS_SUFFIX)) {
+
+                conditionWithoutDuplication += line + LINE_SEPERATOR;
+
+                continue;
+            }
+
+            for (int j = 0; j < i; j++) {
+                if (line.equals(splittedCondition[j])) {
+                    continue outer_loop;
+                }
+            }
+
+            conditionWithoutDuplication += line + LINE_SEPERATOR;
+
+        }
+
+        return conditionWithoutDuplication;
+    }
+
     /*
-     * generate drl file from rules and saves them to the provided path
+     * Generate drl file from rules and saves them to the provided path
      */
     public static void buildRule(JERule jeRule, String buildPath, boolean compileOnly)
             throws RuleBuildFailedException, JERunnerErrorException {
@@ -156,7 +202,7 @@ public class RuleBuilder {
         for (Block root : rootBlocks) {
             uRule.getBlocks().resetAllBlocks();
 
-            // TODO better management of font/back-end rule config desynchronization
+            // TODO better management of font/back-end rule config de-synchronization
             if (!uRule.getRuleFrontConfig().contains("\"block_name\":\"" + root.getBlockName() + "\"")) {
                 continue;
             }
@@ -176,40 +222,43 @@ public class RuleBuilder {
 
                     OrBlock orBlock = (OrBlock) root;
 
+                    // WARNING getDroolsConditionWithoutRepeatedDeclarations is called inside OrBlock
                     condition = orBlock.getExpression();
 
-                    consequences = orBlock.getConsequences();
-
+                    // WARNING getDroolsConditionWithoutRepeatedDeclarations is called inside OrBlock
                     notCondition = orBlock.getNotExpression();
+
+                    consequences = orBlock.getConsequences();
 
                 } else if (root instanceof AndBlock) {
 
                     AndBlock andBlock = (AndBlock) root;
 
-                    condition = andBlock.getExpression();
+                    condition = getDroolsConditionWithoutRepeatedDeclarations(andBlock.getExpression());
+
+                    notCondition = getDroolsConditionWithoutRepeatedDeclarations(andBlock.getNotExpression());
 
                     consequences = andBlock.getConsequences();
-
-                    notCondition = andBlock.getNotExpression();
 
                 } else if (root instanceof NotBlock) {
 
                     NotBlock notBlock = (NotBlock) root;
 
-                    condition = notBlock.getExpression();
+                    condition = getDroolsConditionWithoutRepeatedDeclarations(notBlock.getExpression());
+
+                    notCondition = getDroolsConditionWithoutRepeatedDeclarations(notBlock.getNotExpression());
 
                     consequences = notBlock.getConsequences();
 
-                    notCondition = notBlock.getNotExpression();
-
                 } else {
 
-                    condition = conditionBlock.getExpression();
+                    condition = getDroolsConditionWithoutRepeatedDeclarations(conditionBlock.getExpression());
+
+                    // TODO check if need for more specific blocks cast
+                    notCondition = " not ( \n" + condition.replaceAll("\n", AND_DROOLS_CONDITION) + "\n ) ";
 
                     consequences = conditionBlock.getConsequences();
 
-                    // TODO check if need for more specific blocks cast
-                    notCondition = " not ( " + condition.replaceAll("\n", " and \n") + " ) ";
                 }
 
             } else {
@@ -350,35 +399,50 @@ public class RuleBuilder {
     public static Set<Block> getRootBlocks(UserDefinedRule uRule) throws RuleBuildFailedException {
         Set<Block> roots = new HashSet<>();
 
-        // number of execution blocks
+        // Number of execution blocks
         int executionBlockCounter = 0;
 
-        // get root blocks
-        for (Block ruleBlock : uRule.getBlocks().getAll()) {
+        if (uRule.getBlocks() != null && uRule.getBlocks().getAll() != null) {
 
-            if (ruleBlock instanceof ExecutionBlock) {
+            // Get root blocks
+            for (Block executionBlock : uRule.getBlocks().getAll()) {
 
-                executionBlockCounter++;
+                if (executionBlock instanceof ExecutionBlock) {
 
-                for (var rootInputBlockLink : ruleBlock.getInputBlockLinks()) {
+                    executionBlockCounter++;
 
-                    // FIXME error message if rootInputBlockLink.getBlock() == null
-                    if (rootInputBlockLink != null && rootInputBlockLink.getBlock() != null) {
+                    // If exec block has no input block link, it's a root FIXME is it true?
+                    if (executionBlock.getInputBlockLinks() == null || executionBlock.getInputBlockLinks().isEmpty()) {
 
-                        if (uRule.getBlocks() != null) {
-                            roots.add(uRule.getBlocks()
-                                    .getBlock(rootInputBlockLink.getBlock()
-                                            .getJobEngineElementID()));
-                        }
+                        roots.add(executionBlock);
 
-                        for (var b : uRule.getBlocks()
-                                .getBlock(rootInputBlockLink.getBlock()
-                                        .getJobEngineElementID())
-                                .getInputBlockLinks()) {
+                    } else {
 
-                            if (b.getBlock() instanceof PersistableBlock) {
-                                ((PersistableBlock) b.getBlock()).setTimePersistenceValue(((PersistableBlock) rootInputBlockLink.getBlock()).getTimePersistenceValue());
-                                ((PersistableBlock) b.getBlock()).setTimePersistenceUnit(((PersistableBlock) rootInputBlockLink.getBlock()).getTimePersistenceUnit());
+                        for (var rootInputBlockLink : executionBlock.getInputBlockLinks()) {
+
+                            if (rootInputBlockLink != null && rootInputBlockLink.getBlock() != null) {
+
+                                Block block = uRule.getBlocks().getBlock(rootInputBlockLink.getBlock().getJobEngineElementID());
+
+                                if (block != null) {
+
+                                    roots.add(block);
+
+                                }
+
+                                if (block.getInputBlockLinks() != null) {
+
+                                    for (var b : block.getInputBlockLinks()) {
+
+                                        if (b.getBlock() instanceof PersistableBlock) {
+                                            ((PersistableBlock) b.getBlock()).setTimePersistenceValue(((PersistableBlock) rootInputBlockLink.getBlock()).getTimePersistenceValue());
+                                            ((PersistableBlock) b.getBlock()).setTimePersistenceUnit(((PersistableBlock) rootInputBlockLink.getBlock()).getTimePersistenceUnit());
+                                        }
+
+                                    }
+
+                                }
+
                             }
 
                         }
@@ -387,17 +451,11 @@ public class RuleBuilder {
 
                 }
 
-                // if exec block has no root, it's a root
-                if (ruleBlock.getInputBlockLinks()
-                        .isEmpty()) {
-                    roots.add(ruleBlock);
-                }
-
             }
 
         }
 
-        // if this rule has no execution block, then it is not valid.
+        // If this rule has no execution block, then it is not valid.
         if (executionBlockCounter == 0) {
             JELogger.error("[project = " + uRule.getJobEngineProjectName() + "][rule = " + uRule.getJobEngineElementName() + "] " + JEMessages.NO_EXECUTION_BLOCK,
                     LogCategory.DESIGN_MODE, uRule.getJobEngineProjectID(),
