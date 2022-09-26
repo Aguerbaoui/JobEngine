@@ -16,7 +16,7 @@ import javax.annotation.PreDestroy;
 
 
 /*
- * Tomcat ServletInitializer
+ * ServletInitializer
  * */
 @Configuration
 @ComponentScan

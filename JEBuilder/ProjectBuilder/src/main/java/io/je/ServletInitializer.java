@@ -15,7 +15,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import javax.annotation.PreDestroy;
 
 /*
- * Tomcat ServletInitializer
+ * ServletInitializer
  * */
 @Configuration
 @ComponentScan
