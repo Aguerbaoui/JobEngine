@@ -53,7 +53,6 @@ public class JEMonitorInitializingBean implements InitializingBean {
         }
     }
 
-
     @PreDestroy
     public void destroy() {
         System.err.println(
