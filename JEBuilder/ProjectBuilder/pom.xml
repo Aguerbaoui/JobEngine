@@ -206,7 +206,7 @@
     </dependencies>
 
     <build>
-        <finalName>ProjectBuilder</finalName>
+        <finalName>${artifactId}</finalName>
         <directory>../../release/ProjectBuilder/</directory>
         <outputDirectory>./target/classes/</outputDirectory>
     </build>

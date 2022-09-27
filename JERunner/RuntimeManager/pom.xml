@@ -7,6 +7,7 @@
     <version>0.0.1</version>
     <packaging>war</packaging>
     <name>RuntimeManager</name>
+
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
@@ -17,13 +18,14 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <project.parent.version>2.4.0</project.parent.version>
+        <project.parent.version>2.7.3</project.parent.version>
         <java.version>11</java.version>
         <version.org.kie>7.73.0.Final</version.org.kie>
         <version.org.drools>7.73.0.Final</version.org.drools>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
     </properties>
+
 
     <dependencies>
 
@@ -188,7 +190,7 @@
 
     </dependencies>
     <build>
-        <finalName>RuntimeManager</finalName>
+        <finalName>${artifactId}</finalName>
         <directory>../../release/RuntimeManager/</directory>
         <outputDirectory>./target/classes/</outputDirectory>
         <!-- plugins>
