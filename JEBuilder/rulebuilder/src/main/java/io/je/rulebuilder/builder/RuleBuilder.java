@@ -93,10 +93,10 @@ public class RuleBuilder {
         for (Block root : rootBlocks) {
             uRule.getBlocks().resetAllBlocks();
 
-       /*     // TODO better management of font/back-end rule config desynchronization
+            // TODO better management of font/back-end rule config desynchronization
             if (!uRule.getRuleFrontConfig().contains("\"block_name\":\"" + root.getBlockName() + "\"")) {
                 continue;
-            }*/
+            }
 
             scriptedRuleId = subRulePrefix + uRule.getJobEngineElementName() + ++scriptedRulesCounter;
 

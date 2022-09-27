@@ -51,6 +51,7 @@ import java.util.stream.Collectors;
  * Service class to handle business logic for rules
  */
 @Service
+@Lazy
 public class RuleService {
 
     private static final String DEFAULT_DELETE_CONSTANT = "DELETED";
