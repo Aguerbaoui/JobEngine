@@ -24,7 +24,7 @@ import utils.zmq.ZMQSecurity;
 import javax.annotation.PreDestroy;
 
 @Component
-public class JEBuilderInitializingBean implements InitializingBean {
+public class ProjectBuilderInitializingBean implements InitializingBean {
 
     @Autowired
     BuilderProperties builderProperties;

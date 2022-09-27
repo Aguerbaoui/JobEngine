@@ -5,23 +5,22 @@ import io.je.rulebuilder.components.blocks.LogicBlock;
 import io.je.rulebuilder.models.BlockModel;
 import io.je.utilities.exceptions.RuleBuildFailedException;
 
+import static io.je.rulebuilder.builder.RuleBuilder.*;
+
 public class NotBlock extends LogicBlock {
 
-    // TODO constants
     public NotBlock(BlockModel blockModel) {
         super(blockModel);
-        operator = " not ";
     }
 
     public NotBlock() {
-        operator = " not ";
     }
 
     @Override
     public String getExpression() throws RuleBuildFailedException {
         StringBuilder expression = new StringBuilder();
 
-        expression.append(operator + " ( " + getNotExpression() + " ) ");
+        expression.append(NOT_DROOLS_PREFIX_CONDITION + getNotExpression() + NOT_DROOLS_SUFFIX_CONDITION);
 
         return expression.toString();
     }
@@ -34,7 +33,7 @@ public class NotBlock extends LogicBlock {
 
             expression.append(inputBlockLinks.get(i).getExpression());
 
-            if (i != inputBlockLinks.size() - 1) expression.append(" and ");
+            if (i != inputBlockLinks.size() - 1) expression.append(AND_DROOLS_CONDITION);
 
         }
 

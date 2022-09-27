@@ -4,16 +4,16 @@ import io.je.rulebuilder.components.blocks.LogicBlock;
 import io.je.rulebuilder.models.BlockModel;
 import io.je.utilities.exceptions.RuleBuildFailedException;
 
+import static io.je.rulebuilder.builder.RuleBuilder.*;
+
 public class AndBlock extends LogicBlock {
 
-    // FIXME constants
+
     public AndBlock(BlockModel blockModel) {
         super(blockModel);
-        operator = " and ";
     }
 
     public AndBlock() {
-        operator = " and ";
     }
 
     @Override
@@ -23,7 +23,7 @@ public class AndBlock extends LogicBlock {
 
             expression.append(inputBlockLinks.get(i).getExpression());
 
-            if (i != inputBlockLinks.size() - 1) expression.append(operator);
+            if (i != inputBlockLinks.size() - 1) expression.append(AND_DROOLS_CONDITION);
 
         }
         return expression.toString();
@@ -32,7 +32,13 @@ public class AndBlock extends LogicBlock {
     @Override
     public String getNotExpression() throws RuleBuildFailedException {
         StringBuilder expression = new StringBuilder();
-        expression.append(" not ( " + getExpression() + " ) ");
+
+        expression.append(NOT_DROOLS_PREFIX_CONDITION
+
+                + getExpression()
+
+                + NOT_DROOLS_SUFFIX_CONDITION);
+
         return expression.toString();
     }
 

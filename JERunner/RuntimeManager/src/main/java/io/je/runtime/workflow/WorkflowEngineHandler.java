@@ -214,7 +214,11 @@ public class WorkflowEngineHandler {
         } else if (task.getType()
                 .equals(WorkflowConstants.MAILSERVICETASK_TYPE)) {
             return parseMailTask(projectId, workflowId, workflowName, task);
-        } else return null;
+        } else if (task.getType()
+                .equals(SMS_TYPE)) {
+            return parseSMSTask(projectId, workflowId, workflowName, task);
+        }
+        else return null;
     }
 
     //parse web api task
@@ -290,6 +294,35 @@ public class WorkflowEngineHandler {
             databaseTask.setDatabaseId((String) attributes.get(DATABASE_ID));
         }
         return databaseTask;
+    }
+
+    //parse sms task
+    public static SMSTask parseSMSTask(String projectId, String workflowId, String workflowName, TaskModel task) {
+        SMSTask smsTask = new SMSTask();
+        smsTask.setTaskId(task.getTaskId());
+        smsTask.setTaskName((task.getTaskName()));
+        smsTask.setProjectId(projectId);
+        smsTask.setProjectId(projectId);
+        smsTask.setProcessId(workflowName);
+        smsTask.setWorkflowId(workflowId);
+        smsTask.setServerType((String) task.getAttributes().get(SERVER_TYPE));
+        smsTask.setAccountSID((String) task.getAttributes().get(TWILIO_ACCOUNT_SID));
+        smsTask.setAccountToken((String) task.getAttributes().get(TWILIO_ACCOUNT_TOKEN));
+        smsTask.setMessage((String) task.getAttributes().get(MESSAGE));
+        smsTask.setReceiverPhoneNumbers((List<String>) task.getAttributes().get(RECEIVER_PHONE_NUMBERS));
+        smsTask.setSenderPhoneNumber((String) task.getAttributes().get(TWILIO_SENDER_PHONE_NUMBER));
+        smsTask.setTwilioServer((boolean) task.getAttributes().get(TWILIO_SERVER));
+
+        if ((boolean)task.getAttributes().get(TWILIO_SERVER) == false ) {
+            smsTask.setValidity((String) task.getAttributes().get(VALIDITY));
+            smsTask.setInputType((String) task.getAttributes().get(INPUT_TYPE));
+            smsTask.setModem((String) task.getAttributes().get(MODEM));
+            smsTask.setSendAsUnicode((boolean) task.getAttributes().get(SEND_AS_UNICODE));
+            smsTask.setPriority((boolean) task.getAttributes().get(PRIORITY));
+            smsTask.setSmsType((String) task.getAttributes().get(SMS_EAGLE_TYPE));
+            smsTask.setURI((String) task.getAttributes().get(SMS_URI));
+        }
+        return smsTask;
     }
 
     //parse email task

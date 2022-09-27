@@ -237,9 +237,12 @@ public class RuntimeDispatcher {
         try {
             JELogger.debug("[projectId = " + wf.getProjectId() + "] [workflow = " + wf.getId() + "]" + JEMessages.ADDING_WF,
                     LogCategory.RUNTIME, wf.getProjectId(), LogSubModule.WORKFLOW, wf.getId());
+
             MonitoringMessage msg = new MonitoringMessage(LocalDateTime.now(), wf.getName(), ObjectType.JEWORKFLOW,
                     wf.getProjectId(), Status.BUILDING.toString(), Status.BUILDING.toString());
+
             JEMonitor.publish(msg);
+
             JEProcess process = new JEProcess(wf.getId(), wf.getName(), wf.getPath(), wf.getProjectId(),
                     wf.isTriggeredByEvent());
             process.setOnProjectBoot(wf.isOnProjectBoot());
@@ -257,13 +260,18 @@ public class RuntimeDispatcher {
             }
             WorkflowEngineHandler.addProcess(process);
             projectNameToId.put(wf.getProjectName(), wf.getProjectId());
+
             msg = new MonitoringMessage(LocalDateTime.now(), wf.getName(), ObjectType.JEWORKFLOW,
                     wf.getProjectId(), Status.BUILDING.toString(), Status.STOPPED.toString());
+
             JEMonitor.publish(msg);
+
         } catch (Exception e) {
             LoggerUtils.logException(e);
+
             MonitoringMessage msg = new MonitoringMessage(LocalDateTime.now(), wf.getName(), ObjectType.JEWORKFLOW,
                     wf.getProjectId(), Status.STOPPED.toString(), Status.STOPPED.toString());
+
             JEMonitor.publish(msg);
         }
     }

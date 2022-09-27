@@ -1,21 +1,20 @@
 package io.je.rulebuilder.components.blocks.logic;
 
 
+import io.je.rulebuilder.builder.RuleBuilder;
 import io.je.rulebuilder.components.blocks.LogicBlock;
 import io.je.rulebuilder.models.BlockModel;
 import io.je.utilities.exceptions.RuleBuildFailedException;
 
+import static io.je.rulebuilder.builder.RuleBuilder.*;
+
 public class OrBlock extends LogicBlock {
 
-
-    // TODO constants
     public OrBlock(BlockModel blockModel) {
         super(blockModel);
-        operator = " or ";
     }
 
     public OrBlock() {
-        operator = " or ";
     }
 
     @Override
@@ -23,7 +22,7 @@ public class OrBlock extends LogicBlock {
         StringBuilder expression = new StringBuilder();
 
         // Do not change unless aware
-        expression.append(getNotExpression() + "\n");
+        expression.append(RuleBuilder.getDroolsConditionWithoutRepeatedDeclarations( getNotExpression() ) + "\n");
 
         expression.append(
                 "then"
@@ -58,7 +57,7 @@ public class OrBlock extends LogicBlock {
                             + "\n"
             );
 
-            expression.append("    " + inputBlockLinks.get(i).getExpression() + "\n");
+            expression.append("    " + RuleBuilder.getDroolsConditionWithoutRepeatedDeclarations( inputBlockLinks.get(i).getExpression() ) + "\n");
 
             expression.append(
                     "then"
@@ -95,9 +94,12 @@ public class OrBlock extends LogicBlock {
         );
 
         // FIXME : should loop on input block till getters (data sources) : check Bug 5209
+        String tmpExpression = "";
         for (var inputBlocksExpression : getAllInputBlocksExpressions()) {
-            expression.append("   " + inputBlocksExpression + "\n");
+            tmpExpression += "   " + inputBlocksExpression + "\n";
         }
+
+        expression.append( RuleBuilder.getDroolsConditionWithoutRepeatedDeclarations( tmpExpression ) + "\n" );
 
         return expression.toString();
     }
@@ -107,22 +109,20 @@ public class OrBlock extends LogicBlock {
         StringBuilder expression = new StringBuilder();
 
         expression.append(
-                " not ( "
+                NOT_DROOLS_PREFIX_CONDITION
         );
         // Do not change by getExpression()
         for (int i = 0; i < inputBlockLinks.size(); i++) {
 
-            expression.append("\n"
-                    + inputBlockLinks.get(i).getExpression()
-                    + "\n");
+            expression.append(inputBlockLinks.get(i).getExpression());
 
             if (i < inputBlockLinks.size() - 1) {
-                expression.append(operator);
+                expression.append(OR_DROOLS_CONDITION);
             }
         }
 
         expression.append(
-                " ) "
+                NOT_DROOLS_SUFFIX_CONDITION
         );
 
         return expression.toString();

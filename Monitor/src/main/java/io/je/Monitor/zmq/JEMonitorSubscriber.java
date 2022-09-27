@@ -30,15 +30,16 @@ public class JEMonitorSubscriber {
 
     public void close() {
 
-        if (monitorZMQSubscriber != null) {
-            monitorZMQSubscriber.setListening(false);
-            monitorZMQSubscriber.closeSocket();
-        }
-
+        // Interrupt Thread before closing socket to avoid org.zeromq.ZMQException: Errno 4
         if (monitorZMQSubscriberThread != null) {
             if (monitorZMQSubscriberThread.isAlive()) {
                 monitorZMQSubscriberThread.interrupt();
             }
+        }
+
+        if (monitorZMQSubscriber != null) {
+            monitorZMQSubscriber.setListening(false);
+            monitorZMQSubscriber.closeSocket();
         }
 
     }

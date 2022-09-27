@@ -3,8 +3,12 @@ package io.je.rulebuilder.components.blocks;
 import io.je.rulebuilder.models.BlockModel;
 import io.je.utilities.exceptions.RuleBuildFailedException;
 
+import static io.je.rulebuilder.builder.RuleBuilder.NOT_DROOLS_PREFIX_CONDITION;
+import static io.je.rulebuilder.builder.RuleBuilder.NOT_DROOLS_SUFFIX_CONDITION;
+
 public class LogicBlock extends PersistableBlock {
 
+    // FIXME is it well used. Check RuleBuilder constants.
     protected String operator = "";
 
     public LogicBlock(BlockModel blockModel) {
@@ -13,16 +17,17 @@ public class LogicBlock extends PersistableBlock {
                 blockModel.getTimePersistenceUnit(), blockModel.getInputBlocksIds(), blockModel.getOutputBlocksIds());
 
         switch (blockModel.getOperationId()) {
-            //and
+            // and
             case 3001:
                 operator = " and ";
                 break;
 
-            //or
+            // or
             case 3002:
                 operator = " or ";
                 break;
 
+            // TODO not
         }
     }
 
@@ -54,7 +59,11 @@ public class LogicBlock extends PersistableBlock {
 
         StringBuilder expression = new StringBuilder();
 
-        expression.append("\n not ( " + getExpression() + " ) \n");
+        expression.append(NOT_DROOLS_PREFIX_CONDITION
+
+                + getExpression()
+
+                + NOT_DROOLS_SUFFIX_CONDITION);
 
         return expression.toString();
     }

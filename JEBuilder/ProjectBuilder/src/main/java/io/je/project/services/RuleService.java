@@ -47,6 +47,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
+import static io.je.utilities.constants.WorkflowConstants.*;
+
 /*
  * Service class to handle business logic for rules
  */
@@ -437,7 +439,7 @@ public class RuleService {
             throw new AddRuleBlockException(JEMessages.BLOCK_PROJECT_ID_NULL);
         }
 
-        // check rule is is not null
+        // check rule id is not null
         if (blockModel.getRuleId() == null) {
             throw new AddRuleBlockException(JEMessages.BLOCK_RULE_ID_NULL);
         }
@@ -1080,7 +1082,13 @@ public class RuleService {
             String jsonPrettyPrintString;
             String line;
             String result = "";
-            String baseUrl = smsEagle.get("URI") + "/http_api/contact_read?access_token=" + smsEagle.get("accountToken") + "&responsetype=xml";
+            String baseUrl = smsEagle.get(SMS_URI) + "/http_api/contact_read?access_token=" + smsEagle.get("accountToken") + "&responsetype=xml";
+            if (smsEagle.get("accountSID") != null) {
+                baseUrl = smsEagle.get(SMS_URI) + "/http_api/contact_read?login=" + smsEagle.get("accountSID") + "&pass=" + smsEagle.get("accountToken") + "&responsetype=xml" ;
+            }
+            else {
+                baseUrl = smsEagle.get(SMS_URI) + "/http_api/contact_read?access_token=" + smsEagle.get("accountToken") + "&responsetype=xml" ;
+            }
             try {
                 URL url = new URL(baseUrl);
                 conn = (HttpURLConnection) url.openConnection();
@@ -1117,7 +1125,13 @@ public class RuleService {
             String line;
             String result = "";
             String jsonPrettyPrintString;
-            String baseUrl = smsEagle.get("URI") + "/http_api/group_read?access_token=" + smsEagle.get("accountToken") + "&responsetype=xml";
+            String  baseUrl;
+            if (smsEagle.get(TWILIO_ACCOUNT_SID) != null) {
+                baseUrl = smsEagle.get(SMS_URI) + "/http_api/group_read?login=" + smsEagle.get(TWILIO_ACCOUNT_SID) + "&pass=" + smsEagle.get(TWILIO_ACCOUNT_TOKEN) + "&responsetype=xml" ;
+            }
+            else {
+                baseUrl = smsEagle.get(SMS_URI) + "/http_api/group_read?access_token=" + smsEagle.get(TWILIO_ACCOUNT_TOKEN) + "&responsetype=xml" ;
+            }
             try {
                 URL url = new URL(baseUrl);
                 conn = (HttpURLConnection) url.openConnection();

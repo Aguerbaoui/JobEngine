@@ -247,9 +247,12 @@ public class ProjectService {
                         rule.setBuilt(false);
                         rule.setCompiled(false);
                         rule.setAdded(false);
+
+                        // FIXME
                         if (rule.getStatus() != Status.ERROR) {
                             rule.setStatus(Status.NOT_BUILT);
                         }
+
                         ruleService.saveRule(rule);
                     }
 

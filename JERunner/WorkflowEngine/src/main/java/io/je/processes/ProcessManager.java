@@ -100,11 +100,12 @@ public class ProcessManager {
         JEProcess process = processes.get(id);
         process.setRunning(b);
         Status status = b ? Status.RUNNING : Status.STOPPED;
+
         MonitoringMessage msg = new MonitoringMessage(LocalDateTime.now(), id, ObjectType.JEWORKFLOW,
-                processes.get(id)
-                        .getProjectId(), String.valueOf(b), status.toString());
+                processes.get(id).getProjectId(), String.valueOf(b), status.toString());
         //JELogger.debug(SENDING_WORKFLOW_MONITORING_DATA_TO_JEMONITOR + "\n" + msg, LogCategory.RUNTIME, process.getProjectId(), LogSubModule.WORKFLOW, processes.get(id).getName());
         JEMonitor.publish(msg);
+
         if (!b) {
             if (process.getEndEventId() != null) {
 
@@ -264,10 +265,12 @@ public class ProcessManager {
                     .setDeploymentId(deployment.getId());
         } catch (Exception e) {
             LoggerUtils.logException(e);
+
             MonitoringMessage msg = new MonitoringMessage(LocalDateTime.now(), key, ObjectType.JEWORKFLOW,
                     processes.get(key)
                             .getProjectId(), Status.STOPPED.toString(), Status.STOPPED.toString());
             JEMonitor.publish(msg);
+
             throw new WorkflowBuildException(JEMessages.WORKFLOW_BUILD_ERROR + " with id = " + key);
         }
     }
