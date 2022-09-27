@@ -312,8 +312,14 @@ public class ProjectService {
                 })
                 .get();
         // if there are no workflows or rules that built, then project is not built
-        var buildResult = results.stream().anyMatch(OperationStatusDetails::isOperationSucceeded);
-        ProjectRepository.getProject(projectId).setBuilt(buildResult);
+        //TODO: to check after project mng changes
+        if (results.isEmpty()) {
+            ProjectRepository.getProject(projectId).setBuilt(true);
+        } else {
+            var buildResult = results.stream().anyMatch(OperationStatusDetails::isOperationSucceeded);
+            ProjectRepository.getProject(projectId).setBuilt(buildResult);
+        }
+
         JELogger.debug(BUILT_EVERYTHING_SUCCESSFULLY, LogCategory.DESIGN_MODE, projectId, LogSubModule.JEBUILDER, null);
         return results;
     }

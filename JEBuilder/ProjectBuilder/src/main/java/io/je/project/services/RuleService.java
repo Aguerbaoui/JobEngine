@@ -5,6 +5,7 @@ import com.twilio.base.ResourceSet;
 import com.twilio.rest.api.v2010.account.OutgoingCallerId;
 import io.je.project.beans.JEProject;
 import io.je.project.config.LicenseProperties;
+import io.je.project.repository.ProjectRepository;
 import io.je.project.repository.RuleRepository;
 import io.je.rulebuilder.components.*;
 import io.je.rulebuilder.components.blocks.Block;
@@ -141,6 +142,7 @@ public class RuleService {
         project.getRuleEngine()
                 .remove(ruleId);
         ruleRepository.deleteById(ruleId);
+        ProjectRepository.saveProject(project.getProjectId());
         JELogger.info(JEMessages.RULE_DELETED, LogCategory.DESIGN_MODE, projectId, LogSubModule.RULE,
                 ruleId);
     }

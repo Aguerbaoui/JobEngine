@@ -872,6 +872,7 @@ public class WorkflowService {
                 LogSubModule.WORKFLOW, workflowId);
         project.deleteWorkflowBlock(workflowId, blockId);
         workflowRepository.deleteById(workflowId);
+        projectService.saveProject(project.getProjectId());
     }
 
     /*
@@ -1326,6 +1327,7 @@ public class WorkflowService {
 
         //delete workflow from memory
         project.removeWorkflow(workflowId);
+        projectService.saveProject(project.getProjectId());
     }
 
     // @Async

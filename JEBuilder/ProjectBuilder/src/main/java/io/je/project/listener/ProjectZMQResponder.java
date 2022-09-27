@@ -12,11 +12,12 @@ import io.je.project.services.ProjectService;
 import io.je.utilities.exceptions.ProjectNotFoundException;
 import io.je.utilities.log.JELogger;
 import io.je.utilities.ruleutils.OperationStatusDetails;
+import io.siothconfig.SIOTHConfigUtility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import utils.log.LogSubModule;
-import utils.zmq.ZMQBind;
 import utils.zmq.ZMQResponder;
+import utils.zmq.ZMQType;
 
 import java.util.HashMap;
 import java.util.List;
@@ -33,11 +34,9 @@ public class ProjectZMQResponder extends ZMQResponder {
     @Autowired
     ObjectMapper objectMapper = new ObjectMapper();
 
-
-    public void init(String url, int repPort, ZMQBind bind) {
-        this.url = url;
-        this.repPort = repPort;
-        this.bindType = bind;
+    public ProjectZMQResponder() {
+        super("tcp://" + SIOTHConfigUtility.getSiothConfig().getNodes().getSiothMasterNode(),
+                SIOTHConfigUtility.getSiothConfig().getPorts().getJeResponsePort(), ZMQType.BIND);
     }
 
     @Override
@@ -47,7 +46,7 @@ public class ProjectZMQResponder extends ZMQResponder {
             String response = "";
             ProjectRequestObject request = new ProjectRequestObject();
             try {
-                String data = this.getRepSocket(ZMQBind.BIND).recvStr(0);
+                String data = this.getResponderSocket(ZMQType.BIND).recvStr(0);
                 if (data != null && !data.isEmpty() && !data.equals("null")) {
 
                     JELogger.info("Received ZMQ request: " + data, null, null, LogSubModule.JEBUILDER, null);
@@ -213,7 +212,7 @@ public class ProjectZMQResponder extends ZMQResponder {
         try {
             JELogger.debug("Sending response: " + response, null, null, LogSubModule.JEBUILDER, null);
 
-            this.getRepSocket(ZMQBind.BIND).send(response);
+            this.getResponderSocket(ZMQType.BIND).send(response);
         } catch (Exception e) {
             JELogger.error("Failed to send ZMQ response: " + e.getMessage(), null, null, LogSubModule.JEBUILDER, null);
         }
