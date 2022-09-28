@@ -16,8 +16,9 @@ import java.util.HashMap;
 @SpringBootApplication
 public class RuntimeManagerApplication {
 
-
     public static void main(String[] args) {
+
+        System.setProperty("spring.devtools.restart.enabled", "false");
 
         SpringApplication app = new SpringApplication(RuntimeManagerApplication.class);
         app.setBannerMode(Banner.Mode.OFF);

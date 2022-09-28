@@ -11,6 +11,8 @@ public class ProjectBuilderApplication {
 
     public static void main(String[] args) {
 
+        System.setProperty("spring.devtools.restart.enabled", "false");
+
         SpringApplication app = new SpringApplication(ProjectBuilderApplication.class);
         app.setBannerMode(Banner.Mode.OFF);
         HashMap<String, Object> properties = new HashMap<>();

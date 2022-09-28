@@ -254,8 +254,16 @@ public class RuleBuilder {
 
                     condition = getDroolsConditionWithoutRepeatedDeclarations(conditionBlock.getExpression());
 
+                    // FIXME Bug 100: Job Engine Issues (FIXME / TODO) : more than 200 in about 100 files
+
                     // TODO check if need for more specific blocks cast
-                    notCondition = " not ( \n" + condition.replaceAll("\n", AND_DROOLS_CONDITION) + "\n ) ";
+                    String tmpNotCondition = condition.replaceAll("\n", AND_DROOLS_CONDITION);
+
+                    if (tmpNotCondition.endsWith(AND_DROOLS_CONDITION)) {
+                        tmpNotCondition = tmpNotCondition.substring(0, tmpNotCondition.length() - AND_DROOLS_CONDITION.length());
+                    }
+
+                    notCondition = NOT_DROOLS_PREFIX_CONDITION + tmpNotCondition + NOT_DROOLS_SUFFIX_CONDITION;
 
                     consequences = conditionBlock.getConsequences();
 

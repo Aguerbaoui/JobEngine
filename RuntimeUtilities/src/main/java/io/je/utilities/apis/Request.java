@@ -122,7 +122,8 @@ public class Request {
 
             if (response == null) throw new JERunnerErrorException(JEMessages.JERUNNER_UNREACHABLE);
             if (response.code() != ResponseCodes.CODE_OK) {
-                throw new JERunnerErrorException(JEMessages.JERUNNER_ERROR + " : " + response.message());
+                throw new JERunnerErrorException(JEMessages.JERUNNER_ERROR + " : Code = " + response.code()
+                        + " : Message = " + response.message());
             }
 
             String respBody = response.body()
