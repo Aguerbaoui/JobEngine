@@ -182,8 +182,10 @@ public class ProjectContainer {
         if (!buildKie()) {
             JELogger.error(JEMessages.BUILDING_PROJECT_CONTAINER_FAILED, LogCategory.RUNTIME, projectId,
                     LogSubModule.RULE, null);
+
             throw new RuleBuildFailedException(JEMessages.BUILDING_PROJECT_CONTAINER_FAILED);
         }
+
         JELogger.debugWithoutPublish(JEMessages.BUILDING_PROJECT_CONTAINER_SUCCESS, LogCategory.RUNTIME, projectId,
                 LogSubModule.RULE, null);
 

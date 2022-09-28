@@ -255,7 +255,13 @@ public class RuleBuilder {
                     condition = getDroolsConditionWithoutRepeatedDeclarations(conditionBlock.getExpression());
 
                     // TODO check if need for more specific blocks cast
-                    notCondition = " not ( \n" + condition.replaceAll("\n", AND_DROOLS_CONDITION) + "\n ) ";
+                    String tmpNotCondition = condition.replaceAll("\n", AND_DROOLS_CONDITION);
+
+                    if (tmpNotCondition.endsWith(AND_DROOLS_CONDITION)) {
+                        tmpNotCondition = tmpNotCondition.substring(0, tmpNotCondition.length() - AND_DROOLS_CONDITION.length());
+                    }
+
+                    notCondition = NOT_DROOLS_PREFIX_CONDITION + tmpNotCondition + NOT_DROOLS_SUFFIX_CONDITION;
 
                     consequences = conditionBlock.getConsequences();
 
