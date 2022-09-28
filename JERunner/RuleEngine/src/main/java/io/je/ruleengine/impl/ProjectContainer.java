@@ -858,7 +858,7 @@ public class ProjectContainer {
             // JELogger.info(String.valueOf(fact.getJeObjectLastUpdate().until(LocalDateTime.now(),
             // ChronoUnit.MILLIS)));
             // kieSession.insert(fact);
-            synchronized (kieSession) {
+            // FIXME synchronized (kieSession) { Bug 662: Rule was running, but suddenly no more fire events (even with stop/build/start)
                 try {
                     // ClassLoader t = JEClassLoader.getInstance();
                     // //io.je.utilities.classloader.JEClassLoader@733aa287
@@ -871,7 +871,7 @@ public class ProjectContainer {
 					JELogger.trace(kieContainer.getClassLoader().toString(), LogCategory.RUNTIME, projectId,
 							LogSubModule.RULE, fact.getJobEngineElementID());
 */
-                    synchronized (facts) {
+                    // FIXME synchronized (facts) { Bug 662: Rule was running, but suddenly no more fire events (even with stop/build/start)
 					/*	JELogger.debug(
 								"[projectId =" + projectId + "] [factId :" + fact.getJobEngineElementID() + "]"
 										+ JEMessages.UPDATING_FACT,
@@ -883,7 +883,7 @@ public class ProjectContainer {
                             facts.put(fact.getJobEngineElementID(), kieSession.insert(fact));
 
                         }
-                    }
+                    //}
 
                 } catch (Exception exp) {
 
@@ -892,7 +892,7 @@ public class ProjectContainer {
 
                 }
 
-            }
+            //}
 
         } else {
             LoggerUtils.warn("Trying to insert fact : " + fact.toString() + ", but project is not running. Project Id : " + projectId);
