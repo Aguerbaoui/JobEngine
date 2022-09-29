@@ -58,48 +58,64 @@ public class ProjectContainer {
 
 
     Map<String, Rule> allRules = new ConcurrentHashMap<>();
+
     // private boolean isInitialised = false;
     // JEClassLoader loader = JEClassLoader.getInstance();
     ConcurrentHashMap<String, FactHandle> facts = new ConcurrentHashMap<>();
     private String projectId;
+
     // A project can be either running, or stopped.
     private Status status = Status.STOPPED;
+
     /*
      * ------------------- kie configuration -------------------
      */
     // this parameter indicates whether the project has been built.
     private BuildStatus buildStatus = BuildStatus.UNBUILT;
+
     // The KieServices is a thread-safe singleton acting as a hub giving access
     // to the other services provided by Kie.
     private KieServices kieServices;
+
     // KieFileSystem is an in memory file system used to programmatically define
     // the resources composing a KieModule.
     private KieFileSystem kieFileSystem;
+
     // This second kieFileSystem instance is used to compile rules without
     // altering the original kieFileSystem.
     private KieFileSystem kfsToCompile;
+
     // A KieModule is a container of all the resources necessary to define a set of
     // KieBases
     private KieModuleModel kproj;
+
     // The KieContainer Holds all the knowledge. Each project container is defined
     // by a Kie Container.
     private KieContainer kieContainer;
 
+    /*
     // The KScanner is used to automatically discover if there are new releases for
     // a given KieModule
-    //private KieScanner kScanner;
+    private KieScanner kScanner;
+    */
+
     // This represents the project container's version. It is updated whenever the
-    // project
-    // components are altered
+    // project components are altered
     private ReleaseId releaseId;
+
     // A repository of all the application's knowledge definitions
     private KieBase kieBase;
+
     // We interact with the engine through a KieSession.
     private KieSession kieSession;
+
     private int releaseVersion = 1;
+
     // private KieSessionManagerInterface kieManager;
+
     // This attribute is responsible for listening to the engine while it's active.
     //private RuleListener ruleListener;
+
     private boolean reloadContainer = false;
 
     /*
@@ -149,12 +165,15 @@ public class ProjectContainer {
                 }
             }
         }*/
+
         stopRules(true, true);
+
         try {
             startRules();
         } catch (RulesNotFiredException | RuleBuildFailedException exp) {
             logError(exp, JEMessages.FAILED_TO_FIRE_RULES);
         }
+
         reloadContainer = false;
         JELogger.trace("Reloaded Rule Engine.");
     }
@@ -324,7 +343,7 @@ public class ProjectContainer {
 
     /*
      * ---------------------------------------------------------------
-     * --------------------------------------------------------KIE CONFIGURATION
+     * --------------------  KIE CONFIGURATION  ----------------------
      * ---------------------------------------------------------------
      */
 
@@ -406,11 +425,12 @@ public class ProjectContainer {
         } else {
             return false;
         }
+
         return true;
     }
 
     /*
-     * this method is responsible for creating the kieModule
+     * This method is responsible for creating the kieModule
      */
     private void createKModule() {
 
@@ -496,7 +516,7 @@ public class ProjectContainer {
         try {
             String drlName = generateResourceName(ResourceType.DRL, rule.getJobEngineElementID());
 
-            JELogger.trace(">>> deleting ", LogCategory.RUNTIME, projectId, LogSubModule.RULE, drlName);
+            JELogger.trace(">>> deleting : " + drlName, LogCategory.RUNTIME, projectId, LogSubModule.RULE, drlName);
 
             if (kieFileSystem.read(drlName) != null) {
                 kieFileSystem.delete(drlName);
@@ -544,6 +564,7 @@ public class ProjectContainer {
 
             kieFileSystem.generateAndWritePomXML(releaseId);
 
+            // FIXME kieServices newKieBuilder does not return in debug mode and CPU 100% after a while
             KieBuilder kieBuilder = kieServices.newKieBuilder(kieFileSystem, JEClassLoader.getDataModelInstance())
                     .buildAll(null);
 
@@ -576,19 +597,19 @@ public class ProjectContainer {
 
     /*
      * ---------------------------------------------------------------
-     * -------------------------------------------------------- RULE MANAGEMENT
+     * ---------------------  RULE MANAGEMENT  -----------------------
      * ---------------------------------------------------------------
      */
 
     /*
-     * this method checks if a rule with an identical id already exists
+     * This method checks if a rule with an identical id already exists
      */
     public boolean ruleExists(Rule rule) {
         return allRules.containsKey(rule.getJobEngineElementID());
     }
 
     /*
-     * this method checks if a rule with an identical id already exists
+     * This method checks if a rule with an identical id already exists
      */
     public boolean ruleExists(String ruleID) {
         return allRules.containsKey(ruleID);
@@ -850,7 +871,7 @@ public class ProjectContainer {
 
     /*
      * ---------------------------------------------------------------
-     * -------------------------------------------------------- FACT MANAGEMENT
+     * ---------------------  FACT MANAGEMENT  -----------------------
      * ---------------------------------------------------------------
      */
     public void insertFact(JEObject fact) {
@@ -871,11 +892,16 @@ public class ProjectContainer {
 					JELogger.trace(kieContainer.getClassLoader().toString(), LogCategory.RUNTIME, projectId,
 							LogSubModule.RULE, fact.getJobEngineElementID());
 */
-                    // FIXME synchronized (facts) { Bug 662: Rule was running, but suddenly no more fire events (even with stop/build/start)
-					/*	JELogger.debug(
-								"[projectId =" + projectId + "] [factId :" + fact.getJobEngineElementID() + "]"
-										+ JEMessages.UPDATING_FACT,
-								LogCategory.DESIGN_MODE, projectId, LogSubModule.RULE, fact.getJobEngineElementID()); */
+
+                    // FIXME synchronized (facts) {  Bug 662: Rule was running, but suddenly no more fire events (even with stop/build/start)
+
+                        String message = JEMessages.UPDATING_FACT + " [projectId = " + projectId
+                                + " ] [factId : " + fact.getJobEngineElementID() + " ] : " + fact.toString();
+
+                        LoggerUtils.trace(message);
+
+					/*	JELogger.debug(message, LogCategory.DESIGN_MODE, projectId, LogSubModule.RULE, fact.getJobEngineElementID()); */
+
                         if (facts.containsKey(fact.getJobEngineElementID())) {
                             kieSession.update(facts.get(fact.getJobEngineElementID()), fact);
 
@@ -883,6 +909,7 @@ public class ProjectContainer {
                             facts.put(fact.getJobEngineElementID(), kieSession.insert(fact));
 
                         }
+
                     //}
 
                 } catch (Exception exp) {
@@ -903,7 +930,7 @@ public class ProjectContainer {
     public void retractFact(String factId) {
         try {
             // FIXME
-            // kieSession.delete(facts.get(factId));
+            kieSession.delete(facts.get(factId));
 
         } catch (Exception e) {
             LoggerUtils.logException(e);

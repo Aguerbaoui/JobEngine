@@ -86,7 +86,9 @@ public class RuleEngineHandler {
      * Start running a project rule engine given a project id
      */
     public static void startProjectRuleEngine(String projectId) throws RulesNotFiredException, RuleBuildFailedException {
+
         RuleEngine.start(projectId);
+
     }
 
 
@@ -94,7 +96,9 @@ public class RuleEngineHandler {
      * Stop running a project given a project id
      */
     public static void stopProjectRuleEngine(String projectId) {
+
         RuleEngine.stop(projectId);
+
     }
 
 
@@ -102,6 +106,7 @@ public class RuleEngineHandler {
      * build project
      */
     public static void buildProject(String projectId) throws RuleBuildFailedException {
+
         RuleEngine.buildProject(projectId);
 
     }
