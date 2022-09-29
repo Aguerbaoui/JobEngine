@@ -930,7 +930,7 @@ public class ProjectContainer {
     public void retractFact(String factId) {
         try {
             // FIXME
-            // kieSession.delete(facts.get(factId));
+            kieSession.delete(facts.get(factId));
 
         } catch (Exception e) {
             LoggerUtils.logException(e);
