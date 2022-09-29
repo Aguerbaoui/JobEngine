@@ -266,9 +266,9 @@ public class JEMessages {
 
     public static final String UPDATING_EVENT = "Found event with Id = ";
 
-    public static final String REMOVING_EVENTS = "Updating fact";
+    public static final String REMOVING_EVENTS = "Removing all events";
 
-    public static final String TRIGGERING_NOW = "Triggering event  now";
+    public static final String TRIGGERING_NOW = "Triggering event now";
 
     public static final String REMOVING_EVENT = "Removing event now";
 
@@ -282,7 +282,7 @@ public class JEMessages {
 
     public static final String DELETE_WORKFLOW_FAILED = "Error deleting workflow : ";
 
-    public static final String RUN_WORKFLOW_FAILED = "Error running workflow in JERunner: ";
+    public static final String RUN_WORKFLOW_FAILED = "Error running workflow in JERunner : ";
 
     public static final String PROJECT_RUN_FAILED = "Failed to run project";
 

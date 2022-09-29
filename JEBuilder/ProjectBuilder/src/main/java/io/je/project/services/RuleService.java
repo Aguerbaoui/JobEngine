@@ -897,7 +897,9 @@ public class RuleService {
                 if (rule.isRunning()) {
                     if (rule.getSubRules() != null) {
                         for (String subRuleId : rule.getSubRules()) {
+
                             JEResponse response = JERunnerAPIHandler.deleteRule(projectId, subRuleId);
+
                             if (response.getCode() != ResponseCodes.CODE_OK) {
                                 throw new JERunnerErrorException(JEMessages.FAILED_TO_DELETE_SUBRULE);
                             }
