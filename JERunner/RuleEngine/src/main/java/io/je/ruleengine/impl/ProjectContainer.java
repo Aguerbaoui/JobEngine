@@ -929,7 +929,7 @@ public class ProjectContainer {
 
     public void retractFact(String factId) {
         try {
-            // FIXME
+            // FIXME Issue 679: Rule containing removed Variable, continue to build/run without errors (should be checked also for Events)
             kieSession.delete(facts.get(factId));
 
         } catch (Exception e) {

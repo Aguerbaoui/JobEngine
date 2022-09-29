@@ -721,7 +721,8 @@ public class ClassService {
         @Override
         public void run() {
 
-            synchronized (this) {
+            // Bug 677: No more data received in Job Engine logs on updating static attribute. Reworks after restarting Job Engine (not Data Model) !
+            // FIXME synchronized (this) {
 
                 final String ID_MSG = "ClassZMQSubscriber : ";
 
@@ -814,7 +815,7 @@ public class ClassService {
 
                 this.closeSocket();
 
-            }
+            //}
 
         }
 
