@@ -84,7 +84,9 @@ public class JERunnerRequester {
     private static JEZMQResponse sendRequest(RunnerRequestObject request) {
         try {
             String response;
+
             if (requester == null) init();
+
             synchronized (requester) {
                 response = requester.sendRequest(objectMapper.writeValueAsString(request));
             }

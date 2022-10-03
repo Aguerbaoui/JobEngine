@@ -47,7 +47,8 @@ public class OrBlock extends LogicBlock {
                             "dialect \"mvel\"\n" +
                             "salience @{salience}\n" +
                             "enabled @{enabled}\n" +
-                            "no-loop true\n" +
+                            "no-loop false\n" +
+                            "lock-on-active false\n" +
                             "date-effective @{dateEffective}\n" +
                             "date-expires @{dateExpires}\n" +
                             "timer (cron:@{cronExpression})\n" +
@@ -82,7 +83,8 @@ public class OrBlock extends LogicBlock {
                         "dialect \"mvel\"\n" +
                         "salience @{salience}\n" +
                         "enabled @{enabled}\n" +
-                        "no-loop true\n" +
+                        "no-loop false\n" +
+                        "lock-on-active false\n" +
                         "date-effective @{dateEffective}\n" +
                         "date-expires @{dateExpires}\n" +
                         "timer (cron:@{cronExpression})\n" +

@@ -272,6 +272,7 @@ public class ProjectContainer {
             };
             t1 = new Thread(runnable);
             t1.start();
+
             status = Status.RUNNING;
 
             Set<String> topics = DataModelListener.getTopicsByProjectId(projectId);
@@ -288,8 +289,15 @@ public class ProjectContainer {
             thread.start();
 
         } catch (Exception exp) {
+
             if (t1 != null) {
+
                 kieSession.halt();
+
+                if (t1.isAlive()){
+                    t1.interrupt();
+                }
+
             }
 
             logError(exp, JEMessages.FAILED_TO_FIRE_RULES);
@@ -319,14 +327,18 @@ public class ProjectContainer {
         try {
 
             if (kieSession != null) {
+
                 kieSession.halt();
+
                 status = Status.STOPPED;
+
                 if (destroySession) {
                     kieSession.dispose();
                     kieSession.destroy();
                     kieSession = null;
                     facts.clear();
                 }
+
                 if (removeAllRules) {
                     allRules.clear();
                     return deleteAllRulesFromKieFileSystem();
@@ -398,9 +410,9 @@ public class ProjectContainer {
             // create container
             try {
                 /*
-                FIXME Bug 79: Error creating kieBase org.drools.compiler.kie.builder.impl.KieServicesImpl.newKieContainer(KieServicesImpl.java:190)
+                    FIXME Bug 79: Error creating kieBase org.drools.compiler.kie.builder.impl.KieServicesImpl.newKieContainer(KieServicesImpl.java:190)
 
-                FIXME Bug 110: java.lang.RuntimeException: Cannot find KieModule: io.je:ruleengine
+                    FIXME Bug 110: java.lang.RuntimeException: Cannot find KieModule: io.je:ruleengine
                 */
 
                 kieContainer = kieServices.newKieContainer(releaseId, JEClassLoader.getDataModelInstance());
@@ -408,6 +420,14 @@ public class ProjectContainer {
                 kieBase = kieContainer.getKieBase("kie-base");
 
                 kieSession = kieBase.newKieSession(kieContainer.getKieSessionConfiguration("kie-session"), kieServices.newEnvironment());
+
+                LoggerUtils.trace("kieSessionModel kie-session identifier : " + kieSession.getIdentifier());
+
+                // FIXME remove
+                //kieServices.getLoggers().newConsoleLogger(kieSession);
+
+                // FIXME create dir drools
+                kieServices.getLoggers().newFileLogger(kieSession, "../logs/drools");
 
                 JELogger.debug("KIE CONTAINER : " + kieContainer.getClassLoader().toString());
 
@@ -443,7 +463,10 @@ public class ProjectContainer {
             KieBaseModel kieBaseModel = kproj.newKieBaseModel("kie-base")
                     .setDefault(true)
                     .setEqualsBehavior(EqualityBehaviorOption.IDENTITY)
+                    // Use this to avoid notifications on equal values
+                    //.setEqualsBehavior(EqualityBehaviorOption.EQUALITY)
                     .setEventProcessingMode(EventProcessingOption.STREAM)
+                    //.setEventProcessingMode(EventProcessingOption.CLOUD)
                     // For cancel match option
                     .setDeclarativeAgenda(DeclarativeAgendaOption.ENABLED)
                     .setMutability(KieBaseMutabilityOption.ALLOWED);
@@ -453,7 +476,10 @@ public class ProjectContainer {
                     .setDefault(true)
                     .setType(KieSessionModel.KieSessionType.STATEFUL)
                     .setClockType(ClockTypeOption.get("realtime"))
-                    .setDirectFiring(true);
+                    .setDirectFiring(true)
+                    .setThreadSafe(true); // FIXME could it cause Locks ?!!!
+
+            LoggerUtils.trace("kieSessionModel kie-session : isThreadSafe : " + kieSessionModel.isThreadSafe());
 
             kieFileSystem.writeKModuleXML(kproj.toXML());
 
@@ -902,6 +928,8 @@ public class ProjectContainer {
 
 					/*	JELogger.debug(message, LogCategory.DESIGN_MODE, projectId, LogSubModule.RULE, fact.getJobEngineElementID()); */
 
+                        // TODO we can add atomicity with session.submit
+
                         if (facts.containsKey(fact.getJobEngineElementID())) {
                             kieSession.update(facts.get(fact.getJobEngineElementID()), fact);
 
@@ -909,6 +937,9 @@ public class ProjectContainer {
                             facts.put(fact.getJobEngineElementID(), kieSession.insert(fact));
 
                         }
+
+                        LoggerUtils.trace("kieSession.getIdentifier() : " + kieSession.getIdentifier()
+                                + ", kieSession.getFactCount() : " + kieSession.getFactCount());
 
                     //}
 

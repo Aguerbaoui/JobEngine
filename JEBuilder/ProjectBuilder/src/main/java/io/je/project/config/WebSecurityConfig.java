@@ -18,6 +18,8 @@ public class WebSecurityConfig {
     @Bean
     HttpFirewall httpFirewall() {
         StrictHttpFirewall firewall = new StrictHttpFirewall();
+
+        // FIXME remove if no more needed
         firewall.setAllowUrlEncodedDoubleSlash(true);
 
         System.err.println("firewall.getDecodedUrlBlacklist() : " + firewall.getDecodedUrlBlacklist());
