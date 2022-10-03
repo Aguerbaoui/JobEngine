@@ -3,7 +3,8 @@ rule "reset persistence @{ruleName}"  @Propagation(IMMEDIATE)
 dialect "mvel"
 salience @{salience}
 enabled true
-no-loop true
+no-loop false
+lock-on-active false
 date-effective @{dateEffective}
 date-expires @{dateExpires}
 timer (cron:@{cronExpression})

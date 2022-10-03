@@ -106,7 +106,9 @@ public class ZMQRequester {
 
     public String sendRequest(String request) {
         String reply = "";
+
         synchronized (context) {
+
             try {
 
                 //System.err.println("Requests number : " + this.requestCounter++);
@@ -121,7 +123,9 @@ public class ZMQRequester {
                 LoggerUtils.logException(e);
             }
             return reply;
+
         }
+
     }
 
     public ZContext getContext() {

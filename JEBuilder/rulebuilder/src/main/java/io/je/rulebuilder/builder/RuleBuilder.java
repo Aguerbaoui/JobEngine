@@ -186,6 +186,24 @@ public class RuleBuilder {
 
     /*
      * Generate script rules
+     *
+     * Warning: Fact propagation modes in the Drools engine
+     *
+     * Lazy: (Default)
+     *
+     * Immediate: Facts are propagated immediately in the order that they are inserted by a user or application.
+     *
+     * Eager: Facts are propagated lazily (in batch collections), but before rule execution.
+     * The Drools engine uses this propagation behavior for rules that have the :
+     * no-loop or lock-on-active attribute.
+     *
+     * =>
+
+@Propagation(IMMEDIATE)
+
+no-loop false
+lock-on-active false
+
      */
     public static List<ScriptedRule> scriptRule(UserDefinedRule uRule) throws RuleBuildFailedException {
 
