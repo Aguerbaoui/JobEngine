@@ -27,7 +27,7 @@ public class DataModelListener {
 
     static Map<String, DMTopic> allDMTopics = new HashMap<>();
     private static DataZMQSubscriber dataZMQSubscriber = null;
-    private static ObjectMapper objectMapper = new ObjectMapper();
+    private static Thread threadDataZMQSubscriber = null;
 
     // FIXME check if ok
     public static Set<String> getTopicsByProjectId(String projectId) {
@@ -91,13 +91,32 @@ public class DataModelListener {
     private static DataZMQSubscriber getDataZMQSubscriber() {
 
         if (dataZMQSubscriber == null) {
+
             dataZMQSubscriber = new DataZMQSubscriber("tcp://" + SIOTHConfigUtility.getSiothConfig().getNodes().getSiothMasterNode(),
                     SIOTHConfigUtility.getSiothConfig().getDataModelPORTS().getDmService_PubAddress());
-            Thread thread = new Thread(dataZMQSubscriber);
-            thread.start();
+
+            threadDataZMQSubscriber = new Thread(dataZMQSubscriber);
+
+            threadDataZMQSubscriber.start();
         }
 
         return dataZMQSubscriber;
+    }
+
+    public static void close() {
+
+        if (threadDataZMQSubscriber != null) {
+            if (threadDataZMQSubscriber.isAlive()) {
+                threadDataZMQSubscriber.interrupt();
+            }
+        }
+
+        if (dataZMQSubscriber != null) {
+            LoggerUtils.trace("Setting dataZMQSubscriber listening to false.");
+            dataZMQSubscriber.setListening(false);
+            dataZMQSubscriber.closeSocket();
+        }
+
     }
 
     public static void updateDMListener(DMListener dMListener, Set<String> topics) {

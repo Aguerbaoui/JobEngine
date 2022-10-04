@@ -1,5 +1,6 @@
 package io.je.runtime.beans;
 
+import io.je.ruleengine.data.DataModelListener;
 import io.je.runtime.config.RunnerProperties;
 import io.je.runtime.services.ConfigurationService;
 import org.springframework.beans.factory.InitializingBean;
@@ -39,8 +40,9 @@ public class JERunnerInitBean implements InitializingBean {
     @PreDestroy
     public void destroy() {
         System.err.println(
-                "Callback triggered - @PreDestroy");
+                "JERunnerInitBean Callback triggered - @PreDestroy");
 
         configurationService.close();
+
     }
 }

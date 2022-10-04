@@ -40,7 +40,7 @@ public abstract class ZMQSubscriber implements Runnable {
     }
 
     protected Socket getSubscriberSocket() throws ZMQConnectionFailedException {
-        return getSubscriberSocket(null);
+        return getSubscriberSocket(ZMQType.CONNECT);
     }
 
     protected Socket getSubscriberSocket(ZMQType bindType) throws ZMQConnectionFailedException {
@@ -49,7 +49,7 @@ public abstract class ZMQSubscriber implements Runnable {
 
             this.bindType = bindType;
 
-            LoggerUtils.info("ZMQ subscriber : Create socket for address : " + connectionAddress);
+            LoggerUtils.info("ZMQ subscriber : Create socket for address : " + connectionAddress + ", type : " + this.bindType);
 
             this.context.setRcvHWM(ZMQConfiguration.RECEIVE_HIGH_WATERMARK);
             this.context.setSndHWM(ZMQConfiguration.SEND_HIGH_WATERMARK);

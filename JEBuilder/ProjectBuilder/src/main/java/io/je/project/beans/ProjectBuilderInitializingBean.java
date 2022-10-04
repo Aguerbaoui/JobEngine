@@ -102,7 +102,7 @@ public class ProjectBuilderInitializingBean implements InitializingBean {
     @PreDestroy
     public void destroy() {
         System.err.println(
-                "Callback triggered - @PreDestroy");
+                "ProjectBuilderInitializingBean Callback triggered - @PreDestroy");
 
         configurationService.close();
     }

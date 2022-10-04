@@ -269,8 +269,11 @@ public class ProjectContainer {
                     logError(exp, JEMessages.RULE_EXECUTION_ERROR + StringUtils.substringBefore(exp.getMessage(), " in "), ruleId);
 
                     try {
+                        LoggerUtils.debug("ProjectContainer : RESTARTING kieSession FIRING");
+
                         startRules();
-                    } catch (RulesNotFiredException | RuleBuildFailedException exp1) {
+
+                    } catch (Exception exp1) {
                         logError(exp1, JEMessages.FAILED_TO_FIRE_RULES);
                     }
 
@@ -375,8 +378,8 @@ public class ProjectContainer {
          * if (allRules.isEmpty()) { return false; }
          */
 
-        // TODO: only delete/re-add rule that have been modified
-        // Delete rules to kfs
+        // TODO: only delete/re-add rules that have been modified
+        // Delete rules from kfs
         if (!deleteAllRulesFromKieFileSystem()) {
             return false;
         }
@@ -480,7 +483,7 @@ public class ProjectContainer {
                     .setType(KieSessionModel.KieSessionType.STATEFUL)
                     .setClockType(ClockTypeOption.get("realtime"))
                     .setDirectFiring(true)
-                    .setThreadSafe(true); // FIXME could it cause Locks ?!!!
+                    .setThreadSafe(true); // FIXME could it causes Locks ?!!!
 
             LoggerUtils.trace("kieSessionModel kie-session : isThreadSafe : " + kieSessionModel.isThreadSafe());
 
@@ -749,8 +752,8 @@ public class ProjectContainer {
             // FIXME check returned value
             deleteRuleFromKieFileSystem(allRules.get(ruleId));
             long endTime = System.nanoTime();
-            long duration = (endTime - startTime) / 1000000; //divide by 1000000 to get milliseconds.
-            JELogger.debug("deleteRuleFromKieFileSystem : duration : " + duration + " (ms)");
+            long duration = (endTime - startTime);// / 1000000; //divide by 1000000 to get milliseconds.
+            JELogger.debug("deleteRuleFromKieFileSystem : duration : " + duration + " (nano seconds)");
 
             updateContainer();
 

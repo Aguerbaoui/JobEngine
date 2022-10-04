@@ -56,7 +56,7 @@ public class JEMonitorInitializingBean implements InitializingBean {
     @PreDestroy
     public void destroy() {
         System.err.println(
-                "Callback triggered - @PreDestroy");
+                "JEMonitorInitializingBean Callback triggered - @PreDestroy");
 
         jeMonitorSubscriber.close();
 

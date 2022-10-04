@@ -84,7 +84,7 @@ TODO remove if useless
 */
             }
 
-        } catch (IOException e) {
+        } catch (Exception e) {
             LoggerUtils.logException(e);
             JELogger.error(JEMessages.FAILED_INIT_DATAMODEL + modelId, null, "", LogSubModule.JERUNNER, modelId);
         }

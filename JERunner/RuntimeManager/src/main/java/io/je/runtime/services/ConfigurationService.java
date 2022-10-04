@@ -96,6 +96,7 @@ public class ConfigurationService {
         }
 
         if (jeRunnerResponder != null) {
+            LoggerUtils.trace("Setting jeRunnerResponder listening to false.");
             jeRunnerResponder.setListening(false);
             jeRunnerResponder.closeSocket();
         }

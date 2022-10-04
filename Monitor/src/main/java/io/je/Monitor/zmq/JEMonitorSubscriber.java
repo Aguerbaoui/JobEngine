@@ -3,6 +3,7 @@ package io.je.Monitor.zmq;
 import io.siothconfig.SIOTHConfigUtility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import utils.log.LoggerUtils;
 
 @Component
 public class JEMonitorSubscriber {
@@ -38,6 +39,7 @@ public class JEMonitorSubscriber {
         }
 
         if (monitorZMQSubscriber != null) {
+            LoggerUtils.trace("Setting monitorZMQSubscriber listening to false.");
             monitorZMQSubscriber.setListening(false);
             monitorZMQSubscriber.closeSocket();
         }

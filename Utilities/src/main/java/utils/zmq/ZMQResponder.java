@@ -33,7 +33,7 @@ public abstract class ZMQResponder implements Runnable {
 
             this.bindType = bindType;
 
-            LoggerUtils.info("ZMQ responder : Attempting to connect to address : " + connectionAddress);
+            LoggerUtils.info("ZMQ responder : Create socket for address : " + connectionAddress + ", type : " + this.bindType);
 
             this.context.setRcvHWM(ZMQConfiguration.RECEIVE_HIGH_WATERMARK);
             this.context.setSndHWM(ZMQConfiguration.SEND_HIGH_WATERMARK);
@@ -92,7 +92,7 @@ public abstract class ZMQResponder implements Runnable {
 
     public Socket getResponderSocket() throws ZMQConnectionFailedException {
 
-        return getResponderSocket(null);
+        return getResponderSocket(ZMQType.BIND);
 
     }
 

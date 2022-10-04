@@ -44,7 +44,7 @@ public class ServletInitializer extends SpringBootServletInitializer {
     @PreDestroy
     public void destroy() {
         System.err.println(
-                "Callback triggered - @PreDestroy");
+                "ServletInitializer Callback triggered - @PreDestroy");
 
         jeMonitorSubscriber.close();
 

@@ -1,6 +1,7 @@
 package io.je.runtime;
 
 
+import io.je.ruleengine.data.DataModelListener;
 import io.je.runtime.services.ConfigurationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.Banner;
@@ -46,6 +47,9 @@ public class ServletInitializer extends SpringBootServletInitializer {
                 "ServletInitializer Callback triggered - @PreDestroy");
 
         configurationService.close();
+
+        DataModelListener.close();
+
     }
 
 }

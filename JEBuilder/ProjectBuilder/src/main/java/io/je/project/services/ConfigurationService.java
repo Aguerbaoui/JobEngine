@@ -128,11 +128,13 @@ public class ConfigurationService {
         }
 
         if (projectZMQResponder != null) {
+            LoggerUtils.trace("Setting projectZMQResponder listening to false.");
             projectZMQResponder.setListening(false);
             projectZMQResponder.closeSocket();
         }
 
         if (classService.getClassZMQSubscriber() != null) {
+            LoggerUtils.trace("Setting ClassZMQSubscriber listening to false.");
             classService.getClassZMQSubscriber().setListening(false);
             classService.getClassZMQSubscriber().closeSocket();
         }
