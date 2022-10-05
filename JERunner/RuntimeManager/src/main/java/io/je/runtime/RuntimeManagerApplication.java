@@ -48,9 +48,8 @@ public class RuntimeManagerApplication {
         System.err.println(
                 "RuntimeManagerApplication Callback triggered - @PreDestroy");
 
-        DataModelListener.close();
-
         JEBuilderApiHandler.requestUpdateFromBuilder();
+
     }
 }
 

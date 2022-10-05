@@ -4,6 +4,7 @@ import io.je.Monitor.zmq.JEMonitorSubscriber;
 import io.je.utilities.config.ConfigurationConstants;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.log.JELogger;
+import io.je.utilities.log.ZMQLogPublisher;
 import io.siothconfig.SIOTHConfigUtility;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import utils.log.LoggerUtils;
 import utils.zmq.ZMQConfiguration;
 
 import javax.annotation.PreDestroy;
+
 
 @Component
 public class JEMonitorInitializingBean implements InitializingBean {
@@ -59,6 +61,8 @@ public class JEMonitorInitializingBean implements InitializingBean {
                 "JEMonitorInitializingBean Callback triggered - @PreDestroy");
 
         jeMonitorSubscriber.close();
+
+        ZMQLogPublisher.close();
 
     }
 

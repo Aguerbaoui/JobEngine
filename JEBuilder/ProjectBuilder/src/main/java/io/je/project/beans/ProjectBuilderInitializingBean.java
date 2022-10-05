@@ -8,6 +8,7 @@ import io.je.utilities.config.ConfigurationConstants;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.exceptions.LicenseNotActiveException;
 import io.je.utilities.log.JELogger;
+import io.je.utilities.log.ZMQLogPublisher;
 import io.je.utilities.monitoring.JEMonitor;
 import io.siothconfig.SIOTHConfigUtility;
 import org.springframework.beans.factory.InitializingBean;
@@ -35,7 +36,12 @@ public class ProjectBuilderInitializingBean implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() {
+
         try {
+
+            JELogger.debug(JEMessages.INITILIZING_BUILDER, LogCategory.DESIGN_MODE,
+                    null, LogSubModule.JEBUILDER, null);
+
             //Initialize SIOTHConfig.json
             ConfigurationConstants.initConstants(builderProperties.getSiothId(), builderProperties.isDev());
             SIOTHConfigUtility.setSiothId(builderProperties.getSiothId());
@@ -43,6 +49,10 @@ public class ProjectBuilderInitializingBean implements InitializingBean {
             //Initialize logger
             JELogger.initLogger("JEBuilder", builderProperties.getJeBuilderLogPath(),
                     builderProperties.getJeBuilderLogLevel(), builderProperties.isDev());
+
+            JELogger.control(JEMessages.LOGGER_INITIALIZED,
+                    LogCategory.DESIGN_MODE, null,
+                    LogSubModule.JEBUILDER, null);
 
             ConfigurationConstants.setJavaGenerationPath(SIOTHConfigUtility.getSiothConfig().getJobEngine().getGeneratedClassesPath());
 
@@ -80,14 +90,8 @@ public class ProjectBuilderInitializingBean implements InitializingBean {
             //Initialize JE configurations
             configurationService.init();
 
-            JELogger.control(JEMessages.LOGGER_INITIALIZED,
-                    LogCategory.DESIGN_MODE, null,
-                    LogSubModule.JEBUILDER, null);
-
             JELogger.control(JEMessages.BUILDER_STARTED, LogCategory.DESIGN_MODE,
                     null, LogSubModule.JEBUILDER, null);
-
-            configurationService.initResponder();
 
         } catch (Exception e) {
 
@@ -105,6 +109,8 @@ public class ProjectBuilderInitializingBean implements InitializingBean {
                 "ProjectBuilderInitializingBean Callback triggered - @PreDestroy");
 
         configurationService.close();
+
+        ZMQLogPublisher.close();
     }
 
 }

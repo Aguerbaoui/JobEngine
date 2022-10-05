@@ -1,6 +1,5 @@
 package io.je.ruleengine.data;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.je.ruleengine.impl.RuleEngine;
 import io.je.utilities.beans.JEData;
 import io.je.utilities.constants.JEMessages;
@@ -95,26 +94,45 @@ public class DataModelListener {
             dataZMQSubscriber = new DataZMQSubscriber("tcp://" + SIOTHConfigUtility.getSiothConfig().getNodes().getSiothMasterNode(),
                     SIOTHConfigUtility.getSiothConfig().getDataModelPORTS().getDmService_PubAddress());
 
-            threadDataZMQSubscriber = new Thread(dataZMQSubscriber);
+            interruptThread();
 
-            threadDataZMQSubscriber.start();
+            initThread();
+
         }
 
         return dataZMQSubscriber;
     }
 
-    public static void close() {
+    private static void initThread() {
+
+        threadDataZMQSubscriber = new Thread(dataZMQSubscriber);
+
+        threadDataZMQSubscriber.setName("threadDataZMQSubscriber");
+
+        threadDataZMQSubscriber.start();
+
+    }
+
+    private static void interruptThread() {
 
         if (threadDataZMQSubscriber != null) {
             if (threadDataZMQSubscriber.isAlive()) {
                 threadDataZMQSubscriber.interrupt();
             }
+            threadDataZMQSubscriber = null;
         }
+
+    }
+
+    public static void close() {
+
+        interruptThread();
 
         if (dataZMQSubscriber != null) {
             LoggerUtils.trace("Setting dataZMQSubscriber listening to false.");
             dataZMQSubscriber.setListening(false);
             dataZMQSubscriber.closeSocket();
+            dataZMQSubscriber = null;
         }
 
     }
