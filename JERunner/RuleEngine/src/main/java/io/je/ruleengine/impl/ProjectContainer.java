@@ -166,7 +166,7 @@ public class ProjectContainer {
             }
         }*/
 
-        stopRules(true, true);
+        stopRules(true, false);
 
         try {
             startRules();
@@ -326,9 +326,12 @@ public class ProjectContainer {
                         + " , destroy session : " + destroySession + " , remove all project rules : " + removeAllRules,
                 LogCategory.RUNTIME, projectId, LogSubModule.RULE, null);
 
-        Set<String> topics = DataModelListener.getTopicsByProjectId(projectId);
+        /* Stop listening should be done by user
 
-        DataModelListener.stopListening(topics);
+            Set<String> topics = DataModelListener.getTopicsByProjectId(projectId);
+
+            DataModelListener.stopListening(topics);
+        */
 
         // TODO : Add more control for stopping rules / catching exceptions (case rule stopped but still firing, ex : Issue 14962)
         // destroySession=false;
@@ -409,7 +412,8 @@ public class ProjectContainer {
 
     private boolean initKieBaseAndSession() {
 
-        JELogger.debugWithoutPublish("[projectId = " + projectId + "] " + JEMessages.KIE_INIT, LogCategory.RUNTIME,
+        JELogger.debugWithoutPublish("ProjectId : " + projectId + " : " + JEMessages.KIE_INIT
+                + " : release Id : " + releaseId, LogCategory.RUNTIME,
                 projectId, LogSubModule.RULE, null);
 
         if (releaseId != null) {
@@ -701,6 +705,7 @@ public class ProjectContainer {
 
             // check that rule exists and add it if not
             if (!ruleExists(rule)) {
+                // FIXME we add it even if error?
                 allRules.put(rule.getJobEngineElementID(), rule);
                 if (!addRuleToKieFileSystem(rule)) {
                     return false;
