@@ -44,8 +44,9 @@ public class JERunnerResponder extends ZMQResponder {
             JEZMQResponse response = new JEZMQResponse(ZMQResponseType.FAIL);
             RunnerRequestObject request;
             try {
-                String data = this.getResponderSocket(ZMQType.BIND)
-                        .recvStr(0);
+
+                String data = this.getResponderSocket(ZMQType.BIND).recvStr(0);
+
                 if (data != null && !data.isEmpty() && !data.equals("null")) {
 
                     JELogger.debug(JEMessages.ZMQ_REQUEST_RECEIVED + data, null, null, LogSubModule.JERUNNER, null);

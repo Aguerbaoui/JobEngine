@@ -1,5 +1,6 @@
 package io.je.runtime;
 
+import io.je.ruleengine.data.DataModelListener;
 import io.je.utilities.apis.JEBuilderApiHandler;
 import io.je.utilities.classloader.JEClassLoader;
 import io.je.utilities.constants.JEMessages;
@@ -38,14 +39,17 @@ public class RuntimeManagerApplication {
         System.out.println("All Stack Traces size : " + (Thread.getAllStackTraces().size()));
         System.out.println("Current Thread Stack Trace length : " + (Thread.currentThread().getStackTrace().length));
 
-
         JEClassLoader.getDataModelInstance();
+
     }
 
     @PreDestroy
     public void onDestroy() throws Exception {
+        System.err.println(
+                "RuntimeManagerApplication Callback triggered - @PreDestroy");
 
         JEBuilderApiHandler.requestUpdateFromBuilder();
+
     }
 }
 

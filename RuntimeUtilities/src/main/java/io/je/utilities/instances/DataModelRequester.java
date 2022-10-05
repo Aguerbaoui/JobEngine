@@ -11,7 +11,6 @@ import utils.log.LogSubModule;
 import utils.log.LoggerUtils;
 import utils.zmq.ZMQRequester;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -84,7 +83,7 @@ TODO remove if useless
 */
             }
 
-        } catch (IOException e) {
+        } catch (Exception e) {
             LoggerUtils.logException(e);
             JELogger.error(JEMessages.FAILED_INIT_DATAMODEL + modelId, null, "", LogSubModule.JERUNNER, modelId);
         }

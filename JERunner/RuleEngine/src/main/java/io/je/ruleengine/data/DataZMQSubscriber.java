@@ -21,31 +21,29 @@ public class DataZMQSubscriber extends ZMQSubscriber {
     @Override
     public void run() {
 
-        // Bug 677: No more data received in Job Engine logs on updating static attribute. Reworks after restarting Job Engine (not Data Model) !
-        // FIXME synchronized (this) {
+        final String ID_MSG = "DataZMQSubscriber : ";
 
-            final String ID_MSG = "DataZMQSubscriber : ";
+        try {
 
-            JELogger.debug(ID_MSG + JEMessages.STARTED_LISTENING_FOR_DATA,
-                    LogCategory.RUNTIME, null, LogSubModule.JERUNNER, null);
+            // Bug 677: No more data received in Job Engine logs on updating static attribute. Reworks after restarting Job Engine (not Data Model) !
+            synchronized (this.getSubscriberSocket()) {
 
-            String last_topic = null;
-
-            while (this.listening) {
-                String data = null;
-
-                try {
-                    data = this.getSubscriberSocket().recvStr();
-                } catch (Exception ex) {
-                    LoggerUtils.logException(ex);
-                    continue;
-                }
-
-                JELogger.trace(ID_MSG + JEMessages.DATA_RECEIVED + data,
+                JELogger.debug(ID_MSG + JEMessages.STARTED_LISTENING_FOR_DATA,
                         LogCategory.RUNTIME, null, LogSubModule.JERUNNER, null);
 
-                try {
-                    if (data == null) continue;
+                String data, last_topic = null;
+
+                while (this.listening) {
+
+                    data = this.getSubscriberSocket().recvStr();
+
+                    if (data == null) {
+                        System.err.println(ID_MSG + JEMessages.DATA_RECEIVED + data); // FIXME
+                        continue;
+                    }
+
+                    JELogger.debug(ID_MSG + JEMessages.DATA_RECEIVED + data,
+                            LogCategory.RUNTIME, null, LogSubModule.JERUNNER, null);
 
                     // FIXME waiting to have topic in the same response message
                     if (last_topic == null) {
@@ -69,21 +67,25 @@ public class DataZMQSubscriber extends ZMQSubscriber {
                         last_topic = null;
                     }
 
-                } catch (Exception exp) {
-                    JELogger.logException(exp);
-
-                    JELogger.error(ID_MSG + JEMessages.UKNOWN_ERROR + exp.getMessage(),
-                            LogCategory.RUNTIME, null, LogSubModule.JERUNNER, null);
                 }
 
             }
+
+        } catch (Exception exp) {
+
+            LoggerUtils.logException(exp);
+
+            JELogger.error(ID_MSG + JEMessages.UKNOWN_ERROR + exp.getMessage(),
+                    LogCategory.RUNTIME, null, LogSubModule.JERUNNER, null);
+
+        } finally {
 
             JELogger.debug(ID_MSG + JEMessages.CLOSING_SOCKET,
                     LogCategory.RUNTIME, null, LogSubModule.JERUNNER, null);
 
             this.closeSocket();
 
-        //}
+        }
 
     }
 

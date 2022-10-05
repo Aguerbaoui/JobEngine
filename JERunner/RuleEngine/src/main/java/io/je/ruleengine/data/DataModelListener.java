@@ -1,6 +1,5 @@
 package io.je.ruleengine.data;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.je.ruleengine.impl.RuleEngine;
 import io.je.utilities.beans.JEData;
 import io.je.utilities.constants.JEMessages;
@@ -27,7 +26,7 @@ public class DataModelListener {
 
     static Map<String, DMTopic> allDMTopics = new HashMap<>();
     private static DataZMQSubscriber dataZMQSubscriber = null;
-    private static ObjectMapper objectMapper = new ObjectMapper();
+    private static Thread threadDataZMQSubscriber = null;
 
     // FIXME check if ok
     public static Set<String> getTopicsByProjectId(String projectId) {
@@ -91,13 +90,51 @@ public class DataModelListener {
     private static DataZMQSubscriber getDataZMQSubscriber() {
 
         if (dataZMQSubscriber == null) {
+
             dataZMQSubscriber = new DataZMQSubscriber("tcp://" + SIOTHConfigUtility.getSiothConfig().getNodes().getSiothMasterNode(),
                     SIOTHConfigUtility.getSiothConfig().getDataModelPORTS().getDmService_PubAddress());
-            Thread thread = new Thread(dataZMQSubscriber);
-            thread.start();
+
+            interruptThread();
+
+            initThread();
+
         }
 
         return dataZMQSubscriber;
+    }
+
+    private static void initThread() {
+
+        threadDataZMQSubscriber = new Thread(dataZMQSubscriber);
+
+        threadDataZMQSubscriber.setName("threadDataZMQSubscriber");
+
+        threadDataZMQSubscriber.start();
+
+    }
+
+    private static void interruptThread() {
+
+        if (threadDataZMQSubscriber != null) {
+            if (threadDataZMQSubscriber.isAlive()) {
+                threadDataZMQSubscriber.interrupt();
+            }
+            threadDataZMQSubscriber = null;
+        }
+
+    }
+
+    public static void close() {
+
+        interruptThread();
+
+        if (dataZMQSubscriber != null) {
+            LoggerUtils.trace("Setting dataZMQSubscriber listening to false.");
+            dataZMQSubscriber.setListening(false);
+            dataZMQSubscriber.closeSocket();
+            dataZMQSubscriber = null;
+        }
+
     }
 
     public static void updateDMListener(DMListener dMListener, Set<String> topics) {

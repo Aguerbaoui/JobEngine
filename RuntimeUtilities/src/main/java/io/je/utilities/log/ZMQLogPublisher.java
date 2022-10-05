@@ -35,5 +35,8 @@ public class ZMQLogPublisher {
 
     }
 
+    public static void close() {
+        publisher.closeSocket();
+    }
 
 }

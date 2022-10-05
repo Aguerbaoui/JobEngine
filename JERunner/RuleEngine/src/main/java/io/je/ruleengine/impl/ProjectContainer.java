@@ -166,7 +166,7 @@ public class ProjectContainer {
             }
         }*/
 
-        stopRules(true, true);
+        stopRules(true, false);
 
         try {
             startRules();
@@ -269,8 +269,11 @@ public class ProjectContainer {
                     logError(exp, JEMessages.RULE_EXECUTION_ERROR + StringUtils.substringBefore(exp.getMessage(), " in "), ruleId);
 
                     try {
+                        LoggerUtils.debug("ProjectContainer : RESTARTING kieSession FIRING");
+
                         startRules();
-                    } catch (RulesNotFiredException | RuleBuildFailedException exp1) {
+
+                    } catch (Exception exp1) {
                         logError(exp1, JEMessages.FAILED_TO_FIRE_RULES);
                     }
 
@@ -323,9 +326,12 @@ public class ProjectContainer {
                         + " , destroy session : " + destroySession + " , remove all project rules : " + removeAllRules,
                 LogCategory.RUNTIME, projectId, LogSubModule.RULE, null);
 
-        Set<String> topics = DataModelListener.getTopicsByProjectId(projectId);
+        /* Stop listening should be done by user
 
-        DataModelListener.stopListening(topics);
+            Set<String> topics = DataModelListener.getTopicsByProjectId(projectId);
+
+            DataModelListener.stopListening(topics);
+        */
 
         // TODO : Add more control for stopping rules / catching exceptions (case rule stopped but still firing, ex : Issue 14962)
         // destroySession=false;
@@ -375,8 +381,8 @@ public class ProjectContainer {
          * if (allRules.isEmpty()) { return false; }
          */
 
-        // TODO: only delete/re-add rule that have been modified
-        // Delete rules to kfs
+        // TODO: only delete/re-add rules that have been modified
+        // Delete rules from kfs
         if (!deleteAllRulesFromKieFileSystem()) {
             return false;
         }
@@ -406,7 +412,8 @@ public class ProjectContainer {
 
     private boolean initKieBaseAndSession() {
 
-        JELogger.debugWithoutPublish("[projectId = " + projectId + "] " + JEMessages.KIE_INIT, LogCategory.RUNTIME,
+        JELogger.debugWithoutPublish("ProjectId : " + projectId + " : " + JEMessages.KIE_INIT
+                + " : release Id : " + releaseId, LogCategory.RUNTIME,
                 projectId, LogSubModule.RULE, null);
 
         if (releaseId != null) {
@@ -480,7 +487,7 @@ public class ProjectContainer {
                     .setType(KieSessionModel.KieSessionType.STATEFUL)
                     .setClockType(ClockTypeOption.get("realtime"))
                     .setDirectFiring(true)
-                    .setThreadSafe(true); // FIXME could it cause Locks ?!!!
+                    .setThreadSafe(true); // FIXME could it causes Locks ?!!!
 
             LoggerUtils.trace("kieSessionModel kie-session : isThreadSafe : " + kieSessionModel.isThreadSafe());
 
@@ -698,6 +705,7 @@ public class ProjectContainer {
 
             // check that rule exists and add it if not
             if (!ruleExists(rule)) {
+                // FIXME we add it even if error?
                 allRules.put(rule.getJobEngineElementID(), rule);
                 if (!addRuleToKieFileSystem(rule)) {
                     return false;
@@ -749,8 +757,8 @@ public class ProjectContainer {
             // FIXME check returned value
             deleteRuleFromKieFileSystem(allRules.get(ruleId));
             long endTime = System.nanoTime();
-            long duration = (endTime - startTime) / 1000000; //divide by 1000000 to get milliseconds.
-            JELogger.debug("deleteRuleFromKieFileSystem : duration : " + duration + " (ms)");
+            long duration = (endTime - startTime);// / 1000000; //divide by 1000000 to get milliseconds.
+            JELogger.debug("deleteRuleFromKieFileSystem : duration : " + duration + " (nano seconds)");
 
             updateContainer();
 
@@ -920,7 +928,7 @@ public class ProjectContainer {
             // JELogger.info(String.valueOf(fact.getJeObjectLastUpdate().until(LocalDateTime.now(),
             // ChronoUnit.MILLIS)));
             // kieSession.insert(fact);
-            // FIXME synchronized (kieSession) { Bug 662: Rule was running, but suddenly no more fire events (even with stop/build/start)
+            synchronized (kieSession) { // FIXME Bug 662: Rule was running, but suddenly no more fire events (even with stop/build/start)
                 try {
                     // ClassLoader t = JEClassLoader.getInstance();
                     // //io.je.utilities.classloader.JEClassLoader@733aa287
@@ -934,7 +942,7 @@ public class ProjectContainer {
 							LogSubModule.RULE, fact.getJobEngineElementID());
 */
 
-                    // FIXME synchronized (facts) {  Bug 662: Rule was running, but suddenly no more fire events (even with stop/build/start)
+                    synchronized (facts) {  // FIXME Bug 662: Rule was running, but suddenly no more fire events (even with stop/build/start)
 
                         String message = JEMessages.UPDATING_FACT + " [projectId = " + projectId
                                 + " ] [factId : " + fact.getJobEngineElementID() + " ] : " + fact.toString();
@@ -956,7 +964,7 @@ public class ProjectContainer {
                         LoggerUtils.trace("kieSession.getIdentifier() : " + kieSession.getIdentifier()
                                 + ", kieSession.getFactCount() : " + kieSession.getFactCount());
 
-                    //}
+                    }
 
                 } catch (Exception exp) {
 
@@ -965,7 +973,7 @@ public class ProjectContainer {
 
                 }
 
-            //}
+            }
 
         } else {
             LoggerUtils.warn("Trying to insert fact : " + fact.toString() + ", but project is not running. Project Id : " + projectId);

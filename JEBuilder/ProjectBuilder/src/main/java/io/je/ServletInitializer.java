@@ -23,10 +23,6 @@ import javax.annotation.PreDestroy;
 @EnableAutoConfiguration
 public class ServletInitializer extends SpringBootServletInitializer {
 
-    @Autowired
-    @Lazy
-    ConfigurationService configurationService;
-
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
 
@@ -38,14 +34,6 @@ public class ServletInitializer extends SpringBootServletInitializer {
         // applicationBuilder.context().registerShutdownHook();
 
         return applicationBuilder;
-    }
-
-    @PreDestroy
-    public void destroy() {
-        System.err.println(
-                "ServletInitializer Callback triggered - @PreDestroy");
-
-        configurationService.close();
     }
 
 }
