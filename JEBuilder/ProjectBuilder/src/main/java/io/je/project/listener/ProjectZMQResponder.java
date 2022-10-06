@@ -50,7 +50,7 @@ public class ProjectZMQResponder extends ZMQResponder {
                 String data = this.getResponderSocket(ZMQType.BIND).recvStr(0);
                 if (data != null && !data.isEmpty() && !data.equals("null")) {
 
-                    JELogger.info("Received ZMQ request: " + data, null, null, LogSubModule.JEBUILDER, null);
+                    JELogger.info("[Project Responder] Received ZMQ request: " + data, null, null, LogSubModule.JEBUILDER, null);
 
                     request = objectMapper.readValue(data, ProjectRequestObject.class);
 
@@ -104,6 +104,7 @@ public class ProjectZMQResponder extends ZMQResponder {
 
 
         } catch (Exception e) {
+            LoggerUtils.logException(e);
             response.setStrError(e.getMessage());
 
         }
@@ -118,6 +119,7 @@ public class ProjectZMQResponder extends ZMQResponder {
 
 
         } catch (Exception e) {
+            LoggerUtils.logException(e);
             response.setStrError(e.getMessage());
 
         }
@@ -131,6 +133,7 @@ public class ProjectZMQResponder extends ZMQResponder {
             projectService.stopProject(projectId);
 
         } catch (Exception e) {
+            LoggerUtils.logException(e);
             response.setStrError(e.getMessage());
 
         }
@@ -146,6 +149,7 @@ public class ProjectZMQResponder extends ZMQResponder {
 
 
         } catch (Exception e) {
+            LoggerUtils.logException(e);
             response.setStrError(e.getMessage());
 
         }
@@ -161,6 +165,7 @@ public class ProjectZMQResponder extends ZMQResponder {
 
 
         } catch (Exception e) {
+            LoggerUtils.logException(e);
             response.setStrError(e.getMessage());
 
         }
@@ -183,7 +188,8 @@ public class ProjectZMQResponder extends ZMQResponder {
 
             }
         } catch (Exception e) {
-
+            response.setStrError(e.getMessage());
+            LoggerUtils.logException(e);
         }
         return getProjectResponse(response, projectId);
 
