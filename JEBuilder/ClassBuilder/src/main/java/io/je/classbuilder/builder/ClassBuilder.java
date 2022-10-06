@@ -96,8 +96,8 @@ public class ClassBuilder {
             for (FieldModel field : classDefinition.getAttributes()) {
                 //TODO: all attributes are public because the data def rest api doesn't provide the attribute's modifier
                 VariableSourceGenerator newField = generateField(field).addModifier(getModifier(field.getFieldVisibility()));
-                if (String.valueOf(field.getType())
-                        .equalsIgnoreCase("DATETIME")) {
+                if (field.getType() == UnifiedType.DATETIME
+                ) {
                     newField.addAnnotation(new AnnotationSourceGenerator("JsonDeserialize(using = LocalDateTimeDeserializer.class)"));
                     newField.addAnnotation(new AnnotationSourceGenerator("JsonSerialize(using = LocalDateTimeSerializer.class)"));
                     //newField.addAnnotation(new AnnotationSourceGenerator("JsonFormat (shape = JsonFormat.Shape.STRING, pattern ="+dataModelDateFormat+")"));
@@ -199,7 +199,7 @@ public class ClassBuilder {
             }
 
         }
-        int[] a = new int[]{1, 3};
+
         // store class
         unitSG.addClass(newClass);
         ComponentSupplier componentSupplier = ComponentContainer.getInstance();
