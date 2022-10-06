@@ -741,8 +741,7 @@ public class ClassService {
 
                         if (data == null) continue;
 
-                        JELogger.debug(ID_MSG + JEMessages.DATA_RECEIVED + data, LogCategory.DESIGN_MODE,
-                                null, LogSubModule.CLASS, null);
+                        LoggerUtils.debug(ID_MSG + JEMessages.DATA_RECEIVED + data);
 
                         // FIXME waiting to have topic in the same response message
                         if (last_topic == null) {

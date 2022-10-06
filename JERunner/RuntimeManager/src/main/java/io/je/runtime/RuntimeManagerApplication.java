@@ -1,6 +1,5 @@
 package io.je.runtime;
 
-import io.je.ruleengine.data.DataModelListener;
 import io.je.utilities.apis.JEBuilderApiHandler;
 import io.je.utilities.classloader.JEClassLoader;
 import io.je.utilities.constants.JEMessages;

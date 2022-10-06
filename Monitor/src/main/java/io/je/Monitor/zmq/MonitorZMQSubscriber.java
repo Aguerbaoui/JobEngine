@@ -52,8 +52,7 @@ public class MonitorZMQSubscriber extends ZMQSubscriber {
 
                     if (data == null) continue;
 
-                    JELogger.debug(ID_MSG + JEMessages.DATA_RECEIVED + data, LogCategory.MONITOR,
-                            null, LogSubModule.JEMONITOR, null);
+                    LoggerUtils.debug(ID_MSG + JEMessages.DATA_RECEIVED + data);
 
                     // FIXME waiting to have topic in the same response message
                     if (last_topic == null) {
@@ -62,8 +61,6 @@ public class MonitorZMQSubscriber extends ZMQSubscriber {
                             // Received Data should be equal topic
                             if (data.equals(topic)) {
                                 last_topic = topic;
-
-                                JELogger.debug(ID_MSG + "data received : topic : " + topic);
                                 break;
                             }
                         }
