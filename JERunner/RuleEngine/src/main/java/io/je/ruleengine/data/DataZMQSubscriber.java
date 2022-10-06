@@ -38,12 +38,10 @@ public class DataZMQSubscriber extends ZMQSubscriber {
                     data = this.getSubscriberSocket().recvStr();
 
                     if (data == null) {
-                        System.err.println(ID_MSG + JEMessages.DATA_RECEIVED + data); // FIXME
                         continue;
                     }
 
-                    JELogger.debug(ID_MSG + JEMessages.DATA_RECEIVED + data,
-                            LogCategory.RUNTIME, null, LogSubModule.JERUNNER, null);
+                    LoggerUtils.debug(ID_MSG + JEMessages.DATA_RECEIVED + data);
 
                     // FIXME waiting to have topic in the same response message
                     if (last_topic == null) {
