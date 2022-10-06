@@ -1,6 +1,7 @@
 package io.je.rulebuilder.components.blocks;
 
 import io.je.rulebuilder.models.BlockModel;
+import io.je.utilities.beans.UnifiedType;
 
 public abstract class ArithmeticBlock extends ConditionBlock {
 
@@ -31,7 +32,7 @@ public abstract class ArithmeticBlock extends ConditionBlock {
      * level : to test if it's a comparable expression or not
      * type :  type of the expected result
      */
-    protected abstract String getArithmeticFormula(int level, String type);
+    protected abstract String getArithmeticFormula(int level, UnifiedType type);
 
 
     protected String evaluateExecution(String... inputs) {

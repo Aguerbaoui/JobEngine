@@ -16,6 +16,7 @@ import io.siothconfig.SIOTHConfigUtility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import utils.log.LogSubModule;
+import utils.log.LoggerUtils;
 import utils.zmq.ZMQResponder;
 import utils.zmq.ZMQType;
 
@@ -90,7 +91,7 @@ public class ProjectZMQResponder extends ZMQResponder {
             try {
                 Thread.sleep(500);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                LoggerUtils.logException(e);
             }
         }
 

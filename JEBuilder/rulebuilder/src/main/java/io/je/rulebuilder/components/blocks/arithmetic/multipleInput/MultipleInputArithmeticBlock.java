@@ -3,6 +3,7 @@ package io.je.rulebuilder.components.blocks.arithmetic.multipleInput;
 import io.je.rulebuilder.components.blocks.ArithmeticBlock;
 import io.je.rulebuilder.config.Keywords;
 import io.je.rulebuilder.models.BlockModel;
+import io.je.utilities.beans.UnifiedType;
 import io.je.utilities.exceptions.RuleBuildFailedException;
 
 public abstract class MultipleInputArithmeticBlock extends ArithmeticBlock {
@@ -27,13 +28,21 @@ public abstract class MultipleInputArithmeticBlock extends ArithmeticBlock {
     public String getExpression() throws RuleBuildFailedException {
         // FIXME alreadyScripted needed ?
         //if (!alreadyScripted) {
-            StringBuilder expression = generateAllPreviousBlocksExpressions();
-            expression.append(generateBlockExpression(false));
-            //alreadyScripted = true;
-            return expression.toString();
+        StringBuilder expression = generateAllPreviousBlocksExpressions();
+        expression.append(generateBlockExpression(false));
+        //alreadyScripted = true;
+        return expression.toString();
 
         //}
         //return "";
+    }
+
+    @Override
+    public String getAsOperandExpression() throws RuleBuildFailedException {
+        StringBuilder expression = generateAllPreviousBlocksExpressions();
+        expression.append(generateBlockExpression(true));
+
+        return expression.toString();
     }
 
     @Override
@@ -45,15 +54,6 @@ public abstract class MultipleInputArithmeticBlock extends ArithmeticBlock {
 
         return expression.toString();
     }
-
-    @Override
-    public String getAsOperandExpression() throws RuleBuildFailedException {
-        StringBuilder expression = generateAllPreviousBlocksExpressions();
-        expression.append(generateBlockExpression(true));
-
-        return expression.toString();
-    }
-
 
     private StringBuilder generateAllPreviousBlocksExpressions() throws RuleBuildFailedException {
         StringBuilder expression = new StringBuilder();
@@ -74,7 +74,7 @@ public abstract class MultipleInputArithmeticBlock extends ArithmeticBlock {
         StringBuilder expression = new StringBuilder();
 
         expression.append(getBlockNameAsVariable() + comparableExpression);
-        expression.append(getArithmeticFormula(0, "number") + asDouble(inputBlockLinks.get(0).getReference()));
+        expression.append(getArithmeticFormula(0, UnifiedType.DOUBLE) + asDouble(inputBlockLinks.get(0).getReference()));
         for (int i = 1; i < inputBlockLinks.size(); i++) {
             expression.append(" , " + asDouble(inputBlockLinks.get(i).getReference()));
         }

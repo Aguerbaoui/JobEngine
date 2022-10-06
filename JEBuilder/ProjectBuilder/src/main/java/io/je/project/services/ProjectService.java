@@ -40,6 +40,7 @@ import static io.je.utilities.constants.JEMessages.BUILT_EVERYTHING_SUCCESSFULLY
  * */
 
 @Service
+@Lazy
 public class ProjectService {
 
 
@@ -427,7 +428,7 @@ public class ProjectService {
             ProjectRepository.deleteAll();
             FileUtilities.deleteDirectory(ConfigurationConstants.PROJECTS_PATH);
         } catch (Exception e) {
-            e.printStackTrace();
+            LoggerUtils.logException(e);
         }
     }
 

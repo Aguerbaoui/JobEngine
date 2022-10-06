@@ -11,6 +11,7 @@ import io.je.utilities.config.ConfigurationConstants;
 import io.je.utilities.config.JEConfiguration;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.ResponseCodes;
+import io.je.utilities.exceptions.JERunnerErrorException;
 import io.je.utilities.instances.InstanceManager;
 import io.je.utilities.log.JELogger;
 import io.je.utilities.models.VariableModel;
@@ -18,9 +19,11 @@ import io.je.utilities.runtimeobject.JEObject;
 import io.siothconfig.SIOTHConfigUtility;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.springframework.context.annotation.Description;
 import utils.log.*;
 import utils.string.StringUtilities;
 
+import java.beans.MethodDescriptor;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -66,10 +69,23 @@ public class JobEngine {
     /*
      * Add a variable to runner from script task
      * */
+    static {
+        JEConfiguration.loadProperties();
+    }
+
+    /**
+     * hello i'm a method
+     *
+     * @param projectName
+     * @param varName
+     * @param varValue
+     * @return
+     */
+    @Description("test")
     public static int addIntegerVariable(String projectName, String varName, int varValue) {
 
         try {
-            JEResponse response = JEBuilderApiHandler.addVariable(projectName, varName, getVariableBody(StringUtilities.generateUUID(), projectName, varName, varValue, JEType.INT.toString()));
+            JEResponse response = JEBuilderApiHandler.addVariable(projectName, varName, getVariableBody(StringUtilities.generateUUID(), projectName, varName, varValue, UnifiedType.INT.toString()));
             return response.getCode();
         } catch (Exception e) {
             LoggerUtils.logException(e);
@@ -78,13 +94,48 @@ public class JobEngine {
         }
     }
 
+    //Get variable body from parameters
+    public static Map<String, Object> getVariableBody(String varId, String varProjectId, String varName, Object varValue, String type) {
+        HashMap<String, Object> body = new HashMap<>();
+        body.put("id", varId);
+        body.put("projectId", varProjectId);
+        body.put("name", varName);
+        body.put("type", type);
+        body.put("value", varValue);
+        body.put("initialValue", varValue);
+        return body;
+    }
+
+    /*
+     * Inform user of a message with level
+     * */
+    public static int sendLogMessage(String message, String projectName, LogLevel level, String objectName,
+                                     LogCategory logCategory, LogSubModule logSubModule) {
+        //Network.makeGetNetworkCallWithResponse()
+        int respCode = -1;
+        JEConfiguration.loadProperties();
+        try {
+            LogMessage logMessage = new LogMessage(level, message, Instant.now()
+                    .toString(), projectName, logSubModule,
+                    objectName, objectName);
+            JEZMQResponse response = JERunnerRequester.sendLogMessage(logMessage);
+            if (response.getResponse()
+                    .equals(ZMQResponseType.SUCCESS)) return ResponseCodes.CODE_OK;
+
+        } catch (Exception e) {
+            LoggerUtils.logException(e);
+        }
+
+        return respCode;
+    }
+
     /*
      * Add a variable to runner from script task
      * */
     public static int addLongVariable(String projectName, String varName, long varValue) {
 
         try {
-            JEResponse response = JEBuilderApiHandler.addVariable(projectName, varName, getVariableBody(StringUtilities.generateUUID(), projectName, varName, varValue, JEType.LONG.toString()));
+            JEResponse response = JEBuilderApiHandler.addVariable(projectName, varName, getVariableBody(StringUtilities.generateUUID(), projectName, varName, varValue, UnifiedType.LONG.toString()));
             return response.getCode();
         } catch (Exception e) {
             LoggerUtils.logException(e);
@@ -99,7 +150,7 @@ public class JobEngine {
     public static int addDoubleVariable(String projectName, String varName, double varValue) {
 
         try {
-            JEResponse response = JEBuilderApiHandler.addVariable(projectName, varName, getVariableBody(StringUtilities.generateUUID(), projectName, varName, varValue, JEType.DOUBLE.toString()));
+            JEResponse response = JEBuilderApiHandler.addVariable(projectName, varName, getVariableBody(StringUtilities.generateUUID(), projectName, varName, varValue, UnifiedType.DOUBLE.toString()));
             return response.getCode();
         } catch (Exception e) {
             LoggerUtils.logException(e);
@@ -115,7 +166,7 @@ public class JobEngine {
     public static int addStringVariable(String projectName, String varName, String varValue) {
 
         try {
-            JEResponse response = JEBuilderApiHandler.addVariable(projectName, varName, getVariableBody(StringUtilities.generateUUID(), projectName, varName, varValue, JEType.STRING.toString()));
+            JEResponse response = JEBuilderApiHandler.addVariable(projectName, varName, getVariableBody(StringUtilities.generateUUID(), projectName, varName, varValue, UnifiedType.STRING.toString()));
             return response.getCode();
         } catch (Exception e) {
             LoggerUtils.logException(e);
@@ -131,7 +182,7 @@ public class JobEngine {
     public static int addBooleanVariable(String projectName, String varName, boolean varValue) {
 
         try {
-            JEResponse response = JEBuilderApiHandler.addVariable(projectName, varName, getVariableBody(StringUtilities.generateUUID(), projectName, varName, varValue, JEType.BOOLEAN.toString()));
+            JEResponse response = JEBuilderApiHandler.addVariable(projectName, varName, getVariableBody(StringUtilities.generateUUID(), projectName, varName, varValue, UnifiedType.BOOL.toString()));
             return response.getCode();
         } catch (Exception e) {
             LoggerUtils.logException(e);
@@ -194,18 +245,6 @@ public class JobEngine {
         }
     }
 
-    //Get variable body from parameters
-    public static Map<String, Object> getVariableBody(String varId, String varProjectId, String varName, Object varValue, String type) {
-        HashMap<String, Object> body = new HashMap<>();
-        body.put("id", varId);
-        body.put("projectId", varProjectId);
-        body.put("name", varName);
-        body.put("type", type);
-        body.put("value", varValue);
-        body.put("initialValue", varValue);
-        return body;
-    }
-
     /*
      * Add a variable to runner from script task
      * */
@@ -223,55 +262,6 @@ public class JobEngine {
     }*/
 
     /*
-     * Inform user of a message with inform level
-     * */
-    public static int informUser(String message, String projectName, String workflowName) {
-
-        //Network.makeGetNetworkCallWithResponse()
-        int respCode = -1;
-        JEConfiguration.loadProperties();
-        try {
-            InformModel informModel = new InformModel(message, projectName, workflowName);
-            JEZMQResponse response = JERunnerRequester.informUser(informModel);
-            if (response.getResponse()
-                    .equals(ZMQResponseType.SUCCESS)) return ResponseCodes.CODE_OK;
-            else {
-                sendLogMessage(JEMessages.ERROR_SENDING_INFORM_MESSAGE, projectName, LogLevel.ERROR,
-                        "", LogCategory.RUNTIME, LogSubModule.JERUNNER);
-            }
-        } catch (Exception e) {
-            LoggerUtils.logException(e);
-            sendLogMessage(JEMessages.ERROR_SENDING_INFORM_MESSAGE, projectName, LogLevel.ERROR,
-                    "", LogCategory.RUNTIME, LogSubModule.JERUNNER);
-        }
-
-        return respCode;
-    }
-
-    /*
-     * Inform user of a message with level
-     * */
-    public static int sendLogMessage(String message, String projectName, LogLevel level, String objectName,
-                                     LogCategory logCategory, LogSubModule logSubModule) {
-        //Network.makeGetNetworkCallWithResponse()
-        int respCode = -1;
-        JEConfiguration.loadProperties();
-        try {
-            LogMessage logMessage = new LogMessage(level, message, Instant.now()
-                    .toString(), projectName, logSubModule,
-                    objectName, objectName);
-            JEZMQResponse response = JERunnerRequester.sendLogMessage(logMessage);
-            if (response.getResponse()
-                    .equals(ZMQResponseType.SUCCESS)) return ResponseCodes.CODE_OK;
-
-        } catch (Exception e) {
-            LoggerUtils.logException(e);
-        }
-
-        return respCode;
-    }
-
-    /*
      * Trigger event from script
      * */
     public static int triggerEvent(String projectId, String eventName) {
@@ -287,6 +277,38 @@ public class JobEngine {
                     eventName, LogCategory.RUNTIME, LogSubModule.EVENT);
             return ResponseCodes.UNKNOWN_ERROR;
         }
+    }
+
+    //Execute a database sql query
+    public static HashMap<String, Object> executeSqlQuery(String dbId, String query) {
+        JEConfiguration.loadProperties();
+        HashMap<String, Object> response = null;
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            String data = DatabaseApiHandler.executeCommand(dbId, query);
+            response = mapper.readValue(data, HashMap.class);
+        } catch (Exception e) {
+            LoggerUtils.logException(e);
+            sendLogMessage(JEMessages.ERROR_EXECUTING_DB_QUERY, "", LogLevel.ERROR,
+                    null, LogCategory.RUNTIME, LogSubModule.WORKFLOW);
+        }
+        return response;
+    }
+
+    public static JSONArray executeSelectQuery(String dbId, String query) {
+        JEConfiguration.loadProperties();
+        JSONArray jsonArray = null;
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            String data = DatabaseApiHandler.executeCommand(dbId, query);
+            JSONObject jsonObject = new JSONObject(data);
+            jsonArray = new JSONArray(jsonObject.getJSONArray("values"));
+        } catch (Exception e) {
+            LoggerUtils.logException(e);
+            sendLogMessage(JEMessages.ERROR_EXECUTING_DB_QUERY, "", LogLevel.ERROR,
+                    null, LogCategory.RUNTIME, LogSubModule.WORKFLOW);
+        }
+        return jsonArray;
     }
 
     //Remove workflow from project
@@ -327,114 +349,25 @@ public class JobEngine {
         }
     }*/
 
-    //Execute a database sql query
-    public static HashMap<String, Object> executeSqlQuery(String dbId, String query) {
-        JEConfiguration.loadProperties();
-        HashMap<String, Object> response = null;
-        try {
-            ObjectMapper mapper = new ObjectMapper();
-            String data = DatabaseApiHandler.executeCommand(dbId, query);
-            response = mapper.readValue(data, HashMap.class);
-        } catch (Exception e) {
-            LoggerUtils.logException(e);
-            sendLogMessage(JEMessages.ERROR_EXECUTING_DB_QUERY, "", LogLevel.ERROR,
-                    null, LogCategory.RUNTIME, LogSubModule.WORKFLOW);
-        }
-        return response;
-    }
-
-    public static JSONArray executeSelectQuery(String dbId, String query) {
-        JEConfiguration.loadProperties();
-        JSONArray jsonArray = null;
-        try {
-            ObjectMapper mapper = new ObjectMapper();
-            String data = DatabaseApiHandler.executeCommand(dbId, query);
-            JSONObject jsonObject = new JSONObject(data);
-            jsonArray = new JSONArray(jsonObject.getJSONArray("values"));
-        } catch (Exception e) {
-            LoggerUtils.logException(e);
-            sendLogMessage(JEMessages.ERROR_EXECUTING_DB_QUERY, "", LogLevel.ERROR,
-                    null, LogCategory.RUNTIME, LogSubModule.WORKFLOW);
-        }
-        return jsonArray;
-    }
-
     public static void endJob() {
         System.exit(0);
     }
 
-    public static JEObject getDataModelInstance(String instanceName) throws IOException {
-        System.out.println("step 1");
-        JEConfiguration.loadProperties();
-        ConfigurationConstants.setJavaGenerationPath(SIOTHConfigUtility.getSiothConfig()
-                .getJobEngine()
-                .getGeneratedClassesPath());
-        JEZMQResponse var = JERunnerRequester.readClass(instanceName);
-        JEObject instance = null;
-        if (var != null && !var.getResponse()
-                .equals(ZMQResponseType.FAIL)) {
-            ObjectMapper mapper = new ObjectMapper();
-            File file = new File(ConfigurationConstants.getJavaGenerationPath());
+    public static void main(String... args) throws IOException, JERunnerErrorException {
+        var a = JobEngine.class;
+        var b = new MethodDescriptor(a.getDeclaredMethods()[1]);
+        b.getParameterDescriptors();
+        a.getDeclaredMethods()[5].getAnnotation(Description.class);
 
-            Class<?> cls = null;
-            HashMap<String, String> a = null;
-            try {
-                // Convert File to a URL
-                URL url = file.toURI()
-                        .toURL();          // file:/c:/myclasses/
-                URL[] urls = new URL[]{url};
-
-                // Create a new class loader with the directory
-                ClassLoader cl = new URLClassLoader(urls);
-
-                // Load in the class; MyClass.class should be located in
-                // the directory file:/c:/myclasses/com/mycompany
-                a = (HashMap<String, String>) var.getResponseObject();
-                cls = cl.loadClass(a.get("className"));
-                mapper.registerModule(new JavaTimeModule());
-                mapper.findAndRegisterModules();
-
-            } catch (MalformedURLException e) {
-                LoggerUtils.logException(e);
-            } catch (ClassNotFoundException e) {
-                LoggerUtils.logException(e);
-            }
-            if (a != null) {
-                instance = (JEObject) mapper.readValue(a.get("instance"), cls);
-            }
-            //instance = mapper.readValue((String) var.getResponseObject(), cls.class);
-            System.out.println(instance);
-            // instance = (JEObject) var.getResponseObject();
-
-
-        } else return null;
-        System.out.println(instance);
-
-        //  JEObject obj = InstanceManager.getInstance(instanceName);
-        // System.out.println("step 2" + obj.toString());
-    /*    if (obj == null) {
-            JELogger.error("Failed to load instance from dataModel" + ClassRepository.loadedClasses.toString(), LogCategory.RUNTIME,
-                    null, LogSubModule.JERUNNER, null);
-        }*/
-        return instance;
-    }
-
-    public static void setDataModelInstanceAttribute(String instanceId, String attributeName, Object attributeValue) {
-        JEConfiguration.loadProperties();
-        InstanceManager.writeToDataModelInstance(instanceId, attributeName, attributeValue, false);
-    }
-
-
-    public static void main(String... args) throws IOException {
-
-        sendLogMessage("test", "DM", LogLevel.INFORM, "testwf",
+     /*   sendLogMessage("test", "DM", LogLevel.INFORM, "testwf",
                 LogCategory.RUNTIME, LogSubModule.WORKFLOW);
 
         JobEngine.informUser("test", "DM", "testwf");
 
         setDataModelInstanceAttribute("23aa0c9c-ee34-c9e6-bbeb-7d407f0139b1", "fuelLevel", 110);
 
-        JEObject a = JobEngine.getDataModelInstance("azerty");
+        JEObject a = JobEngine.getDataModelInstance("azerty");*/
+        //   addVariable("Project_4", "testvar", 5, "DOuble");
 
         /*while(true) {
             informUser("test message", "DM", "testwf");
@@ -520,6 +453,111 @@ public class JobEngine {
             e.printStackTrace();
         }*/
         //System.out.println(requestUrl);
+    }
+
+    /*
+     * Add a variable to runner from script task
+     * */
+    public static int addVariable(String projectName, String varName, Object varValue, String type) throws JERunnerErrorException {
+
+
+        try {
+            var realType = UnifiedType.valueOf(type.toUpperCase());
+            JEResponse response = JEBuilderApiHandler.addVariable(projectName, varName, getVariableBody(StringUtilities.generateUUID(), projectName, varName, varValue, realType.toString()));
+            return response.getCode();
+        } catch (Exception e) {
+            LoggerUtils.logException(e);
+            sendLogMessage(JEMessages.ERROR_ADDING_VARIABLE_TO_PROJECT, projectName, LogLevel.ERROR, varName, LogCategory.RUNTIME, LogSubModule.VARIABLE);
+            throw e;
+        }
+
+    }
+
+    /*
+     * Inform user of a message with inform level
+     * */
+    public static int informUser(String message, String projectName, String workflowName) {
+
+        //Network.makeGetNetworkCallWithResponse()
+        int respCode = -1;
+        JEConfiguration.loadProperties();
+        try {
+            InformModel informModel = new InformModel(message, projectName, workflowName);
+            JEZMQResponse response = JERunnerRequester.informUser(informModel);
+            if (response.getResponse()
+                    .equals(ZMQResponseType.SUCCESS)) return ResponseCodes.CODE_OK;
+            else {
+                sendLogMessage(JEMessages.ERROR_SENDING_INFORM_MESSAGE, projectName, LogLevel.ERROR,
+                        "", LogCategory.RUNTIME, LogSubModule.JERUNNER);
+            }
+        } catch (Exception e) {
+            LoggerUtils.logException(e);
+            sendLogMessage(JEMessages.ERROR_SENDING_INFORM_MESSAGE, projectName, LogLevel.ERROR,
+                    "", LogCategory.RUNTIME, LogSubModule.JERUNNER);
+        }
+
+        return respCode;
+    }
+
+    public static void setDataModelInstanceAttribute(String instanceId, String attributeName, Object attributeValue) {
+        JEConfiguration.loadProperties();
+        InstanceManager.writeToDataModelInstance(instanceId, attributeName, attributeValue, false);
+    }
+
+    public static JEObject getDataModelInstance(String instanceName) throws IOException {
+        System.out.println("step 1");
+        JEConfiguration.loadProperties();
+        ConfigurationConstants.setJavaGenerationPath(SIOTHConfigUtility.getSiothConfig()
+                .getJobEngine()
+                .getGeneratedClassesPath());
+        JEZMQResponse var = JERunnerRequester.readClass(instanceName);
+        JEObject instance = null;
+        if (var != null && !var.getResponse()
+                .equals(ZMQResponseType.FAIL)) {
+            ObjectMapper mapper = new ObjectMapper();
+            File file = new File(ConfigurationConstants.getJavaGenerationPath());
+
+            Class<?> cls = null;
+            HashMap<String, String> a = null;
+            try {
+                // Convert File to a URL
+                URL url = file.toURI()
+                        .toURL();          // file:/c:/myclasses/
+                URL[] urls = new URL[]{url};
+
+                // Create a new class loader with the directory
+                ClassLoader cl = new URLClassLoader(urls);
+
+                // Load in the class; MyClass.class should be located in
+                // the directory file:/c:/myclasses/com/mycompany
+                a = (HashMap<String, String>) var.getResponseObject();
+                cls = cl.loadClass(a.get("className"));
+                mapper.registerModule(new JavaTimeModule());
+                mapper.findAndRegisterModules();
+
+            } catch (MalformedURLException e) {
+                LoggerUtils.logException(e);
+            } catch (ClassNotFoundException e) {
+                LoggerUtils.logException(e);
+            }
+            if (a != null) {
+                instance = (JEObject) mapper.readValue(a.get("instance"), cls);
+            }
+            //instance = mapper.readValue((String) var.getResponseObject(), cls.class);
+            System.out.println(instance);
+            // instance = (JEObject) var.getResponseObject();
+
+
+        } else return null;
+        System.out.println(instance);
+
+        //  JEObject obj = InstanceManager.getInstance(instanceName);
+        // System.out.println("step 2" + obj.toString());
+    /*    if (obj == null) {
+            JELogger.error("Failed to load instance from dataModel" + ClassRepository.loadedClasses.toString(), LogCategory.RUNTIME,
+                    null, LogSubModule.JERUNNER, null);
+        }*/
+        return instance;
     }
 }
 

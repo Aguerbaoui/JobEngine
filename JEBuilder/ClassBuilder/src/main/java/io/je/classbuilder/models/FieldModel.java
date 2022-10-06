@@ -1,6 +1,7 @@
 package io.je.classbuilder.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.je.utilities.beans.UnifiedType;
 
 public class FieldModel {
 
@@ -8,7 +9,7 @@ public class FieldModel {
     private String name;
 
     @JsonProperty(ClassModelAttributeMapping.FIELDTYPE)
-    private String type;
+    private UnifiedType type;
 
     @JsonProperty(ClassModelAttributeMapping.FIELDCOMMENT)
     private String comment;
@@ -26,11 +27,11 @@ public class FieldModel {
         this.name = name;
     }
 
-    public String getType() {
+    public UnifiedType getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(UnifiedType type) {
         this.type = type;
     }
 

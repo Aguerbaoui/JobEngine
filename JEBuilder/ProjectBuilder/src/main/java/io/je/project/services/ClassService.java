@@ -154,6 +154,23 @@ public class ClassService {
     }
 
     /*
+     * Add class to runner from datamodel
+     */
+    public void loadClassFromDataModel(String workspaceId, String classId, boolean sendToRunner)
+            throws ClassLoadException, AddClassException {
+
+        ClassDefinition classDefinition = ClassManager.loadClassDefinition(workspaceId, classId);
+
+        if (classDefinition != null) {
+            classDefinition.setWorkspaceId(workspaceId);
+            addClass(classDefinition, sendToRunner, (loadedClasses.containsKey(classId)));
+            JELogger.info("Class " + classDefinition.getName() + " loaded successfully.", null, null, null,
+                    classDefinition.getName());
+        }
+
+    }
+
+    /*
      * Create new SIOTHProcedure class
      */
     private JEClass getNewJEProcedureClass() {
@@ -176,23 +193,6 @@ public class ClassService {
             }
         }
         c.setMethods(methodHashMap);
-
-    }
-
-    /*
-     * Add class to runner from datamodel
-     */
-    public void loadClassFromDataModel(String workspaceId, String classId, boolean sendToRunner)
-            throws ClassLoadException, AddClassException {
-
-        ClassDefinition classDefinition = ClassManager.loadClassDefinition(workspaceId, classId);
-
-        if (classDefinition != null) {
-            classDefinition.setWorkspaceId(workspaceId);
-            addClass(classDefinition, sendToRunner, (loadedClasses.containsKey(classId)));
-            JELogger.info("Class " + classDefinition.getName() + " loaded successfully.", null, null, null,
-                    classDefinition.getName());
-        }
 
     }
 
@@ -283,7 +283,7 @@ public class ClassService {
         m.setMethodName(MAIN);
         m.setCode(script);
         FieldModel fieldModel = new FieldModel();
-        fieldModel.setType("String[]");
+        fieldModel.setType(UnifiedType.STRING_LIST);
         fieldModel.setName("args");
         List<FieldModel> list = new ArrayList<>();
         list.add(fieldModel);
@@ -726,7 +726,7 @@ public class ClassService {
                 final String ID_MSG = "ClassZMQSubscriber : ";
 
                 JELogger.debug(ID_MSG //+ "topics : " + this.topics + " : "
-                        + JEMessages.STARTED_LISTENING_FOR_DATA,
+                                + JEMessages.STARTED_LISTENING_FOR_DATA,
                         LogCategory.DESIGN_MODE, null, LogSubModule.CLASS, null);
 
                 String last_topic = null;

@@ -37,6 +37,9 @@ public class ConversionUtilities {
         } else if (var.equalsIgnoreCase("false")) {
             return "0";
         }
+        if (var.isEmpty() || var.isBlank()) {
+            return "";
+        }
         return var;
     }
 
