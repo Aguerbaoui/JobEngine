@@ -154,23 +154,6 @@ public class ClassService {
     }
 
     /*
-     * Add class to runner from datamodel
-     */
-    public void loadClassFromDataModel(String workspaceId, String classId, boolean sendToRunner)
-            throws ClassLoadException, AddClassException {
-
-        ClassDefinition classDefinition = ClassManager.loadClassDefinition(workspaceId, classId);
-
-        if (classDefinition != null) {
-            classDefinition.setWorkspaceId(workspaceId);
-            addClass(classDefinition, sendToRunner, (loadedClasses.containsKey(classId)));
-            JELogger.info("Class " + classDefinition.getName() + " loaded successfully.", null, null, null,
-                    classDefinition.getName());
-        }
-
-    }
-
-    /*
      * Create new SIOTHProcedure class
      */
     private JEClass getNewJEProcedureClass() {
@@ -193,6 +176,23 @@ public class ClassService {
             }
         }
         c.setMethods(methodHashMap);
+
+    }
+
+    /*
+     * Add class to runner from datamodel
+     */
+    public void loadClassFromDataModel(String workspaceId, String classId, boolean sendToRunner)
+            throws ClassLoadException, AddClassException {
+
+        ClassDefinition classDefinition = ClassManager.loadClassDefinition(workspaceId, classId);
+
+        if (classDefinition != null) {
+            classDefinition.setWorkspaceId(workspaceId);
+            addClass(classDefinition, sendToRunner, (loadedClasses.containsKey(classId)));
+            JELogger.info("Class " + classDefinition.getName() + " loaded successfully.", null, null, null,
+                    classDefinition.getName());
+        }
 
     }
 
@@ -721,40 +721,32 @@ public class ClassService {
         @Override
         public void run() {
 
-            synchronized (this) {
+            final String ID_MSG = "ClassZMQSubscriber : ";
 
-                final String ID_MSG = "ClassZMQSubscriber : ";
+            try {
 
-                JELogger.debug(ID_MSG //+ "topics : " + this.topics + " : "
-                                + JEMessages.STARTED_LISTENING_FOR_DATA,
-                        LogCategory.DESIGN_MODE, null, LogSubModule.CLASS, null);
+                // Bug 677: No more data received in Job Engine logs on updating static attribute. Reworks after restarting Job Engine (not Data Model) !
+                synchronized (this.getSubscriberSocket()) {
 
-                String last_topic = null;
+                    this.addTopic(MODEL_TOPIC);
 
-                while (this.listening) {
+                    JELogger.debug(ID_MSG + "topics : " + this.topics + " : " + JEMessages.STARTED_LISTENING_FOR_DATA,
+                            LogCategory.DESIGN_MODE, null, LogSubModule.CLASS, null);
 
-                    String data = null;
+                    String data, last_topic = null;
 
-                    try {
-
-                        addTopic(MODEL_TOPIC);
+                    while (this.listening) {
 
                         data = this.getSubscriberSocket().recvStr();
 
-                    } catch (ZMQConnectionFailedException e) {
-                        LoggerUtils.logException(e);
-                        JELogger.error(ID_MSG + JEMessages.ZMQ_CONNECTION_FAILED, LogCategory.DESIGN_MODE, null,
-                                LogSubModule.CLASS, e.getMessage());
-                    } catch (Exception e) {
-                        LoggerUtils.logException(e);
-                        continue;
-                    }
-
-                    try {
                         if (data == null) continue;
+
+                        JELogger.debug(ID_MSG + JEMessages.DATA_RECEIVED + data, LogCategory.DESIGN_MODE,
+                                null, LogSubModule.CLASS, null);
 
                         // FIXME waiting to have topic in the same response message
                         if (last_topic == null) {
+
                             for (String topic : this.topics) {
                                 // Received Data should be equal topic
                                 if (data.equals(topic)) {
@@ -762,20 +754,10 @@ public class ClassService {
                                     break;
                                 }
                             }
+
                         } else {
-                            JELogger.debug(ID_MSG + JEMessages.DATA_RECEIVED + data, LogCategory.RUNTIME,
-                                    null, LogSubModule.CLASS, last_topic);
 
-                            List<ModelUpdate> updates = null;
-                            try {
-                                updates = Arrays.asList(objectMapper.readValue(data, ModelUpdate[].class));
-                            } catch (JsonProcessingException e) {
-
-                                LoggerUtils.logException(e);
-
-                                throw new InstanceCreationFailedException("Failed to parse model update : " + e.getMessage());
-
-                            }
+                            List<ModelUpdate> updates = Arrays.asList(objectMapper.readValue(data, ModelUpdate[].class));
 
                             for (ModelUpdate update : updates) {
                                 update.getModel()
@@ -792,25 +774,47 @@ public class ClassService {
                             last_topic = null;
                         }
 
-                    } catch (Exception e) {
-                        LoggerUtils.logException(e);
-                        JELogger.error(JEMessages.ERROR_GETTING_CLASS_UPDATES, LogCategory.DESIGN_MODE, null,
-                                LogSubModule.CLASS, e.getMessage());
-                    }
-
-                    try {
                         // FIXME could slow Class loading
                         Thread.sleep(100);
-                    } catch (InterruptedException e) {
-                        LoggerUtils.logException(e);
-                        JELogger.error(JEMessages.THREAD_INTERRUPTED, LogCategory.DESIGN_MODE, null,
-                                LogSubModule.CLASS, null);
+
                     }
 
                 }
 
+            } catch (InterruptedException e) {
+
+                LoggerUtils.logException(e);
+
+                JELogger.error(ID_MSG + JEMessages.THREAD_INTERRUPTED, LogCategory.DESIGN_MODE, null,
+                        LogSubModule.CLASS, e.getMessage());
+
+            } catch (JsonProcessingException e) {
+
+                LoggerUtils.logException(e);
+
+                //throw new InstanceCreationFailedException("Failed to parse model update : " + e.getMessage());
+
+                JELogger.error(ID_MSG + "Failed to parse model update : " + e.getMessage(), LogCategory.DESIGN_MODE, null,
+                        LogSubModule.CLASS, e.getMessage());
+
+            } catch (ZMQConnectionFailedException e) {
+
+                LoggerUtils.logException(e);
+
+                JELogger.error(ID_MSG + JEMessages.ZMQ_CONNECTION_FAILED, LogCategory.DESIGN_MODE, null,
+                        LogSubModule.CLASS, e.getMessage());
+
+            } catch (Exception e) {
+
+                LoggerUtils.logException(e);
+
+                JELogger.error(ID_MSG + JEMessages.ERROR_GETTING_CLASS_UPDATES, LogCategory.DESIGN_MODE, null,
+                        LogSubModule.CLASS, e.getMessage());
+
+            } finally {
+
                 JELogger.debug(ID_MSG + JEMessages.CLOSING_SOCKET, LogCategory.DESIGN_MODE,
-                        null, LogSubModule.CLASS, last_topic);
+                        null, LogSubModule.CLASS, null);
 
                 this.closeSocket();
 

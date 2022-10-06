@@ -46,7 +46,8 @@ rule "@{ruleName}"  @Propagation(IMMEDIATE)
 dialect "mvel"
 salience @{salience}
 enabled @{enabled}
-no-loop true
+no-loop false
+lock-on-active false
 date-effective @{dateEffective}
 date-expires @{dateExpires}
 timer (cron:@{cronExpression})

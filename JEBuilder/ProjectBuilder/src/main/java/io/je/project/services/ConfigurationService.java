@@ -41,7 +41,7 @@ public class ConfigurationService {
     Thread projectZMQResponderThread = null;
 
     /*
-     * check JERunner health
+     * Check JERunner health
      * */
     private static boolean checkRunnerHealth() {
         try {
@@ -72,11 +72,10 @@ public class ConfigurationService {
      */
     public void init() {
 
-        try {
-            JELogger.debug(JEMessages.INITILIZING_BUILDER, LogCategory.DESIGN_MODE,
-                    null, LogSubModule.JEBUILDER, null);
+        updateRunner();
 
-            updateRunner();
+        try {
+            // Initialize JE ZMQ subscriber
 
             classZMQSubscriberThread = classService.initClassZMQSubscriber();
 
@@ -86,23 +85,19 @@ public class ConfigurationService {
                     null, LogSubModule.JEBUILDER, null);
         }
 
-    }
-
-    /*
-     * Initialize JE ZMQ responder
-     * */
-    public void initResponder() {
         try {
+            // Initialize JE ZMQ responder
 
             projectZMQResponderThread = new Thread(projectZMQResponder);
 
             projectZMQResponderThread.start();
 
-            JELogger.info(ZMQ_RESPONSE_STARTED + "tcp://" + SIOTHConfigUtility.getSiothConfig().getNodes().getSiothMasterNode() + ":" + SIOTHConfigUtility.getSiothConfig().getPorts().getJeResponsePort(), null, null, LogSubModule.JEBUILDER, null);
+            JELogger.info(ZMQ_RESPONSE_STARTED + "tcp://" + SIOTHConfigUtility.getSiothConfig().getNodes().getSiothMasterNode() + ":" + SIOTHConfigUtility.getSiothConfig().getPorts().getJeResponsePort(),
+                    LogCategory.DESIGN_MODE, null, LogSubModule.JEBUILDER, null);
 
         } catch (Exception e) {
             LoggerUtils.logException(e);
-            JELogger.error(ZMQ_RESPONSE_START_FAIL + JEExceptionHandler.getExceptionMessage(e), null, null, LogSubModule.JEBUILDER, null);
+            JELogger.error(ZMQ_RESPONSE_START_FAIL + JEExceptionHandler.getExceptionMessage(e), LogCategory.DESIGN_MODE, null, LogSubModule.JEBUILDER, null);
 
         }
 
@@ -128,11 +123,13 @@ public class ConfigurationService {
         }
 
         if (projectZMQResponder != null) {
+            LoggerUtils.trace("Setting projectZMQResponder listening to false.");
             projectZMQResponder.setListening(false);
             projectZMQResponder.closeSocket();
         }
 
         if (classService.getClassZMQSubscriber() != null) {
+            LoggerUtils.trace("Setting ClassZMQSubscriber listening to false.");
             classService.getClassZMQSubscriber().setListening(false);
             classService.getClassZMQSubscriber().closeSocket();
         }
@@ -183,6 +180,7 @@ public class ConfigurationService {
             } catch (Exception e) {
                 JEExceptionHandler.handleException(e);
             }
+
         }).start();
 
     }

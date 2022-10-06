@@ -92,6 +92,24 @@ public class RuleBuilder {
 
     /*
      * Generate script rules
+     *
+     * Warning: Fact propagation modes in the Drools engine
+     *
+     * Lazy: (Default)
+     *
+     * Immediate: Facts are propagated immediately in the order that they are inserted by a user or application.
+     *
+     * Eager: Facts are propagated lazily (in batch collections), but before rule execution.
+     * The Drools engine uses this propagation behavior for rules that have the :
+     * no-loop or lock-on-active attribute.
+     *
+     * =>
+
+@Propagation(IMMEDIATE)
+
+no-loop false
+lock-on-active false
+
      */
     public static List<ScriptedRule> scriptRule(UserDefinedRule uRule) throws RuleBuildFailedException {
 
@@ -160,8 +178,16 @@ public class RuleBuilder {
 
                     condition = getDroolsConditionWithoutRepeatedDeclarations(conditionBlock.getExpression());
 
+                    // FIXME Bug 100: Job Engine Issues (FIXME / TODO) : more than 200 in about 100 files
+
                     // TODO check if need for more specific blocks cast
-                    notCondition = " not ( \n" + condition.replaceAll("\n", AND_DROOLS_CONDITION) + "\n ) ";
+                    String tmpNotCondition = condition.replaceAll("\n", AND_DROOLS_CONDITION);
+
+                    if (tmpNotCondition.endsWith(AND_DROOLS_CONDITION)) {
+                        tmpNotCondition = tmpNotCondition.substring(0, tmpNotCondition.length() - AND_DROOLS_CONDITION.length());
+                    }
+
+                    notCondition = NOT_DROOLS_PREFIX_CONDITION + tmpNotCondition + NOT_DROOLS_SUFFIX_CONDITION;
 
                     consequences = conditionBlock.getConsequences();
 

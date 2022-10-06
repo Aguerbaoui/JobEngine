@@ -3,6 +3,13 @@
          xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+    <groupId>io.je</groupId>
+    <artifactId>JEMonitor</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <packaging>war</packaging>
+    <name>JEMonitor</name>
+    <description>Job Engine monitoring</description>
+
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
@@ -16,15 +23,8 @@
         <java.version>11</java.version>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
-
     </properties>
 
-    <groupId>io.je</groupId>
-    <artifactId>Monitor</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-    <packaging>war</packaging>
-    <name>Monitor</name>
-    <description>JE monitoring</description>
 
     <dependencies>
 
@@ -96,7 +96,7 @@
     </dependencies>
 
     <build>
-        <finalName>JEMonitor</finalName>
+        <finalName>${artifactId}</finalName>
         <directory>../release/JEMonitor/</directory>
         <outputDirectory>./target/classes/</outputDirectory>
     </build>

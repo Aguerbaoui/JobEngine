@@ -146,6 +146,7 @@ public class ClassManager {
             throw new ClassLoadException(
                     JEMessages.CLASS_LOAD_FAILED + "[" + classDefinition.getName() + "]" + e.getMessage());
         }
+
         builtClasses.put(classDefinition.getClassId(), loadedClass);
         classNames.put(classDefinition.getName(), classDefinition.getClassId());
         JEClass jeClass = new JEClass(classDefinition.getWorkspaceId(), classDefinition.getClassId(),

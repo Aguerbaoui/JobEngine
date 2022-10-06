@@ -31,36 +31,33 @@ public class MonitorZMQSubscriber extends ZMQSubscriber {
     @Override
     public void run() {
 
-        synchronized (this) {
+        final String ID_MSG = "Monitor Subscriber : ";
 
-            final String ID_MSG = "Monitor Subscriber : ";
+        try {
 
-            JELogger.debug(ID_MSG + JEMessages.STARTED_LISTENING_FOR_MONITORING_DATA_FROM_THE_JOB_ENGINE,
-                    LogCategory.MONITOR, null, LogSubModule.JEMONITOR, null);
+            // Bug 677: No more data received in Job Engine logs on updating static attribute. Reworks after restarting Job Engine (not Data Model) !
+            synchronized (this.getSubscriberSocket(ZMQType.BIND)) {
 
-            String last_topic = null;
+                this.addTopic(JEMONITOR_TOPIC, ZMQType.BIND);
 
-            while (this.listening) {
-                String data = null;
+                JELogger.debug(ID_MSG + "topics : " + this.topics + " : "
+                                + JEMessages.STARTED_LISTENING_FOR_MONITORING_DATA_FROM_THE_JOB_ENGINE,
+                        LogCategory.MONITOR, null, LogSubModule.JEMONITOR, null);
 
-                try {
+                String data, last_topic = null;
 
-                    this.addTopic(JEMONITOR_TOPIC, ZMQType.BIND);
-
-                } catch (ZMQConnectionFailedException e) {
-                    LoggerUtils.logException(e);
-                    JELogger.error(ID_MSG + JEMessages.ZMQ_CONNECTION_FAILED, LogCategory.DESIGN_MODE, null,
-                            LogSubModule.CLASS, e.getMessage());
-                }
-
-                try {
+                while (this.listening) {
 
                     data = this.getSubscriberSocket(ZMQType.BIND).recvStr();
 
                     if (data == null) continue;
 
+                    JELogger.debug(ID_MSG + JEMessages.DATA_RECEIVED + data, LogCategory.MONITOR,
+                            null, LogSubModule.JEMONITOR, null);
+
                     // FIXME waiting to have topic in the same response message
                     if (last_topic == null) {
+
                         for (String topic : this.topics) {
                             // Received Data should be equal topic
                             if (data.equals(topic)) {
@@ -70,6 +67,7 @@ public class MonitorZMQSubscriber extends ZMQSubscriber {
                                 break;
                             }
                         }
+
                     } else {
 
                         JELogger.debug(ID_MSG + "WebSocketService : send updates : " + data);
@@ -78,11 +76,24 @@ public class MonitorZMQSubscriber extends ZMQSubscriber {
 
                         last_topic = null;
                     }
-                } catch (Exception e) {
-                    JELogger.error(e.toString(), null, "", null, "");
-                }
 
+                }
             }
+
+        } catch (ZMQConnectionFailedException e) {
+
+            LoggerUtils.logException(e);
+
+            JELogger.error(ID_MSG + JEMessages.ZMQ_CONNECTION_FAILED, LogCategory.DESIGN_MODE, null,
+                    LogSubModule.CLASS, e.getMessage());
+
+        } catch (Exception e) {
+
+            LoggerUtils.logException(e);
+
+            JELogger.error(ID_MSG + e.getMessage(), LogCategory.MONITOR, "", LogSubModule.CLASS, "");
+
+        } finally {
 
             JELogger.debug(ID_MSG + JEMessages.CLOSING_SOCKET,
                     LogCategory.MONITOR, null, LogSubModule.JEMONITOR, null);

@@ -54,11 +54,15 @@ public class ConfigurationService {
 
         try {
 
-            jeRunnerResponder = new JERunnerResponder("tcp://" + SIOTHConfigUtility.getSiothConfig().getNodes().getSiothMasterNode(), responsePort, ZMQType.BIND);
+            if (jeRunnerResponder == null) {
 
-            jeRunnerResponderThread = new Thread(jeRunnerResponder);
+                jeRunnerResponder = new JERunnerResponder("tcp://" + SIOTHConfigUtility.getSiothConfig().getNodes().getSiothMasterNode(), responsePort, ZMQType.BIND);
 
-            jeRunnerResponderThread.start();
+                interruptThread();
+
+                initThread();
+
+            }
 
             JELogger.info(JEMessages.ZMQ_RESPONSE_STARTED + "tcp://" + SIOTHConfigUtility.getSiothConfig().getNodes().getSiothMasterNode() + ":" + responsePort, null, null, LogSubModule.JEBUILDER, null);
 
@@ -86,18 +90,37 @@ public class ConfigurationService {
                 LogSubModule.JERUNNER, null);
     }
 
-    public void close() {
+    private void initThread() {
 
-        // Interrupt Thread before closing socket to avoid org.zeromq.ZMQException: Errno 4
+        jeRunnerResponderThread = new Thread(jeRunnerResponder);
+
+        jeRunnerResponderThread.setName("jeRunnerResponderThread");
+
+        jeRunnerResponderThread.start();
+
+    }
+
+    private void interruptThread() {
+
         if (jeRunnerResponderThread != null) {
             if (jeRunnerResponderThread.isAlive()) {
                 jeRunnerResponderThread.interrupt();
             }
+            jeRunnerResponderThread = null;
         }
 
+    }
+
+    public void close() {
+
+        // Interrupt Thread before closing socket to avoid org.zeromq.ZMQException: Errno 4
+        interruptThread();
+
         if (jeRunnerResponder != null) {
+            LoggerUtils.trace("Setting jeRunnerResponder listening to false.");
             jeRunnerResponder.setListening(false);
             jeRunnerResponder.closeSocket();
+            jeRunnerResponder = null;
         }
 
     }

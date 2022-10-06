@@ -11,6 +11,8 @@ public class JEMonitorApplication {
 
     public static void main(String[] args) {
 
+        System.setProperty("spring.devtools.restart.enabled", "false");
+
         SpringApplication app = new SpringApplication(JEMonitorApplication.class);
         app.setBannerMode(Banner.Mode.OFF);
         HashMap<String, Object> properties = new HashMap<>();

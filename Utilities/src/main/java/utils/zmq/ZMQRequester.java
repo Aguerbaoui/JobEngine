@@ -106,22 +106,27 @@ public class ZMQRequester {
 
     public String sendRequest(String request) {
         String reply = "";
-        synchronized (context) {
-            try {
 
-                //System.err.println("Requests number : " + this.requestCounter++);
+        try {
 
-                LoggerUtils.trace("ZMQ requester : sending request : " + request);
+            //System.err.println("Requests number : " + this.requestCounter++);
+
+            LoggerUtils.trace("ZMQ requester : sending request : " + request);
+
+            synchronized (this.getRequesterSocket()) {
 
                 this.getRequesterSocket().send(request, 0);
 
                 reply = this.getRequesterSocket().recvStr(0);
 
-            } catch (Exception e) {
-                LoggerUtils.logException(e);
             }
-            return reply;
+
+        } catch (Exception e) {
+            LoggerUtils.logException(e);
         }
+
+        return reply;
+
     }
 
     public ZContext getContext() {

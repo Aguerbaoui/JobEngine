@@ -39,7 +39,7 @@ public class JEClassLoader extends ClassLoader {
             dataModelCustomClasses = new HashSet<>();
         }
         dataModelCustomClasses.add(classname);
-        JELogger.debug("added class " + classname + "now list is : " + dataModelCustomClasses);
+        JELogger.debug("Added class : " + classname + ". Now list is : " + dataModelCustomClasses);
     }
 
     public static void removeClassFromDataModelClassesSet(String name) {
