@@ -90,8 +90,14 @@ public class ZMQPublisher {
     public void closeSocket() {
         if (socket != null) {
 
+            socket.setReceiveTimeOut(0);
+            socket.setSendTimeOut(0);
+
             socket.disconnect(connectionAddress);
-            LoggerUtils.info("ZMQ responder : Disconnection succeeded from : " + connectionAddress);
+
+            LoggerUtils.info("ZMQ publisher : Disconnection succeeded from : " + connectionAddress);
+
+            LoggerUtils.info("ZMQ publisher : Closing socket of : " + connectionAddress);
 
             socket.close();
             context.destroySocket(socket);

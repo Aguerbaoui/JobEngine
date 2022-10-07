@@ -95,8 +95,13 @@ public class ZMQRequester {
     public void closeSocket() {
         if (socket != null) {
 
+            socket.setReceiveTimeOut(0);
+            socket.setSendTimeOut(0);
+
             socket.disconnect(connectionAddress);
-            LoggerUtils.info("ZMQ responder : Disconnection succeeded from : " + connectionAddress);
+            LoggerUtils.info("ZMQ requester : Disconnection succeeded from : " + connectionAddress);
+
+            LoggerUtils.info("ZMQ requester : Closing socket of : " + connectionAddress);
 
             socket.close();
             context.destroySocket(socket);

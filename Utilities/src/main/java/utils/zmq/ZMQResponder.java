@@ -99,6 +99,9 @@ public abstract class ZMQResponder implements Runnable {
     public void closeSocket() {
         if (socket != null) {
 
+            socket.setReceiveTimeOut(0);
+            socket.setSendTimeOut(0);
+
             if (bindType == ZMQType.BIND) {
                 this.socket.unbind(connectionAddress);
                 LoggerUtils.info("ZMQ responder : Unbind succeeded from : " + connectionAddress);
@@ -106,6 +109,8 @@ public abstract class ZMQResponder implements Runnable {
                 this.socket.disconnect(connectionAddress);
                 LoggerUtils.info("ZMQ responder : Disconnection succeeded from : " + connectionAddress);
             }
+
+            LoggerUtils.info("ZMQ responder : Closing socket of : " + connectionAddress);
 
             socket.close();
             context.destroySocket(socket);

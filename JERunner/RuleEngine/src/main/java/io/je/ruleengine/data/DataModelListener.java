@@ -234,7 +234,7 @@ public class DataModelListener {
                     for (String id : DataModelListener.getProjectsSubscribedToTopic(jeData.getTopic())) {
                         projectId = id;
 
-                        RuleEngine.assertFact(projectId, instanceData);
+                        RuleEngine.insertFact(projectId, instanceData);
 
                     }
                 } catch (InstanceCreationFailedException e) {

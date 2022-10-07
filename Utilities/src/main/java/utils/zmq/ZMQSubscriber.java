@@ -111,6 +111,9 @@ public abstract class ZMQSubscriber implements Runnable {
     public void closeSocket() {
         if (socket != null) {
 
+            socket.setReceiveTimeOut(0);
+            socket.setSendTimeOut(0);
+
             if (bindType == ZMQType.BIND) {
                 this.socket.unbind(connectionAddress);
                 LoggerUtils.info("ZMQ subscriber : Unbind succeeded from : " + connectionAddress);
@@ -118,6 +121,8 @@ public abstract class ZMQSubscriber implements Runnable {
                 this.socket.disconnect(connectionAddress);
                 LoggerUtils.info("ZMQ subscriber : Disconnection succeeded from : " + connectionAddress);
             }
+
+            LoggerUtils.info("ZMQ subscriber : Closing socket of : " + connectionAddress);
 
             socket.close();
             context.destroySocket(socket);
@@ -139,6 +144,14 @@ public abstract class ZMQSubscriber implements Runnable {
         }
         // FIXME could be dangerous re-subscribing
         getSubscriberSocket().subscribe(topic.getBytes());
+    }
+
+    public void removeTopic(String topic, ZMQType bindType) throws ZMQConnectionFailedException {
+        if (topics.contains(topic)) {
+            topics.remove(topic);
+        }
+        // FIXME could be dangerous re-unsubscribing
+        getSubscriberSocket(bindType).unsubscribe(topic.getBytes());
     }
 
     public void removeTopic(String topic) throws ZMQConnectionFailedException {

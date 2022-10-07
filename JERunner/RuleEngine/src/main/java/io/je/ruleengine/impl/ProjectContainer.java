@@ -55,11 +55,8 @@ enum BuildStatus {
 public class ProjectContainer {
 
     // This is where all the compiled rules are saved.
-
-
     Map<String, Rule> allRules = new ConcurrentHashMap<>();
 
-    // private boolean isInitialised = false;
     // JEClassLoader loader = JEClassLoader.getInstance();
     ConcurrentHashMap<String, FactHandle> facts = new ConcurrentHashMap<>();
     private String projectId;
@@ -93,12 +90,6 @@ public class ProjectContainer {
     // by a Kie Container.
     private KieContainer kieContainer;
 
-    /*
-    // The KScanner is used to automatically discover if there are new releases for
-    // a given KieModule
-    private KieScanner kScanner;
-    */
-
     // This represents the project container's version. It is updated whenever the
     // project components are altered
     private ReleaseId releaseId = null;
@@ -118,6 +109,9 @@ public class ProjectContainer {
 
     private boolean reloadContainer = false;
 
+    private Thread startRulesThread = null;
+
+
     /*
      * Constructor
      */
@@ -134,7 +128,6 @@ public class ProjectContainer {
 
         //ruleListener = new RuleListener(projectId);
 
-        // createKModule
         createKModule();
 
     }
@@ -189,8 +182,7 @@ public class ProjectContainer {
     }
 
     /*
-     * the build project method builds the kie environment needed to execute the
-     * rules.
+     * The build project method builds the kie environment needed to execute the rules.
      */
     public void buildProject() throws RuleBuildFailedException {
         JELogger.debugWithoutPublish(JEMessages.BUILDING_PROJECT_CONTAINER, LogCategory.RUNTIME, projectId,
@@ -220,6 +212,8 @@ public class ProjectContainer {
 
         facts = new ConcurrentHashMap<String, FactHandle>();
 
+        stopRulesThread();
+
         if (allRules == null || allRules.isEmpty()) {
             JELogger.debugWithoutPublish("[projectId = " + projectId + "] " + JEMessages.NO_RULES, LogCategory.RUNTIME,
                     projectId, LogSubModule.RULE, null);
@@ -241,7 +235,6 @@ public class ProjectContainer {
         }
 
         // fire rules
-        Thread t1 = null;
         try {
             Runnable runnable = () -> {
                 try {
@@ -279,8 +272,9 @@ public class ProjectContainer {
 
                 }
             };
-            t1 = new Thread(runnable);
-            t1.start();
+
+            startRulesThread = new Thread(runnable);
+            startRulesThread.start();
 
             status = Status.RUNNING;
 
@@ -299,19 +293,27 @@ public class ProjectContainer {
 
         } catch (Exception exp) {
 
-            if (t1 != null) {
-
-                kieSession.halt();
-
-                if (t1.isAlive()){
-                    t1.interrupt();
-                }
-
-            }
-
             logError(exp, JEMessages.FAILED_TO_FIRE_RULES + " for project id : " + projectId);
 
+            if (kieSession != null) {
+                kieSession.halt();
+            }
+
+            stopRulesThread();
+
             throw new RulesNotFiredException(JEMessages.FAILED_TO_FIRE_RULES + " for project id : " + projectId);
+
+        }
+
+    }
+
+    private void stopRulesThread() {
+
+        if (startRulesThread != null) {
+
+            if (startRulesThread.isAlive()) {
+                startRulesThread.interrupt();
+            }
 
         }
 
@@ -326,15 +328,6 @@ public class ProjectContainer {
                         + " , destroy session : " + destroySession + " , remove all project rules : " + removeAllRules,
                 LogCategory.RUNTIME, projectId, LogSubModule.RULE, null);
 
-        /* Stop listening should be done by user
-
-            Set<String> topics = DataModelListener.getTopicsByProjectId(projectId);
-
-            DataModelListener.stopListening(topics);
-        */
-
-        // TODO : Add more control for stopping rules / catching exceptions (case rule stopped but still firing, ex : Issue 14962)
-        // destroySession=false;
         try {
 
             if (kieSession != null) {
@@ -413,7 +406,7 @@ public class ProjectContainer {
     private boolean initKieBaseAndSession() {
 
         JELogger.debugWithoutPublish("ProjectId : " + projectId + " : " + JEMessages.KIE_INIT
-                + " : release Id : " + releaseId, LogCategory.RUNTIME,
+                        + " : release Id : " + releaseId, LogCategory.RUNTIME,
                 projectId, LogSubModule.RULE, null);
 
         if (releaseId != null) {
@@ -615,13 +608,6 @@ public class ProjectContainer {
             // Thread.currentThread().setContextClassLoader(JEClassLoader.getInstance());
 
             kieContainer.updateToVersion(releaseId);
-
-            /*
-            if (kScanner == null) {
-                kScanner = kieServices.newKieScanner(kieContainer);
-            }
-            //kScanner.scanNow(); removed because it consults the internet
-            */
 
         } catch (Exception exp) {
             logError(exp, JEMessages.UNEXPECTED_ERROR);
@@ -923,55 +909,34 @@ public class ProjectContainer {
      * ---------------------  FACT MANAGEMENT  -----------------------
      * ---------------------------------------------------------------
      */
-    public void insertFact(JEObject fact) {
+    public synchronized void insertFact(JEObject fact) {
+
         if (status == Status.RUNNING) {
-            // JELogger.info(String.valueOf(fact.getJeObjectLastUpdate().until(LocalDateTime.now(),
-            // ChronoUnit.MILLIS)));
-            // kieSession.insert(fact);
-            synchronized (kieSession) { // FIXME Bug 662: Rule was running, but suddenly no more fire events (even with stop/build/start)
-                try {
-                    // ClassLoader t = JEClassLoader.getInstance();
-                    // //io.je.utilities.classloader.JEClassLoader@733aa287
-                    // ClassLoader test = fact.getClass().getClassLoader();
-                    // //io.je.utilities.classloader.JEClassLoader@41ee5f60
-					/*JELogger.trace(JEClassLoader.getInstance().toString(), LogCategory.RUNTIME, projectId,
-							LogSubModule.RULE, fact.getJobEngineElementID());
-					JELogger.trace(fact.getClass().getClassLoader().toString(), LogCategory.RUNTIME, projectId,
-							LogSubModule.RULE, fact.getJobEngineElementID());
-					JELogger.trace(kieContainer.getClassLoader().toString(), LogCategory.RUNTIME, projectId,
-							LogSubModule.RULE, fact.getJobEngineElementID());
-*/
 
-                    synchronized (facts) {  // FIXME Bug 662: Rule was running, but suddenly no more fire events (even with stop/build/start)
+            try {
 
-                        String message = JEMessages.UPDATING_FACT + " [projectId = " + projectId
-                                + " ] [factId : " + fact.getJobEngineElementID() + " ] : " + fact.toString();
+                String message = JEMessages.UPDATING_FACT + " [projectId = " + projectId
+                        + " ] [factId : " + fact.getJobEngineElementID() + " ] : " + fact.toString();
 
-                        LoggerUtils.trace(message);
+                LoggerUtils.trace(message);
 
-					/*	JELogger.debug(message, LogCategory.DESIGN_MODE, projectId, LogSubModule.RULE, fact.getJobEngineElementID()); */
+                // TODO we can add atomicity with session.submit
 
-                        // TODO we can add atomicity with session.submit
+                if (facts.containsKey(fact.getJobEngineElementID())) {
+                    kieSession.update(facts.get(fact.getJobEngineElementID()), fact);
 
-                        if (facts.containsKey(fact.getJobEngineElementID())) {
-                            kieSession.update(facts.get(fact.getJobEngineElementID()), fact);
-
-                        } else {
-                            facts.put(fact.getJobEngineElementID(), kieSession.insert(fact));
-
-                        }
-
-                        LoggerUtils.trace("kieSession.getIdentifier() : " + kieSession.getIdentifier()
-                                + ", kieSession.getFactCount() : " + kieSession.getFactCount());
-
-                    }
-
-                } catch (Exception exp) {
-
-                    logError(exp, "[factId =" + fact.getJobEngineElementID() + "] " + JEMessages.FAILED_TO_UPDATE_FACT,
-                            fact.getJobEngineElementID());
+                } else {
+                    facts.put(fact.getJobEngineElementID(), kieSession.insert(fact));
 
                 }
+
+                LoggerUtils.trace("kieSession.getIdentifier() : " + kieSession.getIdentifier()
+                        + ", kieSession.getFactCount() : " + kieSession.getFactCount());
+
+            } catch (Exception exp) {
+
+                logError(exp, "[factId =" + fact.getJobEngineElementID() + "] " + JEMessages.FAILED_TO_UPDATE_FACT,
+                        fact.getJobEngineElementID());
 
             }
 

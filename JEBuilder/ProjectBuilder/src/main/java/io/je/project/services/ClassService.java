@@ -815,6 +815,12 @@ public class ClassService {
                 JELogger.debug(ID_MSG + JEMessages.CLOSING_SOCKET, LogCategory.DESIGN_MODE,
                         null, LogSubModule.CLASS, null);
 
+                try {
+                    this.removeTopic(MODEL_TOPIC);
+                } catch (Exception e) {
+                    LoggerUtils.logException(e);
+                }
+
                 this.closeSocket();
 
             }

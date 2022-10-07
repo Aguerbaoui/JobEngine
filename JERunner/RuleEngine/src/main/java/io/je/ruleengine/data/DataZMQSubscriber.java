@@ -81,6 +81,19 @@ public class DataZMQSubscriber extends ZMQSubscriber {
             JELogger.debug(ID_MSG + JEMessages.CLOSING_SOCKET,
                     LogCategory.RUNTIME, null, LogSubModule.JERUNNER, null);
 
+            try {
+                Set<String> _topics = this.topics;
+
+                Iterator<String> iterator = _topics.iterator();
+                while (iterator.hasNext()) {
+                    String topic = iterator.next();
+                    this.removeTopic(topic);
+                }
+
+            } catch (Exception e) {
+                LoggerUtils.logException(e);
+            }
+
             this.closeSocket();
 
         }
