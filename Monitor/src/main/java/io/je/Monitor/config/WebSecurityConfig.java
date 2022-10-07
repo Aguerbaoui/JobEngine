@@ -49,9 +49,6 @@ public class WebSecurityConfig {
     HttpFirewall httpFirewall() {
         StrictHttpFirewall firewall = new StrictHttpFirewall();
 
-        // FIXME remove if no more needed
-        firewall.setAllowUrlEncodedDoubleSlash(true);
-
         return firewall;
     }
 
