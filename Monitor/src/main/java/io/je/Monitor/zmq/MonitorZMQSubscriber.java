@@ -75,6 +75,7 @@ public class MonitorZMQSubscriber extends ZMQSubscriber {
                     }
 
                 }
+
             }
 
         } catch (ZMQConnectionFailedException e) {
@@ -94,6 +95,12 @@ public class MonitorZMQSubscriber extends ZMQSubscriber {
 
             JELogger.debug(ID_MSG + JEMessages.CLOSING_SOCKET,
                     LogCategory.MONITOR, null, LogSubModule.JEMONITOR, null);
+
+            try {
+                this.removeTopic(JEMONITOR_TOPIC, ZMQType.BIND);
+            } catch (Exception e) {
+                LoggerUtils.logException(e);
+            }
 
             this.closeSocket();
 

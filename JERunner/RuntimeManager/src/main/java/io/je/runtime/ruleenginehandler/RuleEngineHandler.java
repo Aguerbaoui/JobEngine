@@ -131,7 +131,7 @@ public class RuleEngineHandler {
     }
 
     public static void addEvent(JEEvent event) {
-        RuleEngine.assertFact(event.getJobEngineProjectID(), event);
+        RuleEngine.insertFact(event.getJobEngineProjectID(), event);
 
     }
 
@@ -153,7 +153,7 @@ public class RuleEngineHandler {
 
 
     public static void addVariable(JEVariable variable) {
-        RuleEngine.assertFact(variable.getJobEngineProjectID(), variable);
+        RuleEngine.insertFact(variable.getJobEngineProjectID(), variable);
 
     }
 
