@@ -35,45 +35,40 @@ public class MonitorZMQSubscriber extends ZMQSubscriber {
 
         try {
 
-            // Bug 677: No more data received in Job Engine logs on updating static attribute. Reworks after restarting Job Engine (not Data Model) !
-            synchronized (this.getSubscriberSocket(ZMQType.BIND)) {
+            this.addTopic(JEMONITOR_TOPIC, ZMQType.BIND);
 
-                this.addTopic(JEMONITOR_TOPIC, ZMQType.BIND);
+            JELogger.debug(ID_MSG + "topics : " + this.topics + " : "
+                            + JEMessages.STARTED_LISTENING_FOR_MONITORING_DATA_FROM_THE_JOB_ENGINE,
+                    LogCategory.MONITOR, null, LogSubModule.JEMONITOR, null);
 
-                JELogger.debug(ID_MSG + "topics : " + this.topics + " : "
-                                + JEMessages.STARTED_LISTENING_FOR_MONITORING_DATA_FROM_THE_JOB_ENGINE,
-                        LogCategory.MONITOR, null, LogSubModule.JEMONITOR, null);
+            String data, last_topic = null;
 
-                String data, last_topic = null;
+            while (this.listening) {
 
-                while (this.listening) {
+                data = this.getSubscriberSocket(ZMQType.BIND).recvStr();
 
-                    data = this.getSubscriberSocket(ZMQType.BIND).recvStr();
+                if (data == null) continue;
 
-                    if (data == null) continue;
+                LoggerUtils.debug(ID_MSG + JEMessages.DATA_RECEIVED + data);
 
-                    LoggerUtils.debug(ID_MSG + JEMessages.DATA_RECEIVED + data);
+                // FIXME waiting to have topic in the same response message
+                if (last_topic == null) {
 
-                    // FIXME waiting to have topic in the same response message
-                    if (last_topic == null) {
-
-                        for (String topic : this.topics) {
-                            // Received Data should be equal topic
-                            if (data.equals(topic)) {
-                                last_topic = topic;
-                                break;
-                            }
+                    for (String topic : this.topics) {
+                        // Received Data should be equal topic
+                        if (data.equals(topic)) {
+                            last_topic = topic;
+                            break;
                         }
-
-                    } else {
-
-                        JELogger.debug(ID_MSG + "WebSocketService : send updates : " + data);
-
-                        this.service.sendUpdates(data);
-
-                        last_topic = null;
                     }
 
+                } else {
+
+                    JELogger.debug(ID_MSG + "WebSocketService : send updates : " + data);
+
+                    this.service.sendUpdates(data);
+
+                    last_topic = null;
                 }
 
             }
