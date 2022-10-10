@@ -23,7 +23,7 @@ import java.security.interfaces.RSAPublicKey;
 
 
 /*
- * oauth 2.0 authentication flow interceptor
+ * OAuth 2.0 authentication flow interceptor
  * */
 public class AuthenticationInterceptor implements HandlerInterceptor {
 
@@ -90,4 +90,5 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
         String[] arr = originToken.split(" ");
         return arr[1];
     }
+
 }
