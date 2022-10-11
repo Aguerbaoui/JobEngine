@@ -310,9 +310,9 @@ public class RuleService {
         ruleRepository.save(ruleToUpdate);
     }
 
-    /*
+    /**
      * Update rule status
-     * */
+     */
     public static void updateRuleStatus(JERule rule) {
 
         if (rule.isRunning() || rule.getStatus() == Status.RUNNING_NOT_UP_TO_DATE) {
@@ -335,7 +335,7 @@ public class RuleService {
 
     }
 
-    /*
+    /**
      * update rule : add block to rule
      */
     public String addBlockToRule(BlockModel blockModel) throws AddRuleBlockException, ProjectNotFoundException,
@@ -396,9 +396,9 @@ public class RuleService {
 
     }
 
-    /*
+    /**
      * Check if block format is valid
-     * */
+     */
     public void verifyBlockFormatIsValid(BlockModel blockModel)
             throws AddRuleBlockException, LicenseNotActiveException {
         LicenseProperties.checkLicenseIsActive();
@@ -422,7 +422,7 @@ public class RuleService {
 
     }
 
-    /*
+    /**
      * Retrieve list of all rules that exist in a project.
      */
 
@@ -1086,10 +1086,9 @@ public class RuleService {
             String result = "";
             String baseUrl = smsEagle.get(SMS_URI) + "/http_api/contact_read?access_token=" + smsEagle.get("accountToken") + "&responsetype=xml";
             if (smsEagle.get("accountSID") != null) {
-                baseUrl = smsEagle.get(SMS_URI) + "/http_api/contact_read?login=" + smsEagle.get("accountSID") + "&pass=" + smsEagle.get("accountToken") + "&responsetype=xml" ;
-            }
-            else {
-                baseUrl = smsEagle.get(SMS_URI) + "/http_api/contact_read?access_token=" + smsEagle.get("accountToken") + "&responsetype=xml" ;
+                baseUrl = smsEagle.get(SMS_URI) + "/http_api/contact_read?login=" + smsEagle.get("accountSID") + "&pass=" + smsEagle.get("accountToken") + "&responsetype=xml";
+            } else {
+                baseUrl = smsEagle.get(SMS_URI) + "/http_api/contact_read?access_token=" + smsEagle.get("accountToken") + "&responsetype=xml";
             }
             try {
                 URL url = new URL(baseUrl);
@@ -1127,12 +1126,11 @@ public class RuleService {
             String line;
             String result = "";
             String jsonPrettyPrintString;
-            String  baseUrl;
+            String baseUrl;
             if (smsEagle.get(TWILIO_ACCOUNT_SID) != null) {
-                baseUrl = smsEagle.get(SMS_URI) + "/http_api/group_read?login=" + smsEagle.get(TWILIO_ACCOUNT_SID) + "&pass=" + smsEagle.get(TWILIO_ACCOUNT_TOKEN) + "&responsetype=xml" ;
-            }
-            else {
-                baseUrl = smsEagle.get(SMS_URI) + "/http_api/group_read?access_token=" + smsEagle.get(TWILIO_ACCOUNT_TOKEN) + "&responsetype=xml" ;
+                baseUrl = smsEagle.get(SMS_URI) + "/http_api/group_read?login=" + smsEagle.get(TWILIO_ACCOUNT_SID) + "&pass=" + smsEagle.get(TWILIO_ACCOUNT_TOKEN) + "&responsetype=xml";
+            } else {
+                baseUrl = smsEagle.get(SMS_URI) + "/http_api/group_read?access_token=" + smsEagle.get(TWILIO_ACCOUNT_TOKEN) + "&responsetype=xml";
             }
             try {
                 URL url = new URL(baseUrl);
