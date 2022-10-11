@@ -125,11 +125,11 @@ lock-on-active false
 
         for (Block root : rootBlocks) {
             uRule.getBlocks().resetAllBlocks();
-/*
+
             // TODO better management of font/back-end rule config de-synchronization
             if (!uRule.getRuleFrontConfig().contains("\"block_name\":\"" + root.getBlockName() + "\"")) {
                 continue;
-            }*/
+            }
 
             scriptedRuleId = subRulePrefix + uRule.getJobEngineElementName() + ++scriptedRulesCounter;
 
