@@ -315,7 +315,7 @@ public class ProjectService {
 
                 })
                 .get();
-        // if there are no workflows or rules that built, then project is not built
+        // if there are no workflows or rules that built, then project is built
         //TODO: to check after project mng changes
         if (results.isEmpty()) {
             ProjectRepository.getProject(projectId).setBuilt(true);

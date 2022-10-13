@@ -151,7 +151,7 @@ public class WorkflowService {
         JEWorkflow wf = project.getWorkflowByIdOrName(block.getWorkflowId());
         //check if workflow exists
         if (!project.workflowExists(block.getWorkflowId())) {
-           throw new WorkflowNotFoundException(JEMessages.WORKFLOW_NOT_FOUND);
+            throw new WorkflowNotFoundException(JEMessages.WORKFLOW_NOT_FOUND);
         }
 
         JELogger.debug("[project=" + project.getProjectName() + " ][workflow = " +
@@ -277,7 +277,7 @@ public class WorkflowService {
                 break;
             }
             default: {
-               throw new WorkflowBlockNotFoundException(JEMessages.WORKFLOW_BLOCK_NOT_FOUND);
+                throw new WorkflowBlockNotFoundException(JEMessages.WORKFLOW_BLOCK_NOT_FOUND);
             }
 
 
@@ -721,46 +721,6 @@ public class WorkflowService {
 
     //getSMSBlock
 
-    public SMSBlock getSMSBlock(JEProject project, JEWorkflow wf, WorkflowBlockModel block, boolean update) {
-        SMSBlock SMSBlock = null;
-        if (!update) {
-            SMSBlock = new SMSBlock();
-            SMSBlock.setJobEngineElementName((String) block.getAttributes().get(NAME));
-            SMSBlock.setJobEngineElementID(block.getProjectId());
-            SMSBlock.setWorkflowId(block.getWorkflowId());
-            SMSBlock.setJobEngineElementID(block.getId());
-        } else {
-            SMSBlock = (SMSBlock) wf.getAllBlocks()
-                    .get(block.getId());
-            SMSBlock.setJobEngineElementName((String) block.getAttributes()
-                    .get(NAME));
-            SMSBlock.setJobEngineProjectID(block.getProjectId());
-            SMSBlock.setWorkflowId(block.getWorkflowId());
-            SMSBlock.setJobEngineElementID(block.getId());
-            SMSBlock.setMessage((String) block.getAttributes()
-                    .get(MESSAGE));
-            SMSBlock.setDescription((String) block.getAttributes().get(DESCRIPTION));
-            SMSBlock.setAccountToken((String) block.getAttributes().get(TWILIO_ACCOUNT_TOKEN));
-            SMSBlock.setAccountSID((String) block.getAttributes().get(TWILIO_ACCOUNT_SID));
-            SMSBlock.setSenderPhoneNumber((String) block.getAttributes().get(TWILIO_SENDER_PHONE_NUMBER));
-            SMSBlock.setServerType((String) block.getAttributes().get(SERVER_TYPE));
-            SMSBlock.setTwilioServer((boolean) block.getAttributes().get(TWILIO_SERVER));
-            SMSBlock.setReceiverPhoneNumbers((List<String>) block.getAttributes().get(RECEIVER_PHONE_NUMBERS));
-
-            if (!(boolean) block.getAttributes().get(TWILIO_SERVER)) {
-                SMSBlock.setInputType((String) block.getAttributes()
-                        .get(INPUT_TYPE));
-                SMSBlock.setValidity((String) block.getAttributes().get(VALIDITY));
-                SMSBlock.setModem((String) block.getAttributes().get(MODEM));
-                SMSBlock.setPriority((boolean) block.getAttributes().get(PRIORITY));
-                SMSBlock.setSendAsUnicode((boolean) block.getAttributes().get(SEND_AS_UNICODE));
-                SMSBlock.setSmsType((String) block.getAttributes().get(SMS_EAGLE_TYPE));
-                SMSBlock.setURI((String) block.getAttributes().get(SMS_URI));
-            }
-        }
-        return SMSBlock;
-    }
-
     //get inform block
     public InformBlock getInformBlock(JEProject project, JEWorkflow wf, WorkflowBlockModel block, boolean update) {
         InformBlock informBlock = null;
@@ -832,6 +792,46 @@ public class WorkflowService {
         project.addWorkflowSequenceFlow(workflowId, sourceRef, targetRef, condition);
         workflowRepository.save(project.getWorkflowByIdOrName(workflowId));
 
+    }
+
+    public SMSBlock getSMSBlock(JEProject project, JEWorkflow wf, WorkflowBlockModel block, boolean update) {
+        SMSBlock SMSBlock = null;
+        if (!update) {
+            SMSBlock = new SMSBlock();
+            SMSBlock.setJobEngineElementName((String) block.getAttributes().get(NAME));
+            SMSBlock.setJobEngineElementID(block.getProjectId());
+            SMSBlock.setWorkflowId(block.getWorkflowId());
+            SMSBlock.setJobEngineElementID(block.getId());
+        } else {
+            SMSBlock = (SMSBlock) wf.getAllBlocks()
+                    .get(block.getId());
+            SMSBlock.setJobEngineElementName((String) block.getAttributes()
+                    .get(NAME));
+            SMSBlock.setJobEngineProjectID(block.getProjectId());
+            SMSBlock.setWorkflowId(block.getWorkflowId());
+            SMSBlock.setJobEngineElementID(block.getId());
+            SMSBlock.setMessage((String) block.getAttributes()
+                    .get(MESSAGE));
+            SMSBlock.setDescription((String) block.getAttributes().get(DESCRIPTION));
+            SMSBlock.setAccountToken((String) block.getAttributes().get(TWILIO_ACCOUNT_TOKEN));
+            SMSBlock.setAccountSID((String) block.getAttributes().get(TWILIO_ACCOUNT_SID));
+            SMSBlock.setSenderPhoneNumber((String) block.getAttributes().get(TWILIO_SENDER_PHONE_NUMBER));
+            SMSBlock.setServerType((String) block.getAttributes().get(SERVER_TYPE));
+            SMSBlock.setTwilioServer((boolean) block.getAttributes().get(TWILIO_SERVER));
+            SMSBlock.setReceiverPhoneNumbers((List<String>) block.getAttributes().get(RECEIVER_PHONE_NUMBERS));
+
+            if (!(boolean) block.getAttributes().get(TWILIO_SERVER)) {
+                SMSBlock.setInputType((String) block.getAttributes()
+                        .get(INPUT_TYPE));
+                SMSBlock.setValidity((String) block.getAttributes().get(VALIDITY));
+                SMSBlock.setModem((String) block.getAttributes().get(MODEM));
+                SMSBlock.setPriority((boolean) block.getAttributes().get(PRIORITY));
+                SMSBlock.setSendAsUnicode((boolean) block.getAttributes().get(SEND_AS_UNICODE));
+                SMSBlock.setSmsType((String) block.getAttributes().get(SMS_EAGLE_TYPE));
+                SMSBlock.setURI((String) block.getAttributes().get(SMS_URI));
+            }
+        }
+        return SMSBlock;
     }
 
     public TimerEvent getEmbeddedTimerEvent(WorkflowBlockModel block, Timers timerType) {
@@ -1072,7 +1072,6 @@ public class WorkflowService {
                     .get(NAME))) {
                 throw new WorkflowBlockException(JEMessages.BLOCK_NAME_CAN_T_BE_UPDATED_BECAUSE_IT_ALREADY_EXISTS);
             }
-            project.removeBlockName(block.getId());
             project.addBlockName(block.getId(), (String) block.getAttributes()
                     .get(NAME));
 

@@ -390,6 +390,7 @@ public class JEProject {
         deletedBlockNames.add(blockId);
     }
 
+
     /*
      * Delete a workflow sequence flow
      */

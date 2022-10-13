@@ -472,7 +472,6 @@ public class RuleService {
             if (project.blockNameExists(block.getBlockName())) {
                 throw new AddRuleBlockException(JEMessages.BLOCK_NAME_EXISTS);
             }
-            project.removeBlockName(block.getJobEngineElementID());
             project.addBlockName(blockModel.getBlockId(), block.getBlockName());
 
         }
