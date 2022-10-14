@@ -92,6 +92,11 @@ public class DataZMQSubscriber extends ZMQSubscriber {
 
             this.closeSocket();
 
+            // Restart DataModelListener Thread if end was due to exception
+            if (this.listening) {
+                DataModelListener.initThreadDataZMQSubscriber();
+            }
+
         }
 
     }
