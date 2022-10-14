@@ -31,13 +31,6 @@ public class RuntimeManagerApplication {
         JELogger.debug(JEMessages.RUNNER_STARTED, LogCategory.RUNTIME,
                 null, LogSubModule.JERUNNER, null);
 
-        System.out.println("Runtime.getRuntime().totalMemory() : " + Runtime.getRuntime().totalMemory());
-        System.out.println("Runtime.getRuntime().maxMemory() : " + Runtime.getRuntime().maxMemory());
-        System.out.println("Runtime.getRuntime().freeMemory() : " + Runtime.getRuntime().freeMemory());
-
-        System.out.println("All Stack Traces size : " + (Thread.getAllStackTraces().size()));
-        System.out.println("Current Thread Stack Trace length : " + (Thread.currentThread().getStackTrace().length));
-
         JEClassLoader.getDataModelInstance();
 
     }

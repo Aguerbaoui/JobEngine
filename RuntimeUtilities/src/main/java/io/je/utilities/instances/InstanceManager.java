@@ -104,7 +104,7 @@ public class InstanceManager {
                 var instance = objectMapper.readValue(dataReceived,
                         HashMap.class);
                 var instanceAttributes = (HashMap) instance.get("Payload");
-                //System.out.println(instanceAttributes);
+
                 return instanceAttributes.get(attributeName)
                         .toString();
                 //! old method not working anymore with new datamodel service changes

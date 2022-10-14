@@ -22,7 +22,7 @@ public abstract class ZMQSubscriber implements Runnable {
 
     protected String connectionAddress = null;
 
-    protected Set<String> topics = Collections.synchronizedSet(new HashSet());
+    protected volatile Set<String> topics = Collections.synchronizedSet(new HashSet());
 
     protected volatile boolean listening = true;
 
@@ -43,7 +43,7 @@ public abstract class ZMQSubscriber implements Runnable {
         return getSubscriberSocket(ZMQType.CONNECT);
     }
 
-    protected Socket getSubscriberSocket(ZMQType bindType) throws ZMQConnectionFailedException {
+    protected synchronized Socket getSubscriberSocket(ZMQType bindType) throws ZMQConnectionFailedException {
 
         if (socket == null) {
 
@@ -108,7 +108,7 @@ public abstract class ZMQSubscriber implements Runnable {
         return socket;
     }
 
-    public void closeSocket() {
+    public synchronized void closeSocket() {
         if (socket != null) {
 
             socket.setReceiveTimeOut(0);
@@ -162,6 +162,7 @@ public abstract class ZMQSubscriber implements Runnable {
         getSubscriberSocket().unsubscribe(topic.getBytes());
     }
 
+
     public boolean hasTopic(String topic) {
         return topics.contains(topic);
     }
@@ -198,15 +199,16 @@ public abstract class ZMQSubscriber implements Runnable {
         this.listening = listening;
     }
 
+
 	/*
 
-	public Set<String> getTopics() {
-		return topics;
-	}
+    public Set<String> getTopics() {
+        return topics;
+    }
 
-	public void setTopics(Set<String> topics) {
-		this.topics = topics;
-	}
+    public void setTopics(Set<String> topics) {
+        this.topics = topics;
+    }
 
 	public ZContext getContext() {
 		return context;

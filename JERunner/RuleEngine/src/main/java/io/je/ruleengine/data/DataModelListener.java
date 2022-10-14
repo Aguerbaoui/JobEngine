@@ -94,16 +94,16 @@ public class DataModelListener {
             dataZMQSubscriber = new DataZMQSubscriber("tcp://" + SIOTHConfigUtility.getSiothConfig().getNodes().getSiothMasterNode(),
                     SIOTHConfigUtility.getSiothConfig().getDataModelPORTS().getDmService_PubAddress());
 
-            interruptThread();
-
-            initThread();
+            initThreadDataZMQSubscriber();
 
         }
 
         return dataZMQSubscriber;
     }
 
-    private static void initThread() {
+    public static void initThreadDataZMQSubscriber() {
+
+        interruptThreadDataZMQSubscriber();
 
         threadDataZMQSubscriber = new Thread(dataZMQSubscriber);
 
@@ -113,7 +113,7 @@ public class DataModelListener {
 
     }
 
-    private static void interruptThread() {
+    private static void interruptThreadDataZMQSubscriber() {
 
         if (threadDataZMQSubscriber != null) {
             if (threadDataZMQSubscriber.isAlive()) {
@@ -126,7 +126,7 @@ public class DataModelListener {
 
     public static void close() {
 
-        interruptThread();
+        interruptThreadDataZMQSubscriber();
 
         if (dataZMQSubscriber != null) {
             LoggerUtils.trace("Setting dataZMQSubscriber listening to false.");
@@ -205,8 +205,6 @@ public class DataModelListener {
 
         try {
 
-            //System.err.println("requestInitialValue : value : " + initialValue);
-
             injectData(new JEData(topic, initialValue));
 
         } catch (Exception e) {
@@ -226,8 +224,6 @@ public class DataModelListener {
                 String projectId = null;
 
                 try {
-
-                    //System.err.println("injectData : jeData.getData() : " + jeData.getData());
 
                     instanceData = InstanceManager.createInstance(jeData.getData());
 

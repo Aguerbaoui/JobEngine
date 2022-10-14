@@ -25,49 +25,45 @@ public class DataZMQSubscriber extends ZMQSubscriber {
 
         try {
 
-            // Bug 677: No more data received in Job Engine logs on updating static attribute. Reworks after restarting Job Engine (not Data Model) !
-            synchronized (this.getSubscriberSocket()) {
+            JELogger.debug(ID_MSG + JEMessages.STARTED_LISTENING_FOR_DATA,
+                    LogCategory.RUNTIME, null, LogSubModule.JERUNNER, null);
 
-                JELogger.debug(ID_MSG + JEMessages.STARTED_LISTENING_FOR_DATA,
-                        LogCategory.RUNTIME, null, LogSubModule.JERUNNER, null);
+            String data, last_topic = null;
 
-                String data, last_topic = null;
+            while (this.listening) {
 
-                while (this.listening) {
+                data = this.getSubscriberSocket().recvStr();
 
-                    data = this.getSubscriberSocket().recvStr();
+                if (data == null) {
+                    continue;
+                }
 
-                    if (data == null) {
-                        continue;
-                    }
+                LoggerUtils.debug(ID_MSG + JEMessages.DATA_RECEIVED + data);
 
-                    LoggerUtils.debug(ID_MSG + JEMessages.DATA_RECEIVED + data);
+                // FIXME waiting to have topic in the same response message
+                if (last_topic == null) {
 
-                    // FIXME waiting to have topic in the same response message
-                    if (last_topic == null) {
+                    Set<String> _topics = Set.copyOf(this.topics);
 
-                        Set<String> _topics = this.topics;
-
-                        Iterator<String> iterator = _topics.iterator();
-                        while (iterator.hasNext()) {
-                            String topic = iterator.next();
-                            // Instance case or Class case
-                            if (data.equals(topic) || data.split("#")[0].equals(topic)) {
-                                last_topic = topic;
-                                break;
-                            }
+                    Iterator<String> iterator = _topics.iterator();
+                    while (iterator.hasNext()) {
+                        String topic = iterator.next();
+                        // Instance case or Class case
+                        if (data.equals(topic) || data.split("#")[0].equals(topic)) {
+                            last_topic = topic;
+                            break;
                         }
-
-                    } else {
-
-                        DataModelListener.injectData(new JEData(last_topic, data));
-
-                        last_topic = null;
                     }
 
+                } else {
+
+                    DataModelListener.injectData(new JEData(last_topic, data));
+
+                    last_topic = null;
                 }
 
             }
+
 
         } catch (Exception exp) {
 
@@ -82,12 +78,12 @@ public class DataZMQSubscriber extends ZMQSubscriber {
                     LogCategory.RUNTIME, null, LogSubModule.JERUNNER, null);
 
             try {
-                Set<String> _topics = this.topics;
+
+                Set<String> _topics = Set.copyOf(this.topics);
 
                 Iterator<String> iterator = _topics.iterator();
                 while (iterator.hasNext()) {
-                    String topic = iterator.next();
-                    this.removeTopic(topic);
+                    this.removeTopic(iterator.next());
                 }
 
             } catch (Exception e) {
@@ -95,6 +91,11 @@ public class DataZMQSubscriber extends ZMQSubscriber {
             }
 
             this.closeSocket();
+
+            // Restart DataModelListener Thread if end was due to exception
+            if (this.listening) {
+                DataModelListener.initThreadDataZMQSubscriber();
+            }
 
         }
 

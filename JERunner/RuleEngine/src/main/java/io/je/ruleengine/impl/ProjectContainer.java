@@ -284,6 +284,7 @@ public class ProjectContainer {
 
                 for (String topic : topics) {
 
+                    // FIXME could add stop requests in case rule stopped and topic list in big
                     requestInitialValue(topic);
 
                 }
