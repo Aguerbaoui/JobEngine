@@ -73,9 +73,10 @@ public class APIConstants {
 
     public static final String SHUT_DOWN_RULE_ENGINE = "/rule/shutDownRuleEngine";
 
-
     public static final String UPDATE_CONFIG = "/updateConfig";
 
     public static final String INFORM_USER = "/jeproject/informUser";
+
     public static final String SEND_LOG = "/jeproject/sendLog";
+
 }
