@@ -60,7 +60,7 @@ public class SetterBlock extends ExecutionBlock {
     public SetterBlock(BlockModel blockModel) {
         super(blockModel);
         try {
-            isGeneric = (boolean) blockModel.getBlockConfiguration().getOrDefault("isGeneric", null); // FIXME not sent
+            isGeneric = (boolean) blockModel.getBlockConfiguration().getOrDefault("isGeneric", false); // FIXME not sent for Variable
             // FIXME manage other variables default value
             ignoreWriteIfSameValue = (boolean) blockModel.getBlockConfiguration().get("ignoreWriteIfSameValue");
         } catch (Exception e) {
