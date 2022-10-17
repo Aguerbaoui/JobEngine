@@ -11,7 +11,7 @@ import static io.je.utilities.constants.JEMessages.EXCEPTION_OCCURRED_WHILE_INIT
 /*
  * Block used to writing in an instance's attribute (from DM)
  * source : previous block
- * operation id : 5003
+ * operation id : 5006
  */
 public class SetVariableBlock extends ExecutionBlock {
 

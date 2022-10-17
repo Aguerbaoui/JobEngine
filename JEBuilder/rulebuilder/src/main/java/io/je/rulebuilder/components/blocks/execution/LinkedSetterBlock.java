@@ -38,7 +38,7 @@ public class LinkedSetterBlock extends ExecutionBlock {
         }
 
         try {
-            isGeneric = (boolean) blockModel.getBlockConfiguration().get("isGeneric");
+            isGeneric = (boolean) blockModel.getBlockConfiguration().getOrDefault("isGeneric", null); // FIXME is sent?
             classId = (String) blockModel.getBlockConfiguration().get(AttributesMapping.CLASSID);
             classPath = (String) blockModel.getBlockConfiguration().get(AttributesMapping.CLASSNAME);
             destinationAttributeName = (String) blockModel.getBlockConfiguration().get(AttributesMapping.ATTRIBUTENAME);

@@ -136,6 +136,7 @@ public class BlockGenerator {
             case 5004:
                 return new AttachedSetterBlock(blockModel);
             case 5005:
+            case 5006: // TODO SetVariableBlock
                 return new SetterBlock(blockModel);
             case 5007:
                 return new LinkedVariableSetterBlock(blockModel);
