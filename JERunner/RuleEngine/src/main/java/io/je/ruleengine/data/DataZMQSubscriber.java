@@ -34,11 +34,12 @@ public class DataZMQSubscriber extends ZMQSubscriber {
 
                 data = this.getSubscriberSocket().recvStr();
 
+                // This trace serve to detect if this thread is still running or interrupted
+                LoggerUtils.trace(ID_MSG + JEMessages.DATA_RECEIVED + data);
+
                 if (data == null) {
                     continue;
                 }
-
-                LoggerUtils.debug(ID_MSG + JEMessages.DATA_RECEIVED + data);
 
                 // FIXME waiting to have topic in the same response message
                 if (last_topic == null) {

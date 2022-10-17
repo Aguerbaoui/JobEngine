@@ -178,8 +178,6 @@ public class DataModelListener {
                         LogCategory.RUNTIME, null, LogSubModule.JERUNNER, null);
             }
 
-            Thread thread = new Thread(() -> requestInitialValue(topic));
-            thread.start();
         }
 
     }

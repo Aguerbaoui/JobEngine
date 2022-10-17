@@ -99,10 +99,6 @@ public class RuntimeDispatcher {
             // Run rules
             RuleEngineHandler.startProjectRuleEngine(projectId); // FIXME should launch all rules not just rule engine
 
-            // Add variables
-            for (JEVariable variable : VariableManager.getAllVariables(projectId)) {
-                RuleEngineHandler.addVariable(variable);
-            }
 
         } catch (JEException e) {
             LoggerUtils.logException(e);
@@ -446,12 +442,13 @@ public class RuntimeDispatcher {
         }
     }
 
-    // add variable to runner
+    // Add variable to runner
     public void addVariable(VariableModel variableModel) throws VariableException {
         JELogger.debug(
                 "[project = " + variableModel.getProjectName() + "] [variable = " + variableModel.getName() + "]"
                         + JEMessages.ADDING_VARIABLE,
                 LogCategory.RUNTIME, variableModel.getProjectId(), LogSubModule.VARIABLE, variableModel.getId());
+
         JEVariable var = new JEVariable(variableModel.getId(), variableModel.getProjectId(), variableModel.getName(),
                 variableModel.getType(), variableModel.getInitialValue(), variableModel.getDescription(),
                 variableModel.getCreatedBy(), variableModel.getModifiedBy());
@@ -461,6 +458,7 @@ public class RuntimeDispatcher {
         // JEStringSubstitutor.addVariable(var.getJobEngineProjectID(), var.getName(),
         // (String) var.getValue());
         VariableManager.addVariable(var);
+
         RuleEngineHandler.addVariable(var);
 
     }
@@ -505,10 +503,6 @@ public class RuntimeDispatcher {
 
         RuleEngineHandler.startProjectRuleEngine(projectId);
 
-        for (JEVariable variable : VariableManager.getAllVariables(projectId)) {
-            RuleEngineHandler.addVariable(variable);
-        }
-
     }
 
     public void runRuleEngine(String projectId) throws RulesNotFiredException, RuleBuildFailedException {
@@ -516,10 +510,6 @@ public class RuntimeDispatcher {
         projectStatus.put(projectId, true);
 
         RuleEngineHandler.startProjectRuleEngine(projectId);
-
-        for (JEVariable variable : VariableManager.getAllVariables(projectId)) {
-            RuleEngineHandler.addVariable(variable);
-        }
 
     }
 

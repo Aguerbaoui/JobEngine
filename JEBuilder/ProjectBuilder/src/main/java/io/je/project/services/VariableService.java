@@ -93,6 +93,7 @@ public class VariableService {
         JELogger.debug(JEMessages.SENDING_VARIABLE_TO_RUNNER,
                 LogCategory.DESIGN_MODE, variable.getJobEngineProjectID(),
                 LogSubModule.VARIABLE, variable.getJobEngineElementID());
+        
         JERunnerAPIHandler.addVariable(variable.getJobEngineProjectID(), variable.getJobEngineElementID(), new VariableModel(variable));
 
     }
@@ -107,6 +108,7 @@ public class VariableService {
         JELogger.debug(JEMessages.ADDING_VARIABLE,
                 LogCategory.DESIGN_MODE, variableModel.getProjectId(),
                 LogSubModule.VARIABLE, variableModel.getId());
+
         JEProject project = projectService.getProjectById(variableModel.getProjectId());
         if (project == null) {
             throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
@@ -146,6 +148,7 @@ public class VariableService {
         JELogger.debug(JEMessages.DELETING_VARIABLE,
                 LogCategory.DESIGN_MODE, projectId,
                 LogSubModule.VARIABLE, varId);
+
         JEProject project = projectService.getProjectById(projectId);
         if (project == null) {
             throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
@@ -172,9 +175,10 @@ public class VariableService {
 
         LicenseProperties.checkLicenseIsActive();
 
-        JELogger.debug(JEMessages.ADDING_VARIABLE,
+        JELogger.debug(JEMessages.UPDATING_VARIABLE,
                 LogCategory.DESIGN_MODE, variableModel.getProjectId(),
                 LogSubModule.VARIABLE, variableModel.getId());
+
         JEProject project = projectService.getProjectById(variableModel.getProjectId());
         if (project == null) {
             throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);

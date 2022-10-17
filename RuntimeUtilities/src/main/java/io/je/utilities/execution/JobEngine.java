@@ -424,7 +424,7 @@ public class JobEngine {
         InstanceManager.writeToDataModelInstance(instanceId, attributeName, attributeValue, false);
     }
 
-
+/*
     public static void main(String... args) throws IOException {
 
         sendLogMessage("test", "DM", LogLevel.INFORM, "testwf",
@@ -473,8 +473,8 @@ public class JobEngine {
         testString = (String) JobEngine.getVariable("test", "testVarLong");
         JobEngine.informUser(testString, "test", "testScriptTwo");
         System.out.println(testString);
-        System.exit(0);*/
-/*
+        System.exit(0);
+
         //String requestUrl = SIOTHConfigUtility.getSiothConfig().getJobEngine().getJeBuilder() + INFORM_USER;
         //JobEngine.sendLogMessage("ora", "test", LogLevel.Inform, "none", LogCategory.RUNTIME, LogSubModule.JERUNNER);
         //JobEngine.informUser("ora", "test");
@@ -518,9 +518,11 @@ public class JobEngine {
             }
         } catch (Exception e) {
             e.printStackTrace();
-        }*/
+        }*//*
         //System.out.println(requestUrl);
     }
+*/
+
 }
 
 

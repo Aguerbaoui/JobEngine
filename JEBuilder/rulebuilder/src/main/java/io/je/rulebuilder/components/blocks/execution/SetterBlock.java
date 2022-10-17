@@ -27,7 +27,7 @@ public class SetterBlock extends ExecutionBlock {
 
 
     //SOURCE
-    ValueType sourceType; //ATTRIBUTE/STATIC/VARIBLE
+    ValueType sourceType; //ATTRIBUTE/STATIC/VARIABLE
 
     //static
     Object value;
@@ -54,13 +54,14 @@ public class SetterBlock extends ExecutionBlock {
     String destinationVariableId;
     //Constants
     String executionerMethod = "Executioner.writeToInstance(";
-    boolean isGeneric;  //to be added
+    boolean isGeneric;  //TODO to be added
     boolean ignoreWriteIfSameValue = true;
 
     public SetterBlock(BlockModel blockModel) {
         super(blockModel);
         try {
-            isGeneric = (boolean) blockModel.getBlockConfiguration().get("isGeneric");
+            isGeneric = (boolean) blockModel.getBlockConfiguration().getOrDefault("isGeneric", null); // FIXME not sent
+            // FIXME manage other variables default value
             ignoreWriteIfSameValue = (boolean) blockModel.getBlockConfiguration().get("ignoreWriteIfSameValue");
         } catch (Exception e) {
             JELogger.logException(e);

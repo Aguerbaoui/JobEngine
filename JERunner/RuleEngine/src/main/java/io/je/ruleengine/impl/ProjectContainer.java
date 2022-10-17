@@ -1,9 +1,11 @@
 package io.je.ruleengine.impl;
 
+import io.je.project.variables.VariableManager;
 import io.je.ruleengine.control.PersistenceMap;
 import io.je.ruleengine.data.DataModelListener;
 import io.je.ruleengine.loader.RuleLoader;
 import io.je.ruleengine.models.Rule;
+import io.je.utilities.beans.JEVariable;
 import io.je.utilities.classloader.JEClassLoader;
 import io.je.utilities.config.ConfigurationConstants;
 import io.je.utilities.constants.JEMessages;
@@ -280,17 +282,17 @@ public class ProjectContainer {
 
             Set<String> topics = DataModelListener.getTopicsByProjectId(projectId);
 
-            Thread thread = new Thread(() -> {
+            for (String topic : topics) {
 
-                for (String topic : topics) {
+                // FIXME could add stop requests in case rule stopped (especially that topics list could be big)
+                (new Thread(() -> requestInitialValue(topic))).start();
 
-                    // FIXME could add stop requests in case rule stopped and topic list in big
-                    requestInitialValue(topic);
+            }
 
-                }
-            });
-
-            thread.start();
+            // Add variables
+            for (JEVariable variable : VariableManager.getAllVariables(projectId)) {
+                insertFact(variable);
+            }
 
         } catch (Exception exp) {
 
