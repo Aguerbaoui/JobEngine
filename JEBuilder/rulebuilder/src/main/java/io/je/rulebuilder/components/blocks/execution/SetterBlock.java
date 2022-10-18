@@ -26,25 +26,26 @@ import static io.je.utilities.constants.JEMessages.EXCEPTION_OCCURRED_WHILE_INIT
 public class SetterBlock extends ExecutionBlock {
 
 
-    //SOURCE
+    // SOURCE
     ValueType sourceType; //ATTRIBUTE/STATIC/VARIABLE
 
-    //static
+    // Static
     Object value;
 
-    //variable
+    // Variable
     String sourceVariableId;
 
-    //DM
+    // DM
     String sourceClassName;
     String sourceInstanceId;
     String sourceAttributeName;
-    //SOURCE
+    // SOURCE
     Block linkedBlock;
     String sourceLinkedBlockId;
     String sourceGetterAttributeName;
-    ValueType destinationType; //ATTRIBUTE/VARIBLE
-    //DESTINATION
+    // ATTRIBUTE/VARIABLE
+    ValueType destinationType;
+    // DESTINATION
     List<String> destinationInstancesId;
     String destinationAttributeName;
     String destinationAttributeType;
@@ -61,8 +62,7 @@ public class SetterBlock extends ExecutionBlock {
         super(blockModel);
         try {
             isGeneric = (boolean) blockModel.getBlockConfiguration().getOrDefault("isGeneric", false); // FIXME not sent for Variable
-            // FIXME manage other variables default value
-            ignoreWriteIfSameValue = (boolean) blockModel.getBlockConfiguration().get("ignoreWriteIfSameValue");
+            ignoreWriteIfSameValue = (boolean) blockModel.getBlockConfiguration().getOrDefault("ignoreWriteIfSameValue", true);
         } catch (Exception e) {
             JELogger.logException(e);
         }
@@ -71,35 +71,34 @@ public class SetterBlock extends ExecutionBlock {
             //source configuration
 
             //source type
-            sourceType = ValueType.valueOf((String) blockModel.getBlockConfiguration().get("sourceValueType"));
+            sourceType = ValueType.valueOf((String) blockModel.getBlockConfiguration().getOrDefault("sourceValueType", ""));
 
             //if source data model
-            sourceClassName = (String) blockModel.getBlockConfiguration().get("class_name");
-            sourceAttributeName = (String) blockModel.getBlockConfiguration().get("attribute_name");
-            sourceInstanceId = (String) blockModel.getBlockConfiguration().get("sourceInstance");
+            sourceClassName = (String) blockModel.getBlockConfiguration().getOrDefault("class_name", "");
+            sourceAttributeName = (String) blockModel.getBlockConfiguration().getOrDefault("attribute_name", "");
+            sourceInstanceId = (String) blockModel.getBlockConfiguration().getOrDefault("sourceInstance", "");
             sourceGetterAttributeName = (String) blockModel.getBlockConfiguration()
-                    .get(SOURCE_GETTER_ATTRIBUTE_NAME);
+                    .getOrDefault(SOURCE_GETTER_ATTRIBUTE_NAME, "");
             sourceLinkedBlockId = (String) blockModel.getBlockConfiguration()
-                    .get(SOURCE_LINKED_BLOCK_ID);
+                    .getOrDefault(SOURCE_LINKED_BLOCK_ID, "");
             //if source variable
-            sourceVariableId = (String) blockModel.getBlockConfiguration().get("sourceVariable");
+            sourceVariableId = (String) blockModel.getBlockConfiguration().getOrDefault("sourceVariable", "");
 
-            value = blockModel.getBlockConfiguration().get("newValue");
+            value = blockModel.getBlockConfiguration().getOrDefault("newValue", "");
             //destination configuration
 
-            destinationType = ValueType.valueOf((String) blockModel.getBlockConfiguration().get("destinationType"));
+            destinationType = ValueType.valueOf((String) blockModel.getBlockConfiguration().getOrDefault("destinationType", ""));
 
-
-            destinationAttributeName = (String) blockModel.getBlockConfiguration().get("destinationAttributeName");
+            destinationAttributeName = (String) blockModel.getBlockConfiguration().getOrDefault("destinationAttributeName", "");
 
             if (blockModel.getBlockConfiguration().containsKey(AttributesMapping.SPECIFICINSTANCES)) {
-                destinationInstancesId = (List<String>) blockModel.getBlockConfiguration().get(AttributesMapping.SPECIFICINSTANCES);
+                destinationInstancesId = (List<String>) blockModel.getBlockConfiguration().getOrDefault(AttributesMapping.SPECIFICINSTANCES, "");
             }
 
-            destinationClassName = (String) blockModel.getBlockConfiguration().get("destinationClassName");
-            destinationAttributeType = (String) blockModel.getBlockConfiguration().get("destinationAttributeType");
-            destinationVariableId = (String) blockModel.getBlockConfiguration().get("destinationVariableId");
-            destinationClassId = (String) blockModel.getBlockConfiguration().get("destinationClassId");
+            destinationClassName = (String) blockModel.getBlockConfiguration().getOrDefault("destinationClassName", "");
+            destinationAttributeType = (String) blockModel.getBlockConfiguration().getOrDefault("destinationAttributeType", "");
+            destinationVariableId = (String) blockModel.getBlockConfiguration().getOrDefault("destinationVariableId", "");
+            destinationClassId = (String) blockModel.getBlockConfiguration().getOrDefault("destinationClassId", "");
 
             isProperlyConfigured = true;
             misConfigurationCause = "";
