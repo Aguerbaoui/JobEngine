@@ -5,6 +5,7 @@ import io.je.rulebuilder.models.BlockModel;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.log.JELogger;
 
+import static io.je.rulebuilder.config.Constants.IGNORE_WRITE_IF_SAME_VALUE_DEFAULT_VALUE;
 import static io.je.utilities.constants.JEMessages.EXCEPTION_OCCURRED_WHILE_INITIALIZE;
 
 /*
@@ -23,12 +24,13 @@ public class LinkedVariableSetterBlock extends ExecutionBlock {
     public LinkedVariableSetterBlock(BlockModel blockModel) {
         super(blockModel);
         try {
-            ignoreWriteIfSameValue = (boolean) blockModel.getBlockConfiguration().get("ignoreWriteIfSameValue");
+            ignoreWriteIfSameValue = (boolean) blockModel.getBlockConfiguration().getOrDefault("ignoreWriteIfSameValue",
+                    IGNORE_WRITE_IF_SAME_VALUE_DEFAULT_VALUE);
         } catch (Exception e) {
             JELogger.logException(e);
         }
         try {
-            variableId = (String) blockModel.getBlockConfiguration().get("variableId");
+            variableId = (String) blockModel.getBlockConfiguration().getOrDefault("variableId", "");
 
             isProperlyConfigured = true;
             misConfigurationCause = "";
@@ -60,7 +62,6 @@ public class LinkedVariableSetterBlock extends ExecutionBlock {
                 + ", " + "\"" + blockName + "\","
                 + this.ignoreWriteIfSameValue
                 + ");\r\n";
-
 
     }
 

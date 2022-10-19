@@ -15,6 +15,8 @@ import java.util.List;
 
 import static io.je.rulebuilder.config.AttributesMapping.SOURCE_GETTER_ATTRIBUTE_NAME;
 import static io.je.rulebuilder.config.AttributesMapping.SOURCE_LINKED_BLOCK_ID;
+import static io.je.rulebuilder.config.Constants.IGNORE_WRITE_IF_SAME_VALUE_DEFAULT_VALUE;
+import static io.je.rulebuilder.config.Constants.IS_CLASS_ALL_INSTANCES_DEFAULT_VALUE;
 import static io.je.utilities.constants.JEMessages.EXCEPTION_OCCURRED_WHILE_INITIALIZE;
 
 /**
@@ -26,43 +28,45 @@ import static io.je.utilities.constants.JEMessages.EXCEPTION_OCCURRED_WHILE_INIT
 public class SetterBlock extends ExecutionBlock {
 
 
-    //SOURCE
+    // SOURCE
     ValueType sourceType; //ATTRIBUTE/STATIC/VARIABLE
 
-    //static
+    // Static
     Object value;
 
-    //variable
+    // Variable
     String sourceVariableId;
 
-    //DM
+    // DM
     String sourceClassName;
     String sourceInstanceId;
     String sourceAttributeName;
-    //SOURCE
+    // SOURCE
     Block linkedBlock;
     String sourceLinkedBlockId;
     String sourceGetterAttributeName;
-    ValueType destinationType; //ATTRIBUTE/VARIBLE
-    //DESTINATION
+    // ATTRIBUTE/VARIABLE
+    ValueType destinationType;
+    // DESTINATION
     List<String> destinationInstancesId;
     String destinationAttributeName;
     String destinationAttributeType;
     String destinationClassName;
-    String destinationClassId; //to be added
+    String destinationClassId; //TODO to be added
     //variable
     String destinationVariableId;
     //Constants
     String executionerMethod = "Executioner.writeToInstance(";
     boolean isGeneric;  //TODO to be added
-    boolean ignoreWriteIfSameValue = true;
+    boolean ignoreWriteIfSameValue = IGNORE_WRITE_IF_SAME_VALUE_DEFAULT_VALUE;
 
     public SetterBlock(BlockModel blockModel) {
         super(blockModel);
         try {
-            isGeneric = (boolean) blockModel.getBlockConfiguration().getOrDefault("isGeneric", null); // FIXME not sent
-            // FIXME manage other variables default value
-            ignoreWriteIfSameValue = (boolean) blockModel.getBlockConfiguration().get("ignoreWriteIfSameValue");
+            isGeneric = (boolean) blockModel.getBlockConfiguration().getOrDefault("isGeneric",
+                    IS_CLASS_ALL_INSTANCES_DEFAULT_VALUE); // FIXME not sent for Variable
+            ignoreWriteIfSameValue = (boolean) blockModel.getBlockConfiguration().getOrDefault("ignoreWriteIfSameValue",
+                    IGNORE_WRITE_IF_SAME_VALUE_DEFAULT_VALUE);
         } catch (Exception e) {
             JELogger.logException(e);
         }
@@ -71,35 +75,34 @@ public class SetterBlock extends ExecutionBlock {
             //source configuration
 
             //source type
-            sourceType = ValueType.valueOf((String) blockModel.getBlockConfiguration().get("sourceValueType"));
+            sourceType = ValueType.valueOf((String) blockModel.getBlockConfiguration().getOrDefault("sourceValueType", ""));
 
             //if source data model
-            sourceClassName = (String) blockModel.getBlockConfiguration().get("class_name");
-            sourceAttributeName = (String) blockModel.getBlockConfiguration().get("attribute_name");
-            sourceInstanceId = (String) blockModel.getBlockConfiguration().get("sourceInstance");
+            sourceClassName = (String) blockModel.getBlockConfiguration().getOrDefault("class_name", "");
+            sourceAttributeName = (String) blockModel.getBlockConfiguration().getOrDefault("attribute_name", "");
+            sourceInstanceId = (String) blockModel.getBlockConfiguration().getOrDefault("sourceInstance", "");
             sourceGetterAttributeName = (String) blockModel.getBlockConfiguration()
-                    .get(SOURCE_GETTER_ATTRIBUTE_NAME);
+                    .getOrDefault(SOURCE_GETTER_ATTRIBUTE_NAME, "");
             sourceLinkedBlockId = (String) blockModel.getBlockConfiguration()
-                    .get(SOURCE_LINKED_BLOCK_ID);
+                    .getOrDefault(SOURCE_LINKED_BLOCK_ID, "");
             //if source variable
-            sourceVariableId = (String) blockModel.getBlockConfiguration().get("sourceVariable");
+            sourceVariableId = (String) blockModel.getBlockConfiguration().getOrDefault("sourceVariable", "");
 
             value = blockModel.getBlockConfiguration().get("newValue");
             //destination configuration
 
-            destinationType = ValueType.valueOf((String) blockModel.getBlockConfiguration().get("destinationType"));
+            destinationType = ValueType.valueOf((String) blockModel.getBlockConfiguration().getOrDefault("destinationType", ""));
 
-
-            destinationAttributeName = (String) blockModel.getBlockConfiguration().get("destinationAttributeName");
+            destinationAttributeName = (String) blockModel.getBlockConfiguration().getOrDefault("destinationAttributeName", "");
 
             if (blockModel.getBlockConfiguration().containsKey(AttributesMapping.SPECIFICINSTANCES)) {
-                destinationInstancesId = (List<String>) blockModel.getBlockConfiguration().get(AttributesMapping.SPECIFICINSTANCES);
+                destinationInstancesId = (List<String>) blockModel.getBlockConfiguration().getOrDefault(AttributesMapping.SPECIFICINSTANCES, "");
             }
 
-            destinationClassName = (String) blockModel.getBlockConfiguration().get("destinationClassName");
-            destinationAttributeType = (String) blockModel.getBlockConfiguration().get("destinationAttributeType");
-            destinationVariableId = (String) blockModel.getBlockConfiguration().get("destinationVariableId");
-            destinationClassId = (String) blockModel.getBlockConfiguration().get("destinationClassId");
+            destinationClassName = (String) blockModel.getBlockConfiguration().getOrDefault("destinationClassName", "");
+            destinationAttributeType = (String) blockModel.getBlockConfiguration().getOrDefault("destinationAttributeType", "");
+            destinationVariableId = (String) blockModel.getBlockConfiguration().getOrDefault("destinationVariableId", "");
+            destinationClassId = (String) blockModel.getBlockConfiguration().getOrDefault("destinationClassId", "");
 
             isProperlyConfigured = true;
             misConfigurationCause = "";
