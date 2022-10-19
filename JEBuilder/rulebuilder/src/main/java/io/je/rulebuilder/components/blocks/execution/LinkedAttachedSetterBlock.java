@@ -7,6 +7,7 @@ import io.je.rulebuilder.models.ValueType;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.log.JELogger;
 
+import static io.je.rulebuilder.config.Constants.IGNORE_WRITE_IF_SAME_VALUE_DEFAULT_VALUE;
 import static io.je.utilities.constants.JEMessages.EXCEPTION_OCCURRED_WHILE_INITIALIZE;
 
 /*
@@ -20,7 +21,7 @@ public class LinkedAttachedSetterBlock extends ExecutionBlock {
     //SOURCE
     ValueType sourceType; //Static , Dynamic
 
-    //static
+    //Static
     Object value;
 
 
@@ -28,7 +29,7 @@ public class LinkedAttachedSetterBlock extends ExecutionBlock {
     String getterName;
     String destinationAttributeName;
 
-    boolean ignoreWriteIfSameValue = true;
+    boolean ignoreWriteIfSameValue = IGNORE_WRITE_IF_SAME_VALUE_DEFAULT_VALUE;
     //Constants
     String executionerMethod = "Executioner.writeToInstance(";
 
@@ -37,14 +38,15 @@ public class LinkedAttachedSetterBlock extends ExecutionBlock {
         super(blockModel);
 
         try {
-            ignoreWriteIfSameValue = (boolean) blockModel.getBlockConfiguration().get("ignoreWriteIfSameValue");
+            ignoreWriteIfSameValue = (boolean) blockModel.getBlockConfiguration().getOrDefault("ignoreWriteIfSameValue",
+                    IGNORE_WRITE_IF_SAME_VALUE_DEFAULT_VALUE);
         } catch (Exception e) {
             JELogger.logException(e);
         }
         try {
             value = blockModel.getBlockConfiguration().get(AttributesMapping.NEWVALUE);
-            destinationAttributeName = (String) blockModel.getBlockConfiguration().get(AttributesMapping.DESTINATION_ATTRIBUTE_NAME);
-            getterName = (String) blockModel.getBlockConfiguration().get(AttributesMapping.LINKED_GETTER_NAME);
+            destinationAttributeName = (String) blockModel.getBlockConfiguration().getOrDefault(AttributesMapping.DESTINATION_ATTRIBUTE_NAME, "");
+            getterName = (String) blockModel.getBlockConfiguration().getOrDefault(AttributesMapping.LINKED_GETTER_NAME, "");
             isProperlyConfigured = true;
             if (inputBlockIds.size() != 1) {
                 isProperlyConfigured = false;

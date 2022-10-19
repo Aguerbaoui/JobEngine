@@ -13,6 +13,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import static io.je.rulebuilder.config.AttributesMapping.SOURCE_GETTER_ATTRIBUTE_NAME;
 import static io.je.rulebuilder.config.AttributesMapping.SOURCE_LINKED_BLOCK_ID;
+import static io.je.rulebuilder.config.Constants.IGNORE_WRITE_IF_SAME_VALUE_DEFAULT_VALUE;
 import static io.je.utilities.constants.JEMessages.EXCEPTION_OCCURRED_WHILE_INITIALIZE;
 
 /*
@@ -42,7 +43,7 @@ public class AttachedSetterBlock extends ExecutionBlock {
     //DESTINATION
     String getterName;
     String destinationAttributeName;
-    boolean ignoreWriteIfSameValue = true;
+    boolean ignoreWriteIfSameValue = IGNORE_WRITE_IF_SAME_VALUE_DEFAULT_VALUE;
     //Constants
     String executionerMethod = "Executioner.writeToInstance(";
 
@@ -51,14 +52,14 @@ public class AttachedSetterBlock extends ExecutionBlock {
 
         try {
             ignoreWriteIfSameValue = (boolean) blockModel.getBlockConfiguration()
-                    .getOrDefault("ignoreWriteIfSameValue", true);
+                    .getOrDefault("ignoreWriteIfSameValue", IGNORE_WRITE_IF_SAME_VALUE_DEFAULT_VALUE);
         } catch (Exception e) {
             JELogger.logException(e);
         }
 
         try {
             value = blockModel.getBlockConfiguration()
-                    .getOrDefault(AttributesMapping.NEWVALUE, "");
+                    .get(AttributesMapping.NEWVALUE);
             sourceType = ValueType.valueOf((String) blockModel.getBlockConfiguration()
                     .getOrDefault(AttributesMapping.SOURCE_VALUE_TYPE, ""));
             destinationAttributeName = (String) blockModel.getBlockConfiguration()

@@ -15,6 +15,8 @@ import java.util.List;
 
 import static io.je.rulebuilder.config.AttributesMapping.SOURCE_GETTER_ATTRIBUTE_NAME;
 import static io.je.rulebuilder.config.AttributesMapping.SOURCE_LINKED_BLOCK_ID;
+import static io.je.rulebuilder.config.Constants.IGNORE_WRITE_IF_SAME_VALUE_DEFAULT_VALUE;
+import static io.je.rulebuilder.config.Constants.IS_CLASS_ALL_INSTANCES_DEFAULT_VALUE;
 import static io.je.utilities.constants.JEMessages.EXCEPTION_OCCURRED_WHILE_INITIALIZE;
 
 /**
@@ -50,19 +52,21 @@ public class SetterBlock extends ExecutionBlock {
     String destinationAttributeName;
     String destinationAttributeType;
     String destinationClassName;
-    String destinationClassId; //to be added
+    String destinationClassId; //TODO to be added
     //variable
     String destinationVariableId;
     //Constants
     String executionerMethod = "Executioner.writeToInstance(";
     boolean isGeneric;  //TODO to be added
-    boolean ignoreWriteIfSameValue = true;
+    boolean ignoreWriteIfSameValue = IGNORE_WRITE_IF_SAME_VALUE_DEFAULT_VALUE;
 
     public SetterBlock(BlockModel blockModel) {
         super(blockModel);
         try {
-            isGeneric = (boolean) blockModel.getBlockConfiguration().getOrDefault("isGeneric", false); // FIXME not sent for Variable
-            ignoreWriteIfSameValue = (boolean) blockModel.getBlockConfiguration().getOrDefault("ignoreWriteIfSameValue", true);
+            isGeneric = (boolean) blockModel.getBlockConfiguration().getOrDefault("isGeneric",
+                    IS_CLASS_ALL_INSTANCES_DEFAULT_VALUE); // FIXME not sent for Variable
+            ignoreWriteIfSameValue = (boolean) blockModel.getBlockConfiguration().getOrDefault("ignoreWriteIfSameValue",
+                    IGNORE_WRITE_IF_SAME_VALUE_DEFAULT_VALUE);
         } catch (Exception e) {
             JELogger.logException(e);
         }
@@ -84,7 +88,7 @@ public class SetterBlock extends ExecutionBlock {
             //if source variable
             sourceVariableId = (String) blockModel.getBlockConfiguration().getOrDefault("sourceVariable", "");
 
-            value = blockModel.getBlockConfiguration().getOrDefault("newValue", "");
+            value = blockModel.getBlockConfiguration().get("newValue");
             //destination configuration
 
             destinationType = ValueType.valueOf((String) blockModel.getBlockConfiguration().getOrDefault("destinationType", ""));
