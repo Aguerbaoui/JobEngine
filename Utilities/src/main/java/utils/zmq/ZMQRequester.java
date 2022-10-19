@@ -17,7 +17,6 @@ public class ZMQRequester {
 
     private String connectionAddress;
 
-    //private int requestCounter = 0;
 
     public ZMQRequester(String url, int requesterPort) {
         this.url = url;
@@ -39,31 +38,36 @@ public class ZMQRequester {
 
             LoggerUtils.info("ZMQ requester : Attempting to connect to address : " + connectionAddress);
 
-            context.setRcvHWM(ZMQConfiguration.RECEIVE_HIGH_WATERMARK);
-            context.setSndHWM(ZMQConfiguration.SEND_HIGH_WATERMARK);
 
             try {
 
+                context.setRcvHWM(ZMQConfiguration.RECEIVE_HIGH_WATERMARK);
+                context.setSndHWM(ZMQConfiguration.SEND_HIGH_WATERMARK);
+
                 socket = context.createSocket(SocketType.REQ);
 
-                socket.setHeartbeatTimeout(ZMQConfiguration.HEARTBEAT_TIMEOUT);
-                socket.setHandshakeIvl(ZMQConfiguration.HANDSHAKE_INTERVAL);
-                socket.setRcvHWM(ZMQConfiguration.RECEIVE_HIGH_WATERMARK);
-                socket.setSndHWM(ZMQConfiguration.SEND_HIGH_WATERMARK);
-                socket.setReceiveTimeOut(ZMQConfiguration.RECEIVE_TIMEOUT);
-                socket.setSendTimeOut(ZMQConfiguration.SEND_TIMEOUT);
+                synchronized (socket) {
 
-                if (ZMQSecurity.isSecure()) {
-                    // Client specify server key
-                    socket.setCurveServerKey(ZMQSecurity.getServerPair().publicKey.getBytes());
+                    socket.setHeartbeatTimeout(ZMQConfiguration.HEARTBEAT_TIMEOUT);
+                    socket.setHandshakeIvl(ZMQConfiguration.HANDSHAKE_INTERVAL);
+                    socket.setRcvHWM(ZMQConfiguration.RECEIVE_HIGH_WATERMARK);
+                    socket.setSndHWM(ZMQConfiguration.SEND_HIGH_WATERMARK);
+                    socket.setReceiveTimeOut(ZMQConfiguration.RECEIVE_TIMEOUT);
+                    socket.setSendTimeOut(ZMQConfiguration.SEND_TIMEOUT);
 
-                    socket.setCurveSecretKey(ZMQSecurity.getServerPair().secretKey.getBytes());
-                    socket.setCurvePublicKey(ZMQSecurity.getServerPair().publicKey.getBytes());
+                    if (ZMQSecurity.isSecure()) {
+                        // Client specify server key
+                        socket.setCurveServerKey(ZMQSecurity.getServerPair().publicKey.getBytes());
+
+                        socket.setCurveSecretKey(ZMQSecurity.getServerPair().secretKey.getBytes());
+                        socket.setCurvePublicKey(ZMQSecurity.getServerPair().publicKey.getBytes());
+                    }
+
+                    socket.connect(connectionAddress);
+
+                    LoggerUtils.info("ZMQ requester : Connection succeeded to : " + connectionAddress);
+
                 }
-
-                socket.connect(connectionAddress);
-
-                LoggerUtils.info("ZMQ requester : Connection succeeded to : " + connectionAddress);
 
             } catch (Exception e) {
 
@@ -94,17 +98,18 @@ public class ZMQRequester {
 
     public void closeSocket() {
         if (socket != null) {
+            synchronized (socket) {
+                socket.setReceiveTimeOut(0);
+                socket.setSendTimeOut(0);
 
-            socket.setReceiveTimeOut(0);
-            socket.setSendTimeOut(0);
+                socket.disconnect(connectionAddress);
+                LoggerUtils.info("ZMQ requester : Disconnection succeeded from : " + connectionAddress);
 
-            socket.disconnect(connectionAddress);
-            LoggerUtils.info("ZMQ requester : Disconnection succeeded from : " + connectionAddress);
+                LoggerUtils.info("ZMQ requester : Closing socket of : " + connectionAddress);
 
-            LoggerUtils.info("ZMQ requester : Closing socket of : " + connectionAddress);
-
-            socket.close();
-            context.destroySocket(socket);
+                socket.close();
+                context.destroySocket(socket);
+            }
             socket = null;
         }
     }
@@ -113,8 +118,6 @@ public class ZMQRequester {
         String reply = "";
 
         try {
-
-            //System.err.println("Requests number : " + this.requestCounter++);
 
             LoggerUtils.trace("ZMQ requester : sending request : " + request);
 

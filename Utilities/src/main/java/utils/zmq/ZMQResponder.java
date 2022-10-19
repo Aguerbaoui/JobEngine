@@ -35,32 +35,36 @@ public abstract class ZMQResponder implements Runnable {
 
             LoggerUtils.info("ZMQ responder : Create socket for address : " + connectionAddress + ", type : " + this.bindType);
 
-            this.context.setRcvHWM(ZMQConfiguration.RECEIVE_HIGH_WATERMARK);
-            this.context.setSndHWM(ZMQConfiguration.SEND_HIGH_WATERMARK);
-
             try {
+
+                this.context.setRcvHWM(ZMQConfiguration.RECEIVE_HIGH_WATERMARK);
+                this.context.setSndHWM(ZMQConfiguration.SEND_HIGH_WATERMARK);
 
                 this.socket = this.context.createSocket(SocketType.REP);
 
-                this.socket.setHeartbeatTimeout(ZMQConfiguration.HEARTBEAT_TIMEOUT);
-                this.socket.setHandshakeIvl(ZMQConfiguration.HANDSHAKE_INTERVAL);
-                this.socket.setRcvHWM(ZMQConfiguration.RECEIVE_HIGH_WATERMARK);
-                this.socket.setSndHWM(ZMQConfiguration.SEND_HIGH_WATERMARK);
-                this.socket.setReceiveTimeOut(ZMQConfiguration.RECEIVE_TIMEOUT);
-                this.socket.setSendTimeOut(ZMQConfiguration.SEND_TIMEOUT);
+                synchronized (this.socket) {
 
-                if (ZMQSecurity.isSecure()) {
-                    this.socket.setCurveServer(true);
-                    this.socket.setCurveSecretKey(ZMQSecurity.getServerPair().secretKey.getBytes());
-                    this.socket.setCurvePublicKey(ZMQSecurity.getServerPair().publicKey.getBytes());
-                }
+                    this.socket.setHeartbeatTimeout(ZMQConfiguration.HEARTBEAT_TIMEOUT);
+                    this.socket.setHandshakeIvl(ZMQConfiguration.HANDSHAKE_INTERVAL);
+                    this.socket.setRcvHWM(ZMQConfiguration.RECEIVE_HIGH_WATERMARK);
+                    this.socket.setSndHWM(ZMQConfiguration.SEND_HIGH_WATERMARK);
+                    this.socket.setReceiveTimeOut(ZMQConfiguration.RECEIVE_TIMEOUT);
+                    this.socket.setSendTimeOut(ZMQConfiguration.SEND_TIMEOUT);
 
-                if (bindType == ZMQType.BIND) {
-                    this.socket.bind(connectionAddress);
-                    LoggerUtils.info("ZMQ responder : Bind succeeded to : " + connectionAddress);
-                } else {
-                    this.socket.connect(connectionAddress);
-                    LoggerUtils.info("ZMQ responder : Connection succeeded to : " + connectionAddress);
+                    if (ZMQSecurity.isSecure()) {
+                        this.socket.setCurveServer(true);
+                        this.socket.setCurveSecretKey(ZMQSecurity.getServerPair().secretKey.getBytes());
+                        this.socket.setCurvePublicKey(ZMQSecurity.getServerPair().publicKey.getBytes());
+                    }
+
+                    if (bindType == ZMQType.BIND) {
+                        this.socket.bind(connectionAddress);
+                        LoggerUtils.info("ZMQ responder : Bind succeeded to : " + connectionAddress);
+                    } else {
+                        this.socket.connect(connectionAddress);
+                        LoggerUtils.info("ZMQ responder : Connection succeeded to : " + connectionAddress);
+                    }
+
                 }
 
             } catch (Exception e) {
@@ -98,22 +102,23 @@ public abstract class ZMQResponder implements Runnable {
 
     public void closeSocket() {
         if (socket != null) {
+            synchronized (socket) {
+                socket.setReceiveTimeOut(0);
+                socket.setSendTimeOut(0);
 
-            socket.setReceiveTimeOut(0);
-            socket.setSendTimeOut(0);
+                if (bindType == ZMQType.BIND) {
+                    socket.unbind(connectionAddress);
+                    LoggerUtils.info("ZMQ responder : Unbind succeeded from : " + connectionAddress);
+                } else {
+                    socket.disconnect(connectionAddress);
+                    LoggerUtils.info("ZMQ responder : Disconnection succeeded from : " + connectionAddress);
+                }
 
-            if (bindType == ZMQType.BIND) {
-                this.socket.unbind(connectionAddress);
-                LoggerUtils.info("ZMQ responder : Unbind succeeded from : " + connectionAddress);
-            } else {
-                this.socket.disconnect(connectionAddress);
-                LoggerUtils.info("ZMQ responder : Disconnection succeeded from : " + connectionAddress);
+                LoggerUtils.info("ZMQ responder : Closing socket of : " + connectionAddress);
+
+                socket.close();
+                context.destroySocket(socket);
             }
-
-            LoggerUtils.info("ZMQ responder : Closing socket of : " + connectionAddress);
-
-            socket.close();
-            context.destroySocket(socket);
             socket = null;
         }
     }
