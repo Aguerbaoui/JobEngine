@@ -236,8 +236,7 @@ public class ClassManager {
 
 
     /*
-     * request class definition from Data Model RESTAPI via ZMQ
-
+     * Request class definition from Data Model RESTAPI via ZMQ
      */
     private static String requestClassDefinition(String workspaceId, String classId) {
 

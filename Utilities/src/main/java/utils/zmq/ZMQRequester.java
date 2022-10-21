@@ -38,7 +38,6 @@ public class ZMQRequester {
 
             LoggerUtils.info("ZMQ requester : Attempting to connect to address : " + connectionAddress);
 
-
             try {
 
                 context.setRcvHWM(ZMQConfiguration.RECEIVE_HIGH_WATERMARK);

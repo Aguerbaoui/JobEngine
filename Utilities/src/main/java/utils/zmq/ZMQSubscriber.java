@@ -136,34 +136,26 @@ public abstract class ZMQSubscriber implements Runnable {
     }
 
     public void addTopic(String topic, ZMQType bindType) throws ZMQConnectionFailedException {
-        if (!topics.contains(topic)) {
-            topics.add(topic);
-        }
-        // FIXME could be dangerous re-subscribing
+        topics.add(topic);
+
         getSubscriberSocket(bindType).subscribe(topic.getBytes());
     }
 
     public void addTopic(String topic) throws ZMQConnectionFailedException {
-        if (!topics.contains(topic)) {
-            topics.add(topic);
-        }
-        // FIXME could be dangerous re-subscribing
+        topics.add(topic);
+
         getSubscriberSocket().subscribe(topic.getBytes());
     }
 
     public void removeTopic(String topic, ZMQType bindType) throws ZMQConnectionFailedException {
-        if (topics.contains(topic)) {
-            topics.remove(topic);
-        }
-        // FIXME could be dangerous re-unsubscribing
+        topics.remove(topic);
+
         getSubscriberSocket(bindType).unsubscribe(topic.getBytes());
     }
 
     public void removeTopic(String topic) throws ZMQConnectionFailedException {
-        if (topics.contains(topic)) {
-            topics.remove(topic);
-        }
-        // FIXME could be dangerous re-unsubscribing
+        topics.remove(topic);
+
         getSubscriberSocket().unsubscribe(topic.getBytes());
     }
 

@@ -25,7 +25,19 @@ public class DataZMQSubscriber extends ZMQSubscriber {
 
         try {
 
-            JELogger.debug(ID_MSG + JEMessages.STARTED_LISTENING_FOR_DATA,
+            // Reset if existing socket
+            this.closeSocket();
+
+            Thread.sleep(100);
+
+            // Re-subscribe if Thread was restarted
+            for (String topic : this.topics) {
+
+                this.addTopic(topic);
+
+            }
+
+            JELogger.debug(ID_MSG + "topics : " + this.topics + " : " + JEMessages.STARTED_LISTENING_FOR_DATA,
                     LogCategory.RUNTIME, null, LogSubModule.JERUNNER, null);
 
             String data, last_topic = null;

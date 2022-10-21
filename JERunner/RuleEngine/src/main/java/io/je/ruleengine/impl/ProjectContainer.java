@@ -276,6 +276,7 @@ public class ProjectContainer {
             };
 
             startRulesThread = new Thread(runnable);
+            startRulesThread.setName("startRulesThread");
             startRulesThread.start();
 
             status = Status.RUNNING;
