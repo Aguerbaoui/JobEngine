@@ -43,7 +43,7 @@ public abstract class ZMQSubscriber implements Runnable {
         return getSubscriberSocket(ZMQType.CONNECT);
     }
 
-    protected synchronized Socket getSubscriberSocket(ZMQType bindType) throws ZMQConnectionFailedException {
+    protected Socket getSubscriberSocket(ZMQType bindType) throws ZMQConnectionFailedException {
 
         if (socket == null) {
 
@@ -51,34 +51,38 @@ public abstract class ZMQSubscriber implements Runnable {
 
             LoggerUtils.info("ZMQ subscriber : Create socket for address : " + connectionAddress + ", type : " + this.bindType);
 
-            this.context.setRcvHWM(ZMQConfiguration.RECEIVE_HIGH_WATERMARK);
-            this.context.setSndHWM(ZMQConfiguration.SEND_HIGH_WATERMARK);
-
             try {
+
+                this.context.setRcvHWM(ZMQConfiguration.RECEIVE_HIGH_WATERMARK);
+                this.context.setSndHWM(ZMQConfiguration.SEND_HIGH_WATERMARK);
 
                 socket = this.context.createSocket(SocketType.SUB);
 
-                socket.setHeartbeatTimeout(ZMQConfiguration.HEARTBEAT_TIMEOUT);
-                socket.setHandshakeIvl(ZMQConfiguration.HANDSHAKE_INTERVAL);
-                socket.setRcvHWM(ZMQConfiguration.RECEIVE_HIGH_WATERMARK);
-                socket.setSndHWM(ZMQConfiguration.SEND_HIGH_WATERMARK);
-                socket.setReceiveTimeOut(ZMQConfiguration.RECEIVE_TIMEOUT);
-                socket.setSendTimeOut(ZMQConfiguration.SEND_TIMEOUT);
+                synchronized (socket) {
 
-                if (ZMQSecurity.isSecure()) {
-                    // Client specify server key
-                    socket.setCurveServerKey(ZMQSecurity.getServerPair().publicKey.getBytes());
+                    socket.setHeartbeatTimeout(ZMQConfiguration.HEARTBEAT_TIMEOUT);
+                    socket.setHandshakeIvl(ZMQConfiguration.HANDSHAKE_INTERVAL);
+                    socket.setRcvHWM(ZMQConfiguration.RECEIVE_HIGH_WATERMARK);
+                    socket.setSndHWM(ZMQConfiguration.SEND_HIGH_WATERMARK);
+                    socket.setReceiveTimeOut(ZMQConfiguration.RECEIVE_TIMEOUT);
+                    socket.setSendTimeOut(ZMQConfiguration.SEND_TIMEOUT);
 
-                    socket.setCurveSecretKey(ZMQSecurity.getServerPair().secretKey.getBytes());
-                    socket.setCurvePublicKey(ZMQSecurity.getServerPair().publicKey.getBytes());
-                }
+                    if (ZMQSecurity.isSecure()) {
+                        // Client specify server key
+                        socket.setCurveServerKey(ZMQSecurity.getServerPair().publicKey.getBytes());
 
-                if (bindType == ZMQType.BIND) {
-                    socket.bind(connectionAddress);
-                    LoggerUtils.info("ZMQ subscriber : Bind succeeded to : " + connectionAddress);
-                } else {
-                    socket.connect(connectionAddress);
-                    LoggerUtils.info("ZMQ subscriber : Connection succeeded to : " + connectionAddress);
+                        socket.setCurveSecretKey(ZMQSecurity.getServerPair().secretKey.getBytes());
+                        socket.setCurvePublicKey(ZMQSecurity.getServerPair().publicKey.getBytes());
+                    }
+
+                    if (bindType == ZMQType.BIND) {
+                        socket.bind(connectionAddress);
+                        LoggerUtils.info("ZMQ subscriber : Bind succeeded to : " + connectionAddress);
+                    } else {
+                        socket.connect(connectionAddress);
+                        LoggerUtils.info("ZMQ subscriber : Connection succeeded to : " + connectionAddress);
+                    }
+
                 }
 
             } catch (Exception e) {
@@ -108,57 +112,50 @@ public abstract class ZMQSubscriber implements Runnable {
         return socket;
     }
 
-    public synchronized void closeSocket() {
+    public void closeSocket() {
         if (socket != null) {
+            synchronized (socket) {
+                socket.setReceiveTimeOut(0);
+                socket.setSendTimeOut(0);
 
-            socket.setReceiveTimeOut(0);
-            socket.setSendTimeOut(0);
+                if (bindType == ZMQType.BIND) {
+                    this.socket.unbind(connectionAddress);
+                    LoggerUtils.info("ZMQ subscriber : Unbind succeeded from : " + connectionAddress);
+                } else {
+                    this.socket.disconnect(connectionAddress);
+                    LoggerUtils.info("ZMQ subscriber : Disconnection succeeded from : " + connectionAddress);
+                }
 
-            if (bindType == ZMQType.BIND) {
-                this.socket.unbind(connectionAddress);
-                LoggerUtils.info("ZMQ subscriber : Unbind succeeded from : " + connectionAddress);
-            } else {
-                this.socket.disconnect(connectionAddress);
-                LoggerUtils.info("ZMQ subscriber : Disconnection succeeded from : " + connectionAddress);
+                LoggerUtils.info("ZMQ subscriber : Closing socket of : " + connectionAddress);
+
+                socket.close();
+                context.destroySocket(socket);
             }
-
-            LoggerUtils.info("ZMQ subscriber : Closing socket of : " + connectionAddress);
-
-            socket.close();
-            context.destroySocket(socket);
             socket = null;
         }
     }
 
     public void addTopic(String topic, ZMQType bindType) throws ZMQConnectionFailedException {
-        if (!topics.contains(topic)) {
-            topics.add(topic);
-        }
-        // FIXME could be dangerous re-subscribing
+        topics.add(topic);
+
         getSubscriberSocket(bindType).subscribe(topic.getBytes());
     }
 
     public void addTopic(String topic) throws ZMQConnectionFailedException {
-        if (!topics.contains(topic)) {
-            topics.add(topic);
-        }
-        // FIXME could be dangerous re-subscribing
+        topics.add(topic);
+
         getSubscriberSocket().subscribe(topic.getBytes());
     }
 
     public void removeTopic(String topic, ZMQType bindType) throws ZMQConnectionFailedException {
-        if (topics.contains(topic)) {
-            topics.remove(topic);
-        }
-        // FIXME could be dangerous re-unsubscribing
+        topics.remove(topic);
+
         getSubscriberSocket(bindType).unsubscribe(topic.getBytes());
     }
 
     public void removeTopic(String topic) throws ZMQConnectionFailedException {
-        if (topics.contains(topic)) {
-            topics.remove(topic);
-        }
-        // FIXME could be dangerous re-unsubscribing
+        topics.remove(topic);
+
         getSubscriberSocket().unsubscribe(topic.getBytes());
     }
 
