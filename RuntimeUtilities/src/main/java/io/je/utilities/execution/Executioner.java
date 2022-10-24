@@ -15,11 +15,13 @@ import io.je.utilities.instances.ClassRepository;
 import io.je.utilities.instances.InstanceManager;
 import io.je.utilities.log.JELogger;
 import io.siothconfig.SIOTHConfigUtility;
+import org.json.JSONObject;
 import org.springframework.http.HttpStatus;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
 import utils.log.LoggerUtils;
 import utils.network.Network;
+import utils.zmq.ZMQRequester;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -48,8 +50,13 @@ public class Executioner {
     static ObjectMapper objectMapper = new ObjectMapper();
     static ExecutorService executor = Executors.newCachedThreadPool();
     static int test = 0;
-
+    static ZMQRequester dataflowZmqRequester = new ZMQRequester("tcp://" + SIOTHConfigUtility.getSiothConfig()
+            .getNodes()
+            .getSiothMasterNode(), SIOTHConfigUtility.getSiothConfig()
+            .getPorts()
+            .getDF_ResponsePort());
     private Executioner() {
+
     }
 
     /***************************************
@@ -345,6 +352,56 @@ public class Executioner {
     }
 
     /**
+     * Take dataflow action
+     */
+    public static void TakeDataFlowAction(String projectId, String ruleId, String blockName, Map body) {
+        try {
+            Map B = body;
+            List<?> actions = (List<?>) body.get("actions");
+            executor.submit(() -> {
+                actions.forEach(act -> {
+                    JSONObject requestParams = new JSONObject();
+                    List<String> ConnectorsID = (List<String>) ((Map)act).get("connectorsID");
+                    String action = ((String)((Map)act).get("startStop")).toUpperCase();
+                    String dataflowID = (String)((Map)act).get("dataFlowID");
+                    String dataflowName = (String)((Map)act).get("name");
+                    requestParams.put("idDataProject", dataflowID);
+                    requestParams.put("key", dataflowName);
+
+                    if (ConnectorsID.isEmpty()) {
+                        action = action.toUpperCase() + '_' + "DATAFLOW";
+                        requestParams.put("type", action);
+                        sendDataflowZMQ(projectId, ruleId, requestParams, dataflowZmqRequester);
+                    }
+                    else {
+                        action = action.toUpperCase() + '_' + "CONNECTOR";
+                        requestParams.put("type", action);
+                        ConnectorsID.forEach(id -> {
+                            requestParams.put("AgentConfig", id);
+                            sendDataflowZMQ(projectId, ruleId, requestParams, dataflowZmqRequester);
+                        });
+                    }
+                });
+           });
+        } catch (Exception e) {
+            LoggerUtils.logException(e);
+        }
+    }
+
+    private static void sendDataflowZMQ(String projectId, String ruleId, JSONObject requestParams, ZMQRequester dataflowZmqRequester) {
+        String response;
+        try {
+            response = dataflowZmqRequester.sendRequest(requestParams.toString());
+            JELogger.control("Request sent succesfully", LogCategory.RUNTIME, projectId, LogSubModule.RULE, ruleId);
+        } catch (Exception e) {
+            LoggerUtils.logException(e);
+            JELogger.error("Failed to send request", LogCategory.RUNTIME, projectId, LogSubModule.RULE, ruleId);
+            response = e.getMessage();
+        }
+    }
+
+
+    /**
      * Send sms using twilio or another server
      */
     public static void sendSMS(String projectId, String ruleId, String blockName, Map body, String messageBody) {
@@ -477,4 +534,11 @@ public class Executioner {
 
     }
 
+
+    public static void close() {
+        if (dataflowZmqRequester != null) {
+            dataflowZmqRequester.closeSocket();
+            dataflowZmqRequester = null;
+        }
+    }
 }

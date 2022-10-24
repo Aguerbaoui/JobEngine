@@ -10,6 +10,7 @@ import io.je.rulebuilder.components.blocks.comparison.InRangeBlock;
 import io.je.rulebuilder.components.blocks.comparison.OutOfRangeBlock;
 import io.je.rulebuilder.components.blocks.comparison.TimeComparisonBlock;
 import io.je.rulebuilder.components.blocks.event.AcceptEventBlock;
+import io.je.rulebuilder.components.blocks.event.DFAction;
 import io.je.rulebuilder.components.blocks.execution.*;
 import io.je.rulebuilder.components.blocks.getter.InstanceGetterBlock;
 import io.je.rulebuilder.components.blocks.getter.VariableGetterBlock;
@@ -149,6 +150,8 @@ public class BlockGenerator {
             case 6001:
                 return new AcceptEventBlock(blockModel);
             // no operation with such id
+            case 6002:
+                return new DFAction(blockModel);
             default:
                 throw new AddRuleBlockException(JEMessages.BLOCK_OPERATION_ID_UNKNOWN);
         }

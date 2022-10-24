@@ -30,6 +30,10 @@ public class SIOTHPorts {
     @JsonProperty("DF_ResponsePort")
     public int dfResponsePort;
 
+    @JsonProperty("DF_ResponsePort")
+    private int DF_ResponsePort;
+
+
     private SIOTHPorts() {
         // TODO Auto-generated constructor stub
     }
@@ -106,5 +110,5 @@ public class SIOTHPorts {
         this.jeResponsePort = jeResponsePort;
     }
 
-
+    public int getDF_ResponsePort() { return DF_ResponsePort; }
 }
