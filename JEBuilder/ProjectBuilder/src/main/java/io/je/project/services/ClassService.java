@@ -74,11 +74,51 @@ public class ClassService {
 
     private ClassZMQSubscriber classZMQSubscriber = null;
 
+    /*****************************************************
+     * Class Listener
+     ***********************************************************************/
+
+    /*
+     * Return JEMethod object from MethodModel
+     */
+    public static JEMethod getMethodFromModel(MethodModel m) {
+        JEMethod method = new JEMethod();
+        method.setCode(m.getCode());
+        method.setReturnType(m.getReturnType());
+        method.setJobEngineElementID(m.getId());
+        method.setJobEngineElementName(m.getMethodName());
+        method.setJeObjectCreatedBy(m.getCreatedBy());
+        method.setJeObjectModifiedBy(m.getModifiedBy());
+        method.setJeObjectLastUpdate(Instant.now());
+        method.setJeObjectCreationDate(Instant.now());
+        method.setInputs(new ArrayList<>());
+        method.setScope(WorkflowConstants.STATIC);
+        if (!m.getInputs()
+                .isEmpty()) {
+            for (FieldModel f : m.getInputs()) {
+                method.getInputs()
+                        .add(getFieldFromModel(f));
+            }
+        }
+        method.setImports(m.getImports());
+        return method;
+    }
+
+    /*
+     * Return JEField object from FieldModel
+     */
+    public static JEField getFieldFromModel(FieldModel f) {
+        JEField field = new JEField();
+        field.setComment("");
+        field.setVisibility(f.getFieldVisibility());
+        field.setType(f.getType());
+        field.setName(f.getName());
+        return field;
+    }
 
     public ClassZMQSubscriber getClassZMQSubscriber() {
         return classZMQSubscriber;
     }
-
 
     /**
      * Init a thread that listens to the DataModelRestApi for class definition updates
@@ -425,51 +465,9 @@ public class ClassService {
         compileCode(tempClass, packageName);
     }
 
-    /*****************************************************
-     * Class Listener
-     ***********************************************************************/
-
-    /*
-     * Return JEMethod object from MethodModel
-     */
-    public static JEMethod getMethodFromModel(MethodModel m) {
-        JEMethod method = new JEMethod();
-        method.setCode(m.getCode());
-        method.setReturnType(m.getReturnType());
-        method.setJobEngineElementID(m.getId());
-        method.setJobEngineElementName(m.getMethodName());
-        method.setJeObjectCreatedBy(m.getCreatedBy());
-        method.setJeObjectModifiedBy(m.getModifiedBy());
-        method.setJeObjectLastUpdate(Instant.now());
-        method.setJeObjectCreationDate(Instant.now());
-        method.setInputs(new ArrayList<>());
-        method.setScope(WorkflowConstants.STATIC);
-        if (!m.getInputs()
-                .isEmpty()) {
-            for (FieldModel f : m.getInputs()) {
-                method.getInputs()
-                        .add(getFieldFromModel(f));
-            }
-        }
-        method.setImports(m.getImports());
-        return method;
-    }
-
     public void compileCode(ClassDefinition c, String packageName) throws Exception {
         String filePath = ClassBuilder.buildClass(c, ConfigurationConstants.JAVA_GENERATION_PATH, JEClassLoader.getJobEnginePackageName(packageName));
         CommandExecutioner.compileCode(filePath, ConfigurationConstants.isDev());
-    }
-
-    /*
-     * Return JEField object from FieldModel
-     */
-    public static JEField getFieldFromModel(FieldModel f) {
-        JEField field = new JEField();
-        field.setComment("");
-        field.setVisibility(f.getFieldVisibility());
-        field.setType(f.getType());
-        field.setName(f.getName());
-        return field;
     }
 
     /*
@@ -725,59 +723,53 @@ public class ClassService {
 
             try {
 
-                // Bug 677: No more data received in Job Engine logs on updating static attribute. Reworks after restarting Job Engine (not Data Model) !
-                synchronized (this.getSubscriberSocket()) {
+                this.addTopic(MODEL_TOPIC);
 
-                    this.addTopic(MODEL_TOPIC);
+                JELogger.debug(ID_MSG + "topics : " + this.topics + " : " + JEMessages.STARTED_LISTENING_FOR_DATA,
+                        LogCategory.DESIGN_MODE, null, LogSubModule.CLASS, null);
 
-                    JELogger.debug(ID_MSG + "topics : " + this.topics + " : " + JEMessages.STARTED_LISTENING_FOR_DATA,
-                            LogCategory.DESIGN_MODE, null, LogSubModule.CLASS, null);
+                String data, last_topic = null;
 
-                    String data, last_topic = null;
+                while (this.listening) {
 
-                    while (this.listening) {
+                    data = this.getSubscriberSocket().recvStr();
 
-                        data = this.getSubscriberSocket().recvStr();
+                    if (data == null) continue;
 
-                        if (data == null) continue;
+                    LoggerUtils.debug(ID_MSG + JEMessages.DATA_RECEIVED + data);
 
-                        JELogger.debug(ID_MSG + JEMessages.DATA_RECEIVED + data, LogCategory.DESIGN_MODE,
-                                null, LogSubModule.CLASS, null);
+                    // FIXME waiting to have topic in the same response message
+                    if (last_topic == null) {
 
-                        // FIXME waiting to have topic in the same response message
-                        if (last_topic == null) {
-
-                            for (String topic : this.topics) {
-                                // Received Data should be equal topic
-                                if (data.equals(topic)) {
-                                    last_topic = topic;
-                                    break;
-                                }
+                        for (String topic : this.topics) {
+                            // Received Data should be equal topic
+                            if (data.equals(topic)) {
+                                last_topic = topic;
+                                break;
                             }
-
-                        } else {
-
-                            List<ModelUpdate> updates = Arrays.asList(objectMapper.readValue(data, ModelUpdate[].class));
-
-                            for (ModelUpdate update : updates) {
-                                update.getModel()
-                                        .setClassAuthor(ClassAuthor.DATA_MODEL);
-                                if (update.getAction() == DataModelAction.UPDATE || update.getAction() == DataModelAction.ADD) {
-                                    addClass(update.getModel(), true, true);
-                                }
-                                if (update.getAction() == DataModelAction.DELETE) {
-                                    removeClass(update.getModel()
-                                            .getName());
-                                }
-                            }
-
-                            last_topic = null;
                         }
 
-                        // FIXME could slow Class loading
-                        Thread.sleep(100);
+                    } else {
 
+                        List<ModelUpdate> updates = Arrays.asList(objectMapper.readValue(data, ModelUpdate[].class));
+
+                        for (ModelUpdate update : updates) {
+                            update.getModel()
+                                    .setClassAuthor(ClassAuthor.DATA_MODEL);
+                            if (update.getAction() == DataModelAction.UPDATE || update.getAction() == DataModelAction.ADD) {
+                                addClass(update.getModel(), true, true);
+                            }
+                            if (update.getAction() == DataModelAction.DELETE) {
+                                removeClass(update.getModel()
+                                        .getName());
+                            }
+                        }
+
+                        last_topic = null;
                     }
+
+                    // FIXME could slow Class loading
+                    Thread.sleep(100);
 
                 }
 
@@ -815,6 +807,12 @@ public class ClassService {
 
                 JELogger.debug(ID_MSG + JEMessages.CLOSING_SOCKET, LogCategory.DESIGN_MODE,
                         null, LogSubModule.CLASS, null);
+
+                try {
+                    this.removeTopic(MODEL_TOPIC);
+                } catch (Exception e) {
+                    LoggerUtils.logException(e);
+                }
 
                 this.closeSocket();
 

@@ -91,7 +91,7 @@ public class RuleService {
             throw new RuleNotAddedException(JEMessages.RULE_NAME_NULL);
         }
 
-        JELogger.control(JEMessages.ADDING_RULE + ruleModel.getRuleName() + "..", CATEGORY, projectId, RULE,
+        JELogger.control(JEMessages.ADDING_RULE + " : " + ruleModel.getRuleName() + " ...", CATEGORY, projectId, RULE,
                 ruleModel.getRuleId());
         UserDefinedRule rule = new UserDefinedRule();
         rule.setJobEngineElementID(ruleModel.getRuleId());

@@ -19,13 +19,6 @@ public class WebSecurityConfig {
     HttpFirewall httpFirewall() {
         StrictHttpFirewall firewall = new StrictHttpFirewall();
 
-        // FIXME remove if no more needed
-        firewall.setAllowUrlEncodedDoubleSlash(true);
-
-        System.err.println("firewall.getDecodedUrlBlacklist() : " + firewall.getDecodedUrlBlacklist());
-        System.err.println("firewall.getDecodedUrlBlocklist() : " + firewall.getDecodedUrlBlocklist());
-        System.err.println("firewall.getEncodedUrlBlocklist() : " + firewall.getEncodedUrlBlocklist());
-
         return firewall;
     }
 

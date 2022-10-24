@@ -13,6 +13,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import static io.je.rulebuilder.config.AttributesMapping.SOURCE_GETTER_ATTRIBUTE_NAME;
 import static io.je.rulebuilder.config.AttributesMapping.SOURCE_LINKED_BLOCK_ID;
+import static io.je.rulebuilder.config.Constants.IGNORE_WRITE_IF_SAME_VALUE_DEFAULT_VALUE;
 import static io.je.utilities.constants.JEMessages.EXCEPTION_OCCURRED_WHILE_INITIALIZE;
 
 /*
@@ -42,7 +43,7 @@ public class AttachedSetterBlock extends ExecutionBlock {
     //DESTINATION
     String getterName;
     String destinationAttributeName;
-    boolean ignoreWriteIfSameValue = true;
+    boolean ignoreWriteIfSameValue = IGNORE_WRITE_IF_SAME_VALUE_DEFAULT_VALUE;
     //Constants
     String executionerMethod = "Executioner.writeToInstance(";
 
@@ -51,7 +52,7 @@ public class AttachedSetterBlock extends ExecutionBlock {
 
         try {
             ignoreWriteIfSameValue = (boolean) blockModel.getBlockConfiguration()
-                    .get("ignoreWriteIfSameValue");
+                    .getOrDefault("ignoreWriteIfSameValue", IGNORE_WRITE_IF_SAME_VALUE_DEFAULT_VALUE);
         } catch (Exception e) {
             JELogger.logException(e);
         }
@@ -60,22 +61,21 @@ public class AttachedSetterBlock extends ExecutionBlock {
             value = blockModel.getBlockConfiguration()
                     .get(AttributesMapping.NEWVALUE);
             sourceType = ValueType.valueOf((String) blockModel.getBlockConfiguration()
-                    .get(AttributesMapping.SOURCE_VALUE_TYPE));
+                    .getOrDefault(AttributesMapping.SOURCE_VALUE_TYPE, ""));
             destinationAttributeName = (String) blockModel.getBlockConfiguration()
-                    .get(AttributesMapping.DESTINATION_ATTRIBUTE_NAME);
+                    .getOrDefault(AttributesMapping.DESTINATION_ATTRIBUTE_NAME, "");
             sourceAttributeName = (String) blockModel.getBlockConfiguration()
-                    .get(AttributesMapping.ATTRIBUTENAME);
+                    .getOrDefault(AttributesMapping.ATTRIBUTENAME, "");
             sourceGetterAttributeName = (String) blockModel.getBlockConfiguration()
-                    .get(SOURCE_GETTER_ATTRIBUTE_NAME);
+                    .getOrDefault(SOURCE_GETTER_ATTRIBUTE_NAME, "");
             sourceLinkedBlockId = (String) blockModel.getBlockConfiguration()
-                    .get(SOURCE_LINKED_BLOCK_ID);
+                    .getOrDefault(SOURCE_LINKED_BLOCK_ID, "");
             sourceInstanceId = (String) blockModel.getBlockConfiguration()
-                    .get("sourceInstance");
+                    .getOrDefault("sourceInstance", "");
             sourceVariableId = (String) blockModel.getBlockConfiguration()
-                    .get("sourceVariable");
+                    .getOrDefault("sourceVariable", "");
             getterName = (String) blockModel.getBlockConfiguration()
-                    .get(AttributesMapping.LINKED_GETTER_NAME);
-
+                    .getOrDefault(AttributesMapping.LINKED_GETTER_NAME, "");
 
             isProperlyConfigured = true;
             misConfigurationCause = "";
@@ -178,6 +178,7 @@ public class AttachedSetterBlock extends ExecutionBlock {
                     throw new RuleBuildFailedException(JEMessages.INVALID_CONFIG);
 
             }
+
         } catch (Exception e) {
             isProperlyConfigured = false;
             misConfigurationCause = JEMessages.ATTACHED_SETTER_BLOCK_EXCEPTION_OCCURRED + e.getMessage();

@@ -11,19 +11,19 @@ import static io.je.utilities.constants.JEMessages.EXCEPTION_OCCURRED_WHILE_INIT
 /*
  * Block used to writing in an instance's attribute (from DM)
  * source : previous block
- * operation id : 5003
+ * operation id : 5006 // FIXME not used currently (Setter called instead)
  */
-public class SetVariableBlock extends ExecutionBlock {
+public class VariableSetterBlock extends ExecutionBlock {
 
 
     /*******************************Instance definition*******************************/
     String variableId;
 
 
-    public SetVariableBlock(BlockModel blockModel) {
+    public VariableSetterBlock(BlockModel blockModel) {
         super(blockModel);
         try {
-            variableId = (String) blockModel.getBlockConfiguration().get(AttributesMapping.VALUE);
+            variableId = (String) blockModel.getBlockConfiguration().getOrDefault(AttributesMapping.VALUE, "");
             isProperlyConfigured = true;
             misConfigurationCause = "";
         } catch (Exception e) {
@@ -39,7 +39,7 @@ public class SetVariableBlock extends ExecutionBlock {
 
     }
 
-    public SetVariableBlock() {
+    public VariableSetterBlock() {
         super();
     }
 

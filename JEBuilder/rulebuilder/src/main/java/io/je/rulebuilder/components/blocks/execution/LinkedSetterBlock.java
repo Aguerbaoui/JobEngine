@@ -6,8 +6,11 @@ import io.je.rulebuilder.models.BlockModel;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.log.JELogger;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import static io.je.rulebuilder.config.Constants.IGNORE_WRITE_IF_SAME_VALUE_DEFAULT_VALUE;
+import static io.je.rulebuilder.config.Constants.IS_CLASS_ALL_INSTANCES_DEFAULT_VALUE;
 import static io.je.utilities.constants.JEMessages.EXCEPTION_OCCURRED_WHILE_INITIALIZE;
 
 /*
@@ -26,23 +29,25 @@ public class LinkedSetterBlock extends ExecutionBlock {
     String destinationAttributeName;
     String destinationAttributeType;
 
-    List<String> instances;
-    boolean ignoreWriteIfSameValue = true;
+    List<String> instances; // FIXME change to Set
+    boolean ignoreWriteIfSameValue = IGNORE_WRITE_IF_SAME_VALUE_DEFAULT_VALUE;
 
     public LinkedSetterBlock(BlockModel blockModel) {
         super(blockModel);
         try {
-            ignoreWriteIfSameValue = (boolean) blockModel.getBlockConfiguration().get("ignoreWriteIfSameValue");
+            ignoreWriteIfSameValue = (boolean) blockModel.getBlockConfiguration().getOrDefault("ignoreWriteIfSameValue",
+                    IGNORE_WRITE_IF_SAME_VALUE_DEFAULT_VALUE);
         } catch (Exception e) {
             JELogger.logException(e);
         }
 
         try {
-            isGeneric = (boolean) blockModel.getBlockConfiguration().get("isGeneric");
-            classId = (String) blockModel.getBlockConfiguration().get(AttributesMapping.CLASSID);
-            classPath = (String) blockModel.getBlockConfiguration().get(AttributesMapping.CLASSNAME);
-            destinationAttributeName = (String) blockModel.getBlockConfiguration().get(AttributesMapping.ATTRIBUTENAME);
-            instances = (List<String>) blockModel.getBlockConfiguration().get(AttributesMapping.SPECIFICINSTANCES);
+            isGeneric = (boolean) blockModel.getBlockConfiguration().getOrDefault("isGeneric",
+                    IS_CLASS_ALL_INSTANCES_DEFAULT_VALUE); // FIXME is sent?
+            classId = (String) blockModel.getBlockConfiguration().getOrDefault(AttributesMapping.CLASSID, "");
+            classPath = (String) blockModel.getBlockConfiguration().getOrDefault(AttributesMapping.CLASSNAME, "");
+            destinationAttributeName = (String) blockModel.getBlockConfiguration().getOrDefault(AttributesMapping.ATTRIBUTENAME, "");
+            instances = (List<String>) blockModel.getBlockConfiguration().getOrDefault(AttributesMapping.SPECIFICINSTANCES, new ArrayList<>());
             isProperlyConfigured = true;
             if (inputBlockIds.isEmpty()) {
                 isProperlyConfigured = false;
@@ -97,7 +102,6 @@ public class LinkedSetterBlock extends ExecutionBlock {
                     + ");\r\n");
             expression.append("\n");
         }
-
 
         return expression.toString();
 

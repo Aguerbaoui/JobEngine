@@ -36,22 +36,26 @@ public class ZMQPublisher {
 
                 socket = context.createSocket(SocketType.PUB);
 
-                socket.setHeartbeatTimeout(ZMQConfiguration.HEARTBEAT_TIMEOUT);
-                socket.setHandshakeIvl(ZMQConfiguration.HANDSHAKE_INTERVAL);
-                socket.setRcvHWM(ZMQConfiguration.RECEIVE_HIGH_WATERMARK);
-                socket.setSndHWM(ZMQConfiguration.SEND_HIGH_WATERMARK);
-                socket.setReceiveTimeOut(ZMQConfiguration.RECEIVE_TIMEOUT);
-                socket.setSendTimeOut(ZMQConfiguration.SEND_TIMEOUT);
+                synchronized (socket) {
 
-                if (ZMQSecurity.isSecure()) {
-                    socket.setCurveServer(true);
-                    socket.setCurveSecretKey(ZMQSecurity.getServerPair().secretKey.getBytes());
-                    socket.setCurvePublicKey(ZMQSecurity.getServerPair().publicKey.getBytes());
+                    socket.setHeartbeatTimeout(ZMQConfiguration.HEARTBEAT_TIMEOUT);
+                    socket.setHandshakeIvl(ZMQConfiguration.HANDSHAKE_INTERVAL);
+                    socket.setRcvHWM(ZMQConfiguration.RECEIVE_HIGH_WATERMARK);
+                    socket.setSndHWM(ZMQConfiguration.SEND_HIGH_WATERMARK);
+                    socket.setReceiveTimeOut(ZMQConfiguration.RECEIVE_TIMEOUT);
+                    socket.setSendTimeOut(ZMQConfiguration.SEND_TIMEOUT);
+
+                    if (ZMQSecurity.isSecure()) {
+                        socket.setCurveServer(true);
+                        socket.setCurveSecretKey(ZMQSecurity.getServerPair().secretKey.getBytes());
+                        socket.setCurvePublicKey(ZMQSecurity.getServerPair().publicKey.getBytes());
+                    }
+
+                    socket.connect(connectionAddress);
+
+                    LoggerUtils.info("ZMQ publisher : Connection succeeded to : " + connectionAddress);
+
                 }
-
-                socket.connect(connectionAddress);
-
-                LoggerUtils.info("ZMQ publisher : Connection succeeded to : " + connectionAddress);
 
             } catch (Exception e) {
 
@@ -89,12 +93,19 @@ public class ZMQPublisher {
 
     public void closeSocket() {
         if (socket != null) {
+            synchronized (socket) {
+                socket.setReceiveTimeOut(0);
+                socket.setSendTimeOut(0);
 
-            socket.disconnect(connectionAddress);
-            LoggerUtils.info("ZMQ responder : Disconnection succeeded from : " + connectionAddress);
+                socket.disconnect(connectionAddress);
 
-            socket.close();
-            context.destroySocket(socket);
+                LoggerUtils.info("ZMQ publisher : Disconnection succeeded from : " + connectionAddress);
+
+                LoggerUtils.info("ZMQ publisher : Closing socket of : " + connectionAddress);
+
+                socket.close();
+                context.destroySocket(socket);
+            }
             socket = null;
         }
     }

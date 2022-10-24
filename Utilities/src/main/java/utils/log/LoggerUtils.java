@@ -219,15 +219,14 @@ public class LoggerUtils {
     }
 
     private static String getInitialLogMessage(String appName, String level) {
-        return "\n======================================================================================\r\n"
-                + "==                                     " + appName + "                                     ==\r\n"
-                + "==                                 Version : 1.1.0 Beta                              ==\r\n"
-                + "==                                 Build Date : " + LocalDateTime.now().format(formatter)
-                + "                            ==\r\n"
-                + "==                       Copyright � 2021 Integration Objects                       ==\r\n"
-                + "======================================================================================\r\n"
-                + "==                             Trace level : [ " + level + " ]                              ==\r\n"
-                + "======================================================================================";
+        return  "\n===========================================================================================\r\n"
+                + "                                     " + appName + "                                       \r\n"
+                + "                                 Version : 1.1.0 Beta                                      \r\n"
+                + "                                 Build Date : " + LocalDateTime.now().format(formatter) + "\r\n"
+                + "                       Copyright � 2021 Integration Objects                               \r\n"
+                + "===========================================================================================\r\n"
+                + "                             Trace level : [ " + level + " ]                               \r\n"
+                + "===========================================================================================";
 
     }
 

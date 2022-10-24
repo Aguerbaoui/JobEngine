@@ -87,9 +87,9 @@ public class JERunnerRequester {
 
             if (requester == null) init();
 
-            synchronized (requester) {
+            // FIXME avoid ZMQ deadLocks/exceptions ... synchronized (requester) {
                 response = requester.sendRequest(objectMapper.writeValueAsString(request));
-            }
+            //}
 
             return objectMapper.readValue(response, JEZMQResponse.class);
         } catch (Exception exp) {

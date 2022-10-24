@@ -17,14 +17,13 @@ import java.util.List;
 
 public class DataModelRequester {
 
-    //private static ZMQRequester requester = new ZMQRequester("tcp://"+SIOTHConfigUtility.getSiothConfig().getMachineCredentials().getIpAddress(), SIOTHConfigUtility.getSiothConfig().getDataModelPORTS().getDmService_ReqAddress());
     private static ZMQRequester requester = new ZMQRequester("tcp://" + SIOTHConfigUtility.getSiothConfig()
             .getNodes()
             .getSiothMasterNode(), SIOTHConfigUtility.getSiothConfig()
             .getDataModelPORTS()
             .getDmService_ReqAddress());
+
     private static ObjectMapper objectMapper = new ObjectMapper();
-    private static TypeFactory typeFactory = objectMapper.getTypeFactory();
 
 
     /*
@@ -75,12 +74,7 @@ public class DataModelRequester {
             if (data != null) {
 
                 value = data.substring(1, data.length()-1);
-/*
-FIXME is it needed?
-TODO remove if useless
-                List<String> values = new ArrayList<>();
-                values = objectMapper.readValue(data, typeFactory.constructCollectionType(List.class, String.class));
-*/
+
             }
 
         } catch (Exception e) {

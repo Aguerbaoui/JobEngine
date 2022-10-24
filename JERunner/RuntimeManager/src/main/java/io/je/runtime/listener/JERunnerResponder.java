@@ -87,6 +87,7 @@ public class JERunnerResponder extends ZMQResponder {
                 JELogger.error(JEMessages.ZMQ_FAILED_TO_RESPOND + errorMsg, null, null, LogSubModule.JERUNNER, null);
 
             }
+
         }
 
     }

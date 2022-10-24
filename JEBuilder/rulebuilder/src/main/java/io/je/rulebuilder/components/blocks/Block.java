@@ -98,7 +98,7 @@ public abstract class Block extends JEObject {
     public abstract String getAsOperandExpression() throws RuleBuildFailedException;
 
     /*
-     * get name of variable holding he value expressed by input number index: ex: $age, $block1 ...
+     * Get name of variable holding the value expressed by input number index: ex: $age, $block1 ...
      */
     public String getRefName(String optional) {
         String var = "";
@@ -158,7 +158,7 @@ public abstract class Block extends JEObject {
         this.outputBlockIds = outputBlockIds;
     }
 
-    //ignore block FIXME is it working
+    //ignore block FIXME is it working?
     public void ignoreBlock() {
         for (var inputBlock : inputBlockLinks) {
             inputBlock.getBlock().outputBlockLinks.addAll(outputBlockLinks);
