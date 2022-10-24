@@ -507,9 +507,6 @@ public class JobEngine {
     public static JEObject getDataModelInstance(String instanceName) throws IOException {
         System.out.println("step 1");
         JEConfiguration.loadProperties();
-        ConfigurationConstants.setJavaGenerationPath(SIOTHConfigUtility.getSiothConfig()
-                .getJobEngine()
-                .getGeneratedClassesPath());
         JEZMQResponse var = JERunnerRequester.readClass(instanceName);
         JEObject instance = null;
         if (var != null && !var.getResponse()
