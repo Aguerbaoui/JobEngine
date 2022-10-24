@@ -73,52 +73,6 @@ public class JEClassLoader extends ClassLoader {
         return dataModelInstance;
     }
 
-
-    public static JEClassLoader overrideDataModelInstance(String newClass) throws ClassNotFoundException {
-
-        if (dataModelCustomClasses == null) {
-            dataModelCustomClasses = new HashSet<>();
-        }
-        synchronized (dataModelCustomClasses) {
-
-            dataModelInstance = new JEClassLoader(dataModelCustomClasses);
-            //! HA: removed after discussion with Kais 24/05/2022
-       /*     if (dataModelCustomClasses.contains(newClass)) {
-                dataModelCustomClasses.remove(newClass);
-
-            }*/
-            Set<String> all = dataModelCustomClasses;
-            for (String c : all) {
-                ClassRepository.addClass(ClassRepository.getClassIdByName(c), c, dataModelInstance.loadClass(c));
-
-            }
-
-        }
-
-        return dataModelInstance;
-    }
-
-    public static JEClassLoader getCurrentRuleEngineClassLoader() {
-        return currentRuleEngineClassLoader;
-    }
-
-    public static void setCurrentRuleEngineClassLoader(JEClassLoader currentRuleEngineClassLoader) {
-        JEClassLoader.currentRuleEngineClassLoader = currentRuleEngineClassLoader;
-    }
-
-    public static String getJobEnginePackageName(String packageName) {
-        String imp = ConfigurationConstants.JAVA_GENERATION_PATH.replace(FileUtilities.getPathPrefix(ConfigurationConstants.JAVA_GENERATION_PATH), "");
-        imp = imp.replace("\\", ".");
-        imp = imp.replace("//", ".");
-        imp = imp.replace("/", ".");
-        if (StringUtilities.isEmpty(imp)) {
-            imp = packageName;
-        } else {
-            imp = imp + "." + packageName;
-        }
-        return imp.replace("..", ".");
-    }
-
     @Override
     public Class<?> loadClass(String className) throws ClassNotFoundException {
         //	JELogger.debug("JECLASSLOADER 100: "+dataModelCustomClasses.toString());
@@ -150,7 +104,7 @@ public class JEClassLoader extends ClassLoader {
      */
     private Class<?> getClass(String name) throws ClassNotFoundException {
 
-        String file = FileUtilities.getPathPrefix(JAVA_GENERATION_PATH) + name.replace('.', File.separatorChar) + ".class";
+        String file = JAVA_GENERATION_PATH + name.replace('.', File.separatorChar) + ".class";
         byte[] byteArr = null;
         try {
             // This loads the byte code data from the file
@@ -200,6 +154,51 @@ public class JEClassLoader extends ClassLoader {
 
         return super.getResourceAsStream(name);
 
+    }
+
+    public static JEClassLoader overrideDataModelInstance(String newClass) throws ClassNotFoundException {
+
+        if (dataModelCustomClasses == null) {
+            dataModelCustomClasses = new HashSet<>();
+        }
+        synchronized (dataModelCustomClasses) {
+
+            dataModelInstance = new JEClassLoader(dataModelCustomClasses);
+            //! HA: removed after discussion with Kais 24/05/2022
+       /*     if (dataModelCustomClasses.contains(newClass)) {
+                dataModelCustomClasses.remove(newClass);
+
+            }*/
+            Set<String> all = dataModelCustomClasses;
+            for (String c : all) {
+                ClassRepository.addClass(ClassRepository.getClassIdByName(c), c, dataModelInstance.loadClass(c));
+
+            }
+
+        }
+
+        return dataModelInstance;
+    }
+
+    public static JEClassLoader getCurrentRuleEngineClassLoader() {
+        return currentRuleEngineClassLoader;
+    }
+
+    public static void setCurrentRuleEngineClassLoader(JEClassLoader currentRuleEngineClassLoader) {
+        JEClassLoader.currentRuleEngineClassLoader = currentRuleEngineClassLoader;
+    }
+
+    public static String getJobEnginePackageName(String packageName) {
+        String imp = ConfigurationConstants.JAVA_GENERATION_PATH.replace(FileUtilities.getPathPrefix(ConfigurationConstants.JAVA_GENERATION_PATH), "");
+        imp = imp.replace("\\", ".");
+        imp = imp.replace("//", ".");
+        imp = imp.replace("/", ".");
+        if (StringUtilities.isEmpty(imp)) {
+            imp = packageName;
+        } else {
+            imp = imp + "." + packageName;
+        }
+        return packageName;
     }
 
 }

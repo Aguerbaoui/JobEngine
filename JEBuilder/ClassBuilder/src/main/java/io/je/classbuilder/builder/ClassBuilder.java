@@ -14,7 +14,6 @@ import io.je.utilities.runtimeobject.JEObject;
 import org.burningwave.core.assembler.ComponentContainer;
 import org.burningwave.core.assembler.ComponentSupplier;
 import org.burningwave.core.classes.*;
-import utils.files.FileUtilities;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
 import utils.string.StringUtilities;
@@ -214,7 +213,7 @@ public class ClassBuilder {
 
         File file = new File(generationPath);
         file.delete();
-        unitSG.storeToClassPath(FileUtilities.getPathPrefix(generationPath));
+        unitSG.storeToClassPath(generationPath);
 
         return filePath;
 

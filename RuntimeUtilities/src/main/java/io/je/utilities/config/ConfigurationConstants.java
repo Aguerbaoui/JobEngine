@@ -1,6 +1,5 @@
 package io.je.utilities.config;
 
-import utils.files.FileUtilities;
 import utils.string.StringUtilities;
 
 import static io.je.utilities.constants.ClassBuilderConfig.CLASS_PACKAGE;
@@ -19,7 +18,7 @@ public class ConfigurationConstants {
     public static String SIOTHID = "";
     public static boolean dev = false;
     //path where .java files are generated :
-    public static String JAVA_GENERATION_PATH = "C:\\jobengine\\";
+    public static String JAVA_GENERATION_PATH = System.getenv(SIOTH_ENVIRONMENT_VARIABLE) + "\\..\\Job Engine\\JEFiles\\";
 
     // path for imported libraries
     public static String EXTERNAL_LIB_PATH = System.getenv(SIOTH_ENVIRONMENT_VARIABLE) + "\\..\\Job Engine\\libs\\";
@@ -51,7 +50,7 @@ public class ConfigurationConstants {
     }
 
     public static String getJobEngineCustomImport() {
-        String imp = ConfigurationConstants.JAVA_GENERATION_PATH.replace(FileUtilities.getPathPrefix(ConfigurationConstants.JAVA_GENERATION_PATH), "");
+        String imp = ConfigurationConstants.JAVA_GENERATION_PATH.replace(ConfigurationConstants.JAVA_GENERATION_PATH, "");
         imp = imp.replace("\\", ".");
         imp = imp.replace("//", ".");
         imp = imp.replace("/", ".");
@@ -60,17 +59,11 @@ public class ConfigurationConstants {
         } else {
             imp = imp + "." + CLASS_PACKAGE;
         }
-        return imp.replace("..", ".") + ".*";
+        return "jeclasses" + ".*";
     }
 
     public static String getJavaGenerationPath() {
         return JAVA_GENERATION_PATH;
-    }
-
-    public static void setJavaGenerationPath(String javaGenerationPath) {
-        if (!StringUtilities.isEmpty(javaGenerationPath)) {
-            JAVA_GENERATION_PATH = javaGenerationPath;
-        }
     }
 
 

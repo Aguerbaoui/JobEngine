@@ -49,6 +49,20 @@ public class ConfigurationService {
 
     }
 
+    private void initConstants(String siothId, boolean isDev) {
+
+        SIOTHConfigUtility.setSiothId(siothId);
+        ConfigurationConstants.setDev(isDev);
+        //ConfigurationConstants.setJavaGenerationPath(System.getenv(SIOTH_ENVIRONMENT_VARIABLE) + "\\..\\Job Engine\\");
+
+    }
+
+    private void initLogger(String logPath, String logLevel) {
+        LoggerUtils.initLogger("JERunner", logPath, logLevel, ConfigurationConstants.isDev());
+        JELogger.control(JEMessages.LOGGER_INITIALIZED,
+                LogCategory.DESIGN_MODE, null,
+                LogSubModule.JERUNNER, null);
+    }
 
     public void initResponder(int responsePort) {
 
@@ -74,20 +88,15 @@ public class ConfigurationService {
 
     }
 
+    private void interruptThread() {
 
-    private void initConstants(String siothId, boolean isDev) {
+        if (jeRunnerResponderThread != null) {
+            if (jeRunnerResponderThread.isAlive()) {
+                jeRunnerResponderThread.interrupt();
+            }
+            jeRunnerResponderThread = null;
+        }
 
-        SIOTHConfigUtility.setSiothId(siothId);
-        ConfigurationConstants.setDev(isDev);
-        ConfigurationConstants.setJavaGenerationPath(SIOTHConfigUtility.getSiothConfig().getJobEngine().getGeneratedClassesPath());
-
-    }
-
-    private void initLogger(String logPath, String logLevel) {
-        LoggerUtils.initLogger("JERunner", logPath, logLevel, ConfigurationConstants.isDev());
-        JELogger.control(JEMessages.LOGGER_INITIALIZED,
-                LogCategory.DESIGN_MODE, null,
-                LogSubModule.JERUNNER, null);
     }
 
     private void initThread() {
@@ -97,17 +106,6 @@ public class ConfigurationService {
         jeRunnerResponderThread.setName("jeRunnerResponderThread");
 
         jeRunnerResponderThread.start();
-
-    }
-
-    private void interruptThread() {
-
-        if (jeRunnerResponderThread != null) {
-            if (jeRunnerResponderThread.isAlive()) {
-                jeRunnerResponderThread.interrupt();
-            }
-            jeRunnerResponderThread = null;
-        }
 
     }
 

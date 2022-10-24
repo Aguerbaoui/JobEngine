@@ -93,9 +93,9 @@ public class CommandExecutioner {
 
     public static void buildJar() throws IOException, InterruptedException, CommandFailedException {
         StringBuilder command = new StringBuilder(JAR + " " + CVF + " \"" + ConfigurationConstants.EXTERNAL_LIB_PATH + "JEUtils.jar\"");
-        command.append(" \"")
-                .append(JAVA_GENERATION_PATH)
-                .append("\\jeclasses\"");
+        command.append(" -C \"")
+                .append(JAVA_GENERATION_PATH, 0, JAVA_GENERATION_PATH.length() - 1)
+                .append("\" jeclasses");
         try {
             FileUtilities.deleteFileFromPath(ConfigurationConstants.EXTERNAL_LIB_PATH + "JEUtils.jar");
         } catch (Exception e) {
