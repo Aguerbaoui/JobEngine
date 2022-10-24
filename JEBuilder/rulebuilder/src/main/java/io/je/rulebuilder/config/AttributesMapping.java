@@ -63,6 +63,11 @@ public class AttributesMapping {
     public static final String DESTINATION_CLASSID = "destinationClassId";
     public static final String LINKED_GETTER_NAME = "linkedGetterName";
     public static final String DESTINATION_ATTRIBUTE_NAME = "destinationAttributeName";
-
-
+    public static final String ACTION = "StartStop";
+    public static final String ACTIONS = "actions";
+    public static final String ACTIONID = "actionID";
+    public static final String NAME = "dataflow";
+    public static final String CONNECTORS = "connectors";
+    public static final String CONNECTORSID = "connectorsID";
+    public static final String DATAFLOWID = "dataflowID";
 }
