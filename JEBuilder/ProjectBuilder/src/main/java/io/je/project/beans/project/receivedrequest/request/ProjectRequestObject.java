@@ -1,5 +1,6 @@
-package io.je.project.beans.project.request;
+package io.je.project.beans.project.receivedrequest.request;
 
+import io.je.project.beans.project.receivedrequest.ProjectActionEnum;
 import lombok.Data;
 
 import java.util.Map;
@@ -9,11 +10,6 @@ public class ProjectRequestObject {
     ProjectActionEnum type;
     String projectId;
     Map<String, String> dicOfValues;
-
-    public ProjectRequestObject() {
-        super();
-        // TODO Auto-generated constructor stub
-    }
 
 
 }

@@ -7,12 +7,13 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import utils.log.LoggerUtils;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
 
 
 @Document(collection = "JEVariableCollection")
 public class JEVariable extends JEMonitoredData {
 
-    private JEType type;
+    private UnifiedType type;
 
     @Transient //mongo doesn't support this type
     private Class<?> typeClass;
@@ -34,7 +35,7 @@ public class JEVariable extends JEMonitoredData {
     public JEVariable(String jobEngineElementID, String jobEngineProjectID, String name, String type,
                       String initialValue, String description, String createdBy, String modifiedby) throws VariableException {
         super(jobEngineElementID, jobEngineProjectID, name);
-        this.type = JEType.valueOf(type);
+        this.type = UnifiedType.valueOf(type);
         this.initialValue = castValue(this.type, initialValue);
         typeClass = getType(this.type);
         this.value = this.initialValue;
@@ -43,39 +44,45 @@ public class JEVariable extends JEMonitoredData {
         this.description = description;
     }
 
-
-    public JEVariable(String jobEngineElementID, String jobEngineProjectID, String name, String type,
-                      String initialValue, ArchiveOption isArchived,
-                      boolean isBroadcasted, String description, String createdBy, String modifiedby) throws VariableException {
-        super(jobEngineElementID, jobEngineProjectID, name, isArchived, isBroadcasted);
-        this.type = JEType.valueOf(type);
-        this.initialValue = castValue(this.type, initialValue);
-        typeClass = getType(this.type);
-        this.value = this.initialValue;
-        this.jeObjectCreatedBy = createdBy;
-        this.jeObjectModifiedBy = modifiedby;
-        this.description = description;
-    }
-
-    public static Object castValue(JEType type, String value) throws VariableException {
+    public static Object castValue(UnifiedType type, String value) throws VariableException {
         try {
             switch (type) {
-                case BYTE:
+                case SBYTE:
                     return Byte.valueOf(value);
-                case DOUBLE:
-                    return Double.valueOf(value);
-                case FLOAT:
-                    return Float.valueOf(value);
+                case UINT16:
+                case INT32:
                 case INT:
                     return Integer.valueOf(value);
-                case LONG:
-                    return Long.valueOf(value);
+
+                case BYTE:
+                case INT16:
                 case SHORT:
                     return Short.valueOf(value);
+
+                case UINT32:
+                case INT64:
+                case LONG:
+                    return Long.valueOf(value);
+
+                case UINT64:
+                case FLOAT:
+                case SINGLE:
+                    return Float.valueOf(value);
+
+                case DOUBLE:
+                    return Double.valueOf(value);
+
+                case BOOL:
+                    return Boolean.valueOf(value);
+
+                case OBJECT:
                 case STRING:
                     return value;
-                case BOOLEAN:
-                    return Boolean.valueOf(value);
+
+                case DATETIME:
+                    return getLocalDateTime(value);
+
+
                 default:
                     //JELogger.error("Failed to set variable\""+this.jobEngineElementName+"\" value to "+value+": Incompatible Type", null, this.jobEngineProjectID, LogSubModule.VARIABLE, this.jobEngineElementID);
                     return null;
@@ -87,63 +94,90 @@ public class JEVariable extends JEMonitoredData {
         }
     }
 
-    /*
-     * returns the class type based on a string defining the type
-     */
-    public static Class<?> getType(JEType type) {
-        String typeString = type.toString();
+    private static Class<?> getType(UnifiedType type) {
         Class<?> classType = null;
-        switch (typeString) {
-            case "BYTE":
+
+        switch (type) {
+            case SBYTE:
                 classType = byte.class;
                 break;
-            case "SBYTE":
-                classType = byte.class;
-                break;
-            case "INT":
+            case UINT16:
+            case INT32:
+            case INT:
                 classType = int.class;
                 break;
-            case "SHORT":
+            case BYTE:
+            case INT16:
+            case SHORT:
                 classType = short.class;
                 break;
-            case "LONG":
+            case UINT32:
+            case INT64:
+            case LONG:
                 classType = long.class;
                 break;
-            case "FLOAT":
+            case UINT64:
+            case FLOAT:
+            case SINGLE:
                 classType = float.class;
                 break;
-            case "DOUBLE":
+            case DOUBLE:
                 classType = double.class;
                 break;
-            case "CHAR":
+            case CHAR:
                 classType = char.class;
                 break;
-            case "BOOL":
+            case BOOL:
                 classType = boolean.class;
                 break;
-            case "OBJECT":
+            case OBJECT:
                 classType = Object.class;
                 break;
-            case "STRING":
+            case STRING:
                 classType = String.class;
                 break;
-            case "DATETIME":
+            case DATETIME:
                 classType = LocalDateTime.class;
                 break;
-            case "VOID":
-                classType = void.class;
-                break;
+
             default:
                 break; //add default value
         }
+
+
         return classType;
     }
 
-    public JEType getType() {
+    private static LocalDateTime getLocalDateTime(String value) {
+        try {
+
+            return LocalDateTime.parse(value);
+        } catch (
+                DateTimeParseException e) {
+            LoggerUtils.logException(e);
+            return null;
+        }
+    }
+
+
+    public JEVariable(String jobEngineElementID, String jobEngineProjectID, String name, String type,
+                      String initialValue, ArchiveOption isArchived,
+                      boolean isBroadcasted, String description, String createdBy, String modifiedby) throws VariableException {
+        super(jobEngineElementID, jobEngineProjectID, name, isArchived, isBroadcasted);
+        this.type = UnifiedType.valueOf(type);
+        this.initialValue = castValue(this.type, initialValue);
+        typeClass = getType(this.type);
+        this.value = this.initialValue;
+        this.jeObjectCreatedBy = createdBy;
+        this.jeObjectModifiedBy = modifiedby;
+        this.description = description;
+    }
+
+    public UnifiedType getType() {
         return type;
     }
 
-    public void setType(JEType type) {
+    public void setType(UnifiedType type) {
         this.type = type;
         typeClass = getType(type);
     }

@@ -27,10 +27,19 @@ public class SIOTHPorts {
 
     @JsonProperty("JE_ResponsePort")
     public int jeResponsePort;
-
+    @JsonProperty("DF_ResponsePort")
+    public int dfResponsePort;
 
     private SIOTHPorts() {
         // TODO Auto-generated constructor stub
+    }
+
+    public int getDfResponsePort() {
+        return dfResponsePort;
+    }
+
+    public void setDfResponsePort(int dfResponsePort) {
+        this.dfResponsePort = dfResponsePort;
     }
 
     public int getNodeManagerPort() {

@@ -5,6 +5,7 @@ import com.twilio.base.ResourceSet;
 import com.twilio.rest.api.v2010.account.OutgoingCallerId;
 import io.je.project.beans.JEProject;
 import io.je.project.config.LicenseProperties;
+import io.je.project.repository.ProjectRepository;
 import io.je.project.repository.RuleRepository;
 import io.je.rulebuilder.components.*;
 import io.je.rulebuilder.components.blocks.Block;
@@ -59,7 +60,6 @@ public class RuleService {
     private static final LogSubModule RULE = LogSubModule.RULE;
     private static final LogCategory CATEGORY = LogCategory.DESIGN_MODE;
     @Autowired
-    @Lazy
     RuleRepository ruleRepository;
     @Autowired
     @Lazy
@@ -73,35 +73,6 @@ public class RuleService {
 
     /*
      * Add a rule to a project
-     */
-
-    /*
-     * Update rule status
-     * */
-    public static void updateRuleStatus(JERule rule) {
-
-        if (rule.isRunning() || rule.getStatus() == Status.RUNNING_NOT_UP_TO_DATE) {
-            if (rule.isBuilt()) {
-                rule.setStatus(Status.RUNNING);
-            } else {
-                rule.setStatus(Status.RUNNING_NOT_UP_TO_DATE);
-            }
-        } else {
-
-            if (rule.containsErrors()) {
-                rule.setStatus(Status.ERROR);
-            } else if (rule.isCompiled()) {
-                rule.setStatus(Status.STOPPED);
-            } else { // FIXME case status equals Status.ERROR
-                rule.setStatus(Status.NOT_BUILT);
-            }
-
-        }
-
-    }
-
-    /*
-     * delete rule from a project
      */
 
     public void createRule(String projectId, RuleModel ruleModel) throws ProjectNotFoundException,
@@ -139,15 +110,13 @@ public class RuleService {
         ruleParameters.setDateEffective(ruleModel.getDateEffective());
         ruleParameters.setDateExpires(ruleModel.getDateExpires());
         rule.setRuleParameters(ruleParameters);
-
         rule.setStatus(Status.NOT_BUILT);
-
         project.addRule(rule);
         ruleRepository.save(rule);
     }
 
     /*
-     * update rule : update rule attributes
+     * delete rule from a project
      */
 
     public void deleteRule(String projectId, String ruleId)
@@ -176,9 +145,53 @@ public class RuleService {
         project.getRuleEngine()
                 .remove(ruleId);
         ruleRepository.deleteById(ruleId);
+        ProjectRepository.saveProject(project.getProjectId());
         JELogger.info(JEMessages.RULE_DELETED, LogCategory.DESIGN_MODE, projectId, LogSubModule.RULE,
                 ruleId);
     }
+
+    /*
+     * update rule : update rule attributes
+     */
+
+    /*
+     * Get Project by id
+     * */
+    private JEProject getProject(String projectId) throws ProjectNotFoundException, ProjectLoadException, LicenseNotActiveException {
+        JEProject project = projectService.getProjectById(projectId);
+        if (project == null) {
+            throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
+        }
+        return project;
+    }
+
+    /*
+     * Get rule
+     * */
+    private UserDefinedRule getRule(JEProject project, String ruleId) throws RuleNotFoundException {
+        if (!project.ruleExists(ruleId)) {
+            throw new RuleNotFoundException(project.getProjectId(), ruleId);
+        }
+        return (UserDefinedRule) project.getRule(ruleId);
+    }
+
+    /*
+     * Delete all rule block names in project
+     * */
+    private void removeAllRuleBlockNames(String projectId, String ruleId) throws LicenseNotActiveException, ProjectNotFoundException {
+        LicenseProperties.checkLicenseIsActive();
+
+        JEProject project = ProjectService.getProjectById(projectId);
+        Enumeration<String> blockIds = ((UserDefinedRule) project.getRule(ruleId)).getBlocks()
+                .getAllBlockIds();
+        while (blockIds.hasMoreElements()) {
+            project.removeBlockName(blockIds.nextElement());
+        }
+    }
+
+    /*
+     * delete block
+     */
 
     public void updateRule(String projectId, RuleModel ruleModel)
             throws ProjectNotFoundException, LicenseNotActiveException, ProjectLoadException {
@@ -297,7 +310,32 @@ public class RuleService {
         ruleRepository.save(ruleToUpdate);
     }
 
-    /*
+    /**
+     * Update rule status
+     */
+    public static void updateRuleStatus(JERule rule) {
+
+        if (rule.isRunning() || rule.getStatus() == Status.RUNNING_NOT_UP_TO_DATE) {
+            if (rule.isBuilt()) {
+                rule.setStatus(Status.RUNNING);
+            } else {
+                rule.setStatus(Status.RUNNING_NOT_UP_TO_DATE);
+            }
+        } else {
+
+            if (rule.containsErrors()) {
+                rule.setStatus(Status.ERROR);
+            } else if (rule.isCompiled()) {
+                rule.setStatus(Status.STOPPED);
+            } else {
+                rule.setStatus(Status.NOT_BUILT);
+            }
+
+        }
+
+    }
+
+    /**
      * update rule : add block to rule
      */
     public String addBlockToRule(BlockModel blockModel) throws AddRuleBlockException, ProjectNotFoundException,
@@ -358,8 +396,34 @@ public class RuleService {
 
     }
 
-    /*
-     * delete block
+    /**
+     * Check if block format is valid
+     */
+    public void verifyBlockFormatIsValid(BlockModel blockModel)
+            throws AddRuleBlockException, LicenseNotActiveException {
+        LicenseProperties.checkLicenseIsActive();
+
+        // block Id can't be null
+        if (blockModel == null || blockModel.getBlockId() == null || blockModel.getBlockId()
+                .isEmpty()) {
+            throw new AddRuleBlockException(JEMessages.BLOCK_ID_NULL);
+
+        }
+
+        if (blockModel.getBlockName() == null || blockModel.getBlockName()
+                .isEmpty()) {
+            throw new AddRuleBlockException(JEMessages.BLOCK_NAME_EMPTY);
+
+        }
+        // block operation id can't be empty
+        if (blockModel.getOperationId() == 0) {
+            throw new AddRuleBlockException(JEMessages.BLOCK_OPERATION_ID_UNKNOWN);
+        }
+
+    }
+
+    /**
+     * Retrieve list of all rules that exist in a project.
      */
 
     /*
@@ -408,7 +472,6 @@ public class RuleService {
             if (project.blockNameExists(block.getBlockName())) {
                 throw new AddRuleBlockException(JEMessages.BLOCK_NAME_EXISTS);
             }
-            project.removeBlockName(block.getJobEngineElementID());
             project.addBlockName(blockModel.getBlockId(), block.getBlockName());
 
         }
@@ -459,25 +522,6 @@ public class RuleService {
     }
 
     /*
-     * @Async public CompletableFuture<List<OperationStatusDetails>>
-     * compileAllProjectRules(String projectId) throws ProjectNotFoundException ,
-     * LicenseNotActiveException { LicenseProperties.checkLicenseIsActive();
-     *
-     *
-     * JELogger.debug("[project = " + project.getProjectName() + "]" +
-     * JEMessages.BUILDING_RULES, CATEGORY, projectId, RULE, null); return
-     * CompletableFuture.completedFuture(compileRules(projectId,ruleIds)); }
-     */
-    private void cleanUpRules(JEProject project) throws JERunnerErrorException {
-
-        for (JERule rule : project.getRules()
-                .values()) {
-            cleanUpRule(project, rule.getJobEngineElementID());
-        }
-
-    }
-
-    /*
      * Add Rule To Rule engine
      */
     public List<OperationStatusDetails> buildRules(String projectId)
@@ -510,25 +554,34 @@ public class RuleService {
     }
 
     /*
-     * Retrieve list of all rules that exist in a project.
+     * @Async public CompletableFuture<List<OperationStatusDetails>>
+     * compileAllProjectRules(String projectId) throws ProjectNotFoundException ,
+     * LicenseNotActiveException { LicenseProperties.checkLicenseIsActive();
+     *
+     *
+     * JELogger.debug("[project = " + project.getProjectName() + "]" +
+     * JEMessages.BUILDING_RULES, CATEGORY, projectId, RULE, null); return
+     * CompletableFuture.completedFuture(compileRules(projectId,ruleIds)); }
      */
+    private void cleanUpRules(JEProject project) throws JERunnerErrorException {
+
+        for (JERule rule : project.getRules()
+                .values()) {
+            cleanUpRule(project, rule.getJobEngineElementID());
+        }
+
+    }
 
     private void cleanUpRule(JEProject project, String ruleId) throws JERunnerErrorException {
 
         String rulePrefix = IdManager.generateSubRulePrefix(ruleId);
-
         FileUtilities.deleteFilesInPathByPrefix(project.getConfigurationPath(), rulePrefix);
-
         JELogger.debug(JEMessages.DELETING_RULE_RUNNER, CATEGORY, project.getProjectId(), RULE, ruleId);
-
         if (project.getRule(ruleId) instanceof UserDefinedRule) {
-
             UserDefinedRule rule = (UserDefinedRule) project.getRule(ruleId);
-
             for (String subRuleId : rule.getSubRules()) {
                 JERunnerAPIHandler.deleteRule(project.getProjectId(), subRuleId);
             }
-
         }
 
     }
@@ -620,43 +673,15 @@ public class RuleService {
         if (!project.ruleExists(ruleId)) {
             throw new RuleNotFoundException(projectId, ruleId);
         }
-
         JELogger.debug(
                 "[project = " + project.getProjectName() + "] [rule = "
                         + project.getRules()
                         .get(ruleId)
                         .getJobEngineElementName() + "]" + JEMessages.FRONT_CONFIG,
                 CATEGORY, projectId, RULE, ruleId);
-
-        project.getRule(ruleId).setRuleFrontConfig(config);
-
+        project.getRule(ruleId)
+                .setRuleFrontConfig(config);
         ruleRepository.save(project.getRule(ruleId));
-    }
-
-    /*
-     * Check if block format is valid
-     * */
-    public void verifyBlockFormatIsValid(BlockModel blockModel)
-            throws AddRuleBlockException, LicenseNotActiveException {
-        LicenseProperties.checkLicenseIsActive();
-
-        // block Id can't be null
-        if (blockModel == null || blockModel.getBlockId() == null || blockModel.getBlockId()
-                .isEmpty()) {
-            throw new AddRuleBlockException(JEMessages.BLOCK_ID_NULL);
-
-        }
-
-        if (blockModel.getBlockName() == null || blockModel.getBlockName()
-                .isEmpty()) {
-            throw new AddRuleBlockException(JEMessages.BLOCK_NAME_EMPTY);
-
-        }
-        // block operation id can't be empty
-        if (blockModel.getOperationId() == 0) {
-            throw new AddRuleBlockException(JEMessages.BLOCK_OPERATION_ID_UNKNOWN);
-        }
-
     }
 
     /*
@@ -727,20 +752,6 @@ public class RuleService {
     }
 
     /*
-     * Delete all rule block names in project
-     * */
-    private void removeAllRuleBlockNames(String projectId, String ruleId) throws LicenseNotActiveException, ProjectNotFoundException, ProjectLoadException {
-        LicenseProperties.checkLicenseIsActive();
-
-        JEProject project = projectService.getProjectById(projectId);
-        Enumeration<String> blockIds = ((UserDefinedRule) project.getRule(ruleId)).getBlocks()
-                .getAllBlockIds();
-        while (blockIds.hasMoreElements()) {
-            project.removeBlockName(blockIds.nextElement());
-        }
-    }
-
-    /*
      * Delete all rules in project
      * */
     public void deleteAll(String projectId) {
@@ -759,27 +770,6 @@ public class RuleService {
             map.put(rule.getJobEngineElementID(), rule);
         }
         return map;
-    }
-
-    /*
-     * Get Project by id
-     * */
-    private JEProject getProject(String projectId) throws ProjectNotFoundException, ProjectLoadException, LicenseNotActiveException {
-        JEProject project = projectService.getProjectById(projectId);
-        if (project == null) {
-            throw new ProjectNotFoundException(JEMessages.PROJECT_NOT_FOUND);
-        }
-        return project;
-    }
-
-    /*
-     * Get rule
-     * */
-    private UserDefinedRule getRule(JEProject project, String ruleId) throws RuleNotFoundException {
-        if (!project.ruleExists(ruleId)) {
-            throw new RuleNotFoundException(project.getProjectId(), ruleId);
-        }
-        return (UserDefinedRule) project.getRule(ruleId);
     }
 
     /*
@@ -865,6 +855,53 @@ public class RuleService {
         return results;
 
     }
+
+    /*
+     * Stop list of rules
+     * */
+    public List<OperationStatusDetails> stopRules(String projectId, List<String> ruleIds)
+            throws ProjectNotFoundException, LicenseNotActiveException, ProjectLoadException {
+        LicenseProperties.checkLicenseIsActive();
+
+        if (ruleIds == null) {
+
+            ruleIds = Collections.list(getProject(projectId).getRules()
+                    .keys());
+        }
+
+        List<OperationStatusDetails> results = new ArrayList<>();
+        for (String ruleId : ruleIds) {
+
+            results.add(stopRule(projectId, ruleId));
+
+        }
+
+        return results;
+
+    }
+
+    /*
+     * @Async public List<CompletableFuture<OperationStatusDetails>>
+     * compileRules1(String projectId, List<String> ruleIds) throws
+     * LicenseNotActiveException, ProjectNotFoundException {
+     * LicenseProperties.checkLicenseIsActive();
+     *
+     * System.out.println("----Compiling rules : "+ Instant.now() );
+     * if(ruleIds==null) {
+     *
+     * ruleIds = Collections.list(getProject(projectId).getRules().keys()); }
+     *
+     * ArrayList<CompletableFuture<OperationStatusDetails>> ruleFuture = new
+     * ArrayList<>(); for (String ruleId : ruleIds) {
+     * ruleFuture.add(asyncRuleService.compileRule(projectId, ruleId, true));
+     *
+     * }
+     *
+     *
+     * return ruleFuture;
+     *
+     * }
+     */
 
     /*
      * Stop rule
@@ -956,53 +993,6 @@ public class RuleService {
     }
 
     /*
-     * @Async public List<CompletableFuture<OperationStatusDetails>>
-     * compileRules1(String projectId, List<String> ruleIds) throws
-     * LicenseNotActiveException, ProjectNotFoundException {
-     * LicenseProperties.checkLicenseIsActive();
-     *
-     * System.out.println("----Compiling rules : "+ Instant.now() );
-     * if(ruleIds==null) {
-     *
-     * ruleIds = Collections.list(getProject(projectId).getRules().keys()); }
-     *
-     * ArrayList<CompletableFuture<OperationStatusDetails>> ruleFuture = new
-     * ArrayList<>(); for (String ruleId : ruleIds) {
-     * ruleFuture.add(asyncRuleService.compileRule(projectId, ruleId, true));
-     *
-     * }
-     *
-     *
-     * return ruleFuture;
-     *
-     * }
-     */
-
-    /*
-     * Stop list of rules
-     * */
-    public List<OperationStatusDetails> stopRules(String projectId, List<String> ruleIds)
-            throws ProjectNotFoundException, LicenseNotActiveException, ProjectLoadException {
-        LicenseProperties.checkLicenseIsActive();
-
-        if (ruleIds == null) {
-
-            ruleIds = Collections.list(getProject(projectId).getRules()
-                    .keys());
-        }
-
-        List<OperationStatusDetails> results = new ArrayList<>();
-        for (String ruleId : ruleIds) {
-
-            results.add(stopRule(projectId, ruleId));
-
-        }
-
-        return results;
-
-    }
-
-    /*
      * Compile list of rules
      * */
     public CompletableFuture<List<OperationStatusDetails>> compileRules(String projectId, List<String> ruleIds)
@@ -1085,6 +1075,7 @@ public class RuleService {
         }
         return users;
     }
+
     public String getSMSEagleContacts(Map<String, String> smsEagle) {
         try {
             HttpURLConnection conn;
@@ -1094,10 +1085,9 @@ public class RuleService {
             String result = "";
             String baseUrl = smsEagle.get(SMS_URI) + "/http_api/contact_read?access_token=" + smsEagle.get("accountToken") + "&responsetype=xml";
             if (smsEagle.get("accountSID") != null) {
-                baseUrl = smsEagle.get(SMS_URI) + "/http_api/contact_read?login=" + smsEagle.get("accountSID") + "&pass=" + smsEagle.get("accountToken") + "&responsetype=xml" ;
-            }
-            else {
-                baseUrl = smsEagle.get(SMS_URI) + "/http_api/contact_read?access_token=" + smsEagle.get("accountToken") + "&responsetype=xml" ;
+                baseUrl = smsEagle.get(SMS_URI) + "/http_api/contact_read?login=" + smsEagle.get("accountSID") + "&pass=" + smsEagle.get("accountToken") + "&responsetype=xml";
+            } else {
+                baseUrl = smsEagle.get(SMS_URI) + "/http_api/contact_read?access_token=" + smsEagle.get("accountToken") + "&responsetype=xml";
             }
             try {
                 URL url = new URL(baseUrl);
@@ -1127,6 +1117,7 @@ public class RuleService {
             throw new RuntimeException(e);
         }
     }
+
     public String getSMSEagleGroups(Map<String, String> smsEagle) {
         try {
             HttpURLConnection conn;
@@ -1134,12 +1125,11 @@ public class RuleService {
             String line;
             String result = "";
             String jsonPrettyPrintString;
-            String  baseUrl;
+            String baseUrl;
             if (smsEagle.get(TWILIO_ACCOUNT_SID) != null) {
-                baseUrl = smsEagle.get(SMS_URI) + "/http_api/group_read?login=" + smsEagle.get(TWILIO_ACCOUNT_SID) + "&pass=" + smsEagle.get(TWILIO_ACCOUNT_TOKEN) + "&responsetype=xml" ;
-            }
-            else {
-                baseUrl = smsEagle.get(SMS_URI) + "/http_api/group_read?access_token=" + smsEagle.get(TWILIO_ACCOUNT_TOKEN) + "&responsetype=xml" ;
+                baseUrl = smsEagle.get(SMS_URI) + "/http_api/group_read?login=" + smsEagle.get(TWILIO_ACCOUNT_SID) + "&pass=" + smsEagle.get(TWILIO_ACCOUNT_TOKEN) + "&responsetype=xml";
+            } else {
+                baseUrl = smsEagle.get(SMS_URI) + "/http_api/group_read?access_token=" + smsEagle.get(TWILIO_ACCOUNT_TOKEN) + "&responsetype=xml";
             }
             try {
                 URL url = new URL(baseUrl);

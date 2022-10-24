@@ -23,12 +23,12 @@ public class ProcessRunner {
         String output = "";
         Process process = rt.exec(command);
         process.waitFor(30, TimeUnit.SECONDS);
-        return dumpProcessOutput(process, command, false, true);
+        return dumpProcessOutput(process, command, false, true, false);
 
         //return output;
     }
 
-    private static String dumpProcessOutput(Process process, String command, boolean executionOutput, boolean errorOutput) throws Exception {
+    private static String dumpProcessOutput(Process process, String command, boolean executionOutput, boolean errorOutput, boolean throwException) throws Exception {
         String output = "Executing command = " + command + "\n";
 
         if (executionOutput) {
@@ -59,7 +59,8 @@ public class ProcessRunner {
             if (errorTextBuilder.length() > 0) {
                 output += errorTextBuilder.toString() + "\n";
                 System.out.println(output);
-                throw new Exception("Error in executing command");
+                if (throwException)
+                    throw new Exception("Error in executing command");
 
             }
         }
@@ -91,7 +92,7 @@ public class ProcessRunner {
 
         Thread thread = new Thread(() -> {
             try {
-                dumpProcessOutput(process, command, true, true);
+                dumpProcessOutput(process, command, true, true, true);
             } catch (Exception e) {
                 LoggerUtils.logException(e);
                 throw new RuntimeException(e);

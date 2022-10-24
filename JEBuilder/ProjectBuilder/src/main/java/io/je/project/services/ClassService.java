@@ -323,7 +323,7 @@ public class ClassService {
         m.setMethodName(MAIN);
         m.setCode(script);
         FieldModel fieldModel = new FieldModel();
-        fieldModel.setType("String[]");
+        fieldModel.setType(UnifiedType.STRING_LIST);
         fieldModel.setName("args");
         List<FieldModel> list = new ArrayList<>();
         list.add(fieldModel);

@@ -1,6 +1,7 @@
 package io.je.rulebuilder.components.blocks.arithmetic.multipleInput;
 
 import io.je.rulebuilder.models.BlockModel;
+import io.je.utilities.beans.UnifiedType;
 
 public class MaximumBlock extends MultipleInputArithmeticBlock {
 
@@ -14,7 +15,7 @@ public class MaximumBlock extends MultipleInputArithmeticBlock {
     }
 
     @Override
-    protected String getArithmeticFormula(int level, String type) {
+    protected String getArithmeticFormula(int level, UnifiedType type) {
         return "MathUtilities.maximum( ";
 
     }

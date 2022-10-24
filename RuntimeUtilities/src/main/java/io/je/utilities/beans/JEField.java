@@ -2,7 +2,7 @@ package io.je.utilities.beans;
 
 public class JEField {
 
-    private String type;
+    private UnifiedType type;
 
     private String visibility;
 
@@ -21,11 +21,11 @@ public class JEField {
         this.name = name;
     }
 
-    public String getType() {
+    public UnifiedType getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(UnifiedType type) {
         this.type = type;
     }
 

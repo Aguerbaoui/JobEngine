@@ -64,37 +64,6 @@ public class RuleBuilder {
 
     }
 
-    // Avoid Drools error : Duplicate declaration for variable '... ' in the rule
-    public static String getDroolsConditionWithoutRepeatedDeclarations(String condition) {
-        String conditionWithoutDuplication = "";
-
-        String[] splittedCondition = condition.split(LINE_SEPERATOR);
-
-        // Outer loop
-        outer_loop: for (int i = 0; i < splittedCondition.length; i++) {
-
-            String line = splittedCondition[i];
-
-            if (line.equals(AND_DROOLS) || line.equals(OR_DROOLS) || line.equals(NOT_DROOLS_PREFIX) || line.equals(NOT_DROOLS_SUFFIX)) {
-
-                conditionWithoutDuplication += line + LINE_SEPERATOR;
-
-                continue;
-            }
-
-            for (int j = 0; j < i; j++) {
-                if (line.equals(splittedCondition[j])) {
-                    continue outer_loop;
-                }
-            }
-
-            conditionWithoutDuplication += line + LINE_SEPERATOR;
-
-        }
-
-        return conditionWithoutDuplication;
-    }
-
     /*
      * Generate drl file from rules and saves them to the provided path
      */
@@ -117,69 +86,6 @@ public class RuleBuilder {
         if (jeRule instanceof ScriptedRule) {
             rulePath = ((ScriptedRule) jeRule).generateDRL(buildPath);
             sendDRLToJeRunner(jeRule, rulePath, compileOnly);
-        }
-
-    }
-
-
-    /*
-     * send rule to JERunner
-     */
-    public static void sendDRLToJeRunner(JERule rule, String path, boolean compileOnly) throws RuleBuildFailedException, JERunnerErrorException {
-
-        // compile rule
-
-        HashMap<String, Object> ruleMap = new HashMap<>();
-
-        ruleMap.put(JERunnerRuleMapping.PROJECT_ID, rule.getJobEngineProjectID());
-        ruleMap.put(JERunnerRuleMapping.RULE_ID, rule.getJobEngineElementID());
-        ruleMap.put(JERunnerRuleMapping.PROJECT_NAME, rule.getJobEngineProjectName());
-        ruleMap.put(JERunnerRuleMapping.RULE_NAME, rule.getJobEngineElementName());
-
-        ruleMap.put(JERunnerRuleMapping.RULE_PATH, path);
-        // TODO: remove hard-coded rule format
-        ruleMap.put(JERunnerRuleMapping.RULE_FORMAT, "DRL");
-        ruleMap.put(JERunnerRuleMapping.RULE_TOPICS, rule.getTopics()
-                .keySet());
-
-        JELogger.debug(" [ project = " + rule.getJobEngineProjectName() + " ] [rule = " + rule.getJobEngineElementName() + "]"
-                        + JEMessages.SENDNG_RULE_TO_RUNNER,
-                LogCategory.DESIGN_MODE, rule.getJobEngineProjectID(),
-                LogSubModule.RULE, rule.getJobEngineElementID());
-
-        JELogger.debug(" Rule : " + ruleMap,
-                LogCategory.DESIGN_MODE, rule.getJobEngineProjectID(),
-                LogSubModule.RULE, rule.getJobEngineElementID());
-
-        JEResponse jeRunnerResp = null;
-
-        if (compileOnly) {
-
-            jeRunnerResp = JERunnerAPIHandler.compileRule(ruleMap);
-
-        } else {
-            try {
-
-                jeRunnerResp = JERunnerAPIHandler.updateRule(ruleMap);
-
-            } catch (JERunnerErrorException e) {
-                JELogger.logException(e);
-                JELogger.error(" [ project = " + rule.getJobEngineProjectName() + " ] [rule = " + rule.getJobEngineElementName() + "]"
-                                + JEMessages.RULE_BUILD_FAILED + " : " + e.getMessage(),
-                        LogCategory.DESIGN_MODE, rule.getJobEngineProjectID(),
-                        LogSubModule.RULE, rule.getJobEngineElementID());
-                throw new RuleBuildFailedException(JEMessages.RULE_BUILD_FAILED + " : " + e.getMessage());
-            }
-        }
-
-        if (jeRunnerResp == null || jeRunnerResp.getCode() != ResponseCodes.CODE_OK) {
-            String response = jeRunnerResp == null ? JEMessages.JERUNNER_UNREACHABLE : jeRunnerResp.getMessage();
-            JELogger.error("[project = " + rule.getJobEngineProjectName()
-                            + "][rule =" + rule.getJobEngineElementName() + " ] : "
-                            + JEMessages.RULE_BUILD_FAILED + response,
-                    LogCategory.DESIGN_MODE, rule.getJobEngineProjectID(),
-                    LogSubModule.RULE, rule.getJobEngineElementID());
-            throw new RuleBuildFailedException(response);
         }
 
     }
@@ -318,6 +224,169 @@ lock-on-active false
         return scriptedRules;
     }
 
+    /*
+     * send rule to JERunner
+     */
+    public static void sendDRLToJeRunner(JERule rule, String path, boolean compileOnly) throws RuleBuildFailedException, JERunnerErrorException {
+
+        // compile rule
+
+        HashMap<String, Object> ruleMap = new HashMap<>();
+
+        ruleMap.put(JERunnerRuleMapping.PROJECT_ID, rule.getJobEngineProjectID());
+        ruleMap.put(JERunnerRuleMapping.RULE_ID, rule.getJobEngineElementID());
+        ruleMap.put(JERunnerRuleMapping.PROJECT_NAME, rule.getJobEngineProjectName());
+        ruleMap.put(JERunnerRuleMapping.RULE_NAME, rule.getJobEngineElementName());
+
+        ruleMap.put(JERunnerRuleMapping.RULE_PATH, path);
+        // TODO: remove hard-coded rule format
+        ruleMap.put(JERunnerRuleMapping.RULE_FORMAT, "DRL");
+        ruleMap.put(JERunnerRuleMapping.RULE_TOPICS, rule.getTopics()
+                .keySet());
+
+        JELogger.debug(" [ project = " + rule.getJobEngineProjectName() + " ] [rule = " + rule.getJobEngineElementName() + "]"
+                        + JEMessages.SENDNG_RULE_TO_RUNNER,
+                LogCategory.DESIGN_MODE, rule.getJobEngineProjectID(),
+                LogSubModule.RULE, rule.getJobEngineElementID());
+
+        JELogger.debug(" Rule : " + ruleMap,
+                LogCategory.DESIGN_MODE, rule.getJobEngineProjectID(),
+                LogSubModule.RULE, rule.getJobEngineElementID());
+
+        JEResponse jeRunnerResp = null;
+
+        if (compileOnly) {
+
+            jeRunnerResp = JERunnerAPIHandler.compileRule(ruleMap);
+
+        } else {
+            try {
+
+                jeRunnerResp = JERunnerAPIHandler.updateRule(ruleMap);
+
+            } catch (JERunnerErrorException e) {
+                JELogger.logException(e);
+                JELogger.error(" [ project = " + rule.getJobEngineProjectName() + " ] [rule = " + rule.getJobEngineElementName() + "]"
+                                + JEMessages.RULE_BUILD_FAILED + " : " + e.getMessage(),
+                        LogCategory.DESIGN_MODE, rule.getJobEngineProjectID(),
+                        LogSubModule.RULE, rule.getJobEngineElementID());
+                throw new RuleBuildFailedException(JEMessages.RULE_BUILD_FAILED + " : " + e.getMessage());
+            }
+        }
+
+        if (jeRunnerResp == null || jeRunnerResp.getCode() != ResponseCodes.CODE_OK) {
+            String response = jeRunnerResp == null ? JEMessages.JERUNNER_UNREACHABLE : jeRunnerResp.getMessage();
+            JELogger.error("[project = " + rule.getJobEngineProjectName()
+                            + "][rule =" + rule.getJobEngineElementName() + " ] : "
+                            + JEMessages.RULE_BUILD_FAILED + response,
+                    LogCategory.DESIGN_MODE, rule.getJobEngineProjectID(),
+                    LogSubModule.RULE, rule.getJobEngineElementID());
+            throw new RuleBuildFailedException(response);
+        }
+
+    }
+
+    public static Set<Block> getRootBlocks(UserDefinedRule uRule) throws RuleBuildFailedException {
+        Set<Block> roots = new HashSet<>();
+
+        // Number of execution blocks
+        int executionBlockCounter = 0;
+
+        if (uRule.getBlocks() != null && uRule.getBlocks().getAll() != null) {
+
+            // Get root blocks
+            for (Block executionBlock : uRule.getBlocks().getAll()) {
+
+                if (executionBlock instanceof ExecutionBlock) {
+
+                    executionBlockCounter++;
+
+                    // If exec block has no input block link, it's a root FIXME is it true?
+                    if (executionBlock.getInputBlockLinks() == null || executionBlock.getInputBlockLinks().isEmpty()) {
+
+                        roots.add(executionBlock);
+
+                    } else {
+
+                        for (var rootInputBlockLink : executionBlock.getInputBlockLinks()) {
+
+                            if (rootInputBlockLink != null && rootInputBlockLink.getBlock() != null) {
+
+                                Block block = uRule.getBlocks().getBlock(rootInputBlockLink.getBlock().getJobEngineElementID());
+
+                                if (block != null) {
+
+                                    roots.add(block);
+
+                                }
+
+                                if (block.getInputBlockLinks() != null) {
+
+                                    for (var b : block.getInputBlockLinks()) {
+
+                                        if (b.getBlock() instanceof PersistableBlock) {
+                                            ((PersistableBlock) b.getBlock()).setTimePersistenceValue(((PersistableBlock) rootInputBlockLink.getBlock()).getTimePersistenceValue());
+                                            ((PersistableBlock) b.getBlock()).setTimePersistenceUnit(((PersistableBlock) rootInputBlockLink.getBlock()).getTimePersistenceUnit());
+                                        }
+
+                                    }
+
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        }
+
+        // If this rule has no execution block, then it is not valid.
+        if (executionBlockCounter == 0) {
+            JELogger.error("[project = " + uRule.getJobEngineProjectName() + "][rule = " + uRule.getJobEngineElementName() + "] " + JEMessages.NO_EXECUTION_BLOCK,
+                    LogCategory.DESIGN_MODE, uRule.getJobEngineProjectID(),
+                    LogSubModule.RULE, uRule.getJobEngineElementID());
+            throw new RuleBuildFailedException(JEMessages.NO_EXECUTION_BLOCK);
+        }
+
+        return roots;
+    }
+
+    // Avoid Drools error : Duplicate declaration for variable '... ' in the rule
+    public static String getDroolsConditionWithoutRepeatedDeclarations(String condition) {
+        String conditionWithoutDuplication = "";
+
+        String[] splittedCondition = condition.split(LINE_SEPERATOR);
+
+        // Outer loop
+        outer_loop:
+        for (int i = 0; i < splittedCondition.length; i++) {
+
+            String line = splittedCondition[i];
+
+            if (line.equals(AND_DROOLS) || line.equals(OR_DROOLS) || line.equals(NOT_DROOLS_PREFIX) || line.equals(NOT_DROOLS_SUFFIX)) {
+
+                conditionWithoutDuplication += line + LINE_SEPERATOR;
+
+                continue;
+            }
+
+            for (int j = 0; j < i; j++) {
+                if (line.equals(splittedCondition[j])) {
+                    continue outer_loop;
+                }
+            }
+
+            conditionWithoutDuplication += line + LINE_SEPERATOR;
+
+        }
+
+        return conditionWithoutDuplication;
+    }
 
     /* generate DRL for this rule */
     private static String generateScript(RuleParameters ruleParameters, String ruleId, String duration, String condition,
@@ -421,77 +490,6 @@ lock-on-active false
         }
 
     }
-
-    public static Set<Block> getRootBlocks(UserDefinedRule uRule) throws RuleBuildFailedException {
-        Set<Block> roots = new HashSet<>();
-
-        // Number of execution blocks
-        int executionBlockCounter = 0;
-
-        if (uRule.getBlocks() != null && uRule.getBlocks().getAll() != null) {
-
-            // Get root blocks
-            for (Block executionBlock : uRule.getBlocks().getAll()) {
-
-                if (executionBlock instanceof ExecutionBlock) {
-
-                    executionBlockCounter++;
-
-                    // If exec block has no input block link, it's a root FIXME is it true?
-                    if (executionBlock.getInputBlockLinks() == null || executionBlock.getInputBlockLinks().isEmpty()) {
-
-                        roots.add(executionBlock);
-
-                    } else {
-
-                        for (var rootInputBlockLink : executionBlock.getInputBlockLinks()) {
-
-                            if (rootInputBlockLink != null && rootInputBlockLink.getBlock() != null) {
-
-                                Block block = uRule.getBlocks().getBlock(rootInputBlockLink.getBlock().getJobEngineElementID());
-
-                                if (block != null) {
-
-                                    roots.add(block);
-
-                                }
-
-                                if (block.getInputBlockLinks() != null) {
-
-                                    for (var b : block.getInputBlockLinks()) {
-
-                                        if (b.getBlock() instanceof PersistableBlock) {
-                                            ((PersistableBlock) b.getBlock()).setTimePersistenceValue(((PersistableBlock) rootInputBlockLink.getBlock()).getTimePersistenceValue());
-                                            ((PersistableBlock) b.getBlock()).setTimePersistenceUnit(((PersistableBlock) rootInputBlockLink.getBlock()).getTimePersistenceUnit());
-                                        }
-
-                                    }
-
-                                }
-
-                            }
-
-                        }
-
-                    }
-
-                }
-
-            }
-
-        }
-
-        // If this rule has no execution block, then it is not valid.
-        if (executionBlockCounter == 0) {
-            JELogger.error("[project = " + uRule.getJobEngineProjectName() + "][rule = " + uRule.getJobEngineElementName() + "] " + JEMessages.NO_EXECUTION_BLOCK,
-                    LogCategory.DESIGN_MODE, uRule.getJobEngineProjectID(),
-                    LogSubModule.RULE, uRule.getJobEngineElementID());
-            throw new RuleBuildFailedException(JEMessages.NO_EXECUTION_BLOCK);
-        }
-
-        return roots;
-    }
-
 
     public static void buildAndRun(JERule jeRule, String configurationPath) {
         // TODO Auto-generated method stub

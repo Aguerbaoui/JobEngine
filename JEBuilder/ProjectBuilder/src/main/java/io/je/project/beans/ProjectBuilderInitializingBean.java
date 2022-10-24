@@ -54,7 +54,7 @@ public class ProjectBuilderInitializingBean implements InitializingBean {
                     LogCategory.DESIGN_MODE, null,
                     LogSubModule.JEBUILDER, null);
 
-            ConfigurationConstants.setJavaGenerationPath(SIOTHConfigUtility.getSiothConfig().getJobEngine().getGeneratedClassesPath());
+            //ConfigurationConstants.setJavaGenerationPath(SIOTHConfigUtility.getSiothConfig().getJobEngine().getGeneratedClassesPath());
 
             //Initialize authentication interceptor
             AuthenticationInterceptor.init(builderProperties.getIssuer());

@@ -14,7 +14,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.LinkedList;
 import java.util.Queue;
 
-/*
+/**
  * Class Responsible for logging
  * A log request of level p in a logger with level q is enabled if p >= q.
  * It assumes that levels are ordered. For the standard levels, we have   TRACE < DEBUG < INFO < WARN < ERROR
@@ -154,33 +154,6 @@ public class LoggerUtils {
      * objectIds[i] + " ] "; } } msg += extraInfo; return msg; }
      */
 
-    /***************************************************************************************************************/
-    protected static Level getLogLevel(String level) {
-        // ALL < TRACE < DEBUG < INFO < WARN < ERROR < FATAL < OFF
-        Level lvl = Level.DEBUG;
-        switch (level.toUpperCase()) {
-            case "ERROR":
-                return Level.ERROR;
-            case "DEBUG":
-                break;
-            case "INFO":
-                return Level.INFO;
-            case "INFORM":
-                return Level.INFO;
-            case "WARN":
-                return Level.WARN;
-            case "TRACE":
-                return Level.TRACE;
-            case "CONTROL":
-                return CONTROL;
-            case "OFF":
-                return Level.OFF;
-            case "ALL":
-                return Level.ALL;
-        }
-        return lvl;
-    }
-
     public static void initLogger(String appName, String logPath, String level, boolean isDev) {
 
         // TODO Remove the old logger context initialization (spring/activiti/drools)
@@ -216,6 +189,33 @@ public class LoggerUtils {
         // trace(JELogger.class, "Builder Logger initialized");
         logger.info(getInitialLogMessage(appName, level));
 
+    }
+
+    /***************************************************************************************************************/
+    protected static Level getLogLevel(String level) {
+        // ALL < TRACE < DEBUG < INFO < WARN < ERROR < FATAL < OFF
+        Level lvl = Level.DEBUG;
+        switch (level.toUpperCase()) {
+            case "ERROR":
+                return Level.ERROR;
+            case "DEBUG":
+                break;
+            case "INFO":
+                return Level.INFO;
+            case "INFORM":
+                return Level.INFO;
+            case "WARN":
+                return Level.WARN;
+            case "TRACE":
+                return Level.TRACE;
+            case "CONTROL":
+                return CONTROL;
+            case "OFF":
+                return Level.OFF;
+            case "ALL":
+                return Level.ALL;
+        }
+        return lvl;
     }
 
     private static String getInitialLogMessage(String appName, String level) {

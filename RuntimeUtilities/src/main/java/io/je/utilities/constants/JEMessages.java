@@ -138,7 +138,7 @@ public class JEMessages {
 
     public static final String LOADING_PROJECT = "Loading project from database";
 
-    public static final String LOADING_PROJECTS = "Loading all projects from database ";
+    public static final String LOADING_PROJECTS = "Loading all projects from project management API ";
 
     public static final String RESETTING_PROJECTS = "Resetting projects after updating JERunner";
 

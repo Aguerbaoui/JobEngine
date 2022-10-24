@@ -1,4 +1,4 @@
-package io.je.project.beans.project.request;
+package io.je.project.beans.project.receivedrequest;
 
 public enum ProjectActionEnum {
     Start, Stop, Build, Delete, Update, GetInfo, CLEANALL //FIXME up/low case

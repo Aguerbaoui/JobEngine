@@ -11,6 +11,7 @@ import io.je.utilities.config.ConfigurationConstants;
 import io.je.utilities.config.JEConfiguration;
 import io.je.utilities.constants.JEMessages;
 import io.je.utilities.constants.ResponseCodes;
+import io.je.utilities.exceptions.JERunnerErrorException;
 import io.je.utilities.instances.InstanceManager;
 import io.je.utilities.log.JELogger;
 import io.je.utilities.models.VariableModel;
@@ -18,9 +19,11 @@ import io.je.utilities.runtimeobject.JEObject;
 import io.siothconfig.SIOTHConfigUtility;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.springframework.context.annotation.Description;
 import utils.log.*;
 import utils.string.StringUtilities;
 
+import java.beans.MethodDescriptor;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -66,10 +69,23 @@ public class JobEngine {
     /*
      * Add a variable to runner from script task
      * */
+    static {
+        JEConfiguration.loadProperties();
+    }
+
+    /**
+     * hello i'm a method
+     *
+     * @param projectName
+     * @param varName
+     * @param varValue
+     * @return
+     */
+    @Description("test")
     public static int addIntegerVariable(String projectName, String varName, int varValue) {
 
         try {
-            JEResponse response = JEBuilderApiHandler.addVariable(projectName, varName, getVariableBody(StringUtilities.generateUUID(), projectName, varName, varValue, JEType.INT.toString()));
+            JEResponse response = JEBuilderApiHandler.addVariable(projectName, varName, getVariableBody(StringUtilities.generateUUID(), projectName, varName, varValue, UnifiedType.INT.toString()));
             return response.getCode();
         } catch (Exception e) {
             LoggerUtils.logException(e);
@@ -78,13 +94,48 @@ public class JobEngine {
         }
     }
 
+    //Get variable body from parameters
+    public static Map<String, Object> getVariableBody(String varId, String varProjectId, String varName, Object varValue, String type) {
+        HashMap<String, Object> body = new HashMap<>();
+        body.put("id", varId);
+        body.put("projectId", varProjectId);
+        body.put("name", varName);
+        body.put("type", type);
+        body.put("value", varValue);
+        body.put("initialValue", varValue);
+        return body;
+    }
+
+    /*
+     * Inform user of a message with level
+     * */
+    public static int sendLogMessage(String message, String projectName, LogLevel level, String objectName,
+                                     LogCategory logCategory, LogSubModule logSubModule) {
+        //Network.makeGetNetworkCallWithResponse()
+        int respCode = -1;
+        JEConfiguration.loadProperties();
+        try {
+            LogMessage logMessage = new LogMessage(level, message, Instant.now()
+                    .toString(), projectName, logSubModule,
+                    objectName, objectName);
+            JEZMQResponse response = JERunnerRequester.sendLogMessage(logMessage);
+            if (response.getResponse()
+                    .equals(ZMQResponseType.SUCCESS)) return ResponseCodes.CODE_OK;
+
+        } catch (Exception e) {
+            LoggerUtils.logException(e);
+        }
+
+        return respCode;
+    }
+
     /*
      * Add a variable to runner from script task
      * */
     public static int addLongVariable(String projectName, String varName, long varValue) {
 
         try {
-            JEResponse response = JEBuilderApiHandler.addVariable(projectName, varName, getVariableBody(StringUtilities.generateUUID(), projectName, varName, varValue, JEType.LONG.toString()));
+            JEResponse response = JEBuilderApiHandler.addVariable(projectName, varName, getVariableBody(StringUtilities.generateUUID(), projectName, varName, varValue, UnifiedType.LONG.toString()));
             return response.getCode();
         } catch (Exception e) {
             LoggerUtils.logException(e);
@@ -99,7 +150,7 @@ public class JobEngine {
     public static int addDoubleVariable(String projectName, String varName, double varValue) {
 
         try {
-            JEResponse response = JEBuilderApiHandler.addVariable(projectName, varName, getVariableBody(StringUtilities.generateUUID(), projectName, varName, varValue, JEType.DOUBLE.toString()));
+            JEResponse response = JEBuilderApiHandler.addVariable(projectName, varName, getVariableBody(StringUtilities.generateUUID(), projectName, varName, varValue, UnifiedType.DOUBLE.toString()));
             return response.getCode();
         } catch (Exception e) {
             LoggerUtils.logException(e);
@@ -115,7 +166,7 @@ public class JobEngine {
     public static int addStringVariable(String projectName, String varName, String varValue) {
 
         try {
-            JEResponse response = JEBuilderApiHandler.addVariable(projectName, varName, getVariableBody(StringUtilities.generateUUID(), projectName, varName, varValue, JEType.STRING.toString()));
+            JEResponse response = JEBuilderApiHandler.addVariable(projectName, varName, getVariableBody(StringUtilities.generateUUID(), projectName, varName, varValue, UnifiedType.STRING.toString()));
             return response.getCode();
         } catch (Exception e) {
             LoggerUtils.logException(e);
@@ -131,7 +182,7 @@ public class JobEngine {
     public static int addBooleanVariable(String projectName, String varName, boolean varValue) {
 
         try {
-            JEResponse response = JEBuilderApiHandler.addVariable(projectName, varName, getVariableBody(StringUtilities.generateUUID(), projectName, varName, varValue, JEType.BOOLEAN.toString()));
+            JEResponse response = JEBuilderApiHandler.addVariable(projectName, varName, getVariableBody(StringUtilities.generateUUID(), projectName, varName, varValue, UnifiedType.BOOL.toString()));
             return response.getCode();
         } catch (Exception e) {
             LoggerUtils.logException(e);
@@ -194,18 +245,6 @@ public class JobEngine {
         }
     }
 
-    //Get variable body from parameters
-    public static Map<String, Object> getVariableBody(String varId, String varProjectId, String varName, Object varValue, String type) {
-        HashMap<String, Object> body = new HashMap<>();
-        body.put("id", varId);
-        body.put("projectId", varProjectId);
-        body.put("name", varName);
-        body.put("type", type);
-        body.put("value", varValue);
-        body.put("initialValue", varValue);
-        return body;
-    }
-
     /*
      * Add a variable to runner from script task
      * */
@@ -223,55 +262,6 @@ public class JobEngine {
     }*/
 
     /*
-     * Inform user of a message with inform level
-     * */
-    public static int informUser(String message, String projectName, String workflowName) {
-
-        //Network.makeGetNetworkCallWithResponse()
-        int respCode = -1;
-        JEConfiguration.loadProperties();
-        try {
-            InformModel informModel = new InformModel(message, projectName, workflowName);
-            JEZMQResponse response = JERunnerRequester.informUser(informModel);
-            if (response.getResponse()
-                    .equals(ZMQResponseType.SUCCESS)) return ResponseCodes.CODE_OK;
-            else {
-                sendLogMessage(JEMessages.ERROR_SENDING_INFORM_MESSAGE, projectName, LogLevel.ERROR,
-                        "", LogCategory.RUNTIME, LogSubModule.JERUNNER);
-            }
-        } catch (Exception e) {
-            LoggerUtils.logException(e);
-            sendLogMessage(JEMessages.ERROR_SENDING_INFORM_MESSAGE, projectName, LogLevel.ERROR,
-                    "", LogCategory.RUNTIME, LogSubModule.JERUNNER);
-        }
-
-        return respCode;
-    }
-
-    /*
-     * Inform user of a message with level
-     * */
-    public static int sendLogMessage(String message, String projectName, LogLevel level, String objectName,
-                                     LogCategory logCategory, LogSubModule logSubModule) {
-        //Network.makeGetNetworkCallWithResponse()
-        int respCode = -1;
-        JEConfiguration.loadProperties();
-        try {
-            LogMessage logMessage = new LogMessage(level, message, Instant.now()
-                    .toString(), projectName, logSubModule,
-                    objectName, objectName);
-            JEZMQResponse response = JERunnerRequester.sendLogMessage(logMessage);
-            if (response.getResponse()
-                    .equals(ZMQResponseType.SUCCESS)) return ResponseCodes.CODE_OK;
-
-        } catch (Exception e) {
-            LoggerUtils.logException(e);
-        }
-
-        return respCode;
-    }
-
-    /*
      * Trigger event from script
      * */
     public static int triggerEvent(String projectId, String eventName) {
@@ -287,6 +277,38 @@ public class JobEngine {
                     eventName, LogCategory.RUNTIME, LogSubModule.EVENT);
             return ResponseCodes.UNKNOWN_ERROR;
         }
+    }
+
+    //Execute a database sql query
+    public static HashMap<String, Object> executeSqlQuery(String dbId, String query) {
+        JEConfiguration.loadProperties();
+        HashMap<String, Object> response = null;
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            String data = DatabaseApiHandler.executeCommand(dbId, query);
+            response = mapper.readValue(data, HashMap.class);
+        } catch (Exception e) {
+            LoggerUtils.logException(e);
+            sendLogMessage(JEMessages.ERROR_EXECUTING_DB_QUERY, "", LogLevel.ERROR,
+                    null, LogCategory.RUNTIME, LogSubModule.WORKFLOW);
+        }
+        return response;
+    }
+
+    public static JSONArray executeSelectQuery(String dbId, String query) {
+        JEConfiguration.loadProperties();
+        JSONArray jsonArray = null;
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            String data = DatabaseApiHandler.executeCommand(dbId, query);
+            JSONObject jsonObject = new JSONObject(data);
+            jsonArray = new JSONArray(jsonObject.getJSONArray("values"));
+        } catch (Exception e) {
+            LoggerUtils.logException(e);
+            sendLogMessage(JEMessages.ERROR_EXECUTING_DB_QUERY, "", LogLevel.ERROR,
+                    null, LogCategory.RUNTIME, LogSubModule.WORKFLOW);
+        }
+        return jsonArray;
     }
 
     //Remove workflow from project
@@ -327,48 +349,164 @@ public class JobEngine {
         }
     }*/
 
-    //Execute a database sql query
-    public static HashMap<String, Object> executeSqlQuery(String dbId, String query) {
-        JEConfiguration.loadProperties();
-        HashMap<String, Object> response = null;
-        try {
-            ObjectMapper mapper = new ObjectMapper();
-            String data = DatabaseApiHandler.executeCommand(dbId, query);
-            response = mapper.readValue(data, HashMap.class);
-        } catch (Exception e) {
-            LoggerUtils.logException(e);
-            sendLogMessage(JEMessages.ERROR_EXECUTING_DB_QUERY, "", LogLevel.ERROR,
-                    null, LogCategory.RUNTIME, LogSubModule.WORKFLOW);
-        }
-        return response;
-    }
-
-    public static JSONArray executeSelectQuery(String dbId, String query) {
-        JEConfiguration.loadProperties();
-        JSONArray jsonArray = null;
-        try {
-            ObjectMapper mapper = new ObjectMapper();
-            String data = DatabaseApiHandler.executeCommand(dbId, query);
-            JSONObject jsonObject = new JSONObject(data);
-            jsonArray = new JSONArray(jsonObject.getJSONArray("values"));
-        } catch (Exception e) {
-            LoggerUtils.logException(e);
-            sendLogMessage(JEMessages.ERROR_EXECUTING_DB_QUERY, "", LogLevel.ERROR,
-                    null, LogCategory.RUNTIME, LogSubModule.WORKFLOW);
-        }
-        return jsonArray;
-    }
-
     public static void endJob() {
         System.exit(0);
+    }
+
+    public static void main(String... args) throws IOException, JERunnerErrorException {
+        var a = JobEngine.class;
+        var b = new MethodDescriptor(a.getDeclaredMethods()[1]);
+        b.getParameterDescriptors();
+        a.getDeclaredMethods()[5].getAnnotation(Description.class);
+
+     /*   sendLogMessage("test", "DM", LogLevel.INFORM, "testwf",
+                LogCategory.RUNTIME, LogSubModule.WORKFLOW);
+
+        JobEngine.informUser("test", "DM", "testwf");
+
+        setDataModelInstanceAttribute("23aa0c9c-ee34-c9e6-bbeb-7d407f0139b1", "fuelLevel", 110);
+
+        JEObject a = JobEngine.getDataModelInstance("azerty");*/
+        //   addVariable("Project_4", "testvar", 5, "DOuble");
+
+        /*while(true) {
+            informUser("test message", "DM", "testwf");
+        }*/
+        /*System.out.println(JobEngine.getVariable("DM", "testVar"));
+        JobEngine.setVariabl   e("DM", "testVar", 12132.0);
+        System.out.println(JobEngine.getVariable("DM", "testVar"));*
+        setDataModelInstanceAttribute("23aa0c9c-ee34-c9e6-bbeb-7d407f0139b1", "fuelLevel", 110);
+         //JobEngine.executeSelectQuery("db", "SELECT * FROM siothdatabase.testtable;");
+         /*int code = JobEngine.addDoubleVariable("test", "DoubleVar", 3.3);
+        System.out.println(code);
+        code = JobEngine.addLongVariable("test", "LongVar", 333333);
+        System.out.println(code);
+
+        code = JobEngine.addIntegerVariable("test", "IntVar", 3);
+        System.out.println(code);
+
+       String testString = (String) JobEngine.getVariable("test", "testBool");
+        System.out.println(testString);
+        JobEngine.setVariable("test", "testBool", true);
+        testString = (String) JobEngine.getVariable("test", "testBool");
+        JobEngine.informUser(testString, "test", "testScriptTwo");
+        System.out.println(testString);
+
+        String testString = (String) JobEngine.getVariable("test", "testVarInt");
+        System.out.println(testString);
+        JobEngine.setVariable("test", "testVarInt", true);
+        testString = (String) JobEngine.getVariable("test", "testVarInt");
+        JobEngine.informUser(testString, "test", "testScriptTwo");
+        System.out.println(testString);
+        System.exit(0);
+
+        String testString = (String) JobEngine.getVariable("test", "testVarLong");
+        System.out.println(testString);
+        JobEngine.setVariable("test", "testVarLong", 12354);
+        testString = (String) JobEngine.getVariable("test", "testVarLong");
+        JobEngine.informUser(testString, "test", "testScriptTwo");
+        System.out.println(testString);
+        System.exit(0);*/
+/*
+        //String requestUrl = SIOTHConfigUtility.getSiothConfig().getJobEngine().getJeBuilder() + INFORM_USER;
+        //JobEngine.sendLogMessage("ora", "test", LogLevel.Inform, "none", LogCategory.RUNTIME, LogSubModule.JERUNNER);
+        //JobEngine.informUser("ora", "test");
+        HashMap<String, String> authorization = new HashMap<>();
+        authorization.put("token", "eyJhbGciOiJSUzI1NiIsImtpZCI6Im0waldfSW5FclUwYVFnc0RHU1FGcEEiLCJ0eXAiOiJhdCt" +
+                "qd3QifQ.eyJuYmYiOjE2NDE5MDAzNjQsImV4cCI6MTY0MTkwNzU2NCwiaX" +
+                "NzIjoiaHR0cDovL25qZW5kb3ViaS1wYzo1MDAwIiwiYXVkIjpbIlNJT1R" +
+                "IX1RyYWNrZXIiLCJTSU9USF9KRSIsIkFkbWluQ2xpZW50SWRfYXBpIiwiU0lP" +
+                "VEhfTm9kZSIsIlNJT1RIX0RGIiwiU0lPVEhfRGV2aWNlIiwiU0lPVEhfTW9uaXRvc" +
+                "mluZyIsIlNJT1RIX0RhdGFNb2RlbCIsIlNJT1RIX0V4cGxvcmVyIiwiU0lPVEhfQW" +
+                "RtaW4iLCJTSU9USF9MaWNlbnNlIl0sImNsaWVudF9pZCI6IlNJT1RIX0FQUCIsIn" +
+                "N1YiI6IjBiNDg3YTBlLWU2ZTQtNDRmYy1iYTkxLTEyMGMwYzBjMjljNSIsImF1dGhfdG" +
+                "ltZSI6MTY0MTgyODM4MCwiaWRwIjoibG9jYWwiLCJuYW1lIjoiYWRtaW4iLCJyb2xlI" +
+                "joiQWRtaW5Sb2xlIiwic2NvcGUiOlsicm9sZXMiLCJvcGVuaWQiLCJwcm9maWxlIiwiZW" +
+                "1haWwiLCJ0cmFja2VyLnJlYWQiLCJ0cmFja2VyLndyaXRlIiwiamUucmVhZCIsImplLndyaXRlIiwiQWRtaW5DbGllb" +
+                "nRJZF9hcGkiLCJub2RlLndyaXRlIiwibm9kZS5yZWFkIiwiZGYud3JpdGUiLCJkZi5yZWFkIiwiZGV2aWNlLndyaXRlIiw" +
+                "iZGV2aWNlLnJlYWQiLCJtb25pdG9yaW5nLndyaXRlIiwibW9uaXRvcmluZy5yZWFkIiwiZG0ud3JpdGUiLCJkbS5yZWFkI" +
+                "iwiZXhwbG9yZXIud3JpdGUiLCJleHBsb3Jlci5yZWFkIiwiYWRtaW4ud3JpdGUiLCJhZG1pbi5yZWFkIiwibGljZW5zZS5" +
+                "yZWFkIiwibGljZW5zZS53cml0ZSJdLCJhbXIiOlsicHdkIl19.RxSGBmlzn7r29W5_ijoDC3i5lAWcMDQ9cvOm_ZdYRolU" +
+                "q3Pt6VVVWIKSwmdIhkhnJKn3WB5SY9AltWckLNBpqo_VuOSoUBnasXk3yh9rarUsSSREqyGtW0P5gmfy2u0HzH_1-oTjWq" +
+                "L5LW1vtoB_bMTPczwT0g2e9WqpsA-Cw94UfDX1cazf457pQDH3RfDXdB5dKY4KzcHJiwjoCRLNs-MoeM-MNn6PzW0V3bdZ2" +
+                "hNAapGHhLJHRS8dHcoPoQGW3pRX5qA-zKcKsk42Nu5QIb-7E6byLzW3m4bhFPXNSA-Z-lco1q3GZv_5VmCN7RsehqpVJDrQoZlhHnbFwI5nYg");
+        Network network = new Network.Builder("http://localhost:13003/api/Dataflows/e4526323-c737-3504-6d88-964d9a4f4614/runtime")
+                .withMethod(HttpMethod.GET).withAuthScheme(AuthScheme.BEARER).withAuthentication(authorization).build();
+        try {
+            Response response = network.call();
+            ObjectMapper objectMapper = new ObjectMapper();
+            HashMap<String, Object> respBody = objectMapper.readValue(response.body().string(), HashMap.class);
+            String state = (String) respBody.get("state");
+            System.out.println("dataflow state = " + state);
+            if(state.equals("Stopped")) {
+                network = new Network.Builder("http://localhost:13003/api/Dataflows/e4526323-c737-3504-6d88-964d9a4f4614/start")
+                        .withMethod(HttpMethod.GET).withAuthScheme(AuthScheme.BEARER).withAuthentication(authorization).build();
+                network.call();
+            }
+
+            else {
+                network = new Network.Builder("http://localhost:13003/api/Dataflows/e4526323-c737-3504-6d88-964d9a4f4614/stop")
+                        .withMethod(HttpMethod.GET).withAuthScheme(AuthScheme.BEARER).withAuthentication(authorization).build();
+                network.call();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }*/
+        //System.out.println(requestUrl);
+    }
+
+    /*
+     * Add a variable to runner from script task
+     * */
+    public static int addVariable(String projectName, String varName, Object varValue, String type) throws JERunnerErrorException {
+
+
+        try {
+            var realType = UnifiedType.valueOf(type.toUpperCase());
+            JEResponse response = JEBuilderApiHandler.addVariable(projectName, varName, getVariableBody(StringUtilities.generateUUID(), projectName, varName, varValue, realType.toString()));
+            return response.getCode();
+        } catch (Exception e) {
+            LoggerUtils.logException(e);
+            sendLogMessage(JEMessages.ERROR_ADDING_VARIABLE_TO_PROJECT, projectName, LogLevel.ERROR, varName, LogCategory.RUNTIME, LogSubModule.VARIABLE);
+            throw e;
+        }
+
+    }
+
+    /*
+     * Inform user of a message with inform level
+     * */
+    public static int informUser(String message, String projectName, String workflowName) {
+
+        //Network.makeGetNetworkCallWithResponse()
+        int respCode = -1;
+        JEConfiguration.loadProperties();
+        try {
+            InformModel informModel = new InformModel(message, projectName, workflowName);
+            JEZMQResponse response = JERunnerRequester.informUser(informModel);
+            if (response.getResponse()
+                    .equals(ZMQResponseType.SUCCESS)) return ResponseCodes.CODE_OK;
+            else {
+                sendLogMessage(JEMessages.ERROR_SENDING_INFORM_MESSAGE, projectName, LogLevel.ERROR,
+                        "", LogCategory.RUNTIME, LogSubModule.JERUNNER);
+            }
+        } catch (Exception e) {
+            LoggerUtils.logException(e);
+            sendLogMessage(JEMessages.ERROR_SENDING_INFORM_MESSAGE, projectName, LogLevel.ERROR,
+                    "", LogCategory.RUNTIME, LogSubModule.JERUNNER);
+        }
+
+        return respCode;
+    }
+
+    public static void setDataModelInstanceAttribute(String instanceId, String attributeName, Object attributeValue) {
+        JEConfiguration.loadProperties();
+        InstanceManager.writeToDataModelInstance(instanceId, attributeName, attributeValue, false);
     }
 
     public static JEObject getDataModelInstance(String instanceName) throws IOException {
         System.out.println("step 1");
         JEConfiguration.loadProperties();
-        ConfigurationConstants.setJavaGenerationPath(SIOTHConfigUtility.getSiothConfig()
-                .getJobEngine()
-                .getGeneratedClassesPath());
         JEZMQResponse var = JERunnerRequester.readClass(instanceName);
         JEObject instance = null;
         if (var != null && !var.getResponse()
@@ -418,111 +556,6 @@ public class JobEngine {
         }*/
         return instance;
     }
-
-    public static void setDataModelInstanceAttribute(String instanceId, String attributeName, Object attributeValue) {
-        JEConfiguration.loadProperties();
-        InstanceManager.writeToDataModelInstance(instanceId, attributeName, attributeValue, false);
-    }
-
-/*
-    public static void main(String... args) throws IOException {
-
-        sendLogMessage("test", "DM", LogLevel.INFORM, "testwf",
-                LogCategory.RUNTIME, LogSubModule.WORKFLOW);
-
-        JobEngine.informUser("test", "DM", "testwf");
-
-        setDataModelInstanceAttribute("23aa0c9c-ee34-c9e6-bbeb-7d407f0139b1", "fuelLevel", 110);
-
-        JEObject a = JobEngine.getDataModelInstance("azerty");
-
-        /*while(true) {
-            informUser("test message", "DM", "testwf");
-        }*/
-        /*System.out.println(JobEngine.getVariable("DM", "testVar"));
-        JobEngine.setVariabl   e("DM", "testVar", 12132.0);
-        System.out.println(JobEngine.getVariable("DM", "testVar"));*
-        setDataModelInstanceAttribute("23aa0c9c-ee34-c9e6-bbeb-7d407f0139b1", "fuelLevel", 110);
-         //JobEngine.executeSelectQuery("db", "SELECT * FROM siothdatabase.testtable;");
-         /*int code = JobEngine.addDoubleVariable("test", "DoubleVar", 3.3);
-        System.out.println(code);
-        code = JobEngine.addLongVariable("test", "LongVar", 333333);
-        System.out.println(code);
-
-        code = JobEngine.addIntegerVariable("test", "IntVar", 3);
-        System.out.println(code);
-
-       String testString = (String) JobEngine.getVariable("test", "testBool");
-        System.out.println(testString);
-        JobEngine.setVariable("test", "testBool", true);
-        testString = (String) JobEngine.getVariable("test", "testBool");
-        JobEngine.informUser(testString, "test", "testScriptTwo");
-        System.out.println(testString);
-
-        String testString = (String) JobEngine.getVariable("test", "testVarInt");
-        System.out.println(testString);
-        JobEngine.setVariable("test", "testVarInt", true);
-        testString = (String) JobEngine.getVariable("test", "testVarInt");
-        JobEngine.informUser(testString, "test", "testScriptTwo");
-        System.out.println(testString);
-        System.exit(0);
-
-        String testString = (String) JobEngine.getVariable("test", "testVarLong");
-        System.out.println(testString);
-        JobEngine.setVariable("test", "testVarLong", 12354);
-        testString = (String) JobEngine.getVariable("test", "testVarLong");
-        JobEngine.informUser(testString, "test", "testScriptTwo");
-        System.out.println(testString);
-        System.exit(0);
-
-        //String requestUrl = SIOTHConfigUtility.getSiothConfig().getJobEngine().getJeBuilder() + INFORM_USER;
-        //JobEngine.sendLogMessage("ora", "test", LogLevel.Inform, "none", LogCategory.RUNTIME, LogSubModule.JERUNNER);
-        //JobEngine.informUser("ora", "test");
-        HashMap<String, String> authorization = new HashMap<>();
-        authorization.put("token", "eyJhbGciOiJSUzI1NiIsImtpZCI6Im0waldfSW5FclUwYVFnc0RHU1FGcEEiLCJ0eXAiOiJhdCt" +
-                "qd3QifQ.eyJuYmYiOjE2NDE5MDAzNjQsImV4cCI6MTY0MTkwNzU2NCwiaX" +
-                "NzIjoiaHR0cDovL25qZW5kb3ViaS1wYzo1MDAwIiwiYXVkIjpbIlNJT1R" +
-                "IX1RyYWNrZXIiLCJTSU9USF9KRSIsIkFkbWluQ2xpZW50SWRfYXBpIiwiU0lP" +
-                "VEhfTm9kZSIsIlNJT1RIX0RGIiwiU0lPVEhfRGV2aWNlIiwiU0lPVEhfTW9uaXRvc" +
-                "mluZyIsIlNJT1RIX0RhdGFNb2RlbCIsIlNJT1RIX0V4cGxvcmVyIiwiU0lPVEhfQW" +
-                "RtaW4iLCJTSU9USF9MaWNlbnNlIl0sImNsaWVudF9pZCI6IlNJT1RIX0FQUCIsIn" +
-                "N1YiI6IjBiNDg3YTBlLWU2ZTQtNDRmYy1iYTkxLTEyMGMwYzBjMjljNSIsImF1dGhfdG" +
-                "ltZSI6MTY0MTgyODM4MCwiaWRwIjoibG9jYWwiLCJuYW1lIjoiYWRtaW4iLCJyb2xlI" +
-                "joiQWRtaW5Sb2xlIiwic2NvcGUiOlsicm9sZXMiLCJvcGVuaWQiLCJwcm9maWxlIiwiZW" +
-                "1haWwiLCJ0cmFja2VyLnJlYWQiLCJ0cmFja2VyLndyaXRlIiwiamUucmVhZCIsImplLndyaXRlIiwiQWRtaW5DbGllb" +
-                "nRJZF9hcGkiLCJub2RlLndyaXRlIiwibm9kZS5yZWFkIiwiZGYud3JpdGUiLCJkZi5yZWFkIiwiZGV2aWNlLndyaXRlIiw" +
-                "iZGV2aWNlLnJlYWQiLCJtb25pdG9yaW5nLndyaXRlIiwibW9uaXRvcmluZy5yZWFkIiwiZG0ud3JpdGUiLCJkbS5yZWFkI" +
-                "iwiZXhwbG9yZXIud3JpdGUiLCJleHBsb3Jlci5yZWFkIiwiYWRtaW4ud3JpdGUiLCJhZG1pbi5yZWFkIiwibGljZW5zZS5" +
-                "yZWFkIiwibGljZW5zZS53cml0ZSJdLCJhbXIiOlsicHdkIl19.RxSGBmlzn7r29W5_ijoDC3i5lAWcMDQ9cvOm_ZdYRolU" +
-                "q3Pt6VVVWIKSwmdIhkhnJKn3WB5SY9AltWckLNBpqo_VuOSoUBnasXk3yh9rarUsSSREqyGtW0P5gmfy2u0HzH_1-oTjWq" +
-                "L5LW1vtoB_bMTPczwT0g2e9WqpsA-Cw94UfDX1cazf457pQDH3RfDXdB5dKY4KzcHJiwjoCRLNs-MoeM-MNn6PzW0V3bdZ2" +
-                "hNAapGHhLJHRS8dHcoPoQGW3pRX5qA-zKcKsk42Nu5QIb-7E6byLzW3m4bhFPXNSA-Z-lco1q3GZv_5VmCN7RsehqpVJDrQoZlhHnbFwI5nYg");
-        Network network = new Network.Builder("http://localhost:13003/api/Dataflows/e4526323-c737-3504-6d88-964d9a4f4614/runtime")
-                .withMethod(HttpMethod.GET).withAuthScheme(AuthScheme.BEARER).withAuthentication(authorization).build();
-        try {
-            Response response = network.call();
-            ObjectMapper objectMapper = new ObjectMapper();
-            HashMap<String, Object> respBody = objectMapper.readValue(response.body().string(), HashMap.class);
-            String state = (String) respBody.get("state");
-            System.out.println("dataflow state = " + state);
-            if(state.equals("Stopped")) {
-                network = new Network.Builder("http://localhost:13003/api/Dataflows/e4526323-c737-3504-6d88-964d9a4f4614/start")
-                        .withMethod(HttpMethod.GET).withAuthScheme(AuthScheme.BEARER).withAuthentication(authorization).build();
-                network.call();
-            }
-
-            else {
-                network = new Network.Builder("http://localhost:13003/api/Dataflows/e4526323-c737-3504-6d88-964d9a4f4614/stop")
-                        .withMethod(HttpMethod.GET).withAuthScheme(AuthScheme.BEARER).withAuthentication(authorization).build();
-                network.call();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }*//*
-        //System.out.println(requestUrl);
-    }
-*/
-
 }
 
 
