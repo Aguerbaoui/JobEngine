@@ -6,6 +6,7 @@ import io.je.project.config.LicenseProperties;
 import io.je.project.services.ConfigurationService;
 import io.je.utilities.config.ConfigurationConstants;
 import io.je.utilities.constants.JEMessages;
+import io.je.utilities.dataflow.DataflowRequester;
 import io.je.utilities.exceptions.LicenseNotActiveException;
 import io.je.utilities.log.JELogger;
 import io.je.utilities.log.ZMQLogPublisher;
@@ -111,6 +112,7 @@ public class ProjectBuilderInitializingBean implements InitializingBean {
         configurationService.close();
 
         ZMQLogPublisher.close();
-    }
 
+        DataflowRequester.close();
+    }
 }
