@@ -3,7 +3,6 @@ package io.je.runtime.beans;
 import io.je.ruleengine.data.DataModelListener;
 import io.je.runtime.config.RunnerProperties;
 import io.je.runtime.services.ConfigurationService;
-import io.je.utilities.execution.Executioner;
 import io.je.utilities.log.ZMQLogPublisher;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,9 +49,6 @@ public class JERunnerInitBean implements InitializingBean {
         ZMQLogPublisher.close();
 
         DataModelListener.close();
-
-        Executioner.close();
-
     }
 
 }

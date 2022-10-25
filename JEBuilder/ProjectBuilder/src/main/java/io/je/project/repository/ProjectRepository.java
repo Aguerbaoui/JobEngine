@@ -1,22 +1,19 @@
 package io.je.project.repository;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.je.project.beans.JEProject;
 import io.je.project.beans.project.sentrequest.ExchangedUpdatedObjectAttributeNames;
 import io.je.project.beans.project.sentrequest.request.ExchangedUpdateObject;
 import io.je.project.beans.project.sentrequest.request.RequestType;
-import io.je.project.beans.project.sentrequest.response.ProjectManagementRequestResult;
-import io.je.project.beans.project.sentrequest.response.ProjectModel;
 import io.je.project.exception.JEExceptionHandler;
 import io.je.utilities.constants.JEMessages;
+import io.je.utilities.dataflow.ProjectManagementRequestResult;
 import io.je.utilities.exceptions.ProjectLoadException;
 import io.je.utilities.exceptions.ProjectNotFoundException;
 import io.je.utilities.log.JELogger;
-import io.siothconfig.SIOTHConfigUtility;
+import io.je.utilities.models.ProjectModel;
 import utils.log.LogCategory;
 import utils.log.LogSubModule;
 import utils.log.LoggerUtils;
-import utils.zmq.ZMQRequester;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,13 +21,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static io.je.utilities.dataflow.DataflowRequester.sendRequest;
+
 //TOOD: add logs
 public class ProjectRepository {
-
-    public static ObjectMapper objectMapper = new ObjectMapper();
-    private static ZMQRequester requester = new ZMQRequester(
-            "tcp://" + SIOTHConfigUtility.getSiothConfig().getNodes().getSiothMasterNode(),
-            SIOTHConfigUtility.getSiothConfig().getPorts().getDfResponsePort());
     private static Map<String, JEProject> projects = new ConcurrentHashMap<>();
 
     /*
@@ -61,7 +55,7 @@ public class ProjectRepository {
         req.put("key", projectKey);
         try {
 
-            response = sendRequest(req);
+            response = sendRequest(req, true);
             if (response == null || !response.isOk || response.projects.get(0) == null) {
                 throw new ProjectNotFoundException("Project management api did not respond");
             }
@@ -75,7 +69,7 @@ public class ProjectRepository {
         return project;
     }
 
-    private static ProjectManagementRequestResult sendRequest(Object req) {
+    /*private static ProjectManagementRequestResult sendRequest(Object req) {
 
         String request = "";
         String response = "";
@@ -100,7 +94,7 @@ public class ProjectRepository {
 
         }
         return respObject;
-    }
+    }*/
 
     private static JEProject createProject(ProjectModel projectModel) {
         JEProject project = new JEProject(projectModel.get_id());
@@ -129,7 +123,7 @@ public class ProjectRepository {
         }
 
         try {
-            response = sendRequest(req);
+            response = (ProjectManagementRequestResult)sendRequest(req, true);
             if (response == null || !response.isOk) {
 
                 throw new ProjectNotFoundException("Project management api did not respond");
@@ -210,7 +204,7 @@ public class ProjectRepository {
             updateModel.setRunning(project.isRunning());
             updateModel.setAutoReload(project.isAutoReload());
             updateModel.setConfigurationPath(project.getConfigurationPath());
-            ProjectManagementRequestResult response = sendRequest(updateModel);
+            ProjectManagementRequestResult response = (ProjectManagementRequestResult)sendRequest(updateModel, true);
             if (!response.isOk) {
                 throw new ProjectLoadException("Failed to save project.");
             }
@@ -219,5 +213,4 @@ public class ProjectRepository {
         }
 
     }
-
 }
