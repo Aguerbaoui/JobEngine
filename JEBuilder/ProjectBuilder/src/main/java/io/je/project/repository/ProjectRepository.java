@@ -69,33 +69,6 @@ public class ProjectRepository {
         return project;
     }
 
-    /*private static ProjectManagementRequestResult sendRequest(Object req) {
-
-        String request = "";
-        String response = "";
-        ProjectManagementRequestResult respObject = new ProjectManagementRequestResult();
-        try {
-            synchronized (requester) {
-                // Generate request
-                request = objectMapper.writeValueAsString(req);
-                JELogger.debugWithoutPublish("Sending request to project management api " + request, LogCategory.DESIGN_MODE,
-                        null, LogSubModule.JEBUILDER, null);
-                response = requester.sendRequest(request);
-                respObject = objectMapper.readValue(response, ProjectManagementRequestResult.class);
-
-            }
-        } catch (Exception e) {
-            LoggerUtils.logException(e);
-            respObject.isOk = false;
-        }
-        if (respObject == null || !respObject.isOk) {
-            JELogger.error("Project management api did not respond", LogCategory.DESIGN_MODE,
-                    null, LogSubModule.JEBUILDER, null);
-
-        }
-        return respObject;
-    }*/
-
     private static JEProject createProject(ProjectModel projectModel) {
         JEProject project = new JEProject(projectModel.get_id());
         project.setProjectName(projectModel.getKey());

@@ -13,7 +13,7 @@ import java.util.HashMap;
 public class DataflowRequester {
 
     public static ObjectMapper objectMapper = new ObjectMapper();
-    private static final ZMQRequester requester = new ZMQRequester(
+    private static ZMQRequester requester = new ZMQRequester(
             "tcp://" + SIOTHConfigUtility.getSiothConfig().getNodes().getSiothMasterNode(),
             SIOTHConfigUtility.getSiothConfig().getPorts().getDfResponsePort());
 
@@ -54,6 +54,13 @@ public class DataflowRequester {
             LoggerUtils.logException(e);
             JELogger.error("Failed to send request", LogCategory.RUNTIME, projectId, LogSubModule.RULE, ruleId);
             response = e.getMessage();
+        }
+    }
+
+    public static void close() {
+        if (requester != null) {
+            requester.closeSocket();
+            requester = null;
         }
     }
 }
